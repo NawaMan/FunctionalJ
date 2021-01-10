@@ -33,6 +33,7 @@ import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
 
+
 /**
  * Classes implementing this interface can act like a streamable.
  *
@@ -40,6 +41,7 @@ import lombok.val;
  *
  * @author NawaMan -- nawa@nawaman.net
  */
+@FunctionalInterface
 public interface AsStreamable<DATA> extends AsStreamPlus<DATA> {
     
     /** Returns the streamable for this streamable. */
@@ -49,6 +51,11 @@ public interface AsStreamable<DATA> extends AsStreamPlus<DATA> {
     
     /** @return  the stream plus instance of this object. */
     public StreamPlus<DATA> stream();
+    
+    @Override
+    public default StreamPlus<DATA> streamPlus() {
+        return stream();
+    }
     
     public default Streamable<DATA> streamable() {
         return ()->streamPlus();

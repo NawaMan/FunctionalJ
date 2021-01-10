@@ -139,7 +139,8 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
             IntUnaryOperator  segmentSize,
             IntUnaryOperator  mapper,
             IntBinaryOperator combinator) {
-        return deriveToInt(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
+//        return deriveToInt(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
+        return null;
     }
     
     /**
@@ -152,7 +153,8 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
             IntFunction<Integer>               segmentSize,
             IntFunction<TARGET>                mapper,
             BiFunction<TARGET, TARGET, TARGET> combinator) {
-        return deriveToObj(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
+//        return deriveToObj(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
+        return null;
     }
     
     //-- More - then StreamPlus --

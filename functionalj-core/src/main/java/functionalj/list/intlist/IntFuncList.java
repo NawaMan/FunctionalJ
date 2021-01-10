@@ -33,6 +33,7 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Random;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -40,6 +41,7 @@ import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
+import java.util.function.IntSupplier;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ObjIntConsumer;
@@ -48,11 +50,16 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import functionalj.function.Func0;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
 import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
+import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntIterable;
 import functionalj.stream.intstream.IntIteratorPlus;
@@ -93,6 +100,12 @@ public interface IntFuncList
             IntFuncListWithSort,
             IntFuncListWithSplit,
             IntFuncListWithStatistic {
+    
+    /** Throw a no more element exception. This is used for generator. */
+    public static int noMoreElement() throws NoMoreResultException {
+        SupplierBackedIterator.noMoreElement();
+        return Integer.MIN_VALUE;
+    }
     
     /** Returns an empty IntFuncList. */
      public static ImmutableIntFuncList empty() {
@@ -158,8 +171,28 @@ public interface IntFuncList
     
     /** Create a FuncList from the given streamable. */
     public static IntFuncList from(AsIntStreamable streamable) {
-        if (streamable instanceof IntFuncList)
-            return (IntFuncList)streamable;
+        if (streamable instanceof IntFuncList) {
+            val funcList = (IntFuncList)streamable;
+            if (funcList.isEager()) {
+                return funcList.toImmutableList();
+            }
+            
+            return funcList;
+        }
+        
+        return new IntFuncListDerivedFromIntStreamable(streamable);
+    }
+    
+    /** Create a FuncList from the given streamable. */
+    public static IntFuncList from(boolean isLazy, AsIntStreamable streamable) {
+        if (!isLazy) {
+            return ImmutableIntFuncList.from(isLazy, streamable);
+        }
+        
+        if (streamable instanceof FuncList) {
+            val funcList = (IntFuncList)streamable;
+            return funcList;
+        }
         
         return new IntFuncListDerivedFromIntStreamable(streamable);
     }
@@ -179,17 +212,9 @@ public interface IntFuncList
         return IntFuncList.from(IntStreamable.ones(count));
     }
     
-    public static IntFuncList naturalNumbers() {
-        return naturalNumbers(Integer.MAX_VALUE);
-    }
     
     public static IntFuncList naturalNumbers(int count) {
         return IntFuncList.from(IntStreamable.naturalNumbers().limit(count));
-    }
-    
-    /** Returns the infinite streams of wholes numbers -- 0, 1, 2, 3, .... */
-    public static IntFuncList wholeNumbers() {
-        return wholeNumbers(Integer.MAX_VALUE);
     }
     
     /** Returns the infinite streams of wholes numbers -- 0, 1, 2, 3, .... */
@@ -202,17 +227,40 @@ public interface IntFuncList
         return IntFuncList.from(IntStreamable.range(startInclusive, endExclusive));
     }
     
-//    public static <T> FuncListBuilder<T> newFuncList() {
-//        return new FuncListBuilder<T>();
-//    }
-//
-//    public static <T> FuncListBuilder<T> newList() {
-//        return new FuncListBuilder<T>();
-//    }
-//
-//    public static <T> FuncListBuilder<T> newBuilder() {
-//        return new FuncListBuilder<T>();
-//    }
+    /** Concatenate all the given streams. */
+    @SafeVarargs
+    public static IntFuncList concat(IntFuncList ... list) {
+        return combine(list);
+    }
+    
+    /**
+     * Concatenate all the given lists.
+     *
+     * This method is the alias of {@link FuncList#concat(FuncList...)}
+     *   but allowing static import without colliding with {@link String#concat(String)}.
+     **/
+    @SafeVarargs
+    public static IntFuncList combine(IntFuncList ... lists) {
+        ImmutableList<IntFuncList> listOfList = FuncList.listOf(lists);
+        IntStreamable[] array = (IntStreamable[])listOfList.map(IntFuncList::intStreamable).toArray(IntStreamable[]::new);
+        return IntFuncList.from(IntStreamable.combine(array));
+    }
+    
+    /**
+     * Create a Streamable from the supplier of supplier.
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
+     **/
+    public static IntFuncList generate(Func0<IntSupplier> suppliers) {
+        return IntFuncList.from(IntStreamable.generate(suppliers));
+    }
+    
+    /**
+     * Create a Streamable from the supplier of supplier.
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
+     **/
+    public static IntFuncList generateWith(Func0<IntSupplier> supplier) {
+        return generate(supplier);
+    }
     
     //-- Zip --
     
@@ -233,17 +281,8 @@ public interface IntFuncList
     }
     
     public static FuncList<IntIntTuple> zipOf(
-            IntFuncList list1,
-            IntFuncList list2,
-            int         defaultValue) {
-        return FuncList.from(IntStreamable.zipOf(list1, list2, defaultValue));
-    }
-    
-    public static FuncList<IntIntTuple> zipOf(
-            IntFuncList list1,
-            int         defaultValue1,
-            IntFuncList list2,
-            int         defaultValue2) {
+            IntFuncList list1, int defaultValue1,
+            IntFuncList list2, int defaultValue2) {
         return FuncList.from(IntStreamable.zipOf(list1, defaultValue1, list2, defaultValue2));
     }
     
@@ -255,26 +294,52 @@ public interface IntFuncList
         return IntFuncList.from(IntStreamable.zipOf(list1, list2, merger));
     }
     
-    /** Zip integers from two IntStreams and combine it into another object. */
-    public static IntFuncList zipOf(
-            IntFuncList            list1,
-            IntFuncList            list2,
-            int                    defaultValue,
-            IntBiFunctionPrimitive merger) {
-        return IntFuncList.from(IntStreamable.zipOf(list1, list2, defaultValue, merger));
-    }
-    
     /**
      * Zip integers from an int stream and another object stream and combine it into another object.
      * The result stream has the size of the shortest stream.
      */
     public static IntFuncList zipOf(
-            IntFuncList            list1,
-            int                    defaultValue1,
-            IntFuncList            list2,
-            int                    defaultValue2,
+            IntFuncList            list1, int defaultValue1,
+            IntFuncList            list2, int defaultValue2,
             IntBiFunctionPrimitive merger) {
         return IntFuncList.from(IntStreamable.zipOf(list1, defaultValue1, list2, defaultValue2, merger));
+    }
+    
+    //-- Builder --
+    
+    /** Create a new FuncList. */
+    public static IntFuncListBuilder newFuncList() {
+        return new IntFuncListBuilder();
+    }
+    
+    /** Create a new FuncList. */
+    public static IntFuncListBuilder newIntFuncList() {
+        return new IntFuncListBuilder();
+    }
+    
+    /** Create a new list. */
+    public static IntFuncListBuilder newList() {
+        return new IntFuncListBuilder();
+    }
+    
+    /** Create a new list. */
+    public static IntFuncListBuilder newIntList() {
+        return new IntFuncListBuilder();
+    }
+    
+    /** Create a new list builder. */
+    public static IntFuncListBuilder newBuilder() {
+        return new IntFuncListBuilder();
+    }
+    
+    /** Create a new FuncList. */
+    public static IntFuncListBuilder preparing() {
+        return new IntFuncListBuilder();
+    }
+    
+    /** Create a new FuncList. */
+    public static IntFuncListBuilder preparingInts() {
+        return new IntFuncListBuilder();
     }
     
     //== Core ==
@@ -290,35 +355,37 @@ public interface IntFuncList
     //-- Derive --
     
     /** Create a Streamable from the given Streamable. */
+    @SuppressWarnings("rawtypes")
     public static <SOURCE> IntFuncList deriveFrom(
             AsStreamable<SOURCE>                    asStreamable,
             Function<StreamPlus<SOURCE>, IntStream> action) {
-        return IntFuncList.from(IntStreamable.deriveFrom(asStreamable, action));
+        boolean isLazy 
+                = (asStreamable instanceof FuncList)
+                ? ((FuncList)asStreamable).isLazy()
+                : true;
+        return IntFuncList.from(isLazy, IntStreamable.deriveFrom(asStreamable, action));
     }
     
     /** Create a Streamable from the given IntStreamable. */
     public static <TARGET> IntFuncList deriveFrom(
             AsIntStreamable                    asStreamable,
             Function<IntStreamPlus, IntStream> action) {
-        return IntFuncList.from(IntStreamable.deriveFrom(asStreamable, action));
+        boolean isLazy 
+                = (asStreamable instanceof IntFuncList)
+                ? ((IntFuncList)asStreamable).isLazy()
+                : true;
+        return IntFuncList.from(isLazy, IntStreamable.deriveFrom(asStreamable, action));
     }
-    
-//    /** Create a Streamable from the given LongStreamable. */
-//    public static <TARGET> IntFuncList deriveFrom(
-//            LongFuncList                        list,
-//            Function<LongStreamPlus, IntStream> action) {
-//        return () -> {
-//            val sourceStream = asStreamable.longStream();
-//            val targetStream = action.apply(sourceStream);
-//            return IntStreamPlus.from(targetStream);
-//        };
-//    }
     
     /** Create a Streamable from the given DoubleStreamable. */
     public static <TARGET> IntFuncList deriveFrom(
             AsDoubleStreamable                       asStreamable,
             Function<DoubleStreamPlus, IntStream> action) {
-        return IntFuncList.from(IntStreamable.deriveFrom(asStreamable, action));
+        boolean isLazy 
+                = (asStreamable instanceof DoubleFuncList)
+                ? ((DoubleFuncList)asStreamable).isLazy()
+                : true;
+        return IntFuncList.from(isLazy, IntStreamable.deriveFrom(asStreamable, action));
     }
     
     /** Create a Streamable from another streamable. */
@@ -327,13 +394,6 @@ public interface IntFuncList
             Function<IntStreamPlus, IntStream> action) {
         return IntFuncList.from(IntStreamable.deriveFrom(asStreamable, action));
     }
-    
-//    /** Create a Streamable from another streamable. */
-//    public static <SOURCE> LongStreamable deriveToLong(
-//            AsIntStreamable                     asStreamable,
-//            Function<IntStreamPlus, LongStream> action) {
-//        return LongStreamable.deriveFrom(asStreamable, action);
-//    }
     
     /** Create a Streamable from another streamable. */
     public static DoubleFuncList deriveToDouble(
@@ -388,8 +448,8 @@ public interface IntFuncList
     }
     
     /** Returns stream of Integer from the value of this list. */
-    public default Streamable<Integer> boxed() {
-        return ()->StreamPlus.from(intStream().mapToObj(theInteger.boxed()));
+    public default FuncList<Integer> boxed() {
+        return mapToObj(theInteger.boxed());
     }
     
     /** Returns the list value in this stream as int aka itself */
@@ -417,12 +477,13 @@ public interface IntFuncList
     /** @return a iterator of this streamable. */
     @Override
     public default IntIteratorPlus iterator() {
-        return () -> iterator();
+        return IntIteratorPlus.from(intStream());
     }
     
     /** @return a spliterator of this streamable. */
     public default Spliterator.OfInt spliterator() {
-        return intStream().spliterator();
+        val iterator = iterator();
+        return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
     //-- Map --

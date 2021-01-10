@@ -72,7 +72,8 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
      * @return             the stream of sub stream.
      */
     public default FuncList<StreamPlus<DATA>> segmentSize(int count, IncompletedSegment incompletedSegment) {
-        return segmentSize(count, (incompletedSegment == IncompletedSegment.included));
+        boolean includeTail = incompletedSegment == IncompletedSegment.included;
+        return segmentSize(count, includeTail);
     }
     
     /**

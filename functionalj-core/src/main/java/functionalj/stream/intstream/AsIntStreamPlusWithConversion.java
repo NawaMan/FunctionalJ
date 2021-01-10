@@ -113,15 +113,6 @@ public interface AsIntStreamPlusWithConversion {
         return new ArrayList<Integer>(javaList);
     }
     
-    /** @return a functional list containing the elements. */
-    @Eager
-    @Terminal
-    public default IntFuncList toFuncList() {
-        val streamPlus = intStreamPlus();
-        return streamPlus
-                .toImmutableList();
-    }
-    
     /** @return an immutable list containing the elements. */
     @Eager
     @Terminal

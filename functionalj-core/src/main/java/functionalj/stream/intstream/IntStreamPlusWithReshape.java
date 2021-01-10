@@ -30,20 +30,25 @@ import static functionalj.stream.intstream.IntStreamPlus.generateWith;
 import static functionalj.stream.intstream.IntStreamPlusHelper.sequentialToObj;
 
 import java.util.NoSuchElementException;
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
+import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamPlusHelper;
 import lombok.val;
 
 
@@ -413,124 +418,32 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
      * If the segmentSize function return null or 0, the value will be used as is (no collapse).
      */
     public default IntStreamPlus collapseSize(
-            IntUnaryOperator  segmentSize,
-            IntUnaryOperator  mapper,
-            IntBinaryOperator combinator) {
-//         val dummy = IntStreamPlusHelper.dummy;
-//         val intArray = new int[1];
-//
-//         val firstObj = new Object();
-//         val iterator = streamPlus().iterator();
-//         val prev = new AtomicReference<Object>(firstObj);
-//         val resultStream = generateWith(()->{
-//             if (prev.get() == dummy)
-//                 throw new NoMoreResultException();
-//
-//             while(true) {
-//                 int next;
-//                 try {
-//                     next = iterator.next();
-//                 } catch (NoSuchElementException e) {
-//                     if (prev.get() == firstObj)
-//                         throw new NoMoreResultException();
-//
-//                     val yield = prev.get();
-//                     prev.set(StreamPlusHelper.dummy);
-//                     return (TARGET)yield;
-//                 }
-//
-//                 Integer newSize = segmentSize.apply(next);
-//                 if ((newSize == null) || (newSize == 0)) {
-//                     continue;
-//                 }
-//
-//                 if (newSize == 1) {
-//                     val target = (TARGET)mapper.apply((DATA)next);
-//                     return target;
-//                 }
-//
-//                 TARGET target = (TARGET)mapper.apply((DATA)next);
-//                 prev.set(target);
-//                 for (int i = 0; i < (newSize - 1); i++) {
-//                     try {
-//                         next   = iterator.next();
-//                         target = (TARGET)mapper.apply((DATA)next);
-//                         val prevValue = (TARGET)prev.get();
-//                         val newValue  = combinator.apply(prevValue, target);
-//                         prev.set(newValue);
-//                     } catch (NoSuchElementException e) {
-//                         val yield = prev.get();
-//                         prev.set(StreamPlusHelper.dummy);
-//                         return (TARGET)yield;
-//                     }
-//                 }
-//
-//                 val yield = prev.get();
-//                 prev.set(firstObj);
-//                 return (TARGET)yield;
-//             }
-//         });
-//
-//         return resultStream;
-//
-//        return IntStreamPlusHelper.sequential(this, stream -> {
-//            val splitr = stream.spliterator();
-//            val value = new AtomicReference<AtomicInteger>(null);
-//            IntStreamPlus head = IntStreamPlus.from(StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-//                @Override
-//                public boolean tryAdvance(IntConsumer consumer) {
-//                    val count = new AtomicInteger(0);
-//                    val hasNext = new AtomicBoolean();
-//                    do {
-//                        hasNext.set(splitr.tryAdvance((int next) -> {
-//                            if (count.get() == 0) {
-//                                int newSize = segmentSize.applyAsInt(next);
-//                                if (newSize <= 0) {
-//                                    count.set(1);
-//                                    value.set(null);
-//                                } else {
-//                                    count.set(newSize);
-//                                    value.set(new AtomicInteger(next));
-//                                }
-//                            } else {
-//                                int newValue = concatFunc.applyAsInt(value.get().get(), next);
-//                                value.get().set(newValue);
-//                            }
-//                        }));
-//                    } while(count.decrementAndGet() > 0);
-//
-//                    if ((value.get() != null) && (hasNext.get() || includeTail)) {
-//                        consumer.accept(value.get().get());
-//                        count.set(0);
-//                        value.set(null);
-//                    }
-//
-//                    return hasNext.get();
+            IntFunction<Integer> segmentSize,
+            IntUnaryOperator     mapper,
+            IntBinaryOperator    combinator) {
+//        val splitr      = intStreamPlus().spliterator();
+//        val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+//            @Override
+//            public boolean tryAdvance(IntConsumer consumer) {
+//                val count       = new AtomicInteger();
+//                val accumulator = new AtomicInteger(0);
+//                IntConsumer action = value -> {
+//                    val newSegmentSize = segmentSize.apply(value);
+//                    count.set((newSegmentSize == null) ? 0 : newSegmentSize.intValue());
+//                    accumulator.set(value);
+//                };
+//                boolean hasNext = splitr.tryAdvance(action);
+//                
+//                for (; count.get() >= 0) {
+//                    
 //                }
-//            }, false));
-//
-//            IntStreamPlus tail = (includeTail && (value.get() != null))
-//                     ? IntStreamPlus.of(value.get().get())
-//                     : IntStreamPlus.empty();
-//            val resultStream
-//                = StreamPlus.of(
-//                    f(()-> head),
-//                    f(()-> tail)
-//                )
-//                .map(each -> each.get())
-//                .filterNonNull()
-//                .reduce(IntStreamPlus::concat)
-//                .get();
-//
-//            resultStream
-//            .onClose(()->{
-//                f(()->head.close()).runCarelessly();
-//                f(()->tail.close()).runCarelessly();
-//                IntStreamPlusWithSegment.this.close();
-//            });
-//
-//            return resultStream;
-//        });
+//                if (!hasNext) {
+//                    return hasNext;
+//                }
+//                return hasNext;
+//            }
+//        };
+//        return IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
         return null;
     }
     
@@ -540,11 +453,10 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
      *
      * If the segmentSize function return null or 0, the value will be used as is (no collapse).
      */
-    public default <TARGET> StreamPlus<TARGET> collapseSize(
-            IntFunction<Integer>               segmentSize,
+    public default <TARGET> StreamPlus<TARGET> collapseSizeToObj(
+            IntUnaryOperator                   segmentSize,
             IntFunction<TARGET>                mapper,
             BiFunction<TARGET, TARGET, TARGET> combinator) {
-//        return deriveFrom(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
         return null;
     }
     

@@ -44,7 +44,6 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -217,24 +216,7 @@ public interface FuncList<DATA>
     
     /** Create a FuncList from the given stream. */
     public static <TARGET> FuncList<TARGET> from(Stream<TARGET> stream) {
-        return new ImmutableList<TARGET>(stream.collect(Collectors.toList()));
-    }
-    
-    //-- Builder --
-    
-    /** Create a new FuncList. */
-    public static <TARGET> FuncListBuilder<TARGET> newFuncList(Class<TARGET> clz) {
-        return new FuncListBuilder<TARGET>();
-    }
-    
-    /** Create a new list. */
-    public static <TARGET> FuncListBuilder<TARGET> newList(Class<TARGET> clz) {
-        return new FuncListBuilder<TARGET>();
-    }
-    
-    /** Create a new list builder. */
-    public static <TARGET> FuncListBuilder<TARGET> newBuilder(Class<TARGET> clz) {
-        return new FuncListBuilder<TARGET>();
+        return ImmutableList.from(stream);
     }
     
     /** Concatenate all the given streams. */
@@ -271,12 +253,6 @@ public interface FuncList<DATA>
      **/
     public static <TARGET> FuncList<TARGET> generateWith(Func0<Func0<TARGET>> supplier) {
         return generate(supplier);
-    }
-    
-    /** Create a FuncList that is the repeat of the given array of data. */
-    public static <TARGET> FuncList<TARGET> nulls(int size) {
-        Streamable<TARGET> nulls = Streamable.nulls();
-        return FuncList.from(nulls.limit(size));
     }
     
     //== Zip ==
@@ -373,6 +349,23 @@ public interface FuncList<DATA>
                         list1.doubleStreamable(),
                         list2.streamable(),
                         merger));
+    }
+    
+    //-- Builder --
+    
+    /** Create a new FuncList. */
+    public static <TARGET> FuncListBuilder<TARGET> newFuncList(Class<TARGET> clz) {
+        return new FuncListBuilder<TARGET>();
+    }
+    
+    /** Create a new list. */
+    public static <TARGET> FuncListBuilder<TARGET> newList(Class<TARGET> clz) {
+        return new FuncListBuilder<TARGET>();
+    }
+    
+    /** Create a new list builder. */
+    public static <TARGET> FuncListBuilder<TARGET> newBuilder(Class<TARGET> clz) {
+        return new FuncListBuilder<TARGET>();
     }
     
     //== Core ==

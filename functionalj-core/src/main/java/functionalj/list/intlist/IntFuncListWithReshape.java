@@ -35,9 +35,11 @@ import java.util.function.IntUnaryOperator;
 
 import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.stream.IncompletedSegment;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
+import lombok.val;
 
 public interface IntFuncListWithReshape extends AsIntStreamable {
     
@@ -65,6 +67,22 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
     }
     
     /**
+     * Segment the stream into sub stream with the fix length of count.
+     * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
+     *
+     * @param count        the element count of the sub stream.
+     * @param includeTail  the option indicating if the last sub stream that does not have count element is to be included
+     *                       as opposed to thrown away.
+     * @return             the stream of sub stream.
+     */
+    public default FuncList<IntStreamPlus> segmentSize(
+            int                count,
+            IncompletedSegment incompletedSegment) {
+        val includeTail = (incompletedSegment == IncompletedSegment.included);
+        return deriveFrom(this, stream -> stream.segmentSize(count, includeTail));
+    }
+    
+    /**
      * Segment the stream into sub stream whenever the start condition is true.
      * The tail sub stream will always be included.
      */
@@ -77,6 +95,14 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
             IntPredicate startCondition,
             boolean      includeIncompletedSegment) {
         return deriveFrom(this, stream -> stream.segment(startCondition, includeIncompletedSegment));
+    }
+    
+    /** Segment the stream into sub stream whenever the start condition is true. */
+    public default FuncList<IntStreamPlus> segment(
+            IntPredicate startCondition,
+            IncompletedSegment incompletedSegment) {
+        val includeTail = (incompletedSegment == IncompletedSegment.included);
+        return deriveFrom(this, stream -> stream.segment(startCondition, includeTail));
     }
     
     /**
@@ -95,6 +121,15 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
             IntPredicate endCondition,
             boolean         includeIncompletedSegment) {
         return deriveFrom(this, stream -> stream.segment(startCondition, endCondition, includeIncompletedSegment));
+    }
+    
+    /** Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true. */
+    public default FuncList<IntStreamPlus> segment(
+            IntPredicate startCondition,
+            IntPredicate endCondition,
+            IncompletedSegment incompletedSegment) {
+        val includeTail = (incompletedSegment == IncompletedSegment.included);
+        return deriveFrom(this, stream -> stream.segment(startCondition, endCondition, includeTail));
     }
     
     /**
@@ -136,8 +171,9 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
             IntUnaryOperator  segmentSize,
             IntUnaryOperator  mapper,
             IntBinaryOperator combinator) {
-        IntStreamable streamable = () -> intStreamPlus().collapseSize(segmentSize, mapper, combinator);
-        return from(streamable);
+//        IntStreamable streamable = () -> intStreamPlus().collapseSize(segmentSize, mapper, combinator);
+//        return from(streamable);
+        return null;
     }
     
     /**
@@ -146,11 +182,12 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
      *
      * If the segmentSize function return null or 0, the value will be used as is (no collapse).
      */
-    public default <TARGET> FuncList<TARGET> collapseSize(
+    public default <TARGET> FuncList<TARGET> collapseSizeToObj(
             IntFunction<Integer>               segmentSize,
             IntFunction<TARGET>                mapper,
             BiFunction<TARGET, TARGET, TARGET> combinator) {
-        return deriveFrom(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
+//        return deriveFrom(this, stream -> stream.collapseSizeToObj(segmentSize, mapper, combinator));
+        return null;
     }
     
     //-- More - then StreamPlus --

@@ -48,7 +48,9 @@ import functionalj.function.Func0;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
 import functionalj.list.intlist.IntFuncList;
+import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntIterable;
 import functionalj.stream.intstream.IntIteratorPlus;
@@ -89,6 +91,12 @@ public interface IntStreamable
             IntStreamableWithSort,
             IntStreamableWithSplit,
             IntStreamableWithStatistic {
+    
+    /** Throw a no more element exception. This is used for generator. */
+    public static int noMoreElement() throws NoMoreResultException {
+        SupplierBackedIterator.noMoreElement();
+        return Integer.MIN_VALUE;
+    }
     
     /** Returns an empty Streamable. */
     public static IntStreamable empty() {
@@ -145,16 +153,19 @@ public interface IntStreamable
      * Create a Streamable from the supplier of supplier.
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
-    public static IntStreamable generate(IntSupplier intSupplier) {
-        return ()->IntStreamPlus.generate(intSupplier);
+    public static IntStreamable generate(Func0<IntSupplier> intSuppliers) {
+        return ()->{
+            val intSupplier = intSuppliers.apply();
+            return IntStreamPlus.generate(intSupplier);
+        };
     }
     
     /**
      * Create a Streamable from the supplier of supplier.
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
-    public static IntStreamable generateWith(Func0<IntStream> streamSupplier) {
-        return ()->StreamPlus.of(streamSupplier).flatMapToInt(s -> s.get());
+    public static IntStreamable generateWith(Func0<IntSupplier> intSuppliers) {
+        return generate(intSuppliers);
     }
     
     /**
@@ -308,22 +319,22 @@ public interface IntStreamable
     
     /** Returns the infinite streams of zeroes. */
     public static IntStreamable zeroes() {
-        return IntStreamable.generate(()->0);
+        return IntStreamable.generate(()->()->0);
     }
     
     /** Returns the streams of zeroes. */
     public static IntStreamable zeroes(int count) {
-        return IntStreamable.generate(()->0).limit(count);
+        return IntStreamable.generate(()->()->0).limit(count);
     }
     
     /** Returns the infinite streams of ones. */
     public static IntStreamable ones() {
-        return IntStreamable.generate(()->1);
+        return IntStreamable.generate(()->()->1);
     }
     
     /** Returns the streams of ones. */
     public static IntStreamable ones(int count) {
-        return IntStreamable.generate(()->1).limit(count);
+        return IntStreamable.generate(()->()->1).limit(count);
     }
     
     /** Returns the infinite streams of natural numbers -- 1, 2, 3, .... */
@@ -369,22 +380,8 @@ public interface IntStreamable
     }
     
     public static Streamable<IntIntTuple> zipOf(
-            AsIntStreamable streamable1,
-            AsIntStreamable streamable2,
-            int             defaultValue) {
-        return ()->{
-            return IntStreamPlus.zipOf(
-                    streamable1.intStream(),
-                    streamable2.intStream(),
-                    defaultValue);
-        };
-    }
-    
-    public static Streamable<IntIntTuple> zipOf(
-            AsIntStreamable streamable1,
-            int             defaultValue1,
-            AsIntStreamable streamable2,
-            int             defaultValue2) {
+            AsIntStreamable streamable1, int defaultValue1,
+            AsIntStreamable streamable2, int defaultValue2) {
         return ()->{
             return IntStreamPlus.zipOf(
                     streamable1.intStream(), defaultValue1,
@@ -405,30 +402,13 @@ public interface IntStreamable
         };
     }
     
-    /** Zip integers from two IntStreams and combine it into another object. */
-    public static IntStreamable zipOf(
-            AsIntStreamable        streamable1,
-            AsIntStreamable        streamable2,
-            int                    defaultValue,
-            IntBiFunctionPrimitive merger) {
-        return ()->{
-            return IntStreamPlus.zipOf(
-                    streamable1.intStream(),
-                    streamable2.intStream(),
-                    defaultValue,
-                    merger);
-        };
-    }
-    
     /**
      * Zip integers from an int stream and another object stream and combine it into another object.
      * The result stream has the size of the shortest stream.
      */
     public static IntStreamable zipOf(
-            AsIntStreamable        streamable1,
-            int                    defaultValue1,
-            AsIntStreamable        streamable2,
-            int                    defaultValue2,
+            AsIntStreamable        streamable1, int defaultValue1,
+            AsIntStreamable        streamable2, int defaultValue2,
             IntBiFunctionPrimitive merger) {
         return ()->{
             return IntStreamPlus.zipOf(

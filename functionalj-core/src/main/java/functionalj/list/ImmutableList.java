@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 //
@@ -40,6 +40,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
 import functionalj.streamable.AsStreamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -86,8 +87,7 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         if (streamable == null)
             return ImmutableList.empty();
         
-        val newList = new ImmutableList<T>(streamable.toJavaList(), isLazy);
-        return newList;
+        return new ImmutableList<T>(streamable.toJavaList(), isLazy);
     }
     
     public static <T> ImmutableList<T> from(Stream<T> stream) {
@@ -109,16 +109,17 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         if (funcList == null)
             return ImmutableList.empty();
         
-        return new ImmutableList<T>(funcList.toJavaList());
+        return new ImmutableList<T>(funcList.toJavaList(), funcList.isLazy());
     }
     
     private final List<DATA> data;
     private final boolean    isLazy;
     
-    public ImmutableList(Collection<DATA> data) {
+    ImmutableList(Collection<DATA> data) {
         this(data, true);
     }
-    public ImmutableList(Collection<DATA> data, boolean isLazy) {
+    
+    ImmutableList(Collection<DATA> data, boolean isLazy) {
         this.isLazy = isLazy;
         if (data == null) {
             this.data = Collections.emptyList();
@@ -132,14 +133,21 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     }
     
     @Override
+    public Streamable<DATA> streamable() {
+        return ()->streamPlus();
+    }
+    
+    @Override
     public StreamPlus<DATA> stream() {
         return StreamPlus.from(data.stream());
     }
     
+    @Override
     public boolean isLazy() {
         return isLazy;
     }
     
+    @Override
     public boolean isEager() {
         return !isLazy;
     }
@@ -213,13 +221,13 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     }
     
     @Override
-    public boolean equals(Object o) {
-        return this.data.equals(o);
+    public int hashCode() {
+        return this.data.hashCode();
     }
     
     @Override
-    public int hashCode() {
-        return this.data.hashCode();
+    public boolean equals(Object o) {
+        return this.data.equals(o);
     }
     
     // -- Short cut --

@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import functionalj.stream.StreamPlus;
+import functionalj.streamable.AsStreamable;
 
 /**
  * Builder for FuncList.
@@ -66,11 +67,15 @@ public class FuncListBuilder<DATA> {
     }
     
     public FuncList<DATA> build() {
-        return FuncList.from(list);
+        int length = list.size();
+        AsStreamable<DATA> asStreamable = () -> {
+            return () -> list.stream().limit(length);
+        };
+        return FuncList.from(asStreamable);
     }
     
     public FuncList<DATA> toFuncList() {
-        return FuncList.from(list);
+        return build();
     }
     
     public int size() {

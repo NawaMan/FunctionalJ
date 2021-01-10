@@ -1,1868 +1,3571 @@
+// ============================================================================
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.list.intlist;
 
-//import static functionalj.lens.Access.$I;
-//import static functionalj.lens.Access.theInteger;
-//import static functionalj.list.intlist.IntFuncList.emptyIntList;
-//import static functionalj.list.intlist.IntFuncList.emptyList;
-//import static functionalj.list.intlist.IntFuncList.ints;
-//import static functionalj.list.intlist.IntFuncList.range;
-//import static functionalj.list.intlist.IntFuncList.wholeNumbers;
-//import static java.lang.String.format;
-//import static java.util.Arrays.asList;
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertFalse;
-//import static org.junit.Assert.assertNotEquals;
-//import static org.junit.Assert.assertTrue;
-//import static org.junit.Assert.fail;
-//
-//import java.util.ArrayList;
-//import java.util.Arrays;
-//import java.util.Comparator;
-//import java.util.EnumSet;
-//import java.util.OptionalInt;
-//import java.util.Set;
-//import java.util.concurrent.atomic.AtomicInteger;
-//import java.util.function.BinaryOperator;
-//import java.util.function.Function;
-//import java.util.function.IntFunction;
-//import java.util.function.IntPredicate;
-//import java.util.function.Supplier;
-//import java.util.stream.Collector;
-//import java.util.stream.IntStream;
-//
-//import org.junit.Test;
-//
-//import functionalj.function.FuncUnit1;
-//import functionalj.promise.DeferAction;
-//import functionalj.stream.IncompletedSegment;
-//import functionalj.stream.IntAccumulator;
-//import functionalj.stream.IntCollectorPlus;
-//import functionalj.stream.Streamable;
-//import functionalj.stream.intstream.IntStreamPlus;
-//import functionalj.stream.intstream.IntStreamable;
-//
+import static functionalj.functions.StrFuncs.join;
+import static functionalj.functions.TimeFuncs.Sleep;
+import static functionalj.lens.Access.$S;
+import static functionalj.lens.Access.theInteger;
+import static functionalj.lens.Access.theString;
+import static functionalj.lens.LensTest.Car.theCar;
+import static functionalj.list.FuncList.listOf;
+import static functionalj.ref.Run.With;
+import static functionalj.stream.ZipWithOption.AllowUnpaired;
+import static functionalj.stream.ZipWithOption.RequireBoth;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collector.Characteristics.CONCURRENT;
+import static java.util.stream.Collector.Characteristics.UNORDERED;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators.AbstractIntSpliterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.IntPredicate;
+import java.util.function.IntSupplier;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import java.util.stream.Collector.Characteristics;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import functionalj.function.Func0;
+import functionalj.function.Func1;
+import functionalj.function.FuncUnit1;
+import functionalj.function.FuncUnit2;
+import functionalj.lens.LensTest.Car;
+import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
+import functionalj.list.ReadOnlyListException;
+import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.map.FuncMap;
+import functionalj.promise.DeferAction;
+import functionalj.stream.CollectorPlus;
+import functionalj.stream.IncompletedSegment;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.streamable.AsStreamable;
+import functionalj.streamable.Streamable;
+import functionalj.streamable.doublestreamable.DoubleStreamable;
+import functionalj.streamable.intstreamable.IntStreamable;
+import lombok.val;
 
 public class IntFuncListTest {
-//    
-//    private static final IntFuncList intList = IntFuncList.ints(1, 1, 2, 3, 5, 8, 13);
-//    
-//    private void run(IntFuncList list, FuncUnit1<IntFuncList> action) {
-//        action.accept(list);
-//        action.accept(list);
-//    }
-//    
+
+    static final int MinusOne = -1;
+    static final int Zero     =  0;
+    
+    static final int One         = 1;
+    static final int Two         = 2;
+    static final int Three       = 3;
+    static final int Four        = 4;
+    static final int Five        = 5;
+    static final int Six         = 6;
+    static final int Seven       = 7;
+    static final int Eight       = 8;
+    static final int Nine        = 9;
+    static final int Ten         = 10;
+    static final int Eleven      = 11;
+    static final int Twelve      = 12;
+    static final int Thirteen    = 13;
+    static final int Seventeen   = 17;
+    static final int Nineteen    = 19;
+    static final int TwentyThree = 23;
+    
+    
+    private void assertStrings(String str, Object obj) {
+        assertEquals(str, "" + obj);
+    }
+    
+    private void run(IntFuncList list, FuncUnit1<IntFuncList> action) {
+        action.accept(list);
+        action.accept(list);
+    }
+    
+    private <T> void runExpectReadOnlyListException(IntFuncList list, FuncUnit1<IntFuncList> action) {
+        try {
+            action.accept(list);
+            fail("Exception ReadOnlyListException");
+        } catch (ReadOnlyListException e) {
+        }
+    }
+    
+    private <T> void run(FuncList<T> list, FuncUnit1<FuncList<T>> action) {
+        action.accept(list);
+        action.accept(list);
+    }
+    
+    private <T> void run(DoubleFuncList list, FuncUnit1<DoubleFuncList> action) {
+        action.accept(list);
+        action.accept(list);
+    }
+    
+    private void run(IntFuncList list1, IntFuncList list2, FuncUnit2<IntFuncList, IntFuncList> action) {
+        action.accept(list1, list2);
+        action.accept(list1, list2);
+    }
+    
+    @Test
+    public void testEmpty() {
+        run(IntFuncList.empty(), list -> {
+            assertStrings("[]", list);
+        });
+    }
+    
+    @Test
+    public void testEmptyFuncList() {
+        run(IntFuncList.emptyList(), list -> {
+            assertStrings("[]", list);
+        });
+    }
+    
+    @Test
+    public void testEmptyIntList() {
+        run(IntFuncList.emptyIntList(), list -> {
+            assertStrings("[]", list);
+        });
+    }
+    
+    @Test
+    public void testOf() {
+        run(IntFuncList.of(One, Two, Three), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testAllOf() {
+        run(IntFuncList.AllOf(One, Two, Three), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testInts() {
+        run(IntFuncList.ints(One, Two, Three), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testIntList() {
+        run(IntFuncList.intList(One, Two, Three), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testListOf() {
+        run(IntFuncList.ListOf(One, Two, Three), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+        run(IntFuncList.listOf(One, Two, Three), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testFrom_array() {
+        run(IntFuncList.from(new int[] {1, 2, 3}), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testFrom_collection() {
+        Collection<Integer> collection = Arrays.asList(One, Two, Three);
+        run(IntFuncList.from(collection, 0), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+        Set<Integer> set = new LinkedHashSet<>(collection);
+        run(IntFuncList.from(set, 0), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testFrom_list() {
+        List<Integer> javaList = Arrays.asList(One, Two, Three);
+        run(IntFuncList.from(javaList, 0), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testFrom_streamable() {
+        run(IntFuncList.from(IntStreamable.of(One, Two, Three)), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+        run(IntFuncList.from(IntFuncList.of(One, Two, Three)), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Ignore("Taking too long - run manually as needed.")
+    @Test
+    public void testFrom_streamable_infinite() {
+        run(IntFuncList.from(IntStreamable.loop()), list -> {
+            try {
+                list.toList();
+                fail("Expect an exception.");
+            } catch (OutOfMemoryError e) {
+            }
+        });
+    }
+    
+    @Test
+    public void testFrom_stream() {
+        run(IntFuncList.from(IntStreamable.of(One, Two, Three).intStream()), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testZeroesOnesNumbers() {
+        run(IntFuncList.zeroes(5),                 list -> assertStrings("[0, 0, 0, 0, 0]", list));
+        run(IntFuncList.ones(5),                   list -> assertStrings("[1, 1, 1, 1, 1]", list));
+        run(IntFuncList.naturalNumbers(5),         list -> assertStrings("[1, 2, 3, 4, 5]", list));
+        run(IntFuncList.wholeNumbers(5),           list -> assertStrings("[0, 1, 2, 3, 4]", list));
+        run(IntFuncList.range(2, 7),               list -> assertStrings("[2, 3, 4, 5, 6]", list));
+    }
+    
+    //-- Common List --
+    
+    @Test
+    public void testEquals() {
+        run(IntFuncList.of(One, Two, Three),
+            IntFuncList.of(One, Two, Three),
+            (list1, list2) -> {
+            assertTrue  (Objects.equals(list1, list2));
+            assertEquals(list1, list2);
+        });
+        run(IntFuncList.of(One, Two, Three),
+            IntFuncList.of(One, Two, Three, Four),
+                (list1, list2) -> {
+                assertFalse    (Objects.equals(list1, list2));
+                assertNotEquals(list1, list2);
+            });
+    }
+    
+    @Test
+    public void testHashCode() {
+        run(IntFuncList.of(One, Two, Three),
+            IntFuncList.of(One, Two, Three),
+            (list1, list2) -> {
+            assertEquals(Objects.hash(list1), Objects.hash(list2));
+        });
+    }
+    
+    @Test
+    public void testToString() {
+        run(IntFuncList.of(One, Two, Three), (list) -> 
+        assertEquals("[1, 2, 3]", list.toString()));
+    }
+    
+    @Test
+    public void testConcat() {
+        run(IntFuncList.concat(IntFuncList.of(One, Two), IntFuncList.of(Three, Four)),
+            list -> {
+                assertStrings("[1, 2, 3, 4]", list);
+            }
+        );
+    }
+    
+    @Test
+    public void testCombine() {
+        run(IntFuncList.combine(IntFuncList.of(One, Two), IntFuncList.of(Three, Four)),
+            list -> {
+                assertStrings("[1, 2, 3, 4]", list);
+            }
+        );
+    }
+    
+    //-- Generate --
+    
+    @Test
+    public void testGenerate() {
+        run(IntFuncList.generateWith(() -> {
+                val counter = new AtomicInteger();
+                IntSupplier supplier = ()->{
+                    int count = counter.getAndIncrement();
+                    if (count < 5)
+                        return count;
+                    
+                    return IntFuncList.noMoreElement();
+                };
+                return supplier;
+            }),
+            list -> {
+                assertStrings("[0, 1, 2, 3, 4]", list);
+            }
+        );
+    }
+    
+    //-- zipOf --
+    
+    @Test
+    public void testZipOf_toTuple() {
+        run(IntFuncList.of(100, 200, 300, 400, 500),
+            IntFuncList.of(1, 2, 3, 4),
+            (list1, list2) -> {
+                assertStrings(
+                        "[(100,1), (200,2), (300,3), (400,4)]",
+                        IntFuncList.zipOf(list1, list2));
+        });
+    }
+    
+    @Test
+    public void testZipOf_process() {
+        run(IntFuncList.of(100, 200, 300, 400, 500),
+            IntFuncList.of(1, 2, 3, 4),
+            (list1, list2) -> {
+                assertStrings(
+                        "[101, 202, 303, 404]",
+                        IntFuncList.zipOf(list1, list2, (a, b) -> a + b));
+        });
+    }
+    
+    @Test
+    public void testZipOf_toTuple_withDefault_1() {
+        run(IntFuncList.of(100, 200, 300, 400, 500),
+            IntFuncList.of(1,   2,   3,   4),
+            (list1, list2) -> {
+                assertStrings(
+                        "[(100,1), (200,2), (300,3), (400,4), (500,-2000)]",
+                        IntFuncList.zipOf(list1, -1000, list2, -2000));
+        });
+    }
+    
+    @Test
+    public void testZipOf_toTuple_withDefault_2() {
+        run(IntFuncList.of(100, 200, 300, 400),
+            IntFuncList.of(1,   2,   3,   4, 5),
+            (list1, list2) -> {
+                assertStrings(
+                        "[(100,1), (200,2), (300,3), (400,4), (-1000,5)]",
+                        IntFuncList.zipOf(list1, -1000, list2, -2000));
+        });
+    }
+    
+    @Test
+    public void testZipOf_process_withDefault_1() {
+        run(IntFuncList.of(100, 200, 300, 400, 500),
+            IntFuncList.of(1,   2,   3,   4),
+            (list1, list2) -> {
+                assertStrings(
+                        "[101, 202, 303, 404, -1500]",
+                        IntFuncList.zipOf(list1, -1000, list2, -2000, (a, b) -> a + b));
+        });
+    }
+    
+    @Test
+    public void testZipOf_process_withDefault_2() {
+        run(IntFuncList.of(100, 200, 300, 400),
+            IntFuncList.of(1,   2,   3,   4,  5),
+            (list1, list2) -> {
+                assertStrings(
+                        "[101, 202, 303, 404, -995]",
+                        IntFuncList.zipOf(list1, -1000, list2, -2000, (a, b) -> a + b));
+        });
+    }
+    
+    @Test
+    public void testNew() {
+        run(IntFuncList.newFuncList().add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+        run(IntFuncList.newIntFuncList().add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+        run(IntFuncList.newList().add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+        run(IntFuncList.newIntList().add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+        run(IntFuncList.newBuilder().add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+        run(IntFuncList.preparing().add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+        run(IntFuncList.preparingInts().add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[1, 2, 3]", list);
+        });
+    }
+    
+    @Test
+    public void testDeriveFrom() {
+        run(IntFuncList.deriveFrom(FuncList.of(One, Two, Three), s -> s.mapToInt(v -> v * 2)), list -> {
+            assertStrings("[2, 4, 6]", list);
+        });
+        run(IntFuncList.deriveFrom(IntFuncList.of(1, 2, 3), s -> s.mapToInt(v -> v * 2)), list -> {
+            assertStrings("[2, 4, 6]", list);
+        });
+        run(IntFuncList.deriveFrom(DoubleFuncList.of(1.0, 2.0, 3.0), s -> s.mapToInt(v -> (int)Math.round(v*1.5))), list -> {
+            assertStrings("[2, 3, 5]", list);
+        });
+    }
+    
+    @Test
+    public void testDeriveTo() {
+        run(IntFuncList.deriveToObj(IntFuncList.of(One, Two, Three), s -> s.mapToObj(v -> "-" + v + "-")), list -> {
+            assertTrue   (list instanceof FuncList);
+            assertStrings("[-1-, -2-, -3-]", list);
+        });
+        run(IntFuncList.deriveToInt(IntFuncList.of(One, Two, Three), s -> s.mapToInt(v -> v + 5)), list -> {
+            assertStrings("[6, 7, 8]", list);
+        });
+        run(IntFuncList.deriveToDouble(IntFuncList.of(1, 2, 3), s -> s.mapToDouble(v -> 3.0*v)), list -> {
+            assertStrings("[3.0, 6.0, 9.0]", list);
+        });
+    }
+    
+    //-- Predicate --
+    
+    @Test
+    public void testTest_predicate() {
+        run(IntFuncList.of(One, Two, Three), list -> {
+            assertTrue (list.test(One));
+            assertTrue (list.test(Two));
+            assertTrue (list.test(Three));
+            assertFalse(list.test(Four));
+            assertFalse(list.test(Five));
+            assertFalse(list.test(Six));
+        });
+    }
+    
+    //-- Eager+Lazy --
+    
+    @Test
+    public void testEagerLazy() {
+        {
+            val logs = new ArrayList<String>();
+            
+            // We want to confirm that the list is lazy
+            val list = IntStreamable.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(v -> logs.add("" + v)).toFuncList();
+            // The function has not been materialized so nothing goes through peek.
+            assertStrings("[]", logs);
+            // Get part of them so those peek will goes through the peek
+            assertStrings("[1, 2, 3, 4, 5]", list.limit(5));
+            assertStrings("[1, 2, 3, 4, 5]", logs);
+        }
+        {
+            val logs = new ArrayList<String>();
+            
+            // We want to confirm that the list is eager
+            val list = IntStreamable.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(v -> logs.add("" + v)).toFuncList().eager();
+            // The function has been materialized so all element goes through peek.
+            assertStrings("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", logs);
+            // Even we only get part of it, 
+            assertStrings("[1, 2, 3, 4, 5]", list.limit(5));
+            assertStrings("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", logs);
+        }
+    }
+    
+    @Test
+    public void testEagerLazy_more() {
+        {
+            val logs1 = new ArrayList<String>();
+            val logs2 = new ArrayList<String>();
+            val logs3 = new ArrayList<String>();
+            
+            val orgData = IntStreamable.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
+            // We want to confirm that the list is lazy
+            val list = orgData
+                    .lazy()
+                    .peek   (v -> logs1.add("" + v))
+                    .map    (v -> (int)Math.round(v * 1.5))
+                    .peek   (v -> logs2.add("" + v))
+                    .exclude(theInteger.thatIsDivisibleBy(2))
+                    .peek   (v -> logs3.add("" + v))
+                    ;
+            // The list has not been materialized so nothing goes through peek.
+            assertStrings("[]", logs1);
+            assertStrings("[]", logs2);
+            assertStrings("[]", logs3);
+            
+            // Get part of them so those accepted will goes through the peek
+            assertStrings("[3, 5, 9]", list.limit(3));
+            
+            // Now that the list has been materialize all the element has been through the logs
+            
+            // The first log has all the original number until there are 3 elements that after time 1.5 and is divisible by 2.
+            assertStrings("[1, 2, 3, 4, 5, 6]", logs1);
+            //                 1     2     3
+
+            // The first log has all the original number time 1.5 (round) until there are 3 elements that is divisible by 2.
+            assertStrings("[2, 3, 5, 6, 8, 9]", logs2);
+            // The third log captures only the length that is divisible by 2.
+            assertStrings("[3, 5, 9]", logs3);
+        }
+        {
+            val logs1 = new ArrayList<String>();
+            val logs2 = new ArrayList<String>();
+            val logs3 = new ArrayList<String>();
+            
+            val orgData = IntStreamable.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
+            // We want to confirm that the list is lazy
+            val list = orgData
+                    .eager()
+                    .peek   (v -> logs1.add("" + v))
+                    .map    (v -> (int)Math.round(v * 1.5))
+                    .peek   (v -> logs2.add("" + v))
+                    .exclude(theInteger.thatIsDivisibleBy(2))
+                    .peek   (v -> logs3.add("" + v))
+                    ;
+            // Since the list is eager, all the value pass through all peek all the time
+            assertStrings("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]",    logs1);
+            assertStrings("[2, 3, 5, 6, 8, 9, 11, 12, 14, 15]", logs2);
+            assertStrings("[3, 5, 9, 11, 15]", logs3);
+            // Get part of them so those peek will goes through the peek
+            assertStrings("[3, 5, 9, 11, 15]", list.limit(5));
+            // No more passing through the log stay still
+            assertStrings("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", logs1);
+            assertStrings("[2, 3, 5, 6, 8, 9, 11, 12, 14, 15]", logs2);
+            assertStrings("[3, 5, 9, 11, 15]", logs3);
+        }
+    }
+    
+    //-- List --
+    
+    @Test
+    public void testToFuncList() {
+        run(IntFuncList.of(One, Two, Three), list -> {
+            val funcList = list.toFuncList();
+            assertStrings("[1, 2, 3]", funcList.toString());
+            assertTrue(funcList instanceof IntFuncList);
+        });
+    }
+    
+    @Test
+    public void testToJavaList() {
+        run(IntFuncList.of(One, Two, Three), list -> {
+            val funcList = list.toJavaList();
+            assertStrings("[1, 2, 3]", funcList);
+            assertFalse(funcList instanceof FuncList);
+        });
+    }
+    
+    @Test
+    public void testToImmutableList() {
+        run(IntFuncList.of(One, Two, Three), list -> {
+            val funcList = list.toImmutableList();
+            assertStrings("[1, 2, 3]", funcList);
+            assertTrue(funcList instanceof ImmutableIntFuncList);
+        });
+    }
+    
+    @Test
+    public void testIterator() {
+        run(IntFuncList.of(One, Two, Three), list -> {
+            val iterator = list.iterator();
+            
+            assertTrue(iterator.hasNext());
+            assertTrue(One == iterator.next());
+            
+            assertTrue(iterator.hasNext());
+            assertTrue(Two == iterator.next());
+            
+            assertTrue(iterator.hasNext());
+            assertTrue(Three == iterator.next());
+            
+            assertFalse(iterator.hasNext());
+        });
+    }
+    
+    @Test
+    public void testSpliterator() {
+        run(IntFuncList.of(One, Two, Three), list -> {
+            Spliterator.OfInt spliterator = list.spliterator();
+            IntStream         stream      = StreamSupport.intStream(spliterator, false);
+            IntStreamPlus     streamPlus  = IntStreamPlus.from(stream);
+            assertStrings("[1, 2, 3]", streamPlus.toListString());
+        });
+    }
+    
 //    @Test
-//    public void testEmptyList() {
-//        run(emptyList(), list -> assertEquals("[]", list.toString()));
-//        run(emptyIntList(), list -> assertEquals("[]", list.toString()));
-//        run(IntFuncList.empty(), list -> assertEquals("[]", list.toString()));
-//    }
-//    
-//    @Test
-//    public void test_of() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", IntFuncList.of(1, 1, 2, 3, 5, 8, 13).toString());
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", IntFuncList.AllOf(1, 1, 2, 3, 5, 8, 13).toString());
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", IntFuncList.ListOf(1, 1, 2, 3, 5, 8, 13).toString());
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", IntFuncList.listOf(1, 1, 2, 3, 5, 8, 13).toString());
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", IntFuncList.intList(1, 1, 2, 3, 5, 8, 13).toString());
-//    }
-//    
-//    @Test
-//    public void test_from() {
-//        // From Array
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", IntFuncList.from(new int[] { 1, 1, 2, 3, 5, 8, 13 }).toString());
-//        // From Colletion
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", IntFuncList.from(asList(1, 1, 2, 3, 5, 8, 13), 0).toString());
-//        // From Streamable
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", IntFuncList.from(IntStreamable.of(1, 1, 2, 3, 5, 8, 13)).toString());
-//        // From StreamPlus
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", IntFuncList.from(IntStreamPlus.of(1, 1, 2, 3, 5, 8, 13)).toString());
-//    }
-//    
-//    @Test
-//    public void testBasicList() {
-//        assertTrue(emptyList().isEmpty());
-//        assertFalse(intList.isEmpty());
-//        
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.toString());
-//        
-//        // Check the coverage if caching works
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.toString());
-//        
-//        assertEquals(-520212190, intList.hashCode());
-//        
-//        // Check the coverage if caching works
-//        assertEquals(-520212190, intList.hashCode());
-//        
-//        assertEquals(intList, ints(1, 1, 2, 3, 5, 8, 13));
-//    }
-//    
-//    @Test
-//    public void testPipeable() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.pipeable().pipeTo(Object::toString));
-//    }
-//    
-//    @Test
-//    public void testNumbers() {
-//        assertEquals("[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]", IntFuncList.zeroes(10).toString());
-//        assertEquals("[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]", IntFuncList.ones(10).toString());
-//        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", IntFuncList.naturalNumbers(10).toString());
-//        assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", IntFuncList.wholeNumbers(10).toString());
-//        assertEquals("[7, 8, 9, 10, 11, 12, 13]", IntFuncList.range(7, 14).toString());
-//    }
-//    
-//    @Test
-//    public void testContains() {
-//        assertTrue(intList.contains(13));
-//        assertFalse(intList.contains(25));
-//    }
-//    
-//    @Test
-//    public void testContainAllOf() {
-//        assertTrue(intList.containsAllOf(13, 5));
-//        assertFalse(intList.containsAllOf(13, 25));
-//        assertTrue(intList.containsAllOf(Arrays.asList(13, 5)));
-//        assertFalse(intList.containsAllOf(Arrays.asList(13, 25)));
-//    }
-//    
-//    @Test
-//    public void testContainSomeOf() {
-//        assertTrue(intList.containsSomeOf(13, 25));
-//        assertFalse(intList.containsSomeOf(7, 25));
-//        assertTrue(intList.containsSomeOf(Arrays.asList(13, 25)));
-//        assertFalse(intList.containsSomeOf(Arrays.asList(7, 25)));
-//    }
-//    
-//    @Test
-//    public void testGet() {
-//        assertEquals(1, intList.get(0));
-//        assertEquals(1, intList.get(1));
-//        assertEquals(2, intList.get(2));
-//        assertEquals(3, intList.get(3));
-//        assertEquals(5, intList.get(4));
-//        assertEquals(8, intList.get(5));
-//        assertEquals(13, intList.get(6));
-//        
-//        try {
-//            intList.get(7);
-//        } catch (IndexOutOfBoundsException exception) {
-//            assertEquals("7", exception.getMessage());
-//        }
-//    }
-//    
-//    @Test
-//    public void testAt() {
-//        assertEquals(OptionalInt.of(1), intList.at(0));
-//        assertEquals(OptionalInt.of(1), intList.at(1));
-//        assertEquals(OptionalInt.of(2), intList.at(2));
-//        assertEquals(OptionalInt.of(3), intList.at(3));
-//        assertEquals(OptionalInt.of(5), intList.at(4));
-//        assertEquals(OptionalInt.of(8), intList.at(5));
-//        assertEquals(OptionalInt.of(13), intList.at(6));
-//        assertEquals(OptionalInt.empty(), intList.at(7));
-//    }
-//    
-//    @Test
-//    public void testIndexOf() {
-//        assertEquals(3, intList.indexOf(3));
-//    }
-//    
-//    @Test
-//    public void testLastIndexOf() {
-//        assertEquals(1, intList.lastIndexOf(1));
-//    }
-//    
-//    @Test
-//    public void testIndexesOf() {
-//        assertEquals(ints(0, 1), intList.indexesOf(1));
-//        assertEquals(ints(3), intList.indexesOf(3));
-//        assertEquals(ints(), intList.indexesOf(23));
-//    }
-//    
-//    @Test
-//    public void testSub() {
-//        assertEquals("[2, 3, 5]", intList.subList(2, 5).toString());
-//    }
-//    
-//    @Test
-//    public void testMap() {
-//        assertEquals(
-//                "[2, 2, 4, 6, 10, 16, 26]", 
-//                intList.map($I.time(2)).toString());
-//        assertEquals(
-//                "[2, 2, 4, 6, 10, 16, 26]", 
-//                intList.mapToInt($I.time(2)).toString());
-//    }
-//    
-//    @Test
-//    public void testFilter() {
-//        assertEquals("[2, 8]", intList.filter($I.remainderBy(2).eq(0)).toString());
-//    }
-//    
-//    @Test
-//    public void testPeek() {
-//        val logs = new ArrayList<String>();
-//        intList.peek(i -> logs.add("" + i)).forEach(t -> {
+//    public void testContainsAllOf() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertTrue (list.containsAllOf(One, Five));
+//            assertFalse(list.containsAllOf(One, Six));
 //        });
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", logs.toString());
 //    }
 //    
 //    @Test
-//    public void testFlatMap() {
-//        assertEquals(
-//                intList.sum(), 
-//                intList.flatMap(i -> IntStreamable.cycle(1).limit(i)).size());
+//    public void testContainsAnyOf() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertTrue (list.containsAnyOf(One, Six));
+//            assertFalse(list.containsAnyOf(Six, Seven));
+//        });
 //    }
 //    
 //    @Test
-//    public void testMapToObj() {
-//        assertEquals(
-//                "[2, 2, 4, 6, 10, 16, 26]", 
-//                intList.mapToObj(i -> "" + i*2).toString());
+//    public void testContainsNoneOf() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertTrue (list.containsNoneOf(Six, Seven));
+//            assertFalse(list.containsNoneOf(One, Six));
+//        });
 //    }
 //    
 //    @Test
-//    public void testLazy() {
-//        val factor = new AtomicInteger(1);
-//        
-//        val list = intList.lazy().map(i -> i * factor.get());
-//        
-//        // This set change the values.
-//        factor.set(2);
-//        assertEquals("[2, 2, 4, 6, 10, 16, 26]", list.toString());
+//    public void testJavaList_for() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            val logs = new ArrayList<String>();
+//            for(val value : list) {
+//                logs.add(value);
+//            }
+//            assertStrings("[1, 2, 3]", logs);
+//        });
 //    }
 //    
 //    @Test
-//    public void testEager() {
-//        val factor = new AtomicInteger(1);
-//        
-//        val list = intList.eager().map(i -> i * factor.get());
-//        
-//        // This set change the values.
-//        factor.set(2);
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", list.toString());
+//    public void testJavaList_size_isEmpty() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertEquals(3, list.size());
+//            assertFalse (list.isEmpty());
+//        });
+//        run(IntFuncList.empty(), list -> {
+//            assertEquals(0, list.size());
+//            assertTrue  (list.isEmpty());
+//        });
 //    }
 //    
 //    @Test
-//    public void testFirst() {
-//        assertEquals("OptionalInt[1]", intList.first().toString());
+//    public void testJavaList_contains() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertTrue (list.contains(Two));
+//            assertFalse(list.contains(Five));
+//        });
 //    }
 //    
 //    @Test
-//    public void testFirsts() {
-//        assertEquals("[1, 1, 2]", intList.first(3).toString());
-//    }
-//    
-//    @Test
-//    public void testLast() {
-//        assertEquals("OptionalInt[13]", intList.last().toString());
-//    }
-//    
-//    @Test
-//    public void testLasts() {
-//        assertEquals("[5, 8, 13]", intList.last(3).toString());
-//    }
-//    
-//    @Test
-//    public void testRest() {
-//        assertEquals("[1, 2, 3, 5, 8, 13]", intList.rest().toString());
-//    }
-//    
-//    @Test
-//    public void testReverse() {
-//        assertEquals("[13, 8, 5, 3, 2, 1, 1]", intList.reverse().toString());
-//    }
-//    
-//    @Test
-//    public void testShuffle() {
-//        assertNotEquals(intList.toString(), intList.shuffle().toString());
-//    }
-//    
-//    @Test
-//    public void testMinIndexOf() {
-//        assertEquals("OptionalInt[0]", intList.minIndexOf(i -> i < 5, i -> -i).toString());
-//    }
-//    
-//    @Test
-//    public void testMaxIndexOf() {
-//        assertEquals("OptionalInt[5]", intList.maxIndexOf(i -> i > 5, i -> -i).toString());
-//    }
-//    
-//    @Test
-//    public void testMinIndex() {
-//        assertEquals("OptionalInt[0]", intList.minIndex().toString());
-//    }
-//    
-//    @Test
-//    public void testMaxIndex() {
-//        assertEquals("OptionalInt[6]", intList.maxIndex().toString());
-//    }
-//    
-//    @Test
-//    public void testMinIndexBy() {
-//        assertEquals("OptionalInt[6]", intList.minIndexBy(i -> -i).toString());
-//    }
-//    
-//    @Test
-//    public void testMaxIndexBy() {
-//        assertEquals("OptionalInt[0]", intList.maxIndexBy(i -> -i).toString());
-//    }
-//    
-//    @Test
-//    public void testAppend() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13, 21]", intList.append(21).toString());
-//    }
-//    
-//    @Test
-//    public void testAppendAll() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13, 21, 34]", intList.appendAll(21, 34).toString());
-//    }
-//    
-//    @Test
-//    public void testAppendAll_intStreamable() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.appendAll((IntStreamable) null).toString());
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13, 21, 34]", intList.appendAll(ints(21, 34).intStreamable()).toString());
-//    }
-//    
-//    @Test
-//    public void testAppendAll_streamaSupplier() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.appendAll((Supplier<IntStream>) null).toString());
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13, 21, 34]",
-//                intList.appendAll(() -> (IntStream) ints(21, 34).intStream()).toString());
-//    }
-//    
-//    @Test
-//    public void testPrepend() {
-//        assertEquals("[0, 1, 1, 2, 3, 5, 8, 13]", intList.prepend(0).toString());
-//    }
-//    
-//    @Test
-//    public void testPrependAll() {
-//        assertEquals("[-1, 0, 1, 1, 2, 3, 5, 8, 13]", intList.prependAll(-1, 0).toString());
-//    }
-//    
-//    @Test
-//    public void testPrependAll_intStreamable() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.prependAll((IntStreamable) null).toString());
-//        assertEquals("[-1, 0, 1, 1, 2, 3, 5, 8, 13]", intList.prependAll(ints(-1, 0).intStreamable()).toString());
-//    }
-//    
-//    @Test
-//    public void testPrependAll_streamSupplier() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.prependAll((Supplier<IntStream>) null).toString());
-//        assertEquals("[-1, 0, 1, 1, 2, 3, 5, 8, 13]",
-//                intList.prependAll(() -> (IntStream) ints(-1, 0).intStream()).toString());
-//    }
-//    
-//    @Test
-//    public void testWith() {
-//        assertEquals("[0, 1, 2, 3, 5, 8, 13]", intList.with(0, 0).toString());
-//        
-//        try {
-//            intList.with(-1, 0);
-//            fail();
-//        } catch (IndexOutOfBoundsException e) {
-//        }
-//        
-//        try {
-//            intList.with(intList.size(), 0);
-//            fail();
-//        } catch (IndexOutOfBoundsException e) {
-//        }
-//    }
-//    
-//    @Test
-//    public void testWith_replace() {
-//        assertEquals("[0, 1, 2, 3, 5, 8, 13]", intList.with(0, i -> i - 1).toString());
-//        
-//        try {
-//            intList.with(-1, i -> i - 1);
-//            fail();
-//        } catch (IndexOutOfBoundsException e) {
-//        }
-//        
-//        try {
-//            intList.with(intList.size(), i -> i - 1);
-//            fail();
-//        } catch (IndexOutOfBoundsException e) {
-//        }
-//    }
-//    
-//    @Test
-//    public void testInsertAt() {
-//        assertEquals("[1, 1, 2, 3, 4, 5, 6, 7, 8, 13]", intList.insertAt(4, 4).insertAt(6, 6, 7).toString());
-//    }
-//    
-//    @Test
-//    public void testInsertAllAt() {
-//        assertEquals("[1, 1, 2, 3, 5, 6, 7, 8, 13]", intList.insertAllAt(5, ints(6, 7).intStreamable()).toString());
-//    }
-//    
-//    @Test
-//    public void testExcludeAt() {
-//        assertEquals("[1, 2, 3, 5, 8, 13]", intList.excludeAt(0).toString());
-//        
-//        try {
-//            intList.excludeAt(-1);
-//            fail();
-//        } catch (IndexOutOfBoundsException e) {
-//        }
-//    }
-//    
-//    @Test
-//    public void testExcludeFrom() {
-//        assertEquals("[2, 3, 5, 8, 13]", intList.excludeFrom(0, 2).toString());
-//        assertEquals("[1, 1, 2, 3, 5, 8]", intList.excludeFrom(6, 2).toString());
-//    }
-//    
-//    @Test
-//    public void testExcludeBetween() {
-//        assertEquals("[1, 1, 8, 13]", intList.excludeBetween(2, 4).toString());
-//    }
-//    
-//    @Test
-//    public void testSkipWhile() {
-//        assertEquals("[5, 4, 2, 0]", ints(1, 3, 5, 4, 2, 0).skipWhile(i -> i < 4).toString());
-//    }
-//    
-//    @Test
-//    public void testSkipUntil() {
-//        assertEquals("[5, 4, 2, 0]", ints(1, 3, 5, 4, 2, 0).skipUntil(i -> i > 4).toString());
-//    }
-//    
-//    @Test
-//    public void testTakeWhile() {
-//        assertEquals("[1, 3]", ints(1, 3, 5, 4, 2, 0).takeWhile(i -> i < 4).toString());
-//    }
-//    
-//    @Test
-//    public void testTakeUntil() {
-//        assertEquals("[1, 3]", ints(1, 3, 5, 4, 2, 0).takeUntil(i -> i > 4).toString());
-//    }
-//    
-//    @Test
-//    public void testDistinct() {
-//        assertEquals("[1, 2, 3, 5, 8, 13]", intList.distinct().toString());
-//    }
-//    
-//    @Test
-//    public void testSorted() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.shuffle().sorted().toString());
-//    }
-//    
-//    @Test
-//    public void testLimit() {
-//        assertEquals("[1, 1, 2, 3, 5]", intList.limit(5L).toString());
-//        try {
-//            intList.limit(-1L).toString();
-//            fail();
-//        } catch (IllegalArgumentException e) {
-//        }
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.limit(100L).toString());
-//        
-//        assertEquals("[1, 1, 2, 3, 5]", intList.limit((Long) 5L).toString());
-//        
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.limit((Long) 100L).toString());
-//    }
-//    
-//    @Test
-//    public void testSkip() {
-//        assertEquals("[8, 13]", intList.skip(5L).toString());
-//        try {
-//            intList.skip(-1L).toString();
-//            fail();
-//        } catch (IllegalArgumentException e) {
-//        }
-//        assertEquals("[]", intList.skip(100L).toString());
-//        
-//        assertEquals("[8, 13]", intList.skip((Long) 5L).toString());
-//        
-//        assertEquals("[]", intList.skip((Long) 100L).toString());
-//    }
-//    
-//    @Test
-//    public void testSortedBy() {
-//        assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.shuffle().sortedBy(theInteger.time(2)).toString());
-//        
-//        assertEquals("[13, 8, 5, 3, 2, 1, 1]",
-//                intList.shuffle().sortedBy(theInteger.time(2), (a, b) -> b - a).toString());
-//    }
-//    
-//    @Test
-//    public void testSortedByObj() {
-//        assertEquals("[1, 1, 13, 2, 3, 5, 8]", intList.shuffle().sortedByObj(i -> "" + i).toString());
-//        
-//        assertEquals("[8, 5, 3, 2, 13, 1, 1]",
-//                intList.shuffle().sortedByObj(i -> "" + i, Comparator.<String>reverseOrder()).toString());
+//    public void testJavaList_containsAll() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertTrue (list.containsAll(listOf(Two, Three)));
+//            assertFalse(list.containsAll(listOf(Two, Five)));
+//        });
 //    }
 //    
 //    @Test
 //    public void testForEach() {
-//        val buffer1 = new StringBuffer();
-//        intList.forEach(i -> buffer1.append(" ").append(i));
-//        assertEquals(" 1 1 2 3 5 8 13", buffer1.toString());
-//    }
-//    
-//    @Test
-//    public void testAccumulate() {
-//        assertEquals("[1, 2, 4, 7, 12, 20, 33]", intList.accumulate((a, i) -> a + i).toString());
-//    }
-//    
-//    @Test
-//    public void testRestate() {
-//        assertEquals("[2, 3, 5, 7, 11, 13]", ints(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-//                .restate((i, s) -> s.filter(v -> v % i != 0)).toString());
-//    }
-//    
-//    @Test
-//    public void testExclude() {
-//        assertEquals("[2, 3, 5, 8, 13]", intList.exclude(1).toString());
-//        assertEquals("[1, 1, 2, 3, 5, 13]", intList.exclude(8).toString());
-//    }
-//    
-//    @Test
-//    public void testExcludeAll() {
-//        assertEquals("[2, 3, 8, 13]", intList.excludeAll(1, 5).toString());
-//    }
-//    
-//    @Test
-//    public void testSpawn() {
-//        assertEquals("[" + "Result:{ Value: 13 }, " + "Result:{ Value: 8 }, " + "Result:{ Value: 5 }" + "]",
-//                intList.spawn(i -> DeferAction.from(() -> {
-//                    Thread.sleep(100 * Math.abs(i - 15));
-//                    return i;
-//                })).limit(3).toString());
-//    }
-//    
-//    @Test
-//    public void testMapFirst() {
-//        run(wholeNumbers(14), list->{
-//            assertEquals(
-//                    "["
-//                    + "2, null, 2, 3, 2, null, 2, null, 2, 3, "
-//                    + "2, null, 2, null"
-//                    + "]",
-//                    list
-//                        .mapFirst(
-//                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
-//                                i -> (Integer)(((i % 3) == 0) ? 3 : null))
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "2, null, 2, 3, 2, 5, 2, null, 2, 3, "
-//                    + "2, null, 2, null"
-//                    + "]",
-//                    list
-//                        .mapFirst(
-//                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
-//                                i -> (Integer)(((i % 3) == 0) ? 3 : null),
-//                                i -> (Integer)(((i % 5) == 0) ? 5 : null))
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "2, null, 2, 3, 2, 5, 2, 7, 2, 3, "
-//                    + "2, null, 2, null"
-//                    + "]",
-//                    list
-//                        .mapFirst(
-//                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
-//                                i -> (Integer)(((i % 3) == 0) ? 3 : null),
-//                                i -> (Integer)(((i % 5) == 0) ? 5 : null),
-//                                i -> (Integer)(((i % 7) == 0) ? 7 : null))
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "2, null, 2, 3, 2, 5, 2, 7, 2, 3, "
-//                    + "2, 11, 2, null"
-//                    + "]",
-//                    list
-//                        .mapFirst(
-//                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
-//                                i -> (Integer)(((i % 3) == 0) ? 3 : null),
-//                                i -> (Integer)(((i % 5) == 0) ? 5 : null),
-//                                i -> (Integer)(((i % 7) == 0) ? 7 : null),
-//                                i -> (Integer)(((i % 11) == 0) ? 11 : null))
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "2, null, 2, 3, 2, 5, 2, 7, 2, 3, "
-//                    + "2, 11, 2, 13"
-//                    + "]",
-//                    list
-//                        .mapFirst(
-//                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
-//                                i -> (Integer)(((i % 3) == 0) ? 3 : null),
-//                                i -> (Integer)(((i % 5) == 0) ? 5 : null),
-//                                i -> (Integer)(((i % 7) == 0) ? 7 : null),
-//                                i -> (Integer)(((i % 11) == 0) ? 11 : null),
-//                                i -> (Integer)(((i % 13) == 0) ? 13 : null))
-//                        .toListString());
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            val logs   = new ArrayList<String>();
+//            list.forEach(s -> logs.add(s));
+//            assertStrings("[1, 2, 3]", logs);
 //        });
 //    }
 //    
 //    @Test
-//    public void testMapThen() {
-//        run(wholeNumbers(5), list->{
-//            assertEquals(
-//                    "["
-//                    + "(0)((0)), "
-//                    + "(1)((1)), "
-//                    + "(2)((2)), "
-//                    + "(3)((3)), "
-//                    + "(4)((4))]",
-//                    list
-//                        .mapThen(
-//                                i -> format("(%s)", i),
-//                                i -> format("((%s))", i),
-//                                (a,b)->a + b)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "(0)((0))(((0))), "
-//                    + "(1)((1))(((1))), "
-//                    + "(2)((2))(((2))), "
-//                    + "(3)((3))(((3))), "
-//                    + "(4)((4))(((4)))"
-//                    + "]",
-//                    list
-//                        .mapThen(
-//                                i -> format("(%s)", i),
-//                                i -> format("((%s))", i),
-//                                i -> format("(((%s)))", i),
-//                                (a,b,c)->a + b + c)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "(0)((0))(((0)))((((0)))), "
-//                    + "(1)((1))(((1)))((((1)))), "
-//                    + "(2)((2))(((2)))((((2)))), "
-//                    + "(3)((3))(((3)))((((3)))), "
-//                    + "(4)((4))(((4)))((((4))))"
-//                    + "]",
-//                    list
-//                        .mapThen(
-//                                i -> format("(%s)", i),
-//                                i -> format("((%s))", i),
-//                                i -> format("(((%s)))", i),
-//                                i -> format("((((%s))))", i),
-//                                (a,b,c,d)->a + b + c +d)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "(0)((0))(((0)))((((0))))(((((0))))), "
-//                    + "(1)((1))(((1)))((((1))))(((((1))))), "
-//                    + "(2)((2))(((2)))((((2))))(((((2))))), "
-//                    + "(3)((3))(((3)))((((3))))(((((3))))), "
-//                    + "(4)((4))(((4)))((((4))))(((((4)))))"
-//                    + "]",
-//                    list
-//                        .mapThen(
-//                                i -> format("(%s)", i),
-//                                i -> format("((%s))", i),
-//                                i -> format("(((%s)))", i),
-//                                i -> format("((((%s))))", i),
-//                                i -> format("(((((%s)))))", i),
-//                                (a,b,c,d,e)->a + b + c + d + e)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "(0)((0))(((0)))((((0))))(((((0)))))((((((0)))))), "
-//                    + "(1)((1))(((1)))((((1))))(((((1)))))((((((1)))))), "
-//                    + "(2)((2))(((2)))((((2))))(((((2)))))((((((2)))))), "
-//                    + "(3)((3))(((3)))((((3))))(((((3)))))((((((3)))))), "
-//                    + "(4)((4))(((4)))((((4))))(((((4)))))((((((4))))))"
-//                    + "]",
-//                    list
-//                        .mapThen(
-//                                i -> format("(%s)", i),
-//                                i -> format("((%s))", i),
-//                                i -> format("(((%s)))", i),
-//                                i -> format("((((%s))))", i),
-//                                i -> format("(((((%s)))))", i),
-//                                i -> format("((((((%s))))))", i),
-//                                (a,b,c,d,e,f)->a + b + c + d + e + f)
-//                        .toListString());
+//    public void testForEachOrdered() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            val logs   = new ArrayList<String>();
+//            list.forEachOrdered(s -> logs.add(s));
+//            assertStrings("[1, 2, 3]", logs);
 //        });
 //    }
 //    
 //    @Test
-//    public void testMapTuple() {
-//        run(wholeNumbers(5), list->{
-//            assertEquals(
-//                    "["
-//                    + "(0,#0), "
-//                    + "(1,#1), "
-//                    + "(2,#2), "
-//                    + "(3,#3), "
-//                    + "(4,#4)"
-//                    + "]",
-//                    list
-//                        .mapTuple(
-//                                i -> i,
-//                                i -> "#" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "(0,#0,##0), "
-//                    + "(1,#1,##1), "
-//                    + "(2,#2,##2), "
-//                    + "(3,#3,##3), "
-//                    + "(4,#4,##4)"
-//                    + "]",
-//                    list
-//                        .mapTuple(
-//                                i -> i,
-//                                i -> "#" + i,
-//                                i -> "##" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "(0,#0,##0,###0), "
-//                    + "(1,#1,##1,###1), "
-//                    + "(2,#2,##2,###2), "
-//                    + "(3,#3,##3,###3), "
-//                    + "(4,#4,##4,###4)"
-//                    + "]",
-//                    list
-//                        .mapTuple(
-//                                i -> i,
-//                                i -> "#" + i,
-//                                i -> "##" + i,
-//                                i -> "###" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "(0,#0,##0,###0,####0), "
-//                    + "(1,#1,##1,###1,####1), "
-//                    + "(2,#2,##2,###2,####2), "
-//                    + "(3,#3,##3,###3,####3), "
-//                    + "(4,#4,##4,###4,####4)"
-//                    + "]",
-//                    list
-//                        .mapTuple(
-//                                i -> i,
-//                                i -> "#" + i,
-//                                i -> "##" + i,
-//                                i -> "###" + i,
-//                                i -> "####" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "(0,#0,##0,###0,####0,#####0), "
-//                    + "(1,#1,##1,###1,####1,#####1), "
-//                    + "(2,#2,##2,###2,####2,#####2), "
-//                    + "(3,#3,##3,###3,####3,#####3), "
-//                    + "(4,#4,##4,###4,####4,#####4)"
-//                    + "]",
-//                    list
-//                        .mapTuple(
-//                                i -> i,
-//                                i -> "#" + i,
-//                                i -> "##" + i,
-//                                i -> "###" + i,
-//                                i -> "####" + i,
-//                                i -> "#####" + i)
-//                        .toListString());
+//    public void testReduce() {
+//        run(IntFuncList.of(1, 2, 3), list -> {
+//            assertEquals(6, list.reduce(0, (a, b) -> a + b).intValue());
+//            
+//            assertEquals(6, list.reduce((a, b) -> a + b).get().intValue());
+//            
+//            assertEquals(6, list.reduce(
+//                                        BigInteger.ZERO,
+//                                        (b, i) -> b.add(BigInteger.valueOf((long)i)),
+//                                        (a, b) -> a.add(b)).intValue());
 //        });
 //    }
-//    
 //    @Test
-//    public void testMapToMap() {
-//        run(wholeNumbers(5), list->{
-//            assertEquals(
-//                    "["
-//                    + "{1:0}, "
-//                    + "{1:1}, "
-//                    + "{1:2}, "
-//                    + "{1:3}, "
-//                    + "{1:4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "{1:0, 2:#0}, "
-//                    + "{1:1, 2:#1}, "
-//                    + "{1:2, 2:#2}, "
-//                    + "{1:3, 2:#3}, "
-//                    + "{1:4, 2:#4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i,
-//                                "2", i -> "#" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "{1:0, 2:#0, 3:##0}, "
-//                    + "{1:1, 2:#1, 3:##1}, "
-//                    + "{1:2, 2:#2, 3:##2}, "
-//                    + "{1:3, 2:#3, 3:##3}, "
-//                    + "{1:4, 2:#4, 3:##4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i,
-//                                "2", i -> "#" + i,
-//                                "3", i -> "##" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "{1:0, 2:#0, 3:##0, 4:###0}, "
-//                    + "{1:1, 2:#1, 3:##1, 4:###1}, "
-//                    + "{1:2, 2:#2, 3:##2, 4:###2}, "
-//                    + "{1:3, 2:#3, 3:##3, 4:###3}, "
-//                    + "{1:4, 2:#4, 3:##4, 4:###4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i,
-//                                "2", i -> "#" + i,
-//                                "3", i -> "##" + i,
-//                                "4", i -> "###" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "{1:0, 2:#0, 3:##0, 4:###0, 5:####0}, "
-//                    + "{1:1, 2:#1, 3:##1, 4:###1, 5:####1}, "
-//                    + "{1:2, 2:#2, 3:##2, 4:###2, 5:####2}, "
-//                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3}, "
-//                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i,
-//                                "2", i -> "#" + i,
-//                                "3", i -> "##" + i,
-//                                "4", i -> "###" + i,
-//                                "5", i -> "####" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "{1:0, 2:#0, 3:##0, 4:###0, 5:####0, 6:#####0}, "
-//                    + "{1:1, 2:#1, 3:##1, 4:###1, 5:####1, 6:#####1}, "
-//                    + "{1:2, 2:#2, 3:##2, 4:###2, 5:####2, 6:#####2}, "
-//                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3}, "
-//                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i,
-//                                "2", i -> "#" + i,
-//                                "3", i -> "##" + i,
-//                                "4", i -> "###" + i,
-//                                "5", i -> "####" + i,
-//                                "6", i -> "#####" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "{1:0, 2:#0, 3:##0, 4:###0, 5:####0, 6:#####0, 7:######0}, "
-//                    + "{1:1, 2:#1, 3:##1, 4:###1, 5:####1, 6:#####1, 7:######1}, "
-//                    + "{1:2, 2:#2, 3:##2, 4:###2, 5:####2, 6:#####2, 7:######2}, "
-//                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3, 7:######3}, "
-//                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4, 7:######4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i,
-//                                "2", i -> "#" + i,
-//                                "3", i -> "##" + i,
-//                                "4", i -> "###" + i,
-//                                "5", i -> "####" + i,
-//                                "6", i -> "#####" + i,
-//                                "7", i -> "######" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "{1:0, 2:#0, 3:##0, 4:###0, 5:####0, 6:#####0, 7:######0, 8:#######0}, "
-//                    + "{1:1, 2:#1, 3:##1, 4:###1, 5:####1, 6:#####1, 7:######1, 8:#######1}, "
-//                    + "{1:2, 2:#2, 3:##2, 4:###2, 5:####2, 6:#####2, 7:######2, 8:#######2}, "
-//                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3, 7:######3, 8:#######3}, "
-//                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4, 7:######4, 8:#######4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i,
-//                                "2", i -> "#" + i,
-//                                "3", i -> "##" + i,
-//                                "4", i -> "###" + i,
-//                                "5", i -> "####" + i,
-//                                "6", i -> "#####" + i,
-//                                "7", i -> "######" + i,
-//                                "8", i -> "#######" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "{1:0, 2:#0, 3:##0, 4:###0, 5:####0, 6:#####0, 7:######0, 8:#######0, 9:########0}, "
-//                    + "{1:1, 2:#1, 3:##1, 4:###1, 5:####1, 6:#####1, 7:######1, 8:#######1, 9:########1}, "
-//                    + "{1:2, 2:#2, 3:##2, 4:###2, 5:####2, 6:#####2, 7:######2, 8:#######2, 9:########2}, "
-//                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3, 7:######3, 8:#######3, 9:########3}, "
-//                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4, 7:######4, 8:#######4, 9:########4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i,
-//                                "2", i -> "#" + i,
-//                                "3", i -> "##" + i,
-//                                "4", i -> "###" + i,
-//                                "5", i -> "####" + i,
-//                                "6", i -> "#####" + i,
-//                                "7", i -> "######" + i,
-//                                "8", i -> "#######" + i,
-//                                "9", i -> "########" + i)
-//                        .toListString());
-//            assertEquals(
-//                    "["
-//                    + "{1:0, 2:#0, 3:##0, 4:###0, 5:####0, 6:#####0, 7:######0, 8:#######0, 9:########0, 10:#########0}, "
-//                    + "{1:1, 2:#1, 3:##1, 4:###1, 5:####1, 6:#####1, 7:######1, 8:#######1, 9:########1, 10:#########1}, "
-//                    + "{1:2, 2:#2, 3:##2, 4:###2, 5:####2, 6:#####2, 7:######2, 8:#######2, 9:########2, 10:#########2}, "
-//                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3, 7:######3, 8:#######3, 9:########3, 10:#########3}, "
-//                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4, 7:######4, 8:#######4, 9:########4, 10:#########4}"
-//                    + "]",
-//                    list
-//                        .mapToMap(
-//                                "1", i -> i,
-//                                "2", i -> "#" + i,
-//                                "3", i -> "##" + i,
-//                                "4", i -> "###" + i,
-//                                "5", i -> "####" + i,
-//                                "6", i -> "#####" + i,
-//                                "7", i -> "######" + i,
-//                                "8", i -> "#######" + i,
-//                                "9", i -> "########" + i,
-//                                "10", i -> "#########" + i)
-//                        .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testSegment_fixedSize() {
-//        Function<IntStreamPlus, String> streamToString = s -> s.toListString();
-//        
-//        run(wholeNumbers(10), list->{
-//            assertEquals("["
-//                    + "[0, 1, 2], "
-//                    + "[3, 4, 5], "
-//                    + "[6, 7, 8], "
-//                    + "[9]"
-//                    + "]",
-//                    list
-//                    .segment(3)
-//                    .map(streamToString)
-//                    .toListString());
+//    public void testCollect() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]", list.collect(Collectors.toList()));
 //            
-//            assertEquals("["
-//                    + "[0, 1, 2], "
-//                    + "[3, 4, 5], "
-//                    + "[6, 7, 8]"
-//                    + "]",
-//                    list
-//                    .segment(3, false)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[0, 1, 2], "
-//                    + "[3, 4, 5], "
-//                    + "[6, 7, 8], "
-//                    + "[9]"
-//                    + "]",
-//                    list
-//                    .segment(3, true)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[0, 1, 2], "
-//                    + "[3, 4, 5], "
-//                    + "[6, 7, 8]"
-//                    + "]",
-//                    list
-//                    .segment(3, IncompletedSegment.excluded)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[0, 1, 2], "
-//                    + "[3, 4, 5], "
-//                    + "[6, 7, 8], "
-//                    + "[9]"
-//                    + "]",
-//                    list
-//                    .segment(3, IncompletedSegment.included)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[0, 1, 2, 3], "
-//                    + "[4, 5, 6, 7], "
-//                    + "[8, 9]"
-//                    + "]",
-//                    list
-//                    .segment(i -> i % 4 == 0)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[0, 1, 2, 3], "
-//                    + "[4, 5, 6, 7], "
-//                    + "[8, 9]"
-//                    + "]",
-//                    list
-//                    .segment(i -> i % 4 == 0, IncompletedSegment.included)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[0, 1, 2, 3], "
-//                    + "[4, 5, 6, 7], "
-//                    + "[8, 9]"
-//                    + "]",
-//                    list
-//                    .segment(i -> i % 4 == 0, true)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[0, 1, 2, 3], "
-//                    + "[4, 5, 6, 7]"
-//                    + "]",
-//                    list
-//                    .segment(i -> i % 4 == 0, IncompletedSegment.excluded)
-//                    .map(streamToString)
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testSegment_conditions() {
-//        Function<IntStreamPlus, String> streamToString = s -> s.toListString();
-//        
-//        IntPredicate startCondition = i ->(i % 10) == 3;
-//        IntPredicate endCondition   = i ->(i % 10) == 6;
-//        
-//        run(wholeNumbers(75), list->{
-//            assertEquals("["
-//                    + "[53, 54, 55, 56], " 
-//                    + "[63, 64, 65, 66], "
-//                    + "[73, 74]"
-//                    + "]",
-//                    list
-//                    .segment(startCondition, endCondition)
-//                    .skip(5)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[53, 54, 55, 56], " 
-//                    + "[63, 64, 65, 66], "
-//                    + "[73, 74]"
-//                    + "]",
-//                    list
-//                    .segment(startCondition, endCondition, true)
-//                    .skip(5)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[53, 54, 55, 56], " 
-//                    + "[63, 64, 65, 66]"
-//                    + "]",
-//                    list
-//                    .segment(startCondition, endCondition, false)
-//                    .skip(5)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[53, 54, 55, 56], " 
-//                    + "[63, 64, 65, 66], "
-//                    + "[73, 74]"
-//                    + "]",
-//                    list
-//                    .segment(startCondition, endCondition, IncompletedSegment.included)
-//                    .skip(5)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[53, 54, 55, 56], " 
-//                    + "[63, 64, 65, 66]"
-//                    + "]",
-//                    list
-//                    .segment(startCondition, endCondition, IncompletedSegment.excluded)
-//                    .skip(5)
-//                    .map(streamToString)
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testSegmentSize() {
-//        Function<IntStreamPlus, String> streamToString = s -> s.toListString();
-//        
-//        run(wholeNumbers(30), list->{
-//            assertEquals("["
-//                    + "[], "
-//                    + "[1], "
-//                    + "[2, 3], "
-//                    + "[4, 5, 6, 7], "
-//                    + "[8, 9, 10, 11, 12, 13, 14, 15], "
-//                    + "[16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]"
-//                    + "]",
-//                    list
-//                    .segmentSize(i -> i)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[], "
-//                    + "[1], "
-//                    + "[2, 3], "
-//                    + "[4, 5, 6, 7], "
-//                    + "[8, 9, 10, 11, 12, 13, 14, 15], "
-//                    + "[16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]"
-//                    + "]",
-//                    list
-//                    .segmentSize(i -> i, true)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[], "
-//                    + "[1], "
-//                    + "[2, 3], "
-//                    + "[4, 5, 6, 7], "
-//                    + "[8, 9, 10, 11, 12, 13, 14, 15]"
-//                    + "]",
-//                    list
-//                    .segmentSize(i -> i, false)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[], "
-//                    + "[1], "
-//                    + "[2, 3], "
-//                    + "[4, 5, 6, 7], "
-//                    + "[8, 9, 10, 11, 12, 13, 14, 15], "
-//                    + "[16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]"
-//                    + "]",
-//                    list
-//                    .segmentSize(i -> i, IncompletedSegment.included)
-//                    .map(streamToString)
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "[], "
-//                    + "[1], "
-//                    + "[2, 3], "
-//                    + "[4, 5, 6, 7], "
-//                    + "[8, 9, 10, 11, 12, 13, 14, 15]"
-//                    + "]",
-//                    list
-//                    .segmentSize(i -> i, IncompletedSegment.excluded)
-//                    .map(streamToString)
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testCollapseWhen() {
-//        run(wholeNumbers(10), list->{
-//            // [0, 1, 2 + 3, 4, 5 + 6, 7, 8 + 9]
-//            assertEquals("[0, 1, 9, 11, 24]",
-//                    list
-//                    .collapseWhen(i -> i % 3 == 0 || i % 4 == 0, (a, b) -> a + b)
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testCollapseAfter() {
-//        run(wholeNumbers(10), list->{
-//            // [0 + 1, 2, 3 + 4 + 5, 6 + 7, 8 + 9]
-//            assertEquals("[1, 2, 12, 13, 17]",
-//                    list
-//                    .collapseAfter(i -> i % 3 == 0 || i % 4 == 0, (a, b) -> a + b)
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testCollapseSize() {
-//        run(wholeNumbers(10), list->{
-//            // [0, 1, 2 + 3, 4 + 5 + 6 + 7]
-//            assertEquals("[1, 5, 22, 17]",
-//                    list
-//                    .collapseSize(i -> i, (a, b) -> a + b)
-//                    .toListString());
-//            
-//            assertEquals("[1, 5, 22, 17]",
-//                    list
-//                    .collapseSize(i -> i, (a, b) -> a + b, true)
-//                    .toListString());
-//            
-//            assertEquals("[1, 5, 22]",
-//                    list
-//                    .collapseSize(i -> i, (a, b) -> a + b, false)
-//                    .toListString());
-//            
-//            assertEquals("[1, 5, 22, 17]",
-//                    list
-//                    .collapseSize(i -> i, (a, b) -> a + b, IncompletedSegment.included)
-//                    .toListString());
-//            
-//            assertEquals("[1, 5, 22]",
-//                    list
-//                    .collapseSize(i -> i, (a, b) -> a + b, IncompletedSegment.excluded)
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testConcatWith() {
-//        val anotherList = range(21, 27);
-//        run(range(0, 5), list->{
-//            assertEquals("["
-//                            + "0, 1, 2, 3, 4, "
-//                            + "21, 22, 23, 24, 25, 26"
-//                        + "]", 
-//                        list
-//                        .concatWith(anotherList)
-//                        .toListString());
-//            // TODO - uncomment this.
-////            assertEquals("["
-////                        + "0, 1, 2, 3, 4, "
-////                        + "21, 22, 23, 24, 25, 26"
-////                        + "]", 
-////                        list
-////                        .concatWith(21, 22, 23, 24, 25, 26)
-////                        .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testMergeWith() {
-//        val anotherList = range(21, 27);
-//        run(range(0, 5), list->{
-//            assertEquals("[0, 21, 1, 22, 2, 23, 3, 24, 4, 25, 26]", 
-//                        list
-//                        .mergeWith(anotherList)
-//                        .toListString());
-//            // TODO - uncomment this.
-////            assertEquals("[0, 21, 1, 22, 2, 23, 3, 24, 4, 25, 26]", 
-////                        list
-////                        .mergeWith(21, 22, 23, 24, 25, 26)
-////                        .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testZipWith_boxed() {
-//        val anotherList1 = range(21, 27);
-//        val anotherList2 = range(21, 24);
-//        run(range(0, 5), list->{
-//            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25)]", 
-//                    list.zipWith(anotherList1.boxed()).toListString());
-//            
-//            assertEquals("[(0,21), (1,22), (2,23), (3,null), (4,null)]", 
-//                    list.zipWith(-1, anotherList2.boxed()).toListString());
-//            
-//            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25), (-1,26)]", 
-//                    list.zipWith(-1, anotherList1.boxed()).toListString());
-//            
-//            assertEquals("[(0,21), (1,22), (2,23)]", 
-//                    list.zipWith(anotherList2.boxed()).toListString());
-//            
-//            // TODO - Uncomment this.
-////            assertEquals("[0-21, 1-22, 2-23, 3-null, 4-null]", 
-////                    list.zipWith(-1, anotherList2.boxed(), (a, b)-> a + "-" + b).toListString());
-////            
-////            assertEquals("[0-21, 1-22, 2-23, 3-24, 4-25, -1-26]", 
-////                    list.zipWith(-1, anotherList1.boxed(), (a, b)-> a + "-" + b).toListString());
-//            
-//            assertEquals("[0-21, 1-22, 2-23]", 
-//                    list.zipWith(anotherList2.boxed(), (a, b)-> a + "-" + b).toListString());
-//            
-//            assertEquals("[21, 23, 25]", 
-//                    list.zipWith(anotherList2.boxed(), (a, b) -> a + b).toListString());
-//            
-//            assertEquals("[0-21, 1-22, 2-23, 3--1, 4--1]", 
-//                    list.zipToObjWith(anotherList2, -1, (a, b)-> a + "-" + b).toListString());
-//            
-//            assertEquals("[0-21, 1-22, 2-23, 3-1, 4-1]", 
-//                    list.zipToObjWith(anotherList2, -1, 1, (a, b)-> a + "-" + b).toListString());
-//            
-//            assertEquals("[21, 23, 25]", 
-//                    list.zipToObjWith(anotherList2, (a, b) -> a + b).toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testZipWith() {
-//        val anotherList1 = range(21, 27);
-//        val anotherList2 = range(21, 24);
-//        run(range(0, 5), list->{
-//            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25)]", 
-//                    list.zipWith(anotherList1).toListString());
-//            assertEquals("[(0,21), (1,22), (2,23)]", 
-//                    list.zipWith(anotherList2).toListString());
-//            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25), (-1,26)]", 
-//                    list.zipWith(anotherList1, -1).toListString());
-//            assertEquals("[(0,21), (1,22), (2,23), (3,-1), (4,-1)]", 
-//                    list.zipWith(anotherList2, -1).toListString());
-//            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25), (-1,26)]", 
-//                    list.zipWith(anotherList1, -1, 1).toListString());
-//            assertEquals("[(0,21), (1,22), (2,23), (3,1), (4,1)]", 
-//                    list.zipWith(anotherList2, -1, 1).toListString());
-//            assertEquals("[21, 23, 25, 27, 29, 25]", 
-//                    list.zipWith(anotherList1, -1, (a, b) -> a+b).toListString());
-//            assertEquals("[21, 23, 25, 2, 3]", 
-//                    list.zipWith(anotherList2, -1, (a, b) -> a+b).toListString());
-//            assertEquals("[21, 23, 25, 27, 29, 25]", 
-//                    list.zipWith(anotherList1, -1, 1, (a, b) -> a+b).toListString());
-//            assertEquals("[21, 23, 25, 4, 5]", 
-//                    list.zipWith(anotherList2, -1, 1, (a, b) -> a+b).toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testChoose() {
-//        val anotherList = range(22, 30);
-//        run(range(0, 5), list->{
-//            // 0 % 3 = 0 vs 22 % 2 = 0 => 22
-//            // 1 % 3 = 1 vs 23 % 2 = 1 => 23
-//            // 2 % 3 = 2 vs 24 % 2 = 0 =>  2
-//            // 3 % 3 = 0 vs 25 % 2 = 1 => 25
-//            // 4 % 3 = 1 vs 26 % 2 = 0 =>  4
-//            //           vs 27 % 2 = 1 => none
-//            //           vs 28 % 2 = 0 => none
-//            //           vs 29 % 2 = 1 => none
-//            assertEquals("[22, 23, 2, 25, 4]", 
-//                        list
-//                         .choose(anotherList, (a, b) -> a % 3 > b % 2)
-//                         .toListString());
-//        });
-//    }
-//    
-//    static class Sum implements IntCollectorPlus<AtomicInteger, Integer> {
-//        
-//        @Override
-//        public Collector<Integer, AtomicInteger, Integer> collector() {
-//            return this;
-//        }
-//        
-//        @Override
-//        public Integer process(IntStreamPlus stream) {
-//            return stream.sum();
-//        }
-//        
-//        @Override
-//        public Supplier<AtomicInteger> supplier() {
-//            return () -> new AtomicInteger();
-//        }
-//        
-//        @Override
-//        public IntAccumulator<AtomicInteger> intAccumulator() {
-//            return (atomicInt, i) -> {
-//                atomicInt.set(atomicInt.get() + i);
-//            };
-//        }
-//        
-//        @Override
-//        public BinaryOperator<AtomicInteger> combiner() {
-//            return (i1, i2) -> new AtomicInteger(i1.get() + i2.get());
-//        }
-//        
-//        @Override
-//        public Function<AtomicInteger, Integer> finisher() {
-//            return i -> i.get();
-//        }
-//        
-//        @Override
-//        public Set<Characteristics> characteristics() {
-//            return EnumSet.noneOf(Characteristics.class);
-//        }
-//        
-//    }
-//    
-//    static class Max implements IntCollectorPlus<AtomicInteger, Integer> {
-//        
-//        @Override
-//        public Collector<Integer, AtomicInteger, Integer> collector() {
-//            return this;
-//        }
-//        
-//        @Override
-//        public Integer process(IntStreamPlus stream) {
-//            return stream.max().getAsInt();
-//        }
-//        
-//        @Override
-//        public Supplier<AtomicInteger> supplier() {
-//            return () -> new AtomicInteger();
-//        }
-//        
-//        @Override
-//        public IntAccumulator<AtomicInteger> intAccumulator() {
-//            return (atomicInt, i) -> {
-//                atomicInt.set(Math.max(atomicInt.get(), i));
-//            };
-//        }
-//        
-//        @Override
-//        public BinaryOperator<AtomicInteger> combiner() {
-//            return (i1, i2) -> new AtomicInteger(Math.max(i1.get(), i2.get()));
-//        }
-//        
-//        @Override
-//        public Function<AtomicInteger, Integer> finisher() {
-//            return i -> i.get();
-//        }
-//        
-//        @Override
-//        public Set<Characteristics> characteristics() {
-//            return EnumSet.noneOf(Characteristics.class);
-//        }
-//        
-//    }
-//    
-//    @Test
-//    public void testCalculate() {
-//        val sum = new Sum();
-//        val max = new Max();
-//        run(range(0, 10), list->{
-//            assertEquals("45", 
-//                         "" + list.calculate(sum));
-//            
-//            assertEquals("(45,9)", 
-//                         "" + list.calculate(sum, max));
-//            
-//            assertEquals("(45,9,45)", 
-//                         "" + list.calculate(sum, max, sum));
-//            
-//            assertEquals("(45,9,45,9)", 
-//                         "" + list.calculate(sum, max, sum, max));
-//            
-//            assertEquals("(45,9,45,9,45)", 
-//                         "" + list.calculate(sum, max, sum, max, sum));
-//            
-//            assertEquals("(45,9,45,9,45,9)", 
-//                         "" + list.calculate(sum, max, sum, max, sum, max));
-//        });
-//    }
-//    
-//    @Test
-//    public void testMapOnly() {
-//        run(range(0, 10), list->{
-//            assertEquals("[0, 10, 2, 30, 4, 50, 6, 70, 8, 90]", 
-//                    list
-//                    .mapOnly(theInteger.thatIsOdd(), theInteger.time(10))
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testMapIf() {
-//        run(range(0, 10), list->{
-//            assertEquals("[0, 10, 1, 30, 2, 50, 3, 70, 4, 90]", 
-//                    list
-//                    .mapIf(
-//                        theInteger.thatIsOdd(), 
-//                        theInteger.time(10), 
-//                        i -> i/2)
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testMapToObjIf() {
-//        run(range(0, 10), list->{
-//            assertEquals("[0, 10, 1, 30, 2, 50, 3, 70, 4, 90]", 
-//                    list
-//                    .mapToObjIf(
-//                        theInteger.thatIsOdd(), 
-//                        i -> i * 10, 
-//                        i -> i / 2)
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testMapWithIndex() {
-//        run(range(0, 10), list->{
-//            assertEquals("[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]", 
-//                    list
-//                    .mapWithIndex(
-//                        (index, value)->index*value)
-//                    .toListString());
-//            
-//            assertEquals("[(0,0), (1,1), (2,2), (3,3), (4,4), (5,5), (6,6), (7,7), (8,8), (9,9)]", 
-//                    list
-//                    .mapWithIndex()
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testMapToObjWithIndex() {
-//        run(range(0, 10), list->{
-//            assertEquals("[0-0, 1-1, 2-2, 3-3, 4-4, 5-5, 6-6, 7-7, 8-8, 9-9]", 
-//                    list
-//                    .mapToObjWithIndex(
-//                        (index, value)->index + "-" + value)
-//                    .toListString());
-//            
-//            assertEquals("[0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9]", 
-//                    list
-//                    .mapToObjWithIndex(
-//                            i -> "" + i,
-//                            (index, value) -> index + ": " + value
-//                    )
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testMapWithPrev() {
-//        run(range(0, 10), list->{
-//            assertEquals("["
-//                    + "(OptionalInt.empty,0), "
-//                    + "(OptionalInt[0],1), "
-//                    + "(OptionalInt[1],2), "
-//                    + "(OptionalInt[2],3), "
-//                    + "(OptionalInt[3],4), "
-//                    + "(OptionalInt[4],5), "
-//                    + "(OptionalInt[5],6), "
-//                    + "(OptionalInt[6],7), "
-//                    + "(OptionalInt[7],8), "
-//                    + "(OptionalInt[8],9)"
-//                    + "]", 
-//                    list
-//                    .mapWithPrev()
-//                    .toListString());
-//            
-//            assertEquals("["
-//                    + "OptionalInt.empty-0, "
-//                    + "OptionalInt[0]-1, "
-//                    + "OptionalInt[1]-2, "
-//                    + "OptionalInt[2]-3, "
-//                    + "OptionalInt[3]-4, "
-//                    + "OptionalInt[4]-5, "
-//                    + "OptionalInt[5]-6, "
-//                    + "OptionalInt[6]-7, "
-//                    + "OptionalInt[7]-8, "
-//                    + "OptionalInt[8]-9"
-//                    + "]", 
-//                    list
-//                    .mapWithPrev(
-//                        (prev, i) -> prev + "-" + i
-//                    )
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testFilterIn() {
-//        run(range(0, 10), list->{
-//            assertEquals("[1, 3, 5, 7, 9]", 
-//                    list
-//                    .filterIn(1, 3, 5, 7, 9, 11, 13)
-//                    .toListString());
-//            
-//            assertEquals("[1, 3, 5, 7, 9]", 
-//                    list
-//                    .filterIn(asList(1, 3, 5, 7, 9, 11, 13))
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testExcludeIn() {
-//        run(range(0, 10), list->{
-//            assertEquals("[5, 6, 7, 8, 9]", 
-//                    list
-//                    .exclude(i -> i < 5)
-//                    .toListString());
-//            
-//            assertEquals("[0, 2, 4, 6, 8]", 
-//                    list
-//                    .excludeIn(1, 3, 5, 7, 9, 11, 13)
-//                    .toListString());
-//            
-//            assertEquals("[0, 2, 4, 6, 8]", 
-//                    list
-//                    .excludeIn(asList(1, 3, 5, 7, 9, 11, 13))
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testFilterWithIndex() {
-//        run(range(0, 10), list->{
-//            assertEquals("[0, 1, 2, 3, 8, 9]", 
-//                    list
-//                    .filterWithIndex((i, v) -> i < 4 || v > 7)
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testPeekMore() {
-//        run(range(0, 10), list->{
-//            {
-//                val lines = new ArrayList<String>();
-//                assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
-//                        list
-//                        .peek(theInteger.thatIsEven(), i -> lines.add("" + i))
-//                        .toListString());
-//                
-//                assertEquals(
-//                        "[0, 2, 4, 6, 8]", 
-//                        "" + lines);
-//            }
-//            
-//            {
-//                val lines = new ArrayList<String>();
-//                assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
-//                        list
-//                        .peek((int    i) -> "--> " + i + ";", 
-//                              (String s) -> lines.add(s))
-//                        .toListString());
-//                
-//                assertEquals(
-//                        "[--> 0;, --> 1;, --> 2;, --> 3;, --> 4;, --> 5;, --> 6;, --> 7;, --> 8;, --> 9;]", 
-//                        "" + lines);
-//            }
-//            
-//            {
-//                val lines = new ArrayList<String>();
-//                assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
-//                        list
-//                        .peek((int    i) -> "--> " + i + ";", 
-//                              (String s) -> s.contains("5"),
-//                              (String s) -> lines.add(s))
-//                        .toListString());
-//                
-//                assertEquals(
-//                        "[--> 5;]", 
-//                        "" + lines);
-//            }
-//        });
-//    }
-//    
-//    @Test
-//    public void testFlatMapOnly() {
-//        run(range(0, 7), list->{
-//            //            [0, 1 -> [0], 2, 3->[0, 1, 2], 4, 5 -> [0, 1, 2, 3, 4], 6]
-//            //            [0,      [0], 2,    [0, 1, 2], 4,      [0, 1, 2, 3, 4], 6]
-//            //            [0,       0,  2,     0, 1, 2,  4,       0, 1, 2, 3, 4,  6]
-//            assertEquals("[0, 0, 2, 0, 1, 2, 4, 0, 1, 2, 3, 4, 6]", 
-//                    list
-//                    .flatMapOnly(theInteger.thatIsOdd(), i -> range(0, i)).toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testFlatMapIf() {
-//        run(range(0, 7), list->{
-//            //      [0 -> [0], 1 -> [0], 2 -> [-2], 3->[0, 1, 2], 4 -> [-4], 5 -> [0, 1, 2, 3, 4], 6 -> [-6]]
-//            //      [     [0],      [0],      [-2],    [0, 1, 2],      [-4],      [0, 1, 2, 3, 4],      [-6]]
-//            //      [      0,        0,        -2,      0, 1, 2,        -4,        0, 1, 2, 3, 4,        -6]
-//            assertEquals("[0, 0, -2, 0, 1, 2, -4, 0, 1, 2, 3, 4, -6]", 
-//                    list
-//                    .flatMapIf(
-//                            theInteger.thatIsOdd(), 
-//                            i -> range(0, i),
-//                            i -> IntStreamable.of(-i)
-//                    )
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testFlatMapToObjIf() {
-//        run(range(0, 7), list->{
-//            //      [0 -> [0], 1 -> [0], 2 -> [-2], 3->[0, 1, 2], 4 -> [-4], 5 -> [0, 1, 2, 3, 4], 6 -> [-6]]
-//            //      [     [0],      [0],      [-2],    [0, 1, 2],      [-4],      [0, 1, 2, 3, 4],      [-6]]
-//            //      [      0,        0,        -2,      0, 1, 2,        -4,        0, 1, 2, 3, 4,        -6]
-//            assertEquals("[0, 0, -2, 0, 1, 2, -4, 0, 1, 2, 3, 4, -6]", 
-//                    list
-//                    .flatMapToObjIf(
-//                            theInteger.thatIsOdd(), 
-//                            i -> range(0, i)         .boxed().streamable(),
-//                            i -> IntStreamable.of(-i).boxed()
-//                    )
-//                    .toListString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testForEachWithIndex() {
-//        run(range(0, 10), list->{
-//            val lines = new ArrayList<String>();
-//            list
-//            .forEachWithIndex((i, v) -> lines.add(i + ": " + v));
-//            
-//            assertEquals(
-//                    "[0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9]", 
-//                    "" + lines);
-//        });
-//    }
-//    
-//    @Test
-//    public void testMinBy() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "OptionalInt[34]", 
-//                    list
-//                    .minBy(i -> Math.abs(i - 34))
-//                    .toString());
-//            
-//            assertEquals(
-//                    "OptionalInt[1]", 
-//                    list
-//                    .minBy(i -> Math.abs(i - 34), (a, b)-> b - a)
-//                    .toString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testMaxBy() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "OptionalInt[1]", 
-//                    list
-//                    .maxBy(i -> Math.abs(i - 34))
-//                    .toString());
-//            assertEquals(
-//                    "OptionalInt[34]", 
-//                    list
-//                    .maxBy(i -> Math.abs(i - 34), (a, b)-> b - a)
-//                    .toString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testMinOf() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "OptionalInt[34]", 
-//                    list
-//                    .minOf(i -> Math.abs(i - 34))
-//                    .toString());
-//        });
-//    }
-//    
-//    @Test
-//    public void testMaxOf() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "OptionalInt[1]", 
-//                    list
-//                    .maxOf(i -> Math.abs(i - 34))
-//                    .toString());
+//            Supplier<StringBuffer> supplier = StringBuffer::new;
+//            BiConsumer<StringBuffer, String> accumulator = StringBuffer::append;
+//            BiConsumer<StringBuffer, StringBuffer> combiner = (a, b) -> a.append(b.toString());
+//            assertStrings("OneTwoThree", list.collect(supplier, accumulator, combiner));
 //        });
 //    }
 //    
 //    @Test
 //    public void testMinMax() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "Optional[(1,34)]", 
-//                    list
-//                    .minMax()
-//                    .toString());
+//        run(IntFuncList.of(One, Two, Three, Four), list -> {
+//            assertStrings("Optional[One]",   list.min((a, b)-> a.length()-b.length()));
+//            assertStrings("Optional[Three]", list.max((a, b)-> a.length()-b.length()));
 //        });
 //    }
 //    
 //    @Test
-//    public void testMinMaxOf() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "Optional[(34,1)]", 
-//                    list
-//                    .minMaxOf(i -> Math.abs(i - 34))
-//                    .toString());
+//    public void testCount() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("3", list.count());
 //        });
 //    }
 //    
 //    @Test
-//    public void testMinMaxBy() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "Optional[(34,1)]", 
-//                    list
-//                    .minMaxBy(i -> Math.abs(i - 34))
-//                    .toString());
-//            
-//            assertEquals(
-//                    "Optional[(1,34)]", 
-//                    list
-//                    .minMaxBy(i -> Math.abs(i - 34), (a, b)-> b - a)
-//                    .toString());
+//    public void testAnyMatch() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertTrue(list.anyMatch(One::equals));
+//        });
+//    }
+//    
+//    @Test
+//    public void testAllMatch() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertFalse(list.allMatch(One::equals));
+//        });
+//    }
+//    
+//    @Test
+//    public void testNoneMatch() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertTrue(list.noneMatch(Five::equals));
 //        });
 //    }
 //    
 //    @Test
 //    public void testFindFirst() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "OptionalInt[5]", 
-//                    list
-//                    .findFirst(i -> i % 5 == 0)
-//                    .toString());
-//            assertEquals(
-//                    "OptionalInt[5]", 
-//                    list
-//                    .findFirst(i -> i*2, i -> i % 5 == 0)
-//                    .toString());
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("Optional[One]", list.findFirst());
 //        });
 //    }
 //    
 //    @Test
 //    public void testFindAny() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "OptionalInt[5]", 
-//                    list
-//                    .findAny(i -> i % 5 == 0)
-//                    .toString());
-//            assertEquals(
-//                    "OptionalInt[5]", 
-//                    list
-//                    .findAny(i -> i*2, i -> i % 5 == 0)
-//                    .toString());
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("Optional[One]", list.findAny());
 //        });
 //    }
 //    
 //    @Test
-//    public void testFindFirstBy() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "OptionalInt[13]", 
-//                    list
-//                    .findFirstBy(
-//                            i -> "" + i, 
-//                            s -> s.length() > 1)
-//                    .toString());
+//    public void testFindLast() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("Optional[Three]", list.findLast());
 //        });
 //    }
 //    
 //    @Test
-//    public void testFindAnyBy() {
-//        run(ints(1, 1, 2, 3, 5, 8, 13, 21, 34), list->{
-//            assertEquals(
-//                    "OptionalInt[13]", 
-//                    list
-//                    .findAnyBy(
-//                            i -> "" + i, 
-//                            s -> s.length() > 1)
-//                    .toString());
+//    public void testFirstResult() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("Result:{ Value: One }", list.firstResult());
 //        });
 //    }
 //    
+//    @Test
+//    public void testLastResult() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("Result:{ Value: Three }", list.lastResult());
+//        });
+//    }
+//    
+//    @Test
+//    public void testJavaList_get() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertEquals(One,   list.get(0));
+//            assertEquals(Two,   list.get(1));
+//            assertEquals(Three, list.get(2));
+//        });
+//    }
+//    
+//    @Test
+//    public void testJavaList_indexOf() {
+//        run(IntFuncList.of(One, Two, Three, Two, Three), list -> {
+//            assertEquals( 1, list.indexOf(Two));
+//            assertEquals(-1, list.indexOf(Five));
+//        });
+//    }
+//    
+//    @Test
+//    public void testJavaList_lastIndexOf() {
+//        run(IntFuncList.of(One, Two, Three, Two, Three), list -> {
+//            assertEquals( 3, list.lastIndexOf(Two));
+//            assertEquals(-1, list.lastIndexOf(Five));
+//        });
+//    }
+//    
+//    @Test
+//    public void testJavaList_subList() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[Two, Three]",             list.subList(1, 3));
+//            assertStrings("[Two, Three, Four, Five]", list.subList(1, 10));
+//        });
+//    }
+//    
+//    //-- ReadOnly --
+//    
+//    @Test
+//    public void testJavaList_readOnly() {
+//        val funcList = FuncList.of(One, Two, Three, Four, Five);
+//        runExpectReadOnlyListException(funcList, list -> list.set(1, Six));
+//        runExpectReadOnlyListException(funcList, list -> list.add(Six));
+//        runExpectReadOnlyListException(funcList, list -> list.add(2, Six));
+//        runExpectReadOnlyListException(funcList, list -> list.addAll(asList(Six, Seven)));
+//        runExpectReadOnlyListException(funcList, list -> list.addAll(2, asList(Six, Seven)));
+//        runExpectReadOnlyListException(funcList, list -> list.remove(Four));
+//        runExpectReadOnlyListException(funcList, list -> list.remove(2));
+//        runExpectReadOnlyListException(funcList, list -> list.removeAll(asList(Four, Five)));
+//        runExpectReadOnlyListException(funcList, list -> list.retainAll(asList(Four, Five)));
+//        runExpectReadOnlyListException(funcList, list -> list.clear());
+//        runExpectReadOnlyListException(funcList, list -> list.replaceAll(value -> "-" + value + "-"));
+//        runExpectReadOnlyListException(funcList, list -> list.sort(String.CASE_INSENSITIVE_ORDER));
+//    }
+//    
+//    //-- AsStreamPlusWithGroupingBy --
+//    
+//    @Test
+//    public void testGroupingBy() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings(
+//                    "{3:[One, Two], 4:[Four, Five], 5:[Three]}",
+//                    list
+//                    .groupingBy(theString.length())
+//                    .sortedByKey(theInteger));
+//        });
+//    }
+//    
+//    @Test
+//    public void testGroupingBy_aggregate() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings(
+//                    "{3:One-Two, 4:Four-Five, 5:Three}",
+//                    list
+//                    .groupingBy(theString.length(), join("-"))
+//                    .sortedByKey(theInteger));
+//        });
+//    }
+//    
+//    @Test
+//    public void testGroupingBy_process() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            val sumLength = new SumLength();
+//            assertStrings(
+//                    "{3:6, 4:8, 5:5}",
+//                    list
+//                    .groupingBy(theString.length(), sumLength)
+//                    .sortedByKey(theInteger));
+//        });
+//    }
+//    
+//    @Test
+//    public void testGroupingBy_collect() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings(
+//                    "{3:One:Two, 4:Four:Five, 5:Three}",
+//                    list
+//                    .groupingBy(theString.length(), () -> Collectors.joining(":"))
+//                    .sortedByKey(theInteger));
+//        });
+//    }
+//    
+//    //-- Functional list
+//    
+//    // test
+//    // lazy+eager
+//    
+//    @Test
+//    public void testMap() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[-3-, -3-, -5-, -4-, -4-]",
+//                    list
+//                    .map(s -> "-" + s.length() + "-")
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToInt() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("11", list.mapToInt(String::length).sum());
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToDouble() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("11.0", list.map(s -> "" + s.length()).mapToDouble(Double::parseDouble).sum());
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToObj() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[-3-, -3-, -5-, -4-, -4-]",
+//                    list
+//                    .mapToObj(s -> "-" + s.length() + "-")
+//                    );
+//        });
+//    }
+//    
+//    //-- FlatMap --
+//    
+//    @Test
+//    public void testFlatMap() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings(
+//                    "[3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5]",
+//                    list.flatMap(s -> Streamable.cycle(s.length()).limit(s.length())));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFlatMapToInt() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings(
+//                    "[3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5]",
+//                    list.flatMapToInt(s -> IntStreamable.cycle(s.length()).limit(s.length())));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFlatMapToDouble() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings(
+//                    "[3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 5.0, 5.0, 5.0, 5.0, 5.0]",
+//                    list
+//                    .flatMapToDouble(s -> DoubleStreamable.cycle(s.length()).limit(s.length())));
+//        });
+//    }
+//    
+//    //-- Filter --
+//    
+//    @Test
+//    public void testFilter() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings(
+//                    "[Three]",
+//                    list.filter(theString.length().thatGreaterThan(4)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilter_mapper() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings(
+//                    "[Three]",
+//                    list.filter(theString.length(), theInteger.thatGreaterThan(4)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testPeek() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            val logs   = new ArrayList<String>();
+//            assertStrings("[1, 2, 3]", list.peek(s -> logs.add(s)));
+//            assertStrings("[1, 2, 3]", logs);
+//        });
+//    }
+//    
+//    @Test
+//    public void testLimit() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[1, 2, 3]", list.limit(3));
+//        });
+//    }
+//    
+//    @Test
+//    public void testSkip() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[Three, Four, Five]", list.skip(2));
+//        });
+//    }
+//    
+//    @Test
+//    public void testDistinct() {
+//        run(IntFuncList.of(One, Two, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]", list.distinct());
+//        });
+//    }
+//    
+//    @Test
+//    public void testSorted() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[3, 3, 4, 4, 5]", list.map(theString.length()).sorted());
+//            assertStrings("[5, 4, 4, 3, 3]", list.map(theString.length()).sorted((a, b) -> (b - a)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testToArray() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]", Arrays.toString(list.toArray()));
+//            assertStrings("[1, 2, 3]", Arrays.toString(list.toArray(n -> new String[n])));
+//            assertStrings("[1, 2, 3]", Arrays.toString(list.toArray(String[]::new)));
+//            
+//            // exact sizes array will be used.
+//            val arraySameSize = new String[list.size()];
+//            assertStrings("[1, 2, 3]", Arrays.toString(list.toArray(arraySameSize)));
+//            
+//            // too small array will be ignored and a new one created
+//            val arrayTooSmall = new String[list.size() - 1];
+//            assertStrings("[1, 2, 3]", Arrays.toString(list.toArray(arrayTooSmall)));
+//            
+//            // too large array will be ignored and a new one created
+//            val arrayTooLarge = new String[list.size() + 1];
+//            assertStrings("[1, 2, 3]", Arrays.toString(list.toArray(arrayTooLarge)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testNullableOptionalResult() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("Nullable.of([One, Two, Three])",      list.__nullable());
+//            assertStrings("Optional[[One, Two, Three]]",         list.__optional());
+//            assertStrings("Result:{ Value: [One, Two, Three] }", list.__result());
+//        });
+//    }
+//    
+//    @Test
+//    public void testIndexOf() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertEquals(2, list.indexOf(Three));
+//        });
+//    }
+//    
+//    @Test
+//    public void testIndexesOf() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[0, 2]", list.indexesOf(value -> value.equals(One) || value.equals(Three)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFirst() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[One]",     list.first());
+//            assertStrings("[1, 2, 3]", list.first(3));
+//        });
+//    }
+//    
+//    @Test
+//    public void testLast() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[Five]",      list.last());
+//            assertStrings("[Three, Four, Five]", list.last(3));
+//        });
+//    }
+//    
+//    @Test
+//    public void testAt() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[Three]", list.at(2));
+//            assertStrings("Optional.empty",  list.at(10));
+//        });
+//    }
+//    
+//    @Test
+//    public void testTail() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[Two, Three, Four, Five]", list.tail());
+//        });
+//    }
+//    
+//    @Test
+//    public void testToBuilder() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[One, Two, Three, Four, Five]", list.toBuilder().add(Four).add(Five).build());
+//        });
+//    }
+//    
+//    @Test
+//    public void testAppend() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]",       list);
+//            assertStrings("[One, Two, Three, Four]", list.append(Four));
+//            assertStrings("[1, 2, 3]",       list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testAppendAll() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]",             list);
+//            assertStrings("[One, Two, Three, Four, Five]", list.appendAll(Four, Five));
+//            assertStrings("[One, Two, Three, Four, Five]", list.appendAll(IntFuncList.listOf(Four, Five)));
+//            assertStrings("[One, Two, Three, Four, Five]", list.appendAll(Streamable.of(Four, Five)));
+//            assertStrings("[1, 2, 3]",             list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testPrepend() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]",       list);
+//            assertStrings("[Zero, One, Two, Three]", list.prepend(Zero));
+//            assertStrings("[1, 2, 3]",       list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testPrependAll() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]",                 list);
+//            assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(MinusOne, Zero));
+//            assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(IntFuncList.listOf(MinusOne, Zero)));
+//            assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(Streamable.of(MinusOne, Zero)));
+//            assertStrings("[1, 2, 3]",                 list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testWith() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]",       list);
+//            assertStrings("[One, Zero, Three]",      list.with(1, Zero));
+//            assertStrings("[One, Two=>Zero, Three]", list.with(1, value -> value + "=>" + Zero));
+//            assertStrings("[1, 2, 3]",       list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testInsertAt() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]",       list);
+//            assertStrings("[One, Zero, Two, Three]", list.insertAt(1, Zero));
+//            assertStrings("[1, 2, 3]",       list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testInsertAllAt() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]",             list);
+//            assertStrings("[One, Two, Zero, Zero, Three]", list.insertAt(2, Zero, Zero));
+//            assertStrings("[One, Two, Zero, Zero, Three]", list.insertAllAt(2, listOf(Zero, Zero)));
+//            assertStrings("[One, Two, Zero, Zero, Three]", list.insertAllAt(2, Streamable.of(Zero, Zero)));
+//            assertStrings("[1, 2, 3]",             list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testExclude() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[One, Two, Three, Four, Five]", list);
+//            assertStrings("[One, Three, Four, Five]",      list.exclude(Two));
+//            assertStrings("[One, Three, Four, Five]",      list.exclude(Two::equals));
+//            assertStrings("[One, Three, Four, Five]",      list.excludeAt(1));
+//            assertStrings("[One, Five]",                   list.excludeFrom(1, 3));
+//            assertStrings("[One, Three, Four, Five]",      list.excludeBetween(1, 2));
+//            assertStrings("[One, Two, Three, Four, Five]", list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testReverse() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[One, Two, Three, Four, Five]", list);
+//            assertStrings("[Five, Four, Three, Two, One]", list.reverse());
+//            assertStrings("[One, Two, Three, Four, Five]", list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testShuffle() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten), list -> {
+//            assertStrings  ("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
+//            assertNotEquals("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list.shuffle().toString());
+//            assertStrings  ("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testQuery() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six), list -> {
+//            assertStrings("[One, Two, Three, Four, Five, Six]", list);
+//            assertStrings("[(0,One), (1,Two), (5,Six)]",        list.query(value -> value.length() == 3));
+//            assertStrings("[One, Two, Three, Four, Five, Six]", list);
+//        });
+//    }
+//    
+//    @Test
+//    public void testMinIndexBy() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six), list -> {
+//            assertStrings("Optional[0]", list.minIndexBy(value -> value.length()));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMaxIndexBy() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six), list -> {
+//            assertStrings("Optional[2]", list.maxIndexBy(value -> value.length()));
+//        });
+//    }
+//    
+//    
+//    //-- AsStreamPlusWithConversion --
+//    
+//    @Test
+//    public void testToByteArray() {
+//        run(IntFuncList.of('A', 'B', 'C', 'D'), list -> {
+//            assertStrings("[65, 66, 67, 68]", Arrays.toString(list.toByteArray(c -> (byte)(int)c)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testToIntArray() {
+//        run(IntFuncList.of('A', 'B', 'C', 'D'), list -> {
+//            assertStrings("[65, 66, 67, 68]", Arrays.toString(list.toIntArray(c -> (int)c)));
+//        });
+//    }
+//    
+////    @Test
+////    public void testToLongArray() {
+////        val stream = StreamPlus.of('A', 'B', 'C', 'D');
+////        assertStrings("[65, 66, 67, 68]", Arrays.toString(stream.toLongArray(c -> (long)c)));
+////    }
+//
+//    @Test
+//    public void testToDoubleArray() {
+//        val stream = StreamPlus.of('A', 'B', 'C', 'D');
+//        assertStrings("[65.0, 66.0, 67.0, 68.0]", Arrays.toString(stream.toDoubleArray(c -> (double)(int)c)));
+//    }
+//    
+//    @Test
+//    public void testToArrayList() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            val newList = list.toArrayList();
+//            assertStrings("[1, 2, 3]", newList);
+//            assertTrue(newList instanceof ArrayList);
+//        });
+//    }
+//    
+//    @Test
+//    public void testToList() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            val newList = list.toJavaList();
+//            assertStrings("[1, 2, 3]", newList);
+//            assertTrue(newList instanceof List);
+//        });
+//    }
+//    
+//    @Test
+//    public void testToMutableList() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            val newList = list.toMutableList();
+//            assertStrings("[1, 2, 3]", newList);
+//            // This is because we use ArrayList as mutable list ... not it should not always be.
+//            assertTrue(newList instanceof ArrayList);
+//        });
+//    }
+//    
+//    //-- join --
+//    
+//    @Test
+//    public void testJoin() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("OneTwoThree", list.join());
+//        });
+//    }
+//    
+//    @Test
+//    public void testJoin_withDelimiter() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("One, Two, Three", list.join(", "));
+//        });
+//    }
+//    
+//    @Test
+//    public void testToListString() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]", list);
+//        });
+//    }
+//    
+//    //-- toMap --
+//    
+//    @Test
+//    public void testToMap() {
+//        run(IntFuncList.of(One, Three, Five), list -> {
+//            assertStrings("{3:One, 4:Five, 5:Three}", list.toMap(theString.length()).toString());
+//        });
+//    }
+//    
+//    @Test
+//    public void testToMap_withValue() {
+//        run(IntFuncList.of(One, Three, Five), list -> {
+//            assertStrings("{3:-->One, 4:-->Five, 5:-->Three}", list.toMap(theString.length(), theString.withPrefix("-->")).toString());
+//        });
+//    }
+//    
+//    @Test
+//    public void testToMap_withMappedMergedValue() {
+//        run(IntFuncList.of(One, Two, Three, Five), list -> {
+//            assertStrings("{3:One+Two, 4:Five, 5:Three}", list.toMap(theString.length(), theString, (a, b) -> a + "+" + b).toString());
+//        });
+//    }
+//    
+//    @Test
+//    public void testToMap_withMergedValue() {
+//        run(IntFuncList.of(One, Two, Three, Five), list -> {
+//            assertStrings("{3:One+Two, 4:Five, 5:Three}", list.toMap(theString.length(), (a, b) -> a + "+" + b).toString());
+//        });
+//    }
+//    
+//    @Test
+//    public void testToSet() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            val set    = list.toSet();
+//            assertStrings("[1, 2, 3]", set);
+//            assertTrue(set instanceof Set);
+//        });
+//    }
+//    
+//    @Test
+//    public void testForEachWithIndex() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            val logs   = new ArrayList<String>();
+//            list.forEachWithIndex((i, s) -> logs.add(i + ":" + s));
+//            assertStrings("[0:One, 1:Two, 2:Three]", logs);
+//        });
+//    }
+//    
+//    @Test
+//    public void testPopulateArray() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            val array  = new String[5];
+//            list.populateArray(array);
+//            assertStrings("[One, Two, Three, Four, Five]", Arrays.toString(array));
+//        });
+//    }
+//    
+//    @Test
+//    public void testPopulateArray_withOffset() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            val array  = new String[3];
+//            list.populateArray(array, 2);
+//            assertStrings("[null, null, One]", Arrays.toString(array));
+//        });
+//    }
+//    
+//    @Test
+//    public void testPopulateArray_withOffsetLength() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            val array  = new String[5];
+//            list.populateArray(array, 1, 3);
+//            assertStrings("[null, One, Two, Three, null]", Arrays.toString(array));
+//        });
+//    }
+//    
+//    //-- AsFuncListWithMatch --
+//    
+//    @Test
+//    public void testFindFirst_withPredicate() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[Three]", list.findFirst(theString.thatContains("ee")));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFindAny_withPredicate() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[Three]", list.findAny(theString.thatContains("ee")));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFindFirst_withMapper_withPredicate() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[Three]", list.findFirst(theString.length(), l ->  l == 5));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFindAny_withMapper_withPredicate() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[Three]", list.findAny(theString.length(), l -> l == 5));
+//        });
+//    }
+//    
+//    //-- AsFuncListWithStatistic --
+//    
+//    @Test
+//    public void testSize() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("3", list.size());
+//        });
+//    }
+//    
+//    @Test
+//    public void testMinBy() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[One]", list.minBy(theString.length()));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMaxBy() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[Three]", list.maxBy(theString.length()));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMinBy_withMapper() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[Three]", list.minBy(theString.length(), (a, b)->b-a));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMaxBy_withMapper() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("Optional[One]", list.maxBy(theString.length(), (a, b)->b-a));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMinMaxBy() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("(Optional[Five],Optional[Two])", list.minMax(String.CASE_INSENSITIVE_ORDER));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMinMaxBy_withMapper() {
+//        run(IntFuncList.of(One, Two, Three, Four), list -> {
+//            assertStrings("(Optional[One],Optional[Three])", list.minMaxBy(theString.length()));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMinMaxBy_withMapper_withComparator() {
+//        run(IntFuncList.of(One, Two, Three, Four), list -> {
+//            assertStrings("(Optional[Three],Optional[Two])", list.minMaxBy(theString.length(), (a, b) -> b-a));
+//        });
+//    }
+//    
+//    //-- StreamPlusWithCalculate --
+//    
+//    static class SumLength implements CollectorPlus<String, int[], Integer> {
+//        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+//        @Override public Supplier<int[]>           supplier()          { return ()->new int[] { 0 }; }
+//        @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] += s.length(); }; }
+//        @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
+//        @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
+//        @Override public Set<Characteristics>      characteristics()   { return characteristics; }
+//        @Override public Collector<String, int[], Integer> collector() { return this; }
+//    }
+//    static class AvgLength implements CollectorPlus<String, int[], Integer> {
+//        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+//        @Override public Supplier<int[]>           supplier()          { return ()->new int[] { 0, 0 }; }
+//        @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] += s.length(); a[1]++; }; }
+//        @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
+//        @Override public Function<int[], Integer>  finisher()          { return a -> a[0]/a[1]; }
+//        @Override public Set<Characteristics>      characteristics()   { return characteristics; }
+//        @Override public Collector<String, int[], Integer> collector() { return this; }
+//    }
+//    static class MinLength implements CollectorPlus<String, int[], Integer> {
+//        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+//        @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MAX_VALUE }; }
+//        @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] = Math.min(a[0], s.length()); }; }
+//        @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { Math.min(a1[0], a2[0]) }; }
+//        @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
+//        @Override public Set<Characteristics>      characteristics()   { return characteristics; }
+//        @Override public Collector<String, int[], Integer> collector() { return this; }
+//    }
+//    static class MaxLength implements CollectorPlus<String, int[], Integer> {
+//        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+//        @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MIN_VALUE }; }
+//        @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] = Math.max(a[0], s.length()); }; }
+//        @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { Math.max(a1[0], a2[0]) }; }
+//        @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
+//        @Override public Set<Characteristics>      characteristics()   { return characteristics; }
+//        @Override public Collector<String, int[], Integer> collector() { return this; }
+//    }
+//    static class Sum implements CollectorPlus<Integer, int[], Integer> {
+//        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+//        @Override public Supplier<int[]>            supplier()          { return ()->new int[] { 0 }; }
+//        @Override public BiConsumer<int[], Integer> accumulator()       { return (a, e)->{ a[0] += e.intValue(); }; }
+//        @Override public BinaryOperator<int[]>      combiner()          { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
+//        @Override public Function<int[], Integer>   finisher()          { return a -> a[0]; }
+//        @Override public Set<Characteristics>       characteristics()   { return characteristics; }
+//        @Override public Collector<Integer, int[], Integer> collector() { return this; }
+//    }
+//    
+//    @Test
+//    public void testCalculate() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            assertEquals(18, list.calculate(sumLength).intValue());
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate2() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            assertStrings("(18,4)", list.calculate(sumLength, avgLength));
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate2_combine() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            val range = list.calculate(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
+//            assertEquals(3, range);
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate3() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            assertStrings("(18,4,3)", list.calculate(sumLength, avgLength, minLength));
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate3_combine() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val value     = list
+//                            .calculate(sumLength, avgLength, minLength)
+//                            .mapTo((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
+//            assertStrings("sum: 18, avg: 4, min: 3", value);
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate4() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            assertStrings("(18,4,3,6)", list.calculate(sumLength, avgLength, minLength, maxLength));
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate4_combine() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            val value     = list
+//                            .calculate(sumLength, avgLength, minLength, maxLength)
+//                            .mapTo((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
+//            assertStrings("sum: 18, avg: 4, min: 3, max: 6", value);
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate5() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            assertStrings("(18,4,3,6,18)", list.calculate(sumLength, avgLength, minLength, maxLength, sumLength));
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate5_combine() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            val value     = list
+//                            .calculate(sumLength, avgLength, minLength, maxLength, sumLength)
+//                            .mapTo((sum, avg, min, max, sum2) -> {
+//                                return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2;
+//                            });
+//            assertStrings("sum: 18, avg: 4, min: 3, max: 6, sum2: 18", value);
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate6() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            assertStrings("(18,4,3,6,18,4)", list.calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength));
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate6_combine() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            val value     = list
+//                            .calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength)
+//                            .mapTo((sum, avg, min, max, sum2, avg2) -> {
+//                                return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2 + ", avg2: " + avg2;
+//                            });
+//            assertStrings("sum: 18, avg: 4, min: 3, max: 6, sum2: 18, avg2: 4", value);
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate_of() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sum = new Sum();
+//            assertEquals(18, list.calculate(sum.of(theString.length())).intValue());
+//        });
+//    }
+//    
+//    //-- FuncListWithCombine --
+//    
+//    @Test
+//    public void testConcatWith() {
+//        run(IntFuncList.of(One, Two), FuncList.of(Three, Four), (list1, streamabl2) -> {
+//            assertStrings("[One, Two, Three, Four]",
+//                    list1.concatWith(streamabl2)
+//                    );
+//        });
+//    }
+//        
+//    @Test
+//    public void testMerge() {
+//        run(IntFuncList.of("A", "B", "C"),
+//            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+//            (list1, streamabl2) -> {
+//            assertStrings(
+//                "A, 0, B, 1, C, 2, 3, 4, 5, 6",
+//                list1
+//                    .mergeWith(streamabl2)
+//                    .limit    (10)
+//                    .join     (", "));
+//        });
+//    }
+//    
+//    @Test
+//    public void testZipWith() {
+//        run(IntFuncList.of("A", "B", "C"),
+//            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+//            (listA, listB) -> {
+//                assertStrings(
+//                        "(A,0), (B,1), (C,2)",
+//                        listA.zipWith(listB).join(", "));
+//            });
+//        run(IntFuncList.of("A", "B", "C"),
+//            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+//            (listA, listB) -> {
+//                assertStrings(
+//                        "(A,0), (B,1), (C,2)",
+//                        listA.zipWith(listB, RequireBoth).join(", "));
+//            });
+//        run(IntFuncList.of("A", "B", "C"),
+//            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+//            (listA, listB) -> {
+//                assertStrings(
+//                        "(A,0), (B,1), (C,2), (null,3), (null,4)",
+//                        listA.zipWith(listB, AllowUnpaired).limit(5).join(", "));
+//            });
+//        run(IntFuncList.of("A", "B", "C"),
+//            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+//            (listA, listB) -> {
+//                assertStrings(
+//                        "A:0, B:1, C:2",
+//                        listA.zipWith(listB, (c, i) -> c + ":" + i).join(", "));
+//            });
+//        run(IntFuncList.of("A", "B", "C"),
+//            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+//            (listA, listB) -> {
+//                assertStrings(
+//                        "A:0, B:1, C:2",
+//                        listA.zipWith(listB, RequireBoth, (c, i) -> c + ":" + i).join(", "));
+//            });
+//        run(IntFuncList.of("A", "B", "C"),
+//            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+//            (listA, listB) -> {
+//                assertStrings(
+//                        "A:0, B:1, C:2, null:3, null:4",
+//                        listA.zipWith(listB, AllowUnpaired, (c, i) -> c + ":" + i).limit(5).join(", "));
+//            });
+//    }
+//    
+//    @Test
+//    public void testChoose() {
+//        run(IntFuncList.of("A", "B", "C"),
+//            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+//            (listA, listB) -> {
+//                val bool = new AtomicBoolean(true);
+//                assertStrings("A, 1, C", listA.choose(listB, (a, b) -> {
+//                    boolean curValue = bool.get();
+//                    return bool.getAndSet(!curValue);
+//                }).limit(5).join(", "));
+//            });
+//    }
+//    
+//    @Test
+//    public void testChoose_AllowUnpaired() {
+//        run(IntFuncList.of("A", "B", "C"),
+//            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+//            (listA, listB) -> {
+//                val bool    = new AtomicBoolean(true);
+//                assertStrings("A, 1, C, 3, 4, 5, 6", listA.choose(listB, AllowUnpaired, (a, b) -> {
+//                    boolean curValue = bool.get();
+//                    return bool.getAndSet(!curValue);
+//                }).limit(7).join(", "));
+//            });
+//    }
+//    
+//    //-- StreamPlusWithFillNull --
+//    
+//    @Test
+//    public void testFillNull() {
+//        run(IntFuncList.of("A", "B",  null, "C"), list -> {
+//            assertStrings("[A, B, Z, C]", list.fillNull("Z"));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFillNull_lens() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
+//                    list.fillNull(Car.theCar.color, "Black"));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFillNull_getter_setter() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
+//                    list.fillNull(
+//                            (Car car)               -> car.color(),
+//                            (Car car, String color) -> car.withColor(color),
+//                            "Black"));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFillNull_lens_supplier() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
+//                    list.fillNullWith(Car.theCar.color, () -> "Black"));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFillNull_getter_setter_supplier() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
+//                    list.fillNullWith(
+//                            (Car car)               -> car.color(),
+//                            (Car car, String color) -> car.withColor(color),
+//                            ()                      -> "Black"));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFillNull_lens_function() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
+//                    list.fillNullBy(Car.theCar.color, (Car car) -> "Black"));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFillNull_getter_setter_function() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
+//                    list.fillNullBy(
+//                            (Car car)               -> car.color(),
+//                            (Car car, String color) -> car.withColor(color),
+//                            (Car car)               -> "Black"));
+//        });
+//    }
+//    
+//    //-- StreamPlusWithFilter --
+//    
+//    @Test
+//    public void testFilterClass() {
+//        run(IntFuncList.of(0, One, 2, Three, 4, Five), list -> {
+//            assertStrings("[One, Three, Five]", list.filter(String.class));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterClass_withPredicate() {
+//        run(IntFuncList.of(0, One, 2, Three, 4, Five), list -> {
+//            assertStrings("[One, Five]", list.filter(String.class, theString.length().thatLessThan(5)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilter_withMappter() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings(
+//                    "[Three, Four, Five]", 
+//                    list.filter(
+//                            str -> BigInteger.valueOf(str.length()),
+//                            b   -> b.intValue() >= 4));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterAsInt() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[Three, Four, Five]", list.filterAsInt(str -> str.length(), i -> i >= 4));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterAsLong() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[Three, Four, Five]", list.filterAsLong(str -> (long)str.length(), i -> i >= 4));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterAsDouble() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[Three, Four, Five]", list.filterAsDouble(str -> (double)str.length(), i -> i >= 4));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterAsObject() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[Three, Four, Five]", list.filterAsObject(str -> BigInteger.valueOf(str.length()), b -> b.intValue() >= 4));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterWithIndex() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertStrings("[Four, Five]", list.filterWithIndex((index, str) -> index > 2 && !str.startsWith("T")));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterNonNull() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Blue, Green, Red]",
+//                    list.map(theCar.color).filterNonNull());
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterNonNull_withMapper() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Car(color=Blue), Car(color=Green), Car(color=Red)]",
+//                    list.filterNonNull(theCar.color));
+//        });
+//    }
+//    
+//    @Test
+//    public void testExcludeNull() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Blue, Green, Red]",
+//                    list.map(theCar.color).excludeNull());
+//        });
+//    }
+//    
+//    @Test
+//    public void testExcludeNull_withMapper() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Car(color=Blue), Car(color=Green), Car(color=Red)]",
+//                    list.excludeNull(theCar.color));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterMapper() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Car(color=Blue), Car(color=Red)]",
+//                    list.filter(theCar.color, color -> Arrays.asList("Blue", "Red").contains(color)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterIn() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Blue, Red]",
+//                    list.map(theCar.color).filterIn("Blue", "Red"));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFilterIn_collection() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Blue, Red]",
+//                    list.map(theCar.color).filterIn(asList("Blue", "Red")));
+//        });
+//    }
+//    
+//    @Test
+//    public void testExcludeIn() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Green, null]",
+//                    list.map(theCar.color).excludeIn("Blue", "Red"));
+//        });
+//    }
+//    
+//    @Test
+//    public void testExcludeIn_collection() {
+//        run(IntFuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
+//            assertStrings(
+//                    "[Green, null]",
+//                    list.map(theCar.color).excludeIn(asList("Blue", "Red")));
+//        });
+//    }
+//    
+//    //-- FuncListWithFlatMap --
+//    
+//    @Test
+//    public void testFlatMapToObj() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[3, 3, 5]", list.flatMapToObj(s -> FuncList.of(s.length())));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFlatMapOnly() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[One, 3, 5]", list.flatMapOnly(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("" + s.length())));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFlatMapIf() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[(One), [3], [5]]", list.flatMapIf(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("[" + s.length() + "]"), s -> FuncList.of("(" + s + ")")));
+//        });
+//    }
+//    
+//    @Test
+//    public void testFlatMapToObjIf() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[(One), [3], [5]]", list.flatMapToObjIf(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("[" + s.length() + "]"), s -> FuncList.of("(" + s + ")")));
+//        });
+//    }
+//    
+//    //-- FuncListWithLimit --
+//    
+//    @Test
+//    public void testSkipLimitLong() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[Two]", list.skip((Long)1L).limit((Long)1L));
+//        });
+//    }
+//    
+//    @Test
+//    public void testSkipLimitLongNull() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]", list.skip(null).limit(null));
+//        });
+//    }
+//    
+//    @Test
+//    public void testSkipLimitLongMinus() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[1, 2, 3]", list.skip(Long.valueOf(-1)).limit(Long.valueOf(-1)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testSkipWhile() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
+//            assertStrings("[3, 4, 5, 4, 3, 2, 1]",       list.skipWhile(i -> i < 3));
+//            assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipWhile(i -> i > 3));
+//        });
+//    }
+//    
+//    @Test
+//    public void testSkipUntil() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
+//            assertStrings("[4, 5, 4, 3, 2, 1]",          list.skipUntil(i -> i > 3));
+//            assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipUntil(i -> i < 3));
+//        });
+//    }
+//    
+//    @Test
+//    public void testTakeWhile() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
+//            val logs = new ArrayList<Integer>();
+//            assertStrings("[1, 2, 3]",    list.peek(logs::add).takeWhile(i -> i < 4));
+//            assertStrings("[1, 2, 3, 4]", logs);
+//            //                       ^--- Because it needs 4 to do the check in `takeWhile`
+//            
+//            logs.clear();
+//            assertStrings("[]", list.peek(logs::add).takeWhile(i -> i > 4));
+//            assertStrings("[1]", logs);
+//            //              ^--- Because it needs 1 to do the check in `takeWhile`
+//        });
+//    }
+//    
+//    @Test
+//    public void testTakeWhile_previous() {
+//        run(IntFuncList.of(1, 2, 3, 4, 6, 4, 3, 2, 1), list -> {
+//            assertStrings("[1, 2, 3, 4]", list.takeWhile((a, b) -> b == a + 1));
+//        });
+//    }
+//    
+//    @Test
+//    public void testTakeUtil() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
+//            val logs = new ArrayList<Integer>();
+//            assertStrings("[1, 2, 3, 4]", list.peek(logs::add).takeUntil(i -> i > 4));
+//            assertStrings("[1, 2, 3, 4, 5]", logs);
+//            //                          ^--- Because it needs 5 to do the check in `takeUntil`
+//            
+//            logs.clear();
+//            assertStrings("[]",  list.peek(logs::add).takeUntil(i -> i < 4));
+//            assertStrings("[1]", logs);
+//            //              ^--- Because it needs 1 to do the check in `takeUntil`
+//        });
+//    }
+//    
+//    @Test
+//    public void testTakeUntil_previous() {
+//        run(IntFuncList.of(1, 2, 3, 4, 6, 4, 3, 2, 1), list -> {
+//            assertStrings("[1, 2, 3, 4]", list.takeUntil((a, b) -> b > a + 1));
+//        });
+//    }
+//    
+//    @Test
+//    public void testDropAfter() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
+//            assertStrings("[1, 2, 3, 4]", list.dropAfter(i -> i == 4));
+//            //                       ^--- Include 4
+//        });
+//    }
+//    
+//    @Test
+//    public void testDropAfter_previous() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
+//            assertStrings("[1, 2, 3, 4, 5, 4]", list.dropAfter((a, b) -> b < a));
+//            //                             ^--- Include 4
+//        });
+//    }
+//    
+//    @Test
+//    public void testSkipTake() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
+//            val logs = new ArrayList<Integer>();
+//            assertStrings("[3, 4, 5, 4, 3]", list.peek(logs::add).skipWhile(i -> i < 3).takeUntil(i -> i < 3));
+//            assertStrings("[1, 2, 3, 4, 5, 4, 3, 2]", logs);
+//            //              ^--^-----------------^--- Because it needs these number to do the check in `skipWhile` and `takeWhile`
+//        });
+//    }
+//    
+//    //-- FuncListWithMap --
+//    
+//    @Test
+//    public void testMapOnly() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[ONE, TWO, Three]",
+//                    list
+//                    .mapOnly(
+//                            $S.length().thatLessThan(4),
+//                            $S.toUpperCase())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapIf() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[ONE, TWO, three]",
+//                    list
+//                    .mapIf(
+//                            $S.length().thatLessThan(4), $S.toUpperCase(),
+//                            $S.toLowerCase())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToObjIf() {
+//        run(IntFuncList.of(One, Two, Three), list -> {
+//            assertStrings("[ONE, TWO, three]",
+//                    list
+//                    .mapToObjIf(
+//                            $S.length().thatLessThan(4), $S.toUpperCase(),
+//                            $S.toLowerCase())
+//                    );
+//        });
+//    }
+//    
+//    //== Map First ==
+//    
+//    @Test
+//    public void testMapFirst_2() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
+//            assertStrings("[ONE, TWO, three, four, five, SIX, seven, eight, nine, TEN, eleven, twelve]",
+//                    list
+//                    .mapFirst(
+//                            str -> str.length() == 3 ? str.toUpperCase() : null,
+//                            str -> str.toLowerCase())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapFirst_3() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
+//            assertStrings("[ONE, TWO, Three, four, five, SIX, Seven, Eight, nine, TEN, Eleven, Twelve]",
+//                    list
+//                    .mapFirst(
+//                            str -> str.length() == 3 ? str.toUpperCase() : null,
+//                            str -> str.length() == 4 ? str.toLowerCase() : null,
+//                            str -> str)
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapFirst_4() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
+//            assertStrings("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, Eleven, Twelve]",
+//                    list
+//                    .mapFirst(
+//                            str -> str.length() == 3 ? str.toUpperCase() : null,
+//                            str -> str.length() == 4 ? str.toLowerCase() : null,
+//                            str -> str.length() == 5 ? "(" + str + ")": null,
+//                            str -> str)
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapFirst_5() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
+//            assertStrings("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, [Eleven], Twelve]",
+//                    list
+//                    .mapFirst(
+//                            str -> str.length() == 3 ? str.toUpperCase() : null,
+//                            str -> str.length() == 4 ? str.toLowerCase() : null,
+//                            str -> str.length() == 5 ? "(" + str + ")": null,
+//                            str -> str.length() == 6 && !str.contains("w")? "[" + str + "]": null,
+//                            str -> str)
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapFirst_6() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
+//            assertStrings("[ONE, TWO, (Three), four, -- Five --, -- Six --, (Seven), -- Eight --, -- Nine --, TEN, [Eleven], Twelve]",
+//                    list
+//                    .mapFirst(
+//                            str -> str.contains("i") ? "-- " + str + " --" : null,
+//                            str -> str.length() == 3 ? str.toUpperCase() : null,
+//                            str -> str.length() == 4 ? str.toLowerCase() : null,
+//                            str -> str.length() == 5 ? "(" + str + ")": null,
+//                            str -> str.length() == 6 && !str.contains("w") ? "[" + str + "]": null,
+//                            str -> str)
+//                    );
+//        });
+//    }
+//    
+//    //== MapThen ==
+//    
+//    @Test
+//    public void testMapThen_2() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//        assertStrings(
+//                "[O-n, T-w, T-h, F-o, F-i]",
+//                list
+//                .mapThen(
+//                        $S.charAt(0),
+//                        $S.charAt(1),
+//                        (a, b) -> a + "-" + b)
+//                );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapThen_3() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
+//        assertStrings(
+//                "[O-n-e, T-w-o, T-h-r, F-o-u, F-i-v]",
+//                list
+//                .mapThen(
+//                        $S.charAt(0),
+//                        $S.charAt(1),
+//                        $S.charAt(2),
+//                        (a, b, c) -> a + "-" + b + "-" + c)
+//                );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapThen_4() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
+//            assertStrings(
+//                    "[T-h-r-e, F-o-u-r, F-i-v-e, S-e-v-e, E-i-g-h, N-i-n-e, E-l-e-v, T-w-e-l]",
+//                    list
+//                        .filter($S.length().thatGreaterThanOrEqualsTo(4))
+//                        .mapThen(
+//                            $S.charAt(0),
+//                            $S.charAt(1),
+//                            $S.charAt(2),
+//                            $S.charAt(3),
+//                            (a, b, c, d) -> a + "-" + b + "-" + c + "-" + d)
+//                        );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapThen_5() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
+//            assertStrings(
+//                    "[T-h-r-e-e, S-e-v-e-n, E-i-g-h-t, E-l-e-v-e, T-w-e-l-v]",
+//                    list
+//                        .filter($S.length().thatGreaterThanOrEqualsTo(5))
+//                        .mapThen(
+//                            $S.charAt(0),
+//                            $S.charAt(1),
+//                            $S.charAt(2),
+//                            $S.charAt(3),
+//                            $S.charAt(4),
+//                            (a, b, c, d, e) -> a + "-" + b + "-" + c + "-" + d + "-" + e)
+//                        );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapThen_6() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
+//            assertStrings(
+//                    "[E-l-e-v-e-n, T-w-e-l-v-e]",
+//                    list
+//                        .filter($S.length().thatGreaterThanOrEqualsTo(6))
+//                        .mapThen(
+//                            $S.charAt(0),
+//                            $S.charAt(1),
+//                            $S.charAt(2),
+//                            $S.charAt(3),
+//                            $S.charAt(4),
+//                            $S.charAt(5),
+//                            (a, b, c, d, e, f) -> a + "-" + b + "-" + c + "-" + d + "-" + e + "-" + f)
+//                        );
+//        });
+//    }
+//    
+//    //-- FuncListWithMapGroup --
+//    
+//    @Test
+//    public void testMapTwoToSix() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
+//            assertStrings(
+//                    "[(One,Two), (Two,Three), (Three,Four), (Four,Five), (Five,Six), (Six,Seven), (Seven,Eight)]",
+//                    list.mapTwo());
+//            assertStrings(
+//                    "[(One,Two,Three), (Two,Three,Four), (Three,Four,Five), (Four,Five,Six), (Five,Six,Seven), (Six,Seven,Eight)]",
+//                    list.mapThree());
+//            assertStrings(
+//                    "[(One,Two,Three,Four), (Two,Three,Four,Five), (Three,Four,Five,Six), (Four,Five,Six,Seven), (Five,Six,Seven,Eight)]",
+//                    list.mapFour());
+//            assertStrings(
+//                    "[(One,Two,Three,Four,Five), (Two,Three,Four,Five,Six), (Three,Four,Five,Six,Seven), (Four,Five,Six,Seven,Eight)]",
+//                    list.mapFive());
+//            assertStrings(
+//                    "[(One,Two,Three,Four,Five,Six), (Two,Three,Four,Five,Six,Seven), (Three,Four,Five,Six,Seven,Eight)]",
+//                    list.mapSix());
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapGroup_specific() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
+//            assertStrings(
+//                    "[One:Two, Two:Three, Three:Four, Four:Five, Five:Six, Six:Seven, Seven:Eight]",
+//                    list.mapGroup((a,b) -> a+":"+b));
+//            assertStrings(
+//                    "[One:Two:Three, Two:Three:Four, Three:Four:Five, Four:Five:Six, Five:Six:Seven, Six:Seven:Eight]",
+//                    list.mapGroup((a,b,c) -> a+":"+b+":"+c));
+//            assertStrings(
+//                    "[One:Two:Three:Four, Two:Three:Four:Five, Three:Four:Five:Six, Four:Five:Six:Seven, Five:Six:Seven:Eight]",
+//                    list.mapGroup((a,b,c,d) -> a+":"+b+":"+c+":"+d));
+//            assertStrings(
+//                    "[One:Two:Three:Four:Five, Two:Three:Four:Five:Six, Three:Four:Five:Six:Seven, Four:Five:Six:Seven:Eight]",
+//                    list.mapGroup((a,b,c,d,e) -> a+":"+b+":"+c+":"+d+":"+e));
+//            assertStrings(
+//                    "[One:Two:Three:Four:Five:Six, Two:Three:Four:Five:Six:Seven, Three:Four:Five:Six:Seven:Eight]",
+//                    list.mapGroup((a,b,c,d,e,f) -> a+":"+b+":"+c+":"+d+":"+e+":"+f));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapGroup_count() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
+//            Func1<StreamPlus<? extends String>, String> joiner = stream -> stream.join(":");
+//            assertStrings(
+//                    "[One:Two, Two:Three, Three:Four, Four:Five, Five:Six, Six:Seven, Seven:Eight]",
+//                    list.mapGroup(2, joiner));
+//            assertStrings(
+//                    "[One:Two:Three, Two:Three:Four, Three:Four:Five, Four:Five:Six, Five:Six:Seven, Six:Seven:Eight]",
+//                    list.mapGroup(3, joiner));
+//            assertStrings(
+//                    "[One:Two:Three:Four, Two:Three:Four:Five, Three:Four:Five:Six, Four:Five:Six:Seven, Five:Six:Seven:Eight]",
+//                    list.mapGroup(4, joiner));
+//            assertStrings(
+//                    "[One:Two:Three:Four:Five, Two:Three:Four:Five:Six, Three:Four:Five:Six:Seven, Four:Five:Six:Seven:Eight]",
+//                    list.mapGroup(5, joiner));
+//            assertStrings(
+//                    "[One:Two:Three:Four:Five:Six, Two:Three:Four:Five:Six:Seven, Three:Four:Five:Six:Seven:Eight]",
+//                    list.mapGroup(6, joiner));
+//            
+//            assertStrings(
+//                    "[One:Two, Two:Three, Three:Four, Four:Five, Five:Six, Six:Seven, Seven:Eight]",
+//                    list.mapGroup(2).map(joiner));
+//            assertStrings(
+//                    "[One:Two:Three, Two:Three:Four, Three:Four:Five, Four:Five:Six, Five:Six:Seven, Six:Seven:Eight]",
+//                    list.mapGroup(3).map(joiner));
+//            assertStrings(
+//                    "[One:Two:Three:Four, Two:Three:Four:Five, Three:Four:Five:Six, Four:Five:Six:Seven, Five:Six:Seven:Eight]",
+//                    list.mapGroup(4).map(joiner));
+//            assertStrings(
+//                    "[One:Two:Three:Four:Five, Two:Three:Four:Five:Six, Three:Four:Five:Six:Seven, Four:Five:Six:Seven:Eight]",
+//                    list.mapGroup(5).map(joiner));
+//            assertStrings(
+//                    "[One:Two:Three:Four:Five:Six, Two:Three:Four:Five:Six:Seven, Three:Four:Five:Six:Seven:Eight]",
+//                    list.mapGroup(6).map(joiner));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapGroupToInt() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
+//            assertStrings(
+//                    "[6, 8, 9, 8, 7, 8, 10]",
+//                    list.mapTwoToInt((a, b) -> a.length() + b.length()));
+//            assertStrings(
+//                    "[6, 8, 9, 8, 7, 8, 10]",
+//                    list.mapGroupToInt(2, stream -> stream.mapToInt(theString.length()).sum()));
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapGroupToDouble() {
+//        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
+//            assertStrings(
+//                    "[9.0, 15.0, 20.0, 16.0, 12.0, 15.0, 25.0]",
+//                    list.mapTwoToDouble((a, b) -> a.length() * b.length()));
+//            assertStrings(
+//                    "[9.0, 15.0, 20.0, 16.0, 12.0, 15.0, 25.0]",
+//                    list.mapGroupToDouble(2, stream -> stream.mapToDouble(theString.length().toDouble()).product().getAsDouble()));
+//        });
+//    }
+//    
+//    //-- FuncListWithMapToMap --
+//    
+//    @Test
+//    public void testMapToMap_1() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
+//            assertStrings(
+//                    "[{<1>:O}, "
+//                    + "{<1>:T}, "
+//                    + "{<1>:F}, "
+//                    + "{<1>:S}, "
+//                    + "{<1>:E}, "
+//                    + "{<1>:T}, "
+//                    + "{<1>:S}]",
+//                    list
+//                        .filter($S.length().thatGreaterThanOrEqualsTo(1))
+//                        .mapToMap(
+//                                "<1>", $S.charAt(0))
+//                        .map(map -> map.sorted())
+//                        );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_2() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
+//            assertStrings(
+//                    "[{<1>:O, <2>:n}, "
+//                    + "{<1>:T, <2>:h}, "
+//                    + "{<1>:F, <2>:i}, "
+//                    + "{<1>:S, <2>:e}, "
+//                    + "{<1>:E, <2>:l}, "
+//                    + "{<1>:T, <2>:h}, "
+//                    + "{<1>:S, <2>:e}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(2))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_3() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
+//            assertStrings(
+//                    "[{<1>:O, <2>:n, <3>:e}, "
+//                    + "{<1>:T, <2>:h, <3>:r}, "
+//                    + "{<1>:F, <2>:i, <3>:v}, "
+//                    + "{<1>:S, <2>:e, <3>:v}, "
+//                    + "{<1>:E, <2>:l, <3>:e}, "
+//                    + "{<1>:T, <2>:h, <3>:i}, "
+//                    + "{<1>:S, <2>:e, <3>:v}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(3))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1),
+//                            "<3>", $S.charAt(2))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_4() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
+//            assertStrings(
+//                    "[{<1>:T, <2>:h, <3>:r, <4>:e}, "
+//                    + "{<1>:F, <2>:i, <3>:v, <4>:e}, "
+//                    + "{<1>:S, <2>:e, <3>:v, <4>:e}, "
+//                    + "{<1>:E, <2>:l, <3>:e, <4>:v}, "
+//                    + "{<1>:T, <2>:h, <3>:i, <4>:r}, "
+//                    + "{<1>:S, <2>:e, <3>:v, <4>:e}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(4))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1),
+//                            "<3>", $S.charAt(2),
+//                            "<4>", $S.charAt(3))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_5() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
+//            assertStrings(
+//                    "[{<1>:T, <2>:h, <3>:r, <4>:e, <5>:e}, "
+//                    + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n}, "
+//                    + "{<1>:E, <2>:l, <3>:e, <4>:v, <5>:e}, "
+//                    + "{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t}, "
+//                    + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(5))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1),
+//                            "<3>", $S.charAt(2),
+//                            "<4>", $S.charAt(3),
+//                            "<5>", $S.charAt(4))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_6() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
+//            assertStrings(
+//                    "[{<1>:E, <2>:l, <3>:e, <4>:v, <5>:e, <6>:n}, "
+//                    + "{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t, <6>:e}, "
+//                    + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(6))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1),
+//                            "<3>", $S.charAt(2),
+//                            "<4>", $S.charAt(3),
+//                            "<5>", $S.charAt(4),
+//                            "<6>", $S.charAt(5))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_7() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
+//            assertStrings(
+//                    "[{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t, <6>:e, <7>:e}, "
+//                    + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t, <7>:e}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(7))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1),
+//                            "<3>", $S.charAt(2),
+//                            "<4>", $S.charAt(3),
+//                            "<5>", $S.charAt(4),
+//                            "<6>", $S.charAt(5),
+//                            "<7>", $S.charAt(6))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_8() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
+//            assertStrings(
+//                    "[{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t, <6>:e, <7>:e, <8>:n}, "
+//                    + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t, <7>:e, <8>:e}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(8))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1),
+//                            "<3>", $S.charAt(2),
+//                            "<4>", $S.charAt(3),
+//                            "<5>", $S.charAt(4),
+//                            "<6>", $S.charAt(5),
+//                            "<7>", $S.charAt(6),
+//                            "<8>", $S.charAt(7))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_9() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
+//            assertStrings(
+//                    "[{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t, <7>:e, <8>:e, <9>:n}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(9))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1),
+//                            "<3>", $S.charAt(2),
+//                            "<4>", $S.charAt(3),
+//                            "<5>", $S.charAt(4),
+//                            "<6>", $S.charAt(5),
+//                            "<7>", $S.charAt(6),
+//                            "<8>", $S.charAt(7),
+//                            "<9>", $S.charAt(8))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_10() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen, Nineteen, TwentyThree), list -> {
+//            assertStrings(
+//                    "[{<10>:r, <1>:T, <2>:w, <3>:e, <4>:n, <5>:t, <6>:y, <7>:-, <8>:t, <9>:h}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(10))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1),
+//                            "<3>", $S.charAt(2),
+//                            "<4>", $S.charAt(3),
+//                            "<5>", $S.charAt(4),
+//                            "<6>", $S.charAt(5),
+//                            "<7>", $S.charAt(6),
+//                            "<8>", $S.charAt(7),
+//                            "<9>", $S.charAt(8),
+//                            "<10>", $S.charAt(9))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToMap_11() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen, Nineteen, TwentyThree), list -> {
+//            assertStrings(
+//                    "[{<10>:r, <11>:e, <1>:T, <2>:w, <3>:e, <4>:n, <5>:t, <6>:y, <7>:-, <8>:t, <9>:h}]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(11))
+//                    .mapToMap(
+//                            "<1>", $S.charAt(0),
+//                            "<2>", $S.charAt(1),
+//                            "<3>", $S.charAt(2),
+//                            "<4>", $S.charAt(3),
+//                            "<5>", $S.charAt(4),
+//                            "<6>", $S.charAt(5),
+//                            "<7>", $S.charAt(6),
+//                            "<8>", $S.charAt(7),
+//                            "<9>", $S.charAt(8),
+//                            "<10>", $S.charAt(9),
+//                            "<11>", $S.charAt(10))
+//                    .map(map -> map.sorted())
+//                    );
+//        });
+//    }
+//    
+//    //-- FuncListWithMapToTuple --
+//    
+//    @Test
+//    public void testMapToTuple_2() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//            assertStrings(
+//                    "[(O,n), (T,h), (F,i), (S,e), (E,l)]",
+//                    list
+//                        .filter($S.length().thatGreaterThanOrEqualsTo(2))
+//                        .mapToTuple($S.charAt(0), $S.charAt(1))
+//                        );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToTuple_3() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//            assertStrings(
+//                    "[(O,n,e), (T,h,r), (F,i,v), (S,e,v), (E,l,e)]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(3))
+//                    .mapToTuple($S.charAt(0), $S.charAt(1), $S.charAt(2))
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToTuple_4() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//            assertStrings(
+//                    "[(T,h,r,e), (F,i,v,e), (S,e,v,e), (E,l,e,v)]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(4))
+//                    .mapToTuple($S.charAt(0), $S.charAt(1), $S.charAt(2), $S.charAt(3))
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToTuple_5() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//            assertStrings(
+//                    "[(T,h,r,e,e), (S,e,v,e,n), (E,l,e,v,e)]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(5))
+//                    .mapToTuple($S.charAt(0), $S.charAt(1), $S.charAt(2), $S.charAt(3), $S.charAt(4))
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToTuple_6() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//            assertStrings(
+//                    "[(E,l,e,v,e,n)]",
+//                    list
+//                    .filter($S.length().thatGreaterThanOrEqualsTo(6))
+//                    .mapToTuple($S.charAt(0), $S.charAt(1), $S.charAt(2), $S.charAt(3), $S.charAt(4), $S.charAt(5))
+//                    );
+//        });
+//    }
+//    
+//    //-- StreamPlusWithMapWithIndex --
+//    
+//    @Test
+//    public void testMapWithIndex() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//            assertStrings(
+//                    "[(0,One), (1,Three), (2,Five), (3,Seven), (4,Eleven)]",
+//                    list
+//                    .mapWithIndex()
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapWithIndex_combine() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//            assertStrings(
+//                    "[0: One, 1: Three, 2: Five, 3: Seven, 4: Eleven]",
+//                    list
+//                    .mapWithIndex((i, each) -> i + ": " + each)
+//                    );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToObjWithIndex_combine() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//        assertStrings(
+//                "[0: One, 1: Three, 2: Five, 3: Seven, 4: Eleven]",
+//                list
+//                .mapToObjWithIndex((i, each) -> i + ": " + each)
+//                );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapWithIndex_map_combine() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//        assertStrings(
+//                "[0: 3, 1: 5, 2: 4, 3: 5, 4: 6]",
+//                list
+//                .mapWithIndex(each -> each.length(), (i, each) -> i + ": " + each)
+//                );
+//        });
+//    }
+//    
+//    @Test
+//    public void testMapToObjWithIndex_map_combine() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//        assertStrings(
+//                "[0: 3, 1: 5, 2: 4, 3: 5, 4: 6]",
+//                list
+//                .mapToObjWithIndex(each -> each.length(), (i, each) -> i + ": " + each)
+//                );
+//        });
+//    }
+//    
+//    //-- FuncListWithModify --
+//    
+//    @Test
+//    public void testAccumulate1() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5), list -> {
+//            assertStrings(
+//                    "1, 3, 6, 10, 15",
+//                    list
+//                        .accumulate((a, b)->a+b)
+//                        .join(", "));
+//        });
+//    }
+//    
+//    @Test
+//    public void testAccumulate2() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5), list -> {
+//            assertStrings(
+//                    "1, 12, 123, 1234, 12345",
+//                    list
+//                        .accumulate((prev, current)->prev*10 + current)
+//                        .join(", "));
+//        });
+//    }
+//    
+//    @Test
+//    public void testRestate1() {
+//        run(IntFuncList.wholeNumbers(20).map(i -> i % 5).toFuncList(), list -> {
+//            assertStrings(
+//                    "0, 1, 2, 3, 4",
+//                  list
+//                      .restate((a, s)->s.filter(x -> x != a))
+//                      .join   (", "));
+//        });
+//    }
+//    
+//    // sieve of eratosthenes
+//    @Test
+//    public void testRestate2() {
+//        run(IntFuncList.wholeNumbers(1000).skip(2).boxed().toFuncList(), list -> {
+//            assertStrings(
+//                    "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, "
+//                  + "31, 37, 41, 43, 47, 53, 59, 61, 67, 71, "
+//                  + "73, 79, 83, 89, 97, 101, 103, 107, 109, 113, "
+//                  + "127, 131, 137, 139, 149, 151, 157, 163, 167, 173, "
+//                  + "179, 181, 191, 193, 197, 199, 211, 223, 227, 229, "
+//                  + "233, 239, 241, 251, 257, 263, 269, 271, 277, 281",
+//                  list
+//                      .restate((a, s)->s.filter(x -> x % a != 0))
+//                      .limit(60)
+//                      .join (", "));
+//        });
+//    }
+//    
+//    @Test
+//    public void testSpawn() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val timePrecision = 100;
+//            val first  = new AtomicLong(-1);
+//            val logs   = new ArrayList<String>();
+//            list
+//            .spawn(str -> Sleep(str.length()*timePrecision + 5).thenReturn(str).defer())
+//            .forEach(element -> {
+//                first.compareAndSet(-1, System.currentTimeMillis());
+//                val start    = first.get();
+//                val end      = System.currentTimeMillis();
+//                val duration = Math.round((end - start)/(1.0 * timePrecision))*timePrecision;
+//                logs.add(element + " -- " + duration);
+//            });
+//            assertEquals("["
+//                    + "Result:{ Value: Two } -- 0, "
+//                    + "Result:{ Value: Four } -- " + (1*timePrecision) + ", "
+//                    + "Result:{ Value: Three } -- " + (2*timePrecision) + ", "
+//                    + "Result:{ Value: Eleven } -- " + (3*timePrecision) + ""
+//                    + "]",
+//                    logs.toString());
+//        });
+//    }
+//    
+//    @Test
+//    public void testSpawn_limit() {
+//        run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
+//            val first   = new AtomicLong(-1);
+//            val actions = new ArrayList<DeferAction<String>>();
+//            val logs    = new ArrayList<String>();
+//            list
+//            .spawn(str -> {
+//                DeferAction<String> action = Sleep(str.length()*50 + 5).thenReturn(str).defer();
+//                actions.add(action);
+//                return action;
+//            })
+//            .limit(1)
+//            .forEach(element -> {
+//                first.compareAndSet(-1, System.currentTimeMillis());
+//                val start    = first.get();
+//                val end      = System.currentTimeMillis();
+//                val duration = Math.round((end - start)/50.0)*50;
+//                logs.add(element + " -- " + duration);
+//            });
+//            assertEquals("[Result:{ Value: Two } -- 0]",
+//                    logs.toString());
+//            assertEquals(
+//                    "Result:{ Value: Two }, " +
+//                    "Result:{ Cancelled: Stream closed! }, " +
+//                    "Result:{ Cancelled: Stream closed! }, " +
+//                    "Result:{ Cancelled: Stream closed! }",
+//                    actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
+//        });
+//    }
+//    //-- FuncListWithPeek --
+//    
+//    @Test
+//    public void testPeekClass() {
+//        run(IntFuncList.of(0, One, 2, Three, 4, Five), list -> {
+//            val elementStrings = new ArrayList<String>();
+//            val elementIntegers = new ArrayList<Integer>();
+//            list
+//                .peek(String.class,  elementStrings::add)
+//                .peek(Integer.class, elementIntegers::add)
+//                .join() // To terminate the stream
+//                ;
+//            assertStrings("[One, Three, Five]", elementStrings);
+//            assertStrings("[0, 2, 4]", elementIntegers);
+//        });
+//    }
+//    
+//    @Test
+//    public void testPeekBy() {
+//        run(IntFuncList.of(0, One, 2, Three, 4, Five), list -> {
+//            val elementStrings = new ArrayList<String>();
+//            val elementIntegers = new ArrayList<Integer>();
+//            list
+//                .peekBy(String.class::isInstance,  e -> elementStrings.add((String)e))
+//                .peekBy(Integer.class::isInstance, e -> elementIntegers.add((Integer)e))
+//                .join() // To terminate the stream
+//                ;
+//            assertStrings("[One, Three, Five]", elementStrings);
+//            assertStrings("[0, 2, 4]", elementIntegers);
+//        });
+//    }
+//    
+//    @Test
+//    public void testPeekAs() {
+//        run(IntFuncList.of(0, One, 2, Three, 4, Five), list -> {
+//            val elementStrings = new ArrayList<String>();
+//            list
+//                .peekAs(e -> "<" + e + ">", e -> elementStrings.add((String)e))
+//                .join() // To terminate the stream
+//                ;
+//            assertStrings("[<0>, <One>, <2>, <Three>, <4>, <Five>]", elementStrings);
+//        });
+//    }
+//    
+//    @Test
+//    public void testPeekBy_map() {
+//        run(IntFuncList.of(0, One, 2, Three, 4, Five), list -> {
+//            val elementStrings = new ArrayList<String>();
+//            list
+//                .peekBy(e -> "<" + e + ">", s -> !s.contains("v"), e -> elementStrings.add("" + e))
+//                .join() // To terminate the stream
+//                ;
+//            assertStrings("[0, One, 2, Three, 4]", elementStrings);
+//        });
+//    }
+//    
+//    @Test
+//    public void testPeekAs_map() {
+//        run(IntFuncList.of(0, One, 2, Three, 4, Five), list -> {
+//            val elementStrings = new ArrayList<String>();
+//            list
+//                .peekAs(e -> "<" + e + ">", s -> !s.contains("v"), e -> elementStrings.add((String)e))
+//                .join() // To terminate the stream
+//                ;
+//            assertStrings("[<0>, <One>, <2>, <Three>, <4>]", elementStrings);
+//        });
+//    }
+//    
+//    //-- FuncListWithPipe --
+//    
+//    @Test
+//    public void testPipeable() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//            assertStrings(
+//                    "[One, Three, Five, Seven, Eleven]",
+//                    list
+//                        .pipable()
+//                        .pipeTo(FuncList::toListString));
+//        });
+//    }
+//    
+//    @Test
+//    public void testPipe() {
+//        run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
+//            assertStrings(
+//                    "[One, Three, Five, Seven, Eleven]",
+//                    list.pipe(FuncList::toListString));
+//        });
+//    }
+    
+    
+    //-- FuncListWithReshape --
+    
+    @Test
+    public void testSegmentSize() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            assertEquals(
+                    "[0, 1, 2, 3, 4, 5], "
+                    + "[6, 7, 8, 9, 10, 11], "
+                    + "[12, 13, 14, 15, 16, 17], "
+                    + "[18, 19]",
+                    list
+                    .segmentSize(6)
+                    .map        (IntStreamPlus::toListString)
+                    .join       (", ")
+            );
+        });
+    }
+    
+    @Test
+    public void testSegmentSize_excludeTail() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            assertEquals(
+                    "[0, 1, 2, 3, 4, 5], "
+                    + "[6, 7, 8, 9, 10, 11], "
+                    + "[12, 13, 14, 15, 16, 17]",
+                    list
+                    .segmentSize(6, false)
+                    .map        (IntStreamPlus::toListString)
+                    .join       (", ")
+            );
+        });
+    }
+    
+    @Test
+    public void testSegmentSize_includeIncomplete() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            assertEquals(
+                    "[0, 1, 2, 3, 4, 5], "
+                    + "[6, 7, 8, 9, 10, 11], "
+                    + "[12, 13, 14, 15, 16, 17], "
+                    + "[18, 19]",
+                    list
+                    .segmentSize(6, IncompletedSegment.included)
+                    .map        (IntStreamPlus::toListString)
+                    .join       (", ")
+                    );
+        });
+    }
+    
+    @Test
+    public void testSegmentSize_excludeIncomplete() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            assertEquals(
+                    "[0, 1, 2, 3, 4, 5], "
+                    + "[6, 7, 8, 9, 10, 11], "
+                    + "[12, 13, 14, 15, 16, 17]",
+                    list
+                    .segmentSize(6, IncompletedSegment.excluded)
+                    .map        (IntStreamPlus::toListString)
+                    .join       (", ")
+                );
+        });
+    }
+    
+    @Test
+    public void testSegmentSize_function() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            assertEquals(
+                    "[], " +
+                    "[1], " +
+                    "[2, 3], " +
+                    "[4, 5, 6, 7], " +
+                    "[8, 9, 10, 11, 12, 13, 14, 15], " +
+                    "[16, 17, 18, 19]",
+                    list
+                    .segmentSize(i -> i)
+                    .map        (IntStreamPlus::toListString)
+                    .join       (", ")
+                    );
+        });
+    }
+    
+    @Test
+    public void testSegmentStartCondition() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            assertEquals(
+                    "[0, 1, 2], "
+                    + "[3, 4, 5], "
+                    + "[6, 7, 8], "
+                    + "[9, 10, 11], "
+                    + "[12, 13, 14], "
+                    + "[15, 16, 17], "
+                    + "[18, 19]",
+                    list
+                    .segment(theInteger.thatIsDivisibleBy(3))
+                    .map    (IntStreamPlus::toListString)
+                    .join   (", ")
+            );
+        });
+    }
+    
+    @Test
+    public void testSegmentStartCondition_includeIncomplete() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            assertEquals(
+                    "[0, 1, 2], "
+                    + "[3, 4, 5], "
+                    + "[6, 7, 8], "
+                    + "[9, 10, 11], "
+                    + "[12, 13, 14], "
+                    + "[15, 16, 17], "
+                    + "[18, 19]",
+                    list
+                    .segment(theInteger.thatIsDivisibleBy(3), IncompletedSegment.included)
+                    .map    (IntStreamPlus::toListString)
+                    .join   (", ")
+                    );
+            
+            assertEquals(
+                    "[0, 1, 2], "
+                    + "[3, 4, 5], "
+                    + "[6, 7, 8], "
+                    + "[9, 10, 11], "
+                    + "[12, 13, 14], "
+                    + "[15, 16, 17], "
+                    + "[18, 19]",
+                    list
+                    .segment(theInteger.thatIsDivisibleBy(3), true)
+                    .map    (IntStreamPlus::toListString)
+                    .join   (", ")
+                    );
+        });
+    }
+    
+    @Test
+    public void testSegmentStartCondition_excludeIncomplete() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            assertEquals(
+                    "[0, 1, 2], "
+                    + "[3, 4, 5], "
+                    + "[6, 7, 8], "
+                    + "[9, 10, 11], "
+                    + "[12, 13, 14], "
+                    + "[15, 16, 17]",
+                    list
+                    .segment(theInteger.thatIsDivisibleBy(3), IncompletedSegment.excluded)
+                    .map    (IntStreamPlus::toListString)
+                    .join   (", ")
+                    );
+            
+            assertEquals(
+                    "[0, 1, 2], "
+                    + "[3, 4, 5], "
+                    + "[6, 7, 8], "
+                    + "[9, 10, 11], "
+                    + "[12, 13, 14], "
+                    + "[15, 16, 17]",
+                    list
+                    .segment(theInteger.thatIsDivisibleBy(3), false)
+                    .map    (IntStreamPlus::toListString)
+                    .join   (", ")
+                    );
+        });
+    }
+    
+    @Test
+    public void testSegmentCondition() {
+        IntPredicate startCondition = i ->(i % 10) == 3;
+        IntPredicate endCondition   = i ->(i % 10) == 6;
+        
+        run(IntFuncList.wholeNumbers(100), list -> {
+            assertStrings("[[53, 54, 55, 56], " +
+                          "[63, 64, 65, 66], " +
+                          "[73, 74, 75, 76]]",
+                      list
+                      .segment(startCondition, endCondition)
+                      .skip   (5)
+                      .limit  (3)
+                      .map    (IntStreamPlus::toListString)
+                      );
+            
+            assertStrings("[[53, 54, 55, 56], " +
+                          "[63, 64, 65, 66], " +
+                          "[73, 74, 75, 76]]",
+                      list
+                      .segment(startCondition, endCondition, true)
+                      .skip   (5)
+                      .limit  (3)
+                      .map    (IntStreamPlus::toListString)
+                      );
+            
+            assertStrings("[[53, 54, 55, 56], " +
+                          "[63, 64, 65, 66], " +
+                          "[73, 74, 75, 76]]",
+                      list
+                      .segment(startCondition, endCondition, false)
+                      .skip   (5)
+                      .limit  (3)
+                      .map    (IntStreamPlus::toListString)
+                      );
+            
+            assertStrings("[[53, 54, 55, 56], " +
+                          "[63, 64, 65, 66], " +
+                          "[73, 74, 75, 76]]",
+                          list
+                          .segment(startCondition, endCondition, IncompletedSegment.included)
+                          .skip   (5)
+                          .limit  (3)
+                          .map    (IntStreamPlus::toListString)
+                          );
+            
+            assertStrings("[[53, 54, 55, 56], " +
+                          "[63, 64, 65, 66], " +
+                          "[73, 74, 75, 76]]",
+                          list
+                          .segment(startCondition, endCondition, IncompletedSegment.excluded)
+                          .skip   (5)
+                          .limit  (3)
+                          .map    (IntStreamPlus::toListString));
+        });
+    }
+//    
+//    @Test
+//    public void testCollapse() {
+//        run(IntFuncList.of(1, 2, 3, 4, 5, 6), list -> {
+//            // Because 3 and 6 do match the condition to collapse ... so they are merged with the one before them.
+//            assertEquals(
+//                    "1, 5, 4, 11",
+//                    list.collapseWhen(
+//                            i -> (i % 3) == 0,
+//                            (a,b)->a+b
+//                        ).join(", "));
+//            
+//            assertEquals(
+//                    "1, 2, 7, 5, 6",
+//                    list.collapseWhen(
+//                            i -> (i % 3) == 1,
+//                            (a,b)->a+b
+//                        ).join(", "));
+//            
+//            assertEquals(
+//                    "1, 9, 11",
+//                    list.collapseWhen(
+//                            i -> (i % 3) <= 1,
+//                            (a,b)->a+b
+//                        ).join(", "));
+//        });
+//    }
+//    
+//    @Test
+//    public void testCollapseSize() {
+//        run(IntFuncList.wholeNumbers(20), list -> {
+//            assertEquals(
+//                    "1, 5, 22, 92, 70",
+//                    list.collapseSize(
+//                            i -> i,
+//                            (a,b)->a+b
+//                        ).join(", "));
+//                    
+//            assertEquals(
+//                    "1, 2-3, 4-5-6-7, 8-9-10-11-12-13-14-15, 16-17-18-19",
+//                    list.collapseSize(
+//                            i -> i,
+//                            i -> i*1000,
+//                            (a,b)-> a + b
+//                        ).join(", "));
+//            
+//            assertEquals(
+//                    "1, 2-3, 4-5-6-7, 8-9-10-11-12-13-14-15, 16-17-18-19",
+//                    list.collapseSizeToObj(
+//                            i -> i,
+//                            i -> "" + i*1000,
+//                            (a,b)-> a + "-" + b
+//                        ).join(", "));
+//        });
+//    }
+//    
+//    @Test
+//    public void testSegmentByPercentiles() {
+//        run(IntFuncList.wholeNumbers(50), list -> {
+//            assertStrings(
+//                    "[" +
+//                        "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], " +
+//                        "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], " +
+//                        "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]" +
+//                    "]", list.segmentByPercentiles(30,   80));
+//            assertStrings(
+//                    "[" +
+//                        "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], " +
+//                        "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], " +
+//                        "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]" +
+//                    "]", list.segmentByPercentiles(30.0, 80.0));
+//            assertStrings(
+//                    "[" +
+//                        "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], " +
+//                        "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], " +
+//                        "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]" +
+//                    "]", list.segmentByPercentiles(IntFuncList   .of(30,   80)));
+//            assertStrings(
+//                    "[" +
+//                        "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], " +
+//                        "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], " +
+//                        "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]" +
+//                    "]", list.segmentByPercentiles(DoubleFuncList.of(30.0, 80.0)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testSegmentByPercentiles_mapper() {
+//        run(IntFuncList.wholeNumbers(50), list -> {
+//            assertStrings(
+//                    "["
+//                    + "[49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35], "
+//                    + "[34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10], "
+//                    + "[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]"
+//                    + "]",
+//                    list.segmentByPercentiles(x -> 100 - x, 30, 80));
+//            assertStrings(
+//                    "["
+//                    + "[49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35], "
+//                    + "[34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10], "
+//                    + "[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]"
+//                    + "]",
+//                    list.segmentByPercentiles(x -> 100 - x, 30.0, 80.0));
+//            assertStrings(
+//                    "["
+//                    + "[49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35], "
+//                    + "[34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10], "
+//                    + "[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]"
+//                    + "]",
+//                    list.segmentByPercentiles(x -> 100 - x, IntFuncList   .of(30,   80)));
+//            assertStrings(
+//                    "["
+//                    + "[49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35], "
+//                    + "[34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10], "
+//                    + "[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]"
+//                    + "]",
+//                    list.segmentByPercentiles(x -> 100 - x, DoubleFuncList.of(30.0, 80.0)));
+//        });
+//    }
+//    
+//    @Test
+//    public void testSegmentByPercentiles_mapper_comparator() {
+//        run(IntFuncList.wholeNumbers(50), list -> {
+//            assertStrings(
+//                    "["
+//                    + "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
+//                    + "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], "
+//                    + "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]"
+//                    + "]",
+//                    list.segmentByPercentiles(x -> 100 - x, (a, b) -> b - a, 30, 80));
+//            assertStrings(
+//                    "["
+//                    + "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
+//                    + "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], "
+//                    + "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]"
+//                    + "]",
+//                    list.segmentByPercentiles(x -> 100 - x, (a, b) -> b - a, 30.0, 80.0));
+//            assertStrings(
+//                    "["
+//                    + "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
+//                    + "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], "
+//                    + "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]"
+//                    + "]",
+//                    list.segmentByPercentiles(x -> 100 - x, (a, b) -> b - a, IntFuncList   .of(30,   80)));
+//            assertStrings(
+//                    "["
+//                    + "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
+//                    + "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], "
+//                    + "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]"
+//                    + "]",
+//                    list.segmentByPercentiles(x -> 100 - x, (a, b) -> b - a, DoubleFuncList.of(30.0, 80.0)));
+//        });
+//    }
+    
+    //-- FuncListWithSort --
+    
+    @Test
+    public void testSortedBy() {
+        run(IntFuncList.of(One, Two, Three, Four), list -> {
+            assertStrings("[1, 2, 3, 4]", list.sortedBy(i -> i*2));
+            assertStrings("[4, 3, 2, 1]", list.sortedBy(i -> 5 - i));
+        });
+    }
+    
+    @Test
+    public void testSortedByComparator() {
+        run(IntFuncList.of(One, Two, Three, Four), list -> {
+            assertStrings(
+                    "[1, 2, 3, 4]",
+                    list.sortedBy(i -> 5 - i, (a,b)->b-a));
+        });
+    }
+    
+    //-- FuncListWithSplit --
+    
+    @Test
+    public void testSplit_1() {
+        Function<IntFuncList, IntFuncList> listPlusToList = s -> s.toImmutableList();
+        run(IntFuncList.of(One, Two, Three, Four, Five, Six), list -> {
+            assertStrings(
+                     "([1, 2],[3, 4, 5, 6])",
+                    list
+                    .split(i -> i < 3)
+                    .map(
+                        listPlusToList,
+                        listPlusToList));
+        });
+    }
+    
+    @Test
+    public void testSplit_2() {
+        Function<IntFuncList, IntFuncList> listPlusToList = s -> s.toImmutableList();
+        run(IntFuncList.of(One, Two, Three, Four, Five, Six), list -> {
+            assertStrings("([2],[4],[1, 3, 5, 6])",
+                     list
+                    .split(
+                        i -> Math.round(i*1.5) == 3,
+                        i -> Math.round(i*1.5) == 6)
+                    .map(
+                        listPlusToList,
+                        listPlusToList,
+                        listPlusToList));
+        });
+    }
+    
+    @Test
+    public void testSplitToTuple_N() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            assertStrings(
+                    "("
+                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
+                    + "[1, 3, 5, 7, 9, 11, 13, 15, 17, 19]"
+                    + ")",
+                     list
+                    .split(theInteger.thatIsDivisibleBy(2)));
+            assertStrings(
+                    "("
+                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
+                    + "[3, 9, 15],"
+                    + "[1, 5, 7, 11, 13, 17, 19]"
+                    + ")",
+                     list
+                    .split(theInteger.thatIsDivisibleBy(2), 
+                           theInteger.thatIsDivisibleBy(3)));
+            assertStrings(
+                    "("
+                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
+                    + "[3, 9, 15],"
+                    + "[5],"
+                    + "[1, 7, 11, 13, 17, 19]"
+                    + ")",
+                     list
+                    .split(theInteger.thatIsDivisibleBy(2),
+                           theInteger.thatIsDivisibleBy(3),
+                           theInteger.thatIsDivisibleBy(5)));
+            assertStrings(
+                    "("
+                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
+                    + "[3, 9, 15],"
+                    + "[5],"
+                    + "[7],"
+                    + "[1, 11, 13, 17, 19]"
+                    + ")",
+                     list
+                    .split(theInteger.thatIsDivisibleBy(2),
+                           theInteger.thatIsDivisibleBy(3),
+                           theInteger.thatIsDivisibleBy(5),
+                           theInteger.thatIsDivisibleBy(7)));
+            assertStrings(
+                    "("
+                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
+                    + "[3, 9, 15],"
+                    + "[5],"
+                    + "[7],"
+                    + "[11],"
+                    + "[1, 13, 17, 19]"
+                    + ")",
+                     list
+                    .split(theInteger.thatIsDivisibleBy(2),
+                           theInteger.thatIsDivisibleBy(3),
+                           theInteger.thatIsDivisibleBy(5),
+                           theInteger.thatIsDivisibleBy(7),
+                           theInteger.thatIsDivisibleBy(11)));
+        });
+    }
+    
+    @Test
+    public void testSplitToMap_N() {
+        run(IntFuncList.wholeNumbers(20), list -> {
+            int Other = 1;
+            assertStrings(
+                    "{"
+                    + "1:[1, 3, 5, 7, 9, 11, 13, 15, 17, 19], "
+                    + "2:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
+                    + "}",
+                     list
+                    .split(Two,  theInteger.thatIsDivisibleBy(2),
+                           Other)
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{"
+                    + "1:[1, 5, 7, 11, 13, 17, 19], "
+                    + "2:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18], "
+                    + "3:[3, 9, 15]"
+                    + "}",
+                     list
+                    .split(Two,   theInteger.thatIsDivisibleBy(2),
+                           Three, theInteger.thatIsDivisibleBy(3),
+                           Other)
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{"
+                    + "1:[1, 7, 11, 13, 17, 19], "
+                    + "2:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18], "
+                    + "3:[3, 9, 15], "
+                    + "5:[5]"
+                    + "}",
+                     list
+                    .split(Two,   theInteger.thatIsDivisibleBy(2),
+                           Three, theInteger.thatIsDivisibleBy(3),
+                           Five,  theInteger.thatIsDivisibleBy(5),
+                           Other)
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{"
+                    + "1:[1, 11, 13, 17, 19], "
+                    + "2:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18], "
+                    + "3:[3, 9, 15], "
+                    + "5:[5], "
+                    + "7:[7]"
+                    + "}",
+                     list
+                    .split(Two,    theInteger.thatIsDivisibleBy(2),
+                           Three,  theInteger.thatIsDivisibleBy(3),
+                           Five,   theInteger.thatIsDivisibleBy(5),
+                           Seven,  theInteger.thatIsDivisibleBy(7),
+                           Other)
+                    .toString());
+            assertStrings(
+                    "{"
+                    + "1:[1, 13, 17, 19], "
+                    + "2:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18], "
+                    + "3:[3, 9, 15], "
+                    + "5:[5], "
+                    + "7:[7], "
+                    + "11:[11]"
+                    + "}",
+                     list
+                    .split(Two,    theInteger.thatIsDivisibleBy(2),
+                           Three,  theInteger.thatIsDivisibleBy(3),
+                           Five,   theInteger.thatIsDivisibleBy(5),
+                           Seven,  theInteger.thatIsDivisibleBy(7),
+                           Eleven, theInteger.thatIsDivisibleBy(11),
+                           Other)
+                    .sorted()
+                    .toString());
+        });
+    }
+    
+    @Test
+    public void testFizzBuzz() {
+        Function<IntFuncList, IntFuncList> listToList = s -> s.toImmutableList();
+        run(IntFuncList.wholeNumbers(20), list -> {
+            String toString = With(FuncMap.underlineMap.butWith(FuncMap.UnderlineMap.LinkedHashMap))
+            .run(() -> {
+                FuncMap<String, IntFuncList> splited
+                        = list
+                        .split(
+                            "FizzBuzz", i -> i % (3*5) == 0,
+                            "Buzz",     i -> i % 5     == 0,
+                            "Fizz",     i -> i % 3     == 0,
+                            null);
+                val string
+                        = splited
+                        .mapValue(listToList)
+                        .toString();
+                return string;
+            });
+            assertEquals("{"
+                    + "FizzBuzz:[0, 15], "
+                    + "Buzz:[5, 10], "
+                    + "Fizz:[3, 6, 9, 12, 18], "
+                    + "null:[]}",
+                    toString);
+        });
+    }
+    
 }

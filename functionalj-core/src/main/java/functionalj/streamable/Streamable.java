@@ -260,6 +260,11 @@ public interface Streamable<DATA>
         return cycle((TARGET)null);
     }
     
+    /** Create a Streamable that contains infinite number of null. */
+    public static <TARGET> Streamable<TARGET> nulls(Class<TARGET> dataClass) {
+        return cycle((TARGET)null);
+    }
+    
     /** Create a Streamable that is the repeat of the given array of data. */
     @SuppressWarnings("unchecked")
     public static <TARGET> Streamable<TARGET> repeat(TARGET ... data) {
