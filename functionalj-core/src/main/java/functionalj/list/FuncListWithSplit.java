@@ -26,6 +26,8 @@ package functionalj.list;
 import java.util.function.Predicate;
 
 import functionalj.map.FuncMap;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
 import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -55,6 +57,7 @@ public interface FuncListWithSplit<DATA>
      * 
      * The elements in this stream is guaranteed to be in one of the result stream.
      */
+    @Terminal
     public default Tuple2<FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate) {
         val temp 
@@ -80,6 +83,7 @@ public interface FuncListWithSplit<DATA>
      * 
      * The elements in this stream is guaranteed to be in one of the sub streams.
      */
+    @Terminal
     public default Tuple3<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2) {
@@ -111,6 +115,7 @@ public interface FuncListWithSplit<DATA>
      * 
      * The elements in this stream is guaranteed to be in one of the sub streams.
      */
+    @Eager
     public default Tuple4<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2,
@@ -147,6 +152,7 @@ public interface FuncListWithSplit<DATA>
      * 
      * The elements in this stream is guaranteed to be in one of the sub streams.
      */
+    @Terminal
     public default Tuple5<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2,
@@ -188,6 +194,7 @@ public interface FuncListWithSplit<DATA>
      * 
      * The elements in this stream is guaranteed to be in one of the sub streams.
      */
+    @Terminal
     public default Tuple6<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2,
@@ -226,6 +233,7 @@ public interface FuncListWithSplit<DATA>
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
+    @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate,
             KEY key2) {
@@ -248,6 +256,7 @@ public interface FuncListWithSplit<DATA>
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
+    @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
@@ -275,6 +284,22 @@ public interface FuncListWithSplit<DATA>
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
+    @Terminal
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2) {
+        return split(
+                key1, predicate1, 
+                key2, predicate2, 
+                null);
+    }
+    
+    /**
+     * Split the stream using the predicate and return as part of a map.
+     * 
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     */
+    @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
@@ -306,6 +331,24 @@ public interface FuncListWithSplit<DATA>
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
+    @Terminal
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3, Predicate<? super DATA> predicate3) {
+        return split(
+                key1, predicate1, 
+                key2, predicate2, 
+                key3, predicate3, 
+                null);
+    }
+    
+    /**
+     * Split the stream using the predicate and return as part of a map.
+     * 
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     */
+    @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
@@ -341,6 +384,26 @@ public interface FuncListWithSplit<DATA>
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
+    @Terminal
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3, Predicate<? super DATA> predicate3,
+            KEY key4, Predicate<? super DATA> predicate4) {
+        return split(
+                key1, predicate1, 
+                key2, predicate2, 
+                key3, predicate3, 
+                key4, predicate4, 
+                null);
+    }
+    
+    /**
+     * Split the stream using the predicate and return as part of a map.
+     * 
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     */
+    @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
@@ -373,5 +436,26 @@ public interface FuncListWithSplit<DATA>
                 key4, list4, 
                 key5, list5,
                 key6, list6);
+    }
+    
+    /**
+     * Split the stream using the predicate and return as part of a map.
+     * 
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     */
+    @Terminal
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3, Predicate<? super DATA> predicate3,
+            KEY key4, Predicate<? super DATA> predicate4,
+            KEY key5, Predicate<? super DATA> predicate5) {
+        return split(
+                key1, predicate1, 
+                key2, predicate2, 
+                key3, predicate3, 
+                key4, predicate4, 
+                key5, predicate5,
+                null);
     }
 }

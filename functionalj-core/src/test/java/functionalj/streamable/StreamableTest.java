@@ -54,12 +54,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func0;
@@ -74,8 +74,6 @@ import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.CollectorPlus;
-import functionalj.stream.IncompletedSegment;
-import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusUtils;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
@@ -2068,271 +2066,20 @@ public class StreamableTest {
         });
     }
     
+    @Ignore("Tested wiht FuncListTest")
     @Test
     public void testSegmentSize() {
         run(IntStreamable.infiniteInt().boxed().limit(20), streamable -> {
-            assertEquals(
-                    "[0, 1, 2, 3, 4, 5], "
+            assertStrings(
+                    "["
+                    + "[0, 1, 2, 3, 4, 5], "
                     + "[6, 7, 8, 9, 10, 11], "
                     + "[12, 13, 14, 15, 16, 17], "
-                    + "[18, 19]",
+                    + "[18, 19]"
+                    + "]",
                     streamable
-                    .segmentSize(6)
-                    .map        (s -> s.toList())
-                    .join       (", ")
+                    .segment(6)
             );
-        });
-    }
-    
-    @Test
-    public void testSegmentSize_excludeTail() {
-        run(IntStreamable.infiniteInt().boxed().limit(20), streamable -> {
-            assertEquals(
-                    "[0, 1, 2, 3, 4, 5], "
-                    + "[6, 7, 8, 9, 10, 11], "
-                    + "[12, 13, 14, 15, 16, 17]",
-                    streamable
-                    .segmentSize(6, false)
-                    .map        (s -> s.toList())
-                    .join       (", ")
-            );
-        });
-    }
-    
-    @Test
-    public void testSegmentSize_includeIncomplete() {
-        run(IntStreamable.infiniteInt().boxed().limit(20), streamable -> {
-            assertEquals(
-                    "[0, 1, 2, 3, 4, 5], "
-                    + "[6, 7, 8, 9, 10, 11], "
-                    + "[12, 13, 14, 15, 16, 17], "
-                    + "[18, 19]",
-                    streamable
-                    .segmentSize(6, IncompletedSegment.included)
-                    .map        (s -> s.toList())
-                    .join       (", ")
-                    );
-        });
-    }
-    
-    @Test
-    public void testSegmentSize_excludeIncomplete() {
-        run(IntStreamable.infiniteInt().boxed().limit(20), streamable -> {
-            assertEquals(
-                    "[0, 1, 2, 3, 4, 5], "
-                    + "[6, 7, 8, 9, 10, 11], "
-                    + "[12, 13, 14, 15, 16, 17]",
-                    streamable
-                    .segmentSize(6, IncompletedSegment.excluded)
-                    .map        (s -> s.toList())
-                    .join       (", ")
-                );
-        });
-    }
-    
-    @Test
-    public void testSegmentSize_function() {
-        run(IntStreamable.infiniteInt().boxed().limit(20), streamable -> {
-            assertEquals(
-                    "[], " +
-                    "[1], " +
-                    "[2, 3], " +
-                    "[4, 5, 6, 7], " +
-                    "[8, 9, 10, 11, 12, 13, 14, 15], " +
-                    "[16, 17, 18, 19]",
-                    streamable
-                    .segmentSize(i -> i)
-                    .map        (s -> s.toList())
-                    .join       (", ")
-                    );
-        });
-    }
-    
-    @Test
-    public void testSegmentStartCondition() {
-        run(IntStreamable.infiniteInt().boxed().limit(20), streamable -> {
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17], "
-                    + "[18, 19]",
-                    streamable
-                    .segment    (theInteger.thatIsDivisibleBy(3))
-                    .map        (s -> s.toList())
-                    .join       (", ")
-            );
-        });
-    }
-    
-    @Test
-    public void testSegmentStartCondition_includeIncomplete() {
-        run(IntStreamable.infiniteInt().boxed().limit(20), streamable -> {
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17], "
-                    + "[18, 19]",
-                    streamable
-                    .segment    (theInteger.thatIsDivisibleBy(3), IncompletedSegment.included)
-                    .map        (s -> s.toList())
-                    .join       (", ")
-                    );
-            
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17], "
-                    + "[18, 19]",
-                    streamable
-                    .segment    (theInteger.thatIsDivisibleBy(3), true)
-                    .map        (s -> s.toList())
-                    .join       (", ")
-                    );
-        });
-    }
-    
-    @Test
-    public void testSegmentStartCondition_excludeIncomplete() {
-        run(IntStreamable.infiniteInt().boxed().limit(20), streamable -> {
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17]",
-                    streamable
-                    .segment    (theInteger.thatIsDivisibleBy(3), IncompletedSegment.excluded)
-                    .map        (s -> s.toList())
-                    .join       (", ")
-                    );
-            
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17]",
-                    streamable
-                    .segment    (theInteger.thatIsDivisibleBy(3), false)
-                    .map        (s -> s.toList())
-                    .join       (", ")
-                    );
-        });
-    }
-    
-    @Test
-    public void testSegmentCondition() {
-        Predicate<Integer> startCondition = i ->(i % 10) == 3;
-        Predicate<Integer> endCondition   = i ->(i % 10) == 6;
-        
-        run(IntStreamable.infiniteInt().boxed(), streamable -> {
-            assertEquals("[[53, 54, 55, 56], " +
-                          "[63, 64, 65, 66], " +
-                          "[73, 74, 75, 76]]",
-                      streamable
-                      .segment(startCondition, endCondition)
-                      .skip   (5)
-                      .limit  (3)
-                      .map    (StreamPlus::toListString)
-                      .toListString());
-            
-            assertEquals("[[53, 54, 55, 56], " +
-                          "[63, 64, 65, 66], " +
-                          "[73, 74, 75, 76]]",
-                      streamable
-                      .segment(startCondition, endCondition, true)
-                      .skip   (5)
-                      .limit  (3)
-                      .map    (StreamPlus::toListString)
-                      .toListString());
-            
-            assertEquals("[[53, 54, 55, 56], " +
-                          "[63, 64, 65, 66], " +
-                          "[73, 74, 75, 76]]",
-                      streamable
-                      .segment(startCondition, endCondition, false)
-                      .skip   (5)
-                      .limit  (3)
-                      .map    (StreamPlus::toListString)
-                      .toListString());
-            
-            assertEquals("[[53, 54, 55, 56], " +
-                          "[63, 64, 65, 66], " +
-                          "[73, 74, 75, 76]]",
-                          streamable
-                          .segment(startCondition, endCondition, IncompletedSegment.included)
-                          .skip   (5)
-                          .limit  (3)
-                          .map    (StreamPlus::toListString)
-                          .toListString());
-            
-            assertEquals("[[53, 54, 55, 56], " +
-                          "[63, 64, 65, 66], " +
-                          "[73, 74, 75, 76]]",
-                          streamable
-                          .segment(startCondition, endCondition, IncompletedSegment.excluded)
-                          .skip   (5)
-                          .limit  (3)
-                          .map    (StreamPlus::toListString)
-                          .toListString());
-        });
-    }
-    
-    @Test
-    public void testCollapse() {
-        run(Streamable.of(1, 2, 3, 4, 5, 6), streamable -> {
-            // Because 3 and 6 do match the condition to collapse ... so they are merged with the one before them.
-            assertEquals(
-                    "1, 5, 4, 11",
-                    streamable.collapseWhen(
-                            i -> (i % 3) == 0,
-                            (a,b)->a+b
-                        ).join(", "));
-            
-            assertEquals(
-                    "1, 2, 7, 5, 6",
-                    streamable.collapseWhen(
-                            i -> (i % 3) == 1,
-                            (a,b)->a+b
-                        ).join(", "));
-            
-            assertEquals(
-                    "1, 9, 11",
-                    streamable.collapseWhen(
-                            i -> (i % 3) <= 1,
-                            (a,b)->a+b
-                        ).join(", "));
-        });
-    }
-    
-    @Test
-    public void testCollapseSize() {
-        run(IntStreamable.infiniteInt().limit(20).boxed(), streamable -> {
-            assertEquals(
-                    "1, 5, 22, 92, 70",
-                    streamable.collapseSize(
-                            i -> i,
-                            (a,b)->a+b
-                        ).join(", "));
-                    
-                    assertEquals(
-                            "1, 2-3, 4-5-6-7, 8-9-10-11-12-13-14-15, 16-17-18-19",
-                            streamable.collapseSize(
-                                    i -> i,
-                                    i -> "" + i,
-                                    (a,b)->a + "-" + b
-                                ).join(", "));
         });
     }
     
@@ -2477,6 +2224,7 @@ public class StreamableTest {
         });
     }
     
+    @Ignore("Tested wiht FuncListTest")
     @Test
     public void testFizzBuzz() {
         Function<Streamable<Integer>, FuncList<Integer>> streamableToList = s -> s.toImmutableList();

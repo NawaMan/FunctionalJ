@@ -29,142 +29,107 @@ import static functionalj.streamable.Streamable.deriveToObj;
 import java.util.Comparator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
-import functionalj.function.Func1;
-import functionalj.function.Func2;
 import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.IncompletedSegment;
-import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.markers.Sequential;
 import lombok.val;
 
 
-public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
+public interface StreamableWithSegment<DATA> extends AsStreamable<DATA> {
     
     /**
      * Segment the stream into sub stream with the fix length of count.
-     * The last portion may be shorter.
+     * 
+     * Note:
+     * <ul>
+     * <li>The last portion may be shorter.</li>
+     * <li>If the count is less than or equal to 0, an empty stream is return.</li>
+     * </ul>
+     * 
+     * @param count  the element count of the sub stream.
      **/
-    public default Streamable<StreamPlus<DATA>> segmentSize(int count) {
-        return deriveToObj(this, stream -> stream.segmentSize(count));
+    @Sequential
+    public default Streamable<FuncList<DATA>> segment(int count) {
+        return deriveToObj(this, stream -> stream.segment(count));
     }
-    
-    /**
-     * Segment the stream into sub stream with the fix length of count.
-     * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
-     *
-     * @param count        the element count of the sub stream.
-     * @param includeTail  the flag indicating if the last sub stream that does not have count element is to be included
-     *                       as opposed to thrown away.
-     * @return             the stream of sub stream.
-     */
-    public default Streamable<StreamPlus<DATA>> segmentSize(
-            int     count,
-            boolean includeTail) {
-        return deriveToObj(this, stream -> stream.segmentSize(count, includeTail));
-    }
-    
-    /**
-     * Segment the stream into sub stream with the fix length of count.
-     * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
-     *
-     * @param count        the element count of the sub stream.
-     * @param includeTail  the option indicating if the last sub stream that does not have count element is to be included
-     *                       as opposed to thrown away.
-     * @return             the stream of sub stream.
-     */
-    public default Streamable<StreamPlus<DATA>> segmentSize(int count, IncompletedSegment incompletedSegment) {
-        return segmentSize(count, (incompletedSegment == IncompletedSegment.included));
-    }
-    
-    /**
-     * Segment the stream into sub stream whenever the start condition is true.
-     * The tail sub stream will always be included.
-     */
-    public default Streamable<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
-        return deriveFrom(this, stream -> stream.segment(startCondition));
-    }
-    
-    /** Segment the stream into sub stream whenever the start condition is true. */
-    public default Streamable<StreamPlus<DATA>> segment(
-            Predicate<DATA> startCondition,
-            boolean         includeIncompletedSegment) {
-        return deriveFrom(this, stream -> stream.segment(startCondition, includeIncompletedSegment));
-    }
-    
-    /** Segment the stream into sub stream whenever the start condition is true. */
-    public default Streamable<StreamPlus<DATA>> segment(Predicate<? super DATA> startCondition, IncompletedSegment incompletedSegment) {
-        return deriveFrom(this, stream -> stream.segment(startCondition, incompletedSegment));
-    }
-    
-    /**
-     * Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true.
-     * The tail sub stream will always be included.
-     */
-    public default Streamable<StreamPlus<DATA>> segment(
-            Predicate<DATA> startCondition,
-            Predicate<DATA> endCondition) {
-        return deriveToObj(this, stream -> stream.segment(startCondition, endCondition));
-    }
-    
-    /** Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true. */
-    public default Streamable<StreamPlus<DATA>> segment(
-            Predicate<DATA> startCondition,
-            Predicate<DATA> endCondition,
-            boolean         includeIncompletedSegment) {
-        return deriveToObj(this, stream -> stream.segment(startCondition, endCondition, includeIncompletedSegment));
-    }
-    
-    /** Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true. */
-    public default Streamable<StreamPlus<DATA>> segment(
-            Predicate<DATA> startCondition,
-            Predicate<DATA> endCondition,
-            IncompletedSegment incompletedSegment) {
-        return deriveToObj(this, stream -> stream.segment(startCondition, endCondition, incompletedSegment));
-    }
-    
     /**
      * Create a stream of sub-stream which size is derived from the value.
      *
-     * If the segmentSize function return null, the value will be ignored.
-     * If the segmentSize function return 0, an empty stream is returned.
+     * If the segmentSize function return 0,
+     *   the value will be ignored.
      */
-    public default Streamable<StreamPlus<DATA>> segmentSize(Func1<DATA, Integer> segmentSize) {
-        return deriveToObj(this, stream -> stream.segmentSize(segmentSize));
+    public default Streamable<FuncList<DATA>> segment(ToIntFunction<DATA> segmentSize) {
+        return deriveToObj(this, stream -> stream.segment(segmentSize));
     }
     
-    /** Combine the current value with the one before it using then combinator everytime the condition to collapse is true. */
-    public default Streamable<DATA> collapseWhen(
-            Predicate<DATA>         conditionToCollapse,
-            Func2<DATA, DATA, DATA> concatFunc) {
-        return deriveFrom(this, stream -> stream.collapseWhen(conditionToCollapse, concatFunc));
+    /** Segment the stream into sub stream whenever the start condition is true. */
+    @Sequential
+    public default Streamable<FuncList<DATA>> segmentWhen(Predicate<DATA> startCondition) {
+        return deriveFrom(this, stream -> stream.segmentWhen(startCondition));
     }
     
-    /**
-     * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
-     *
-     * If the segmentSize function return null or 0, the value will be used as is (no collapse).
-     */
-    public default Streamable<DATA> collapseSize(
-            Func1<DATA, Integer>    segmentSize,
-            Func2<DATA, DATA, DATA> combinator) {
-        return deriveFrom(this, stream -> stream.collapseSize(segmentSize, combinator));
+    /** Segment the stream into sub stream starting the element after the precondition is true. */
+    @Sequential
+    public default Streamable<FuncList<DATA>> segmentAfter(Predicate<? super DATA> endCondition) {
+        return deriveFrom(this, stream -> stream.segmentAfter(endCondition));
     }
     
     /**
-     * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
-     * The value is mapped using the mapper function before combined.
-     *
-     * If the segmentSize function return null or 0, the value will be used as is (no collapse).
+     * Segment the stream into sub stream 
+     *   starting when the start condition is true 
+     *   and ending when the end condition is true
+     *   -- both inclusively.
+     * 
+     * Note: this method will include the last sub stream 
+     *   even if the end condition is never been true before the stream ended.
+     * 
+     * @param startCondition  the condition to start the sub stream
+     * @param endCondition    the condition to end the sub stream
      */
-    public default <TARGET> Streamable<TARGET> collapseSize(
-            Func1<DATA, Integer>          segmentSize,
-            Func1<DATA, TARGET>           mapper,
-            Func2<TARGET, TARGET, TARGET> combinator) {
-        return deriveToObj(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
+    public default Streamable<FuncList<DATA>> segmentBetween(
+            Predicate<DATA> startCondition,
+            Predicate<DATA> endCondition) {
+        return deriveToObj(this, stream -> stream.segmentBetween(startCondition, endCondition));
+    }
+    
+    /**
+     * Segment the stream into sub stream 
+     *   starting when the start condition is true 
+     *   and ending when the end condition is true
+     *   -- both inclusively.
+     * 
+     * @param startCondition             the condition to start the sub stream
+     * @param endCondition               the condition to end the sub stream
+     * @param includeIncompletedSegment  specifying if the incomplete segment at the end should be included.
+     */
+    public default Streamable<FuncList<DATA>> segmentBetween(
+            Predicate<DATA> startCondition,
+            Predicate<DATA> endCondition,
+            boolean         includeIncompletedSegment) {
+        return deriveToObj(this, stream -> stream.segmentBetween(startCondition, endCondition, includeIncompletedSegment));
+    }
+    
+    /**
+     * Segment the stream into sub stream 
+     *   starting when the start condition is true 
+     *   and ending when the end condition is true
+     *   -- both inclusively.
+     * 
+     * @param startCondition             the condition to start the sub stream
+     * @param endCondition               the condition to end the sub stream
+     * @param includeIncompletedSegment  specifying if the incomplete segment at the end should be included.
+     */
+    public default Streamable<FuncList<DATA>> segmentBetween(
+            Predicate<DATA> startCondition,
+            Predicate<DATA> endCondition,
+            IncompletedSegment incompletedSegment) {
+        return deriveToObj(this, stream -> stream.segmentBetween(startCondition, endCondition, incompletedSegment));
     }
     
     //-- More - then StreamPlus --

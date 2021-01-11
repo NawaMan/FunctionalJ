@@ -25,16 +25,19 @@ package functionalj.stream.doublestream;
 
 import static functionalj.stream.doublestream.DoubleStreamPlusHelper.sequentialToObj;
 
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
@@ -286,56 +289,35 @@ public interface DoubleStreamPlusWithReshape extends AsDoubleStreamPlus {
     public default DoubleStreamPlus collapseWhen(
             DoublePredicate      conditionToCollapse,
             DoubleBinaryOperator combinator) {
-//        Object dummy = DoubleStreamPlusHelper.dummy;
-//        val    array = new double[1];
-//        int    first;
-//
-//        val iterator = doubleStreamPlus().iterator();
-//
-//        if (!iterator.hasNext()) {
-//            return empty();
-//        }
-//        try {
-//            first = iterator.next();
-//        } catch (NoSuchElementException e) {
-//            return empty();
-//        }
-//
-//        val prev = new AtomicReference<Object>(new double[] { first });
-//        DoubleStreamPlus resultStream = generateWith(()->{
-//            if (prev.get() == dummy)
-//                throw new NoMoreResultException();
-//
-//            while(true) {
-//                int next;
-//                val prevValue = array[0];
-//                if (!iterator.hasNext()) {
-//                    val yield = prevValue;
-//                    prev.set(dummy);
-//                    return yield;
-//                }
-//
-//                try {
-//                    next = iterator.next();
-//                } catch (NoSuchElementException e) {
-//                    val yield = prevValue;
-//                    prev.set(dummy);
-//                    return yield;
-//                }
-//                if (conditionToCollapse.test(next)) {
-//                    val newValue = combinator.applyAsDouble(prevValue, next);
-//                    prev.set(newValue);
-//                } else {
-//                    val yield = prevValue;
-//                    array[0] = next;
-//                    prev.set(array);
-//                    return yield;
-//                }
-//            }
-//        });
-//
-//        return resultStream;
-        return null;
+        val splitr      = doubleStreamPlus().spliterator();
+        val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
+            boolean isFirst      = true;
+            double  accumulation = Double.NaN;
+            @Override
+            public boolean tryAdvance(DoubleConsumer consumer) {
+                boolean hasNext;
+                do {
+                    hasNext = splitr.tryAdvance((double value) -> {
+                        val toCollapse = conditionToCollapse.test(value);
+                        if (isFirst) {
+                            accumulation = value;
+                            isFirst = false;
+                        } else {
+                            val accValue = accumulation;
+                            if (!toCollapse) {
+                                consumer.accept(accValue);
+                                accumulation = value;
+                            } else {
+                                accumulation = combinator.applyAsDouble(accValue, value);
+                            }
+                        }
+                    });
+                } while(hasNext);
+                consumer.accept(accumulation);
+                return false;
+            }
+        };
+        return DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
     }
     
     /**

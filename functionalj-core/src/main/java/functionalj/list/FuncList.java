@@ -100,9 +100,10 @@ public interface FuncList<DATA>
             FuncListWithModify<DATA>,
             FuncListWithPeek<DATA>,
             FuncListWithPipe<DATA>,
-            FuncListWithReshape<DATA>,
+            FuncListWithSegment<DATA>,
             FuncListWithSort<DATA>,
             FuncListWithSplit<DATA> {
+    // TODO NOW: Remove each of the above to ensure that the method are appropreate.
     
     /** Throw a no more element exception. This is used for generator. */
     public static <TARGET> TARGET noMoreElement() throws NoMoreResultException {
@@ -352,6 +353,21 @@ public interface FuncList<DATA>
     }
     
     //-- Builder --
+    
+    /** Create a new FuncList. */
+    public static <TARGET> FuncListBuilder<TARGET> newFuncList() {
+        return new FuncListBuilder<TARGET>();
+    }
+    
+    /** Create a new list. */
+    public static <TARGET> FuncListBuilder<TARGET> newList() {
+        return new FuncListBuilder<TARGET>();
+    }
+    
+    /** Create a new list builder. */
+    public static <TARGET> FuncListBuilder<TARGET> newBuilder() {
+        return new FuncListBuilder<TARGET>();
+    }
     
     /** Create a new FuncList. */
     public static <TARGET> FuncListBuilder<TARGET> newFuncList(Class<TARGET> clz) {

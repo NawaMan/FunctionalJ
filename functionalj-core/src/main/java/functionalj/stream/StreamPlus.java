@@ -120,9 +120,9 @@ public interface StreamPlus<DATA>
             StreamPlusWithMapToTuple<DATA>,
             StreamPlusWithMapWithIndex<DATA>,
             StreamPlusWithModify<DATA>,
-            StreamPlusWithReshape<DATA>,
             StreamPlusWithPeek<DATA>,
             StreamPlusWithPipe<DATA>,
+            StreamPlusWithSegment<DATA>,
             StreamPlusWithSort<DATA>,
             StreamPlusWithSplit<DATA> {
     

@@ -2950,269 +2950,234 @@ public class FuncListTest {
     //-- FuncListWithReshape --
     
     @Test
-    public void testSegmentSize() {
+    public void testSegment() {
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertEquals(
-                    "[0, 1, 2, 3, 4, 5], "
+            assertStrings(
+                    "["
+                    + "[0, 1, 2, 3, 4, 5], "
                     + "[6, 7, 8, 9, 10, 11], "
                     + "[12, 13, 14, 15, 16, 17], "
-                    + "[18, 19]",
+                    + "[18, 19]"
+                    + "]",
                     list
-                    .segmentSize(6)
-                    .map        (StreamPlus::toListString)
-                    .join       (", ")
+                    .segment(6)
+                    .map    (FuncList::toListString)
             );
         });
     }
     
     @Test
-    public void testSegmentSize_excludeTail() {
+    public void testSegment_sizeFunction() {
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertEquals(
-                    "[0, 1, 2, 3, 4, 5], "
-                    + "[6, 7, 8, 9, 10, 11], "
-                    + "[12, 13, 14, 15, 16, 17]",
+            assertStrings(
+                      "[" 
+                    + "[1], "
+                    + "[2, 3], "
+                    + "[4, 5, 6, 7], "
+                    + "[8, 9, 10, 11, 12, 13, 14, 15], "
+                    + "[16, 17, 18, 19]"
+                    + "]",
                     list
-                    .segmentSize(6, false)
-                    .map        (StreamPlus::toListString)
-                    .join       (", ")
+                    .segment(i -> i));
+        });
+        // Empty
+        run(IntFuncList.wholeNumbers(0).boxed(), list -> {
+            assertStrings(
+                      "[]",
+                    list
+                    .segment(i -> i));
+        });
+        // End at exact boundary
+        run(IntFuncList.wholeNumbers(8).boxed(), list -> {
+            assertStrings(
+                      "[" 
+                    + "[1], "
+                    + "[2, 3], "
+                    + "[4, 5, 6, 7]"
+                    + "]",
+                    list
+                    .segment(i -> i));
+        });
+    }
+    
+    @Test
+    public void testSegmentWhen() {
+        run(IntFuncList.wholeNumbers(20).boxed(), list -> {
+            assertStrings(
+                    "["
+                    + "[0, 1, 2], "
+                    + "[3, 4, 5], "
+                    + "[6, 7, 8], "
+                    + "[9, 10, 11], "
+                    + "[12, 13, 14], "
+                    + "[15, 16, 17], "
+                    + "[18, 19]"
+                    + "]",
+                    list
+                    .segmentWhen(theInteger.thatIsDivisibleBy(3))
+                    .map        (FuncList::toListString)
             );
         });
     }
     
     @Test
-    public void testSegmentSize_includeIncomplete() {
+    public void testSegmentAfter() {
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertEquals(
-                    "[0, 1, 2, 3, 4, 5], "
-                    + "[6, 7, 8, 9, 10, 11], "
-                    + "[12, 13, 14, 15, 16, 17], "
-                    + "[18, 19]",
+            assertStrings(
+                    "["
+                    + "[0], "
+                    + "[1, 2, 3], "
+                    + "[4, 5, 6], "
+                    + "[7, 8, 9], "
+                    + "[10, 11, 12], "
+                    + "[13, 14, 15], "
+                    + "[16, 17, 18], "
+                    + "[19]"
+                    + "]",
                     list
-                    .segmentSize(6, IncompletedSegment.included)
-                    .map        (StreamPlus::toListString)
-                    .join       (", ")
-                    );
-        });
-    }
-    
-    @Test
-    public void testSegmentSize_excludeIncomplete() {
-        run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertEquals(
-                    "[0, 1, 2, 3, 4, 5], "
-                    + "[6, 7, 8, 9, 10, 11], "
-                    + "[12, 13, 14, 15, 16, 17]",
-                    list
-                    .segmentSize(6, IncompletedSegment.excluded)
-                    .map        (StreamPlus::toListString)
-                    .join       (", ")
-                );
-        });
-    }
-    
-    @Test
-    public void testSegmentSize_function() {
-        run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertEquals(
-                    "[], " +
-                    "[1], " +
-                    "[2, 3], " +
-                    "[4, 5, 6, 7], " +
-                    "[8, 9, 10, 11, 12, 13, 14, 15], " +
-                    "[16, 17, 18, 19]",
-                    list
-                    .segmentSize(i -> i)
-                    .map        (StreamPlus::toListString)
-                    .join       (", ")
-                    );
-        });
-    }
-    
-    @Test
-    public void testSegmentStartCondition() {
-        run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17], "
-                    + "[18, 19]",
-                    list
-                    .segment(theInteger.thatIsDivisibleBy(3))
-                    .map    (StreamPlus::toListString)
-                    .join   (", ")
+                    .segmentAfter(theInteger.thatIsDivisibleBy(3))
+                    .map         (FuncList::toListString)
             );
         });
     }
     
     @Test
-    public void testSegmentStartCondition_includeIncomplete() {
-        run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17], "
-                    + "[18, 19]",
+    public void testSegmentBetween() {
+        Predicate<Integer> startCondition = i ->(i % 10) == 3;
+        Predicate<Integer> endCondition   = i ->(i % 10) == 6;
+        
+        run(IntFuncList.wholeNumbers(75).boxed(), list -> {
+            assertStrings(
+                    "["
+                    + "[53, 54, 55, 56], "
+                    + "[63, 64, 65, 66]"
+                    + "]",
                     list
-                    .segment(theInteger.thatIsDivisibleBy(3), IncompletedSegment.included)
-                    .map    (StreamPlus::toListString)
-                    .join   (", ")
-                    );
+                    .segmentBetween(startCondition, endCondition)
+                    .skip          (5)
+                    .limit         (3));
             
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17], "
-                    + "[18, 19]",
+            assertStrings(
+                    "["
+                    + "[53, 54, 55, 56], "
+                    + "[63, 64, 65, 66], "
+                    + "[73, 74]"
+                    + "]",
                     list
-                    .segment(theInteger.thatIsDivisibleBy(3), true)
-                    .map    (StreamPlus::toListString)
-                    .join   (", ")
-                    );
+                    .segmentBetween(startCondition, endCondition, true)
+                    .skip   (5)
+                    .limit  (3));
+            
+            assertStrings(
+                    "["
+                    + "[53, 54, 55, 56], "
+                    + "[63, 64, 65, 66]"
+                    + "]",
+                    list
+                    .segmentBetween(startCondition, endCondition, false)
+                    .skip          (5)
+                    .limit         (3));
+            
+            assertStrings(
+                    "["
+                    + "[53, 54, 55, 56], "
+                    + "[63, 64, 65, 66], "
+                    + "[73, 74]"
+                    + "]",
+                    list
+                    .segmentBetween(startCondition, endCondition, IncompletedSegment.included)
+                    .skip          (5)
+                    .limit         (3));
+            
+            assertStrings(
+                    "["
+                    + "[53, 54, 55, 56], "
+                    + "[63, 64, 65, 66]"
+                    + "]",
+                    list
+                    .segmentBetween(startCondition, endCondition, IncompletedSegment.excluded)
+                    .skip          (5)
+                    .limit         (3));
         });
-    }
-    
-    @Test
-    public void testSegmentStartCondition_excludeIncomplete() {
-        run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17]",
+        
+        
+        // Edge cases
+        
+        // Empty
+        run(IntFuncList.wholeNumbers(0).boxed(), list -> {
+            assertStrings(
+                    "[]",
                     list
-                    .segment(theInteger.thatIsDivisibleBy(3), IncompletedSegment.excluded)
-                    .map    (StreamPlus::toListString)
-                    .join   (", ")
-                    );
-            
-            assertEquals(
-                    "[0, 1, 2], "
-                    + "[3, 4, 5], "
-                    + "[6, 7, 8], "
-                    + "[9, 10, 11], "
-                    + "[12, 13, 14], "
-                    + "[15, 16, 17]",
-                    list
-                    .segment(theInteger.thatIsDivisibleBy(3), false)
-                    .map    (StreamPlus::toListString)
-                    .join   (", ")
-                    );
+                    .segmentBetween(startCondition, endCondition, false)
+                    .skip          (5)
+                    .limit         (3));
         });
-    }
-    
-//    @Test
-//    public void testSegmentCondition() {
-//        Predicate<Integer> startCondition = i ->(i % 10) == 3;
-//        Predicate<Integer> endCondition   = i ->(i % 10) == 6;
-//        
-//        run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-//            assertStrings("[[53, 54, 55, 56], " +
-//                          "[63, 64, 65, 66], " +
-//                          "[73, 74, 75, 76]]",
-//                      list
-//                      .segment(startCondition, endCondition)
-//                      .skip   (5)
-//                      .limit  (3)
-//                      .map    (StreamPlus::toListString)
-//                      );
-//            
-//            assertStrings("[[53, 54, 55, 56], " +
-//                          "[63, 64, 65, 66], " +
-//                          "[73, 74, 75, 76]]",
-//                      list
-//                      .segment(startCondition, endCondition, true)
-//                      .skip   (5)
-//                      .limit  (3)
-//                      .map    (StreamPlus::toListString)
-//                      );
-//            
-//            assertStrings("[[53, 54, 55, 56], " +
-//                          "[63, 64, 65, 66], " +
-//                          "[73, 74, 75, 76]]",
-//                      list
-//                      .segment(startCondition, endCondition, false)
-//                      .skip   (5)
-//                      .limit  (3)
-//                      .map    (StreamPlus::toListString)
-//                      );
-//            
-//            assertStrings("[[53, 54, 55, 56], " +
-//                          "[63, 64, 65, 66], " +
-//                          "[73, 74, 75, 76]]",
-//                          list
-//                          .segment(startCondition, endCondition, IncompletedSegment.included)
-//                          .skip   (5)
-//                          .limit  (3)
-//                          .map    (StreamPlus::toListString)
-//                          );
-//            
-//            assertStrings("[[53, 54, 55, 56], " +
-//                          "[63, 64, 65, 66], " +
-//                          "[73, 74, 75, 76]]",
-//                          list
-//                          .segment(startCondition, endCondition, IncompletedSegment.excluded)
-//                          .skip   (5)
-//                          .limit  (3)
-//                          .map    (StreamPlus::toListString));
-//        });
-//    }
-    
-    @Test
-    public void testCollapse() {
-        run(FuncList.of(1, 2, 3, 4, 5, 6), list -> {
-            // Because 3 and 6 do match the condition to collapse ... so they are merged with the one before them.
-            assertEquals(
-                    "1, 5, 4, 11",
-                    list.collapseWhen(
-                            i -> (i % 3) == 0,
-                            (a,b)->a+b
-                        ).join(", "));
-            
-            assertEquals(
-                    "1, 2, 7, 5, 6",
-                    list.collapseWhen(
-                            i -> (i % 3) == 1,
-                            (a,b)->a+b
-                        ).join(", "));
-            
-            assertEquals(
-                    "1, 9, 11",
-                    list.collapseWhen(
-                            i -> (i % 3) <= 1,
-                            (a,b)->a+b
-                        ).join(", "));
-        });
-    }
-    
-    @Test
-    public void testCollapseSize() {
+        // Not enough
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertEquals(
-                    "1, 5, 22, 92, 70",
-                    list.collapseSize(
-                            i -> i,
-                            (a,b)->a+b
-                        ).join(", "));
-                    
-                    assertEquals(
-                            "1, 2-3, 4-5-6-7, 8-9-10-11-12-13-14-15, 16-17-18-19",
-                            list.collapseSize(
-                                    i -> i,
-                                    i -> "" + i,
-                                    (a,b)->a + "-" + b
-                                ).join(", "));
+            assertStrings(
+                    "[]",
+                    list
+                    .segmentBetween(startCondition, endCondition, false)
+                    .skip          (5)
+                    .limit         (3));
+        });
+        // Exact
+        run(IntFuncList.wholeNumbers(67).boxed(), list -> {
+            assertStrings(
+                    "["
+                    + "[53, 54, 55, 56], "
+                    + "[63, 64, 65, 66]"
+                    + "]",
+                    list
+                    .segmentBetween(startCondition, endCondition, false)
+                    .skip          (5)
+                    .limit         (3));
+        });
+        // Exact - 1
+        run(IntFuncList.wholeNumbers(66).boxed(), list -> {
+            assertStrings(
+                    "["
+                    + "[53, 54, 55, 56]"
+                    + "]",
+                    list
+                    .segmentBetween(startCondition, endCondition, false)
+                    .skip          (5)
+                    .limit         (3));
+        });
+        // Exact + 1
+        run(IntFuncList.wholeNumbers(68).boxed(), list -> {
+            assertStrings(
+                    "["
+                    + "[53, 54, 55, 56], "
+                    + "[63, 64, 65, 66]"
+                    + "]",
+                    list
+                    .segmentBetween(startCondition, endCondition, false)
+                    .skip          (5)
+                    .limit         (3));
+        });
+        
+        // From start
+        run(IntFuncList.wholeNumbers(30).boxed(), list -> {
+            assertStrings(
+                    "["
+                    + "[3, 4, 5, 6], "
+                    + "[13, 14, 15, 16], "
+                    + "[23, 24, 25, 26]"
+                    + "]",
+                    list
+                    .segmentBetween(startCondition, endCondition, false));
+        });
+        
+        // Incomplete start
+        run(IntFuncList.wholeNumbers(30).skip(5).boxed(), list -> {
+            assertStrings(
+                    "["
+                    + "[13, 14, 15, 16], "
+                    + "[23, 24, 25, 26]"
+                    + "]",
+                    list
+                    .segmentBetween(startCondition, endCondition, false));
         });
     }
     
@@ -3474,7 +3439,8 @@ public class FuncListTest {
                     + "Seven:[7], "
                     + "Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18], "
                     + "Three:[3, 9, 15], "
-                    + "Other:[1, 11, 13, 17, 19]}",
+                    + "Other:[1, 11, 13, 17, 19]"
+                    + "}",
                      list
                     .split(Two,    theInteger.thatIsDivisibleBy(2),
                            Three,  theInteger.thatIsDivisibleBy(3),
@@ -3488,7 +3454,8 @@ public class FuncListTest {
                     + "Five:[5], "
                     + "Other:[1, 13, 17, 19], "
                     + "Seven:[7], "
-                    + "Three:[3, 9, 15], Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]}",
+                    + "Three:[3, 9, 15], Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
+                    + "}",
                      list
                     .split(Two,    theInteger.thatIsDivisibleBy(2),
                            Three,  theInteger.thatIsDivisibleBy(3),
@@ -3496,6 +3463,78 @@ public class FuncListTest {
                            Seven,  theInteger.thatIsDivisibleBy(7),
                            Eleven, theInteger.thatIsDivisibleBy(11),
                            Other)
+                    .sorted()
+                    .toString());
+            
+            // Ignore some values
+            
+            assertStrings(
+                    "{"
+                    + "Eleven:[11], "
+                    + "Five:[5], "
+                    + "Other:[1, 13, 17, 19], "
+                    + "Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
+                    + "}",
+                     list
+                    .split(Two,    theInteger.thatIsDivisibleBy(2),
+                           null,   theInteger.thatIsDivisibleBy(3),
+                           Five,   theInteger.thatIsDivisibleBy(5),
+                           null,   theInteger.thatIsDivisibleBy(7),
+                           Eleven, theInteger.thatIsDivisibleBy(11),
+                           Other)
+                    .sorted()
+                    .toString());
+            
+            // Ignore others
+            
+            assertStrings(
+                    "{"
+                    + "Three:[3, 9, 15], "
+                    + "Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
+                    + "}",
+                     list
+                    .split(Two,   theInteger.thatIsDivisibleBy(2),
+                           Three, theInteger.thatIsDivisibleBy(3))
+                    .sorted()
+                    .toString());
+            
+            assertStrings(
+                    "{"
+                    + "Five:[5], "
+                    + "Three:[3, 9, 15], Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]}",
+                     list
+                    .split(Two,    theInteger.thatIsDivisibleBy(2),
+                           Three,  theInteger.thatIsDivisibleBy(3),
+                           Five,   theInteger.thatIsDivisibleBy(5))
+                    .sorted()
+                    .toString());
+            
+            assertStrings(
+                    "{"
+                    + "Five:[5], "
+                    + "Seven:[7], "
+                    + "Three:[3, 9, 15], "
+                    + "Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]}",
+                     list
+                    .split(Two,    theInteger.thatIsDivisibleBy(2),
+                           Three,  theInteger.thatIsDivisibleBy(3),
+                           Five,   theInteger.thatIsDivisibleBy(5),
+                           Seven,  theInteger.thatIsDivisibleBy(7))
+                    .sorted()
+                    .toString());
+            
+            assertStrings(
+                    "{"
+                    + "Eleven:[11], "
+                    + "Five:[5], "
+                    + "Seven:[7], "
+                    + "Three:[3, 9, 15], Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]}",
+                     list
+                    .split(Two,    theInteger.thatIsDivisibleBy(2),
+                           Three,  theInteger.thatIsDivisibleBy(3),
+                           Five,   theInteger.thatIsDivisibleBy(5),
+                           Seven,  theInteger.thatIsDivisibleBy(7),
+                           Eleven, theInteger.thatIsDivisibleBy(11))
                     .sorted()
                     .toString());
         });
@@ -3520,11 +3559,12 @@ public class FuncListTest {
                         .toString();
                 return string;
             });
-            assertEquals("{"
+            assertEquals(
+                    "{"
                     + "FizzBuzz:[0, 15], "
                     + "Buzz:[5, 10], "
-                    + "Fizz:[3, 6, 9, 12, 18], "
-                    + "null:[]}",
+                    + "Fizz:[3, 6, 9, 12, 18]"
+                    + "}",
                     toString);
         });
     }

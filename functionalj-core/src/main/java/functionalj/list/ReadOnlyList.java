@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
-import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -52,17 +51,16 @@ public interface ReadOnlyList<DATA>
     }
     
     public static <T> ReadOnlyList<T> of(Collection<T> data) {
+        if (data instanceof ReadOnlyList) {
+            return (ReadOnlyList<T>)data;
+        }
+        
         return ImmutableList.from(data);
     }
+    
     @SafeVarargs
-	public static <T> ReadOnlyList<T> of(T ... data) {
+    public static <T> ReadOnlyList<T> of(T ... data) {
         return ImmutableList.of(data);
-    }
-    public static <T> ReadOnlyList<T> of(Streamable<T> streamable) {
-        return ImmutableList.from(streamable);
-    }
-    public static <T> ReadOnlyList<T> of(ReadOnlyList<T> readOnlyList) {
-        return readOnlyList;
     }
     
     @Override

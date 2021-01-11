@@ -23,74 +23,40 @@
 // ============================================================================
 package functionalj.list.intlist;
 
-import static functionalj.functions.StrFuncs.join;
-import static functionalj.functions.TimeFuncs.Sleep;
-import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theInteger;
-import static functionalj.lens.Access.theString;
-import static functionalj.lens.LensTest.Car.theCar;
-import static functionalj.list.FuncList.listOf;
 import static functionalj.ref.Run.With;
-import static functionalj.stream.ZipWithOption.AllowUnpaired;
-import static functionalj.stream.ZipWithOption.RequireBoth;
-import static java.util.Arrays.asList;
-import static java.util.stream.Collector.Characteristics.CONCURRENT;
-import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Spliterator;
-import java.util.Spliterators.AbstractIntSpliterator;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import java.util.stream.Collector.Characteristics;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import functionalj.function.Func0;
-import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
-import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
 import functionalj.list.ReadOnlyListException;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.map.FuncMap;
-import functionalj.promise.DeferAction;
-import functionalj.stream.CollectorPlus;
 import functionalj.stream.IncompletedSegment;
-import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.streamable.AsStreamable;
-import functionalj.streamable.Streamable;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
@@ -3198,34 +3164,34 @@ public class IntFuncListTest {
                           .map    (IntStreamPlus::toListString));
         });
     }
-//    
-//    @Test
-//    public void testCollapse() {
-//        run(IntFuncList.of(1, 2, 3, 4, 5, 6), list -> {
-//            // Because 3 and 6 do match the condition to collapse ... so they are merged with the one before them.
-//            assertEquals(
-//                    "1, 5, 4, 11",
-//                    list.collapseWhen(
-//                            i -> (i % 3) == 0,
-//                            (a,b)->a+b
-//                        ).join(", "));
-//            
-//            assertEquals(
-//                    "1, 2, 7, 5, 6",
-//                    list.collapseWhen(
-//                            i -> (i % 3) == 1,
-//                            (a,b)->a+b
-//                        ).join(", "));
-//            
-//            assertEquals(
-//                    "1, 9, 11",
-//                    list.collapseWhen(
-//                            i -> (i % 3) <= 1,
-//                            (a,b)->a+b
-//                        ).join(", "));
-//        });
-//    }
-//    
+    
+    @Test
+    public void testCollapse() {
+        run(IntFuncList.of(1, 2, 3, 4, 5, 6), list -> {
+            // Because 3 and 6 do match the condition to collapse ... so they are merged with the one before them.
+            assertStrings(
+                    "[1, 5, 4, 11]",
+                    list.collapseWhen(
+                            i -> (i % 3) == 0,
+                            (a,b)->a+b
+                        ));
+            
+            assertStrings(
+                    "[1, 2, 7, 5, 6]",
+                    list.collapseWhen(
+                            i -> (i % 3) == 1,
+                            (a,b)->a+b
+                        ));
+            
+            assertStrings(
+                    "[1, 9, 11]",
+                    list.collapseWhen(
+                            i -> (i % 3) <= 1,
+                            (a,b)->a+b
+                        ));
+        });
+    }
+    
 //    @Test
 //    public void testCollapseSize() {
 //        run(IntFuncList.wholeNumbers(20), list -> {
@@ -3540,6 +3506,7 @@ public class IntFuncListTest {
         });
     }
     
+    @Ignore("Will need to get the changes from FuncList")
     @Test
     public void testFizzBuzz() {
         Function<IntFuncList, IntFuncList> listToList = s -> s.toImmutableList();
@@ -3562,8 +3529,8 @@ public class IntFuncListTest {
             assertEquals("{"
                     + "FizzBuzz:[0, 15], "
                     + "Buzz:[5, 10], "
-                    + "Fizz:[3, 6, 9, 12, 18], "
-                    + "null:[]}",
+                    + "Fizz:[3, 6, 9, 12, 18]"
+                    + "}",
                     toString);
         });
     }

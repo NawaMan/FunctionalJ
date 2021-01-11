@@ -87,7 +87,7 @@ public interface Streamable<DATA>
             StreamableWithModify<DATA>,
             StreamableWithPeek<DATA>,
             StreamableWithPipe<DATA>,
-            StreamableWithReshape<DATA>,
+            StreamableWithSegment<DATA>,
             StreamableWithSort<DATA>,
             StreamableWithSplit<DATA> {
     

@@ -25,9 +25,9 @@ package functionalj.stream.intstream;
 
 import static functionalj.function.Func.f;
 import static functionalj.stream.StreamPlus.streamOf;
-import static functionalj.stream.intstream.IntStreamPlus.empty;
 import static functionalj.stream.intstream.IntStreamPlus.generateWith;
 import static functionalj.stream.intstream.IntStreamPlusHelper.sequentialToObj;
+import static java.lang.Math.max;
 
 import java.util.NoSuchElementException;
 import java.util.Spliterators;
@@ -48,7 +48,7 @@ import java.util.stream.StreamSupport;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamPlusHelper;
+import functionalj.stream.markers.Sequential;
 import lombok.val;
 
 
@@ -291,173 +291,206 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         });
     }
     
-    /** Combine the current value with the one before it using then combinator everytime the condition to collapse is true. */
+    /**
+     * Combine the current value with the one before it using
+     *   then combinator every time the condition to collapse is true.
+     **/
+    @Sequential
     public default IntStreamPlus collapseWhen(
             IntPredicate      conditionToCollapse,
             IntBinaryOperator combinator) {
-        Object dummy = IntStreamPlusHelper.dummy;
-        val intArray = new int[1];
-        int first;
-        
-        val iterator = intStreamPlus().iterator();
-        
-        if (!iterator.hasNext()) {
-            return empty();
-        }
-        try {
-            first = iterator.next();
-        } catch (NoSuchElementException e) {
-            return empty();
-        }
-        
-        val prev = new AtomicReference<Object>(new int[] { first });
-        IntStreamPlus resultStream = generateWith(()->{
-            if (prev.get() == dummy)
-                throw new NoMoreResultException();
-            
-            while(true) {
-                int next;
-                val prevValue = intArray[0];
-                if (!iterator.hasNext()) {
-                    val yield = prevValue;
-                    prev.set(dummy);
-                    return yield;
-                }
-                
-                try {
-                    next = iterator.next();
-                } catch (NoSuchElementException e) {
-                    val yield = prevValue;
-                    prev.set(dummy);
-                    return yield;
-                }
-                if (conditionToCollapse.test(next)) {
-                    val newValue = combinator.applyAsInt(prevValue, next);
-                    prev.set(newValue);
-                } else {
-                    val yield = prevValue;
-                    intArray[0] = next;
-                    prev.set(intArray);
-                    return yield;
-                }
+        val splitr      = intStreamPlus().spliterator();
+        val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+            boolean isFirst      = true;
+            int     accumulation = Integer.MIN_VALUE;
+            @Override
+            public boolean tryAdvance(IntConsumer consumer) {
+                boolean hasNext;
+                do {
+                    hasNext = splitr.tryAdvance((int value) -> {
+                        val toCollapse = conditionToCollapse.test(value);
+                        if (isFirst) {
+                            accumulation = value;
+                            isFirst = false;
+                        } else {
+                            val accValue = accumulation;
+                            if (!toCollapse) {
+                                consumer.accept(accValue);
+                                accumulation = value;
+                            } else {
+                                accumulation = combinator.applyAsInt(accValue, value);
+                            }
+                        }
+                    });
+                } while(hasNext);
+                consumer.accept(accumulation);
+                return false;
             }
-        });
-        
-        return resultStream;
+        };
+        return IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
     }
     
     /**
-     * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
+     * Collapse the value of this stream together.
+     * Each sub stream size is determined by the segmentSize function.
      *
-     * If the segmentSize function return null or 0, the value will be used as is (no collapse).
+     * If the segmentSize function return null or less than 1,
+     *     the value will be used as is (no collapse).
      */
+    @Sequential
     public default IntStreamPlus collapseSize(
             IntFunction<Integer> segmentSize,
             IntBinaryOperator    combinator) {
-        Object dummy = IntStreamPlusHelper.dummy;
-        val intArray = new int[1];
-        
-        val firstObj = new Object();
-        val iterator = intStreamPlus().iterator();
-        val prev = new AtomicReference<Object>(firstObj);
-        IntStreamPlus resultStream = generateWith(()->{
-            if (prev.get() == dummy)
-                throw new NoMoreResultException();
-            
-            while(true) {
-                int next;
-                Object prevValue = prev.get();
-                try {
-                    next = iterator.next();
-                } catch (NoSuchElementException e) {
-                    if (prevValue == firstObj)
-                        throw new NoMoreResultException();
-                    
-                    val yield = intArray[0];
-                    prev.set(dummy);
-                    return yield;
-                }
-                
-                Integer newSize = segmentSize.apply(next);
-                if ((newSize == null) || (newSize == 0)) {
-                    continue;
-                }
-                
-                if (newSize == 1) {
-                    return next;
-                }
-                
-                intArray[0] = next;
-                prev.set(intArray);
-                for (int i = 0; i < (newSize - 1); i++) {
-                    try {
-                        next = iterator.next();
-                        int newValue = combinator.applyAsInt(intArray[0], next);
-                        intArray[0] = newValue;
-                        prev.set(intArray);
-                    } catch (NoSuchElementException e) {
-                        val yield = intArray[0];
-                        prev.set(dummy);
-                        return yield;
+        val splitr       = intStreamPlus().spliterator();
+        val isParallel   = false;
+        val isSequence   = !isParallel;
+        val unsetCounter = Integer.MIN_VALUE;
+        val spliterator  = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+            int counter      = unsetCounter;
+            int accumulation = Integer.MIN_VALUE;
+            @Override
+            public boolean tryAdvance(IntConsumer consumer) {
+                counter = unsetCounter;
+                // Try to find the first element.
+                boolean hasNext = true;
+                while (hasNext) {
+                    hasNext = splitr.tryAdvance((int value) -> {
+                        accumulation = value;
+                        counter      = Math.max(0, segmentSize.apply(value));
+                    });
+                    // Do not find the first element
+                    if (!hasNext) {
+                        return false;
+                    }
+                    // Collect the rest of the element
+                    while ((counter > 1) && hasNext) {
+                        hasNext = splitr.tryAdvance((int value) -> {
+                            accumulation = combinator.applyAsInt(accumulation, value);
+                            counter--;
+                        });
+                    }
+                    // Send out the value if exist.
+                    if (counter >= 0) {
+                        consumer.accept(accumulation);
+                        return true;
                     }
                 }
-                
-                val yield = intArray[0];
-                prev.set(firstObj);
-                return yield;
+                return false;
             }
-        });
-        
-        return resultStream;
+        };
+        return IntStreamPlus.from(StreamSupport.intStream(spliterator, isSequence));
     }
     
     /**
-     * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
+     * Collapse the value of this stream together.
+     * Each sub stream size is determined by the segmentSize function.
      * The value is mapped using the mapper function before combined.
      *
-     * If the segmentSize function return null or 0, the value will be used as is (no collapse).
+     * If the segmentSize function return null or less than 1,
+     *     the value will be used as is (no collapse).
      */
+    @Sequential
     public default IntStreamPlus collapseSize(
             IntFunction<Integer> segmentSize,
             IntUnaryOperator     mapper,
             IntBinaryOperator    combinator) {
-//        val splitr      = intStreamPlus().spliterator();
-//        val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-//            @Override
-//            public boolean tryAdvance(IntConsumer consumer) {
-//                val count       = new AtomicInteger();
-//                val accumulator = new AtomicInteger(0);
-//                IntConsumer action = value -> {
-//                    val newSegmentSize = segmentSize.apply(value);
-//                    count.set((newSegmentSize == null) ? 0 : newSegmentSize.intValue());
-//                    accumulator.set(value);
-//                };
-//                boolean hasNext = splitr.tryAdvance(action);
-//                
-//                for (; count.get() >= 0) {
-//                    
-//                }
-//                if (!hasNext) {
-//                    return hasNext;
-//                }
-//                return hasNext;
-//            }
-//        };
-//        return IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
-        return null;
+        val splitr       = intStreamPlus().spliterator();
+        val isParallel   = false;
+        val isSequence   = !isParallel;
+        val unsetCounter = Integer.MIN_VALUE;
+        val spliterator  = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+            int counter      = unsetCounter;
+            int accumulation = Integer.MIN_VALUE;
+            @Override
+            public boolean tryAdvance(IntConsumer consumer) {
+                counter = unsetCounter;
+                boolean hasNext = true;
+                while (hasNext) {
+                    // Try to find the first element.
+                    hasNext = splitr.tryAdvance((int value) -> {
+                        accumulation = mapper.applyAsInt(value);
+                        counter      = Math.max(0, segmentSize.apply(value));
+                    });
+                    // Do not find the first element
+                    if (!hasNext) {
+                        return false;
+                    }
+                    // Collect the rest of the element by the counter
+                    while ((counter > 1) && hasNext) {
+                        hasNext = splitr.tryAdvance((int value) -> {
+                            val mappedValue = mapper.applyAsInt(value);
+                            accumulation    = combinator.applyAsInt(accumulation, mappedValue);
+                            counter--;
+                        });
+                    }
+                    // Send out the value if exist.
+                    if (counter >= 0) {
+                        consumer.accept(accumulation);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+        return IntStreamPlus.from(StreamSupport.intStream(spliterator, isSequence));
     }
     
     /**
-     * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
+     * Collapse the value of this stream together.
+     * Each sub stream size is determined by the segmentSize function.
      * The value is mapped using the mapper function before combined.
      *
-     * If the segmentSize function return null or 0, the value will be used as is (no collapse).
+     * If the segmentSize function return null or less than 1,
+     *     the value will be used as is (no collapse).
      */
+    @Sequential
     public default <TARGET> StreamPlus<TARGET> collapseSizeToObj(
             IntUnaryOperator                   segmentSize,
             IntFunction<TARGET>                mapper,
             BiFunction<TARGET, TARGET, TARGET> combinator) {
-        return null;
+        val splitr       = intStreamPlus().spliterator();
+        val isParallel   = false;
+        val isSequence   = !isParallel;
+        val unsetCounter = Integer.MIN_VALUE;
+        val spliterator  = new Spliterators.AbstractSpliterator<TARGET>(splitr.estimateSize(), 0) {
+            @Override
+            public boolean tryAdvance(Consumer<? super TARGET> consumer) {
+                val counter     = new AtomicInteger(unsetCounter);
+                val accumulator = new AtomicReference<TARGET>();
+                // Try to find the first element.
+                boolean hasNext = true;
+                while (hasNext) {
+                    hasNext = splitr.tryAdvance((int value) -> {
+                        val mappedValue = mapper.apply(value);
+                        accumulator.set(mappedValue);
+                        val count = Math.max(0, segmentSize.applyAsInt(value));
+                        counter.set(count);
+                    });
+                    // Do not find the first element
+                    if (!hasNext) {
+                        return false;
+                    }
+                    // Collect the rest of the element
+                    while ((counter.get() > 1) && hasNext) {
+                        hasNext = splitr.tryAdvance((int value) -> {
+                            val accValue    = accumulator.get();
+                            val mappedValue = mapper.apply(value);
+                            val newValue    = combinator.apply(accValue, mappedValue);
+                            accumulator.set(newValue);
+                            counter.decrementAndGet();
+                        });
+                    }
+                    // Send out the value if exist.
+                    if (counter.get() >= 0) {
+                        val accValue = accumulator.get();
+                        consumer.accept(accValue);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
     
     public default IntStreamPlus collapseAfter(
