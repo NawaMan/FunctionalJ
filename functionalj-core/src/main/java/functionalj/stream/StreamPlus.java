@@ -568,11 +568,6 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default LongStream mapToLong(ToLongFunction<? super DATA> mapper) {
-        return null;
-    }
-    
-    @Override
     public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
         return DoubleStreamPlus.from(stream().mapToDouble(mapper));
     }
@@ -591,11 +586,6 @@ public interface StreamPlus<DATA>
     @Override
     public default IntStreamPlus flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
         return IntStreamPlus.from(stream().flatMapToInt(mapper));
-    }
-    
-    @Override
-    public default LongStream flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
-        return null;
     }
     
     @Override

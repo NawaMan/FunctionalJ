@@ -456,11 +456,6 @@ public interface IntFuncList
         return this;
     }
     
-//    /** Returns the streamable value in this stream as long */
-//    public default LongFuncList asLongFuncList() {
-//        return deriveToLong(this, stream -> stream.mapToLong(i -> (long)i));
-//    }
-    
     /** Returns the streamable value in this stream as double */
     public default DoubleFuncList asDoubleFuncList() {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(i -> (double)i));
@@ -497,11 +492,6 @@ public interface IntFuncList
         return deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
     
-//    /** Map each value into a long value using the function. */
-//    public default LongFuncList mapToLong(IntToLongFunction mapper) {
-//        return deriveToLong(this, stream -> stream.mapToLong(mapper));
-//    }
-    
     /** Map each value into a double value using the function. */
     public default DoubleFuncList mapToDouble() {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(i -> i));
@@ -527,11 +517,6 @@ public interface IntFuncList
     public default IntFuncList flatMapToInt(IntFunction<? extends AsIntStreamable> mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).intStream()));
     }
-    
-//    /** Map a value into a long streamable and then flatten that streamable */
-//    public default LongFuncList flatMapToLong(IntFunction<? extends AsLongStreamable> mapper) {
-//        return LongFuncList.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
-//    }
     
     /** Map a value into a double streamable and then flatten that streamable */
     public default DoubleFuncList flatMapToDouble(IntFunction<? extends AsDoubleStreamable> mapper) {

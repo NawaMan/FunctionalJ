@@ -431,12 +431,7 @@ public interface IntStreamPlus
     }
     
     @Override
-    public default LongStream asLongStream() {
-        return mapToLong(i -> i);
-    }
-    
-    @Override
-    public default DoubleStream asDoubleStream() {
+    public default DoubleStreamPlus asDoubleStream() {
         return mapToDouble(i -> i);
     }
     
@@ -577,11 +572,6 @@ public interface IntStreamPlus
         return IntStreamPlus.from(intStream().map(mapper));
     }
     
-    @Override
-    public default LongStream mapToLong(IntToLongFunction mapper) {
-        return null;
-    }
-    
     public default DoubleStreamPlus mapToDouble() {
         return mapToDouble(i -> (double)i);
     }
@@ -605,10 +595,6 @@ public interface IntStreamPlus
     
     public default IntStreamPlus flatMapToInt(IntFunction<? extends IntStream> mapper) {
         return flatMap(mapper);
-    }
-    
-    public default LongStream flatMapToLong(IntFunction<? extends LongStream> mapper) {
-        return null;
     }
     
     public default DoubleStreamPlus flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {

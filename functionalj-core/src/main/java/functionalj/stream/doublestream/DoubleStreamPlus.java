@@ -539,11 +539,6 @@ public interface DoubleStreamPlus
         return IntStreamPlus.from(doubleStream().mapToInt(mapper));
     }
     
-    @Override
-    public default LongStream mapToLong(DoubleToLongFunction mapper) {
-        return null;
-    }
-    
     public default DoubleStreamPlus mapToDouble(DoubleUnaryOperator mapper) {
         return DoubleStreamPlus.from(doubleStream().map(mapper));
     }
@@ -562,10 +557,6 @@ public interface DoubleStreamPlus
     
     public default IntStreamPlus flatMapToInt(DoubleFunction<? extends IntStream> mapper) {
         return mapToObj(mapper).flatMapToInt(itself());
-    }
-    
-    public default LongStream flatMapToLong(IntFunction<? extends LongStream> mapper) {
-        return null;
     }
     
     public default DoubleStreamPlus flatMapToDouble(DoubleFunction<? extends DoubleStream> mapper) {

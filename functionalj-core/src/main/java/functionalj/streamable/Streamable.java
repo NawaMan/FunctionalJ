@@ -588,11 +588,6 @@ public interface Streamable<DATA>
         return IntStreamable.deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
     
-//    /** Map each value into a long value using the function. */
-//    public default LongStreamable mapToLong(ToLongFunction<? super DATA> mapper) {
-//        return LongStreamable.deriveFrom(this, stream -> stream.mapToLong(mapper));
-//    }
-    
     /** Map each value into a double value using the function. */
     public default DoubleStreamable mapToDouble(ToDoubleFunction<? super DATA> mapper) {
         return DoubleStreamable.deriveFrom(this, stream -> stream.mapToDouble(mapper));
@@ -609,16 +604,11 @@ public interface Streamable<DATA>
     public default IntStreamable flatMapToInt(Function<? super DATA, ? extends IntStreamable> mapper) {
         return IntStreamable.deriveFrom(this, stream -> stream.flatMapToInt(value -> mapper.apply(value).intStream()));
     }
-//
-//    /** Map a value into a long streamable and then flatten that streamable */
-//    public default LongStreamable flatMapToLong(Function<? super DATA, ? extends LongStreamable> mapper) {
-//        return LongStreamable.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
-//    }
-//
-//    /** Map a value into a double streamable and then flatten that streamable */
-//    public default DoubleStreamable flatMapToDouble(Function<? super DATA, ? extends DoubleStreamable> mapper) {
-//        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
-//    }
+    
+    /** Map a value into a double streamable and then flatten that streamable */
+    public default DoubleStreamable flatMapToDouble(Function<? super DATA, ? extends DoubleStreamable> mapper) {
+        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
+    }
     
     //-- Filter --
     

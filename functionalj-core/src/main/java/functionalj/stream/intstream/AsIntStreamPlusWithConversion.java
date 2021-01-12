@@ -78,16 +78,6 @@ public interface AsIntStreamPlusWithConversion {
                 .toArray ();
     }
     
-    /** Map the data to long and return the long array of all the results. */
-    @Eager
-    @Terminal
-    public default long[] toLongArray(IntToLongFunction toLong) {
-        val streamPlus = intStreamPlus();
-        return streamPlus
-                .mapToLong(toLong)
-                .toArray  ();
-    }
-    
     /** Map the data to double and return the byte array of all the results. */
     @Eager
     @Terminal

@@ -516,11 +516,6 @@ public interface IntStreamable
     public default IntStreamable asIntStreamable() {
         return this;
     }
-//    
-//    /** Returns the streamable value in this stream as long */
-//    public default LongStreamable asLongStreamable() {
-//        return deriveToLong(this, stream -> stream.mapToLong(i -> (long)i));
-//    }
     
     /** Returns the streamable value in this stream as double */
     public default DoubleStreamable asDoubleStream() {
@@ -613,11 +608,6 @@ public interface IntStreamable
     public default IntStreamable mapToInt(IntUnaryOperator mapper) {
         return deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
-//    
-//    /** Map each value into a long value using the function. */
-//    public default LongStreamable mapToLong(IntToLongFunction mapper) {
-//        return deriveToLong(this, stream -> stream.mapToLong(mapper));
-//    }
     
     /** Map each value into a double value using the function. */
     public default DoubleStreamable mapToDouble() {
@@ -644,16 +634,11 @@ public interface IntStreamable
     public default IntStreamable flatMapToInt(IntFunction<? extends AsIntStreamable> mapper) {
         return IntStreamable.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).intStream()));
     }
-//    
-//    /** Map a value into a long streamable and then flatten that streamable */
-//    public default LongStreamable flatMapToLong(IntFunction<? extends AsLongStreamable> mapper) {
-//        return LongStreamable.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
-//    }
-//    
-//    /** Map a value into a double streamable and then flatten that streamable */
-//    public default DoubleStreamable flatMapToDouble(IntFunction<? extends AsDoubleStreamable> mapper) {
-//        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
-//    }
+    
+    /** Map a value into a double streamable and then flatten that streamable */
+    public default DoubleStreamable flatMapToDouble(IntFunction<? extends AsDoubleStreamable> mapper) {
+        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
+    }
     
     //-- Filter --
     
