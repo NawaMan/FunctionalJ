@@ -87,7 +87,7 @@ public final class GrowOnlyDoubleArray {
         DoubleStreamPlus tail  = ((aCount >= arrays.length) || (arrays[aCount] == null))
                             ? DoubleStreamPlus.empty()
                             : DoubleStreamPlus.of(arrays[aCount]).limit(residue);
-        DoubleStreamPlus total = head.concatWith(tail);
+        DoubleStreamPlus total = head.appendWith(tail);
         return total;
     }
     

@@ -933,9 +933,16 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testConcatWith() {
+    public void testPrependWith() {
         assertStrings("[One, Two, Three, Four]",
-                streamOf("One", "Two").concatWith(streamOf("Three", "Four"))
+                streamOf("Three", "Four").prependWith(streamOf("One", "Two"))
+                .toList());
+    }
+    
+    @Test
+    public void testAppendWith() {
+        assertStrings("[One, Two, Three, Four]",
+                streamOf("One", "Two").appendWith(streamOf("Three", "Four"))
                 .toList());
     }
     
@@ -984,7 +991,7 @@ public class StreamPlusTest {
         val streamA = StreamPlus.of("A", "B", "C");
         val streamB = IntStreamPlus.infinite().boxed().map(theInteger.asString());
         val bool    = new AtomicBoolean(true);
-        assertEquals("A, 1, C", streamA.choose(streamB, (a, b) -> {
+        assertEquals("A, 1, C, 3, 4", streamA.choose(streamB, (a, b) -> {
             boolean curValue = bool.get();
             return bool.getAndSet(!curValue);
         }).limit(5).join(", "));
@@ -1143,11 +1150,11 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testFilterIn() {
+    public void testFilterOnly() {
         val stream = StreamPlus.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red"));
         assertEquals(
                 "[Blue, Red]",
-                stream.map(theCar.color).filterIn("Blue", "Red").toListString());
+                stream.map(theCar.color).filterOnly("Blue", "Red").toListString());
     }
     
     @Test
@@ -1167,11 +1174,11 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testExcludeIn() {
+    public void testExcludeAny() {
         val stream = StreamPlus.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red"));
         assertEquals(
                 "[Green, null]",
-                stream.map(theCar.color).excludeIn("Blue", "Red").toListString());
+                stream.map(theCar.color).excludeAny("Blue", "Red").toListString());
     }
     
     @Test
@@ -1787,26 +1794,6 @@ public class StreamPlusTest {
                 "[0: One, 1: Three, 2: Five, 3: Seven, 4: Eleven]",
                 stream
                 .mapToObjWithIndex((i, each) -> i + ": " + each)
-                .toListString());
-    }
-    
-    @Test
-    public void testMapWithIndex_map_combine() {
-        val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
-                "[0: 3, 1: 5, 2: 4, 3: 5, 4: 6]",
-                stream
-                .mapWithIndex(each -> each.length(), (i, each) -> i + ": " + each)
-                .toListString());
-    }
-    
-    @Test
-    public void testMapToObjWithIndex_map_combine() {
-        val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
-                "[0: 3, 1: 5, 2: 4, 3: 5, 4: 6]",
-                stream
-                .mapToObjWithIndex(each -> each.length(), (i, each) -> i + ": " + each)
                 .toListString());
     }
     

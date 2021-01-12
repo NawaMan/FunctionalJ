@@ -41,6 +41,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+import functionalj.list.FuncList;
 import functionalj.result.Result;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
@@ -209,6 +210,17 @@ public interface AsStreamPlus<DATA>
     }
     
     //== Conversion ==
+    
+    /** 
+     * @return a functional list containing the elements.
+     * 
+     * Note: This method will materialize the elements and put in a list.
+     **/
+    @Eager
+    @Terminal
+    public default FuncList<DATA> toFuncList() {
+        return toImmutableList();
+    }
     
     @Eager
     @Terminal

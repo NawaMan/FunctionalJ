@@ -52,7 +52,6 @@ import org.junit.Test;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.list.FuncList;
-import functionalj.list.ReadOnlyListException;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.map.FuncMap;
 import functionalj.stream.IncompletedSegment;
@@ -92,13 +91,6 @@ public class IntFuncListTest {
         action.accept(list);
     }
     
-    private <T> void runExpectReadOnlyListException(IntFuncList list, FuncUnit1<IntFuncList> action) {
-        try {
-            action.accept(list);
-            fail("Exception ReadOnlyListException");
-        } catch (ReadOnlyListException e) {
-        }
-    }
     
     private <T> void run(FuncList<T> list, FuncUnit1<FuncList<T>> action) {
         action.accept(list);

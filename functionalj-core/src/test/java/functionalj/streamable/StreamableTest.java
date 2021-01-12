@@ -68,7 +68,6 @@ import functionalj.function.FuncUnit2;
 import functionalj.lens.Access;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList;
-import functionalj.list.FuncListDerived;
 import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
@@ -956,7 +955,7 @@ public class StreamableTest {
     public void testConcatWith() {
         run(Streamable.of("One", "Two"), Streamable.of("Three", "Four"), (streamable1, streamabl2) -> {
             assertStrings("[One, Two, Three, Four]",
-                    streamable1.concatWith(streamabl2)
+                    streamable1.appendWith(streamabl2)
                     .toList());
         });
     }
@@ -1013,7 +1012,7 @@ public class StreamableTest {
                 IntStreamable.infinite().boxed().map(theInteger.asString()),
                 (streamableA, streamableB) -> {
             val bool = new AtomicBoolean(true);
-            assertEquals("A, 1, C", streamableA.choose(streamableB, (a, b) -> {
+            assertEquals("A, 1, C, 3, 4", streamableA.choose(streamableB, (a, b) -> {
                 boolean curValue = bool.get();
                 return bool.getAndSet(!curValue);
             }).limit(5).join(", "));
@@ -1197,7 +1196,7 @@ public class StreamableTest {
         run(Streamable.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), streamable -> {
             assertEquals(
                     "[Blue, Red]",
-                    streamable.map(theCar.color).filterIn("Blue", "Red").toListString());
+                    streamable.map(theCar.color).filterOnly("Blue", "Red").toListString());
         });
     }
     
@@ -1220,11 +1219,11 @@ public class StreamableTest {
     }
     
     @Test
-    public void testExcludeIn() {
+    public void testExcludeAny() {
         run(Streamable.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), streamable -> {
             assertEquals(
                     "[Green, null]",
-                    streamable.map(theCar.color).excludeIn("Blue", "Red").toListString());
+                    streamable.map(theCar.color).excludeAny("Blue", "Red").toListString());
         });
     }
     
@@ -1916,28 +1915,6 @@ public class StreamableTest {
         });
     }
     
-    @Test
-    public void testMapWithIndex_map_combine() {
-        run(Streamable.of("One", "Three", "Five", "Seven", "Eleven"), streamable -> {
-        assertStrings(
-                "[0: 3, 1: 5, 2: 4, 3: 5, 4: 6]",
-                streamable
-                .mapWithIndex(each -> each.length(), (i, each) -> i + ": " + each)
-                .toListString());
-        });
-    }
-    
-    @Test
-    public void testMapToObjWithIndex_map_combine() {
-        run(Streamable.of("One", "Three", "Five", "Seven", "Eleven"), streamable -> {
-        assertStrings(
-                "[0: 3, 1: 5, 2: 4, 3: 5, 4: 6]",
-                streamable
-                .mapToObjWithIndex(each -> each.length(), (i, each) -> i + ": " + each)
-                .toListString());
-        });
-    }
-    
     //-- StreamPlusWithMapGroup --
     
     @Test
@@ -2269,9 +2246,10 @@ public class StreamableTest {
     @Test
     public void testSplit() {
         assertEquals("([One, Two],[Four, Five],[Three])",
-                FuncListDerived.from((Supplier<Stream<String>>)()->Stream.of("One", "Two", "Three", "Four", "Five"))
+                Streamable.of("One", "Two", "Three", "Four", "Five")
                 .split($S.length().thatEquals(3),
                        $S.length().thatLessThanOrEqualsTo(4))
+                .map(Streamable::toListString, Streamable::toListString, Streamable::toListString)
                 .toString());
     }
     

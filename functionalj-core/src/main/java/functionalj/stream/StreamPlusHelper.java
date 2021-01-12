@@ -2,12 +2,12 @@ package functionalj.stream;
 
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Func1;
-import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
 import lombok.val;
 
@@ -42,10 +42,10 @@ public class StreamPlusHelper {
     }
     
     static <DATA, C, B> StreamPlus<C> doZipWith(
-            ZipWithOption      option, 
-            Func2<DATA, B, C>  merger,
-            IteratorPlus<DATA> iteratorA, 
-            IteratorPlus<B>    iteratorB) {
+            ZipWithOption          option, 
+            BiFunction<DATA, B, C> merger,
+            IteratorPlus<DATA>     iteratorA, 
+            IteratorPlus<B>        iteratorB) {
         
         val iterator = new Iterator<C>() {
             private boolean hasNextA;

@@ -513,7 +513,8 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
             return FuncListDerived.from(source);
         }
         
-        return FuncListDerived.from(()->map.keySet().stream());
+        Streamable<KEY> streamable = ()->StreamPlus.from( map.keySet().stream());
+        return streamable.toFuncList();
     }
     
     @Override

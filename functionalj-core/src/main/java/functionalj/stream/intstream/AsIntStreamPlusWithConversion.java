@@ -40,7 +40,6 @@ import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.list.intlist.ImmutableIntFuncList;
-import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.stream.markers.Eager;

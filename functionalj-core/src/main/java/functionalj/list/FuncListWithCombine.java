@@ -25,16 +25,23 @@ package functionalj.list;
 
 import static functionalj.list.FuncList.deriveFrom;
 
-import functionalj.function.Func2;
+import java.util.function.BiFunction;
+
 import functionalj.stream.ZipWithOption;
 import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple2;
 
 public interface FuncListWithCombine<DATA> extends AsStreamable<DATA> {
+    
+    
+    /** Concatenate the given head stream in front of this stream. */
+    public default FuncList<DATA> prependWith(FuncList<DATA> head) {
+        return deriveFrom(this, stream -> stream.prependWith(head.stream()));
+    }
 
     /** Concatenate the given tail stream to this stream. */
-    public default FuncList<DATA> concatWith(FuncList<DATA> tail) {
-        return deriveFrom(this, stream -> stream.concatWith(tail.streamPlus()));
+    public default FuncList<DATA> appendWith(FuncList<DATA> tail) {
+        return deriveFrom(this, stream -> stream.appendWith(tail.streamPlus()));
     }
     
     /**
@@ -91,8 +98,8 @@ public interface FuncListWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result list:  [A-1, B-2, C-3] <br>
      */
     public default <B, C> FuncList<C> zipWith(
-            FuncList<B>       anotherList, 
-            Func2<DATA, B, C> combinator) {
+            FuncList<B>            anotherList, 
+            BiFunction<DATA, B, C> combinator) {
         return deriveFrom(this, stream -> stream.zipWith(anotherList.stream(), combinator));
     }
     
@@ -107,44 +114,43 @@ public interface FuncListWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result list:  [A-1, B-2, C-3, null-4, null-5] <br>
      */
     public default <B, C> FuncList<C> zipWith(
-            FuncList<B>       anotherList, 
-            ZipWithOption     option,
-            Func2<DATA, B, C> combinator) {
+            FuncList<B>            anotherList, 
+            ZipWithOption          option,
+            BiFunction<DATA, B, C> combinator) {
         return deriveFrom(this, stream -> stream.zipWith(anotherList.stream(), option, combinator));
     }
     
     /**
-     * Create a new stream by choosing value from each stream suing the selector.
-     * The combine stream ended when any of the stream ended.
-     * 
+     * Create a new stream by choosing value from each stream using the selector.
+     * The value from the longer stream is automatically used after the shorter stream ended.
+     *
      * For an example: <br>
-     *   This list:    [10, 1, 9, 2] <br>
-     *   Another list: [ 5, 5, 5, 5, 5, 5, 5] <br>
-     *   Selector:     (v1,v2) -> v1 > v2 <br>
-     *   Result list:  [10, 5, 9, 5]
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5]
      */
     public default FuncList<DATA> choose(
-            FuncList<DATA>             anotherList,
-            Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveFrom(this, stream -> stream.choose(anotherList.stream(), selectThisNotAnother));
+            FuncList<DATA>                  anotherStreamable,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+        return deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), selectThisNotAnother));
     }
     
     /**
-     * Create a new stream by choosing value from each stream suing the selector.
-     * The combine stream ended when both stream ended.
+     * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
-     * 
-     * For an example with ZipWithOption.AllowUnpaired: <br>
-     *   This list:    [10, 1, 9, 2] <br>
-     *   Another list: [ 5, 5, 5, 5, 5, 5, 5] <br>
-     *   Selector:     (v1,v2) -> v1 > v2 <br>
-     *   Result list:  [10, 5, 9, 5, 5, 5, 5]
+     *
+     * For an example: <br>
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5]
      */
     public default FuncList<DATA> choose(
-            FuncList<DATA>             anotherList,
-            ZipWithOption              option,
-            Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveFrom(this, stream -> stream.choose(anotherList.stream(), option, selectThisNotAnother));
+            FuncList<DATA>                  anotherStreamable,
+            ZipWithOption                   option,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+        return deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), option, selectThisNotAnother));
     }
     
 }

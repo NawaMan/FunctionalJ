@@ -83,12 +83,10 @@ public interface FuncList<DATA>
             ReadOnlyList<DATA>,
             Predicate<DATA>,
             AsStreamable<DATA>,
-            FuncListWithCalculate<DATA>,
             FuncListWithCombine<DATA>,
             FuncListWithFillNull<DATA>,
             FuncListWithFilter<DATA>,
             FuncListWithFlatMap<DATA>,
-            FuncListWithForEach<DATA>,
             FuncListWithLimit<DATA>,
             FuncListWithMap<DATA>,
             FuncListWithMapFirst<DATA>,
@@ -103,7 +101,7 @@ public interface FuncList<DATA>
             FuncListWithSegment<DATA>,
             FuncListWithSort<DATA>,
             FuncListWithSplit<DATA> {
-    // TODO NOW: Remove each of the above to ensure that the method are appropreate.
+    
     
     /** Throw a no more element exception. This is used for generator. */
     public static <TARGET> TARGET noMoreElement() throws NoMoreResultException {

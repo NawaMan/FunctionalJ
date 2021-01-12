@@ -23,13 +23,11 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
-import functionalj.list.FuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.intstream.AsIntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
-import lombok.val;
 
 /**
  * Classes implementing this interface can act like an int streamable.

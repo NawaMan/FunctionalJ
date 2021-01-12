@@ -237,9 +237,19 @@ public class FuncListTest {
         });
     }
     
-    @Ignore("Taking too long - run manually as needed.")
     @Test
     public void testFrom_streamable_infinite() {
+        run(FuncList.from(Streamable.loop()), list -> {
+            assertStrings("[null, null, null, null, null]", list.skip(100000).limit(5));
+        });
+        run(FuncList.from(IntStreamable.infinite().boxed()), list -> {
+            assertStrings("[100000, 100001, 100002, 100003, 100004]", list.skip(100000).limit(5));
+        });
+    }
+    
+    @Ignore("Taking too long - run manually as needed.")
+    @Test
+    public void testFrom_streamable_infinite_toList() {
         run(FuncList.from(Streamable.loop()), list -> {
             try {
                 list.toList();
@@ -1638,10 +1648,21 @@ public class FuncListTest {
     //-- FuncListWithCombine --
     
     @Test
-    public void testConcatWith() {
-        run(FuncList.of(One, Two), FuncList.of(Three, Four), (list1, streamabl2) -> {
-            assertStrings("[One, Two, Three, Four]",
-                    list1.concatWith(streamabl2)
+    public void testAppendWith() {
+        run(FuncList.of(One, Two), FuncList.of(Three, Four), (list1, list2) -> {
+            assertStrings(
+                        "[One, Two, Three, Four]",
+                        list1.appendWith(list2)
+                    );
+        });
+    }
+    
+    @Test
+    public void testParependWith() {
+        run(FuncList.of(One, Two), FuncList.of(Three, Four), (list1, list2) -> {
+            assertStrings(
+                        "[One, Two, Three, Four]",
+                        list2.prependWith(list1)
                     );
         });
     }
@@ -1712,7 +1733,7 @@ public class FuncListTest {
             IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 val bool = new AtomicBoolean(true);
-                assertStrings("A, 1, C", listA.choose(listB, (a, b) -> {
+                assertStrings("A, 1, C, 3, 4", listA.choose(listB, (a, b) -> {
                     boolean curValue = bool.get();
                     return bool.getAndSet(!curValue);
                 }).limit(5).join(", "));
@@ -1912,11 +1933,11 @@ public class FuncListTest {
     }
     
     @Test
-    public void testFilterIn() {
+    public void testFilterOnly() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
             assertStrings(
                     "[Blue, Red]",
-                    list.map(theCar.color).filterIn("Blue", "Red"));
+                    list.map(theCar.color).filterOnly("Blue", "Red"));
         });
     }
     
@@ -1930,11 +1951,11 @@ public class FuncListTest {
     }
     
     @Test
-    public void testExcludeIn() {
+    public void testExcludeAny() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
             assertStrings(
                     "[Green, null]",
-                    list.map(theCar.color).excludeIn("Blue", "Red"));
+                    list.map(theCar.color).excludeAny("Blue", "Red"));
         });
     }
     
@@ -2727,24 +2748,32 @@ public class FuncListTest {
     }
     
     @Test
-    public void testMapWithIndex_map_combine() {
+    public void testMapToIntWithIndex_combine() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
         assertStrings(
-                "[0: 3, 1: 5, 2: 4, 3: 5, 4: 6]",
+                "[3, 6, 6, 8, 10]",
+                //  3 = 0 + 3 (One)
+                //  6 = 1 + 5 (Three)
+                //  6 = 2 + 4 (Five)
+                //  8 = 3 + 5 (Seven)
+                // 10 = 4 + 6 (Eleven)
                 list
-                .mapWithIndex(each -> each.length(), (i, each) -> i + ": " + each)
-                );
+                .mapToIntWithIndex((index, value) -> index + value.length()));
         });
     }
     
     @Test
-    public void testMapToObjWithIndex_map_combine() {
+    public void testMapToDoubleWithIndex_combine() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
         assertStrings(
-                "[0: 3, 1: 5, 2: 4, 3: 5, 4: 6]",
+                "[3.0, 6.0, 6.0, 8.0, 10.0]",
+                //  3 = 0 + 3 (One)
+                //  6 = 1 + 5 (Three)
+                //  6 = 2 + 4 (Five)
+                //  8 = 3 + 5 (Seven)
+                // 10 = 4 + 6 (Eleven)
                 list
-                .mapToObjWithIndex(each -> each.length(), (i, each) -> i + ": " + each)
-                );
+                .mapToDoubleWithIndex((index, value) -> index + value.length()));
         });
     }
     

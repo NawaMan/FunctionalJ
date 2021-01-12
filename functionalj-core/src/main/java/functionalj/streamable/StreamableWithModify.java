@@ -27,10 +27,12 @@ import static functionalj.streamable.Streamable.deriveFrom;
 import static functionalj.streamable.Streamable.deriveToObj;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import functionalj.function.Func1;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
+import functionalj.stream.markers.Sequential;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -54,6 +56,7 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
      *     output2 = acc2 with acc3 = acc2 ~ rest2 and rest3 = rest of rest2
      *     ...
      */
+    @Sequential
     public default Streamable<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
         return deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
@@ -77,6 +80,7 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
+    @Sequential
     @SuppressWarnings({ "unchecked" })
     public default Streamable<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
         Func1<Tuple2<DATA, Streamable<DATA>>, Tuple2<DATA, Streamable<DATA>>> func = ((Tuple2<DATA, Streamable<DATA>> pair) -> {
@@ -110,10 +114,10 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
      * Map each element to a uncompleted action, run them and collect which ever finish first.
      * The result stream will not be the same order with the original one
      *   -- as stated, the order will be the order of completion.
-     * If the result StreamPlus is closed (which is done everytime a terminal operation is done),
+     * If the result StreamPlus is closed (which is done every times a terminal operation is done),
      *   the unfinished actions will be canceled.
      */
-    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
+    public default <T> Streamable<Result<T>> spawn(Function<DATA, ? extends UncompletedAction<T>> mapToAction) {
         return deriveToObj(this, stream -> stream.spawn(mapToAction));
     }
     

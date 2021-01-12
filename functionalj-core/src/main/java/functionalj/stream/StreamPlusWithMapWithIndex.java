@@ -26,9 +26,13 @@ package functionalj.stream;
 import static functionalj.tuple.IntTuple2.tuple;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 import functionalj.function.IntObjBiFunction;
+import functionalj.function.IntObjToDoubleBiFunction;
+import functionalj.function.IntObjToIntBiFunction;
+import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.markers.Sequential;
 import functionalj.tuple.IntTuple2;
 import lombok.val;
 
@@ -36,11 +40,10 @@ import lombok.val;
 
 public interface StreamPlusWithMapWithIndex<DATA> {
     
-    // TODO - to int, long, double
-    
     public StreamPlus<DATA> streamPlus();
     
     /** @return  the stream of each value and index. */
+    @Sequential
     public default StreamPlus<IntTuple2<DATA>> mapWithIndex() {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
@@ -53,6 +56,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
+    @Sequential
     public default <T> StreamPlus<T> mapWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
@@ -65,6 +69,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
+    @Sequential
     public default <T> StreamPlus<T> mapToObjWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
@@ -76,28 +81,30 @@ public interface StreamPlusWithMapWithIndex<DATA> {
                 });
     }
     
-    /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
-    public default <T1, T> StreamPlus<T> mapWithIndex(
-                Function<? super DATA, ? extends T1> valueMapper,
-                IntObjBiFunction<? super T1, T>      combinator) {
+    /** Create a stream whose value is the combination between value of this stream and its index. */
+    @Sequential
+    public default IntStreamPlus mapToIntWithIndex(IntObjToIntBiFunction<? super DATA> combinator) {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
         return streamPlus
-                .mapToObj(each -> {
+                .mapToInt(each -> {
                     val currentIndex = index.getAndIncrement();
-                    val value        = valueMapper.apply(each);
-                    val target       = combinator.apply(currentIndex, value);
+                    val target       = combinator.apply(currentIndex, each);
                     return target;
                 });
     }
     
-    /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
-    public default <T1, T> StreamPlus<T> mapToObjWithIndex(
-                Function<? super DATA, ? extends T1> valueMapper,
-                IntObjBiFunction<? super T1, T>      combinator) {
+    /** Create a stream whose value is the combination between value of this stream and its index. */
+    @Sequential
+    public default DoubleStreamPlus mapToDoubleWithIndex(IntObjToDoubleBiFunction<? super DATA> combinator) {
+        val index = new AtomicInteger();
         val streamPlus = streamPlus();
         return streamPlus
-                .mapWithIndex(valueMapper, combinator);
+                .mapToDouble(each -> {
+                    val currentIndex = index.getAndIncrement();
+                    val target       = combinator.apply(currentIndex, each);
+                    return target;
+                });
     }
     
 }

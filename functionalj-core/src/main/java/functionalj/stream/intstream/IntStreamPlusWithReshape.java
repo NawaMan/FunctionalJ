@@ -25,11 +25,8 @@ package functionalj.stream.intstream;
 
 import static functionalj.function.Func.f;
 import static functionalj.stream.StreamPlus.streamOf;
-import static functionalj.stream.intstream.IntStreamPlus.generateWith;
 import static functionalj.stream.intstream.IntStreamPlusHelper.sequentialToObj;
-import static java.lang.Math.max;
 
-import java.util.NoSuchElementException;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,7 +42,6 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
-import functionalj.result.NoMoreResultException;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.markers.Sequential;

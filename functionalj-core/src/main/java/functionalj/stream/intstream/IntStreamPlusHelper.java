@@ -14,7 +14,6 @@ import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.ZipWithOption;
 import lombok.val;
 
 
@@ -445,53 +444,6 @@ public class IntStreamPlusHelper {
         val targetStream = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iterator::close).runCarelessly();
-            f(iteratorA::close).runCarelessly();
-            f(iteratorB::close).runCarelessly();
-        });
-        return targetStream;
-    }
-    
-    static IntStreamPlus doChoiceWith(
-            ZipWithOption          option,
-            IntBiFunctionPrimitive merger,
-            IntIteratorPlus        iteratorA,
-            IntIteratorPlus        iteratorB) {
-        
-        val iterator = new PrimitiveIterator.OfInt() {
-            private boolean hasNextA;
-            private boolean hasNextB;
-            
-            public boolean hasNext() {
-                hasNextA = iteratorA.hasNext();
-                hasNextB = iteratorB.hasNext();
-                return (option == ZipWithOption.RequireBoth)
-                        ? (hasNextA && hasNextB)
-                        : (hasNextA || hasNextB);
-            }
-            public int nextInt() {
-                if (hasNextA && hasNextB) {
-                    int nextA  = iteratorA.nextInt();
-                    int nextB  = iteratorB.nextInt();
-                    int choice = merger.applyAsIntAndInt(nextA, nextB);
-                    return choice;
-                }
-                if (hasNextA) {
-                    int nextA = iteratorA.nextInt();
-                    return nextA;
-                }
-                if (hasNextB) {
-                    int nextB = iteratorB.nextInt();
-                    return nextB;
-                }
-                throw new NoSuchElementException();
-            }
-        };
-        
-        val targetIterator = IntIteratorPlus.from(iterator);
-        val iterable       = (IntIterable)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
-        targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
         });

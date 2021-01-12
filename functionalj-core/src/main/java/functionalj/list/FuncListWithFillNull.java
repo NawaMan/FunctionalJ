@@ -25,10 +25,11 @@ package functionalj.list;
 
 import static functionalj.list.FuncList.deriveFrom;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.function.Func1;
-import functionalj.function.Func2;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.streamable.AsStreamable;
 
@@ -48,9 +49,9 @@ public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the given replacement. */
     public default <VALUE> FuncList<DATA> fillNull(
-            Func1<DATA, VALUE>       getter, 
-            Func2<DATA, VALUE, DATA> setter, 
-            VALUE                    replacement) {
+            Function<DATA, VALUE>         getter, 
+            BiFunction<DATA, VALUE, DATA> setter, 
+            VALUE                         replacement) {
         return deriveFrom(this, stream -> stream.fillNull(getter, setter, replacement));
     }
     
@@ -63,9 +64,9 @@ public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier. */
     public default <VALUE> FuncList<DATA> fillNullWith(
-            Func1<DATA, VALUE>       getter, 
-            Func2<DATA, VALUE, DATA> setter, 
-            Supplier<VALUE>          replacementSupplier) {
+            Function<DATA, VALUE>         getter, 
+            BiFunction<DATA, VALUE, DATA> setter, 
+            Supplier<VALUE>               replacementSupplier) {
         return deriveFrom(this, stream -> stream.fillNullWith(getter, setter, replacementSupplier));
     }
     
@@ -78,9 +79,9 @@ public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function. */
     public default <VALUE> FuncList<DATA> fillNullBy(
-            Func1<DATA, VALUE>       getter, 
-            Func2<DATA, VALUE, DATA> setter, 
-            Func1<DATA, VALUE>       replacementFunction) {
+            Function<DATA, VALUE>         getter, 
+            BiFunction<DATA, VALUE, DATA> setter, 
+            Function<DATA, VALUE>         replacementFunction) {
         return deriveFrom(this, stream -> stream.fillNullBy(getter, setter, replacementFunction));
     }
 }

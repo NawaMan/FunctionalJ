@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,10 +21,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable;
+package functionalj.function;
 
-import functionalj.stream.AsStreamPlusWithForEach;
+import functionalj.functions.ThrowFuncs;
 
-public interface StreamableWithForEach<DATA> extends AsStreamable<DATA>, AsStreamPlusWithForEach<DATA> {
+public interface IntObjToIntBiFunction<DATA> extends Func2<Integer, DATA, Integer> {
+    
+    public int applyAsIntUnsafe(int input1, DATA input2) throws Exception;
+    
+    public default int applyAsInt(int input1, DATA input2) {
+        try {
+            return applyAsIntUnsafe(input1, input2);
+        } catch(Exception exception) {
+            throw ThrowFuncs.exceptionTransformer.get().apply(exception);
+        }
+    }
+    
+    public default Integer applyUnsafe(Integer input1, DATA input2) throws Exception {
+        return applyAsIntUnsafe(input1, input2);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <D> int apply(IntObjBiFunction<D, Integer> function, int input1, D input2) {
+        if (function instanceof IntObjToIntBiFunction) {
+            return ((IntObjToIntBiFunction<D>)function).applyAsInt(input1, input2);
+        } else {
+            return function.applyAsInt(input1, input2);
+        }
+    }
     
 }
+

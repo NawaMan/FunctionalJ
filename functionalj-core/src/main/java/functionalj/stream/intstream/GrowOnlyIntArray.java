@@ -87,7 +87,7 @@ public final class GrowOnlyIntArray {
         IntStreamPlus tail  = ((aCount >= arrays.length) || (arrays[aCount] == null))
                             ? IntStreamPlus.empty()
                             : IntStreamPlus.of(arrays[aCount]).limit(residue);
-        IntStreamPlus total = head.concatWith(tail);
+        IntStreamPlus total = head.appendWith(tail);
         return total;
     }
     

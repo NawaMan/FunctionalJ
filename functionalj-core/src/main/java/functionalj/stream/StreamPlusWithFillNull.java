@@ -25,11 +25,12 @@ package functionalj.stream;
 
 import static functionalj.stream.StreamPlusHelper.derive;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.function.Func1;
-import functionalj.function.Func2;
 import functionalj.lens.core.WriteLens;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
@@ -65,9 +66,9 @@ public interface StreamPlusWithFillNull<DATA> {
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the given replacement. */
     public default <VALUE> StreamPlus<DATA> fillNull(
-            Func1<DATA, VALUE>       getter, 
-            Func2<DATA, VALUE, DATA> setter, 
-            VALUE                    replacement) {
+            Function<DATA, VALUE>         getter, 
+            BiFunction<DATA, VALUE, DATA> setter, 
+            VALUE                         replacement) {
         val streamPlus = streamPlus();
         return derive(streamPlus, stream ->  {
             return (Stream<DATA>)stream
@@ -94,9 +95,9 @@ public interface StreamPlusWithFillNull<DATA> {
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier. */
     public default <VALUE> StreamPlus<DATA> fillNullWith(
-            Func1<DATA, VALUE>       getter, 
-            Func2<DATA, VALUE, DATA> setter, 
-            Supplier<VALUE>          replacementSupplier) {
+            Function<DATA, VALUE>         getter, 
+            BiFunction<DATA, VALUE, DATA> setter, 
+            Supplier<VALUE>               replacementSupplier) {
         val streamPlus = streamPlus();
         return derive(streamPlus, stream ->  {
             return (Stream<DATA>)stream
@@ -124,9 +125,9 @@ public interface StreamPlusWithFillNull<DATA> {
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function. */
     public default <VALUE> StreamPlus<DATA> fillNullBy(
-            Func1<DATA, VALUE>       getter, 
-            Func2<DATA, VALUE, DATA> setter, 
-            Func1<DATA, VALUE>       replacementFunction) {
+            Function<DATA, VALUE>         getter, 
+            BiFunction<DATA, VALUE, DATA> setter, 
+            Function<DATA, VALUE>         replacementFunction) {
         val streamPlus = streamPlus();
         return derive(streamPlus, stream ->  {
             return (Stream<DATA>)stream

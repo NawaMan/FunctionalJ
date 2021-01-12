@@ -24,7 +24,6 @@
 package functionalj.streamable.intstreamable;
 
 import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
 import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
 
 import java.util.Comparator;

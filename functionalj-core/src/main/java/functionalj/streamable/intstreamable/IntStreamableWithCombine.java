@@ -36,9 +36,15 @@ import functionalj.tuple.IntTuple2;
 
 public interface IntStreamableWithCombine extends AsIntStreamable {
     
+    
+    /** Concatenate the given head stream in front of this stream. */
+    public default IntStreamable prependWith(IntStreamable head) {
+        return deriveFrom(this, stream -> stream.prependWith(head.intStream()));
+    }
+    
     /** Concatenate the given tail stream to this stream. */
-    public default IntStreamable concatWith(IntStreamable tail) {
-        return deriveFrom(this, stream -> stream.concatWith(tail.intStream()));
+    public default IntStreamable appendWith(IntStreamable tail) {
+        return deriveFrom(this, stream -> stream.appendWith(tail.intStream()));
     }
     
     /**

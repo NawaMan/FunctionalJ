@@ -24,16 +24,19 @@
 package functionalj.streamable;
 
 import static functionalj.streamable.Streamable.deriveFrom;
+import static functionalj.streamable.Streamable.deriveToDouble;
+import static functionalj.streamable.Streamable.deriveToInt;
 import static functionalj.streamable.Streamable.deriveToObj;
 
-import java.util.function.Function;
-
 import functionalj.function.IntObjBiFunction;
+import functionalj.function.IntObjToDoubleBiFunction;
+import functionalj.function.IntObjToIntBiFunction;
+import functionalj.stream.markers.Sequential;
+import functionalj.streamable.doublestreamable.DoubleStreamable;
+import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.tuple.IntTuple2;
 
 public interface StreamableWithMapWithIndex<DATA> extends AsStreamable<DATA> {
-    
-    // TODO - to int, long, double
     
     /** @return  the stream of each value and index. */
     public default Streamable<IntTuple2<DATA>> mapWithIndex() {
@@ -50,18 +53,16 @@ public interface StreamableWithMapWithIndex<DATA> extends AsStreamable<DATA> {
         return deriveToObj(this, stream -> stream.mapToObjWithIndex(combinator));
     }
     
-    /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
-    public default <T1, T> Streamable<T> mapWithIndex(
-                Function<? super DATA, ? extends T1> valueMapper,
-                IntObjBiFunction<? super T1, T>      combinator) {
-        return deriveToObj(this, stream -> stream.mapWithIndex(valueMapper, combinator));
+    /** Create a stream whose value is the combination between value of this stream and its index. */
+    @Sequential
+    public default IntStreamable mapToIntWithIndex(IntObjToIntBiFunction<? super DATA> combinator) {
+        return deriveToInt(this, stream -> stream.mapToIntWithIndex(combinator));
     }
     
-    /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
-    public default <T1, T> Streamable<T> mapToObjWithIndex(
-                Function<? super DATA, ? extends T1> valueMapper,
-                IntObjBiFunction<? super T1, T>      combinator) {
-        return deriveToObj(this, stream -> stream.mapToObjWithIndex(valueMapper, combinator));
+    /** Create a stream whose value is the combination between value of this stream and its index. */
+    @Sequential
+    public default DoubleStreamable mapToDoubleWithIndex(IntObjToDoubleBiFunction<? super DATA> combinator) {
+        return deriveToDouble(this, stream -> stream.mapToDoubleWithIndex(combinator));
     }
     
 }

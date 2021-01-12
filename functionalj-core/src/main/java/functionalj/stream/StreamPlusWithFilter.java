@@ -172,7 +172,7 @@ public interface StreamPlusWithFilter<DATA> {
     
     /** Filter only the value that is in the given items. */
     @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> filterIn(DATA ... items) {
+    public default StreamPlus<DATA> filterOnly(DATA ... items) {
         return filterIn(asList((DATA[])items));
     }
     
@@ -200,7 +200,7 @@ public interface StreamPlusWithFilter<DATA> {
     
     /** Filter out any value that is in the given items. */
     @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> excludeIn(DATA ... items) {
+    public default StreamPlus<DATA> excludeAny(DATA ... items) {
         val streamPlus = streamPlus();
         return streamPlus
                 .excludeIn(asList((DATA[])items));

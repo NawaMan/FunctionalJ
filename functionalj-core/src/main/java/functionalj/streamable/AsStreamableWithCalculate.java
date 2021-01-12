@@ -24,7 +24,6 @@
 package functionalj.streamable;
 
 import static functionalj.stream.Collected.collectedOf;
-import static functionalj.streamable.AsStreamable.streamableFrom;
 
 import functionalj.stream.StreamProcessor;
 import functionalj.tuple.Tuple;
@@ -36,12 +35,16 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
-public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
+public interface AsStreamableWithCalculate<DATA> {
+    
+    
+    public Streamable<DATA> streamable();
+    
     
     /** Perform the calculation using the data of this streamable */
     public default <A, T> T calculate(
             StreamProcessor<? extends DATA, T> processor) {
-        val streamble = streamableFrom(this);
+        val streamble = streamable();
         val collected = collectedOf(streamble, processor);
         streamble
         .forEach(each -> {
@@ -55,7 +58,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
     public default <T1, T2> Tuple2<T1, T2> calculate(
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2) {
-        val streamble = streamableFrom(this);
+        val streamble  = streamable();
         val collected1 = collectedOf(streamble, processor1);
         val collected2 = collectedOf(streamble, processor2);
         streamble
@@ -73,7 +76,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2,
             StreamProcessor<DATA, T3> processor3) {
-        val streamble = streamableFrom(this);
+        val streamble  = streamable();
         val collected1 = collectedOf(streamble, processor1);
         val collected2 = collectedOf(streamble, processor2);
         val collected3 = collectedOf(streamble, processor3);
@@ -95,7 +98,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             StreamProcessor<DATA, T2> processor2,
             StreamProcessor<DATA, T3> processor3,
             StreamProcessor<DATA, T4> processor4) {
-        val streamble = streamableFrom(this);
+        val streamble  = streamable();
         val collected1 = collectedOf(streamble, processor1);
         val collected2 = collectedOf(streamble, processor2);
         val collected3 = collectedOf(streamble, processor3);
@@ -121,7 +124,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             StreamProcessor<DATA, T3> processor3,
             StreamProcessor<DATA, T4> processor4,
             StreamProcessor<DATA, T5> processor5) {
-        val streamble = streamableFrom(this);
+        val streamble  = streamable();
         val collected1 = collectedOf(streamble, processor1);
         val collected2 = collectedOf(streamble, processor2);
         val collected3 = collectedOf(streamble, processor3);
@@ -151,7 +154,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             StreamProcessor<DATA, T4> processor4,
             StreamProcessor<DATA, T5> processor5,
             StreamProcessor<DATA, T6> processor6) {
-        val streamble = streamableFrom(this);
+        val streamble  = streamable();
         val collected1 = collectedOf(streamble, processor1);
         val collected2 = collectedOf(streamble, processor2);
         val collected3 = collectedOf(streamble, processor3);

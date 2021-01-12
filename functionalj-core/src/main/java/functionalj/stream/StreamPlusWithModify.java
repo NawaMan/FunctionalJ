@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import functionalj.function.Func1;
-import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
@@ -104,7 +104,7 @@ public interface StreamPlusWithModify<DATA> {
      **/
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     @SuppressWarnings({ "unchecked" })
-    public default StreamPlus<DATA> restate(Func2<? super DATA, StreamPlus<DATA>, StreamPlus<DATA>> restater) {
+    public default StreamPlus<DATA> restate(BiFunction<? super DATA, StreamPlus<DATA>, StreamPlus<DATA>> restater) {
         Func1<Tuple2<DATA, StreamPlus<DATA>>, Tuple2<DATA, StreamPlus<DATA>>> func = ((Tuple2<DATA, StreamPlus<DATA>> pair) -> {
             val stream = pair._2();
             if (stream == null)
@@ -136,10 +136,10 @@ public interface StreamPlusWithModify<DATA> {
      * Map each element to a uncompleted action, run them and collect which ever finish first.
      * The result stream will not be the same order with the original one 
      *   -- as stated, the order will be the order of completion.
-     * If the result StreamPlus is closed (which is done everytime a terminal operation is done),
+     * If the result StreamPlus is closed (which is done every times a terminal operation is done),
      *   the unfinished actions will be canceled.
      */
-    public default <T> StreamPlus<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
+    public default <T> StreamPlus<Result<T>> spawn(Function<DATA, ? extends UncompletedAction<T>> mapToAction) {
         val streamPlus = streamPlus();
         return sequentialToObj(streamPlus, stream -> {
             val results = new ArrayList<DeferAction<T>>();
@@ -174,5 +174,10 @@ public interface StreamPlusWithModify<DATA> {
             return resultStream;
         });
     }
+    
+    // TODO - Add insertBetween -> do mapTwo and return an element to be inserted in.
+    // insertBetween(BiFunction<DATA, DATA, DATA>)
+    // insertBetween(Function<Tuple2<DATA, DATA>, DATA>)
+    // insertBetween(IntBiFunction<Tuple2<DATA, DATA>, DATA>)
     
 }

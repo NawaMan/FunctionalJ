@@ -117,8 +117,8 @@ public interface FuncListWithFilter<DATA> extends AsStreamable<DATA> {
     
     /** Filter only the value that is in the given items. */
     @SuppressWarnings("unchecked")
-    public default FuncList<DATA> filterIn(DATA ... items) {
-        return deriveFrom(this, stream -> stream.filterIn(items));
+    public default FuncList<DATA> filterOnly(DATA ... items) {
+        return deriveFrom(this, stream -> stream.filterOnly(items));
     }
     
     /** Filter only the value that is in the given collections. */
@@ -133,8 +133,8 @@ public interface FuncListWithFilter<DATA> extends AsStreamable<DATA> {
     
     /** Filter out any value that is in the given items. */
     @SuppressWarnings("unchecked")
-    public default FuncList<DATA> excludeIn(DATA ... items) {
-        return deriveFrom(this, stream -> stream.excludeIn(items));
+    public default FuncList<DATA> excludeAny(DATA ... items) {
+        return deriveFrom(this, stream -> stream.excludeAny(items));
     }
     
     /** Filter out any value that is in the given collection. */

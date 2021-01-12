@@ -57,7 +57,6 @@ import functionalj.list.ImmutableList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
-import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;

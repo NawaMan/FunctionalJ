@@ -37,9 +37,15 @@ import functionalj.tuple.IntTuple2;
 
 public interface IntFuncListWithCombine extends AsIntFuncList {
     
+    
+    /** Concatenate the given head stream in front of this stream. */
+    public default IntFuncList prependWith(IntFuncList head) {
+        return deriveToInt(this, stream -> stream.prependWith(head.intStream()));
+    }
+    
     /** Concatenate the given tail stream to this stream. */
-    public default IntFuncList concatWith(IntFuncList tail) {
-        return deriveToInt(this, stream -> stream.concatWith(tail.intStream()));
+    public default IntFuncList appendWith(IntFuncList tail) {
+        return deriveToInt(this, stream -> stream.appendWith(tail.intStream()));
     }
     
     /**

@@ -42,7 +42,11 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface AsStreamable<DATA> extends AsStreamPlus<DATA> {
+public interface AsStreamable<DATA> 
+                    extends 
+                        AsStreamPlus<DATA>, 
+                        AsStreamableWithCalculate<DATA> {
+    
     
     /** Returns the streamable for this streamable. */
     public static <D> Streamable<D> streamableFrom(AsStreamable<D> streamable) {
@@ -77,7 +81,13 @@ public interface AsStreamable<DATA> extends AsStreamPlus<DATA> {
         return list;
     }
     
-    /** Return function that represent this streamable. */
+    /**
+     * Return function that represent this streamable.
+     * 
+     * Note: Different from {@link StreamPlus#toFuncList()},
+     *         this method can successfully be done even if this stream is infinit.
+     *       Of course, certain operations cannot be run on it (like those that need size()).
+     **/
     @Terminal
     public default FuncList<DATA> toFuncList() {
         return FuncList.from(this);

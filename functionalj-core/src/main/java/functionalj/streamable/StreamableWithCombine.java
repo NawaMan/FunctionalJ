@@ -26,15 +26,22 @@ package functionalj.streamable;
 import static functionalj.streamable.Streamable.deriveFrom;
 import static functionalj.streamable.Streamable.deriveToObj;
 
-import functionalj.function.Func2;
+import java.util.function.BiFunction;
+
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
 
 public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
     
+    
+    /** Concatenate the given head stream in front of this stream. */
+    public default Streamable<DATA> prependWith(Streamable<DATA> head) {
+        return deriveFrom(this, stream -> stream.prependWith(head.stream()));
+    }
+    
     /** Concatenate the given tail stream to this stream. */
-    public default Streamable<DATA> concatWith(Streamable<DATA> tail) {
-        return deriveFrom(this, stream -> stream.concatWith(tail.stream()));
+    public default Streamable<DATA> appendWith(Streamable<DATA> tail) {
+        return deriveFrom(this, stream -> stream.appendWith(tail.stream()));
     }
     
     /**
@@ -91,8 +98,8 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result stream:  [A-1, B-2, C-3] <br>
      */
     public default <B, C> Streamable<C> zipWith(
-            Streamable<B>     anotherStreamable, 
-            Func2<DATA, B, C> combinator) {
+            Streamable<B>          anotherStreamable, 
+            BiFunction<DATA, B, C> combinator) {
         return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream(), combinator));
     }
     
@@ -107,16 +114,16 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result stream:  [A-1, B-2, C-3, null-4, null-5] <br>
      */
     public default <B, C> Streamable<C> zipWith(
-            Streamable<B>     anotherStreamable, 
-            ZipWithOption     option,
-            Func2<DATA, B, C> combinator) {
+            Streamable<B>          anotherStreamable, 
+            ZipWithOption          option,
+            BiFunction<DATA, B, C> combinator) {
         return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream(), option, combinator));
     }
     
     /**
-     * Create a new stream by choosing value from each stream suing the selector.
-     * The combine stream ended when any of the stream ended.
-     * 
+     * Create a new stream by choosing value from each stream using the selector.
+     * The value from the longer stream is automatically used after the shorter stream ended.
+     *
      * For an example: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
@@ -124,26 +131,25 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default Streamable<DATA> choose(
-            Streamable<DATA>           anotherStreamable,
-            Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), selectThisNotAnother));
+            Streamable<DATA>                anotherStreamable,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+        return deriveToObj(this, stream -> stream.choose(anotherStreamable.stream(), selectThisNotAnother));
     }
     
     /**
-     * Create a new stream by choosing value from each stream suing the selector.
-     * The combine stream ended when both stream ended.
+     * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
-     * 
-     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *
+     * For an example: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
      *   Selector:       (v1,v2) -> v1 > v2 <br>
-     *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
+     *   Result stream:  [10, 5, 9, 5]
      */
     public default Streamable<DATA> choose(
-            Streamable<DATA>           anotherStreamable,
-            ZipWithOption              option,
-            Func2<DATA, DATA, Boolean> selectThisNotAnother) {
+            Streamable<DATA>                anotherStreamable,
+            ZipWithOption                   option,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
         return deriveToObj(this, stream -> stream.choose(anotherStreamable.stream(), option, selectThisNotAnother));
     }
     

@@ -70,12 +70,10 @@ import lombok.val;
 public interface Streamable<DATA>
         extends
             AsStreamable<DATA>,
-            StreamableWithCalculate<DATA>,
             StreamableWithCombine<DATA>,
             StreamableWithFillNull<DATA>,
             StreamableWithFilter<DATA>,
             StreamableWithFlatMap<DATA>,
-            StreamableWithForEach<DATA>,
             StreamableWithLimit<DATA>,
             StreamableWithMap<DATA>,
             StreamableWithMapFirst<DATA>,

@@ -24,13 +24,17 @@
 package functionalj.stream;
 
 import static functionalj.function.FuncUnit0.funcUnit0;
+import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
 
+import java.util.Iterator;
+import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import functionalj.function.Func1;
-import functionalj.function.Func2;
+import functionalj.result.NoMoreResultException;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.Tuple2;
 import lombok.val;
@@ -47,9 +51,19 @@ public interface StreamPlusWithCombine<DATA> {
     public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
     
     
+    /** Concatenate the given head stream in front of this stream. */
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<DATA> prependWith(Stream<DATA> head) {
+        return StreamPlus.concat(
+                StreamPlus.of(head),
+                StreamPlus.of(this)
+               )
+               .flatMap(s -> (StreamPlus<DATA>)s);
+    }
+    
     /** Concatenate the given tail stream to this stream. */
     @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> concatWith(Stream<DATA> tail) {
+    public default StreamPlus<DATA> appendWith(Stream<DATA> tail) {
         return StreamPlus.concat(
                 StreamPlus.of(this),
                 StreamPlus.of(tail)
@@ -124,8 +138,8 @@ public interface StreamPlusWithCombine<DATA> {
      *   Result stream:  [A-1, B-2, C-3] <br>
      */
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
-            Stream<ANOTHER>              anotherStream,
-            Func2<DATA, ANOTHER, TARGET> combinator) {
+            Stream<ANOTHER>                   anotherStream,
+            BiFunction<DATA, ANOTHER, TARGET> combinator) {
         return zipWith(anotherStream, RequireBoth, combinator);
     }
     
@@ -141,17 +155,17 @@ public interface StreamPlusWithCombine<DATA> {
      */
     // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
     public default <B, C> StreamPlus<C> zipWith(
-            Stream<B>         anotherStream,
-            ZipWithOption     option,
-            Func2<DATA, B, C> combinator) {
+            Stream<B>              anotherStream,
+            ZipWithOption          option,
+            BiFunction<DATA, B, C> combinator) {
         val iteratorA = streamPlus().iterator();
         val iteratorB = StreamPlus.from(anotherStream).iterator();
         return StreamPlusHelper.doZipWith(option, combinator, iteratorA, iteratorB);
     }
     
     /**
-     * Create a new stream by choosing value from each stream suing the selector.
-     * The combine stream ended when any of the stream ended.
+     * Create a new stream by choosing value from each stream using the selector.
+     * The value from the longer stream is automatically used after the shorter stream ended.
      *
      * For an example: <br>
      *   This stream:    [10, 1, 9, 2] <br>
@@ -160,40 +174,62 @@ public interface StreamPlusWithCombine<DATA> {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default StreamPlus<DATA> choose(
-            Stream<DATA>               anotherStream,
-            Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return choose(anotherStream, RequireBoth, selectThisNotAnother);
+            Stream<DATA>                    anotherStream,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+        return choose(anotherStream, AllowUnpaired, selectThisNotAnother);
     }
     
     /**
-     * Create a new stream by choosing value from each stream suing the selector.
-     * The combine stream ended when both stream ended.
+     * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
      *
-     * For an example with ZipWithOption.AllowUnpaired: <br>
+     * For an example: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
      *   Selector:       (v1,v2) -> v1 > v2 <br>
-     *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
+     *   Result stream:  [10, 5, 9, 5]
      */
     public default StreamPlus<DATA> choose(
-            Stream<DATA>               anotherStream,
-            ZipWithOption              option,
-            Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return zipWith(anotherStream, option)
-                .map(t -> {
-                    val _1 = t._1();
-                    val _2 = t._2();
-                    if ((_1 != null) && _2 == null)
-                        return _1;
-                    if ((_1 == null) && _2 != null)
-                        return _2;
-                    if ((_1 == null) && _2 == null)
-                        return null;
-                    val which = selectThisNotAnother.applyTo(t);
-                    return which ? _1 : _2;
-                })
-                .filterNonNull();
+            Stream<DATA>                    anotherStream,
+            ZipWithOption                   option,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+        val iteratorA = this.streamPlus().iterator();
+        val iteratorB = StreamPlus.from(anotherStream).iterator();
+        val iterator = new Iterator<DATA>() {
+            private boolean hasNextA;
+            private boolean hasNextB;
+            
+            public boolean hasNext() {
+                hasNextA = iteratorA.hasNext();
+                hasNextB = iteratorB.hasNext();
+                return (option == ZipWithOption.RequireBoth)
+                        ? (hasNextA && hasNextB)
+                        : (hasNextA || hasNextB);
+            }
+            public DATA next() {
+                val nextA = hasNextA ? iteratorA.next() : null;
+                val nextB = hasNextB ? iteratorB.next() : null;
+                if (hasNextA && hasNextB) {
+                    boolean selectA = selectThisNotAnother.apply(nextA, nextB);
+                    return selectA ? nextA : nextB;
+                }
+                if (hasNextA) {
+                    return nextA;
+                }
+                if (hasNextB) {
+                    return nextB;
+                }
+                throw new NoMoreResultException();
+            }
+        };
+        val iterable = new Iterable<DATA>() {
+            @Override
+            public Iterator<DATA> iterator() {
+                return iterator;
+            }
+          
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
 }

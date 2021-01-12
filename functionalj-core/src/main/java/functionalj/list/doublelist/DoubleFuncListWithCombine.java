@@ -31,15 +31,23 @@ import functionalj.function.DoubleBiPredicatePrimitive;
 import functionalj.function.DoubleDoubleBiFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.list.FuncList;
+import functionalj.stream.ZipWithOption;
+import functionalj.streamable.doublestreamable.DoubleStreamable;
 import functionalj.tuple.DoubleDoubleTuple;
 import functionalj.tuple.DoubleTuple2;
 
 
 public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
     
+    
+    /** Concatenate the given head stream in front of this stream. */
+    public default DoubleFuncList prependWith(DoubleFuncList head) {
+        return deriveToDouble(this, stream -> stream.prependWith(head.doubleStream()));
+    }
+    
     /** Concatenate the given tail stream to this stream. */
-    public default DoubleFuncList concatWith(DoubleFuncList tail) {
-        return deriveToDouble(this, stream -> stream.concatWith(tail.doubleStream()));
+    public default DoubleFuncList appendWith(DoubleFuncList tail) {
+        return deriveToDouble(this, stream -> stream.appendWith(tail.doubleStream()));
     }
     
     /**
@@ -195,8 +203,11 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
      *   Selector:       (v1,v2) -> v1 > v2 <br>
      *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
      */
-    public default DoubleFuncList choose(DoubleFuncList anotherStreamable, DoubleBiPredicatePrimitive selectThisNotAnother) {
-        return deriveToDouble(this, stream -> stream.choose(anotherStreamable.doubleStreamPlus(), selectThisNotAnother));
+    public default DoubleFuncList choose(
+                                    DoubleStreamable           anotherStreamable,
+                                    ZipWithOption              option, 
+                                    DoubleBiPredicatePrimitive selectThisNotAnother) {
+        return deriveToDouble(this, stream -> stream.choose(anotherStreamable.doubleStreamPlus(), option, selectThisNotAnother));
     }
     
 }

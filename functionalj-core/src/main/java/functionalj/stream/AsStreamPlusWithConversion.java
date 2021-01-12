@@ -108,13 +108,6 @@ public interface AsStreamPlusWithConversion<DATA> {
         return new ArrayList<DATA>(toJavaList());
     }
     
-    /** @return a functional list containing the elements. */
-    @Eager
-    @Terminal
-    public default FuncList<DATA> toFuncList() {
-        return toImmutableList();
-    }
-    
     /** @return an immutable list containing the elements. */
     @Eager
     @Terminal

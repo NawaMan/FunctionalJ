@@ -116,8 +116,8 @@ public interface StreamableWithFilter<DATA> extends AsStreamable<DATA> {
     
     /** Filter only the value that is in the given items. */
     @SuppressWarnings("unchecked")
-    public default Streamable<DATA> filterIn(DATA ... items) {
-        return deriveFrom(this, stream -> stream.filterIn(items));
+    public default Streamable<DATA> filterOnly(DATA ... items) {
+        return deriveFrom(this, stream -> stream.filterOnly(items));
     }
     
     /** Filter only the value that is in the given collections. */
@@ -137,8 +137,8 @@ public interface StreamableWithFilter<DATA> extends AsStreamable<DATA> {
     
     /** Filter out any value that is in the given collection. */
     @SuppressWarnings("unchecked")
-    public default Streamable<DATA> excludeIn(DATA ... items) {
-        return deriveFrom(this, stream -> stream.excludeIn(items));
+    public default Streamable<DATA> excludeAny(DATA ... items) {
+        return deriveFrom(this, stream -> stream.excludeAny(items));
     }
     
 }

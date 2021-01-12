@@ -26,10 +26,11 @@ package functionalj.list;
 import static functionalj.list.FuncList.from;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import functionalj.function.Func1;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
+import functionalj.stream.markers.Sequential;
 import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
 
@@ -52,6 +53,7 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      *     output2 = acc2 with acc3 = acc2 ~ rest2 and rest3 = rest of rest2
      *     ...
      */
+    @Sequential
     public default FuncList<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
         return FuncList.deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
@@ -75,6 +77,7 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
+    @Sequential
     public default FuncList<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
         return from(streamable().restate(restater));
     }
@@ -85,10 +88,10 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      * Map each element to a uncompleted action, run them and collect which ever finish first.
      * The result stream will not be the same order with the original one 
      *   -- as stated, the order will be the order of completion.
-     * If the result StreamPlus is closed (which is done everytime a terminal operation is done),
+     * If the result StreamPlus is closed (which is done every times a terminal operation is done),
      *   the unfinished actions will be canceled.
      */
-    public default <T> FuncList<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
+    public default <T> FuncList<Result<T>> spawn(Function<DATA, ? extends UncompletedAction<T>> mapToAction) {
         return FuncList.deriveFrom(this, stream -> stream.spawn(mapToAction));
     }
 }

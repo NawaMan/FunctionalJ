@@ -36,9 +36,15 @@ import functionalj.tuple.DoubleTuple2;
 
 public interface DoubleStreamableWithCombine extends AsDoubleStreamable {
     
+    
+    /** Concatenate the given head stream in front of this stream. */
+    public default DoubleStreamable prependWith(DoubleStreamable head) {
+        return deriveFrom(this, stream -> stream.prependWith(head.doubleStream()));
+    }
+    
     /** Concatenate the given tail stream to this stream. */
-    public default DoubleStreamable concatWith(DoubleStreamable tail) {
-        return deriveFrom(this, stream -> stream.concatWith(tail.doubleStream()));
+    public default DoubleStreamable appendWith(DoubleStreamable tail) {
+        return deriveFrom(this, stream -> stream.appendWith(tail.doubleStream()));
     }
     
     /**
