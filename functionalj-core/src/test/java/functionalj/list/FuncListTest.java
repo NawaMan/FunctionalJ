@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.function.Func.F;
 import static functionalj.functions.StrFuncs.join;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.$S;
@@ -70,7 +71,6 @@ import java.util.stream.StreamSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import functionalj.function.Func;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
@@ -2861,27 +2861,30 @@ public class FuncListTest {
                     + "]",
                     logs.toString());
         });
-//        run(FuncList.of(Two, Three, Four, Eleven), list -> {
-//            val timePrecision = 100;
-//            val first  = new AtomicLong(-1);
-//            val logs   = new ArrayList<String>();
-//            list
-//            .spawn(Func.F((String str) -> Sleep(str.length()*timePrecision + 5).thenReturn(str)).async())
-//            .forEach(element -> {
-//                first.compareAndSet(-1, System.currentTimeMillis());
-//                val start    = first.get();
-//                val end      = System.currentTimeMillis();
-//                val duration = Math.round((end - start)/(1.0 * timePrecision))*timePrecision;
-//                logs.add(element + " -- " + duration);
-//            });
-//            assertEquals("["
-//                    + "Result:{ Value: Two } -- 0, "
-//                    + "Result:{ Value: Four } -- " + (1*timePrecision) + ", "
-//                    + "Result:{ Value: Three } -- " + (2*timePrecision) + ", "
-//                    + "Result:{ Value: Eleven } -- " + (3*timePrecision) + ""
-//                    + "]",
-//                    logs.toString());
-//        });
+        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+            val timePrecision = 100;
+            val first  = new AtomicLong(-1);
+            val logs   = new ArrayList<String>();
+            list
+            .spawn(F((String str) -> {
+                Thread.sleep(str.length()*timePrecision + 5);
+                return str;
+            }).defer())
+            .forEach(element -> {
+                first.compareAndSet(-1, System.currentTimeMillis());
+                val start    = first.get();
+                val end      = System.currentTimeMillis();
+                val duration = Math.round((end - start)/(1.0 * timePrecision))*timePrecision;
+                logs.add(element + " -- " + duration);
+            });
+            assertEquals("["
+                    + "Result:{ Value: Two } -- 0, "
+                    + "Result:{ Value: Four } -- " + (1*timePrecision) + ", "
+                    + "Result:{ Value: Three } -- " + (2*timePrecision) + ", "
+                    + "Result:{ Value: Eleven } -- " + (3*timePrecision) + ""
+                    + "]",
+                    logs.toString());
+        });
     }
     
     @Test

@@ -104,7 +104,7 @@ public class FuncTest {
     
     @Test
     public void testDefer() {
-        val func = ((Func2<Integer, Integer, Integer>)(a, b) -> a+b).defer();
+        val func = ((Func2<Integer, Integer, Integer>)(a, b) -> a+b).forPromise();
         val a    = Promise.of(5);
         val b    = Promise.of(7);
         val c    = func.apply(a, b);

@@ -411,7 +411,16 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         };
     }
     
-    public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<OUTPUT>> defer() {
+    public default Func2<INPUT1, INPUT2, DeferAction<OUTPUT>> defer() {
+        return (input1, input2) -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.applyUnsafe(input1, input2);
+            };
+            return DeferAction.from(supplier);
+        };
+    }
+    
+    public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<OUTPUT>> forPromise() {
         return (promise1, promise2) -> {
             return Promise.from(promise1, promise2, this);
         };

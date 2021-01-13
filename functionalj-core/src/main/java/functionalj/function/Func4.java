@@ -397,7 +397,16 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         };
     }
     
-    public default Func4<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, Promise<OUTPUT>> defer() {
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, DeferAction<OUTPUT>> defer() {
+        return (input1, input2, input3, input4) -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.applyUnsafe(input1, input2, input3, input4);
+            };
+            return DeferAction.from(supplier);
+        };
+    }
+    
+    public default Func4<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, Promise<OUTPUT>> forPromise() {
         return (promise1, promise2, promise3, promise4) -> {
             return Promise.from(promise1, promise2, promise3, promise4, this);
         };

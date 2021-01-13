@@ -389,7 +389,15 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
                     .start().getPromise();
         };
     }
-    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<OUTPUT>> defer() {
+    public default Func3<INPUT1, INPUT2, INPUT3, DeferAction<OUTPUT>> defer() {
+        return (input1, input2, input3) -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.applyUnsafe(input1, input2, input3);
+            };
+            return DeferAction.from(supplier);
+        };
+    }
+    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<OUTPUT>> forPromise() {
         return (promise1, promise2, promise3) -> {
             return Promise.from(promise1, promise2, promise3, this);
         };

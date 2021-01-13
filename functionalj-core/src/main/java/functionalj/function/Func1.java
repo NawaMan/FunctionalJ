@@ -56,7 +56,7 @@ import nullablej.nullable.Nullable;
  */
 @FunctionalInterface
 public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
-
+    
     /**
      * Constructs a Func1 from function or lambda.
      *
@@ -73,7 +73,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             Func1<INPUT, OUTPUT> func1(Func1<INPUT, OUTPUT> function) {
         return function;
     }
-
+    
     public static <I1, O> Func1<I1, O> from(Function<I1, O> func) {
         return func::apply;
     }
@@ -147,10 +147,10 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return func.apply(i1, i2, i3, i4, i5, i6);
         };
     }
-
+    
     public OUTPUT applyUnsafe(INPUT input) throws Exception;
-
-
+    
+    
     /**
      * Applies this function to the given input value.
      *
@@ -166,7 +166,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
-
+    
     public default OUTPUT applyToNull() {
         return apply((INPUT)null);
     }
@@ -206,7 +206,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default <T> Func1<T, OUTPUT> applyTo(Function<T, INPUT> input) {
         return t -> apply(input.apply(t));
     }
-
+    
     public default Result<OUTPUT> applySafely(INPUT input) {
         try {
             val output = applyUnsafe(input);
@@ -215,11 +215,11 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return Result.ofException(exception);
         }
     }
-
+    
     public default Func1<INPUT, OUTPUT> memoize() {
         return Func.cacheFor(this);
     }
-
+    
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
@@ -244,7 +244,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return target;
         };
     }
-
+    
     public default Func1<INPUT, OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
         return (input)->{
             try {
@@ -289,7 +289,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             }
         };
     }
-
+    
     public default Func1<INPUT, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input)->{
             try {
@@ -346,7 +346,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             }
         };
     }
-
+    
     public default Func1<INPUT, OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
         return (input)->{
             try {
@@ -403,19 +403,19 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             }
         };
     }
-
+    
     public default OUTPUT orElse(INPUT input, OUTPUT defaultValue) {
         return applySafely(input).orElse(defaultValue);
     }
-
+    
     public default OUTPUT orGet(INPUT input, Supplier<OUTPUT> defaultSupplier) {
         return applySafely(input).orGet(defaultSupplier);
     }
-
+    
     public default Func1<INPUT, Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
     }
-
+    
     public default Func1<INPUT, Optional<OUTPUT>> optionally() {
         return (input) -> {
             try {
@@ -425,7 +425,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             }
         };
     }
-
+    
     public default Func1<INPUT, Promise<OUTPUT>> async() {
         return input -> {
             val supplier = (Func0<OUTPUT>)()->{
@@ -435,14 +435,23 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
                     .start().getPromise();
         };
     }
-    public default Func1<HasPromise<INPUT>, Promise<OUTPUT>> defer() {
+    public default Func1<INPUT, DeferAction<OUTPUT>> defer() {
+        return input -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.applyUnsafe(input);
+            };
+            return DeferAction.from(supplier);
+        };
+    }
+    
+    public default Func1<HasPromise<INPUT>, Promise<OUTPUT>> forPromise() {
         return input -> input.getPromise().map(this);
     }
-
+    
     public default FuncUnit1<INPUT> ignoreResult() {
         return FuncUnit1.of((input1)->applyUnsafe(input1));
     }
-
+    
     public default Predicate<INPUT> toPredicate() {
         return toPredicate(Boolean.TRUE::equals);
     }
@@ -450,7 +459,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         val converted = this.then(converter);
         return Func.toPredicate(converted);
     }
-
+    
     /**
      * Create a bind function (a supplier) of the this function.
      *
@@ -462,5 +471,5 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return this.applyUnsafe(input);
         };
     }
-
+    
 }

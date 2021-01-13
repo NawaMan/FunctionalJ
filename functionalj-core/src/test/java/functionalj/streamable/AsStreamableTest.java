@@ -22,7 +22,7 @@ public class AsStreamableTest {
     
     @Test
     public void testToFuncList_infiniteStream() {
-        val list = Streamable.generate(() -> {
+        val list = Streamable.<Integer>generate(() -> {
                 val counter = new AtomicInteger();
                 return () -> counter.getAndIncrement();
             }).toFuncList();
