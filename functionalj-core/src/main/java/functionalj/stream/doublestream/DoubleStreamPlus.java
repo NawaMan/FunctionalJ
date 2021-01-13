@@ -41,7 +41,6 @@ import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.stream.DoubleStream;

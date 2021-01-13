@@ -24,15 +24,10 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.DoubleFuncList.deriveToDouble;
-import static functionalj.list.doublelist.DoubleFuncList.deriveToObj;
 
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
-
-import functionalj.list.FuncList;
-import functionalj.streamable.Streamable;
 
 public interface DoubleFuncListWithFlatMap extends AsDoubleFuncList {
     

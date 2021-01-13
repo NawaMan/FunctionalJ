@@ -26,10 +26,7 @@ package functionalj.stream.intstream;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import functionalj.function.Func;
-import functionalj.stream.StreamPlus;
 import lombok.val;
 
 

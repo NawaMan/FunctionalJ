@@ -45,7 +45,6 @@ import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
-import java.util.function.ToLongFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;

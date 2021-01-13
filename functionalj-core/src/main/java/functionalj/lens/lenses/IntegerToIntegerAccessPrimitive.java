@@ -265,6 +265,72 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         };
     }
     
+    public default IntegerToBooleanAccessPrimitive thatIs(int anotherValue) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue == anotherValue;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive thatIsNot(int anotherValue) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue != anotherValue;
+        };
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsAnyOF(int ... otherValues) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            
+            for (int anotherValue : otherValues) {
+                if (intValue == anotherValue) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive thatIsNoneOf(int ... otherValues) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            
+            for (int anotherValue : otherValues) {
+                if (intValue == anotherValue) {
+                    return false;
+                }
+            }
+            return true;
+        };
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsOne() {
+        return thatIs(1);
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsZero() {
+        return thatIs(0);
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsMinusOne() {
+        return thatIs(-1);
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsFourtyTwo() {
+        return thatIs(42);
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsNotOne() {
+        return thatIsNot(1);
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsNotZero() {
+        return thatIsNot(0);
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsNotMinusOne() {
+        return thatIsNot(-1);
+    }
+    
     public default IntegerToBooleanAccessPrimitive thatEquals(int anotherValue) {
         return host -> {
             int intValue = applyAsInt(host);

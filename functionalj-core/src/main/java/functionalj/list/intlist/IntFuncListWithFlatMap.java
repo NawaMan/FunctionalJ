@@ -24,15 +24,10 @@
 package functionalj.list.intlist;
 
 import static functionalj.list.intlist.IntFuncList.deriveToInt;
-import static functionalj.list.intlist.IntFuncList.deriveToObj;
 
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import functionalj.list.FuncList;
-import functionalj.streamable.Streamable;
 
 public interface IntFuncListWithFlatMap extends AsIntFuncList {
     

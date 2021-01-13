@@ -26,12 +26,10 @@ package functionalj.list.doublelist;
 import java.util.function.DoublePredicate;
 
 import functionalj.map.FuncMap;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
-import functionalj.tuple.Tuple3;
-import functionalj.tuple.Tuple4;
-import functionalj.tuple.Tuple5;
-import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
@@ -68,156 +66,160 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
     }
     
     /**
-     * Split the stream using the predicates.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * Otherwise, it will be in the last sub stream.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
      * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
+     * Any element that does not check any predicate will thrown away.
      */
-    public default Tuple3<DoubleFuncList, DoubleFuncList, DoubleFuncList> split(
-            DoublePredicate predicate1,
-            DoublePredicate predicate2) {
-        val temp
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    :                       2,
-                it -> it
-            )
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, DoubleFuncList> split(
+            KEY key1, DoublePredicate predicate) {
+        val list1 
+            = doubleStreamPlus()
+            .filter(predicate)
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3);
+        return FuncMap.of(key1, list1);
     }
     
     /**
-     * Split the stream using the predicates.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * Otherwise, it will be in the last sub stream.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
      * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
+     * Any element that does not check any predicate will thrown away.
      */
-    public default Tuple4<DoubleFuncList, DoubleFuncList, DoubleFuncList, DoubleFuncList> split(
-            DoublePredicate predicate1,
-            DoublePredicate predicate2,
-            DoublePredicate predicate3) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    :                       3,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4);
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, DoubleFuncList> split(
+            KEY key1, DoublePredicate predicate1,
+            KEY key2, DoublePredicate predicate2) {
+        return split(
+                key1, predicate1, 
+                key2, predicate2, 
+                null);
     }
     
     /**
-     * Split the stream using the predicates.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * The element will be in the forth sub stream if the first, second, third predicate return false and the forth predicate is true.
-     * Otherwise, it will be in the last sub stream.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
      * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
+     * Any element that does not check any predicate will thrown away.
      */
-    public default Tuple5<DoubleFuncList, DoubleFuncList, DoubleFuncList, DoubleFuncList, DoubleFuncList> split(
-            DoublePredicate predicate1,
-            DoublePredicate predicate2,
-            DoublePredicate predicate3,
-            DoublePredicate predicate4) {
-        val temp
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    :                       4,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).mapToDouble(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5);
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, DoubleFuncList> split(
+            KEY key1, DoublePredicate predicate1,
+            KEY key2, DoublePredicate predicate2,
+            KEY key3, DoublePredicate predicate3) {
+        return split(
+                key1, predicate1, 
+                key2, predicate2, 
+                key3, predicate3, 
+                null);
     }
     
     /**
-     * Split the stream using the predicates.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * The element will be in the forth sub stream if the first, second and third predicate return false and the forth predicate is true.
-     * The element will be in the fifth sub stream if the first, second, third and forth predicate return false and the fifth predicate is true.
-     * Otherwise, it will be in the last sub stream.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
      * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
+     * Any element that does not check any predicate will thrown away.
      */
-    public default Tuple6<DoubleFuncList, DoubleFuncList, DoubleFuncList, DoubleFuncList, DoubleFuncList, DoubleFuncList> split(
-            DoublePredicate predicate1,
-            DoublePredicate predicate2,
-            DoublePredicate predicate3,
-            DoublePredicate predicate4,
-            DoublePredicate predicate5) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    : predicate5.test(it) ? 4
-                    :                       5,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).mapToDouble(it -> it._2());
-        val list6 = temp.filter(it -> it._1() == 5).mapToDouble(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5,
-                list6);
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, DoubleFuncList> split(
+            KEY key1, DoublePredicate predicate1,
+            KEY key2, DoublePredicate predicate2,
+            KEY key3, DoublePredicate predicate3,
+            KEY key4, DoublePredicate predicate4) {
+        return split(
+                key1, predicate1, 
+                key2, predicate2, 
+                key3, predicate3, 
+                key4, predicate4, 
+                null);
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with that associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will thrown away.
      */
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, DoubleFuncList> split(
+            KEY key1, DoublePredicate predicate1,
+            KEY key2, DoublePredicate predicate2,
+            KEY key3, DoublePredicate predicate3,
+            KEY key4, DoublePredicate predicate4,
+            KEY key5, DoublePredicate predicate5) {
+        return split(
+                key1, predicate1, 
+                key2, predicate2, 
+                key3, predicate3, 
+                key4, predicate4, 
+                key5, predicate5,
+                null);
+    }
+    
+    /**
+     * Partitioning the stream using the predicates and return as a map of each partition.
+     * 
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will thrown away.
+     */
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, DoubleFuncList> split(
+            KEY key1, DoublePredicate predicate1,
+            KEY key2, DoublePredicate predicate2,
+            KEY key3, DoublePredicate predicate3,
+            KEY key4, DoublePredicate predicate4,
+            KEY key5, DoublePredicate predicate5,
+            KEY key6, DoublePredicate predicate6) {
+        val splittedMap = split(
+                key1, predicate1, 
+                key2, predicate2, 
+                key3, predicate3, 
+                key4, predicate4, 
+                key5, predicate5,
+                key6);
+        if (key6 != null) {
+            val list6 = splittedMap.get(key6);
+            return splittedMap.with(key6, list6.filter(predicate6));
+        }
+        return splittedMap;
+    }
+    
+    /**
+     * Partitioning the stream using the predicates and return as a map of each partition.
+     * 
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
+     */
+    @Eager
+    @Terminal
     public default <KEY> FuncMap<KEY, DoubleFuncList> split(
             KEY key1, DoublePredicate predicate,
             KEY key2) {
@@ -235,10 +237,16 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
      */
+    @Eager
+    @Terminal
     public default <KEY> FuncMap<KEY, DoubleFuncList> split(
             KEY key1, DoublePredicate predicate1,
             KEY key2, DoublePredicate predicate2,
@@ -261,15 +269,21 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with that associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
      */
+    @Eager
+    @Terminal
     public default <KEY> FuncMap<KEY, DoubleFuncList> split(
             KEY key1, DoublePredicate predicate1,
             KEY key2, DoublePredicate predicate2,
             KEY key3, DoublePredicate predicate3,
-            KEY key4) {
+            KEY otherKey) {
         val temp
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -279,28 +293,34 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list1 = (key1     != null) ? temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list2 = (key2     != null) ? temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list3 = (key3     != null) ? temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list4 = (otherKey != null) ? temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
         return FuncMap.of(
-                key1, list1,
-                key2, list2,
-                key3, list3,
-                key4, list4);
+                key1,     list1,
+                key2,     list2,
+                key3,     list3,
+                otherKey, list4);
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with that associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
      */
+    @Eager
+    @Terminal
     public default <KEY> FuncMap<KEY, DoubleFuncList> split(
             KEY key1, DoublePredicate predicate1,
             KEY key2, DoublePredicate predicate2,
             KEY key3, DoublePredicate predicate3,
             KEY key4, DoublePredicate predicate4,
-            KEY key5) {
+            KEY otherKey) {
         val temp
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -311,31 +331,37 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list1 = (key1     != null) ? temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list2 = (key2     != null) ? temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list3 = (key3     != null) ? temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list4 = (key4     != null) ? temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list5 = (otherKey != null) ? temp.filter(it -> it._1() == 4).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
         return FuncMap.of(
-                key1, list1,
-                key2, list2,
-                key3, list3,
-                key4, list4,
-                key5, list5);
+                key1,     list1,
+                key2,     list2,
+                key3,     list3,
+                key4,     list4,
+                otherKey, list5);
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with that associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
      */
+    @Eager
+    @Terminal
     public default <KEY> FuncMap<KEY, DoubleFuncList> split(
             KEY key1, DoublePredicate predicate1,
             KEY key2, DoublePredicate predicate2,
             KEY key3, DoublePredicate predicate3,
             KEY key4, DoublePredicate predicate4,
             KEY key5, DoublePredicate predicate5,
-            KEY key6) {
+            KEY otherKey) {
         val temp
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -347,19 +373,19 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
-        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list1 = (key1     != null) ? temp.filter(it -> it._1() == 0).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list2 = (key2     != null) ? temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list3 = (key3     != null) ? temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list4 = (key4     != null) ? temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list5 = (key5     != null) ? temp.filter(it -> it._1() == 4).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
+        val list6 = (otherKey != null) ? temp.filter(it -> it._1() == 5).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
         return FuncMap.of(
-                key1, list1,
-                key2, list2,
-                key3, list3,
-                key4, list4,
-                key5, list5,
-                key6, list6);
+                key1,     list1,
+                key2,     list2,
+                key3,     list3,
+                key4,     list4,
+                key5,     list5,
+                otherKey, list6);
     }
     
 }

@@ -70,6 +70,7 @@ import java.util.stream.StreamSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import functionalj.function.Func;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
@@ -2805,53 +2806,35 @@ public class FuncListTest {
     //-- FuncListWithModify --
     
     @Test
-    public void testAccumulate1() {
+    public void testAccumulate() {
         run(FuncList.of(1, 2, 3, 4, 5), list -> {
             assertStrings(
-                    "1, 3, 6, 10, 15",
-                    list
-                        .accumulate((a, b)->a+b)
-                        .join(", "));
+                    "[1, 3, 6, 10, 15]",
+                    list.accumulate((prev, current) -> prev + current));
+            
+            assertStrings(
+                    "[1, 12, 123, 1234, 12345]",
+                    list.accumulate((prev, current)->prev*10 + current));
         });
     }
     
     @Test
-    public void testAccumulate2() {
-        run(FuncList.of(1, 2, 3, 4, 5), list -> {
-            assertStrings(
-                    "1, 12, 123, 1234, 12345",
-                    list
-                        .accumulate((prev, current)->prev*10 + current)
-                        .join(", "));
-        });
-    }
-    
-    @Test
-    public void testRestate1() {
+    public void testRestate() {
         run(IntFuncList.wholeNumbers(20).map(i -> i % 5).toFuncList(), list -> {
-            assertStrings(
-                    "0, 1, 2, 3, 4",
-                  list
-                      .restate((a, s)->s.filter(x -> x != a))
-                      .join   (", "));
+            assertStrings("[0, 1, 2, 3, 4]", list.restate((head, tail) -> tail.filter(x -> x != head)));
         });
     }
     
-    // sieve of eratosthenes
     @Test
-    public void testRestate2() {
-        run(IntFuncList.wholeNumbers(1000).skip(2).boxed().toFuncList(), list -> {
+    public void testRestate_sieveOfEratosthenes() {
+        run(IntFuncList.naturalNumbers(300).filter(theInteger.thatIsNotOne()).boxed().toFuncList(), list -> {
             assertStrings(
-                    "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, "
-                  + "31, 37, 41, 43, 47, 53, 59, 61, 67, 71, "
-                  + "73, 79, 83, 89, 97, 101, 103, 107, 109, 113, "
-                  + "127, 131, 137, 139, 149, 151, 157, 163, 167, 173, "
-                  + "179, 181, 191, 193, 197, 199, 211, 223, 227, 229, "
-                  + "233, 239, 241, 251, 257, 263, 269, 271, 277, 281",
-                  list
-                      .restate((a, s)->s.filter(x -> x % a != 0))
-                      .limit(60)
-                      .join (", "));
+                    "["
+                    + "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, "
+                    + "101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, "
+                    + "211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293"
+                    + "]",
+                  list.restate((head, tail) -> tail.filter(x -> x % head != 0)));
         });
     }
     
@@ -2878,6 +2861,27 @@ public class FuncListTest {
                     + "]",
                     logs.toString());
         });
+//        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+//            val timePrecision = 100;
+//            val first  = new AtomicLong(-1);
+//            val logs   = new ArrayList<String>();
+//            list
+//            .spawn(Func.F((String str) -> Sleep(str.length()*timePrecision + 5).thenReturn(str)).async())
+//            .forEach(element -> {
+//                first.compareAndSet(-1, System.currentTimeMillis());
+//                val start    = first.get();
+//                val end      = System.currentTimeMillis();
+//                val duration = Math.round((end - start)/(1.0 * timePrecision))*timePrecision;
+//                logs.add(element + " -- " + duration);
+//            });
+//            assertEquals("["
+//                    + "Result:{ Value: Two } -- 0, "
+//                    + "Result:{ Value: Four } -- " + (1*timePrecision) + ", "
+//                    + "Result:{ Value: Three } -- " + (2*timePrecision) + ", "
+//                    + "Result:{ Value: Eleven } -- " + (3*timePrecision) + ""
+//                    + "]",
+//                    logs.toString());
+//        });
     }
     
     @Test
@@ -3339,6 +3343,8 @@ public class FuncListTest {
     public void testSortedBy() {
         run(FuncList.of(One, Two, Three, Four), list -> {
             assertStrings("[One, Two, Four, Three]", list.sortedBy(String::length));
+            // Using comparable access.
+            assertStrings("[One, Two, Four, Three]", list.sortedBy(theString.length()));
         });
     }
     
@@ -3348,46 +3354,17 @@ public class FuncListTest {
             assertStrings(
                     "[Three, Four, One, Two]",
                     list.sortedBy(String::length, (a,b)->b-a));
+            // Using comparable access.
+            assertStrings(
+                    "[Three, Four, One, Two]",
+                    list.sortedBy(theString.length(), (a,b)->b-a));
         });
     }
     
     //-- FuncListWithSplit --
     
     @Test
-    public void testSplit_1() {
-        Function<FuncList<String>, FuncList<String>> listPlusToList = s -> s.toImmutableList();
-        run(FuncList.of(One, Two, Three, Four, Five, Six), list -> {
-            assertStrings(
-                     "([One, Two, Six],"
-                    + "[Three, Four, Five])",
-                    list
-                    .split(theString.length().thatEquals(3))
-                    .map(
-                        listPlusToList,
-                        listPlusToList));
-        });
-    }
-    
-    @Test
-    public void testSplit_2() {
-        Function<FuncList<String>, FuncList<String>> listPlusToList = s -> s.toImmutableList();
-        run(FuncList.of(One, Two, Three, Four, Five, Six), list -> {
-            assertStrings("([One, Two, Six],"
-                         + "[Four, Five],"
-                         + "[Three])",
-                     list
-                    .split(
-                        s -> s.length() == 3,
-                        s -> s.length() == 4)
-                    .map(
-                        listPlusToList,
-                        listPlusToList,
-                        listPlusToList));
-        });
-    }
-    
-    @Test
-    public void testSplitToTuple_N() {
+    public void testSplitTuple() {
         run(IntFuncList.wholeNumbers(20).boxed().toFuncList(), list -> {
             assertStrings(
                     "("
@@ -3395,60 +3372,13 @@ public class FuncListTest {
                     + "[1, 3, 5, 7, 9, 11, 13, 15, 17, 19]"
                     + ")",
                      list
-                    .split(theInteger.thatIsDivisibleBy(2)));
-            assertStrings(
-                    "("
-                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
-                    + "[3, 9, 15],"
-                    + "[1, 5, 7, 11, 13, 17, 19]"
-                    + ")",
-                     list
-                    .split(theInteger.thatIsDivisibleBy(2), 
-                           theInteger.thatIsDivisibleBy(3)));
-            assertStrings(
-                    "("
-                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
-                    + "[3, 9, 15],"
-                    + "[5],"
-                    + "[1, 7, 11, 13, 17, 19]"
-                    + ")",
-                     list
-                    .split(theInteger.thatIsDivisibleBy(2),
-                           theInteger.thatIsDivisibleBy(3),
-                           theInteger.thatIsDivisibleBy(5)));
-            assertStrings(
-                    "("
-                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
-                    + "[3, 9, 15],"
-                    + "[5],"
-                    + "[7],"
-                    + "[1, 11, 13, 17, 19]"
-                    + ")",
-                     list
-                    .split(theInteger.thatIsDivisibleBy(2),
-                           theInteger.thatIsDivisibleBy(3),
-                           theInteger.thatIsDivisibleBy(5),
-                           theInteger.thatIsDivisibleBy(7)));
-            assertStrings(
-                    "("
-                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
-                    + "[3, 9, 15],"
-                    + "[5],"
-                    + "[7],"
-                    + "[11],"
-                    + "[1, 13, 17, 19]"
-                    + ")",
-                     list
-                    .split(theInteger.thatIsDivisibleBy(2),
-                           theInteger.thatIsDivisibleBy(3),
-                           theInteger.thatIsDivisibleBy(5),
-                           theInteger.thatIsDivisibleBy(7),
-                           theInteger.thatIsDivisibleBy(11)));
+                    .split(theInteger.thatIsDivisibleBy(2))
+                    .toString());
         });
     }
-    
+        
     @Test
-    public void testSplitToMap_N() {
+    public void testSplit() {
         run(IntFuncList.wholeNumbers(20).boxed().toFuncList(), list -> {
             String Other = "Other";
             assertStrings(
@@ -3616,7 +3546,7 @@ public class FuncListTest {
     }
     
     @Test
-    public void testSplitToMap_N_ignore() {
+    public void testSplit_ignore() {
         run(IntFuncList.wholeNumbers(20).boxed().toFuncList(), list -> {
             assertStrings(
                     "{}",

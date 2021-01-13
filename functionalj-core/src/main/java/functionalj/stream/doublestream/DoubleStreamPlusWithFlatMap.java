@@ -26,10 +26,7 @@ package functionalj.stream.doublestream;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
 
-import functionalj.function.Func;
-import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public interface DoubleStreamPlusWithFlatMap {

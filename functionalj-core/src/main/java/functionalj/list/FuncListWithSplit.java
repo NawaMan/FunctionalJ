@@ -28,24 +28,18 @@ import java.util.function.Predicate;
 import functionalj.map.FuncMap;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
-import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
-import functionalj.tuple.Tuple3;
-import functionalj.tuple.Tuple4;
-import functionalj.tuple.Tuple5;
-import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
 public interface FuncListWithSplit<DATA>
-    extends AsStreamable<DATA> {
+    extends FuncListWithMapToTuple<DATA> {
     
     
     // The most important thing here is to only evaluate the value once.
-    // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
-    
-    //== split ==
+    // Everything else that contradict that must give.
+    // That because we can use regular filter if evaluating once is not important.
     
     // TODO - Try to make it lazy 
     // It is not easy as it seems as there has to be buffer for one branch when go through with another branch.
@@ -57,12 +51,9 @@ public interface FuncListWithSplit<DATA>
      * 
      * The elements in this stream is guaranteed to be in one of the result stream.
      */
-    @Terminal
-    public default Tuple2<FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate) {
-        val temp 
-            = streamPlus()
-            .mapToTuple(
+    public default Tuple2<FuncList<DATA>, FuncList<DATA>> split(Predicate<DATA> predicate) {
+        val temp
+            = mapToTuple(
                     it -> predicate.test(it) ? 0 : 1,
                     it -> it
             )
@@ -75,164 +66,15 @@ public interface FuncListWithSplit<DATA>
     }
     
     /**
-     * Split the stream using the predicates.
-     * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    @Terminal
-    public default Tuple3<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2) {
-        val temp 
-            = streamPlus()
-            .mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    :                       2,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    @Eager
-    public default Tuple4<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2,
-            Predicate<? super DATA> predicate3) {
-        val temp 
-            = streamPlus()
-            .mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    :                       3,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * The element will be in the forth sub stream if the first, second, third predicate return false and the forth predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    @Terminal
-    public default Tuple5<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2,
-            Predicate<? super DATA> predicate3,
-            Predicate<? super DATA> predicate4) {
-        val temp 
-            = streamPlus()
-            .mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    :                       4,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * The element will be in the forth sub stream if the first, second and third predicate return false and the forth predicate is true.
-     * The element will be in the fifth sub stream if the first, second, third and forth predicate return false and the fifth predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    @Terminal
-    public default Tuple6<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2,
-            Predicate<? super DATA> predicate3,
-            Predicate<? super DATA> predicate4,
-            Predicate<? super DATA> predicate5) {
-        val temp 
-            = streamPlus()
-            .mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    : predicate5.test(it) ? 4
-                    :                       5,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
-        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5,
-                list6);
-    }
-    
-    /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will thrown away.
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate) {
@@ -244,10 +86,15 @@ public interface FuncListWithSplit<DATA>
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will thrown away.
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -259,10 +106,15 @@ public interface FuncListWithSplit<DATA>
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will thrown away.
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -276,10 +128,15 @@ public interface FuncListWithSplit<DATA>
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will thrown away.
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -295,10 +152,15 @@ public interface FuncListWithSplit<DATA>
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will thrown away.
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -316,10 +178,15 @@ public interface FuncListWithSplit<DATA>
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will thrown away.
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -328,66 +195,63 @@ public interface FuncListWithSplit<DATA>
             KEY key4, Predicate<? super DATA> predicate4,
             KEY key5, Predicate<? super DATA> predicate5,
             KEY key6, Predicate<? super DATA> predicate6) {
-        val temp 
-        = streamPlus()
-        .mapToTuple(
-            it -> predicate1.test(it) ? 0
-                : predicate2.test(it) ? 1
-                : predicate3.test(it) ? 2
-                : predicate4.test(it) ? 3
-                : predicate5.test(it) ? 4
-                :                       5,
-            it -> it
-        )
-        .toImmutableList();
-    val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-    val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-    val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-    val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-    val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
-    val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()) : FuncList.<DATA>empty();
-    return FuncMap.of(
-            key1, list1, 
-            key2, list2, 
-            key3, list3, 
-            key4, list4, 
-            key5, list5,
-            key6, list6.filter(predicate6));
+        val splittedMap = split(
+                        key1, predicate1, 
+                        key2, predicate2, 
+                        key3, predicate3, 
+                        key4, predicate4, 
+                        key5, predicate5,
+                        key6);
+        if (key6 != null) {
+            val list6 = splittedMap.get(key6);
+            return splittedMap.with(key6, list6.filter(predicate6));
+        }
+        return splittedMap;
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate,
-            KEY key2) {
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY otherKey) {
         val temp 
             = streamPlus()
             .mapToTuple(
-                it -> predicate.test(it) ? 0 : 1,
+                it -> predicate1.test(it) ? 0 : 1,
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1     != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (otherKey != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
-                key1, list1, 
-                key2, list2);
+                key1,     list1, 
+                otherKey, list2);
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
-            KEY key3) {
+            KEY otherKey) {
         val temp 
             = streamPlus()
             .mapToTuple(
@@ -397,26 +261,31 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1     != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2     != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (otherKey != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3);
+                key1,     list1, 
+                key2,     list2, 
+                otherKey, list3);
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
             KEY key3, Predicate<? super DATA> predicate3,
-            KEY key4) {
+            KEY otherKey) {
         val temp 
             = streamPlus()
             .mapToTuple(
@@ -427,29 +296,34 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1     != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2     != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3     != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (otherKey != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3, 
-                key4, list4);
+                key1,     list1, 
+                key2,     list2, 
+                key3,     list3, 
+                otherKey, list4);
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
             KEY key3, Predicate<? super DATA> predicate3,
             KEY key4, Predicate<? super DATA> predicate4,
-            KEY key5) {
+            KEY otherKey) {
         val temp 
             = streamPlus()
             .mapToTuple(
@@ -461,24 +335,29 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1     != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2     != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3     != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4     != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (otherKey != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3, 
-                key4, list4, 
-                key5, list5);
+                key1,     list1, 
+                key2,     list2, 
+                key3,     list3, 
+                key4,     list4, 
+                otherKey, list5);
     }
     
     /**
-     * Split the stream using the predicate and return as part of a map.
+     * Partitioning the stream using the predicates and return as a map of each partition.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
+     * If all the keys are given as non-null, all the elements are guaranteed to be in one of the partition.
+     * Elements that are associated with a key that are given as null will be thrown away.
+     * 
+     * Any element that does not check any predicate will be associated with "otherKey".
      */
+    @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -486,7 +365,7 @@ public interface FuncListWithSplit<DATA>
             KEY key3, Predicate<? super DATA> predicate3,
             KEY key4, Predicate<? super DATA> predicate4,
             KEY key5, Predicate<? super DATA> predicate5,
-            KEY key6) {
+            KEY otherKey) {
         val temp 
             = streamPlus()
             .mapToTuple(
@@ -499,19 +378,19 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1     != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2     != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3     != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4     != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (key5     != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list6 = (otherKey != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3, 
-                key4, list4, 
-                key5, list5,
-                key6, list6);
+                key1,     list1, 
+                key2,     list2, 
+                key3,     list3, 
+                key4,     list4, 
+                key5,     list5,
+                otherKey, list6);
     }
     
 }

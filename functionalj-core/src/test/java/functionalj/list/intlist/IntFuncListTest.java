@@ -3318,37 +3318,7 @@ public class IntFuncListTest {
     //-- FuncListWithSplit --
     
     @Test
-    public void testSplit_1() {
-        Function<IntFuncList, IntFuncList> listPlusToList = s -> s.toImmutableList();
-        run(IntFuncList.of(One, Two, Three, Four, Five, Six), list -> {
-            assertStrings(
-                     "([1, 2],[3, 4, 5, 6])",
-                    list
-                    .split(i -> i < 3)
-                    .map(
-                        listPlusToList,
-                        listPlusToList));
-        });
-    }
-    
-    @Test
-    public void testSplit_2() {
-        Function<IntFuncList, IntFuncList> listPlusToList = s -> s.toImmutableList();
-        run(IntFuncList.of(One, Two, Three, Four, Five, Six), list -> {
-            assertStrings("([2],[4],[1, 3, 5, 6])",
-                     list
-                    .split(
-                        i -> Math.round(i*1.5) == 3,
-                        i -> Math.round(i*1.5) == 6)
-                    .map(
-                        listPlusToList,
-                        listPlusToList,
-                        listPlusToList));
-        });
-    }
-    
-    @Test
-    public void testSplitToTuple_N() {
+    public void testSplitTuple() {
         run(IntFuncList.wholeNumbers(20), list -> {
             assertStrings(
                     "("
@@ -3356,60 +3326,13 @@ public class IntFuncListTest {
                     + "[1, 3, 5, 7, 9, 11, 13, 15, 17, 19]"
                     + ")",
                      list
-                    .split(theInteger.thatIsDivisibleBy(2)));
-            assertStrings(
-                    "("
-                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
-                    + "[3, 9, 15],"
-                    + "[1, 5, 7, 11, 13, 17, 19]"
-                    + ")",
-                     list
-                    .split(theInteger.thatIsDivisibleBy(2), 
-                           theInteger.thatIsDivisibleBy(3)));
-            assertStrings(
-                    "("
-                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
-                    + "[3, 9, 15],"
-                    + "[5],"
-                    + "[1, 7, 11, 13, 17, 19]"
-                    + ")",
-                     list
-                    .split(theInteger.thatIsDivisibleBy(2),
-                           theInteger.thatIsDivisibleBy(3),
-                           theInteger.thatIsDivisibleBy(5)));
-            assertStrings(
-                    "("
-                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
-                    + "[3, 9, 15],"
-                    + "[5],"
-                    + "[7],"
-                    + "[1, 11, 13, 17, 19]"
-                    + ")",
-                     list
-                    .split(theInteger.thatIsDivisibleBy(2),
-                           theInteger.thatIsDivisibleBy(3),
-                           theInteger.thatIsDivisibleBy(5),
-                           theInteger.thatIsDivisibleBy(7)));
-            assertStrings(
-                    "("
-                    + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
-                    + "[3, 9, 15],"
-                    + "[5],"
-                    + "[7],"
-                    + "[11],"
-                    + "[1, 13, 17, 19]"
-                    + ")",
-                     list
-                    .split(theInteger.thatIsDivisibleBy(2),
-                           theInteger.thatIsDivisibleBy(3),
-                           theInteger.thatIsDivisibleBy(5),
-                           theInteger.thatIsDivisibleBy(7),
-                           theInteger.thatIsDivisibleBy(11)));
+                    .split(theInteger.thatIsDivisibleBy(2))
+                    .toString());
         });
     }
     
     @Test
-    public void testSplitToMap_N() {
+    public void testSplit() {
         run(IntFuncList.wholeNumbers(20), list -> {
             int Other = 1;
             assertStrings(

@@ -25,15 +25,10 @@ package functionalj.streamable.intstreamable;
 
 import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
 import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
 
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import functionalj.stream.StreamPlus;
-import functionalj.streamable.Streamable;
 
 public interface IntStreamableWithFlatMap extends AsIntStreamable {
     

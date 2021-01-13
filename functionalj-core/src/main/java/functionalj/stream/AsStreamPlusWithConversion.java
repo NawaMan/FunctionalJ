@@ -31,7 +31,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
 import functionalj.function.ToByteFunction;

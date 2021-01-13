@@ -720,6 +720,8 @@ public abstract class FuncMap<KEY, VALUE>
     
     public abstract FuncList<Map.Entry<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
     
+    // TODO - Add with using function.
+    
     public abstract FuncMap<KEY, VALUE> with(KEY key, VALUE value);
     
     public abstract FuncMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries);
