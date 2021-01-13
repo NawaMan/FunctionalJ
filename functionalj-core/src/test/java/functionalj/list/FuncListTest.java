@@ -581,6 +581,24 @@ public class FuncListTest {
     }
     
     @Test
+    public void testIterable() {
+        run(FuncList.of(One, Two, Three), list -> {
+            val iterator = list.iterable().iterator();
+            
+            assertTrue(iterator.hasNext());
+            assertTrue(One.equals(iterator.next()));
+            
+            assertTrue(iterator.hasNext());
+            assertTrue(Two.equals(iterator.next()));
+            
+            assertTrue(iterator.hasNext());
+            assertTrue(Three.equals(iterator.next()));
+            
+            assertFalse(iterator.hasNext());
+        });
+    }
+    
+    @Test
     public void testIterator() {
         run(FuncList.of(One, Two, Three), list -> {
             val iterator = list.iterator();

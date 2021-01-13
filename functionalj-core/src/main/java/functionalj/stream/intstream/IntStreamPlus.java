@@ -45,6 +45,7 @@ import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
+import java.util.function.ToLongFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -435,6 +436,11 @@ public interface IntStreamPlus
         return mapToDouble(i -> i);
     }
     
+    @Override
+    public default LongStream asLongStream() {
+        return mapToLong(i -> i);
+    }
+    
     // //== Helper functions ==
     
     public default <TARGET> TARGET terminate(
@@ -570,6 +576,11 @@ public interface IntStreamPlus
     
     public default IntStreamPlus mapToInt(IntUnaryOperator mapper) {
         return IntStreamPlus.from(intStream().map(mapper));
+    }
+    
+    @Override
+    public default LongStream mapToLong(IntToLongFunction mapper) {
+        return intStream().mapToLong(mapper);
     }
     
     public default DoubleStreamPlus mapToDouble() {

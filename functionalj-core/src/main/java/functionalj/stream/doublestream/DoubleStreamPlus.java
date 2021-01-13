@@ -63,10 +63,6 @@ import functionalj.tuple.DoubleDoubleTuple;
 import lombok.val;
 
 
-// TODO - Use this for byte, short and char
-// TODO - Intersect
-
-
 @FunctionalInterface
 public interface DoubleStreamPlus
         extends
@@ -537,6 +533,11 @@ public interface DoubleStreamPlus
     
     public default IntStreamPlus mapToInt(DoubleToIntFunction mapper) {
         return IntStreamPlus.from(doubleStream().mapToInt(mapper));
+    }
+    
+    @Override
+    public default LongStream mapToLong(DoubleToLongFunction mapper) {
+        return doubleStream().mapToLong(mapper);
     }
     
     public default DoubleStreamPlus mapToDouble(DoubleUnaryOperator mapper) {
