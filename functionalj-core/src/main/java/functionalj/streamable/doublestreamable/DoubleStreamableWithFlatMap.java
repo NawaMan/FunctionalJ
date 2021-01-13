@@ -25,29 +25,12 @@ package functionalj.streamable.doublestreamable;
 
 import static functionalj.streamable.doublestreamable.DoubleStreamable.deriveFrom;
 import static functionalj.streamable.doublestreamable.DoubleStreamable.deriveToDouble;
-import static functionalj.streamable.doublestreamable.DoubleStreamable.deriveToObj;
 
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
-
-import functionalj.stream.StreamPlus;
-import functionalj.streamable.Streamable;
 
 public interface DoubleStreamableWithFlatMap extends AsDoubleStreamable {
-    
-    /** FlatMap with the given mapper. */
-    public default <T> Streamable<T> flatMapToObj(DoubleFunction<? extends Streamable<? extends T>> mapper) {
-        return deriveToObj(this, stream -> {
-            return stream.flatMapToObj(value -> {
-                @SuppressWarnings("unchecked")
-                Streamable<T> apply = (Streamable<T>)mapper.apply(value);
-                StreamPlus<T> stream2 = apply.stream();
-                return stream2;
-            });
-        });
-    }
     
     /** FlatMap with the given mapper for only the value that pass the condition. */
     public default DoubleStreamable flatMapOnly(
@@ -69,16 +52,6 @@ public interface DoubleStreamableWithFlatMap extends AsDoubleStreamable {
         return deriveFrom(this, stream -> {
             return stream.flatMapIf(checker, newTrueMapper, newFalseMapper);
         });
-    }
-    
-    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
-    public default <T> Streamable<T> flatMapToObjIf(
-            DoublePredicate                         checker,
-            DoubleFunction<? extends Streamable<T>> trueMapper,
-            DoubleFunction<? extends Streamable<T>> falseMapper) {
-        DoubleFunction<? extends Stream<T>> newTrueMapper  = value -> trueMapper.apply(value).stream();
-        DoubleFunction<? extends Stream<T>> newFalseMapper = value -> falseMapper.apply(value).stream();
-        return deriveToObj(this, stream -> stream.flatMapToObjIf(checker, newTrueMapper, newFalseMapper));
     }
     
 }

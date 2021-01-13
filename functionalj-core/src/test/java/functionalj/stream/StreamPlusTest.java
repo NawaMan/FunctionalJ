@@ -1192,12 +1192,6 @@ public class StreamPlusTest {
     //-- StreamPlusWithFlatMap --
     
     @Test
-    public void testFlatMapToObj() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[3, 3, 5]", stream.flatMapToObj(s -> Stream.of(s.length())).toList());
-    }
-    
-    @Test
     public void testFlatMapOnly() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("[One, 3, 5]", stream.flatMapOnly(str -> str.toLowerCase().startsWith("t"), s -> Stream.of("" + s.length())).toList());
@@ -1207,12 +1201,6 @@ public class StreamPlusTest {
     public void testFlatMapIf() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("[(One), [3], [5]]", stream.flatMapIf(str -> str.toLowerCase().startsWith("t"), s -> Stream.of("[" + s.length() + "]"), s -> Stream.of("(" + s + ")")).toList());
-    }
-    
-    @Test
-    public void testFlatMapToObjIf() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[(One), [3], [5]]", stream.flatMapToObjIf(str -> str.toLowerCase().startsWith("t"), s -> Stream.of("[" + s.length() + "]"), s -> Stream.of("(" + s + ")")).toList());
     }
     
     //-- StreamPlusWithGroupBy --

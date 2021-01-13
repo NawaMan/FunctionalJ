@@ -575,17 +575,6 @@
 //    }
 //
 //    @Test
-//    public void testFlatMapToObj() {
-//        val streamable = ints(1, 2, 3, 5);
-//        IntFunction<? extends Streamable<String>> mapper = i -> Streamable.of(cycle(i).limit(i).toListString());
-//        assertEquals(
-//                "[[1], [2, 2], [3, 3, 3], [5, 5, 5, 5, 5]]",
-//                streamable
-//                .flatMapToObj(mapper)
-//                .toListString());
-//    }
-//
-//    @Test
 //    public void testFilter() {
 //        val streamable = loop(10);
 //        run(()->{
@@ -2205,25 +2194,7 @@
 //                        .toListString());
 //        });
 //    }
-//
-//    @Test
-//    public void testFlatMapToObjIf() {
-//        val streamable = range(0, 7);
-//        run(()->{
-//            //      [0 -> [0], 1 -> [0], 2 -> [-2], 3->[0, 1, 2], 4 -> [-4], 5 -> [0, 1, 2, 3, 4], 6 -> [-6]]
-//            //      [     [0],      [0],      [-2],    [0, 1, 2],      [-4],      [0, 1, 2, 3, 4],      [-6]]
-//            //      [      0,        0,        -2,      0, 1, 2,        -4,        0, 1, 2, 3, 4,        -6]
-//            assertEquals("[0, 0, -2, 0, 1, 2, -4, 0, 1, 2, 3, 4, -6]",
-//                    streamable
-//                    .flatMapToObjIf(
-//                            theInteger.thatIsOdd(),
-//                            i -> range(0, i)         .boxed(),
-//                            i -> IntStreamable.of(-i).boxed()
-//                    )
-//                    .toListString());
-//        });
-//    }
-//
+//    
 //    @Test
 //    public void testForEachWithIndex() {
 //        val streamable = range(0, 10);
@@ -2237,7 +2208,7 @@
 //                    "" + lines);
 //        });
 //    }
-//
+//    
 //    @Test
 //    public void testMinBy() {
 //        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);

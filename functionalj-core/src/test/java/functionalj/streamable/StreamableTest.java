@@ -1239,13 +1239,6 @@ public class StreamableTest {
     //-- StreamableWithFlatMap --
     
     @Test
-    public void testFlatMapToObj() {
-        run(Streamable.of("One", "Two", "Three"), streamable -> {
-            assertStrings("[3, 3, 5]", streamable.flatMapToObj(s -> Streamable.of(s.length())).toList());
-        });
-    }
-    
-    @Test
     public void testFlatMapOnly() {
         run(Streamable.of("One", "Two", "Three"), streamable -> {
             assertStrings("[One, 3, 5]", streamable.flatMapOnly(str -> str.toLowerCase().startsWith("t"), s -> Streamable.of("" + s.length())).toList());
@@ -1256,13 +1249,6 @@ public class StreamableTest {
     public void testFlatMapIf() {
         run(Streamable.of("One", "Two", "Three"), streamable -> {
             assertStrings("[(One), [3], [5]]", streamable.flatMapIf(str -> str.toLowerCase().startsWith("t"), s -> Streamable.of("[" + s.length() + "]"), s -> Streamable.of("(" + s + ")")).toList());
-        });
-    }
-    
-    @Test
-    public void testFlatMapToObjIf() {
-        run(Streamable.of("One", "Two", "Three"), streamable -> {
-            assertStrings("[(One), [3], [5]]", streamable.flatMapToObjIf(str -> str.toLowerCase().startsWith("t"), s -> Streamable.of("[" + s.length() + "]"), s -> Streamable.of("(" + s + ")")).toList());
         });
     }
     

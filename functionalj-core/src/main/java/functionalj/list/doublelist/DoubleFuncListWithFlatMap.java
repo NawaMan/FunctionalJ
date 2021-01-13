@@ -36,17 +36,6 @@ import functionalj.streamable.Streamable;
 
 public interface DoubleFuncListWithFlatMap extends AsDoubleFuncList {
     
-    /** FlatMap with the given mapper. */
-    public default <T> FuncList<T> flatMapToObj(DoubleFunction<? extends FuncList<? extends T>> mapper) {
-        return deriveToObj(this, stream -> {
-            return stream.flatMapToObj(value -> {
-                @SuppressWarnings("unchecked")
-                FuncList<T> apply = (FuncList<T>) mapper.apply(value);
-                return apply.stream();
-            });
-        });
-    }
-    
     /** FlatMap with the given mapper for only the value that pass the condition. */
     public default DoubleFuncList flatMapOnly(
             DoublePredicate                          checker,
@@ -65,16 +54,6 @@ public interface DoubleFuncListWithFlatMap extends AsDoubleFuncList {
         DoubleFunction<? extends DoubleStream> newTrueMapper  = value -> trueMapper .apply(value).doubleStream();
         DoubleFunction<? extends DoubleStream> newFalseMapper = value -> falseMapper.apply(value).doubleStream();
         return deriveToDouble(this, stream -> stream.flatMapIf(checker, newTrueMapper, newFalseMapper));
-    }
-    
-    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
-    public default <T> FuncList<T> flatMapToObjIf(
-            DoublePredicate                         checker,
-            DoubleFunction<? extends Streamable<T>> trueMapper,
-            DoubleFunction<? extends Streamable<T>> falseMapper) {
-        DoubleFunction<? extends Stream<T>> newTrueMapper  = value -> trueMapper.apply(value).stream();
-        DoubleFunction<? extends Stream<T>> newFalseMapper = value -> falseMapper.apply(value).stream();
-        return deriveToObj(this, stream -> stream.flatMapToObjIf(checker, newTrueMapper, newFalseMapper));
     }
     
 }

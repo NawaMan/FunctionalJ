@@ -115,8 +115,8 @@ public interface StreamPlusWithFillNull<DATA> {
     
     /** Replace sub element that is null (accessed with the given lens) with the replacement value from the function. */
     public default <VALUE> StreamPlus<DATA> fillNullBy(
-            AnyLens<DATA, VALUE> lens, 
-            Func1<DATA, VALUE>   replacementFunction) {
+            AnyLens<DATA, VALUE>  lens, 
+            Function<DATA, VALUE> replacementFunction) {
         return fillNullBy(
                 (Func1<DATA, VALUE>)lens, 
                 ((WriteLens<DATA, VALUE>)lens)::apply, 

@@ -30,6 +30,8 @@ import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
 import static functionalj.lens.LensTest.Car.theCar;
 import static functionalj.list.FuncList.listOf;
+import static functionalj.list.FuncList.newBuilder;
+import static functionalj.list.FuncList.newListBuilder;
 import static functionalj.ref.Run.With;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
@@ -220,9 +222,17 @@ public class FuncListTest {
     }
     
     @Test
-    public void testFrom_funcList() {
+    public void testFrom_javaList() {
         List<String> javaList = Arrays.asList(One, Two, Three);
         run(FuncList.from(javaList), list -> {
+            assertStrings("[One, Two, Three]", list);
+        });
+    }
+    
+    @Test
+    public void testFrom_funcList() {
+        FuncList<String> funcList = FuncList.of(One, Two, Three);
+        run(FuncList.from((Collection<String>)funcList), list -> {
             assertStrings("[One, Two, Three]", list);
         });
     }
@@ -405,10 +415,21 @@ public class FuncListTest {
     
     @Test
     public void testNew() {
-        run(FuncList.newFuncList(String.class).add(One).add(Two).add(Three).build(), list -> {
+        FuncListBuilder<String> funcList1 = FuncList.newListBuilder();
+        FuncListBuilder<String> funcList2 = FuncList.newBuilder();
+        run(funcList1.add(One).add(Two).add(Three).build(), list -> {
             assertStrings("[One, Two, Three]", list);
         });
-        run(FuncList.newList(String.class).add(One).add(Two).add(Three).build(), list -> {
+        run(funcList2.add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[One, Two, Three]", list);
+        });
+        run(newListBuilder().add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[One, Two, Three]", list);
+        });
+        run(newBuilder().add(One).add(Two).add(Three).build(), list -> {
+            assertStrings("[One, Two, Three]", list);
+        });
+        run(FuncList.newListBuilder(String.class).add(One).add(Two).add(Three).build(), list -> {
             assertStrings("[One, Two, Three]", list);
         });
         run(FuncList.newBuilder(String.class).add(One).add(Two).add(Three).build(), list -> {
@@ -1989,13 +2010,6 @@ public class FuncListTest {
     //-- FuncListWithFlatMap --
     
     @Test
-    public void testFlatMapToObj() {
-        run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[3, 3, 5]", list.flatMapToObj(s -> FuncList.of(s.length())));
-        });
-    }
-    
-    @Test
     public void testFlatMapOnly() {
         run(FuncList.of(One, Two, Three), list -> {
             assertStrings("[One, 3, 5]", list.flatMapOnly(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("" + s.length())));
@@ -2006,13 +2020,6 @@ public class FuncListTest {
     public void testFlatMapIf() {
         run(FuncList.of(One, Two, Three), list -> {
             assertStrings("[(One), [3], [5]]", list.flatMapIf(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("[" + s.length() + "]"), s -> FuncList.of("(" + s + ")")));
-        });
-    }
-    
-    @Test
-    public void testFlatMapToObjIf() {
-        run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[(One), [3], [5]]", list.flatMapToObjIf(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("[" + s.length() + "]"), s -> FuncList.of("(" + s + ")")));
         });
     }
     
@@ -3501,7 +3508,8 @@ public class FuncListTest {
                     + "Five:[5], "
                     + "Other:[1, 13, 17, 19], "
                     + "Seven:[7], "
-                    + "Three:[3, 9, 15], Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
+                    + "Three:[3, 9, 15], "
+                    + "Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
                     + "}",
                      list
                     .split(Two,    theInteger.thatIsDivisibleBy(2),
@@ -3548,7 +3556,8 @@ public class FuncListTest {
             assertStrings(
                     "{"
                     + "Five:[5], "
-                    + "Three:[3, 9, 15], Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]}",
+                    + "Three:[3, 9, 15], "
+                    + "Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]}",
                      list
                     .split(Two,    theInteger.thatIsDivisibleBy(2),
                            Three,  theInteger.thatIsDivisibleBy(3),
@@ -3582,6 +3591,128 @@ public class FuncListTest {
                            Five,   theInteger.thatIsDivisibleBy(5),
                            Seven,  theInteger.thatIsDivisibleBy(7),
                            Eleven, theInteger.thatIsDivisibleBy(11))
+                    .sorted()
+                    .toString());
+            
+            assertStrings(
+                    "{"
+                    + "Eleven:[11], "
+                    + "Five:[5], "
+                    + "Seven:[7], "
+                    + "Thirteen:[13], "
+                    + "Three:[3, 9, 15], "
+                    + "Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
+                    + "}",
+                     list
+                    .split(Two,      theInteger.thatIsDivisibleBy(2),
+                           Three,    theInteger.thatIsDivisibleBy(3),
+                           Five,     theInteger.thatIsDivisibleBy(5),
+                           Seven,    theInteger.thatIsDivisibleBy(7),
+                           Eleven,   theInteger.thatIsDivisibleBy(11),
+                           Thirteen, theInteger.thatIsDivisibleBy(13))
+                    .sorted()
+                    .toString());
+        });
+    }
+    
+    @Test
+    public void testSplitToMap_N_ignore() {
+        run(IntFuncList.wholeNumbers(20).boxed().toFuncList(), list -> {
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null)
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null, theInteger.thatIsDivisibleBy(3),
+                           (String)null)
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null, theInteger.thatIsDivisibleBy(3),
+                           (String)null, theInteger.thatIsDivisibleBy(5),
+                           (String)null)
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null, theInteger.thatIsDivisibleBy(3),
+                           (String)null, theInteger.thatIsDivisibleBy(5),
+                           (String)null, theInteger.thatIsDivisibleBy(7),
+                           (String)null)
+                    .toString());
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null, theInteger.thatIsDivisibleBy(3),
+                           (String)null, theInteger.thatIsDivisibleBy(5),
+                           (String)null, theInteger.thatIsDivisibleBy(7),
+                           (String)null, theInteger.thatIsDivisibleBy(11),
+                           (String)null)
+                    .sorted()
+                    .toString());
+            
+            // No other
+            
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2))
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null, theInteger.thatIsDivisibleBy(3))
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null, theInteger.thatIsDivisibleBy(3),
+                           (String)null, theInteger.thatIsDivisibleBy(5))
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null, theInteger.thatIsDivisibleBy(3),
+                           (String)null, theInteger.thatIsDivisibleBy(5),
+                           (String)null, theInteger.thatIsDivisibleBy(7))
+                    .toString());
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null, theInteger.thatIsDivisibleBy(3),
+                           (String)null, theInteger.thatIsDivisibleBy(5),
+                           (String)null, theInteger.thatIsDivisibleBy(7),
+                           (String)null, theInteger.thatIsDivisibleBy(11))
+                    .sorted()
+                    .toString());
+            assertStrings(
+                    "{}",
+                     list
+                    .split((String)null, theInteger.thatIsDivisibleBy(2),
+                           (String)null, theInteger.thatIsDivisibleBy(3),
+                           (String)null, theInteger.thatIsDivisibleBy(5),
+                           (String)null, theInteger.thatIsDivisibleBy(7),
+                           (String)null, theInteger.thatIsDivisibleBy(11),
+                           (String)null, theInteger.thatIsDivisibleBy(13))
                     .sorted()
                     .toString());
         });

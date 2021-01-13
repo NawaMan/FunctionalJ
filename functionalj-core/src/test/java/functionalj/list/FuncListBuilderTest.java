@@ -12,7 +12,7 @@ public class FuncListBuilderTest {
     
     @Test
     public void testListBuilder() {
-        val map = FuncList.newList(String.class)
+        val map = FuncList.newListBuilder(String.class)
                 .add("A")
                 .add("B")
                 .add("C")

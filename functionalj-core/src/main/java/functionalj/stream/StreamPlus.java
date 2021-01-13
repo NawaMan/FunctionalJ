@@ -604,11 +604,6 @@ public interface StreamPlus<DATA>
         return DoubleStreamPlus.from(stream().flatMapToDouble(mapper));
     }
     
-    @Override
-    public default <T> StreamPlus<T> flatMapToObj(Function<? super DATA, ? extends Stream<? extends T>> mapper) {
-        return StreamPlus.from(stream().flatMap(mapper));
-    }
-    
     //-- Filter --
     
     @Override

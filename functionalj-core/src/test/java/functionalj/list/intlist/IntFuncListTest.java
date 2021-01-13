@@ -1938,13 +1938,6 @@ public class IntFuncListTest {
 //    //-- FuncListWithFlatMap --
 //    
 //    @Test
-//    public void testFlatMapToObj() {
-//        run(IntFuncList.of(One, Two, Three), list -> {
-//            assertStrings("[3, 3, 5]", list.flatMapToObj(s -> FuncList.of(s.length())));
-//        });
-//    }
-//    
-//    @Test
 //    public void testFlatMapOnly() {
 //        run(IntFuncList.of(One, Two, Three), list -> {
 //            assertStrings("[One, 3, 5]", list.flatMapOnly(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("" + s.length())));
@@ -1955,13 +1948,6 @@ public class IntFuncListTest {
 //    public void testFlatMapIf() {
 //        run(IntFuncList.of(One, Two, Three), list -> {
 //            assertStrings("[(One), [3], [5]]", list.flatMapIf(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("[" + s.length() + "]"), s -> FuncList.of("(" + s + ")")));
-//        });
-//    }
-//    
-//    @Test
-//    public void testFlatMapToObjIf() {
-//        run(IntFuncList.of(One, Two, Three), list -> {
-//            assertStrings("[(One), [3], [5]]", list.flatMapToObjIf(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("[" + s.length() + "]"), s -> FuncList.of("(" + s + ")")));
 //        });
 //    }
 //    

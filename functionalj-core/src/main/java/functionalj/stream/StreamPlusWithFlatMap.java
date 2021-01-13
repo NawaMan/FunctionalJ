@@ -35,12 +35,6 @@ public interface StreamPlusWithFlatMap<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /** FlatMap with the given mapper. */
-    public default <T> StreamPlus<T> flatMapToObj(Function<? super DATA, ? extends Stream<? extends T>> mapper) {
-        val streamPlus = streamPlus();
-        return streamPlus.flatMap(mapper);
-    }
-    
     /** FlatMap with the given mapper for only the value that pass the condition. */
     public default StreamPlus<DATA> flatMapOnly(
             Predicate<? super DATA>                        condition, 
@@ -70,14 +64,6 @@ public interface StreamPlusWithFlatMap<DATA> {
                             : elseMapper.apply(value);
                     return mapped;
                 });
-    }
-    
-    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
-    public default <T> StreamPlus<T> flatMapToObjIf(
-            Predicate<? super DATA> checker, 
-            Function<? super DATA, Stream<T>> mapper, 
-            Function<? super DATA, Stream<T>> elseMapper) {
-        return flatMapIf(checker, mapper, elseMapper);
     }
     
 }

@@ -612,10 +612,6 @@ public interface IntStreamPlus
         return DoubleStreamPlus.from(mapToObj(mapper).flatMapToDouble(itself()));
     }
     
-    public default <T> StreamPlus<T> flatMapToObj(IntFunction<? extends Stream<T>> mapper) {
-        return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
-    }
-    
     //-- Filter --
     
     @Override

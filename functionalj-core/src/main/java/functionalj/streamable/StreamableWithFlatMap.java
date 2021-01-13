@@ -31,11 +31,6 @@ import java.util.stream.Stream;
 
 public interface StreamableWithFlatMap<DATA> extends AsStreamable<DATA> {
     
-    /** FlatMap with the given mapper. */
-    public default <T> Streamable<T> flatMapToObj(Function<? super DATA, ? extends Streamable<? extends T>> mapper) {
-        return deriveFrom(this, stream -> stream.flatMapToObj(value -> mapper.apply(value).stream()));
-    }
-    
     /** FlatMap with the given mapper for only the value that pass the condition. */
     public default Streamable<DATA> flatMapOnly(
                     Predicate<? super DATA>                            checker, 
@@ -56,14 +51,6 @@ public interface StreamableWithFlatMap<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, Stream<T>> newFalseMapper = value -> falseMapper.apply(value).stream();
             return stream.flatMapIf(checker, newTrueMapper, newFalseMapper);
         });
-    }
-    
-    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
-    public default <T> Streamable<T> flatMapToObjIf(
-            Predicate<? super DATA>               checker, 
-            Function<? super DATA, Streamable<T>> mapper, 
-            Function<? super DATA, Streamable<T>> elseMapper) {
-        return flatMapIf(checker, mapper, elseMapper);
     }
     
 }

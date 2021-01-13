@@ -176,15 +176,6 @@ public interface FuncList<DATA>
         return ImmutableList.from(collection);
     }
     
-    /** Create a FuncList from the given list. */
-    @SuppressWarnings("unchecked")
-    public static <TARGET> FuncList<TARGET> from(List<TARGET> list) {
-        if (list instanceof FuncList)
-            return FuncList.from((AsStreamable<TARGET>)list);
-        
-        return ImmutableList.from(list);
-    }
-    
     /** Create a FuncList from the given streamable. */
     public static <TARGET> FuncList<TARGET> from(AsStreamable<TARGET> streamable) {
         if (streamable instanceof FuncList) {
@@ -353,12 +344,7 @@ public interface FuncList<DATA>
     //-- Builder --
     
     /** Create a new FuncList. */
-    public static <TARGET> FuncListBuilder<TARGET> newFuncList() {
-        return new FuncListBuilder<TARGET>();
-    }
-    
-    /** Create a new list. */
-    public static <TARGET> FuncListBuilder<TARGET> newList() {
+    public static <TARGET> FuncListBuilder<TARGET> newListBuilder() {
         return new FuncListBuilder<TARGET>();
     }
     
@@ -368,12 +354,7 @@ public interface FuncList<DATA>
     }
     
     /** Create a new FuncList. */
-    public static <TARGET> FuncListBuilder<TARGET> newFuncList(Class<TARGET> clz) {
-        return new FuncListBuilder<TARGET>();
-    }
-    
-    /** Create a new list. */
-    public static <TARGET> FuncListBuilder<TARGET> newList(Class<TARGET> clz) {
+    public static <TARGET> FuncListBuilder<TARGET> newListBuilder(Class<TARGET> clz) {
         return new FuncListBuilder<TARGET>();
     }
     

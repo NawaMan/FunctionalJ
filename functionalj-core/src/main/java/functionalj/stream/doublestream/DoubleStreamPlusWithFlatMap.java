@@ -67,14 +67,4 @@ public interface DoubleStreamPlusWithFlatMap {
                 });
     }
     
-    public default <T> StreamPlus<T> flatMapToObjIf(
-            DoublePredicate   checker,
-            DoubleFunction<? extends Stream<T>> mapper,
-            DoubleFunction<? extends Stream<T>> elseMapper) {
-        val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .mapToObj(mapper)
-                .flatMap(Func.itself());
-    }
-    
 }

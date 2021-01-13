@@ -295,17 +295,6 @@
 //    }
 //
 //    @Test
-//    public void testFlatMapToObj() {
-//        val intStream = IntStreamPlus.of(1, 2, 3, 5);
-//        IntFunction<? extends Stream<String>> mapper = i -> Stream.of(cycle(i).limit(i).toListString());
-//        assertEquals(
-//                "[[1], [2, 2], [3, 3, 3], [5, 5, 5, 5, 5]]",
-//                intStream
-//                .flatMapToObj(mapper)
-//                .toListString());
-//    }
-//
-//    @Test
 //    public void testFilter() {
 //        assertEquals(
 //                "[1, 3, 5, 7, 9]",
@@ -1884,21 +1873,6 @@
 //                        theInteger.thatIsOdd(),
 //                        i -> range(0, i),
 //                        i -> IntStreamPlus.of(-i)
-//                )
-//                .toListString());
-//    }
-//
-//    @Test
-//    public void testFlatMapToObjIf() {
-//        //      [0 -> [0], 1 -> [0], 2 -> [-2], 3->[0, 1, 2], 4 -> [-4], 5 -> [0, 1, 2, 3, 4], 6 -> [-6]]
-//        //      [     [0],      [0],      [-2],    [0, 1, 2],      [-4],      [0, 1, 2, 3, 4],      [-6]]
-//        //      [      0,        0,        -2,      0, 1, 2,        -4,        0, 1, 2, 3, 4,        -6]
-//        assertEquals("[0, 0, -2, 0, 1, 2, -4, 0, 1, 2, 3, 4, -6]",
-//                "" + range(0, 7)
-//                .flatMapToObjIf(
-//                        theInteger.thatIsOdd(),
-//                        i -> range(0, i)         .boxed(),
-//                        i -> IntStreamPlus.of(-i).boxed()
 //                )
 //                .toListString());
 //    }

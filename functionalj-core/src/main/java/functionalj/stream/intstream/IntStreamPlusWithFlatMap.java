@@ -68,14 +68,4 @@ public interface IntStreamPlusWithFlatMap {
                 });
     }
     
-    public default <T> StreamPlus<T> flatMapToObjIf(
-            IntPredicate   checker,
-            IntFunction<? extends Stream<T>> mapper,
-            IntFunction<? extends Stream<T>> elseMapper) {
-        val streamPlus = intStreamPlus();
-        return streamPlus
-                .mapToObj(mapper)
-                .flatMap(Func.itself());
-    }
-    
 }

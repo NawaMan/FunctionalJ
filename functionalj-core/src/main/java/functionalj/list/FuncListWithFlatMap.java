@@ -32,11 +32,6 @@ import functionalj.streamable.AsStreamable;
 
 public interface FuncListWithFlatMap<DATA> extends AsStreamable<DATA> {
     
-    /** FlatMap with the given mapper. */
-    public default <T> FuncList<T> flatMapToObj(Function<? super DATA, ? extends FuncList<? extends T>> mapper) {
-        return deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).stream()));
-    }
-    
     /** FlatMap with the given mapper for only the value that pass the condition. */
     public default FuncList<DATA> flatMapOnly(
             Predicate<? super DATA>                          checker, 
@@ -52,14 +47,6 @@ public interface FuncListWithFlatMap<DATA> extends AsStreamable<DATA> {
         return deriveFrom(this, stream -> {
             return stream.flatMapIf(checker, value -> mapper.apply(value).stream(), value -> elseMapper.apply(value).stream());
         });
-    }
-    
-    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
-    public default <T> FuncList<T> flatMapToObjIf(
-            Predicate<? super DATA>             checker, 
-            Function<? super DATA, FuncList<T>> mapper, 
-            Function<? super DATA, FuncList<T>> elseMapper) {
-        return flatMapIf(checker, mapper, elseMapper);
     }
     
 }

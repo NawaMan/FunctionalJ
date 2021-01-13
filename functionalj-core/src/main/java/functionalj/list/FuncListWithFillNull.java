@@ -29,7 +29,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.function.Func1;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.streamable.AsStreamable;
 
@@ -73,7 +72,7 @@ public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
     /** Replace sub element that is null (accessed with the given lens) with the replacement value from the function. */
     public default <VALUE> FuncList<DATA> fillNullBy(
             AnyLens<DATA, VALUE> lens, 
-            Func1<DATA, VALUE>   replacementFunction) {
+            Function<DATA, VALUE>   replacementFunction) {
         return deriveFrom(this, stream -> stream.fillNullBy(lens, replacementFunction));
     }
     

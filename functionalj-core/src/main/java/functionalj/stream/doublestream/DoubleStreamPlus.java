@@ -564,10 +564,6 @@ public interface DoubleStreamPlus
         return flatMap(mapper);
     }
     
-    public default <T> StreamPlus<T> flatMapToObj(DoubleFunction<? extends Stream<T>> mapper) {
-        return mapToObj(mapper).flatMap(itself());
-    }
-    
     //-- Filter --
     
     @Override
