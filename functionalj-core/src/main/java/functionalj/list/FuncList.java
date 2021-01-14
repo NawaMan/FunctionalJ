@@ -38,10 +38,12 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.DoubleStream;
@@ -50,9 +52,6 @@ import java.util.stream.Stream;
 
 import functionalj.function.DoubleDoubleBiFunction;
 import functionalj.function.DoubleObjBiFunction;
-import functionalj.function.Func0;
-import functionalj.function.Func1;
-import functionalj.function.Func2;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.doublelist.DoubleFuncList;
@@ -170,7 +169,7 @@ public interface FuncList<DATA>
     /** Create a FuncList from the given collection. */
     @SuppressWarnings("unchecked")
     public static <TARGET> FuncList<TARGET> from(Collection<TARGET> collection) {
-        if (collection instanceof FuncList)
+        if (collection instanceof AsStreamable)
             return FuncList.from((AsStreamable<TARGET>)collection);
         
         return ImmutableList.from(collection);
@@ -209,6 +208,15 @@ public interface FuncList<DATA>
         return ImmutableList.from(stream);
     }
     
+    /**
+     * Create a FuncList from the given supplier of stream.
+     *
+     * The provided stream should produce the same sequence of values.
+     **/
+    public static <TARGET> FuncList<TARGET> from(Supplier<Stream<TARGET>> supplier) {
+        return FuncList.from(()->StreamPlus.from(supplier.get()));
+    }
+    
     /** Concatenate all the given streams. */
     @SafeVarargs
     public static <TARGET> FuncList<TARGET> concat(FuncList<TARGET> ... list) {
@@ -229,31 +237,177 @@ public interface FuncList<DATA>
         return FuncList.from(Streamable.combine(array));
     }
     
+    // TODO - Rethink ... as this will generate un-repeatable stream.
+    //          we may want to do cache here.
+    
     /**
-     * Create a Streamable from the supplier of supplier.
+     * Create a FuncList from the supplier of supplier.
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
-    public static <TARGET> FuncList<TARGET> generate(Func0<Func0<TARGET>> supplier) {
-        return FuncList.from(Streamable.generate(supplier));
+    public static <TARGET> FuncList<TARGET> generate(Supplier<Supplier<TARGET>> supplier) {
+        return FuncList.from(() -> {
+            val generator = supplier.get();
+            return StreamPlus.generate(generator);
+        });
     }
     
     /**
-     * Create a Streamable from the supplier of supplier.
+     * Create a FuncList from the supplier of supplier.
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
-    public static <TARGET> FuncList<TARGET> generateWith(Func0<Func0<TARGET>> supplier) {
+    public static <TARGET> FuncList<TARGET> generateWith(Supplier<Supplier<TARGET>> supplier) {
         return generate(supplier);
+    }
+    
+    /**
+     * Create a FuncList by apply the compounder to the seed over and over.
+     *
+     * For example: let say seed = 1 and f(x) = x*2.
+     * The result stream will be:
+     *      1 <- seed,
+     *      2 <- (1*2),
+     *      4 <- ((1*2)*2),
+     *      8 <- (((1*2)*2)*2),
+     *      16 <- ((((1*2)*2)*2)*2)
+     *      ...
+     *
+     * Note: this is an alias of compound()
+     **/
+    public static <TARGET> FuncList<TARGET> iterate(
+            TARGET                   seed,
+            Function<TARGET, TARGET> compounder) {
+        return FuncList.from(()->StreamPlus.iterate(seed, compounder));
+    }
+    
+    /**
+     * Create a FuncList by apply the compounder to the seed over and over.
+     *
+     * For example: let say seed = 1 and f(x) = x*2.
+     * The result stream will be:
+     *      1 <- seed,
+     *      2 <- (1*2),
+     *      4 <- ((1*2)*2),
+     *      8 <- (((1*2)*2)*2),
+     *      16 <- ((((1*2)*2)*2)*2)
+     *      ...
+     *
+     * Note: this is an alias of iterate()
+     **/
+    public static <TARGET> FuncList<TARGET> compound(
+            TARGET                   seed,
+            Function<TARGET, TARGET> compounder) {
+        return FuncList.from(()->StreamPlus.compound(seed, compounder));
+    }
+    
+    /**
+     * Create a FuncList by apply the compounder to the seeds over and over.
+     *
+     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
+     * The result stream will be:
+     *      1 <- seed1,
+     *      1 <- seed2,
+     *      2 <- (1+1),
+     *      3 <- (1+2),
+     *      5 <- (2+3),
+     *      8 <- (5+8)
+     *      ...
+     *
+     * Note: this is an alias of compound()
+     **/
+    public static <TARGET> FuncList<TARGET> iterate(
+            TARGET                             seed1,
+            TARGET                             seed2,
+            BiFunction<TARGET, TARGET, TARGET> compounder) {
+        return FuncList.from(()->StreamPlus.iterate(seed1, seed2, compounder));
+    }
+    
+    /**
+     * Create a FuncList by apply the compounder to the seeds over and over.
+     *
+     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
+     * The result stream will be:
+     *      1 <- seed1,
+     *      1 <- seed2,
+     *      2 <- (1+1),
+     *      3 <- (1+2),
+     *      5 <- (2+3),
+     *      8 <- (5+8)
+     *      ...
+     *
+     * Note: this is an alias of iterate()
+     **/
+    public static <TARGET> FuncList<TARGET> compound(
+            TARGET                             seed1,
+            TARGET                             seed2,
+            BiFunction<TARGET, TARGET, TARGET> compounder) {
+        return FuncList.from(()->StreamPlus.compound(seed1, seed2, compounder));
+    }
+    
+    /** Create a FuncList that contains infinite number of null. */
+    public static <TARGET> FuncList<TARGET> nulls() {
+        return cycle((TARGET)null);
+    }
+    
+    /** Create a FuncList that contains infinite number of null. */
+    public static <TARGET> FuncList<TARGET> nulls(Class<TARGET> dataClass) {
+        return cycle((TARGET)null);
+    }
+    
+    /** Create a FuncList that is the repeat of the given array of data. */
+    @SuppressWarnings("unchecked")
+    public static <TARGET> FuncList<TARGET> repeat(TARGET ... data) {
+        return cycle(data);
+    }
+    
+    /** Create a FuncList that is the repeat of the given list of data. */
+    public static <TARGET> FuncList<TARGET> repeat(FuncList<TARGET> data) {
+        return cycle(data);
+    }
+    
+    /** Create a FuncList that is the repeat of the given array of data. */
+    @SafeVarargs
+    public static <TARGET> FuncList<TARGET> cycle(TARGET ... data) {
+        val size = data.length;
+        return IntFuncList
+                .wholeNumbers()
+                .mapToObj(i -> data[i % size]);
+    }
+    
+    /** Create a FuncList that is the repeat of the given list of data. */
+    public static <TARGET> FuncList<TARGET> cycle(FuncList<TARGET> data) {
+        val size = data.size();
+        return IntFuncList
+                .wholeNumbers()
+                .mapToObj(i -> data.get(i % size));
+    }
+    
+    /** Create a FuncList that for an infinite loop - the value is boolean true */
+    public static <TARGET> FuncList<TARGET> loop() {
+        return FuncList.from(()-> StreamPlus.from(Stream.generate(() -> (TARGET)null)));
+    }
+    
+    /** Create a FuncList that for a loop with the number of time given - the value is the index of the loop. */
+    public static <TARGET> FuncList<TARGET> loop(int time) {
+        FuncList<TARGET> nulls = nulls();
+        return nulls.limit(time);
+    }
+    
+    /** Create a FuncList that for an infinite loop - the value is the index of the loop. */
+    public static FuncList<Integer> infiniteInt() {
+        return IntFuncList
+                .wholeNumbers()
+                .boxed();
     }
     
     //== Zip ==
     
     /**
-     * Create a Streamable by combining elements together into a Streamable of tuples.
+     * Create a FuncList by combining elements together into a Streamable of tuples.
      * Only elements with pair will be combined. If this is not desirable, use streamable1.zip(streamable2).
      *
      * For example:
-     *     streamable1 = [A, B, C, D, E]
-     *     streamable2 = [1, 2, 3, 4]
+     *     list1 = [A, B, C, D, E]
+     *     list2 = [1, 2, 3, 4]
      *
      * The result stream = [(A,1), (B,2), (C,3), (D,4)].
      **/
@@ -264,21 +418,23 @@ public interface FuncList<DATA>
     }
     
     /**
-     * Create a Streamable by combining elements together using the merger function and collected into the result stream.
+     * Create a FuncList by combining elements together using the merger function and collected into the result stream.
      * Only elements with pair will be combined. If this is not desirable, use streamable1.zip(streamable2).
      *
      * For example:
-     *     streamable1 = [A, B, C, D, E]
-     *     streamable2 = [1, 2, 3, 4]
+     *     list1 = [A, B, C, D, E]
+     *     list2 = [1, 2, 3, 4]
      *     merger      = a + "+" + b
      *
      * The result stream = ["A+1", "B+2", "C+3", "D+4"].
      **/
     public static <T1, T2, TARGET> FuncList<TARGET> zipOf(
-            FuncList<T1>          list1,
-            FuncList<T2>          list2,
-            Func2<T1, T2, TARGET> merger) {
-        return FuncList.from(Streamable.zipOf(Streamable.from(list1), Streamable.from(list2), merger));
+            FuncList<T1>               list1,
+            FuncList<T2>               list2,
+            BiFunction<T1, T2, TARGET> merger) {
+        return FuncList.from(() -> {
+            return StreamPlus.zipOf(list1.stream(), list2.stream(), merger);
+        });
     }
     
     /**
@@ -289,11 +445,12 @@ public interface FuncList<DATA>
             IntFuncList              list1,
             IntFuncList              list2,
             IntIntBiFunction<TARGET> merger) {
-        return FuncList.from(
-                Streamable.zipOf(
-                    list1.intStreamable(),
-                    list2.intStreamable(),
-                    merger));
+        return FuncList.from(() -> {
+            return StreamPlus.zipOf(
+                    list1.intStream(),
+                    list2.intStream(),
+                    merger);
+        });
     }
     
     /**
@@ -304,11 +461,12 @@ public interface FuncList<DATA>
             IntFuncList                       list1,
             FuncList<ANOTHER>                 list2,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return FuncList.from(
-                Streamable.zipOf(
-                        list1.intStreamable(),
-                        list2.streamable(),
-                        merger));
+        return FuncList.from(() -> {
+            return StreamPlus.zipOf(
+                    list1.intStream(),
+                    list2.stream(),
+                    merger);
+        });
     }
     
     /**
@@ -319,11 +477,12 @@ public interface FuncList<DATA>
             DoubleFuncList                 list1,
             DoubleFuncList                 list2,
             DoubleDoubleBiFunction<TARGET> merger) {
-        return FuncList.from(
-                Streamable.zipOf(
-                    list1.doubleStreamable(),
-                    list2.doubleStreamable(),
-                    merger));
+        return FuncList.from(() -> {
+            return StreamPlus.zipOf(
+                    list1.doubleStream(),
+                    list2.doubleStream(),
+                    merger);
+        });
     }
     
     /**
@@ -334,11 +493,12 @@ public interface FuncList<DATA>
             DoubleFuncList                       list1,
             FuncList<ANOTHER>                    list2,
             DoubleObjBiFunction<ANOTHER, TARGET> merger) {
-        return FuncList.from(
-                Streamable.zipOf(
-                        list1.doubleStreamable(),
-                        list2.streamable(),
-                        merger));
+        return FuncList.from(() -> {
+            return StreamPlus.zipOf(
+                        list1.doubleStream(),
+                        list2.stream(),
+                        merger);
+        });
     }
     
     //-- Builder --
@@ -896,19 +1056,19 @@ public interface FuncList<DATA>
     }
     
     /** Map each value using the mapper to a comparable value and use it to find a minimal value then return the index */
-    public default <D extends Comparable<D>> Optional<Integer> minIndexBy(Func1<DATA, D> mapper) {
+    public default <D extends Comparable<D>> Optional<Integer> minIndexBy(Function<DATA, D> mapper) {
         return minIndexBy(alwaysTrue(), mapper);
     }
     
     /** Map each value using the mapper to a comparable value and use it to find a maximum value then return the index */
-    public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(Func1<DATA, D> mapper) {
+    public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(Function<DATA, D> mapper) {
         return maxIndexBy(alwaysTrue(), mapper);
     }
     
     /** Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index */
     public default <D extends Comparable<D>> Optional<Integer> minIndexBy(
-            Predicate<DATA> filter,
-            Func1<DATA, D>  mapper) {
+            Predicate<DATA>   filter,
+            Function<DATA, D> mapper) {
         return stream()
                 .mapWithIndex(Tuple::of)
                 .filter(t -> filter.test(t._2))
@@ -918,8 +1078,8 @@ public interface FuncList<DATA>
     
     /** Using the mapper to map each value that passes the filter to a comparable and use it to find a maximum value then return the index */
     public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(
-            Predicate<DATA> filter,
-            Func1<DATA, D>  mapper) {
+            Predicate<DATA>   filter,
+            Function<DATA, D> mapper) {
         return stream()
                 .mapWithIndex(Tuple::of)
                 .filter(t -> filter.test(t._2))

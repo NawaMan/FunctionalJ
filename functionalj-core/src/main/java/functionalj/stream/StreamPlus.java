@@ -54,9 +54,6 @@ import java.util.stream.StreamSupport;
 
 import functionalj.function.DoubleDoubleBiFunction;
 import functionalj.function.DoubleObjBiFunction;
-import functionalj.function.Func0;
-import functionalj.function.Func1;
-import functionalj.function.Func2;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.result.NoMoreResultException;
@@ -192,7 +189,7 @@ public interface StreamPlus<DATA>
     
     /** Concatenate all streams supplied by the given supplied. */
     @SafeVarargs
-    public static <TARGET> StreamPlus<TARGET> concat(Func0<Stream<TARGET>> ... streams) {
+    public static <TARGET> StreamPlus<TARGET> concat(Supplier<Stream<TARGET>> ... streams) {
         return streamOf (streams)
                 .map    (Supplier::get)
                 .flatMap(themAll());
@@ -207,7 +204,7 @@ public interface StreamPlus<DATA>
     
     /** Concatenate all streams supplied by the given supplied. */
     @SafeVarargs
-    public static <TARGET> StreamPlus<TARGET> combine(Func0<Stream<TARGET>> ... streams) {
+    public static <TARGET> StreamPlus<TARGET> combine(Supplier<Stream<TARGET>> ... streams) {
         return streamOf (streams)
                 .map    (Supplier::get)
                 .flatMap(themAll());
@@ -217,7 +214,7 @@ public interface StreamPlus<DATA>
      * Create a StreamPlus from the supplier.
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
-    public static <TARGET> StreamPlus<TARGET> generate(Func0<TARGET> supplier) {
+    public static <TARGET> StreamPlus<TARGET> generate(Supplier<TARGET> supplier) {
         return generateWith(supplier);
     }
     
@@ -225,7 +222,7 @@ public interface StreamPlus<DATA>
      * Create a StreamPlus from the supplier.
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
-    public static <TARGET> StreamPlus<TARGET> generateWith(Func0<TARGET> supplier) {
+    public static <TARGET> StreamPlus<TARGET> generateWith(Supplier<TARGET> supplier) {
         val iterable = (Iterable<TARGET>)() -> new SupplierBackedIterator<TARGET>(supplier);
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
@@ -246,8 +243,8 @@ public interface StreamPlus<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> StreamPlus<TARGET> iterate(
-            TARGET                seed,
-            Func1<TARGET, TARGET> compounder) {
+            TARGET                   seed,
+            Function<TARGET, TARGET> compounder) {
         return StreamPlus.from(Stream.iterate(seed, compounder::apply));
     }
     
@@ -267,8 +264,8 @@ public interface StreamPlus<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> StreamPlus<TARGET> compound(
-            TARGET                seed,
-            Func1<TARGET, TARGET> compounder) {
+            TARGET                   seed,
+            Function<TARGET, TARGET> compounder) {
         return iterate(seed, compounder);
     }
     
@@ -372,9 +369,9 @@ public interface StreamPlus<DATA>
      * The result stream = ["A+1", "B+2", "C+3", "D+4"].
      **/
     public static <T1, T2, TARGET> StreamPlus<TARGET> zipOf(
-            Stream<T1>            stream1,
-            Stream<T2>            stream2,
-            Func2<T1, T2, TARGET> merger) {
+            Stream<T1>                 stream1,
+            Stream<T2>                 stream2,
+            BiFunction<T1, T2, TARGET> merger) {
         return StreamPlus.from(stream1)
                 .zipWith(stream2, ZipWithOption.RequireBoth, merger);
     }
@@ -439,26 +436,19 @@ public interface StreamPlus<DATA>
     
     //-- Derive --
     
-    public default <TARGET> StreamPlus<TARGET> derive(Func1<StreamPlus<DATA>, Stream<TARGET>> action) {
+    public default <TARGET> StreamPlus<TARGET> derive(Function<StreamPlus<DATA>, Stream<TARGET>> action) {
         return StreamPlus.from(action.apply(this));
     }
     
-    public default IntStreamPlus deriveToInt(Func1<StreamPlus<DATA>, IntStream> action) {
+    public default IntStreamPlus deriveToInt(Function<StreamPlus<DATA>, IntStream> action) {
         return IntStreamPlus.from(action.apply(this));
     }
     
-//    public default LongStreamPlus deriveToLong(Func1<StreamPlus<DATA>, LongStream> action) {
-//        return LongStreamPlus.from(action.apply(this));
-//    }
-    public default LongStream deriveToLong(Func1<StreamPlus<DATA>, LongStream> action) {
-        return null;
+    public default DoubleStreamPlus deriveToDouble(Function<StreamPlus<DATA>, DoubleStream> action) {
+        return DoubleStreamPlus.from(action.apply(this));
     }
     
-//    public default DoubleStreamPlus deriveToDouble(Func1<StreamPlus<DATA>, DoubleStream> action) {
-//        return DoubleStreamPlus.from(action.apply(this));
-//    }
-    
-    public default <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, Stream<TARGET>> action) {
+    public default <TARGET> StreamPlus<TARGET> deriveToObj(Function<StreamPlus<DATA>, Stream<TARGET>> action) {
         return StreamPlus.from(action.apply(this));
     }
     

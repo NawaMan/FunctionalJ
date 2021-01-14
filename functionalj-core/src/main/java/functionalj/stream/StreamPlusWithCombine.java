@@ -29,11 +29,11 @@ import static functionalj.stream.ZipWithOption.RequireBoth;
 
 import java.util.Iterator;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.Func1;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.Tuple2;
@@ -44,11 +44,11 @@ public interface StreamPlusWithCombine<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    public <TARGET> StreamPlus<TARGET> derive(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> derive(Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
-    public IntStreamPlus deriveToInt(Func1<StreamPlus<DATA>, IntStream> action);
+    public IntStreamPlus deriveToInt(Function<StreamPlus<DATA>, IntStream> action);
     
-    public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> deriveToObj(Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
     
     /** Concatenate the given head stream in front of this stream. */

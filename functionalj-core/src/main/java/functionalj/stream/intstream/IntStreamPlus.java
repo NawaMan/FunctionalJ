@@ -126,6 +126,9 @@ public interface IntStreamPlus
         return ()->intStream;
     }
     
+    // TODO : Nawa Latest - Random
+    // TODO : Nawa Latest - Cache
+    
     public static IntStreamPlus zeroes() {
         return IntStreamPlus.generate(()->0);
     }

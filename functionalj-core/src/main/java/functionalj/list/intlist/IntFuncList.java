@@ -212,8 +212,16 @@ public interface IntFuncList
     }
     
     
+    public static IntFuncList naturalNumbers() {
+        return naturalNumbers(Integer.MAX_VALUE);
+    }
+    
     public static IntFuncList naturalNumbers(int count) {
         return IntFuncList.from(IntStreamable.naturalNumbers().limit(count));
+    }
+    
+    public static IntFuncList wholeNumbers() {
+        return naturalNumbers(Integer.MAX_VALUE);
     }
     
     /** Returns the infinite streams of wholes numbers -- 0, 1, 2, 3, .... */

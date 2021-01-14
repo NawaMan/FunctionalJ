@@ -23,8 +23,6 @@
 // ============================================================================
 package functionalj.list;
 
-import static functionalj.list.FuncList.from;
-
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -32,9 +30,15 @@ import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.markers.Sequential;
 import functionalj.streamable.AsStreamable;
-import functionalj.streamable.Streamable;
+import functionalj.tuple.Tuple2;
+import lombok.val;
 
 public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
+    
+    public FuncList<DATA> toFuncList();
+    
+    // TODO : Nawa Latest - Add insertBetween((prev, curr)->btwOrNull)
+    
     
     /**
      * Accumulate the previous to the next element.
@@ -77,9 +81,32 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
+    @SuppressWarnings("unchecked")
     @Sequential
-    public default FuncList<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
-        return from(streamable().restate(restater));
+    public default FuncList<DATA> restate(BiFunction<? super DATA, FuncList<DATA>, FuncList<DATA>> restater) {
+        Function<Tuple2<DATA, FuncList<DATA>>, Tuple2<DATA, FuncList<DATA>>> func = ((Tuple2<DATA, FuncList<DATA>> pair) -> {
+            val list = pair._2();
+            if (list == null)
+                return null;
+            
+            val head     = new Object[] { null };
+            val iterator = list.iterator();
+            if (!iterator.hasNext())
+                return null;
+            
+            head[0]  = iterator.next();
+            val tail = restater.apply((DATA)head[0], list.skip(1));
+            if (tail == null)
+                return null;
+            
+            return Tuple2.of((DATA)head[0], tail);
+        });
+        val seed = Tuple2.of((DATA)null, this.toFuncList());
+        return FuncList
+                .iterate  (seed, func)
+                .takeUntil(t -> t == null)
+                .skip     (1)
+                .map      (t -> t._1());
     }
     
     //== Spawn ==
@@ -92,6 +119,6 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      *   the unfinished actions will be canceled.
      */
     public default <T> FuncList<Result<T>> spawn(Function<DATA, ? extends UncompletedAction<T>> mapToAction) {
-        return FuncList.deriveFrom(this, stream -> stream.spawn(mapToAction));
+        return FuncList.deriveToObj(this, stream -> stream.spawn(mapToAction));
     }
 }
