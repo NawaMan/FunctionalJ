@@ -32,15 +32,13 @@ import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.Predicate;
 
-import functionalj.streamable.doublestreamable.DoubleStreamable;
-
 public interface DoubleFuncListWithPeek extends AsDoubleFuncList {
     
     /** Peek only the value that is selected with selector. */
     public default DoubleFuncList peekBy(
             DoublePredicate selector,
             DoubleConsumer  theConsumer) {
-        return from((DoubleStreamable)(() -> doubleStreamPlus().peekBy(selector, theConsumer)));
+        return from((DoubleFuncList)(() -> doubleStreamPlus().peekBy(selector, theConsumer)));
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj

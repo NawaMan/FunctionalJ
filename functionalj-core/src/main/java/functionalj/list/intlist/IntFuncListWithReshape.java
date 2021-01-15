@@ -37,11 +37,9 @@ import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.streamable.intstreamable.AsIntStreamable;
-import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
-public interface IntFuncListWithReshape extends AsIntStreamable {
+public interface IntFuncListWithReshape extends AsIntFuncList {
     
     /**
      * Segment the stream into sub stream with the fix length of count.
@@ -146,7 +144,7 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
     public default IntFuncList collapseWhen(
             IntPredicate      conditionToCollapse,
             IntBinaryOperator concatFunc) {
-        return from((IntStreamable)(() -> intStreamPlus().collapseWhen(conditionToCollapse, concatFunc)));
+        return from((IntFuncList)(() -> intStreamPlus().collapseWhen(conditionToCollapse, concatFunc)));
     }
     
     /**
@@ -157,8 +155,8 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
     public default IntFuncList collapseSize(
             IntFunction<Integer> segmentSize,
             IntBinaryOperator    combinator) {
-        IntStreamable streamable = () -> intStreamPlus().collapseSize(segmentSize, combinator);
-        return from(streamable);
+        IntFuncList FuncList = () -> intStreamPlus().collapseSize(segmentSize, combinator);
+        return from(FuncList);
     }
     
     /**
@@ -171,8 +169,8 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
             IntUnaryOperator  segmentSize,
             IntUnaryOperator  mapper,
             IntBinaryOperator combinator) {
-//        IntStreamable streamable = () -> intStreamPlus().collapseSize(segmentSize, mapper, combinator);
-//        return from(streamable);
+//        IntFuncList FuncList = () -> intStreamPlus().collapseSize(segmentSize, mapper, combinator);
+//        return from(FuncList);
         return null;
     }
     
@@ -194,24 +192,24 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<IntFuncList> segmentByPercentiles(int ... percentiles) {
-        return FuncList.from(intStreamable().segmentByPercentiles(percentiles));
+        return FuncList.from(asIntFuncList().segmentByPercentiles(percentiles));
     }
 
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<IntFuncList> segmentByPercentiles(double ... percentiles) {
-        return FuncList.from(intStreamable().segmentByPercentiles(percentiles));
+        return FuncList.from(asIntFuncList().segmentByPercentiles(percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<IntFuncList> segmentByPercentiles(DoubleFuncList percentiles) {
-        return FuncList.from(intStreamable().segmentByPercentiles(percentiles));
+        return FuncList.from(asIntFuncList().segmentByPercentiles(percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(
             IntFunction<T> mapper,
             int ...        percentiles) {
-        return FuncList.from(intStreamable().segmentByPercentiles(percentiles));
+        return FuncList.from(asIntFuncList().segmentByPercentiles(percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -219,14 +217,14 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
             IntFunction<T> mapper,
             Comparator<T>  comparator,
             int ...        percentiles) {
-        return FuncList.from(intStreamable().segmentByPercentiles(mapper, comparator, percentiles));
+        return FuncList.from(asIntFuncList().segmentByPercentiles(mapper, comparator, percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(
             IntFunction<T> mapper,
             double ...     percentiles) {
-        return FuncList.from(intStreamable().segmentByPercentiles(mapper, percentiles));
+        return FuncList.from(asIntFuncList().segmentByPercentiles(mapper, percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -234,14 +232,14 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
             IntFunction<T> mapper,
             Comparator<T>  comparator,
             double ...     percentiles) {
-        return FuncList.from(intStreamable().segmentByPercentiles(mapper, comparator, percentiles));
+        return FuncList.from(asIntFuncList().segmentByPercentiles(mapper, comparator, percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(
             IntFunction<T> mapper,
             DoubleFuncList percentiles) {
-        return FuncList.from(intStreamable().segmentByPercentiles(mapper, percentiles));
+        return FuncList.from(asIntFuncList().segmentByPercentiles(mapper, percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -249,7 +247,7 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
             IntFunction<T>     mapper,
             Comparator<T>      comparator,
             DoubleFuncList percentiles) {
-        return FuncList.from(intStreamable().segmentByPercentiles(mapper, comparator, percentiles));
+        return FuncList.from(asIntFuncList().segmentByPercentiles(mapper, comparator, percentiles));
     }
     
 }

@@ -71,12 +71,12 @@ public interface AsIntStreamPlus
     
     //== Terminal operations ==
     
-    /** @return a iterator of this streamable. */
+    /** @return a iterator of this FuncList. */
     public default IntIteratorPlus iterator() {
         return streamFrom(this).iterator();
     }
     
-    /** @return a spliterator of this streamable. */
+    /** @return a spliterator of this FuncList. */
     public default Spliterator.OfInt spliterator() {
         val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);

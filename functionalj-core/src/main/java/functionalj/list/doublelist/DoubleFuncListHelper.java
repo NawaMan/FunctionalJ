@@ -21,24 +21,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.doublelist;
 
-import static functionalj.streamable.intstreamable.AsIntStreamable.streamableOf;
+import java.util.ArrayList;
 
-import java.util.function.Function;
+import functionalj.list.FuncList;
+import functionalj.stream.doublestream.GrowOnlyDoubleArray;
+import lombok.val;
 
-import functionalj.pipeable.Pipeable;
 
-public interface IntStreamableWithPipe extends AsIntStreamable {
+public class DoubleFuncListHelper {
     
-    /** @return the pipeable of this stream. */
-    public default <T> Pipeable<IntStreamable> pipable() {
-        return Pipeable.of(streamableOf(this));
-    }
-    
-    /** Pipe this stream plus through the given function. */
-    public default <T> T pipe(Function<? super IntStreamable, T> piper) {
-        return piper.apply(streamableOf(this));
+    static <D> FuncList<DoubleFuncList> segmentByPercentiles(AsDoubleFuncList asList, DoubleFuncList percentiles) {
+        val list = asList.asDoubleFuncList();
+        val size = list.size();
+        DoubleFuncList indexes 
+                = percentiles
+                .append(100.0)
+                .sorted()
+                .map   (d -> (int)Math.round(d*size/100))
+                .toImmutableList();
+        
+        val lists   = new ArrayList<GrowOnlyDoubleArray>();
+        for (int i = 0; i < indexes.size(); i++) {
+            lists.add(new GrowOnlyDoubleArray());
+        }
+        int idx = 0;
+        for (int i = 0; i < size; i++) {
+            if (i >= indexes.get(idx)) {
+                idx++;
+            }
+            val l = lists.get(idx);
+            val element = list.get(i);
+            l.add(element);
+        }
+        
+        return FuncList.from(lists.stream().map(each -> each.toFuncList()));
     }
     
 }

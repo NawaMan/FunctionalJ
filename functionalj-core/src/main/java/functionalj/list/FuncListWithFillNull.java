@@ -30,9 +30,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.lens.lenses.AnyLens;
-import functionalj.streamable.AsStreamable;
 
-public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithFillNull<DATA> extends AsFuncList<DATA> {
     
     /** Replace any null value with the given replacement. */
     public default FuncList<DATA> fillNull(DATA replacement) {

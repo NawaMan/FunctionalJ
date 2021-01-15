@@ -29,11 +29,11 @@ import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.function.Func1;
-import functionalj.streamable.intstreamable.IntStreamable;
+import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 
 
-public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntStreamable {
+public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntFuncList {
     
     private final int size;
     private final int start;

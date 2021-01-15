@@ -27,16 +27,16 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 
+import functionalj.list.AsFuncList;
+import functionalj.list.doublelist.AsDoubleFuncList;
+import functionalj.list.intlist.AsIntFuncList;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.doublestream.DoubleAccumulator;
 import functionalj.stream.doublestream.DoubleCollectorPlus;
 import functionalj.stream.doublestream.DoubleStreamProcessor;
 import functionalj.stream.intstream.IntAccumulator;
 import functionalj.stream.intstream.IntCollectorPlus;
-import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamProcessor;
-import functionalj.streamable.Streamable;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
-import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
 
@@ -44,21 +44,21 @@ import lombok.val;
 public interface Collected<DATA, ACCUMULATED, RESULT> {
     
     public static <D, A, R> Collected<D, A, R> collectedOf(
-            Streamable<D>                   streamable,
+            AsFuncList<D>                   funcList,
             StreamProcessor<? extends D, R> processor) {
-        return of(streamable, processor);
+        return of(funcList, processor);
     }
     
     @SuppressWarnings("unchecked")
     public static <D, A, R> Collected<D, A, R> of(
-            Streamable<D>                   streamable,
+            AsFuncList<D>                   funcList,
             StreamProcessor<? extends D, R> processor) {
         Objects.requireNonNull(processor);
         if (processor instanceof Collector)
             return new ByCollector<D, A, R>(((Collector<D, A, R>)processor));
         
-        Objects.requireNonNull(streamable);
-        return new ByStreamProcessor<>(streamable, processor);
+        Objects.requireNonNull(funcList);
+        return new ByStreamProcessor<>(funcList, processor);
     }
     
     public void   accumulate(DATA each);
@@ -69,25 +69,25 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     
     @SuppressWarnings("unchecked")
     public static <A, R> CollectedInt<A, R> ofInt(
-            IntStreamable         streamable,
+            AsIntFuncList         funcList,
             IntStreamProcessor<R> processor) {
         Objects.requireNonNull(processor);
         if (processor instanceof Collector)
             return new ByCollectedInt<>(((IntCollectorPlus<A, R>)processor));
         
-        Objects.requireNonNull(streamable);
-        return new ByIntStreamProcessor<>(streamable, processor);
+        Objects.requireNonNull(funcList);
+        return new ByIntStreamProcessor<>(funcList, processor);
     }
     @SuppressWarnings("unchecked")
     public static <A, R> CollectedDouble<A, R> ofDouble(
-            DoubleStreamable          streamable,
+            AsDoubleFuncList         funcList,
             DoubleStreamProcessor<R> processor) {
         Objects.requireNonNull(processor);
         if (processor instanceof Collector)
             return (CollectedDouble<A, R>) new ByCollectedDouble<A, R>((DoubleCollectorPlus<A, R>) processor);
         
-        Objects.requireNonNull(streamable);
-        return new ByDoubleStreamProcessor<A, R>(streamable, processor);
+        Objects.requireNonNull(funcList);
+        return new ByDoubleStreamProcessor<A, R>(funcList, processor);
     }
     
     
@@ -125,13 +125,13 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
                 Collected<DATA, ACCUMULATED, RESULT> {
         
         private final StreamProcessor<? extends DATA, RESULT> processor;
-        private final Streamable<DATA>    streamable;
+        private final AsFuncList<DATA> funcList;
         
         ByStreamProcessor(
-                Streamable<DATA>                        stream,
+                AsFuncList<DATA>                        funcList,
                 StreamProcessor<? extends DATA, RESULT> processor) {
-            this.processor  = processor;
-            this.streamable = stream;
+            this.processor = processor;
+            this.funcList  = funcList;
         }
         
         public void accumulate(DATA each) {
@@ -139,7 +139,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public RESULT finish() {
-            val stream = streamable.streamPlus();
+            val stream = funcList.streamPlus();
             return (RESULT) processor.process((StreamPlus)stream);
         }
     }
@@ -147,9 +147,9 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     public static interface CollectedInt<ACCUMULATED, RESULT> {
         
         public static <A, R> CollectedInt<A, R> collectedOf(
-                IntStreamable         streamable,
+                IntFuncList         FuncList,
                 IntStreamProcessor<R> processor) {
-            return Collected.ofInt(streamable, processor);
+            return Collected.ofInt(FuncList, processor);
         }
         
         public void   accumulate(int each);
@@ -184,21 +184,20 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
                     implements CollectedInt<ACCUMULATED, RESULT> {
         
         private final IntStreamProcessor<RESULT> processor;
-        private final IntStreamable              streamable;
+        private final AsIntFuncList              funcList;
         
         public ByIntStreamProcessor(
-                IntStreamable              stream,
+                AsIntFuncList              funcList,
                 IntStreamProcessor<RESULT> processor) {
-            this.processor  = processor;
-            this.streamable = stream;
+            this.processor = processor;
+            this.funcList  = funcList;
         }
         
         public void accumulate(int each) {
         }
         
         public RESULT finish() {
-            val stream    = streamable.intStream();
-            val intStream = IntStreamPlus.from(stream);
+            val intStream = funcList.intStreamPlus();
             return processor.process(intStream);
         }
     }
@@ -206,9 +205,9 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     public static interface CollectedDouble<ACCUMULATED, RESULT> {
         
         public static <A, R> CollectedDouble<A, R> collectedOf(
-                DoubleStreamable         streamable,
+                AsDoubleFuncList         funcList,
                 DoubleStreamProcessor<R> processor) {
-            return Collected.ofDouble(streamable, processor);
+            return Collected.ofDouble(funcList, processor);
         }
         
         public void   accumulate(double each);
@@ -242,20 +241,20 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
                     implements CollectedDouble<ACCUMULATED, RESULT> {
         
         private final DoubleStreamProcessor<RESULT> processor;
-        private final DoubleStreamable              streamable;
+        private final AsDoubleFuncList              funcList;
         
         public ByDoubleStreamProcessor(
-                DoubleStreamable              stream,
+                AsDoubleFuncList              stream,
                 DoubleStreamProcessor<RESULT> processor) {
-            this.processor  = processor;
-            this.streamable = stream;
+            this.processor = processor;
+            this.funcList  = stream;
         }
         
         public void accumulate(double each) {
         }
         
         public RESULT finish() {
-           val doubleStream = streamable.doubleStream();
+           val doubleStream = funcList.doubleStreamPlus();
             return processor.process(doubleStream);
         }
     }

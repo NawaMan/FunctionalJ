@@ -28,10 +28,9 @@ import static functionalj.list.FuncList.deriveFrom;
 import java.util.function.BiFunction;
 
 import functionalj.stream.ZipWithOption;
-import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple2;
 
-public interface FuncListWithCombine<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
     
     
     /** Concatenate the given head stream in front of this stream. */
@@ -131,9 +130,9 @@ public interface FuncListWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default FuncList<DATA> choose(
-            FuncList<DATA>                  anotherStreamable,
+            FuncList<DATA>                  anotherFuncList,
             BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), selectThisNotAnother));
+        return deriveFrom(this, stream -> stream.choose(anotherFuncList.stream(), selectThisNotAnother));
     }
     
     /**
@@ -147,10 +146,10 @@ public interface FuncListWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default FuncList<DATA> choose(
-            FuncList<DATA>                  anotherStreamable,
+            FuncList<DATA>                  anotherFuncList,
             ZipWithOption                   option,
             BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), option, selectThisNotAnother));
+        return deriveFrom(this, stream -> stream.choose(anotherFuncList.stream(), option, selectThisNotAnother));
     }
     
 }

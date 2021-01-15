@@ -28,6 +28,7 @@ import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
 import static functionalj.lens.LensTest.Car.theCar;
+import static functionalj.list.intlist.IntFuncList.infiniteInt;
 import static functionalj.map.FuncMap.UnderlineMap.LinkedHashMap;
 import static functionalj.ref.Run.With;
 import static functionalj.stream.StreamPlus.combine;
@@ -39,7 +40,6 @@ import static functionalj.stream.StreamPlus.streamOf;
 import static functionalj.stream.StreamPlus.zipOf;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
-import static functionalj.streamable.intstreamable.IntStreamable.infiniteInt;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
@@ -75,10 +75,10 @@ import functionalj.function.Func0;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
 
@@ -1867,7 +1867,7 @@ public class StreamPlusTest {
     
     @Test
     public void testRestate1() {
-        val stream = IntStreamable.infiniteInt().map(i -> i % 5).limit(20).boxed().stream();
+        val stream = IntFuncList.infiniteInt().map(i -> i % 5).limit(20).boxed().stream();
         assertStrings(
                 "0, 1, 2, 3, 4",
               stream
@@ -1878,7 +1878,7 @@ public class StreamPlusTest {
     // sieve of eratosthenes
     @Test
     public void testRestate2() {
-        val stream = IntStreamable.infiniteInt().skip(2).boxed().stream();
+        val stream = IntFuncList.infiniteInt().skip(2).boxed().stream();
         assertStrings(
                 "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, "
               + "31, 37, 41, 43, 47, 53, 59, 61, 67, 71, "
@@ -1958,7 +1958,7 @@ public class StreamPlusTest {
                 + "[12, 13, 14, 15, 16, 17], "
                 + "[18, 19]"
                 + "]",
-                IntStreamable
+                IntFuncList
                 .infiniteInt()
                 .boxed      ()
                 .streamPlus ()
@@ -1977,7 +1977,7 @@ public class StreamPlusTest {
                 "[4, 5, 6, 7], " +
                 "[8, 9, 10, 11, 12, 13, 14, 15], " +
                 "[16, 17, 18, 19]",
-                IntStreamable
+                IntFuncList
                 .infiniteInt()
                 .boxed      ()
                 .streamPlus ()
@@ -1999,7 +1999,7 @@ public class StreamPlusTest {
                 + "[12, 13, 14], "
                 + "[15, 16, 17], "
                 + "[18, 19]",
-                IntStreamable
+                IntFuncList
                 .infiniteInt()
                 .boxed      ()
                 .streamPlus ()
@@ -2105,101 +2105,6 @@ public class StreamPlusTest {
                 .map(
                         streamPlusToList,
                         streamPlusToList)
-                .toString());
-    }
-    
-    @Test
-    public void testSplit_2() {
-        Function<StreamPlus<String>, FuncList<String>> streamPlusToList = s -> s.toImmutableList();
-        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
-        assertStrings("([One, Two, Six],"
-                     + "[Four, Five],"
-                     + "[Three])",
-                stream
-                .split(
-                    s -> s.length() == 3,
-                    s -> s.length() == 4)
-                .map(
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList)
-                .toString());
-    }
-    
-    @Test
-    public void testSplit_3() {
-        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
-        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        assertStrings("("
-                + "[0, 2, 4, 6, 8, 10, 12, 14],"
-                + "[3, 9, 15],"
-                + "[5],"
-                + "[1, 7, 11, 13]"
-                + ")",
-                stream
-                .split(
-                    i -> i%2 == 0,
-                    i -> i%3 == 0,
-                    i -> i%5 == 0)
-                .map(
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList)
-                .toString());
-    }
-    
-    @Test
-    public void testSplit_4() {
-        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
-        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        assertStrings("("
-                + "[0, 2, 4, 6, 8, 10, 12, 14],"
-                + "[3, 9, 15],"
-                + "[5],"
-                + "[7],"
-                + "[1, 11, 13]"
-                + ")",
-                stream
-                .split(
-                    i -> i%2 == 0,
-                    i -> i%3 == 0,
-                    i -> i%5 == 0,
-                    i -> i%7 == 0)
-                .map(
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList)
-                .toString());
-    }
-    
-    @Test
-    public void testSplit_5() {
-        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
-        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        assertStrings("("
-                + "[0, 2, 4, 6, 8, 10, 12, 14],"
-                + "[3, 9, 15],"
-                + "[5],"
-                + "[7],"
-                + "[11],"
-                + "[1, 13])",
-                stream
-                .split(
-                    i -> i%2 == 0,
-                    i -> i%3 == 0,
-                    i -> i%5 == 0,
-                    i -> i%7 == 0,
-                    i -> i%11 == 0)
-                .map(
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList,
-                    streamPlusToList)
                 .toString());
     }
     

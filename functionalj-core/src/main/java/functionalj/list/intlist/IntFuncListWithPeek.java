@@ -32,7 +32,6 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
-import functionalj.streamable.intstreamable.IntStreamable;
 
 public interface IntFuncListWithPeek extends AsIntFuncList {
     
@@ -40,7 +39,7 @@ public interface IntFuncListWithPeek extends AsIntFuncList {
     public default IntFuncList peekBy(
             IntPredicate selector,
             IntConsumer  theConsumer) {
-        return from((IntStreamable)(() -> intStreamPlus().peekBy(selector, theConsumer)));
+        return from((IntFuncList)(() -> intStreamPlus().peekBy(selector, theConsumer)));
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj

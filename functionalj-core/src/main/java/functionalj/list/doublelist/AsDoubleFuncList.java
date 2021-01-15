@@ -23,12 +23,27 @@
 // ============================================================================
 package functionalj.list.doublelist;
 
-import functionalj.streamable.doublestreamable.AsDoubleStreamable;
+import functionalj.stream.doublestream.AsDoubleStreamPlus;
+import functionalj.stream.doublestream.DoubleStreamPlus;
 
-public interface AsDoubleFuncList extends AsDoubleStreamable {
+
+class AsDoubleFuncListHelper {
     
-    public default DoubleFuncList doubleFuncList() {
-        return DoubleFuncList.from(this);
+    static DoubleFuncList funcListOf(AsDoubleFuncList asFuncList) {
+        return asFuncList.asDoubleFuncList();
+    }
+    
+}
+
+@FunctionalInterface
+public interface AsDoubleFuncList extends AsDoubleStreamPlus {
+    
+    public DoubleFuncList asDoubleFuncList();
+    
+    
+    @Override
+    public default DoubleStreamPlus doubleStreamPlus() {
+        return asDoubleFuncList().doubleStreamPlus();
     }
     
 }

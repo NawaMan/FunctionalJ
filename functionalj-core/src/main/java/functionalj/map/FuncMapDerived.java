@@ -48,7 +48,6 @@ import functionalj.map.MapAction.FilterKey;
 import functionalj.map.MapAction.Mapping;
 import functionalj.map.MapAction.With;
 import functionalj.stream.StreamPlus;
-import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -480,7 +479,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     public FuncList<KEY> keys() {
         if (action instanceof With) {
             val with   = (With<KEY,VALUE>)action;
-            val source = Streamable.from(()->{
+            val source = FuncList.from(()->{
                 StreamPlus<KEY> stream = StreamPlus.concat(
                     map.keySet().stream()
                        .filter(k -> !Objects.equals(k, with.key)),
@@ -497,13 +496,13 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
         }
         if (action instanceof FilterKey) {
             val filter = (FilterKey<KEY, VALUE>)action;
-            val source = (Streamable<KEY>)(()->StreamPlus.from(map.keySet().stream().filter(filter.keyCheck)));
+            val source = (FuncList<KEY>)(()->StreamPlus.from(map.keySet().stream().filter(filter.keyCheck)));
             return FuncListDerived.from(source);
         }
         if (action instanceof FilterBoth) {
             val filter = (FilterBoth<KEY, VALUE>)action;
             val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
-            val source = (Streamable<KEY>)(()->{
+            val source = (FuncList<KEY>)(()->{
                 
                 return StreamPlus.from(
                         originalEntryStream()
@@ -513,8 +512,8 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
             return FuncListDerived.from(source);
         }
         
-        Streamable<KEY> streamable = ()->StreamPlus.from( map.keySet().stream());
-        return streamable.toFuncList();
+        FuncList<KEY> FuncList = ()->StreamPlus.from( map.keySet().stream());
+        return FuncList.toFuncList();
     }
     
     @Override
@@ -537,7 +536,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     }
     @Override
     public FuncList<Map.Entry<KEY, VALUE>> entries() {
-        return FuncList.from((Streamable<Map.Entry<KEY, VALUE>>)(()->entryStream()));
+        return FuncList.from((FuncList<Map.Entry<KEY, VALUE>>)(()->entryStream()));
     }
     
     @Override

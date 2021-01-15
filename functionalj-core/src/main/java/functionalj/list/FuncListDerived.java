@@ -32,10 +32,8 @@ import java.util.stream.Stream;
 
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusUtils;
-import functionalj.streamable.AsStreamable;
 
-public class FuncListDerived<SOURCE, DATA>
-                implements FuncList<DATA> {
+public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
     
     @SuppressWarnings("rawtypes")
     private static final Function noAction = Function.identity();
@@ -44,30 +42,30 @@ public class FuncListDerived<SOURCE, DATA>
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
     
     @SuppressWarnings("unchecked")
-    public static <DATA> FuncListDerived<DATA, DATA> from(AsStreamable<DATA> streamable) {
-        return new FuncListDerived<>(streamable, noAction);
+    public static <DATA> FuncListDerived<DATA, DATA> from(FuncList<DATA> FuncList) {
+        return new FuncListDerived<>(FuncList, noAction);
     }
     
     @SuppressWarnings("unchecked")
-    public static <DATA> FuncListDerived<DATA, DATA> from(Collection<DATA> streamable) {
-        return new FuncListDerived<>(streamable, noAction);
+    public static <DATA> FuncListDerived<DATA, DATA> from(Collection<DATA> FuncList) {
+        return new FuncListDerived<>(FuncList, noAction);
     }
     
     private FuncListDerived(Iterable<SOURCE> iterable, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = iterable;
     }
-    FuncListDerived(AsStreamable<SOURCE> streamable, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    FuncListDerived(FuncList<SOURCE> FuncList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
-        this.source = streamable;
+        this.source = FuncList;
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Stream<SOURCE> getSourceStream() {
         if (source == null)
             return Stream.empty();
-        if (source instanceof AsStreamable)
-            return (Stream<SOURCE>)((AsStreamable)source).stream();
+        if (source instanceof FuncList)
+            return (Stream<SOURCE>)((FuncList)source).stream();
         if (source instanceof Collection)
             return ((Collection)source).stream();
         throw new IllegalStateException();

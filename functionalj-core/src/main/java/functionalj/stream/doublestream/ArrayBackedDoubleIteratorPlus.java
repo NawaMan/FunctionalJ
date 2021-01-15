@@ -8,9 +8,9 @@ import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Func1;
+import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
 import lombok.val;
 
 
@@ -140,8 +140,8 @@ public class ArrayBackedDoubleIteratorPlus implements DoubleIteratorPlus, Primit
         }
     }
     
-    public DoubleStreamable streamable() {
-        return (DoubleStreamable)()->{
+    public DoubleFuncList FuncList() {
+        return (DoubleFuncList)()->{
             val iterable = (DoubleIterable)()->newIterator();
             return DoubleStreamPlus.from(StreamSupport.doubleStream(iterable.spliterator(), false));
         };

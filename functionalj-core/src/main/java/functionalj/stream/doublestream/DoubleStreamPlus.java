@@ -502,13 +502,13 @@ public interface DoubleStreamPlus
     
     //-- Iterator --
     
-    /** @return a iterator of this streamable. */
+    /** @return a iterator of this FuncList. */
     @Override
     public default DoubleIteratorPlus iterator() {
         return DoubleIteratorPlus.from(doubleStream().iterator());
     }
     
-    /** @return a spliterator of this streamable. */
+    /** @return a spliterator of this FuncList. */
     @Override
     public default Spliterator.OfDouble spliterator() {
         return terminate(s -> {

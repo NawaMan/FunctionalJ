@@ -26,9 +26,7 @@ package functionalj.list;
 import java.util.Comparator;
 import java.util.function.Function;
 
-import functionalj.streamable.AsStreamable;
-
-public interface FuncListWithSort<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithSort<DATA> extends AsFuncList<DATA> {
     
     /** Sort the values by the mapped value. */
     public default <T extends Comparable<? super T>> FuncList<DATA> sortedBy(Function<? super DATA, T> mapper) {

@@ -28,9 +28,7 @@ import static functionalj.list.FuncList.deriveFrom;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.streamable.AsStreamable;
-
-public interface FuncListWithMap<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithMap<DATA> extends AsFuncList<DATA> {
     
     /** Map the value using the mapper only when the condition is true. */
     public default FuncList<DATA> mapOnly(

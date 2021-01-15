@@ -36,9 +36,8 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import functionalj.function.IntObjBiFunction;
-import functionalj.streamable.AsStreamable;
 
-public interface FuncListWithFilter<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
     
     /** Map each value to an int and used it to filter the value. */
     public default FuncList<DATA> filterAsInt(

@@ -50,7 +50,6 @@ import functionalj.list.FuncList;
 import functionalj.stream.AsStreamPlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -432,7 +431,7 @@ public class StrFuncs {
     
     public static FuncList<String> grab(CharSequence strValue, String regex, int patternFlags) {
         val pattern  = Pattern.compile(regex, patternFlags);
-        return FuncList.from(Streamable.from(()->{
+        return FuncList.from(FuncList.from(()->{
             val matcher  = pattern.matcher(strValue);
             try (val iterator = createMatchIterator(matcher)) {
                 return iterator.stream();

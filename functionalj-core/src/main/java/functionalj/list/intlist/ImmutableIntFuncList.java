@@ -29,8 +29,6 @@ import java.util.stream.IntStream;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.streamable.intstreamable.AsIntStreamable;
-import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
 
@@ -88,18 +86,18 @@ public class ImmutableIntFuncList implements IntFuncList {
         return new ImmutableIntFuncList(ints);
     }
     
-    public static ImmutableIntFuncList from(AsIntStreamable streamable) {
-        if (streamable == null)
+    public static ImmutableIntFuncList from(AsIntFuncList FuncList) {
+        if (FuncList == null)
             return ImmutableIntFuncList.empty();
         
-        return new ImmutableIntFuncList(streamable.toArray());
+        return new ImmutableIntFuncList(FuncList.toArray());
     }
     
-    public static ImmutableIntFuncList from(boolean isLazy, AsIntStreamable streamable) {
-        if (streamable == null)
+    public static ImmutableIntFuncList from(boolean isLazy, AsIntFuncList FuncList) {
+        if (FuncList == null)
             return ImmutableIntFuncList.empty();
         
-        return new ImmutableIntFuncList(streamable.toArray(), isLazy);
+        return new ImmutableIntFuncList(FuncList.toArray(), isLazy);
     }
     
     public static ImmutableIntFuncList from(IntStream source) {
@@ -134,13 +132,18 @@ public class ImmutableIntFuncList implements IntFuncList {
     }
     
     @Override
-    public IntStreamable intStreamable() {
+    public IntFuncList intFuncList() {
         return ()->intStreamPlus();
     }
     
     @Override
     public IntStreamPlus intStreamPlus() {
         return IntStreamPlus.of(data);
+    }
+    
+    @Override
+    public IntStreamPlus intStream() {
+        return intStreamPlus();
     }
     
     @Override
@@ -231,7 +234,7 @@ public class ImmutableIntFuncList implements IntFuncList {
         if (size() != anotherList.size())
             return false;
         
-        return IntStreamable.zipOf(this.intStreamable(), anotherList.intStreamable(), zeroForEquals)
+        return IntFuncList.zipOf(this.intFuncList(), anotherList.intFuncList(), zeroForEquals)
                 .allMatch(toZero);
     }
     

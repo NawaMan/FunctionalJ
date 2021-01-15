@@ -8,9 +8,9 @@ import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Func1;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
-import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
 
@@ -140,8 +140,8 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
         }
     }
     
-    public IntStreamable streamable() {
-        return (IntStreamable)()->{
+    public IntFuncList FuncList() {
+        return (IntFuncList)()->{
             val iterable = (IntIterable)()->newIterator();
             return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
         };

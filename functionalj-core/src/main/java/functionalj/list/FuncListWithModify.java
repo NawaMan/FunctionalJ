@@ -29,11 +29,10 @@ import java.util.function.Function;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.markers.Sequential;
-import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
     
     public FuncList<DATA> toFuncList();
     

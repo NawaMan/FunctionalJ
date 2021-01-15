@@ -34,9 +34,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import functionalj.function.Func;
+import functionalj.list.FuncList;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
-import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -75,9 +75,9 @@ public class Func1Test {
     public void testApply() {
         val result   = Result.valueOf("Hello");
         val promise  = Promise.of("Hello");
-        val stream   = f(()->Streamable.infiniteInt().streamPlus().limit(5).map($I.asString()));
-        val list     = Streamable.infiniteInt().streamPlus().limit(5).map($I.asString()).toList();
-        val map      = Streamable.infiniteInt().streamPlus().limit(5).toMap($I, $I.asString());
+        val stream   = f(()->FuncList.infiniteInt().streamPlus().limit(5).map($I.asString()));
+        val list     = FuncList.infiniteInt().streamPlus().limit(5).map($I.asString()).toList();
+        val map      = FuncList.infiniteInt().streamPlus().limit(5).toMap($I, $I.asString());
         val supplier = f(()   -> "Hello");
         val function = f(name -> "Hello " + name + "!");
         val func     = f(String::length);

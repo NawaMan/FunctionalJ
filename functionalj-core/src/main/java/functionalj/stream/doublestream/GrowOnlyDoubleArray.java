@@ -26,6 +26,7 @@ package functionalj.stream.doublestream;
 import java.util.OptionalDouble;
 
 import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.list.doublelist.ImmutableDoubleFuncList;
 import functionalj.stream.StreamPlus;
 
 // TODO - This is NOT thread safe (not even try to be).
@@ -92,7 +93,7 @@ public final class GrowOnlyDoubleArray {
     }
     
     public DoubleFuncList toFuncList() {
-        return DoubleFuncList.from(stream());
+        return ImmutableDoubleFuncList.from(stream());
     }
     
     public double get(int i) {

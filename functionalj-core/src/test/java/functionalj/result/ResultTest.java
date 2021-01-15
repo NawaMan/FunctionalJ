@@ -34,7 +34,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import functionalj.function.Func;
-import functionalj.streamable.intstreamable.IntStreamable;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.validator.Validator;
 import lombok.val;
 
@@ -236,7 +236,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst() {
-        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val nums = IntFuncList.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
@@ -257,7 +257,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_Exception() {
-        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val nums = IntFuncList.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
@@ -278,7 +278,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_AllNull() {
-        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val nums = IntFuncList.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
@@ -295,7 +295,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_AllException() {
-        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val nums = IntFuncList.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
@@ -326,7 +326,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_OneNullAllException() {
-        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val nums = IntFuncList.loop(13).map(i -> i*i*i).boxed().toList();
         val guess = nums
         .map(num -> (String)Result.valueOf(num)
                     .mapFirst(

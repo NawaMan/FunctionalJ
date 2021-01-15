@@ -1,7 +1,7 @@
 package example.functionalj.numericalmethods.optimization.oned;
 
 import static functionalj.function.Apply.$;
-import static functionalj.streamable.Streamable.iterate;
+import static functionalj.list.FuncList.iterate;
 import static java.lang.Math.abs;
 
 import functionalj.function.Func1;

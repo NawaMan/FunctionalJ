@@ -29,7 +29,6 @@ import java.util.stream.DoubleStream;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
 import lombok.val;
 
 
@@ -83,33 +82,28 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         return new ImmutableDoubleFuncList(source.toArray(), true);
     }
     
-    public static ImmutableDoubleFuncList from(DoubleStreamable source) {
-        if ((source == null))
-            return emptyList;
-        
-        if (source instanceof ImmutableDoubleFuncList)
-            return (ImmutableDoubleFuncList)source;
-        
-        return new ImmutableDoubleFuncList(source, true);
-    }
-    
     ImmutableDoubleFuncList(double[] data, boolean isLazy) {
         this.data = Objects.requireNonNull(data);
         this.isLazy = isLazy;
     }
     
-    ImmutableDoubleFuncList(DoubleStreamable source, boolean isLazy) {
+    ImmutableDoubleFuncList(DoubleFuncList source, boolean isLazy) {
         this(source.toArray(), isLazy);
     }
     
     @Override
-    public DoubleStreamable doubleStreamable() {
+    public DoubleFuncList asDoubleFuncList() {
         return ()->doubleStreamPlus();
     }
     
     @Override
     public DoubleStreamPlus doubleStreamPlus() {
         return DoubleStreamPlus.of(data);
+    }
+
+    @Override
+    public DoubleStreamPlus doubleStream() {
+        return doubleStreamPlus();
     }
     
     @Override
@@ -170,7 +164,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         if (size() != anotherList.size())
             return false;
         
-        return DoubleStreamable.zipOf(this.doubleStreamable(), anotherList.doubleStreamable(), zeroForEquals)
+        return DoubleFuncList.zipOf(this, anotherList, zeroForEquals)
                 .allMatch(toZero);
     }
     

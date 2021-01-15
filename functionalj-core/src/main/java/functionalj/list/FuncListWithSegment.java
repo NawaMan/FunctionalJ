@@ -36,10 +36,9 @@ import functionalj.stream.IncompletedSegment;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Sequential;
-import functionalj.streamable.AsStreamable;
 import lombok.val;
 
-public interface FuncListWithSegment<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
     
     /**
      * Segment the stream into sub stream with the fix length of count.

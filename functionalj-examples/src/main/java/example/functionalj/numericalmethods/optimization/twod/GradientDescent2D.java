@@ -1,7 +1,7 @@
 package example.functionalj.numericalmethods.optimization.twod;
 
 import static example.functionalj.numericalmethods.optimization.twod.Iteration.theIteration;
-import static functionalj.streamable.Streamable.iterate;
+import static functionalj.list.FuncList.iterate;
 import static java.lang.Math.abs;
 
 import java.util.List;

@@ -34,11 +34,12 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;
 
 import functionalj.list.FuncList;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.streamable.doublestreamable.AsDoubleStreamable;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
+import functionalj.stream.intstream.IntStreamPlus;
+import lombok.val;
 
-public interface DoubleFuncListWithReshape extends AsDoubleStreamable {
+public interface DoubleFuncListWithReshape extends AsDoubleFuncList {
     
     /**
      * Segment the stream into sub stream with the fix length of count.
@@ -110,7 +111,7 @@ public interface DoubleFuncListWithReshape extends AsDoubleStreamable {
     public default DoubleFuncList collapseWhen(
             DoublePredicate      conditionToCollapse,
             DoubleBinaryOperator concatFunc) {
-        return from((DoubleStreamable)(() -> doubleStreamPlus().collapseWhen(conditionToCollapse, concatFunc)));
+        return from((DoubleFuncList)(() -> doubleStreamPlus().collapseWhen(conditionToCollapse, concatFunc)));
     }
     
     /**
@@ -121,8 +122,8 @@ public interface DoubleFuncListWithReshape extends AsDoubleStreamable {
     public default DoubleFuncList collapseSize(
             DoubleFunction<Integer> segmentSize,
             DoubleBinaryOperator    combinator) {
-        DoubleStreamable streamable = () -> doubleStreamPlus().collapseSize(segmentSize, combinator);
-        return from(streamable);
+        DoubleFuncList FuncList = () -> doubleStreamPlus().collapseSize(segmentSize, combinator);
+        return from(FuncList);
     }
     
     /**
@@ -135,8 +136,8 @@ public interface DoubleFuncListWithReshape extends AsDoubleStreamable {
             DoubleFunction<Integer> segmentSize,
             DoubleUnaryOperator     mapper,
             DoubleBinaryOperator    combinator) {
-        DoubleStreamable streamable = () -> doubleStreamPlus().collapseSize(segmentSize, mapper, combinator);
-        return from(streamable);
+        DoubleFuncList FuncList = () -> doubleStreamPlus().collapseSize(segmentSize, mapper, combinator);
+        return from(FuncList);
     }
     
     /**
@@ -156,24 +157,25 @@ public interface DoubleFuncListWithReshape extends AsDoubleStreamable {
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<DoubleFuncList> segmentByPercentiles(int ... percentiles) {
-        return FuncList.from(doubleStreamable().segmentByPercentiles(percentiles));
+        return DoubleFuncListHelper.segmentByPercentiles(this, IntFuncList.of(percentiles).mapToDouble());
     }
 
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<DoubleFuncList> segmentByPercentiles(double ... percentiles) {
-        return FuncList.from(doubleStreamable().segmentByPercentiles(percentiles));
+        return DoubleFuncListHelper.segmentByPercentiles(this, DoubleFuncList.of(percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<DoubleFuncList> segmentByPercentiles(DoubleFuncList percentiles) {
-        return FuncList.from(doubleStreamable().segmentByPercentiles(percentiles));
+        return DoubleFuncListHelper.segmentByPercentiles(this, percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
             double ...        percentiles) {
-        return FuncList.from(doubleStreamable().segmentByPercentiles(percentiles));
+        val percentileList = DoubleFuncList.of(percentiles);
+        return segmentByPercentiles(mapper, percentileList);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -181,29 +183,33 @@ public interface DoubleFuncListWithReshape extends AsDoubleStreamable {
             DoubleFunction<T> mapper,
             Comparator<T>     comparator,
             int ...           percentiles) {
-        return FuncList.from(doubleStreamable().segmentByPercentiles(mapper, comparator, percentiles));
+        val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
+        return segmentByPercentiles(mapper, comparator, percentileList);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
             int ...           percentiles) {
-        return FuncList.from(doubleStreamable().segmentByPercentiles(mapper, percentiles));
+        val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
+        return segmentByPercentiles(mapper, percentileList);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
-            Comparator<T>  comparator,
-            double ...     percentiles) {
-        return FuncList.from(doubleStreamable().segmentByPercentiles(mapper, comparator, percentiles));
+            Comparator<T>     comparator,
+            double ...        percentiles) {
+        val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
+        return segmentByPercentiles(mapper, comparator, percentileList);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
-            DoubleFuncList percentiles) {
-        return FuncList.from(doubleStreamable().segmentByPercentiles(mapper, percentiles));
+            DoubleFuncList    percentiles) {
+        val list = doubleStreamPlus().sortedBy(mapper).toImmutableList();
+        return DoubleFuncListHelper.segmentByPercentiles(list, percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -211,7 +217,8 @@ public interface DoubleFuncListWithReshape extends AsDoubleStreamable {
             DoubleFunction<T>  mapper,
             Comparator<T>      comparator,
             DoubleFuncList     percentiles) {
-        return FuncList.from(doubleStreamable().segmentByPercentiles(mapper, comparator, percentiles));
+        val list = doubleStreamPlus().sortedBy(mapper, comparator).toImmutableList();
+        return DoubleFuncListHelper.segmentByPercentiles(list, percentiles);
     }
     
 }

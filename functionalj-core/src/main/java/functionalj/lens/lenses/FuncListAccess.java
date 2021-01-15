@@ -33,7 +33,6 @@ import java.util.function.Predicate;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
 import functionalj.list.FuncList;
-import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -137,10 +136,10 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         });
     }
     
-    public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(Streamable<? extends TYPE> streamable) {
+    public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(FuncList<? extends TYPE> FuncList) {
         return subList(this, host -> {
             return apply(host)
-                    .appendAll(streamable);
+                    .appendAll(FuncList);
         });
     }
     
@@ -166,10 +165,10 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         });
     }
     
-    public default FuncListAccess<HOST, TYPE, TYPEACCESS> insertAllAt(int index, Streamable<? extends TYPE> streamable) {
+    public default FuncListAccess<HOST, TYPE, TYPEACCESS> insertAllAt(int index, FuncList<? extends TYPE> FuncList) {
         return subList(this, host -> {
             return apply(host)
-                    .insertAllAt(index, streamable);
+                    .insertAllAt(index, FuncList);
         });
     }
     

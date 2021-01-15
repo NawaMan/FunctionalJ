@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.list.intlist;
 
+import static functionalj.list.intlist.AsIntFuncListHelper.funcListOf;
+
 import java.util.function.IntPredicate;
 
 import functionalj.map.FuncMap;
@@ -33,7 +35,7 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 
-public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
+public interface IntFuncListWithSplit extends AsIntFuncList {
     
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
@@ -52,7 +54,8 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
      */
     public default Tuple2<IntFuncList, IntFuncList> split(IntPredicate predicate) {
         val temp
-            = mapToTuple(
+            = funcListOf(this)
+            .mapToTuple(
                     it -> predicate.test(it) ? 0 : 1,
                     it -> it
             )
@@ -195,7 +198,8 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key5, IntPredicate predicate5,
             KEY key6, IntPredicate predicate6) {
         val temp
-            = mapToTuple(
+            = funcListOf(this)
+            .mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2
@@ -235,7 +239,8 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key1, IntPredicate predicate,
             KEY key2) {
         val temp 
-            = mapToTuple(
+            = funcListOf(this)
+            .mapToTuple(
                 it -> predicate.test(it) ? 0 : 1,
                 it -> it
             )
@@ -263,7 +268,8 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key2, IntPredicate predicate2,
             KEY key3) {
         val temp 
-            = mapToTuple(
+            = funcListOf(this)
+            .mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     :                       2,
@@ -296,7 +302,8 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key3, IntPredicate predicate3,
             KEY otherKey) {
         val temp
-            = mapToTuple(
+            = funcListOf(this)
+            .mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2
@@ -333,7 +340,8 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key4, IntPredicate predicate4,
             KEY otherKey) {
         val temp
-            = mapToTuple(
+            = funcListOf(this)
+            .mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2
@@ -374,7 +382,8 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key5, IntPredicate predicate5,
             KEY otherKey) {
         val temp
-            = mapToTuple(
+            = funcListOf(this)
+            .mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2

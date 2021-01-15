@@ -57,8 +57,8 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      *   Another stream: [1, 2, 3, 4, 5] <br>
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
-    public default IntFuncList mergeWith(IntFuncList anotherStreamable) {
-        return deriveToInt(this, stream -> stream.mergeWith(anotherStreamable.intStream()));
+    public default IntFuncList mergeWith(IntFuncList anotherFuncList) {
+        return deriveToInt(this, stream -> stream.mergeWith(anotherFuncList.intStream()));
     }
     
     //-- Zip --
@@ -73,8 +73,8 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      *   Result stream:  [(A, 1), (B, 2), (C, 3)] <br>
      */
     public default <ANOTHER> FuncList<IntTuple2<ANOTHER>> zipWith(
-            FuncList<ANOTHER> anotherStreamable) {
-        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream()));
+            FuncList<ANOTHER> anotherFuncList) {
+        return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.stream()));
     }
     
     /**
@@ -88,8 +88,8 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      */
     public default <ANOTHER> FuncList<IntTuple2<ANOTHER>> zipWith(
             int               defaultValue,
-            FuncList<ANOTHER> anotherStreamable) {
-        return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherStreamable.stream()));
+            FuncList<ANOTHER> anotherFuncList) {
+        return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherFuncList.stream()));
     }
     
     /**
@@ -103,9 +103,9 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      *   Result stream:  [A-1, B-2, C-3] <br>
      */
     public default <ANOTHER, TARGET> FuncList<TARGET> zipWith(
-            FuncList<ANOTHER>                 anotherStreamable,
+            FuncList<ANOTHER>                 anotherFuncList,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream(), merger));
+        return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.stream(), merger));
     }
     
     /**
@@ -118,8 +118,8 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      *   Combinator:     (v1,v2) -> v1 + "-" + v2
      *   Result stream:  [A-1, B-2, C-3, null-4, null-5] <br>
      */
-    public default FuncList<IntIntTuple> zipWith(IntFuncList anotherStreamable) {
-        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.intStream()));
+    public default FuncList<IntIntTuple> zipWith(IntFuncList anotherFuncList) {
+        return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.intStream()));
     }
     
     /**
@@ -132,8 +132,8 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      *   Selector:       (v1,v2) -> v1 > v2 <br>
      *   Result stream:  [10, 5, 9, 5]
      */
-    public default FuncList<IntIntTuple> zipWith(IntFuncList anotherStreamable, int defaultValue) {
-        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.intStream(), defaultValue));
+    public default FuncList<IntIntTuple> zipWith(IntFuncList anotherFuncList, int defaultValue) {
+        return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.intStream(), defaultValue));
     }
     
     /**
@@ -147,44 +147,44 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      *   Selector:       (v1,v2) -> v1 > v2 <br>
      *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
      */
-    public default FuncList<IntIntTuple> zipWith(IntFuncList anotherStreamable, int defaultValue1,
+    public default FuncList<IntIntTuple> zipWith(IntFuncList anotherFuncList, int defaultValue1,
             int defaultValue2) {
-        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.intStream(), defaultValue1, defaultValue2));
+        return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.intStream(), defaultValue1, defaultValue2));
     }
     
-    public default IntFuncList zipWith(IntFuncList anotherStreamable, IntBiFunctionPrimitive merger) {
-        return deriveToInt(this, stream -> stream.zipWith(anotherStreamable.intStream(), merger));
+    public default IntFuncList zipWith(IntFuncList anotherFuncList, IntBiFunctionPrimitive merger) {
+        return deriveToInt(this, stream -> stream.zipWith(anotherFuncList.intStream(), merger));
     }
     
-    public default IntFuncList zipWith(IntFuncList anotherStreamable, int defaultValue,
+    public default IntFuncList zipWith(IntFuncList anotherFuncList, int defaultValue,
             IntBiFunctionPrimitive merger) {
-        return deriveToInt(this, stream -> stream.zipWith(anotherStreamable.intStream(), defaultValue, merger));
+        return deriveToInt(this, stream -> stream.zipWith(anotherFuncList.intStream(), defaultValue, merger));
     }
     
-    public default IntFuncList zipWith(IntFuncList anotherStreamable, int defaultValue1, int defaultValue2,
+    public default IntFuncList zipWith(IntFuncList anotherFuncList, int defaultValue1, int defaultValue2,
             IntBiFunctionPrimitive merger) {
-        return deriveToInt(this, stream -> stream.zipWith(anotherStreamable.intStream(), defaultValue1, defaultValue2, merger));
+        return deriveToInt(this, stream -> stream.zipWith(anotherFuncList.intStream(), defaultValue1, defaultValue2, merger));
     }
     
-    public default <T> FuncList<T> zipToObjWith(IntFuncList anotherStreamable, IntIntBiFunction<T> merger) {
-        return deriveToObj(this, stream -> stream.zipToObjWith(anotherStreamable.intStream(), merger));
+    public default <T> FuncList<T> zipToObjWith(IntFuncList anotherFuncList, IntIntBiFunction<T> merger) {
+        return deriveToObj(this, stream -> stream.zipToObjWith(anotherFuncList.intStream(), merger));
     }
     
-    public default <T> FuncList<T> zipToObjWith(IntFuncList anotherStreamable, int defaultValue,
+    public default <T> FuncList<T> zipToObjWith(IntFuncList anotherFuncList, int defaultValue,
             IntIntBiFunction<T> merger) {
-        return deriveToObj(this, stream -> stream.zipToObjWith(anotherStreamable.intStream(), defaultValue, merger));
+        return deriveToObj(this, stream -> stream.zipToObjWith(anotherFuncList.intStream(), defaultValue, merger));
     }
     
-    public default <T> FuncList<T> zipToObjWith(IntFuncList anotherStreamable, int defaultValue1, int defaultValue2,
+    public default <T> FuncList<T> zipToObjWith(IntFuncList anotherFuncList, int defaultValue1, int defaultValue2,
             IntIntBiFunction<T> merger) {
-        return deriveToObj(this, stream -> stream.zipToObjWith(anotherStreamable.intStream(), defaultValue1, defaultValue2, merger));
+        return deriveToObj(this, stream -> stream.zipToObjWith(anotherFuncList.intStream(), defaultValue1, defaultValue2, merger));
     }
     
     public default <ANOTHER, TARGET> FuncList<TARGET> zipToObjWith(
             int               defaultValue,
-            FuncList<ANOTHER> anotherStreamable,
+            FuncList<ANOTHER> anotherFuncList,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherStreamable.stream(), merger));
+        return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherFuncList.stream(), merger));
     }
     
     /**
@@ -198,8 +198,8 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      *   Selector:       (v1,v2) -> v1 > v2 <br>
      *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
      */
-    public default IntFuncList choose(IntFuncList anotherStreamable, IntBiPredicatePrimitive selectThisNotAnother) {
-        return deriveToInt(this, stream -> stream.choose(anotherStreamable.intStreamPlus(), selectThisNotAnother));
+    public default IntFuncList choose(IntFuncList anotherFuncList, IntBiPredicatePrimitive selectThisNotAnother) {
+        return deriveToInt(this, stream -> stream.choose(anotherFuncList.intStreamPlus(), selectThisNotAnother));
     }
     
 }

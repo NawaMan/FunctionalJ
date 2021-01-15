@@ -26,13 +26,9 @@ package functionalj.stream.intstream;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 
+import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
-import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.tuple.Tuple2;
-import functionalj.tuple.Tuple3;
-import functionalj.tuple.Tuple4;
-import functionalj.tuple.Tuple5;
-import functionalj.tuple.Tuple6;
 
 public interface IntStreamPlusWithSplit
             extends IntStreamPlusWithMapToTuple {
@@ -54,99 +50,11 @@ public interface IntStreamPlusWithSplit
      */
     public default Tuple2<IntStreamPlus, IntStreamPlus> split(
             IntPredicate predicate) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
+        Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
+        IntFuncList FuncList = ()->intStreamPlus();
+        return FuncList
                 .split(predicate)
                 .map(toStreamPlus, toStreamPlus);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    public default Tuple3<IntStreamPlus, IntStreamPlus, IntStreamPlus> split(
-            IntPredicate predicate1,
-            IntPredicate predicate2) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
-                .split(predicate1, predicate2)
-                .map(toStreamPlus, toStreamPlus, toStreamPlus);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    public default Tuple4<IntStreamPlus, IntStreamPlus, IntStreamPlus, IntStreamPlus> split(
-            IntPredicate predicate1,
-            IntPredicate predicate2,
-            IntPredicate predicate3) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
-                .split(predicate1, predicate2, predicate3)
-                .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * The element will be in the forth sub stream if the first, second, third predicate return false and the forth predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    public default Tuple5<IntStreamPlus, IntStreamPlus, IntStreamPlus, IntStreamPlus, IntStreamPlus> split(
-            IntPredicate predicate1,
-            IntPredicate predicate2,
-            IntPredicate predicate3,
-            IntPredicate predicate4) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
-                .split(predicate1, predicate2, predicate3, predicate4)
-                .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     * 
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * The element will be in the forth sub stream if the first, second and third predicate return false and the forth predicate is true.
-     * The element will be in the fifth sub stream if the first, second, third and forth predicate return false and the fifth predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     * 
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    public default Tuple6<IntStreamPlus, IntStreamPlus, IntStreamPlus, IntStreamPlus, IntStreamPlus, IntStreamPlus> split(
-            IntPredicate predicate1,
-            IntPredicate predicate2,
-            IntPredicate predicate3,
-            IntPredicate predicate4,
-            IntPredicate predicate5) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
-                .split(predicate1, predicate2, predicate3, predicate4, predicate5)
-                .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
     }
     
     /**
@@ -157,9 +65,9 @@ public interface IntStreamPlusWithSplit
     public default <KEY> FuncMap<KEY, IntStreamPlus> split(
             KEY key1, IntPredicate predicate,
             KEY key2) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
+        Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
+        IntFuncList FuncList = ()->intStreamPlus();
+        return FuncList
                 .split(key1, predicate, key2)
                 .mapValue(toStreamPlus);
     }
@@ -173,9 +81,9 @@ public interface IntStreamPlusWithSplit
             KEY key1, IntPredicate predicate1,
             KEY key2, IntPredicate predicate2,
             KEY key3) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
+        Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
+        IntFuncList FuncList = ()->intStreamPlus();
+        return FuncList
                 .split(key1, predicate1, key2, predicate2, key3)
                 .mapValue(toStreamPlus);
     }
@@ -190,9 +98,9 @@ public interface IntStreamPlusWithSplit
             KEY key2, IntPredicate predicate2,
             KEY key3, IntPredicate predicate3,
             KEY key4) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
+        Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
+        IntFuncList FuncList = ()->intStreamPlus();
+        return FuncList
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4)
                 .mapValue(toStreamPlus);
     }
@@ -208,9 +116,9 @@ public interface IntStreamPlusWithSplit
             KEY key3, IntPredicate predicate3,
             KEY key4, IntPredicate predicate4,
             KEY key5) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
+        Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
+        IntFuncList FuncList = ()->intStreamPlus();
+        return FuncList
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5)
                 .mapValue(toStreamPlus);
     }
@@ -227,9 +135,9 @@ public interface IntStreamPlusWithSplit
             KEY key4, IntPredicate predicate4,
             KEY key5, IntPredicate predicate5,
             KEY key6) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
-        IntStreamable streamable = ()->intStreamPlus();
-        return streamable
+        Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
+        IntFuncList FuncList = ()->intStreamPlus();
+        return FuncList
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6)
                 .mapValue(toStreamPlus);
     }

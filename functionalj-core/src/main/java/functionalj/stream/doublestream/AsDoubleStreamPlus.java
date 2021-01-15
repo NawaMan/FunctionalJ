@@ -70,12 +70,12 @@ public interface AsDoubleStreamPlus
     
     //== Terminal operations ==
     
-    /** @return a iterator of this streamable. */
+    /** @return a iterator of this FuncList. */
     public default DoubleIteratorPlus iterator() {
         return streamFrom(this).iterator();
     }
     
-    /** @return a spliterator of this streamable. */
+    /** @return a spliterator of this FuncList. */
     public default Spliterator.OfDouble spliterator() {
         val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);

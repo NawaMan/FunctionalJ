@@ -21,12 +21,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.doublestreamable;
+package functionalj.list;
 
-import static functionalj.stream.Collected.CollectedDouble.collectedOf;
-import static functionalj.streamable.doublestreamable.AsDoubleStreamable.streamableOf;
+import static functionalj.list.AsFuncListHelper.funcListOf;
+import static functionalj.stream.Collected.collectedOf;
 
-import functionalj.stream.doublestream.DoubleStreamProcessor;
+import functionalj.stream.StreamProcessor;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -36,14 +36,15 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
-public interface DoubleStreamableWithCalculate extends AsDoubleStreamable {
+public interface FuncListWithCalculate<DATA> extends AsFuncList<DATA>{
     
-    /** Perform the calculation using the data of this streamable */
+    
+    /** Perform the calculation using the data of this funcList */
     public default <A, T> T calculate(
-            DoubleStreamProcessor<T> processor) {
-        val streamble = streamableOf(this);
-        val collected = collectedOf(streamble, processor);
-        streamble
+            StreamProcessor<? extends DATA, T> processor) {
+        val funcList = funcListOf(this);
+        val collected = collectedOf(funcList, processor);
+        funcList
         .forEach(each -> {
             collected.accumulate(each);
         });
@@ -51,14 +52,14 @@ public interface DoubleStreamableWithCalculate extends AsDoubleStreamable {
         return value;
     }
     
-    /** Perform the calculation using the data of this streamable */
+    /** Perform the calculation using the data of this funcList */
     public default <T1, T2> Tuple2<T1, T2> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2) {
-        val streamble = streamableOf(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
-        streamble
+            StreamProcessor<DATA, T1> processor1,
+            StreamProcessor<DATA, T2> processor2) {
+        val funcList = funcListOf(this);
+        val collected1 = collectedOf(funcList, processor1);
+        val collected2 = collectedOf(funcList, processor2);
+        funcList
         .forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -68,16 +69,16 @@ public interface DoubleStreamableWithCalculate extends AsDoubleStreamable {
         return Tuple.of(value1, value2);
     }
     
-    /** Perform the calculation using the data of this streamable */
+    /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2,
-            DoubleStreamProcessor<T3> processor3) {
-        val streamble = streamableOf(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
-        val collected3 = collectedOf(streamble, processor3);
-        streamble
+            StreamProcessor<DATA, T1> processor1,
+            StreamProcessor<DATA, T2> processor2,
+            StreamProcessor<DATA, T3> processor3) {
+        val funcList = funcListOf(this);
+        val collected1 = collectedOf(funcList, processor1);
+        val collected2 = collectedOf(funcList, processor2);
+        val collected3 = collectedOf(funcList, processor3);
+        funcList
         .forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -89,18 +90,18 @@ public interface DoubleStreamableWithCalculate extends AsDoubleStreamable {
         return Tuple.of(value1, value2, value3);
     }
     
-    /** Perform the calculation using the data of this streamable */
+    /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2,
-            DoubleStreamProcessor<T3> processor3,
-            DoubleStreamProcessor<T4> processor4) {
-        val streamble = streamableOf(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
-        val collected3 = collectedOf(streamble, processor3);
-        val collected4 = collectedOf(streamble, processor4);
-        streamble
+            StreamProcessor<DATA, T1> processor1,
+            StreamProcessor<DATA, T2> processor2,
+            StreamProcessor<DATA, T3> processor3,
+            StreamProcessor<DATA, T4> processor4) {
+        val funcList = funcListOf(this);
+        val collected1 = collectedOf(funcList, processor1);
+        val collected2 = collectedOf(funcList, processor2);
+        val collected3 = collectedOf(funcList, processor3);
+        val collected4 = collectedOf(funcList, processor4);
+        funcList
         .forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -114,20 +115,20 @@ public interface DoubleStreamableWithCalculate extends AsDoubleStreamable {
         return Tuple.of(value1, value2, value3, value4);
     }
     
-    /** Perform the calculation using the data of this streamable */
+    /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2,
-            DoubleStreamProcessor<T3> processor3,
-            DoubleStreamProcessor<T4> processor4,
-            DoubleStreamProcessor<T5> processor5) {
-        val streamble = streamableOf(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
-        val collected3 = collectedOf(streamble, processor3);
-        val collected4 = collectedOf(streamble, processor4);
-        val collected5 = collectedOf(streamble, processor5);
-        streamble
+            StreamProcessor<DATA, T1> processor1,
+            StreamProcessor<DATA, T2> processor2,
+            StreamProcessor<DATA, T3> processor3,
+            StreamProcessor<DATA, T4> processor4,
+            StreamProcessor<DATA, T5> processor5) {
+        val funcList = funcListOf(this);
+        val collected1 = collectedOf(funcList, processor1);
+        val collected2 = collectedOf(funcList, processor2);
+        val collected3 = collectedOf(funcList, processor3);
+        val collected4 = collectedOf(funcList, processor4);
+        val collected5 = collectedOf(funcList, processor5);
+        funcList
         .forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -143,22 +144,22 @@ public interface DoubleStreamableWithCalculate extends AsDoubleStreamable {
         return Tuple.of(value1, value2, value3, value4, value5);
     }
     
-    /** Perform the calculation using the data of this streamable */
+    /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2,
-            DoubleStreamProcessor<T3> processor3,
-            DoubleStreamProcessor<T4> processor4,
-            DoubleStreamProcessor<T5> processor5,
-            DoubleStreamProcessor<T6> processor6) {
-        val streamble = streamableOf(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
-        val collected3 = collectedOf(streamble, processor3);
-        val collected4 = collectedOf(streamble, processor4);
-        val collected5 = collectedOf(streamble, processor5);
-        val collected6 = collectedOf(streamble, processor6);
-        streamble
+            StreamProcessor<DATA, T1> processor1,
+            StreamProcessor<DATA, T2> processor2,
+            StreamProcessor<DATA, T3> processor3,
+            StreamProcessor<DATA, T4> processor4,
+            StreamProcessor<DATA, T5> processor5,
+            StreamProcessor<DATA, T6> processor6) {
+        val funcList = funcListOf(this);
+        val collected1 = collectedOf(funcList, processor1);
+        val collected2 = collectedOf(funcList, processor2);
+        val collected3 = collectedOf(funcList, processor3);
+        val collected4 = collectedOf(funcList, processor4);
+        val collected5 = collectedOf(funcList, processor5);
+        val collected6 = collectedOf(funcList, processor6);
+        funcList
         .forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);

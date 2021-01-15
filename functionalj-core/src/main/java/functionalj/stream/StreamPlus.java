@@ -63,7 +63,6 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
-import functionalj.streamable.Streamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -81,7 +80,7 @@ import lombok.val;
  * </ol>
  *
  * Use this class if the source of data is a one-time non-repeatable data source.
- * Otherwise, use {@link Streamable} as some operation may benefit from having repeatable streams.
+ * Otherwise, use {@link FuncList} as some operation may benefit from having repeatable streams.
  *
  * Unless stated otherwise all methods in this class is:
  * <ol>
@@ -532,13 +531,13 @@ public interface StreamPlus<DATA>
     
     //-- Iterator --
     
-    /** @return a iterator of this streamable. */
+    /** @return a iterator of this FuncList. */
     @Override
     public default IteratorPlus<DATA> iterator() {
         return IteratorPlus.from(stream().iterator());
     }
     
-    /** @return a spliterator of this streamable. */
+    /** @return a spliterator of this FuncList. */
     @Override
     public default Spliterator<DATA> spliterator() {
         val iterator = iterator();

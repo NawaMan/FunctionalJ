@@ -20,7 +20,7 @@ public class DoubleStreamPlusTest {
         .takeWhile(theDouble.thatLessThanOrEqualsTo(10.00))
         .toFuncList()
         .shuffle()
-        .doubleStreamable()
+        .asDoubleFuncList()
         .segmentByPercentiles(25, 75)
         .forEach  (each -> {
             logs.add(String.format("Found: %d\n", each.size()));

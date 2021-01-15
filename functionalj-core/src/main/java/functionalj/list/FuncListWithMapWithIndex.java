@@ -29,10 +29,9 @@ import functionalj.function.IntObjToIntBiFunction;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.markers.Sequential;
-import functionalj.streamable.AsStreamable;
 import functionalj.tuple.IntTuple2;
 
-public interface FuncListWithMapWithIndex<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
     
     /** @return  the stream of each value and index. */
     public default FuncList<IntTuple2<DATA>> mapWithIndex() {

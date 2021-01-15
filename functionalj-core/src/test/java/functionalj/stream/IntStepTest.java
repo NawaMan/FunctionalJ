@@ -6,8 +6,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.list.FuncList;
 import functionalj.stream.intstream.IntStep;
-import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -30,7 +30,7 @@ public class IntStepTest {
         val step = step(10);
         assertEquals(
                 "[0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]",
-                Streamable
+                FuncList
                 .infiniteInt()
                 .limit(25)
                 .map(step)
@@ -42,7 +42,7 @@ public class IntStepTest {
                 + "10:[5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
                 + "20:[15, 16, 17, 18, 19, 20, 21, 22, 23, 24]"
                 + "}",
-                Streamable
+                FuncList
                 .infiniteInt()
                 .limit(25)
                 .groupingBy(step.function())

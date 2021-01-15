@@ -23,7 +23,8 @@
 // ============================================================================
 package functionalj.stream;
 
-import functionalj.streamable.Streamable;
+
+import functionalj.list.FuncList;
 
 /**
  * Classes implementing this interface can create an iterator plus.
@@ -37,8 +38,8 @@ public interface IterablePlus<DATA> {
     
     public IteratorPlus<DATA> iterator();
     
-    public default Streamable<DATA> streamable() {
-        return (Streamable<DATA>)(() -> iterator().stream());
+    public default FuncList<DATA> FuncList() {
+        return (FuncList<DATA>)(() -> iterator().stream());
     }
     
 }

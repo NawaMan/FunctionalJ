@@ -28,9 +28,7 @@ import static functionalj.list.FuncList.deriveFrom;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-import functionalj.streamable.AsStreamable;
-
-public interface FuncListWithLimit<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
     
     /** Limit the size of the stream to the given size. */
     public default FuncList<DATA> limit(Long maxSize) {

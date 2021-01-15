@@ -29,11 +29,11 @@ import java.util.function.Function;
 
 import functionalj.function.Func1;
 import functionalj.lens.lenses.DoubleAccess;
+import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
 
 
-public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, Function<Double, Double>, DoubleStreamable {
+public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, Function<Double, Double>, DoubleFuncList {
     
     private final double size;
     private final double start;

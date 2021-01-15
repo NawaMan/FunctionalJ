@@ -23,38 +23,40 @@
 // ============================================================================
 package functionalj.list.intlist;
 
-import static functionalj.streamable.intstreamable.IntStreamable.zipOf;
 
 import java.util.Objects;
 import java.util.function.IntPredicate;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.streamable.intstreamable.AsIntStreamable;
-import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
 
-class IntFuncListDerivedFromIntStreamable
+class IntFuncListDerivedFromIntFuncList
                 implements IntFuncList {
     
     private static final IntBiFunctionPrimitive zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
     private static final IntPredicate           toZero        = (int i)          -> i  == 0;
     
-    private AsIntStreamable source;
+    private AsIntFuncList source;
     
-    public IntFuncListDerivedFromIntStreamable(AsIntStreamable souce) {
+    public IntFuncListDerivedFromIntFuncList(AsIntFuncList souce) {
         this.source = Objects.requireNonNull(souce);
     }
     
     @Override
-    public IntStreamable intStreamable() {
-        return source.intStreamable();
+    public IntFuncList asIntFuncList() {
+        return source.asIntFuncList();
     }
     
     @Override
     public IntStreamPlus intStreamPlus() {
-        return intStreamable().intStreamPlus();
+        return intFuncList().intStreamPlus();
+    }
+
+    @Override
+    public IntStreamPlus intStream() {
+        return intStreamPlus();
     }
     
     @Override
@@ -69,7 +71,7 @@ class IntFuncListDerivedFromIntStreamable
     }
     
     public String toString() {
-        return intStreamable().toListString();
+        return intFuncList().toListString();
     }
     
     public int hashCode() {
@@ -87,7 +89,7 @@ class IntFuncListDerivedFromIntStreamable
         if (size() != anotherList.size())
             return false;
         
-        return zipOf(this.intStreamable(), anotherList.intStreamable(), zeroForEquals)
+        return IntFuncList.zipOf(this.intFuncList(), anotherList.intFuncList(), zeroForEquals)
                 .allMatch(toZero);
     }
     

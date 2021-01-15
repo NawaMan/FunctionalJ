@@ -39,8 +39,6 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
-import functionalj.streamable.AsStreamable;
-import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -71,27 +69,11 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return new ImmutableList<>(Arrays.asList(datas));
     }
     
-    public static <T> ImmutableList<T> from(Collection<T> data) {
-        if (data instanceof ImmutableList)
-            return (ImmutableList<T>)data;
-        if (data == null)
-            return empty();
-        
-        return new ImmutableList<T>(data);
-    }
-    
-    public static <T> ImmutableList<T> from(AsStreamable<T> streamable) {
-        if (streamable == null)
+    public static <T> ImmutableList<T> from(boolean isLazy, FuncList<T> funcList) {
+        if (funcList == null)
             return ImmutableList.empty();
         
-        return new ImmutableList<T>(streamable.toJavaList());
-    }
-    
-    public static <T> ImmutableList<T> from(boolean isLazy, AsStreamable<T> streamable) {
-        if (streamable == null)
-            return ImmutableList.empty();
-        
-        return new ImmutableList<T>(streamable.toJavaList(), isLazy);
+        return new ImmutableList<T>(funcList, isLazy);
     }
     
     public static <T> ImmutableList<T> from(Stream<T> stream) {
@@ -107,13 +89,22 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return new ImmutableList<T>(readOnlyList.toJavaList());
     }
     
-    public static <T> ImmutableList<T> from(FuncList<T> funcList) {
-        if (funcList instanceof ImmutableList)
-            return (ImmutableList<T>)funcList;
-        if (funcList == null)
+    public static <T> ImmutableList<T> from(Collection<T> collection) {
+        if (collection instanceof ImmutableList)
+            return (ImmutableList<T>)collection;
+        if (collection == null)
             return ImmutableList.empty();
+        if (collection instanceof FuncList) {
+            val funcList = (FuncList<T>)collection;
+            return new ImmutableList<T>(funcList.toJavaList(), funcList.isLazy());
+        }
+        if (collection instanceof List) {
+            val list = (List<T>)collection;
+            return new ImmutableList<T>(list, true);
+        }
         
-        return new ImmutableList<T>(funcList.toJavaList(), funcList.isLazy());
+        val list = (List<T>)collection.stream().collect(Collectors.toList());
+        return new ImmutableList<T>(list, true);
     }
     
     private final List<DATA> data;
@@ -134,11 +125,6 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
             data.forEach(list::add);
             this.data = unmodifiableList(list);
         }
-    }
-    
-    @Override
-    public Streamable<DATA> streamable() {
-        return ()->streamPlus();
     }
     
     @Override

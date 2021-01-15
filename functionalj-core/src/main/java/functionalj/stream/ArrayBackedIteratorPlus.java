@@ -31,9 +31,9 @@ import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Func1;
+import functionalj.list.FuncList;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
-import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -161,8 +161,8 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
         }
     }
     
-    public Streamable<DATA> streamable() {
-        return (Streamable<DATA>)(()->{
+    public FuncList<DATA> FuncList() {
+        return (FuncList<DATA>)(()->{
             val iterable = (Iterable<DATA>)()->newIterator();
             return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
         });

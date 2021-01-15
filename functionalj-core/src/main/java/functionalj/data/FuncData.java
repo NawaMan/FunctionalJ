@@ -23,14 +23,16 @@
 // ============================================================================
 package functionalj.data;
 
+import static functionalj.function.Func.f;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import functionalj.list.FuncList;
 import functionalj.result.Result;
-import functionalj.streamable.Streamable;
 
 public class FuncData {
     
@@ -43,9 +45,9 @@ public class FuncData {
      *
      * @param path
      *          the path to the text file.
-     * @return  the streamable containing the lines of text from the class.
+     * @return  the functional list containing the lines of text from the class.
      */
-    public static Result<Streamable<String>> readLines(String path) {
+    public static Result<FuncList<String>> readLines(String path) {
         return readLines(Paths.get(path), StandardCharsets.UTF_8);
     }
     
@@ -56,9 +58,9 @@ public class FuncData {
      *
      * @param path
      *          the path to the text file.
-     * @return  the streamable containing the lines of text from the class.
+     * @return  the functional list containing the lines of text from the class.
      */
-    public static Result<Streamable<String>> readLines(String path, Charset charset) {
+    public static Result<FuncList<String>> readLines(String path, Charset charset) {
         return readLines(Paths.get(path), charset);
     }
     
@@ -69,9 +71,9 @@ public class FuncData {
      *
      * @param path
      *          the path to the text file.
-     * @return  the streamable containing the lines of text from the class.
+     * @return  the functional list containing the lines of text from the class.
      */
-    public static Result<Streamable<String>> readLines(Path path) {
+    public static Result<FuncList<String>> readLines(Path path) {
         return readLines(path, StandardCharsets.UTF_8);
     }
     
@@ -82,10 +84,10 @@ public class FuncData {
      *
      * @param path
      *          the path to the text file.
-     * @return  the streamable containing the lines of text from the class.
+     * @return  the functional list containing the lines of text from the class.
      */
-    public static Result<Streamable<String>> readLines(Path path, Charset charset) {
-        return Result.from(()->Streamable.from(()->Files.lines(path, charset)));
+    public static Result<FuncList<String>> readLines(Path path, Charset charset) {
+        return Result.from(()->FuncList.from(f(()->Files.lines(path, charset))));
     }
     
     // TODO - Write text file

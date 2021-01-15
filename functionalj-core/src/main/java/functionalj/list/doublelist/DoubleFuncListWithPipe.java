@@ -27,9 +27,7 @@ import java.util.function.Function;
 
 import functionalj.pipeable.Pipeable;
 
-public interface DoubleFuncListWithPipe {
-    
-    public DoubleFuncList toFuncList();
+public interface DoubleFuncListWithPipe extends AsDoubleFuncList {
     
     /** @return the pipeable of this stream. */
     public default <T> Pipeable<DoubleFuncList> pipable() {

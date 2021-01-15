@@ -32,7 +32,6 @@ import functionalj.function.Func;
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
 import functionalj.list.FuncListDerived;
-import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -113,8 +112,8 @@ public final class Log {
         
         @SuppressWarnings("unchecked")
         public <DATA> FuncList<DATA> logEach(DATA ... values) {
-            val streamable = Streamable.of((DATA[])values);
-            val list       = FuncListDerived.from(streamable);
+            val FuncList = FuncList.of((DATA[])values);
+            val list       = FuncListDerived.from(FuncList);
             list.forEach(value -> this.log(value));
             return list;
         }

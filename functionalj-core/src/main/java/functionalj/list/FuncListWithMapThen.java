@@ -32,10 +32,8 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
-import functionalj.streamable.AsStreamable;
 
-public interface FuncListWithMapThen<DATA>
-        extends AsStreamable<DATA> {
+public interface FuncListWithMapThen<DATA> extends AsFuncList<DATA> {
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T> 

@@ -41,14 +41,13 @@ import functionalj.function.ObjectObjectToIntFunctionPrimitive;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.StreamPlus;
-import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 
-public interface FuncListWithMapGroup<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
     
     /** @return  the stream of  each previous value and each current value. */
     public default FuncList<Tuple2<DATA, DATA>> mapTwo() {

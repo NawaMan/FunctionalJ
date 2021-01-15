@@ -80,12 +80,12 @@ public interface AsStreamPlus<DATA>
     
     //== Terminal operations ==
     
-    /** @return a iterator of this streamable. */
+    /** @return a iterator of this FuncList. */
     public default IteratorPlus<DATA> iterator() {
         return streamFrom(this).iterator();
     }
     
-    /** @return a spliterator of this streamable. */
+    /** @return a spliterator of this FuncList. */
     public default Spliterator<DATA> spliterator() {
         val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);

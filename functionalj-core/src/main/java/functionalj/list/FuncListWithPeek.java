@@ -29,9 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.streamable.AsStreamable;
-
-public interface FuncListWithPeek<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithPeek<DATA> extends AsFuncList<DATA> {
 
     /** Peek only the value that is an instance of the give class. */
     public default <T extends DATA> FuncList<DATA> peek(

@@ -27,14 +27,13 @@ import static functionalj.list.FuncList.deriveFrom;
 
 import java.util.function.Function;
 
-import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 
-public interface FuncListWithMapToTuple<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithMapToTuple<DATA> extends AsFuncList<DATA> {
 
     /**Map the value into different values and then combine them into a tuple. */
     public default <T1, T2> FuncList<Tuple2<T1, T2>> mapToTuple(

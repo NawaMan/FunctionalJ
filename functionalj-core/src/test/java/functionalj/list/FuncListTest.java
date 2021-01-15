@@ -83,10 +83,7 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.CollectorPlus;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
-import functionalj.streamable.AsStreamable;
-import functionalj.streamable.Streamable;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
-import functionalj.streamable.intstreamable.IntStreamable;
+import functionalj.stream.ZipWithOption;
 import lombok.val;
 
 
@@ -239,29 +236,29 @@ public class FuncListTest {
     }
     
     @Test
-    public void testFrom_streamable() {
-        run(FuncList.from(Streamable.of(One, Two, Three)), list -> {
+    public void testFrom_FuncList() {
+        run(FuncList.from(FuncList.of(One, Two, Three)), list -> {
             assertStrings("[One, Two, Three]", list);
         });
-        run(FuncList.from((AsStreamable<String>)FuncList.of(One, Two, Three)), list -> {
+        run(FuncList.from((FuncList<String>)FuncList.of(One, Two, Three)), list -> {
             assertStrings("[One, Two, Three]", list);
         });
     }
     
     @Test
-    public void testFrom_streamable_infinite() {
-        run(FuncList.from(Streamable.loop()), list -> {
+    public void testFrom_FuncList_infinite() {
+        run(FuncList.from(FuncList.loop()), list -> {
             assertStrings("[null, null, null, null, null]", list.skip(100000).limit(5));
         });
-        run(FuncList.from(IntStreamable.infinite().boxed()), list -> {
+        run(FuncList.from(IntFuncList.wholeNumbers().boxed()), list -> {
             assertStrings("[100000, 100001, 100002, 100003, 100004]", list.skip(100000).limit(5));
         });
     }
     
     @Ignore("Taking too long - run manually as needed.")
     @Test
-    public void testFrom_streamable_infinite_toList() {
-        run(FuncList.from(Streamable.loop()), list -> {
+    public void testFrom_FuncList_infinite_toList() {
+        run(FuncList.from(FuncList.loop()), list -> {
             try {
                 list.toList();
                 fail("Expect an exception.");
@@ -272,7 +269,7 @@ public class FuncListTest {
     
     @Test
     public void testFrom_stream() {
-        run(FuncList.from(Streamable.of(One, Two, Three).streamPlus().stream()), list -> {
+        run(FuncList.from(FuncList.of(One, Two, Three).streamPlus().stream()), list -> {
             assertStrings("[One, Two, Three]", list);
         });
     }
@@ -489,7 +486,7 @@ public class FuncListTest {
             val logs = new ArrayList<String>();
             
             // We want to confirm that the list is lazy
-            val list = Streamable.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(logs::add).toFuncList();
+            val list = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(logs::add).toFuncList();
             // The function has not been materialized so nothing goes through peek.
             assertStrings("[]", logs);
             // Get part of them so those peek will goes through the peek
@@ -500,7 +497,7 @@ public class FuncListTest {
             val logs = new ArrayList<String>();
             
             // We want to confirm that the list is eager
-            val list = Streamable.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(logs::add).toFuncList().eager();
+            val list = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(logs::add).toFuncList().eager();
             // The function has been materialized so all element goes through peek.
             assertStrings("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs);
             // Even we only get part of it, 
@@ -516,7 +513,7 @@ public class FuncListTest {
             val logs2 = new ArrayList<String>();
             val logs3 = new ArrayList<String>();
             
-            val orgData = Streamable.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
+            val orgData = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
             // We want to confirm that the list is lazy
             val list = orgData
                     .lazy()
@@ -550,7 +547,7 @@ public class FuncListTest {
             val logs2 = new ArrayList<String>();
             val logs3 = new ArrayList<String>();
             
-            val orgData = Streamable.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
+            val orgData = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
             // We want to confirm that the list is lazy
             val list = orgData
                     .eager()
@@ -970,7 +967,7 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three), list -> {
             assertStrings(
                     "[3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5]",
-                    list.flatMap(s -> Streamable.cycle(s.length()).limit(s.length())));
+                    list.flatMap(s -> FuncList.cycle(s.length()).limit(s.length())));
         });
     }
     
@@ -979,7 +976,7 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three), list -> {
             assertStrings(
                     "[3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5]",
-                    list.flatMapToInt(s -> IntStreamable.cycle(s.length()).limit(s.length())));
+                    list.flatMapToInt(s -> IntFuncList.cycle(s.length()).limit(s.length())));
         });
     }
     
@@ -989,7 +986,7 @@ public class FuncListTest {
             assertStrings(
                     "[3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 5.0, 5.0, 5.0, 5.0, 5.0]",
                     list
-                    .flatMapToDouble(s -> DoubleStreamable.cycle(s.length()).limit(s.length())));
+                    .flatMapToDouble(s -> DoubleFuncList.cycle(s.length()).limit(s.length())));
         });
     }
     
@@ -1148,7 +1145,7 @@ public class FuncListTest {
             assertStrings("[One, Two, Three]",             list);
             assertStrings("[One, Two, Three, Four, Five]", list.appendAll(Four, Five));
             assertStrings("[One, Two, Three, Four, Five]", list.appendAll(FuncList.listOf(Four, Five)));
-            assertStrings("[One, Two, Three, Four, Five]", list.appendAll(Streamable.of(Four, Five)));
+            assertStrings("[One, Two, Three, Four, Five]", list.appendAll(FuncList.of(Four, Five)));
             assertStrings("[One, Two, Three]",             list);
         });
     }
@@ -1168,7 +1165,7 @@ public class FuncListTest {
             assertStrings("[One, Two, Three]",                 list);
             assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(MinusOne, Zero));
             assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(FuncList.listOf(MinusOne, Zero)));
-            assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(Streamable.of(MinusOne, Zero)));
+            assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(FuncList.of(MinusOne, Zero)));
             assertStrings("[One, Two, Three]",                 list);
         });
     }
@@ -1198,7 +1195,7 @@ public class FuncListTest {
             assertStrings("[One, Two, Three]",             list);
             assertStrings("[One, Two, Zero, Zero, Three]", list.insertAt(2, Zero, Zero));
             assertStrings("[One, Two, Zero, Zero, Three]", list.insertAllAt(2, listOf(Zero, Zero)));
-            assertStrings("[One, Two, Zero, Zero, Three]", list.insertAllAt(2, Streamable.of(Zero, Zero)));
+            assertStrings("[One, Two, Zero, Zero, Three]", list.insertAllAt(2, FuncList.of(Zero, Zero)));
             assertStrings("[One, Two, Three]",             list);
         });
     }
@@ -1710,7 +1707,7 @@ public class FuncListTest {
     @Test
     public void testMerge() {
         run(FuncList.of("A", "B", "C"),
-            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+            IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (list1, streamabl2) -> {
             assertStrings(
                 "A, 0, B, 1, C, 2, 3, 4, 5, 6",
@@ -1724,42 +1721,42 @@ public class FuncListTest {
     @Test
     public void testZipWith() {
         run(FuncList.of("A", "B", "C"),
-            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+            IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 assertStrings(
                         "(A,0), (B,1), (C,2)",
                         listA.zipWith(listB).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
-            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+            IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 assertStrings(
                         "(A,0), (B,1), (C,2)",
                         listA.zipWith(listB, RequireBoth).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
-            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+            IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 assertStrings(
                         "(A,0), (B,1), (C,2), (null,3), (null,4)",
                         listA.zipWith(listB, AllowUnpaired).limit(5).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
-            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+            IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 assertStrings(
                         "A:0, B:1, C:2",
                         listA.zipWith(listB, (c, i) -> c + ":" + i).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
-            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+            IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 assertStrings(
                         "A:0, B:1, C:2",
                         listA.zipWith(listB, RequireBoth, (c, i) -> c + ":" + i).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
-            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+            IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 assertStrings(
                         "A:0, B:1, C:2, null:3, null:4",
@@ -1770,7 +1767,7 @@ public class FuncListTest {
     @Test
     public void testChoose() {
         run(FuncList.of("A", "B", "C"),
-            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+            IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 val bool = new AtomicBoolean(true);
                 assertStrings("A, 1, C, 3, 4", listA.choose(listB, (a, b) -> {
@@ -1783,7 +1780,7 @@ public class FuncListTest {
     @Test
     public void testChoose_AllowUnpaired() {
         run(FuncList.of("A", "B", "C"),
-            IntStreamable.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
+            IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 val bool    = new AtomicBoolean(true);
                 assertStrings("A, 1, C, 3, 4, 5, 6", listA.choose(listB, AllowUnpaired, (a, b) -> {

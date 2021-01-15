@@ -23,12 +23,27 @@
 // ============================================================================
 package functionalj.list.intlist;
 
-import functionalj.streamable.intstreamable.AsIntStreamable;
+import functionalj.stream.intstream.AsIntStreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
 
-public interface AsIntFuncList extends AsIntStreamable {
+
+class AsIntFuncListHelper {
     
-    public default IntFuncList intFuncList() {
-        return IntFuncList.from(this);
+    static IntFuncList funcListOf(AsIntFuncList asFuncList) {
+        return asFuncList.asIntFuncList();
+    }
+    
+}
+
+@FunctionalInterface
+public interface AsIntFuncList extends AsIntStreamPlus {
+    
+    public IntFuncList asIntFuncList();
+    
+    
+    @Override
+    public default IntStreamPlus intStreamPlus() {
+        return asIntFuncList().intStreamPlus();
     }
     
 }

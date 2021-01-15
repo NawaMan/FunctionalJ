@@ -28,9 +28,7 @@ import static functionalj.list.FuncList.deriveFrom;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.streamable.AsStreamable;
-
-public interface FuncListWithFlatMap<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithFlatMap<DATA> extends AsFuncList<DATA> {
     
     /** FlatMap with the given mapper for only the value that pass the condition. */
     public default FuncList<DATA> flatMapOnly(

@@ -27,10 +27,7 @@ import static functionalj.list.FuncList.deriveFrom;
 
 import java.util.function.Function;
 
-import functionalj.streamable.AsStreamable;
-
-public interface FuncListWithMapFirst<DATA>
-        extends AsStreamable<DATA> {
+public interface FuncListWithMapFirst<DATA> extends AsFuncList<DATA> {
     
     /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> FuncList<T> mapFirst(

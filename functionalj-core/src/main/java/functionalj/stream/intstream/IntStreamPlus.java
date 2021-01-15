@@ -552,13 +552,13 @@ public interface IntStreamPlus
     
     //-- Iterator --
     
-    /** @return a iterator of this streamable. */
+    /** @return a iterator of this FuncList. */
     @Override
     public default IntIteratorPlus iterator() {
         return IntIteratorPlus.from(intStream().iterator());
     }
     
-    /** @return a spliterator of this streamable. */
+    /** @return a spliterator of this FuncList. */
     @Override
     public default Spliterator.OfInt spliterator() {
         return terminate(s -> {

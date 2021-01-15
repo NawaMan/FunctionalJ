@@ -23,38 +23,39 @@
 // ============================================================================
 package functionalj.list.doublelist;
 
-import static functionalj.streamable.doublestreamable.DoubleStreamable.zipOf;
-
 import java.util.Objects;
 import java.util.function.DoublePredicate;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.streamable.doublestreamable.AsDoubleStreamable;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
 import lombok.val;
 
 
-class DoubleFuncListDerivedFromDoubleStreamable
+class DoubleFuncListDerivedFromDoubleFuncList
                 implements DoubleFuncList {
     
     private static final DoubleBiFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
     private static final DoublePredicate           toZero        = (double i)          -> i  == 0;
     
-    private AsDoubleStreamable source;
+    private AsDoubleFuncList source;
     
-    public DoubleFuncListDerivedFromDoubleStreamable(AsDoubleStreamable souce) {
+    public DoubleFuncListDerivedFromDoubleFuncList(AsDoubleFuncList souce) {
         this.source = Objects.requireNonNull(souce);
     }
     
     @Override
-    public DoubleStreamable doubleStreamable() {
-        return source.doubleStreamable();
+    public DoubleFuncList asDoubleFuncList() {
+        return source.asDoubleFuncList();
     }
     
     @Override
     public DoubleStreamPlus doubleStreamPlus() {
-        return doubleStreamable().doubleStreamPlus();
+        return asDoubleFuncList().doubleStreamPlus();
+    }
+    
+    @Override
+    public DoubleStreamPlus doubleStream() {
+        return doubleStreamPlus();
     }
     
     @Override
@@ -69,7 +70,7 @@ class DoubleFuncListDerivedFromDoubleStreamable
     }
     
     public String toString() {
-        return doubleStreamable().toListString();
+        return asDoubleFuncList().toListString();
     }
     
     public int hashCode() {
@@ -87,7 +88,7 @@ class DoubleFuncListDerivedFromDoubleStreamable
         if (size() != anotherList.size())
             return false;
         
-        return zipOf(this.doubleStreamable(), anotherList.doubleStreamable(), zeroForEquals)
+        return DoubleFuncList.zipOf(this.asDoubleFuncList(), anotherList.asDoubleFuncList(), zeroForEquals)
                 .allMatch(toZero);
     }
     

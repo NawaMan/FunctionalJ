@@ -2,24 +2,24 @@
 //
 //import static functionalj.lens.Access.theInteger;
 //import static functionalj.lens.Access.theString;
-//import static functionalj.streamable.intstreamable.IntStreamable.compound;
-//import static functionalj.streamable.intstreamable.IntStreamable.cycle;
-//import static functionalj.streamable.intstreamable.IntStreamable.empty;
-//import static functionalj.streamable.intstreamable.IntStreamable.emptyIntStreamable;
-//import static functionalj.streamable.intstreamable.IntStreamable.generate;
-//import static functionalj.streamable.intstreamable.IntStreamable.generateWith;
-//import static functionalj.streamable.intstreamable.IntStreamable.infinite;
-//import static functionalj.streamable.intstreamable.IntStreamable.infiniteInt;
-//import static functionalj.streamable.intstreamable.IntStreamable.ints;
-//import static functionalj.streamable.intstreamable.IntStreamable.iterate;
-//import static functionalj.streamable.intstreamable.IntStreamable.loop;
-//import static functionalj.streamable.intstreamable.IntStreamable.naturalNumbers;
-//import static functionalj.streamable.intstreamable.IntStreamable.ones;
-//import static functionalj.streamable.intstreamable.IntStreamable.range;
-//import static functionalj.streamable.intstreamable.IntStreamable.repeat;
-//import static functionalj.streamable.intstreamable.IntStreamable.steamableOf;
-//import static functionalj.streamable.intstreamable.IntStreamable.wholeNumbers;
-//import static functionalj.streamable.intstreamable.IntStreamable.zeroes;
+//import static functionalj.FuncList.intFuncList.IntFuncList.compound;
+//import static functionalj.FuncList.intFuncList.IntFuncList.cycle;
+//import static functionalj.FuncList.intFuncList.IntFuncList.empty;
+//import static functionalj.FuncList.intFuncList.IntFuncList.emptyIntFuncList;
+//import static functionalj.FuncList.intFuncList.IntFuncList.generate;
+//import static functionalj.FuncList.intFuncList.IntFuncList.generateWith;
+//import static functionalj.FuncList.intFuncList.IntFuncList.infinite;
+//import static functionalj.FuncList.intFuncList.IntFuncList.infiniteInt;
+//import static functionalj.FuncList.intFuncList.IntFuncList.ints;
+//import static functionalj.FuncList.intFuncList.IntFuncList.iterate;
+//import static functionalj.FuncList.intFuncList.IntFuncList.loop;
+//import static functionalj.FuncList.intFuncList.IntFuncList.naturalNumbers;
+//import static functionalj.FuncList.intFuncList.IntFuncList.ones;
+//import static functionalj.FuncList.intFuncList.IntFuncList.range;
+//import static functionalj.FuncList.intFuncList.IntFuncList.repeat;
+//import static functionalj.FuncList.intFuncList.IntFuncList.steamableOf;
+//import static functionalj.FuncList.intFuncList.IntFuncList.wholeNumbers;
+//import static functionalj.FuncList.intFuncList.IntFuncList.zeroes;
 //import static org.junit.Assert.assertEquals;
 //
 //import java.util.ArrayList;
@@ -29,12 +29,12 @@
 //
 //import functionalj.function.FuncUnit0;
 //import functionalj.stream.intstream.IntStreamPlus;
-//import functionalj.streamable.Streamable;
-//import functionalj.streamable.intstreamable.IntStreamable;
+//import functionalj.FuncList.FuncList;
+//import functionalj.FuncList.intFuncList.IntFuncList;
 //import lombok.val;
 //
 //
-//public class IntStreamableTest {
+//public class IntFuncListTest {
 //
 //    void run(FuncUnit0 runnable) {
 //        runnable.run();
@@ -51,7 +51,7 @@
 //
 //    @Test
 //    public void testEmptyIntStream() {
-//        val streamble = emptyIntStreamable();
+//        val streamble = emptyIntFuncList();
 //        run(()->{
 //            assertEquals("[]", streamble.toListString());
 //        });
@@ -61,7 +61,7 @@
 //    public void testOf() {
 //        val intArray = new int[] {1, 1, 2, 3, 5, 8};
 //
-//        val streamble1 = IntStreamable.of(intArray);
+//        val streamble1 = IntFuncList.of(intArray);
 //        run(()->{
 //            assertEquals("[1, 1, 2, 3, 5, 8]", streamble1.toListString());
 //        });
@@ -76,12 +76,12 @@
 //            assertEquals("[1, 1, 2, 3, 5, 8]", streamble3.toListString());
 //        });
 //
-//        val nullStreamble = IntStreamable.of(null);
+//        val nullStreamble = IntFuncList.of(null);
 //        run(()->{
 //            assertEquals("[]", nullStreamble.toListString());
 //        });
 //
-//        val zeroStreamble = IntStreamable.of(new int[0]);
+//        val zeroStreamble = IntFuncList.of(new int[0]);
 //        run(()->{
 //            assertEquals("[]", zeroStreamble.toListString());
 //        });
@@ -120,17 +120,17 @@
 //
 //    @Test
 //    public void testRepeat() {
-//        val streamable = repeat(1, 2, 3);
+//        val FuncList = repeat(1, 2, 3);
 //        run(()->{
-//            assertEquals("[1, 2, 3, 1, 2, 3, 1, 2, 3, 1]", streamable.limit(10).toListString());
+//            assertEquals("[1, 2, 3, 1, 2, 3, 1, 2, 3, 1]", FuncList.limit(10).toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testCycle() {
-//        val streamable = cycle(1, 2, 3);
+//        val FuncList = cycle(1, 2, 3);
 //        run(()->{
-//            assertEquals("[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2]", streamable.limit(11).toListString());
+//            assertEquals("[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2]", FuncList.limit(11).toListString());
 //        });
 //    }
 //
@@ -146,74 +146,74 @@
 //
 //    @Test
 //    public void testInfinite() {
-//        val streamable  = infinite();
+//        val FuncList  = infinite();
 //        run(()->{
-//            assertEquals("[5, 6, 7, 8, 9]", streamable.skip(5).limit(5).toListString());
+//            assertEquals("[5, 6, 7, 8, 9]", FuncList.skip(5).limit(5).toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testInfiniteInt() {
-//        val streamable  = infiniteInt();
+//        val FuncList  = infiniteInt();
 //        run(()->{
-//            assertEquals("[5, 6, 7, 8, 9]", streamable.skip(5).limit(5).toListString());
+//            assertEquals("[5, 6, 7, 8, 9]", FuncList.skip(5).limit(5).toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testNaturalNumbers() {
-//        val streamable1 = naturalNumbers();
-//        val streamable2 = naturalNumbers(5);
+//        val FuncList1 = naturalNumbers();
+//        val FuncList2 = naturalNumbers(5);
 //        run(()->{
-//            assertEquals("[1, 2, 3, 4, 5]", streamable1.limit(5).toListString());
-//            assertEquals("[1, 2, 3, 4, 5]", streamable2.toListString());
+//            assertEquals("[1, 2, 3, 4, 5]", FuncList1.limit(5).toListString());
+//            assertEquals("[1, 2, 3, 4, 5]", FuncList2.toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testWholeNumbers() {
-//        val streamable1 = wholeNumbers();
-//        val streamable2 = wholeNumbers(5);
+//        val FuncList1 = wholeNumbers();
+//        val FuncList2 = wholeNumbers(5);
 //        run(()->{
-//            assertEquals("[0, 1, 2, 3, 4]", streamable1.limit(5).toListString());
-//            assertEquals("[0, 1, 2, 3, 4]", streamable2.toListString());
+//            assertEquals("[0, 1, 2, 3, 4]", FuncList1.limit(5).toListString());
+//            assertEquals("[0, 1, 2, 3, 4]", FuncList2.toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testRange() {
-//        val streamable  = range(7, 12);
+//        val FuncList  = range(7, 12);
 //        run(()->{
-//            assertEquals("[7, 8, 9, 10, 11]", streamable.toListString());
+//            assertEquals("[7, 8, 9, 10, 11]", FuncList.toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testGenerate() {
-//        val streamable  = generate(()->5);
+//        val FuncList  = generate(()->5);
 //        run(()->{
-//            assertEquals("[5, 5, 5]", streamable.limit(3).toListString());
+//            assertEquals("[5, 5, 5]", FuncList.limit(3).toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testGenerateWith() {
-//        val streamable  = generateWith(()->IntStreamPlus.of(1, 2, 3));
+//        val FuncList  = generateWith(()->IntStreamPlus.of(1, 2, 3));
 //        run(()->{
-//            assertEquals("[1, 2, 3]", streamable.toListString());
+//            assertEquals("[1, 2, 3]", FuncList.toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testIterate() {
-//        val streamable1  = iterate(1, a -> a + 1);
+//        val FuncList1  = iterate(1, a -> a + 1);
 //        run(()->{
-//            assertEquals("[6, 7, 8, 9, 10]", streamable1.skip(5).limit(5).toListString());
+//            assertEquals("[6, 7, 8, 9, 10]", FuncList1.skip(5).limit(5).toListString());
 //        });
 //
-//        val streamable2  = iterate(1, 1, (a, b) -> a + b);
+//        val FuncList2  = iterate(1, 1, (a, b) -> a + b);
 //        run(()->{
-//            assertEquals("[1, 1, 2, 3, 5, 8, 13]", streamable2.limit(7).toListString());
+//            assertEquals("[1, 1, 2, 3, 5, 8, 13]", FuncList2.limit(7).toListString());
 //        });
 //    }
 //
@@ -221,151 +221,151 @@
 //    public void testConcat() {
 //        val range1  = range(0, 5);
 //        val range2  = range(21, 27);
-//        val streamable  = IntStreamable.concat(range1, range2);
+//        val FuncList  = IntFuncList.concat(range1, range2);
 //        run(()->{
 //            assertEquals("["
 //                            + "0, 1, 2, 3, 4, "
 //                            + "21, 22, 23, 24, 25, 26"
 //                        + "]",
-//                        streamable.toListString());
+//                        FuncList.toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testCompound() {
-//        val streamable1 = compound(1, i -> i * 2);
+//        val FuncList1 = compound(1, i -> i * 2);
 //        run(()->{
 //            assertEquals("[32, 64, 128, 256, 512]",
-//                    streamable1.skip(5).limit(5).toListString());
+//                    FuncList1.skip(5).limit(5).toListString());
 //        });
 //
-//        val streamable2 = compound(1, 2, (a, b) -> a * 3 + b);
+//        val FuncList2 = compound(1, 2, (a, b) -> a * 3 + b);
 //        run(()->{
 //            assertEquals("[1, 2, 5, 11, 26]",
-//                    streamable2.limit(5).toListString());
+//                    FuncList2.limit(5).toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testZipOf() {
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8)]",
-//                        zipOf(streamable1, streamable2)
+//                        zipOf(FuncList1, FuncList2)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8), (0,9), (0,10), (0,11)]",
-//                        zipOf(streamable1, streamable2, 0)
+//                        zipOf(FuncList1, FuncList2, 0)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8), (-1,9), (-1,10), (-1,11)]",
-//                        zipOf(streamable1, -1, streamable2, 1)
+//                        zipOf(FuncList1, -1, FuncList2, 1)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(8, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(8, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[(5,8), (6,9), (7,10), (8,11), (9,1), (10,1), (11,1)]",
-//                        zipOf(streamable1, -1, streamable2, 1)
+//                        zipOf(FuncList1, -1, FuncList2, 1)
 //                        .toListString());
 //            });
 //        }
 //
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8]",
-//                        Streamable.zipOf(streamable1, streamable2, (a, b) -> a + "-" + b)
+//                        FuncList.zipOf(FuncList1, FuncList2, (a, b) -> a + "-" + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, 0-9, 0-10, 0-11]",
-//                        Streamable.zipOf(streamable1, streamable2, 0, (a, b) -> a + "-" + b)
+//                        FuncList.zipOf(FuncList1, FuncList2, 0, (a, b) -> a + "-" + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, -1-9, -1-10, -1-11]",
-//                        Streamable.zipOf(streamable1, -1, streamable2, 1, (a, b) -> a + "-" + b)
+//                        FuncList.zipOf(FuncList1, -1, FuncList2, 1, (a, b) -> a + "-" + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(8, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(8, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[5-8, 6-9, 7-10, 8-11, 9-1, 10-1, 11-1]",
-//                        Streamable.zipOf(streamable1, -1, streamable2, 1, (a, b) -> a + "-" + b)
+//                        FuncList.zipOf(FuncList1, -1, FuncList2, 1, (a, b) -> a + "-" + b)
 //                        .toListString());
 //                    });
 //        }
 //
 //        {
-//            val streamable1 = range(5, 10);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 10);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals("[7, 9, 11, 13, 15]",
-//                        zipOf(streamable1, streamable2, (a, b) -> a + b)
+//                        zipOf(FuncList1, FuncList2, (a, b) -> a + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 10);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 10);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[7, 9, 11, 13, 15, 7, 8, 9, 10, 11]",
-//                        zipOf(streamable1, streamable2, 0, (a, b) -> a + b)
+//                        zipOf(FuncList1, FuncList2, 0, (a, b) -> a + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 10);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 10);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[7, 9, 11, 13, 15, 6, 7, 8, 9, 10]",
-//                        zipOf(streamable1, -1, streamable2, 1, (a, b) -> a + b)
+//                        zipOf(FuncList1, -1, FuncList2, 1, (a, b) -> a + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(8, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(8, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[13, 15, 17, 19, 10, 11, 12]",
-//                        zipOf(streamable1, -1, streamable2, 1, (a, b) -> a + b)
+//                        zipOf(FuncList1, -1, FuncList2, 1, (a, b) -> a + b)
 //                        .toListString());
 //            });
 //        }
@@ -374,133 +374,133 @@
 //    @Test
 //    public void testZipWith() {
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8)]",
-//                        streamable1.zipWith(streamable2)
+//                        FuncList1.zipWith(FuncList2)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8), (0,9), (0,10), (0,11)]",
-//                        streamable1.zipWith(streamable2, 0)
+//                        FuncList1.zipWith(FuncList2, 0)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8), (-1,9), (-1,10), (-1,11)]",
-//                        streamable1.zipWith(streamable2, -1, 1)
+//                        FuncList1.zipWith(FuncList2, -1, 1)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(8, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(8, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[(5,8), (6,9), (7,10), (8,11), (9,1), (10,1), (11,1)]",
-//                        streamable1.zipWith(streamable2, -1, 1)
+//                        FuncList1.zipWith(FuncList2, -1, 1)
 //                        .toListString());
 //            });
 //        }
 //
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8]",
-//                        streamable1.zipToObjWith(streamable2, (a, b) -> a + "-" + b)
+//                        FuncList1.zipToObjWith(FuncList2, (a, b) -> a + "-" + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, 0-9, 0-10, 0-11]",
-//                        streamable1.zipToObjWith(streamable2, 0, (a, b) -> a + "-" + b)
+//                        FuncList1.zipToObjWith(FuncList2, 0, (a, b) -> a + "-" + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, -1-9, -1-10, -1-11]",
-//                        streamable1.zipToObjWith(streamable2, -1, 1, (a, b) -> a + "-" + b)
+//                        FuncList1.zipToObjWith(FuncList2, -1, 1, (a, b) -> a + "-" + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(8, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(8, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[5-8, 6-9, 7-10, 8-11, 9-1, 10-1, 11-1]",
-//                        streamable1.zipToObjWith(streamable2, -1, 1, (a, b) -> a + "-" + b)
+//                        FuncList1.zipToObjWith(FuncList2, -1, 1, (a, b) -> a + "-" + b)
 //                        .toListString());
 //                    });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, -1-9, -1-10, -1-11]",
-//                        streamable1.zipToObjWith(-1, streamable2.boxed(), (a, b) -> a + "-" + b)
+//                        FuncList1.zipToObjWith(-1, FuncList2.boxed(), (a, b) -> a + "-" + b)
 //                        .toListString());
 //            });
 //        }
 //
 //        {
-//            val streamable1 = range(5, 10);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 10);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals("[7, 9, 11, 13, 15]",
-//                        streamable1.zipWith(streamable2, (a, b) -> a + b)
+//                        FuncList1.zipWith(FuncList2, (a, b) -> a + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 10);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 10);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[7, 9, 11, 13, 15, 7, 8, 9, 10, 11]",
-//                        streamable1.zipWith(streamable2, 0, (a, b) -> a + b)
+//                        FuncList1.zipWith(FuncList2, 0, (a, b) -> a + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 10);
-//            val streamable2 = range(2, 12);
+//            val FuncList1 = range(5, 10);
+//            val FuncList2 = range(2, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[7, 9, 11, 13, 15, 6, 7, 8, 9, 10]",
-//                        streamable1.zipWith(streamable2, -1, 1, (a, b) -> a + b)
+//                        FuncList1.zipWith(FuncList2, -1, 1, (a, b) -> a + b)
 //                        .toListString());
 //            });
 //        }
 //        {
-//            val streamable1 = range(5, 12);
-//            val streamable2 = range(8, 12);
+//            val FuncList1 = range(5, 12);
+//            val FuncList2 = range(8, 12);
 //            run(()->{
 //                assertEquals(
 //                        "[13, 15, 17, 19, 10, 11, 12]",
-//                        streamable1.zipWith(streamable2, -1, 1, (a, b) -> a + b)
+//                        FuncList1.zipWith(FuncList2, -1, 1, (a, b) -> a + b)
 //                        .toListString());
 //            });
 //        }
@@ -508,11 +508,11 @@
 //
 //    @Test
 //    public void testMap() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8);
 //        run(()->{
 //            assertEquals(
 //                    "[2, 2, 4, 6, 10, 16]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i * 2)
 //                    .toListString());
 //        });
@@ -520,11 +520,11 @@
 //
 //    @Test
 //    public void testMapToInt() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8);
 //        run(()->{
 //            assertEquals(
 //                    "[2, 2, 4, 6, 10, 16]",
-//                    streamable
+//                    FuncList
 //                    .mapToInt(i -> i * 2)
 //                    .toListString());
 //        });
@@ -552,11 +552,11 @@
 //
 //    @Test
 //    public void testMapToObj() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8);
 //        run(()->{
 //            assertEquals(
 //                    "['1', '1', '2', '3', '5', '8']",
-//                    streamable
+//                    FuncList
 //                    .mapToObj(i -> "'" + i + "'")
 //                    .toListString());
 //        });
@@ -564,11 +564,11 @@
 //
 //    @Test
 //    public void testFlatMap() {
-//        val streamable = ints(1, 2, 3, 5);
+//        val FuncList = ints(1, 2, 3, 5);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 5]",
-//                    streamable
+//                    FuncList
 //                    .flatMap(i -> cycle(i).limit(i))
 //                    .toListString());
 //        });
@@ -576,29 +576,29 @@
 //
 //    @Test
 //    public void testFilter() {
-//        val streamable = loop(10);
+//        val FuncList = loop(10);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 3, 5, 7, 9]",
-//                    streamable
+//                    FuncList
 //                    .filter(i -> i % 2 == 1)
 //                    .toListString());
 //            assertEquals(
 //                    "[0, 1, 2]",
-//                    streamable
+//                    FuncList
 //                    .filter(theInteger.time(3),
 //                            theInteger.thatLessThan(9))
 //                    .toListString());
 //            assertEquals(
 //                    "[0, 1, 2, 3]",
-//                    streamable
+//                    FuncList
 //                    .filterAsObject(
 //                            (int i) -> "" + (i*3),
 //                            theString.length().eq(1))
 //                    .toListString());
 //            assertEquals(
 //                    "[0, 1, 2, 3]",
-//                    streamable
+//                    FuncList
 //                    .filterAsObject(
 //                            theInteger.time(3).asString(),
 //                            theString.length().eq(1))
@@ -608,12 +608,12 @@
 //
 //    @Test
 //    public void testPeek() {
-//        val streamable = loop(5);
+//        val FuncList = loop(5);
 //        run(()->{
 //            val list = new ArrayList<String>();
 //            assertEquals(
 //                    "[0, 1, 2, 3, 4]",
-//                    streamable
+//                    FuncList
 //                    .peek(i -> list.add("" + i))
 //                    .toListString());
 //            assertEquals(
@@ -624,11 +624,11 @@
 //
 //    @Test
 //    public void testLimit() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 1, 2, 3]",
-//                    streamable
+//                    FuncList
 //                    .limit(4)
 //                    .toListString());
 //        });
@@ -636,11 +636,11 @@
 //
 //    @Test
 //    public void testSkip() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21);
 //        run(()->{
 //            assertEquals(
 //                    "[5, 8, 13, 21]",
-//                    streamable
+//                    FuncList
 //                    .skip(4)
 //                    .toListString());
 //        });
@@ -648,16 +648,16 @@
 //
 //    @Test
 //    public void testSkipWhile() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 1, 2, 3, 0, 3, 3, 1, 4, 0, 4]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .toListString());
 //            assertEquals(
 //                    "[0, 3, 3, 1, 4, 0, 4]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .skipWhile(i -> i != 0)
 //                    .toListString());
@@ -666,16 +666,16 @@
 //
 //    @Test
 //    public void testSkipUtil() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 1, 2, 3, 0, 3, 3, 1, 4, 0, 4]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .toListString());
 //            assertEquals(
 //                    "[0, 3, 3, 1, 4, 0, 4]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .skipUntil(i -> i == 0)
 //                    .toListString());
@@ -684,16 +684,16 @@
 //
 //    @Test
 //    public void testTakeWhile() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 1, 2, 3, 0, 3, 3, 1, 4, 0, 4]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .toListString());
 //            assertEquals(
 //                    "[1, 1, 2, 3]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .takeWhile(i -> i != 0)
 //                    .toListString());
@@ -702,16 +702,16 @@
 //
 //    @Test
 //    public void testTakeUtil() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 1, 2, 3, 0, 3, 3, 1, 4, 0, 4]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .toListString());
 //            assertEquals(
 //                    "[1, 1, 2, 3]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .takeUntil(i -> i == 0)
 //                    .toListString());
@@ -720,11 +720,11 @@
 //
 //    @Test
 //    public void testDistinct() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 2, 3, 0, 4]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .distinct()
 //                    .toListString());
@@ -733,11 +733,11 @@
 //
 //    @Test
 //    public void testSorted() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[0, 0, 1, 1, 1, 2, 3, 3, 3, 4, 4]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .sorted()
 //                    .toListString());
@@ -746,11 +746,11 @@
 //
 //    @Test
 //    public void testSortedBy() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[0, 0, 1, 1, 1, 2, 3, 3, 3, 4, 4]",
-//                    streamable
+//                    FuncList
 //                    .map(i -> i % 5)
 //                    .sorted()
 //                    .toListString());
@@ -759,16 +759,16 @@
 //
 //    @Test
 //    public void testSortedBy_mapper() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[34, 21, 13, 8, 5, 55, 3, 2, 1, 1, 89]",
-//                    streamable
+//                    FuncList
 //                    .sortedBy(i -> Math.abs(i - 30))
 //                    .toListString());
 //            assertEquals(
 //                    "[34 -> 4, 21 -> 9, 13 -> 17, 8 -> 22, 5 -> 25, 55 -> 25, 3 -> 27, 2 -> 28, 1 -> 29, 1 -> 29, 89 -> 59]",
-//                    streamable
+//                    FuncList
 //                    .sortedBy(i -> Math.abs(i - 30))
 //                    .mapToObj(i -> "" + i + " -> " + Math.abs(i - 30))
 //                    .toListString());
@@ -777,11 +777,11 @@
 //
 //    @Test
 //    public void testSortedBy_mapper_comparator() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[89, 1, 1, 2, 3, 5, 55, 8, 13, 21, 34]",
-//                    streamable
+//                    FuncList
 //                    .sortedBy(i -> Math.abs(i - 30), (a, b) -> b - a)
 //                    .toListString());
 //        });
@@ -789,11 +789,11 @@
 //
 //    @Test
 //    public void testSortedBy_mapper_object() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 1, 13, 2, 21, 3, 34, 5, 55, 8, 89]",
-//                    streamable
+//                    FuncList
 //                    .sortedByObj(i -> "" + i)
 //                    .toListString());
 //        });
@@ -801,11 +801,11 @@
 //
 //    @Test
 //    public void testSortedBy_mapper_object_with_comparator() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            assertEquals(
 //                    "[13, 21, 34, 55, 89, 1, 1, 2, 3, 5, 8]",
-//                    streamable
+//                    FuncList
 //                    .sortedByObj(i -> "" + i, (a, b) -> b.length() - a.length())
 //                    .toListString());
 //        });
@@ -813,10 +813,10 @@
 //
 //    @Test
 //    public void testForEachOrdered() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89);
 //        run(()->{
 //            val list = new ArrayList<Integer>();
-//            streamable
+//            FuncList
 //            .map(i -> Math.abs(i - 30))
 //            .forEachOrdered(list::add);
 //            assertEquals(
@@ -827,33 +827,33 @@
 //
 //    @Test
 //    public void testReduce() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    OptionalInt.of(88),
-//                    streamable
+//                    FuncList
 //                    .reduce((a, b) -> a + b));
 //        });
 //    }
 //
 //    @Test
 //    public void testReduce_withIdentity() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    188,
-//                    streamable
+//                    FuncList
 //                    .reduce(100, (a, b) -> a + b));
 //        });
 //    }
 //
 //    @Test
 //    public void testCollect() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    ",1,1,2,3,5,8,13,21,34",
-//                    streamable
+//                    FuncList
 //                    .collect(
 //                            ()-> new StringBuffer(),
 //                            (StringBuffer a, int          b)-> a.append("," + b),
@@ -864,18 +864,18 @@
 //
 //    @Test
 //    public void testMin() {
-//        val streamable1 = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
-//        val streamable2 = ints();
+//        val FuncList1 = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList2 = ints();
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[0]",
-//                    streamable1
+//                    FuncList1
 //                    .map(i -> Math.abs(i - 34))
 //                    .min()
 //                    .toString());
 //            assertEquals(
 //                    "OptionalInt.empty",
-//                    streamable2
+//                    FuncList2
 //                    .min()
 //                    .toString());
 //        });
@@ -883,18 +883,18 @@
 //
 //    @Test
 //    public void testMax() {
-//        val streamable1 = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
-//        val streamable2 = ints();
+//        val FuncList1 = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList2 = ints();
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[33]",
-//                    streamable1
+//                    FuncList1
 //                    .map(i -> Math.abs(i - 34))
 //                    .max()
 //                    .toString());
 //            assertEquals(
 //                    "OptionalInt.empty",
-//                    streamable2
+//                    FuncList2
 //                    .max()
 //                    .toString());
 //        });
@@ -902,145 +902,145 @@
 //
 //    @Test
 //    public void testCountSize() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    9L,
-//                    streamable
+//                    FuncList
 //                    .count());
 //            assertEquals(
 //                    9,
-//                    streamable
+//                    FuncList
 //                    .size());
 //        });
 //    }
 //
 //    @Test
 //    public void testMatch() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
-//            assertTrue(streamable.anyMatch(i -> i == 13));
-//            assertFalse(streamable.anyMatch(i -> i == 14));
+//            assertTrue(FuncList.anyMatch(i -> i == 13));
+//            assertFalse(FuncList.anyMatch(i -> i == 14));
 //
-//            assertTrue(streamable.allMatch(i -> i < 50));
-//            assertFalse(streamable.allMatch(i -> i < 20));
+//            assertTrue(FuncList.allMatch(i -> i < 50));
+//            assertFalse(FuncList.allMatch(i -> i < 20));
 //
-//            assertTrue(streamable.noneMatch(i -> i == 15));
-//            assertFalse(streamable.noneMatch(i -> i == 21));
+//            assertTrue(FuncList.noneMatch(i -> i == 15));
+//            assertFalse(FuncList.noneMatch(i -> i == 21));
 //        });
 //    }
 //
 //    @Test
 //    public void testFind() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
-//            assertEquals(OptionalInt.of(21),  streamable.filter(i -> i == 21).findFirst());
-//            assertEquals(OptionalInt.empty(), streamable.filter(i -> i == 55).findFirst());
+//            assertEquals(OptionalInt.of(21),  FuncList.filter(i -> i == 21).findFirst());
+//            assertEquals(OptionalInt.empty(), FuncList.filter(i -> i == 55).findFirst());
 //
-//            assertEquals(OptionalInt.of(21),  streamable.filter(i -> i == 21).findAny());
-//            assertEquals(OptionalInt.empty(), streamable.filter(i -> i == 55).findAny());
+//            assertEquals(OptionalInt.of(21),  FuncList.filter(i -> i == 21).findAny());
+//            assertEquals(OptionalInt.empty(), FuncList.filter(i -> i == 55).findAny());
 //        });
 //    }
 //
 //    @Test
 //    public void testAsStream() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    StreamPlus.of(1, 1, 2, 3, 5, 8, 13, 21, 34).toListString(),
-//                    streamable.intStream().toListString());
+//                    FuncList.intStream().toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testToArray() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertArrayEquals(
 //                    new int[] {1, 1, 2, 3, 5, 8, 13, 21, 34},
-//                    streamable.toArray());
+//                    FuncList.toArray());
 //        });
 //    }
 //
 //    @Test
 //    public void testSum() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    88,
-//                    streamable.sum());
+//                    FuncList.sum());
 //        });
 //    }
 //
 //    @Test
 //    public void testAverage() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55);
 //        run(()->{
 //            assertEquals(
 //                    OptionalDouble.of(14.3),
-//                    streamable.average());
+//                    FuncList.average());
 //        });
 //    }
 //
 //    @Test
 //    public void testSummaryStatistics() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "IntSummaryStatistics{count=9, sum=88, min=1, average=9.777778, max=34}",
-//                    streamable.summaryStatistics().toString());
+//                    FuncList.summaryStatistics().toString());
 //        });
 //    }
 //
 //    @Test
 //    public void testBoxed() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    StreamPlus.of(1, 1, 2, 3, 5, 8, 13, 21, 34).toList(),
-//                    streamable.boxed().toList());
+//                    FuncList.boxed().toList());
 //        });
 //    }
 //
 //    @Test
 //    public void testToImmutableList() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    ImmutableIntFuncList.of(1, 1, 2, 3, 5, 8, 13, 21, 34),
-//                    streamable.toImmutableList());
+//                    FuncList.toImmutableList());
 //        });
 //    }
 //
 //    @Test
 //    public void testJoinToString() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "112358132134",
-//                    streamable.joinToString());
+//                    FuncList.joinToString());
 //            assertEquals(
 //                    "1, 1, 2, 3, 5, 8, 13, 21, 34",
-//                    streamable.joinToString(", "));
+//                    FuncList.joinToString(", "));
 //        });
 //    }
 //
 //    @Test
 //    public void testPipeable() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "-[1, 1, 2, 3, 5, 8, 13, 21, 34]-",
-//                    streamable.pipable().pipeTo(i -> "-" + i.toListString() + "-").toString());
+//                    FuncList.pipable().pipeTo(i -> "-" + i.toListString() + "-").toString());
 //            assertEquals(
 //                    "-[1, 1, 2, 3, 5, 8, 13, 21, 34]-",
-//                    streamable.pipable().pipeTo(i -> "-" + i.toListString() + "-").toString());
+//                    FuncList.pipable().pipeTo(i -> "-" + i.toListString() + "-").toString());
 //        });
 //    }
 //
 //    @Test
 //    public void testSpawn() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "["
@@ -1048,7 +1048,7 @@
 //                    +   "Result:{ Value: 21 }, "
 //                    +   "Result:{ Value: 8 }"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .spawn(i -> DeferAction.from(()->{ Thread.sleep(100*Math.abs(i - 15)); return i; }))
 //                        .limit(3)
 //                        .toListString());
@@ -1057,11 +1057,11 @@
 //
 //    @Test
 //    public void testAccumulate() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 2, 4, 7, 12, 20, 33, 54, 88]",
-//                    streamable
+//                    FuncList
 //                        .accumulate((a, i) -> a + i)
 //                        .toListString());
 //        });
@@ -1069,11 +1069,11 @@
 //
 //    @Test
 //    public void testRestate() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "[1, 0, 1, 1, 2, 3, 5, 8, 13]",
-//                    streamable
+//                    FuncList
 //                        .restate((i, s) -> s.map(j -> j - i))
 //                        .toListString());
 //        });
@@ -1081,14 +1081,14 @@
 //
 //    @Test
 //    public void testMapFirst() {
-//        val streamable = wholeNumbers(14);
+//        val FuncList = wholeNumbers(14);
 //        run(()->{
 //            assertEquals(
 //                    "["
 //                    + "2, null, 2, 3, 2, null, 2, null, 2, 3, "
 //                    + "2, null, 2, null"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapFirst(
 //                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
 //                                i -> (Integer)(((i % 3) == 0) ? 3 : null))
@@ -1098,7 +1098,7 @@
 //                    + "2, null, 2, 3, 2, 5, 2, null, 2, 3, "
 //                    + "2, null, 2, null"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapFirst(
 //                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
 //                                i -> (Integer)(((i % 3) == 0) ? 3 : null),
@@ -1109,7 +1109,7 @@
 //                    + "2, null, 2, 3, 2, 5, 2, 7, 2, 3, "
 //                    + "2, null, 2, null"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapFirst(
 //                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
 //                                i -> (Integer)(((i % 3) == 0) ? 3 : null),
@@ -1121,7 +1121,7 @@
 //                    + "2, null, 2, 3, 2, 5, 2, 7, 2, 3, "
 //                    + "2, 11, 2, null"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapFirst(
 //                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
 //                                i -> (Integer)(((i % 3) == 0) ? 3 : null),
@@ -1134,7 +1134,7 @@
 //                    + "2, null, 2, 3, 2, 5, 2, 7, 2, 3, "
 //                    + "2, 11, 2, 13"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapFirst(
 //                                i -> (Integer)(((i % 2) == 0) ? 2 : null),
 //                                i -> (Integer)(((i % 3) == 0) ? 3 : null),
@@ -1148,7 +1148,7 @@
 //
 //    @Test
 //    public void testMapThen() {
-//        val streamable = wholeNumbers(5);
+//        val FuncList = wholeNumbers(5);
 //        run(()->{
 //            assertEquals(
 //                    "["
@@ -1157,7 +1157,7 @@
 //                    + "(2)((2)), "
 //                    + "(3)((3)), "
 //                    + "(4)((4))]",
-//                    streamable
+//                    FuncList
 //                        .mapThen(
 //                                i -> format("(%s)", i),
 //                                i -> format("((%s))", i),
@@ -1171,7 +1171,7 @@
 //                    + "(3)((3))(((3))), "
 //                    + "(4)((4))(((4)))"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapThen(
 //                                i -> format("(%s)", i),
 //                                i -> format("((%s))", i),
@@ -1186,7 +1186,7 @@
 //                    + "(3)((3))(((3)))((((3)))), "
 //                    + "(4)((4))(((4)))((((4))))"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapThen(
 //                                i -> format("(%s)", i),
 //                                i -> format("((%s))", i),
@@ -1202,7 +1202,7 @@
 //                    + "(3)((3))(((3)))((((3))))(((((3))))), "
 //                    + "(4)((4))(((4)))((((4))))(((((4)))))"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapThen(
 //                                i -> format("(%s)", i),
 //                                i -> format("((%s))", i),
@@ -1219,7 +1219,7 @@
 //                    + "(3)((3))(((3)))((((3))))(((((3)))))((((((3)))))), "
 //                    + "(4)((4))(((4)))((((4))))(((((4)))))((((((4))))))"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapThen(
 //                                i -> format("(%s)", i),
 //                                i -> format("((%s))", i),
@@ -1234,7 +1234,7 @@
 //
 //    @Test
 //    public void testMapTuple() {
-//        val streamable = wholeNumbers(5);
+//        val FuncList = wholeNumbers(5);
 //        run(()->{
 //            assertEquals(
 //                    "["
@@ -1244,7 +1244,7 @@
 //                    + "(3,#3), "
 //                    + "(4,#4)"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapTuple(
 //                                i -> i,
 //                                i -> "#" + i)
@@ -1257,7 +1257,7 @@
 //                    + "(3,#3,##3), "
 //                    + "(4,#4,##4)"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapTuple(
 //                                i -> i,
 //                                i -> "#" + i,
@@ -1271,7 +1271,7 @@
 //                    + "(3,#3,##3,###3), "
 //                    + "(4,#4,##4,###4)"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapTuple(
 //                                i -> i,
 //                                i -> "#" + i,
@@ -1286,7 +1286,7 @@
 //                    + "(3,#3,##3,###3,####3), "
 //                    + "(4,#4,##4,###4,####4)"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapTuple(
 //                                i -> i,
 //                                i -> "#" + i,
@@ -1302,7 +1302,7 @@
 //                    + "(3,#3,##3,###3,####3,#####3), "
 //                    + "(4,#4,##4,###4,####4,#####4)"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapTuple(
 //                                i -> i,
 //                                i -> "#" + i,
@@ -1316,7 +1316,7 @@
 //
 //    @Test
 //    public void testMapToMap() {
-//        val streamable = wholeNumbers(5);
+//        val FuncList = wholeNumbers(5);
 //        run(()->{
 //            assertEquals(
 //                    "["
@@ -1326,7 +1326,7 @@
 //                    + "{1:3}, "
 //                    + "{1:4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i)
 //                        .toListString());
@@ -1338,7 +1338,7 @@
 //                    + "{1:3, 2:#3}, "
 //                    + "{1:4, 2:#4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i,
 //                                "2", i -> "#" + i)
@@ -1351,7 +1351,7 @@
 //                    + "{1:3, 2:#3, 3:##3}, "
 //                    + "{1:4, 2:#4, 3:##4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i,
 //                                "2", i -> "#" + i,
@@ -1365,7 +1365,7 @@
 //                    + "{1:3, 2:#3, 3:##3, 4:###3}, "
 //                    + "{1:4, 2:#4, 3:##4, 4:###4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i,
 //                                "2", i -> "#" + i,
@@ -1380,7 +1380,7 @@
 //                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3}, "
 //                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i,
 //                                "2", i -> "#" + i,
@@ -1396,7 +1396,7 @@
 //                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3}, "
 //                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i,
 //                                "2", i -> "#" + i,
@@ -1413,7 +1413,7 @@
 //                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3, 7:######3}, "
 //                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4, 7:######4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i,
 //                                "2", i -> "#" + i,
@@ -1431,7 +1431,7 @@
 //                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3, 7:######3, 8:#######3}, "
 //                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4, 7:######4, 8:#######4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i,
 //                                "2", i -> "#" + i,
@@ -1450,7 +1450,7 @@
 //                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3, 7:######3, 8:#######3, 9:########3}, "
 //                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4, 7:######4, 8:#######4, 9:########4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i,
 //                                "2", i -> "#" + i,
@@ -1470,7 +1470,7 @@
 //                    + "{1:3, 2:#3, 3:##3, 4:###3, 5:####3, 6:#####3, 7:######3, 8:#######3, 9:########3, 10:#########3}, "
 //                    + "{1:4, 2:#4, 3:##4, 4:###4, 5:####4, 6:#####4, 7:######4, 8:#######4, 9:########4, 10:#########4}"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                        .mapToMap(
 //                                "1", i -> i,
 //                                "2", i -> "#" + i,
@@ -1490,7 +1490,7 @@
 //    public void testSegment_fixedSize() {
 //        Function<IntStreamPlus, String> streamToString = s -> s.toListString();
 //
-//        val streamable = wholeNumbers(10);
+//        val FuncList = wholeNumbers(10);
 //        run(()->{
 //            assertEquals("["
 //                    + "[0, 1, 2], "
@@ -1498,7 +1498,7 @@
 //                    + "[6, 7, 8], "
 //                    + "[9]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(3)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1508,7 +1508,7 @@
 //                    + "[3, 4, 5], "
 //                    + "[6, 7, 8]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(3, false)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1519,7 +1519,7 @@
 //                    + "[6, 7, 8], "
 //                    + "[9]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(3, true)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1529,7 +1529,7 @@
 //                    + "[3, 4, 5], "
 //                    + "[6, 7, 8]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(3, IncompletedSegment.excluded)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1540,7 +1540,7 @@
 //                    + "[6, 7, 8], "
 //                    + "[9]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(3, IncompletedSegment.included)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1550,7 +1550,7 @@
 //                    + "[4, 5, 6, 7], "
 //                    + "[8, 9]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(i -> i % 4 == 0)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1560,7 +1560,7 @@
 //                    + "[4, 5, 6, 7], "
 //                    + "[8, 9]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(i -> i % 4 == 0, IncompletedSegment.included)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1570,7 +1570,7 @@
 //                    + "[4, 5, 6, 7], "
 //                    + "[8, 9]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(i -> i % 4 == 0, true)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1579,7 +1579,7 @@
 //                    + "[0, 1, 2, 3], "
 //                    + "[4, 5, 6, 7]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(i -> i % 4 == 0, IncompletedSegment.excluded)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1593,14 +1593,14 @@
 //        IntPredicate startCondition = i ->(i % 10) == 3;
 //        IntPredicate endCondition   = i ->(i % 10) == 6;
 //
-//        val streamable = wholeNumbers(75);
+//        val FuncList = wholeNumbers(75);
 //        run(()->{
 //            assertEquals("["
 //                    + "[53, 54, 55, 56], "
 //                    + "[63, 64, 65, 66], "
 //                    + "[73, 74]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(startCondition, endCondition)
 //                    .skip(5)
 //                    .map(streamToString)
@@ -1611,7 +1611,7 @@
 //                    + "[63, 64, 65, 66], "
 //                    + "[73, 74]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(startCondition, endCondition, true)
 //                    .skip(5)
 //                    .map(streamToString)
@@ -1621,7 +1621,7 @@
 //                    + "[53, 54, 55, 56], "
 //                    + "[63, 64, 65, 66]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(startCondition, endCondition, false)
 //                    .skip(5)
 //                    .map(streamToString)
@@ -1632,7 +1632,7 @@
 //                    + "[63, 64, 65, 66], "
 //                    + "[73, 74]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(startCondition, endCondition, IncompletedSegment.included)
 //                    .skip(5)
 //                    .map(streamToString)
@@ -1642,7 +1642,7 @@
 //                    + "[53, 54, 55, 56], "
 //                    + "[63, 64, 65, 66]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segment(startCondition, endCondition, IncompletedSegment.excluded)
 //                    .skip(5)
 //                    .map(streamToString)
@@ -1654,7 +1654,7 @@
 //    public void testSegmentSize() {
 //        Function<IntStreamPlus, String> streamToString = s -> s.toListString();
 //
-//        val streamable = wholeNumbers(30);
+//        val FuncList = wholeNumbers(30);
 //        run(()->{
 //            assertEquals("["
 //                    + "[], "
@@ -1664,7 +1664,7 @@
 //                    + "[8, 9, 10, 11, 12, 13, 14, 15], "
 //                    + "[16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segmentSize(i -> i)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1677,7 +1677,7 @@
 //                    + "[8, 9, 10, 11, 12, 13, 14, 15], "
 //                    + "[16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segmentSize(i -> i, true)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1689,7 +1689,7 @@
 //                    + "[4, 5, 6, 7], "
 //                    + "[8, 9, 10, 11, 12, 13, 14, 15]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segmentSize(i -> i, false)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1702,7 +1702,7 @@
 //                    + "[8, 9, 10, 11, 12, 13, 14, 15], "
 //                    + "[16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segmentSize(i -> i, IncompletedSegment.included)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1714,7 +1714,7 @@
 //                    + "[4, 5, 6, 7], "
 //                    + "[8, 9, 10, 11, 12, 13, 14, 15]"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .segmentSize(i -> i, IncompletedSegment.excluded)
 //                    .map(streamToString)
 //                    .toListString());
@@ -1723,11 +1723,11 @@
 //
 //    @Test
 //    public void testCollapseWhen() {
-//        val streamable = wholeNumbers(10);
+//        val FuncList = wholeNumbers(10);
 //        run(()->{
 //            // [0, 1, 2 + 3, 4, 5 + 6, 7, 8 + 9]
 //            assertEquals("[0, 1, 9, 11, 24]",
-//                    streamable
+//                    FuncList
 //                    .collapseWhen(i -> i % 3 == 0 || i % 4 == 0, (a, b) -> a + b)
 //                    .toListString());
 //        });
@@ -1735,11 +1735,11 @@
 //
 //    @Test
 //    public void testCollapseAfter() {
-//        val streamable = wholeNumbers(10);
+//        val FuncList = wholeNumbers(10);
 //        run(()->{
 //            // [0 + 1, 2, 3 + 4 + 5, 6 + 7, 8 + 9]
 //            assertEquals("[1, 2, 12, 13, 17]",
-//                    streamable
+//                    FuncList
 //                    .collapseAfter(i -> i % 3 == 0 || i % 4 == 0, (a, b) -> a + b)
 //                    .toListString());
 //        });
@@ -1747,31 +1747,31 @@
 //
 //    @Test
 //    public void testCollapseSize() {
-//        val streamable = wholeNumbers(10);
+//        val FuncList = wholeNumbers(10);
 //        run(()->{
 //            // [0, 1, 2 + 3, 4 + 5 + 6 + 7]
 //            assertEquals("[1, 5, 22, 17]",
-//                    streamable
+//                    FuncList
 //                    .collapseSize(i -> i, (a, b) -> a + b)
 //                    .toListString());
 //
 //            assertEquals("[1, 5, 22, 17]",
-//                    streamable
+//                    FuncList
 //                    .collapseSize(i -> i, (a, b) -> a + b, true)
 //                    .toListString());
 //
 //            assertEquals("[1, 5, 22]",
-//                    streamable
+//                    FuncList
 //                    .collapseSize(i -> i, (a, b) -> a + b, false)
 //                    .toListString());
 //
 //            assertEquals("[1, 5, 22, 17]",
-//                    streamable
+//                    FuncList
 //                    .collapseSize(i -> i, (a, b) -> a + b, IncompletedSegment.included)
 //                    .toListString());
 //
 //            assertEquals("[1, 5, 22]",
-//                    streamable
+//                    FuncList
 //                    .collapseSize(i -> i, (a, b) -> a + b, IncompletedSegment.excluded)
 //                    .toListString());
 //        });
@@ -1779,14 +1779,14 @@
 //
 //    @Test
 //    public void testConcatWith() {
-//        val streamable = range(0, 5);
+//        val FuncList = range(0, 5);
 //        val anotherStreamble = range(21, 27);
 //        run(()->{
 //            assertEquals("["
 //                            + "0, 1, 2, 3, 4, "
 //                            + "21, 22, 23, 24, 25, 26"
 //                        + "]",
-//                        streamable
+//                        FuncList
 //                        .concatWith(anotherStreamble)
 //                        .toListString());
 //        });
@@ -1794,11 +1794,11 @@
 //
 //    @Test
 //    public void testMergeWith() {
-//        val streamable = range(0, 5);
+//        val FuncList = range(0, 5);
 //        val anotherStreamble = range(21, 27);
 //        run(()->{
 //            assertEquals("[0, 21, 1, 22, 2, 23, 3, 24, 4, 25, 26]",
-//                    streamable
+//                    FuncList
 //                            .mergeWith(anotherStreamble)
 //                            .toListString());
 //        });
@@ -1806,30 +1806,30 @@
 //
 //    @Test
 //    public void testZipWith_boxed() {
-//        val streamable = range(0, 5);
+//        val FuncList = range(0, 5);
 //        val anotherStreamble1 = range(21, 27);
 //        val anotherStreamble2 = range(21, 24);
 //        run(()->{
 //            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25)]",
-//                         streamable.zipWith(anotherStreamble1.boxed()).toListString());
+//                         FuncList.zipWith(anotherStreamble1.boxed()).toListString());
 //
 //            assertEquals("[(0,21), (1,22), (2,23), (3,null), (4,null)]",
-//                         streamable.zipWith(-1, anotherStreamble2.boxed()).toListString());
+//                         FuncList.zipWith(-1, anotherStreamble2.boxed()).toListString());
 //
 //            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25), (-1,26)]",
-//                         streamable.zipWith(-1, anotherStreamble1.boxed()).toListString());
+//                         FuncList.zipWith(-1, anotherStreamble1.boxed()).toListString());
 //
 //            assertEquals("[(0,21), (1,22), (2,23)]",
-//                         streamable.zipWith(anotherStreamble2.boxed()).toListString());
+//                         FuncList.zipWith(anotherStreamble2.boxed()).toListString());
 //
 //            assertEquals("[21, 23, 25]",
-//                         streamable.zipWith(anotherStreamble2.boxed(), (a, b) -> a + b).toListString());
+//                         FuncList.zipWith(anotherStreamble2.boxed(), (a, b) -> a + b).toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testChoose() {
-//        val streamable = range(0, 5);
+//        val FuncList = range(0, 5);
 //        val anotherStreamble = range(22, 30);
 //        run(()->{
 //            // 0 % 3 = 0 vs 22 % 2 = 0 => 22
@@ -1841,7 +1841,7 @@
 //            //           vs 28 % 2 = 0 => none
 //            //           vs 29 % 2 = 1 => none
 //            assertEquals("[22, 23, 2, 25, 4]",
-//                         streamable
+//                         FuncList
 //                         .choose(anotherStreamble, (a, b) -> a % 3 > b % 2)
 //                         .toListString());
 //        });
@@ -1933,34 +1933,34 @@
 //    public void testCalculate() {
 //        val sum = new Sum();
 //        val max = new Max();
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("45",
-//                         "" + streamable.calculate(sum));
+//                         "" + FuncList.calculate(sum));
 //
 //            assertEquals("(45,9)",
-//                         "" + streamable.calculate(sum, max));
+//                         "" + FuncList.calculate(sum, max));
 //
 //            assertEquals("(45,9,45)",
-//                         "" + streamable.calculate(sum, max, sum));
+//                         "" + FuncList.calculate(sum, max, sum));
 //
 //            assertEquals("(45,9,45,9)",
-//                         "" + streamable.calculate(sum, max, sum, max));
+//                         "" + FuncList.calculate(sum, max, sum, max));
 //
 //            assertEquals("(45,9,45,9,45)",
-//                         "" + streamable.calculate(sum, max, sum, max, sum));
+//                         "" + FuncList.calculate(sum, max, sum, max, sum));
 //
 //            assertEquals("(45,9,45,9,45,9)",
-//                         "" + streamable.calculate(sum, max, sum, max, sum, max));
+//                         "" + FuncList.calculate(sum, max, sum, max, sum, max));
 //        });
 //    }
 //
 //    @Test
 //    public void testMapOnly() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("[0, 10, 2, 30, 4, 50, 6, 70, 8, 90]",
-//                    streamable
+//                    FuncList
 //                    .mapOnly(theInteger.thatIsOdd(), theInteger.time(10))
 //                    .toListString());
 //        });
@@ -1968,10 +1968,10 @@
 //
 //    @Test
 //    public void testMapIf() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("[0, 10, 1, 30, 2, 50, 3, 70, 4, 90]",
-//                        streamable
+//                        FuncList
 //                        .mapIf(
 //                            theInteger.thatIsOdd(),
 //                            theInteger.time(10),
@@ -1982,10 +1982,10 @@
 //
 //    @Test
 //    public void testMapToObjIf() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("[0, 10, 1, 30, 2, 50, 3, 70, 4, 90]",
-//                        streamable
+//                        FuncList
 //                        .mapToObjIf(
 //                            theInteger.thatIsOdd(),
 //                            i -> i * 10,
@@ -1996,16 +1996,16 @@
 //
 //    @Test
 //    public void testMapWithIndex() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]",
-//                        streamable
+//                        FuncList
 //                        .mapWithIndex(
 //                            (index, value)->index*value)
 //                        .toListString());
 //
 //            assertEquals("[(0,0), (1,1), (2,2), (3,3), (4,4), (5,5), (6,6), (7,7), (8,8), (9,9)]",
-//                        streamable
+//                        FuncList
 //                        .mapWithIndex()
 //                        .toListString());
 //        });
@@ -2013,16 +2013,16 @@
 //
 //    @Test
 //    public void testMapToObjWithIndex() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("[0-0, 1-1, 2-2, 3-3, 4-4, 5-5, 6-6, 7-7, 8-8, 9-9]",
-//                        streamable
+//                        FuncList
 //                        .mapToObjWithIndex(
 //                            (index, value)->index + "-" + value)
 //                        .toListString());
 //
 //            assertEquals("[0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9]",
-//                        streamable
+//                        FuncList
 //                        .mapToObjWithIndex(
 //                                i -> "" + i,
 //                                (index, value) -> index + ": " + value
@@ -2033,7 +2033,7 @@
 //
 //    @Test
 //    public void testMapWithPrev() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("["
 //                    + "(OptionalInt.empty,0), "
@@ -2047,7 +2047,7 @@
 //                    + "(OptionalInt[7],8), "
 //                    + "(OptionalInt[8],9)"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .mapWithPrev()
 //                    .toListString());
 //
@@ -2063,7 +2063,7 @@
 //                    + "OptionalInt[7]-8, "
 //                    + "OptionalInt[8]-9"
 //                    + "]",
-//                    streamable
+//                    FuncList
 //                    .mapWithPrev(
 //                        (prev, i) -> prev + "-" + i
 //                    )
@@ -2073,15 +2073,15 @@
 //
 //    @Test
 //    public void testFilterIn() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("[1, 3, 5, 7, 9]",
-//                        streamable
+//                        FuncList
 //                        .filterIn(1, 3, 5, 7, 9, 11, 13)
 //                        .toListString());
 //
 //            assertEquals("[1, 3, 5, 7, 9]",
-//                        streamable
+//                        FuncList
 //                        .filterIn(asList(1, 3, 5, 7, 9, 11, 13))
 //                        .toListString());
 //        });
@@ -2089,20 +2089,20 @@
 //
 //    @Test
 //    public void testExcludeIn() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("[5, 6, 7, 8, 9]",
-//                        streamable
+//                        FuncList
 //                        .exclude(i -> i < 5)
 //                        .toListString());
 //
 //            assertEquals("[0, 2, 4, 6, 8]",
-//                        streamable
+//                        FuncList
 //                        .excludeIn(1, 3, 5, 7, 9, 11, 13)
 //                        .toListString());
 //
 //            assertEquals("[0, 2, 4, 6, 8]",
-//                        streamable
+//                        FuncList
 //                        .excludeIn(asList(1, 3, 5, 7, 9, 11, 13))
 //                        .toListString());
 //        });
@@ -2110,10 +2110,10 @@
 //
 //    @Test
 //    public void testFilterWithIndex() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            assertEquals("[0, 1, 2, 3, 8, 9]",
-//                        streamable
+//                        FuncList
 //                        .filterWithIndex((i, v) -> i < 4 || v > 7)
 //                        .toListString());
 //        });
@@ -2121,12 +2121,12 @@
 //
 //    @Test
 //    public void testPeekMore() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            {
 //                val lines = new ArrayList<String>();
 //                assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
-//                            streamable
+//                            FuncList
 //                            .peek(theInteger.thatIsEven(), i -> lines.add("" + i))
 //                            .toListString());
 //
@@ -2138,7 +2138,7 @@
 //            {
 //                val lines = new ArrayList<String>();
 //                assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
-//                            streamable
+//                            FuncList
 //                            .peek((int    i) -> "--> " + i + ";",
 //                                  (String s) -> lines.add(s))
 //                            .toListString());
@@ -2151,7 +2151,7 @@
 //            {
 //                val lines = new ArrayList<String>();
 //                assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
-//                            streamable
+//                            FuncList
 //                            .peek((int    i) -> "--> " + i + ";",
 //                                  (String s) -> s.contains("5"),
 //                                  (String s) -> lines.add(s))
@@ -2166,30 +2166,30 @@
 //
 //    @Test
 //    public void testFlatMapOnly() {
-//        val streamable = range(0, 7);
+//        val FuncList = range(0, 7);
 //        run(()->{
 //            //            [0, 1 -> [0], 2, 3->[0, 1, 2], 4, 5 -> [0, 1, 2, 3, 4], 6]
 //            //            [0,      [0], 2,    [0, 1, 2], 4,      [0, 1, 2, 3, 4], 6]
 //            //            [0,       0,  2,     0, 1, 2,  4,       0, 1, 2, 3, 4,  6]
 //            assertEquals("[0, 0, 2, 0, 1, 2, 4, 0, 1, 2, 3, 4, 6]",
-//                        streamable
+//                        FuncList
 //                        .flatMapOnly(theInteger.thatIsOdd(), i -> range(0, i)).toListString());
 //        });
 //    }
 //
 //    @Test
 //    public void testFlatMapIf() {
-//        val streamable = range(0, 7);
+//        val FuncList = range(0, 7);
 //        run(()->{
 //            //      [0 -> [0], 1 -> [0], 2 -> [-2], 3->[0, 1, 2], 4 -> [-4], 5 -> [0, 1, 2, 3, 4], 6 -> [-6]]
 //            //      [     [0],      [0],      [-2],    [0, 1, 2],      [-4],      [0, 1, 2, 3, 4],      [-6]]
 //            //      [      0,        0,        -2,      0, 1, 2,        -4,        0, 1, 2, 3, 4,        -6]
 //            assertEquals("[0, 0, -2, 0, 1, 2, -4, 0, 1, 2, 3, 4, -6]",
-//                        streamable
+//                        FuncList
 //                        .flatMapIf(
 //                                theInteger.thatIsOdd(),
 //                                i -> range(0, i),
-//                                i -> IntStreamable.of(-i)
+//                                i -> IntFuncList.of(-i)
 //                        )
 //                        .toListString());
 //        });
@@ -2197,10 +2197,10 @@
 //    
 //    @Test
 //    public void testForEachWithIndex() {
-//        val streamable = range(0, 10);
+//        val FuncList = range(0, 10);
 //        run(()->{
 //            val lines = new ArrayList<String>();
-//            streamable
+//            FuncList
 //            .forEachWithIndex((i, v) -> lines.add(i + ": " + v));
 //
 //            assertEquals(
@@ -2211,17 +2211,17 @@
 //    
 //    @Test
 //    public void testMinBy() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[34]",
-//                    streamable
+//                    FuncList
 //                    .minBy(i -> Math.abs(i - 34))
 //                    .toString());
 //
 //            assertEquals(
 //                    "OptionalInt[1]",
-//                    streamable
+//                    FuncList
 //                    .minBy(i -> Math.abs(i - 34), (a, b)-> b - a)
 //                    .toString());
 //        });
@@ -2229,16 +2229,16 @@
 //
 //    @Test
 //    public void testMaxBy() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[1]",
-//                    streamable
+//                    FuncList
 //                    .maxBy(i -> Math.abs(i - 34))
 //                    .toString());
 //            assertEquals(
 //                    "OptionalInt[34]",
-//                    streamable
+//                    FuncList
 //                    .maxBy(i -> Math.abs(i - 34), (a, b)-> b - a)
 //                    .toString());
 //        });
@@ -2246,11 +2246,11 @@
 //
 //    @Test
 //    public void testMinOf() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[34]",
-//                    streamable
+//                    FuncList
 //                    .minOf(i -> Math.abs(i - 34))
 //                    .toString());
 //        });
@@ -2258,11 +2258,11 @@
 //
 //    @Test
 //    public void testMaxOf() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[1]",
-//                    streamable
+//                    FuncList
 //                    .maxOf(i -> Math.abs(i - 34))
 //                    .toString());
 //        });
@@ -2270,11 +2270,11 @@
 //
 //    @Test
 //    public void testMinMax() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "Optional[(1,34)]",
-//                    streamable
+//                    FuncList
 //                    .minMax()
 //                    .toString());
 //        });
@@ -2282,11 +2282,11 @@
 //
 //    @Test
 //    public void testMinMaxOf() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "Optional[(34,1)]",
-//                    streamable
+//                    FuncList
 //                    .minMaxOf(i -> Math.abs(i - 34))
 //                    .toString());
 //        });
@@ -2294,17 +2294,17 @@
 //
 //    @Test
 //    public void testMinMaxBy() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "Optional[(34,1)]",
-//                    streamable
+//                    FuncList
 //                    .minMaxBy(i -> Math.abs(i - 34))
 //                    .toString());
 //
 //            assertEquals(
 //                    "Optional[(1,34)]",
-//                    streamable
+//                    FuncList
 //                    .minMaxBy(i -> Math.abs(i - 34), (a, b)-> b - a)
 //                    .toString());
 //        });
@@ -2312,16 +2312,16 @@
 //
 //    @Test
 //    public void testFindFirst() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[5]",
-//                    streamable
+//                    FuncList
 //                    .findFirst(i -> i % 5 == 0)
 //                    .toString());
 //            assertEquals(
 //                    "OptionalInt[5]",
-//                    streamable
+//                    FuncList
 //                    .findFirst(i -> i*2, i -> i % 5 == 0)
 //                    .toString());
 //        });
@@ -2329,16 +2329,16 @@
 //
 //    @Test
 //    public void testFindAny() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[5]",
-//                    streamable
+//                    FuncList
 //                    .findAny(i -> i % 5 == 0)
 //                    .toString());
 //            assertEquals(
 //                    "OptionalInt[5]",
-//                    streamable
+//                    FuncList
 //                    .findAny(i -> i*2, i -> i % 5 == 0)
 //                    .toString());
 //        });
@@ -2346,11 +2346,11 @@
 //
 //    @Test
 //    public void testFindFirstBy() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[13]",
-//                    streamable
+//                    FuncList
 //                    .findFirstBy(
 //                            i -> "" + i,
 //                            s -> s.length() > 1)
@@ -2360,11 +2360,11 @@
 //
 //    @Test
 //    public void testFindAnyBy() {
-//        val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
+//        val FuncList = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
 //        run(()->{
 //            assertEquals(
 //                    "OptionalInt[13]",
-//                    streamable
+//                    FuncList
 //                    .findAnyBy(
 //                            i -> "" + i,
 //                            s -> s.length() > 1)

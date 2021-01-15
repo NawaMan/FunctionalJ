@@ -5,7 +5,6 @@ import java.util.OptionalInt;
 
 import functionalj.stream.intstream.GrowOnlyIntArray;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.streamable.intstreamable.AsIntStreamable;
 
 public class IntFuncListBuilder {
 
@@ -31,10 +30,9 @@ public class IntFuncListBuilder {
     
     public IntFuncList build() {
         int length = list.length();
-        AsIntStreamable asStreamable = () -> {
+        return () -> {
             return list.stream().limit(length);
         };
-        return IntFuncList.from(asStreamable);
     }
     
     public IntFuncList toFuncList() {

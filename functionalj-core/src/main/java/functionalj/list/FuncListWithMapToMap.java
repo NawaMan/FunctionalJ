@@ -28,10 +28,8 @@ import static functionalj.list.FuncList.deriveFrom;
 import java.util.function.Function;
 
 import functionalj.map.FuncMap;
-import functionalj.streamable.AsStreamable;
 
-public interface FuncListWithMapToMap<DATA>
-        extends AsStreamable<DATA> {
+public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
     
     /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(

@@ -26,13 +26,9 @@ package functionalj.stream.doublestream;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 
+import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.map.FuncMap;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
 import functionalj.tuple.Tuple2;
-import functionalj.tuple.Tuple3;
-import functionalj.tuple.Tuple4;
-import functionalj.tuple.Tuple5;
-import functionalj.tuple.Tuple6;
 
 public interface DoubleStreamPlusWithSplit
             extends DoubleStreamPlusWithMapToTuple {
@@ -54,99 +50,11 @@ public interface DoubleStreamPlusWithSplit
      */
     public default Tuple2<DoubleStreamPlus, DoubleStreamPlus> split(
             DoublePredicate predicate) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
+        Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
+        DoubleFuncList FuncList = ()->doubleStreamPlus();
+        return FuncList
                 .split(predicate)
                 .map(toStreamPlus, toStreamPlus);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     *
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     *
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    public default Tuple3<DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus> split(
-            DoublePredicate predicate1,
-            DoublePredicate predicate2) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
-                .split(predicate1, predicate2)
-                .map(toStreamPlus, toStreamPlus, toStreamPlus);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     *
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     *
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    public default Tuple4<DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus> split(
-            DoublePredicate predicate1,
-            DoublePredicate predicate2,
-            DoublePredicate predicate3) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
-                .split(predicate1, predicate2, predicate3)
-                .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     *
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * The element will be in the forth sub stream if the first, second, third predicate return false and the forth predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     *
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    public default Tuple5<DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus> split(
-            DoublePredicate predicate1,
-            DoublePredicate predicate2,
-            DoublePredicate predicate3,
-            DoublePredicate predicate4) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
-                .split(predicate1, predicate2, predicate3, predicate4)
-                .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
-    }
-    
-    /**
-     * Split the stream using the predicates.
-     *
-     * The element will be in the first sub stream if the first predicate return true.
-     * The element will be in the second sub stream if the first predicate return false and the second predicate is true.
-     * The element will be in the third sub stream if the first and second predicate return false and the third predicate is true.
-     * The element will be in the forth sub stream if the first, second and third predicate return false and the forth predicate is true.
-     * The element will be in the fifth sub stream if the first, second, third and forth predicate return false and the fifth predicate is true.
-     * Otherwise, it will be in the last sub stream.
-     *
-     * The elements in this stream is guaranteed to be in one of the sub streams.
-     */
-    public default Tuple6<DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus, DoubleStreamPlus> split(
-            DoublePredicate predicate1,
-            DoublePredicate predicate2,
-            DoublePredicate predicate3,
-            DoublePredicate predicate4,
-            DoublePredicate predicate5) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
-                .split(predicate1, predicate2, predicate3, predicate4, predicate5)
-                .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
     }
     
     /**
@@ -157,9 +65,9 @@ public interface DoubleStreamPlusWithSplit
     public default <KEY> FuncMap<KEY, DoubleStreamPlus> split(
             KEY key1, DoublePredicate predicate,
             KEY key2) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
+        Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
+        DoubleFuncList FuncList = ()->doubleStreamPlus();
+        return FuncList
                 .split(key1, predicate, key2)
                 .mapValue(toStreamPlus);
     }
@@ -173,9 +81,9 @@ public interface DoubleStreamPlusWithSplit
             KEY key1, DoublePredicate predicate1,
             KEY key2, DoublePredicate predicate2,
             KEY key3) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
+        Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
+        DoubleFuncList FuncList = ()->doubleStreamPlus();
+        return FuncList
                 .split(key1, predicate1, key2, predicate2, key3)
                 .mapValue(toStreamPlus);
     }
@@ -190,9 +98,9 @@ public interface DoubleStreamPlusWithSplit
             KEY key2, DoublePredicate predicate2,
             KEY key3, DoublePredicate predicate3,
             KEY key4) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
+        Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
+        DoubleFuncList FuncList = ()->doubleStreamPlus();
+        return FuncList
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4)
                 .mapValue(toStreamPlus);
     }
@@ -208,9 +116,9 @@ public interface DoubleStreamPlusWithSplit
             KEY key3, DoublePredicate predicate3,
             KEY key4, DoublePredicate predicate4,
             KEY key5) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
+        Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
+        DoubleFuncList FuncList = ()->doubleStreamPlus();
+        return FuncList
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5)
                 .mapValue(toStreamPlus);
     }
@@ -227,9 +135,9 @@ public interface DoubleStreamPlusWithSplit
             KEY key4, DoublePredicate predicate4,
             KEY key5, DoublePredicate predicate5,
             KEY key6) {
-        Function<DoubleStreamable, DoubleStreamPlus> toStreamPlus = DoubleStreamable::doubleStreamPlus;
-        DoubleStreamable streamable = ()->doubleStreamPlus();
-        return streamable
+        Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
+        DoubleFuncList FuncList = ()->doubleStreamPlus();
+        return FuncList
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6)
                 .mapValue(toStreamPlus);
     }
