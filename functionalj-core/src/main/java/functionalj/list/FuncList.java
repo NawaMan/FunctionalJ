@@ -954,8 +954,7 @@ public interface FuncList<DATA>
         
         val first      = limit(index);
         val tail       = skip(index);
-        val FuncList = FuncList.concat(first, FuncList.of(elements), tail);
-        return from(FuncList);
+        return FuncList.concat(first, FuncList.of(elements), tail);
     }
     
     /** Returns a new list with the given elements inserts into at the given index. */
