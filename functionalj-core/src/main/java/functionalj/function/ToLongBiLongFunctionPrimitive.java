@@ -28,7 +28,7 @@ import lombok.val;
 @FunctionalInterface
 public interface ToLongBiLongFunctionPrimitive extends ToLongBiLongFunction<Long> {
     
-    public int applyAsLongAndLong(long data, long longValue);
+    public long applyAsLongAndLong(long data, long longValue);
     
     public default long applyAsLong(Long data, long longValue) {
         return applyAsLongAndLong(data, longValue);
