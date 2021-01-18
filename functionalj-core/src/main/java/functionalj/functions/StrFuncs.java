@@ -84,7 +84,7 @@ public class StrFuncs {
      * @param <I>  the input data type.
      * @return the function.
      */
-    public static <I> Func1<I, String> toStr() {
+    public static <I> Function<I, String> toStr() {
         return (i) -> toStr(i);
     }
     
@@ -97,15 +97,15 @@ public class StrFuncs {
         return str -> (str != null) && !str.isEmpty();
     }
     
-    public static <I> Func1<AsStreamPlus<I>, String> concat(Class<I> clz) {
+    public static <I> Function<AsStreamPlus<I>, String> concat(Class<I> clz) {
         return concat();
     }
     
-    public static <I> Func1<AsStreamPlus<I>, String> concat() {
+    public static <I> Function<AsStreamPlus<I>, String> concat() {
         return strings -> strings.streamPlus().map(StrFuncs::toStr).join();
     }
     
-    public static <I1, I2> Func2<I1, I2, String> concat2() {
+    public static <I1, I2> BiFunction<I1, I2, String> concat2() {
         return (i1, i2) -> toStr(i1) + toStr(i2);
     }
     public static <I1, I2, I3> Func3<I1, I2, I3, String> concat3() {
