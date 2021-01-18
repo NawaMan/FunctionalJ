@@ -24,7 +24,6 @@
 package functionalj.list.intlist;
 
 import static functionalj.list.intlist.IntFuncList.deriveFrom;
-import static functionalj.list.intlist.IntFuncList.from;
 
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
@@ -39,7 +38,7 @@ public interface IntFuncListWithPeek extends AsIntFuncList {
     public default IntFuncList peekBy(
             IntPredicate selector,
             IntConsumer  theConsumer) {
-        return from((IntFuncList)(() -> intStreamPlus().peekBy(selector, theConsumer)));
+        return IntFuncList.from(() -> intStreamPlus().peekBy(selector, theConsumer));
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj

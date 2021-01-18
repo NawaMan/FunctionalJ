@@ -39,7 +39,7 @@ public interface IterablePlus<DATA> {
     public IteratorPlus<DATA> iterator();
     
     public default FuncList<DATA> FuncList() {
-        return (FuncList<DATA>)(() -> iterator().stream());
+        return FuncList.from(() -> iterator().stream());
     }
     
 }

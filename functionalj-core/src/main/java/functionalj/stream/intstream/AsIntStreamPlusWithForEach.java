@@ -24,9 +24,11 @@
 package functionalj.stream.intstream;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntConsumer;
 
 import functionalj.function.IntBiConsumer;
 import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
 
@@ -34,6 +36,14 @@ import lombok.val;
 public interface AsIntStreamPlusWithForEach {
     
     public IntStreamPlus intStreamPlus();
+    
+    
+    @Eager
+    @Terminal
+    @Sequential
+    public default void forEachOrdered(IntConsumer action) {
+        intStreamPlus().forEachOrdered(action);
+    }
     
     /** For each with the index. */
     @Eager

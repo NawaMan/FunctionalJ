@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
 
 import java.util.Comparator;
@@ -53,7 +54,8 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
      **/
     @Sequential
     public default FuncList<FuncList<DATA>> segment(int count) {
-        return deriveFrom(this, stream -> stream.segment(count));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.segment(count));
     }
     
     /**
@@ -63,19 +65,22 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
      *   the value will be ignored.
      */
     public default FuncList<FuncList<DATA>> segment(ToIntFunction<DATA> segmentSize) {
-        return deriveFrom(this, stream -> stream.segment(segmentSize));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.segment(segmentSize));
     }
     
     /** Segment the stream into sub stream whenever the start condition is true. */
     @Sequential
     public default FuncList<FuncList<DATA>> segmentWhen(Predicate<DATA> startCondition) {
-        return deriveFrom(this, stream -> stream.segmentWhen(startCondition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.segmentWhen(startCondition));
     }
     
     /** Segment the stream into sub stream starting the element after the precondition is true. */
     @Sequential
     public default FuncList<FuncList<DATA>> segmentAfter(Predicate<? super DATA> endCondition) {
-        return deriveFrom(this, stream -> stream.segmentAfter(endCondition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.segmentAfter(endCondition));
     }
     
     /**
@@ -94,7 +99,8 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
     public default FuncList<FuncList<DATA>> segmentBetween(
             Predicate<DATA> startCondition, 
             Predicate<DATA> endCondition) {
-        return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.segmentBetween(startCondition, endCondition));
     }
     
     /**
@@ -112,7 +118,8 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
             Predicate<DATA> startCondition,
             Predicate<DATA> endCondition,
             IncompletedSegment incompletedSegment) {
-        return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition, incompletedSegment));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.segmentBetween(startCondition, endCondition, incompletedSegment));
     }
     
     /**
@@ -129,7 +136,8 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
             Predicate<DATA> startCondition, 
             Predicate<DATA> endCondition, 
             boolean         includeIncompletedSegment) {
-        return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition, includeIncompletedSegment));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.segmentBetween(startCondition, endCondition, includeIncompletedSegment));
     }
     
     //-- segmentByPercentiles --

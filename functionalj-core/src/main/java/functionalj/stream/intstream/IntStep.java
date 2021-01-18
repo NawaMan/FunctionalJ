@@ -23,14 +23,12 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.function.Func1;
 import functionalj.list.intlist.IntFuncList;
-import lombok.val;
 
 
 public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntFuncList {
@@ -53,6 +51,10 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         public final int from;
         From(int from) {
             this.from = from;
+        }
+        
+        public IntStep step(int size) {
+            return new IntStep(size, from);
         }
     }
     
@@ -115,8 +117,7 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     
     @Override
     public IntStreamPlus intStreamPlus() {
-        val num = new AtomicInteger(start);
-        return IntStreamPlus.generate(()->num.getAndUpdate(i -> i + size));
+        return IntStreamPlus.wholeNumbers().map(i -> i *size + start);
     }
     
     @Override
@@ -136,6 +137,19 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     
     public Func1<Integer, Integer> function() {
         return i -> applyAsInt(i);
+    }
+    
+    @Override
+    public IntFuncList lazy() {
+        return IntFuncList.from(() -> intStreamPlus());
+    }
+    
+    /** Please don't call. This will blow up. */
+    @Override
+    public IntFuncList eager() {
+        throw new UnsupportedOperationException(
+                "Infinite double step cannot be made an eager list: " 
+                    + intStreamPlus().limit(5).join(", ") + "...");
     }
     
 }

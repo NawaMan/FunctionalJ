@@ -1,3 +1,26 @@
+// ============================================================================
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream.intstream;
 
 import static functionalj.function.Func.f;
@@ -5,10 +28,11 @@ import static functionalj.function.Func.f;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.Func1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
@@ -41,10 +65,37 @@ public class IntStreamPlusHelper {
         return found;
     }
     
+    //-- Terminal --
+    
+    static <TARGET> TARGET terminate(
+            AsIntStreamPlus             asStreamPlus,
+            Function<IntStream, TARGET> action) {
+        val streamPlus = asStreamPlus.intStreamPlus();
+        try {
+            val stream = streamPlus.intStream();
+            val result = action.apply(stream);
+            return result;
+        } finally {
+            streamPlus.close();
+        }
+    }
+    
+    static void terminate(
+            AsIntStreamPlus     asStreamPlus,
+            Consumer<IntStream> action) {
+        val streamPlus = asStreamPlus.intStreamPlus();
+        try {
+            val stream = streamPlus.intStream();
+            action.accept(stream);
+        } finally {
+            streamPlus.close();
+        }
+    }
+    
     /** Run the given action sequentially, make sure to set the parallelity of the result back. */
-    public static <T> IntStreamPlus sequential(
-            AsIntStreamPlus      asStreamPlus,
-            Func1<IntStreamPlus, IntStreamPlus> action) {
+    static <T> IntStreamPlus sequential(
+            AsIntStreamPlus         asStreamPlus,
+            Function<IntStreamPlus, IntStreamPlus> action) {
         val streamPlus = asStreamPlus.intStreamPlus();
         val isParallel = streamPlus.isParallel();
         
@@ -60,16 +111,16 @@ public class IntStreamPlusHelper {
     }
     
     /** Run the given action sequentially, make sure to set the parallelity of the result back. */
-    public static <T> IntStreamPlus sequentialToInt(
-            AsIntStreamPlus                     asStreamPlus,
-            Func1<IntStreamPlus, IntStreamPlus> action) {
+    static <T> IntStreamPlus sequentialToInt(
+            AsIntStreamPlus                        asStreamPlus,
+            Function<IntStreamPlus, IntStreamPlus> action) {
         return sequential(asStreamPlus, action);
     }
     
     /** Run the given action sequentially, make sure to set the parallelity of the result back. */
-    public static <T> StreamPlus<T> sequentialToObj(
-            AsIntStreamPlus                     asStreamPlus,
-            Func1<IntStreamPlus, StreamPlus<T>> action) {
+    static <T> StreamPlus<T> sequentialToObj(
+            AsIntStreamPlus                        asStreamPlus,
+            Function<IntStreamPlus, StreamPlus<T>> action) {
         val streamPlus = asStreamPlus.intStreamPlus();
         val isParallel = streamPlus.isParallel();
         
@@ -80,7 +131,7 @@ public class IntStreamPlusHelper {
         
         if (isParallel)
             return newIntStreamPlus.parallel();
-        
+       
         return newIntStreamPlus.sequential();
     }
     

@@ -83,7 +83,6 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.CollectorPlus;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.ZipWithOption;
 import lombok.val;
 
 

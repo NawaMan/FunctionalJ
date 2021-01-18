@@ -42,7 +42,6 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func2;
 import functionalj.list.FuncList;
-import functionalj.list.FuncListDerived;
 import functionalj.map.MapAction.FilterBoth;
 import functionalj.map.MapAction.FilterKey;
 import functionalj.map.MapAction.Mapping;
@@ -479,7 +478,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     public FuncList<KEY> keys() {
         if (action instanceof With) {
             val with   = (With<KEY,VALUE>)action;
-            val source = FuncList.from(()->{
+            return FuncList.from(()->{
                 StreamPlus<KEY> stream = StreamPlus.concat(
                     map.keySet().stream()
                        .filter(k -> !Objects.equals(k, with.key)),
@@ -492,33 +491,28 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
                 }
                 return stream;
             });
-            return FuncListDerived.from(source);
         }
         if (action instanceof FilterKey) {
             val filter = (FilterKey<KEY, VALUE>)action;
-            val source = (FuncList<KEY>)(()->StreamPlus.from(map.keySet().stream().filter(filter.keyCheck)));
-            return FuncListDerived.from(source);
+            return FuncList.<KEY>from(()->StreamPlus.from(map.keySet().stream().filter(filter.keyCheck)));
         }
         if (action instanceof FilterBoth) {
             val filter = (FilterBoth<KEY, VALUE>)action;
             val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
-            val source = (FuncList<KEY>)(()->{
-                
+            return FuncList.<KEY>from(()->{
                 return StreamPlus.from(
                         originalEntryStream()
                                 .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
                                 .map     (Map.Entry::getKey));
             });
-            return FuncListDerived.from(source);
         }
         
-        FuncList<KEY> FuncList = ()->StreamPlus.from( map.keySet().stream());
-        return FuncList.toFuncList();
+        return FuncList.<KEY>from(()->StreamPlus.from( map.keySet().stream()));
     }
     
     @Override
     public FuncList<VALUE> values() {
-        return FuncListDerived.from(()->entryStream().map(Map.Entry::getValue));
+        return FuncList.from(()->entryStream().map(Map.Entry::getValue));
     }
     
     @Override
@@ -536,7 +530,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     }
     @Override
     public FuncList<Map.Entry<KEY, VALUE>> entries() {
-        return FuncList.from((FuncList<Map.Entry<KEY, VALUE>>)(()->entryStream()));
+        return FuncList.from(()->entryStream());
     }
     
     @Override

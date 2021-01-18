@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 import functionalj.function.Func;
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
-import functionalj.list.FuncListDerived;
 import lombok.val;
 
 
@@ -112,17 +111,16 @@ public final class Log {
         
         @SuppressWarnings("unchecked")
         public <DATA> FuncList<DATA> logEach(DATA ... values) {
-            val FuncList = FuncList.of((DATA[])values);
-            val list       = FuncListDerived.from(FuncList);
-            list.forEach(value -> this.log(value));
-            return list;
+            val funcList = FuncList.of((DATA[])values);
+            funcList.forEach(value -> this.log(value));
+            return funcList;
         }
         
         public <DATA> FuncList<DATA> logEach(String prefix, Collection<DATA> values) {
             return logEach(prefix, values, null);
         }
         public <DATA> FuncList<DATA> logEach(String prefix, Collection<DATA> values, String suffix) {
-            val list = FuncListDerived.from(values);
+            val list = FuncList.from(values);
             list.forEach(value -> this.log(prefix, value, suffix));
             return list;
         }

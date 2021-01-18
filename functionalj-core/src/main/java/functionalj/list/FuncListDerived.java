@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,30 +28,23 @@ import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusUtils;
+import lombok.val;
 
 public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
     
-    @SuppressWarnings("rawtypes")
-    private static final Function noAction = Function.identity();
+    //-- Data --
     
     private final Object                                 source;
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
     
-    @SuppressWarnings("unchecked")
-    public static <DATA> FuncListDerived<DATA, DATA> from(FuncList<DATA> FuncList) {
-        return new FuncListDerived<>(FuncList, noAction);
-    }
+    //-- Constructors --
     
-    @SuppressWarnings("unchecked")
-    public static <DATA> FuncListDerived<DATA, DATA> from(Collection<DATA> FuncList) {
-        return new FuncListDerived<>(FuncList, noAction);
-    }
-    
-    private FuncListDerived(Iterable<SOURCE> iterable, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    FuncListDerived(Iterable<SOURCE> iterable, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = iterable;
     }
@@ -59,6 +52,17 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
         this.action = Objects.requireNonNull(action);
         this.source = FuncList;
     }
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    FuncListDerived(Supplier<Stream<SOURCE>> streams) {
+        this.action = stream -> (Stream)stream;
+        this.source = streams;
+    }
+    FuncListDerived(Supplier<Stream<SOURCE>> streams, Function<Stream<SOURCE>, Stream<DATA>> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = streams;
+    }
+    
+    //-- Source Stream --
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Stream<SOURCE> getSourceStream() {
@@ -68,6 +72,8 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
             return (Stream<SOURCE>)((FuncList)source).stream();
         if (source instanceof Collection)
             return ((Collection)source).stream();
+        if (source instanceof Supplier)
+            return ((Supplier<Stream<SOURCE>>)source).get();
         throw new IllegalStateException();
     }
     
@@ -86,16 +92,19 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
         return false;
     }
     
+    @Override
     public FuncList<DATA> lazy() {
         return this;
     }
+    
+    @Override
     public FuncList<DATA> eager() {
         return new ImmutableList<DATA>(this, false);
     }
     
     @Override
     public ImmutableList<DATA> toImmutableList() {
-        return new ImmutableList<DATA>(this);
+        return ImmutableList.from(this);
     }
     
     @Override
@@ -109,14 +118,15 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
         if ((o instanceof Collection))
             return false;
         
-        return zipWith(FuncList.from((Collection)o), AllowUnpaired, Objects::equals)
+        val anotherList = FuncList.from((Collection)o);
+        return zipWith(anotherList, AllowUnpaired, Objects::equals)
                 .findFirst(Boolean.TRUE::equals)
                 .isPresent();
     }
     
     @Override
     public String toString() {
-        return StreamPlusUtils.toString(this.stream());
+        return asFuncList().toListString();
     }
     
 }

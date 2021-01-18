@@ -51,8 +51,8 @@ public interface DoubleStreamPlusWithSplit
     public default Tuple2<DoubleStreamPlus, DoubleStreamPlus> split(
             DoublePredicate predicate) {
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
-        DoubleFuncList FuncList = ()->doubleStreamPlus();
-        return FuncList
+        return DoubleFuncList
+                .from(()->doubleStreamPlus())
                 .split(predicate)
                 .map(toStreamPlus, toStreamPlus);
     }
@@ -66,8 +66,8 @@ public interface DoubleStreamPlusWithSplit
             KEY key1, DoublePredicate predicate,
             KEY key2) {
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
-        DoubleFuncList FuncList = ()->doubleStreamPlus();
-        return FuncList
+        return DoubleFuncList
+                .from(()->doubleStreamPlus())
                 .split(key1, predicate, key2)
                 .mapValue(toStreamPlus);
     }
@@ -82,8 +82,8 @@ public interface DoubleStreamPlusWithSplit
             KEY key2, DoublePredicate predicate2,
             KEY key3) {
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
-        DoubleFuncList FuncList = ()->doubleStreamPlus();
-        return FuncList
+        return DoubleFuncList
+                .from(()->doubleStreamPlus())
                 .split(key1, predicate1, key2, predicate2, key3)
                 .mapValue(toStreamPlus);
     }
@@ -99,8 +99,8 @@ public interface DoubleStreamPlusWithSplit
             KEY key3, DoublePredicate predicate3,
             KEY key4) {
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
-        DoubleFuncList FuncList = ()->doubleStreamPlus();
-        return FuncList
+        return DoubleFuncList
+                .from(()->doubleStreamPlus())
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4)
                 .mapValue(toStreamPlus);
     }
@@ -117,8 +117,8 @@ public interface DoubleStreamPlusWithSplit
             KEY key4, DoublePredicate predicate4,
             KEY key5) {
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
-        DoubleFuncList FuncList = ()->doubleStreamPlus();
-        return FuncList
+        return DoubleFuncList
+                .from(()->doubleStreamPlus())
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5)
                 .mapValue(toStreamPlus);
     }
@@ -136,8 +136,8 @@ public interface DoubleStreamPlusWithSplit
             KEY key5, DoublePredicate predicate5,
             KEY key6) {
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
-        DoubleFuncList FuncList = ()->doubleStreamPlus();
-        return FuncList
+        return DoubleFuncList
+                .from(()->doubleStreamPlus())
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6)
                 .mapValue(toStreamPlus);
     }

@@ -162,7 +162,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     }
     
     public FuncList<DATA> FuncList() {
-        return (FuncList<DATA>)(()->{
+        return FuncList.from(()->{
             val iterable = (Iterable<DATA>)()->newIterator();
             return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
         });

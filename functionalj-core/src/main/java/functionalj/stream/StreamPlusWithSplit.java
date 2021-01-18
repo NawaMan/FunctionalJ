@@ -50,8 +50,7 @@ public interface StreamPlusWithSplit<DATA>
      */
     public default Tuple2<StreamPlus<DATA>, StreamPlus<DATA>> split(Predicate<DATA> predicate) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        FuncList<DATA> FuncList = ()->streamPlus();
-        return FuncList
+        return FuncList.from(()->streamPlus())
                 .split(predicate)
                 .map(toStreamPlus, toStreamPlus);
     }
@@ -65,8 +64,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key1, Predicate<? super DATA> predicate,
             KEY key2) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        FuncList<DATA> FuncList = ()->streamPlus();
-        return FuncList
+        return FuncList.from(()->streamPlus())
                 .split(key1, predicate, key2)
                 .mapValue(toStreamPlus);
     }
@@ -81,8 +79,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key2, Predicate<? super DATA> predicate2,
             KEY key3) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        FuncList<DATA> FuncList = ()->streamPlus();
-        return FuncList
+        return FuncList.from(()->streamPlus())
                 .split(key1, predicate1, key2, predicate2, key3)
                 .mapValue(toStreamPlus);
     }
@@ -98,8 +95,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key3, Predicate<? super DATA> predicate3,
             KEY key4) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        FuncList<DATA> FuncList = ()->streamPlus();
-        return FuncList
+        return FuncList.from(()->streamPlus())
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4)
                 .mapValue(toStreamPlus);
     }
@@ -116,8 +112,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key4, Predicate<? super DATA> predicate4,
             KEY key5) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        FuncList<DATA> FuncList = ()->streamPlus();
-        return FuncList
+        return FuncList.from(()->streamPlus())
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5)
                 .mapValue(toStreamPlus);
     }
@@ -135,8 +130,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key5, Predicate<? super DATA> predicate5,
             KEY key6) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        FuncList<DATA> FuncList = ()->streamPlus();
-        return FuncList
+        return FuncList.from(()->streamPlus())
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6)
                 .mapValue(toStreamPlus);
     }

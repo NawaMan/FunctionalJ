@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 //
@@ -32,9 +32,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.function.BiObjectToIntFunction;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.markers.Sequential;
@@ -48,38 +52,48 @@ import lombok.val;
 
 public final class ImmutableList<DATA> implements FuncList<DATA> {
     
+    private static final BiObjectToIntFunction<Object, Object> zeroForEquals = (Object i1, Object i2) -> Objects.equals(i1, i2) ? 0 : 1;
+    private static final Predicate<Integer>                    toZero        = (Integer i)            -> i  == 0;
+    
     private final static ImmutableList<?> EMPTY = new ImmutableList<>(Collections.emptyList());
     
+    /** @return an empty list */
     @SuppressWarnings("unchecked")
     public static final <T> ImmutableList<T> empty() {
         return (ImmutableList<T>)EMPTY;
     }
     
+    /** @return the list containing the given elements */
     @SafeVarargs
     public static <T> ImmutableList<T> of(T ... data) {
         return new ImmutableList<>(Arrays.asList(data));
     }
     
+    /** @return the list containing the given elements */
     @SafeVarargs
     public static <T> ImmutableList<T> listOf(T ... data) {
         return new ImmutableList<T>(Arrays.asList(data));
     }
     
-    public static <T> ImmutableList<T> from(T[] datas) {
-        return new ImmutableList<>(Arrays.asList(datas));
-    }
-    
-    public static <T> ImmutableList<T> from(boolean isLazy, FuncList<T> funcList) {
+    /** @return the list containing the given elements */
+    public static <T> ImmutableList<T> from(boolean isLazy, AsFuncList<T> funcList) {
         if (funcList == null)
             return ImmutableList.empty();
         
-        return new ImmutableList<T>(funcList, isLazy);
+        return new ImmutableList<T>(funcList.asFuncList(), isLazy);
     }
     
+    /** @return the list containing the element from the given stream */
     public static <T> ImmutableList<T> from(Stream<T> stream) {
         return new ImmutableList<T>(stream.collect(Collectors.toList()));
     }
     
+    /** @return the list containing the element from the given stream */
+    static <T> ImmutableList<T> from(boolean isLazy, Stream<T> stream) {
+        return new ImmutableList<T>(stream.collect(Collectors.toList()), isLazy);
+    }
+    
+    /** @return the list containing the element from the given list. */
     public static <T> ImmutableList<T> from(ReadOnlyList<T> readOnlyList) {
         if (readOnlyList instanceof ImmutableList)
             return (ImmutableList<T>)readOnlyList;
@@ -89,6 +103,7 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return new ImmutableList<T>(readOnlyList.toJavaList());
     }
     
+    /** @return the list containing the element from the given collections. */
     public static <T> ImmutableList<T> from(Collection<T> collection) {
         if (collection instanceof ImmutableList)
             return (ImmutableList<T>)collection;
@@ -107,8 +122,15 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return new ImmutableList<T>(list, true);
     }
     
+    //-- Data --
+    
     private final List<DATA> data;
     private final boolean    isLazy;
+    
+    private volatile String  toStringCache = null;
+    private volatile Integer hashcodeCache = null;
+    
+    //-- Constructors --
     
     ImmutableList(Collection<DATA> data) {
         this(data, true);
@@ -142,12 +164,15 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return !isLazy;
     }
     
+    @Override
     public FuncList<DATA> lazy() {
         if (isLazy)
             return this;
         
         return new ImmutableList<DATA>(data, true);
     }
+    
+    @Override
     public FuncList<DATA> eager() {
         if (!isLazy)
             return this;
@@ -159,6 +184,55 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     public ImmutableList<DATA> toImmutableList() {
         return this;
     }
+    
+    @Override
+    public String toString() {
+        if (toStringCache != null)
+            return toStringCache;
+        
+        synchronized (this) {
+            if (toStringCache != null)
+                return toStringCache;
+            
+            toStringCache = data.toString();
+            return toStringCache;
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        if (hashcodeCache != null)
+            return hashcodeCache;
+        
+        synchronized (this) {
+            if (hashcodeCache != null)
+                return hashcodeCache;
+            
+            hashcodeCache
+                    = mapToInt(value -> (value != null) ? Objects.hash(value) : 0)
+                    .reduce(43, (hash, each) -> hash*43 + each);
+            return hashcodeCache;
+        }
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof FuncList))
+            return false;
+        
+        if (hashCode() != o.hashCode())
+            return false;
+        
+        val anotherList = (FuncList)o;
+        if (size() != anotherList.size())
+            return false;
+        
+        return FuncList.zipOf(this, anotherList, (BiFunction)zeroForEquals)
+                .allMatch(toZero);
+    }
+    
+    // -- Short cut --
     
     @Override
     public int size() {
@@ -204,23 +278,6 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     public ListIterator<DATA> listIterator(int index) {
         return data.listIterator();
     }
-    
-    @Override
-    public String toString() {
-        return this.data.toString();
-    }
-    
-    @Override
-    public int hashCode() {
-        return this.data.hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        return this.data.equals(o);
-    }
-    
-    // -- Short cut --
     
     @Sequential
     @Terminal

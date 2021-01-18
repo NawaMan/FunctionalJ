@@ -16,16 +16,23 @@ public class DoubleStreamPlusTest {
     public void segmentByPercentiles() {
         val logs = new ArrayList<String>();
         
-        Step.from (0.0).step(1)
-        .takeWhile(theDouble.thatLessThanOrEqualsTo(10.00))
-        .toFuncList()
-        .shuffle()
-        .asDoubleFuncList()
-        .segmentByPercentiles(25, 75)
-        .forEach  (each -> {
-            logs.add(String.format("Found: %d\n", each.size()));
-            each.forEach(d -> logs.add(String.format("    %f\n", d)));
-        });
+        DoubleFuncList stepList 
+            = Step.from (0.0).step(1)
+            .takeWhile(theDouble.thatLessThanOrEqualsTo(10.00))
+            .toFuncList();
+        System.out.println(stepList);
+        
+        DoubleFuncList shuffleList 
+            = stepList
+            .shuffle();
+        System.out.println(shuffleList);
+        
+        shuffleList
+            .segmentByPercentiles(25, 75)
+            .forEach  (each -> {
+                logs.add(String.format("Found: %d\n", each.size()));
+                each.forEach(d -> logs.add(String.format("    %f\n", d)));
+            });
         
         assertEquals(
                   "[Found: 3\n"

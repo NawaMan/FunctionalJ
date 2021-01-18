@@ -23,10 +23,15 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.stream.StreamPlus.streamOf;
+
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import functionalj.result.Result;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
@@ -35,6 +40,68 @@ import lombok.val;
 public interface AsStreamPlusWithMatch<DATA> {
     
     public StreamPlus<DATA> streamPlus();
+    
+    
+    //-- Match --
+    
+    @Terminal
+    public default boolean anyMatch(Predicate<? super DATA> predicate) {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .anyMatch(predicate);
+    }
+    
+    @Terminal
+    public default boolean allMatch(Predicate<? super DATA> predicate) {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .allMatch(predicate);
+    }
+    
+    @Terminal
+    public default boolean noneMatch(Predicate<? super DATA> predicate) {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .noneMatch(predicate);
+    }
+    
+    @Terminal
+    public default Optional<DATA> findFirst() {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .findFirst();
+    }
+    
+    @Terminal
+    public default Optional<DATA> findAny() {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .findAny();
+    }
+    
+    @Sequential
+    @Terminal
+    public default Optional<DATA> findLast() {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .findLast();
+    }
+    
+    @Sequential
+    @Terminal
+    public default Result<DATA> firstResult() {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .firstResult();
+    }
+    
+    @Sequential
+    @Terminal
+    public default Result<DATA> lastResult() {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .lastResult();
+    }
     
     /** Return the first element that matches the predicate. */
     @Terminal
@@ -78,6 +145,31 @@ public interface AsStreamPlusWithMatch<DATA> {
         return streamPlus
                 .filter(mapper, theCondition)
                 .findAny();
+    }
+    
+    //== Contains ==
+    
+    /** Check if the list contains all the given values */
+    @SuppressWarnings("unchecked")
+    public default boolean containsAllOf(DATA ... values) {
+        val set = new HashSet<DATA>(values.length);
+        for (val value : values) {
+            set.add(value);
+        }
+        val streamPlus = streamPlus();
+        return streamPlus
+                .peek(set::remove)
+                .anyMatch(__ -> set.isEmpty());
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default boolean containsAnyOf(DATA ... values) {
+        return anyMatch(each -> streamOf(values).anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default boolean containsNoneOf(DATA ... values) {
+        return noneMatch(each -> streamOf(values).anyMatch(o -> Objects.equals(each, o)));
     }
     
 }

@@ -23,21 +23,28 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.list.AsFuncListHelper.funcListOf;
+import static functionalj.list.FuncList.deriveFrom;
+
 import java.util.Comparator;
 import java.util.function.Function;
+
+import lombok.val;
 
 public interface FuncListWithSort<DATA> extends AsFuncList<DATA> {
     
     /** Sort the values by the mapped value. */
     public default <T extends Comparable<? super T>> FuncList<DATA> sortedBy(Function<? super DATA, T> mapper) {
-        return FuncList.deriveFrom(this, stream -> stream.sortedBy(mapper));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.sortedBy(mapper));
     }
     
     /** Sort the values by the mapped value using the comparator. */
     public default <T> FuncList<DATA> sortedBy(
             Function<? super DATA, T> mapper, 
             Comparator<T>             comparator) {
-        return FuncList.deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.sortedBy(mapper, comparator));
     }
     
 }

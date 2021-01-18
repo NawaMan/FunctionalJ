@@ -27,6 +27,7 @@ import static functionalj.tuple.DoubleDoubleTuple.doubleTuple;
 import static functionalj.tuple.Tuple.tuple2;
 
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -55,11 +56,49 @@ public interface AsDoubleStreamPlusWithStatistic {
                 .count();
     }
     
+    public default long count() {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .count();
+    }
+    
+    public default double sum() {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .sum();
+    }
+    
     /** @return the product of all the number */
     @Eager
     @Terminal
     public default OptionalDouble product() {
         return doubleStreamPlus().reduce((a, b) -> a*b);
+    }
+    
+    public default OptionalDouble average() {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .average();
+    }
+    
+    public default DoubleSummaryStatistics summaryStatistics() {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .summaryStatistics();
+    }
+    
+    /** Using the comparator, find the minimal value */
+    public default OptionalDouble min() {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .min();
+    }
+    
+    /** Using the comparator, find the maximum value */
+    public default OptionalDouble max() {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .max();
     }
     
     /** Return the value whose mapped value is the smallest. */

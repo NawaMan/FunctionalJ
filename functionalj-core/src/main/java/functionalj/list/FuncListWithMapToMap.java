@@ -23,25 +23,29 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
 
 import java.util.function.Function;
 
 import functionalj.map.FuncMap;
+import lombok.val;
 
 public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
     
     /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, Function<? super DATA, VALUE> mapper) {
-        return deriveFrom(this, stream -> stream.mapToMap(key, mapper));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(key, mapper));
     }
     
     /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2));
     }
@@ -51,7 +55,8 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2,
             KEY key3, Function<? super DATA, VALUE> mapper3) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2,
                 key3, mapper3));
@@ -63,7 +68,8 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
             KEY key2, Function<? super DATA, VALUE> mapper2,
             KEY key3, Function<? super DATA, VALUE> mapper3,
             KEY key4, Function<? super DATA, VALUE> mapper4) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2,
                 key3, mapper3,
@@ -77,7 +83,8 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
             KEY key3, Function<? super DATA, VALUE> mapper3,
             KEY key4, Function<? super DATA, VALUE> mapper4,
             KEY key5, Function<? super DATA, VALUE> mapper5) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2,
                 key3, mapper3,
@@ -93,7 +100,8 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
             KEY key4, Function<? super DATA, VALUE> mapper4,
             KEY key5, Function<? super DATA, VALUE> mapper5,
             KEY key6, Function<? super DATA, VALUE> mapper6) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2,
                 key3, mapper3,
@@ -111,7 +119,8 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
             KEY key5, Function<? super DATA, VALUE> mapper5,
             KEY key6, Function<? super DATA, VALUE> mapper6,
             KEY key7, Function<? super DATA, VALUE> mapper7) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2,
                 key3, mapper3,
@@ -131,7 +140,8 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
             KEY key6, Function<? super DATA, VALUE> mapper6,
             KEY key7, Function<? super DATA, VALUE> mapper7,
             KEY key8, Function<? super DATA, VALUE> mapper8) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2,
                 key3, mapper3,
@@ -153,7 +163,8 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
             KEY key7, Function<? super DATA, VALUE> mapper7,
             KEY key8, Function<? super DATA, VALUE> mapper8,
             KEY key9, Function<? super DATA, VALUE> mapper9) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2,
                 key3, mapper3,
@@ -177,7 +188,8 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
             KEY key8, Function<? super DATA, VALUE> mapper8,
             KEY key9, Function<? super DATA, VALUE> mapper9,
             KEY key10, Function<? super DATA, VALUE> mapper10) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2,
                 key3, mapper3,
@@ -203,7 +215,8 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
             KEY key9, Function<? super DATA, VALUE> mapper9,
             KEY key10, Function<? super DATA, VALUE> mapper10,
             KEY key11, Function<? super DATA, VALUE> mapper11) {
-        return deriveFrom(this, stream -> stream.mapToMap(
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
                 key1, mapper1,
                 key2, mapper2,
                 key3, mapper3,

@@ -23,56 +23,35 @@
 // ============================================================================
 package functionalj.stream;
 
-import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 
-import functionalj.stream.markers.Eager;
-import functionalj.stream.markers.Terminal;
 import lombok.val;
 
-class AsStreamPlusHelper {
+public interface AsStreamPlusWithReduce<DATA> {
     
-    /** @return  the stream plus instance of this object. */
-    public static <D> StreamPlus<D> streamFrom(AsStreamPlus<D> streamPlus) {
-        return streamPlus.streamPlus();
-    }
-    
-}
-
-/**
- * Classes implementing this interface can provider a StreamPlus instance of itself.
- *
- * @param <DATA> the data type of the stream plus.
- *
- * @author NawaMan -- nawa@nawaman.net
- */
-@FunctionalInterface
-public interface AsStreamPlus<DATA>
-                    extends
-                        AsStreamPlusWithConversion<DATA>,
-                        AsStreamPlusWithCollect<DATA>,
-                        AsStreamPlusWithForEach<DATA>,
-                        AsStreamPlusWithGroupingBy<DATA>,
-                        AsStreamPlusWithMatch<DATA>,
-                        AsStreamPlusWithReduce<DATA>,
-                        AsStreamPlusWithStatistic<DATA> {
-    
-    
-    /** @return  the stream plus instance of this object. */
     public StreamPlus<DATA> streamPlus();
     
-    /** @return  return the stream underneath the stream plus. */
-    public default Stream<DATA> stream() {
-        return streamPlus();
-    }
     
-    /** Iterate all element through the action */
-    @Eager
-    @Terminal
-    public default void forEach(Consumer<? super DATA> action) {
+    public default DATA reduce(DATA identity, BinaryOperator<DATA> reducer) {
         val streamPlus = streamPlus();
-        streamPlus
-        .forEach(action);
+        return streamPlus
+                .reduce(identity, reducer);
     }
     
+    public default Optional<DATA> reduce(BinaryOperator<DATA> reducer) {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .reduce(reducer);
+    }
+    
+    public default <U> U reduce(
+            U                              identity,
+            BiFunction<U, ? super DATA, U> accumulator,
+            BinaryOperator<U>              combiner) {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .reduce(identity, accumulator, combiner);
+    }
 }

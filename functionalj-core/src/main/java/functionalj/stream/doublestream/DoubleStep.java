@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,7 +28,6 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 
 import functionalj.function.Func1;
-import functionalj.lens.lenses.DoubleAccess;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.intstream.IntStreamPlus;
 
@@ -41,6 +40,10 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
     public static class Size {
         public final double size;
         Size(double size) {
+            if (size <= 0) {
+                throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
+            }
+            
             this.size = size;
         }
     }
@@ -109,12 +112,12 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
     }
     
     private DoubleStep(double size, double start) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
+        }
+        
         this.size = size;
         this.start = start;
-    }
-    
-    public DoubleStreamPlus stream() {
-        return doubleStreamPlus();
     }
     
     public DoubleStreamPlus doubleStream() {
@@ -145,19 +148,17 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
         return i -> applyAsDouble(i);
     }
     
-    public DoubleAccess<Double> access() {
-        return new DoubleAccess<Double>() {
-            
-            @Override
-            public double applyAsDouble(Double host) {
-                return  applyAsDouble(host);
-            }
-            
-            @Override
-            public Double applyUnsafe(Double host) throws Exception {
-                return  applyAsDouble(host);
-            }
-        };
+    @Override
+    public DoubleFuncList lazy() {
+        return DoubleFuncList.from(() -> doubleStreamPlus());
+    }
+    
+    /** Please don't call. This will blow up. */
+    @Override
+    public DoubleFuncList eager() {
+        throw new UnsupportedOperationException(
+                "Infinite double step cannot be made an eager list: " 
+                    + doubleStreamPlus().limit(5).join(", ") + "...");
     }
     
 }

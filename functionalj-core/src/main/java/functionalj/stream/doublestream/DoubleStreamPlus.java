@@ -24,6 +24,7 @@
 package functionalj.stream.doublestream;
 
 import static functionalj.function.Func.itself;
+import static functionalj.stream.doublestream.DoubleStreamPlusHelper.terminate;
 
 import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
@@ -51,9 +52,10 @@ import java.util.stream.StreamSupport;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
-import functionalj.function.Func1;
-import functionalj.function.FuncUnit1;
+import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
+import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
@@ -85,6 +87,13 @@ public interface DoubleStreamPlus
             DoubleStreamPlusWithPipe,
             DoubleStreamPlusWithSort,
             DoubleStreamPlusWithSplit {
+    
+    
+    /** Throw a no more element exception. This is used for generator. */
+    public static double noMoreElement() throws NoMoreResultException {
+        SupplierBackedIterator.noMoreElement();
+        return Double.NaN;
+    }
     
     // //== Constructor ==
     
@@ -121,6 +130,8 @@ public interface DoubleStreamPlus
         return ()->doubleStream;
     }
     
+    // TODO : Nawa Latest - Cache
+    
     public static DoubleStreamPlus zeroes() {
         return DoubleStreamPlus.generate(()->0.0);
     }
@@ -136,13 +147,13 @@ public interface DoubleStreamPlus
     public static DoubleStreamPlus ones(int count) {
         return DoubleStreamPlus.generate(()->1.0).limit(count);
     }
-
-    /** Create a StreamPlus that is the repeat of the given array of data. */
+    
+    /** Create a stream that is the repeat of the given array of data. */
     public static DoubleStreamPlus repeat(double ... data) {
         return cycle(data);
     }
 
-    /** Create a StreamPlus that is the repeat of the given array of data. */
+    /** Create a stream that is the repeat of the given array of data. */
     public static DoubleStreamPlus cycle(double ... data) {
         val doubles = Arrays.copyOf(data, data.length);
         val size    = doubles.length;
@@ -152,24 +163,65 @@ public interface DoubleStreamPlus
                 .mapToDouble(i -> data[i % size]));
     }
     
-    public static DoubleStreamPlus naturalNumbers() {
+    /** Create a stream that for a loop with the number of time given - the value is the index of the loop. */
+    public static DoubleStreamPlus loop() {
         return DoubleStreamPlus
-                .iterate(1.0, d -> d + 1.0);
+                .infinite();
+    }
+    
+    /** Create a stream that for a loop with the number of time given - the value is the index of the loop. */
+    public static DoubleStreamPlus loop(int time) {
+        return DoubleStreamPlus
+                .infinite()
+                .limit(time);
+    }
+    
+    public static DoubleStreamPlus loopBy(int step) {
+        return DoubleStreamPlus
+                .infinite()
+                .map(i -> i * step);
+    }
+    
+    public static DoubleStreamPlus loopBy(int step, int time) {
+        return DoubleStreamPlus
+                .loopBy(step)
+                .limit(time);
+    }
+    
+    /** Create a stream that for an infinite loop - the value is the index of the loop. */
+    public static DoubleStreamPlus infinite() {
+        return IntStreamPlus
+                .infinite()
+                .asDoubleStream();
+    }
+    
+    /** Create a stream that for an infinite loop - the value is the index of the loop. */
+    public static DoubleStreamPlus infiniteInt() {
+        return infinite();
+    }
+    
+    public static DoubleStreamPlus naturalNumbers() {
+        return IntStreamPlus
+                .naturalNumbers()
+                .asDoubleStream();
     }
     
     public static DoubleStreamPlus naturalNumbers(int count) {
-        return naturalNumbers()
-                .limit(count);
+        return IntStreamPlus
+                .naturalNumbers(count)
+                .asDoubleStream();
     }
     
     public static DoubleStreamPlus wholeNumbers() {
-        return DoubleStreamPlus
-                .iterate(0.0, d -> d + 1.0);
+        return IntStreamPlus
+                .wholeNumbers()
+                .asDoubleStream();
     }
     
     public static DoubleStreamPlus wholeNumbers(int count) {
-        return wholeNumbers()
-                .limit(count);
+        return IntStreamPlus
+                .wholeNumbers(count)
+                .asDoubleStream();
     }
     
     /** Create a StreamPlus that for a loop from the start value inclusively bu the given step. */
@@ -222,8 +274,10 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static DoubleStreamPlus iterate(double seed, DoubleUnaryOperator f) {
-        return DoubleStreamPlus.from(DoubleStream.iterate(seed, f));
+    public static DoubleStreamPlus iterate(
+            double                        seed, 
+            DoubleToDoubleAccessPrimitive compounder) {
+        return DoubleStreamPlus.from(DoubleStream.iterate(seed, compounder));
     }
     
     /**
@@ -240,8 +294,10 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static DoubleStreamPlus compound(double seed, DoubleUnaryOperator f) {
-        return iterate(seed, f);
+    public static DoubleStreamPlus compound(
+            double                        seed, 
+            DoubleToDoubleAccessPrimitive compounder) {
+        return iterate(seed, compounder);
     }
     
     /**
@@ -259,7 +315,10 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static DoubleStreamPlus iterate(double seed1, double seed2, DoubleBinaryOperator f) {
+    public static DoubleStreamPlus iterate(
+            double                    seed1, 
+            double                    seed2, 
+            DoubleBiFunctionPrimitive compounder) {
         val counter = new AtomicInteger(0);
         val value1  = new double[] { seed1 };
         val value2  = new double[] { seed2 };
@@ -272,7 +331,7 @@ public interface DoubleStreamPlus
             double i2 = value1[0];
             double i1 = value2[0];
             value2[0] = i2;
-            double i  = f.applyAsDouble(i1, i2);
+            double i  = compounder.applyAsDouble(i1, i2);
             value2[0] = i;
             return i;
         });
@@ -293,8 +352,11 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static DoubleStreamPlus compound(Double seed1, Double seed2, DoubleBinaryOperator f) {
-        return iterate(seed1, seed2, f);
+    public static DoubleStreamPlus compound(
+            double                    seed1, 
+            double                    seed2, 
+            DoubleBiFunctionPrimitive compounder) {
+        return iterate(seed1, seed2, compounder);
     }
     
     /**
@@ -350,7 +412,7 @@ public interface DoubleStreamPlus
             DoubleBiFunctionPrimitive merger) {
         return DoubleStreamPlus.from(stream1).zipWith(stream2, defaultValue, merger);
     }
-    public static DoubleStreamPlus zipOf(  
+    public static DoubleStreamPlus zipOf(
             DoubleStream stream1, double defaultValue1,
             DoubleStream stream2, double defaultValue2,
             DoubleBiFunctionPrimitive merger) {
@@ -359,73 +421,45 @@ public interface DoubleStreamPlus
     
     //== Core ==
     
+    /** Return the stream of data behind this stream. */
     public DoubleStream doubleStream();
     
     
+    /** Return this stream. */
     public default DoubleStreamPlus doubleStreamPlus() {
         return this;
     }
     
+    //-- Derive --
     
-    public default DoubleStreamPlus derive(Func1<DoubleStreamPlus, DoubleStream> action) {
-        return DoubleStreamPlus.from(action.apply(this));
+    public default DoubleStreamPlus derive(Function<DoubleStreamPlus, DoubleStream> action) {
+        return DoubleStreamPlus
+                .from(action.apply(this));
     }
     
-    public default IntStreamPlus deriveToInt(Func1<DoubleStreamPlus, IntStream> action) {
-        return IntStreamPlus.from(action.apply(this));
+    public default IntStreamPlus deriveToInt(Function<DoubleStreamPlus, IntStream> action) {
+        return IntStreamPlus
+                .from(action.apply(this));
     }
     
-    public default LongStream deriveToLong(Func1<DoubleStreamPlus, LongStream> action) {
-//        return LongStreamPlus.from(action.apply(this));
-        return null;
+    public default DoubleStreamPlus deriveToDouble(Function<DoubleStreamPlus, DoubleStream> action) {
+        return DoubleStreamPlus
+                .from(action.apply(this));
     }
     
-    public default DoubleStreamPlus deriveToDouble(Func1<DoubleStreamPlus, DoubleStream> action) {
-        return DoubleStreamPlus.from(action.apply(this));
-    }
-    
-    public default <TARGET> StreamPlus<TARGET> deriveToObj(Func1<DoubleStreamPlus, Stream<TARGET>> action) {
-        return StreamPlus.from(action.apply(this));
+    public default <TARGET> StreamPlus<TARGET> deriveToObj(Function<DoubleStreamPlus, Stream<TARGET>> action) {
+        return StreamPlus
+                .from(action.apply(this));
     }
     
     @Override
     public default StreamPlus<Double> boxed() {
-        return StreamPlus.from(doubleStream().boxed());
+        return StreamPlus
+                .from(doubleStream().boxed());
     }
     
-    // //== Helper functions ==
-    
-    public default <TARGET> TARGET terminate(
-            Function<DoubleStream, TARGET> action) {
-        val stream = doubleStream();
-        try {
-            val result = action.apply(stream);
-            return result;
-        } finally {
-            stream.close();
-        }
-    }
-    
-    public default void terminate(FuncUnit1<DoubleStream> action) {
-        val stream = doubleStream();
-        try {
-            action.accept(stream);
-        } finally {
-            stream.close();
-        }
-    }
-    
-    public default DoubleStreamPlus sequential(Func1<DoubleStreamPlus, DoubleStreamPlus> action) {
-        val isParallel = isParallel();
-        val orgDoubleStreamPlus = sequential();
-        val newDoubleStreamPlus = action.apply(orgDoubleStreamPlus);
-        if (newDoubleStreamPlus.isParallel() == isParallel)
-            return newDoubleStreamPlus;
-        
-        if (isParallel)
-            return newDoubleStreamPlus.parallel();
-        
-        return newDoubleStreamPlus.sequential();
+    public default LongStream asLongStream() {
+        return mapToLong(value -> Math.round(value));
     }
     
     //-- Characteristics --
@@ -440,8 +474,10 @@ public interface DoubleStreamPlus
      *
      * @return a sequential stream
      */
+    @Override
     public default DoubleStreamPlus sequential() {
-        return DoubleStreamPlus.from(doubleStream().sequential());
+        return DoubleStreamPlus
+                .from(doubleStream().sequential());
     }
     
     /**
@@ -456,7 +492,8 @@ public interface DoubleStreamPlus
      */
     @Override
     public default DoubleStreamPlus parallel() {
-        return DoubleStreamPlus.from(doubleStream().parallel());
+        return DoubleStreamPlus
+                .from(doubleStream().parallel());
     }
     
     /**
@@ -472,7 +509,8 @@ public interface DoubleStreamPlus
      */
     @Override
     public default DoubleStreamPlus unordered() {
-        return DoubleStreamPlus.from(doubleStream().unordered());
+        return DoubleStreamPlus
+                .from(doubleStream().unordered());
     }
     
     /**
@@ -484,7 +522,8 @@ public interface DoubleStreamPlus
      */
     @Override
     public default boolean isParallel() {
-        return doubleStream().isParallel();
+        return doubleStream()
+                .isParallel();
     }
     
     //-- Close --
@@ -492,12 +531,14 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default void close() {
-        doubleStream().close();
+        doubleStream()
+            .close();
     }
     
     @Override
     public default DoubleStreamPlus onClose(Runnable closeHandler) {
-        return DoubleStreamPlus.from(doubleStream().onClose(closeHandler));
+        return DoubleStreamPlus
+                .from(doubleStream().onClose(closeHandler));
     }
     
     //-- Iterator --
@@ -505,16 +546,15 @@ public interface DoubleStreamPlus
     /** @return a iterator of this FuncList. */
     @Override
     public default DoubleIteratorPlus iterator() {
-        return DoubleIteratorPlus.from(doubleStream().iterator());
+        return DoubleIteratorPlus
+                .from(doubleStream().iterator());
     }
     
     /** @return a spliterator of this FuncList. */
     @Override
     public default Spliterator.OfDouble spliterator() {
-        return terminate(s -> {
-            val iterator = iterator();
-            return Spliterators.spliteratorUnknownSize(iterator, 0);
-        });
+        val iterator = iterator();
+        return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
     //== Functionalities ==
@@ -563,6 +603,10 @@ public interface DoubleStreamPlus
         return flatMap(mapper);
     }
     
+    public default <DATA> StreamPlus<DATA> flatMapToObj(DoubleFunction<? extends Stream<DATA>> mapper) {
+        return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
+    }
+    
     //-- Filter --
     
     @Override
@@ -588,6 +632,8 @@ public interface DoubleStreamPlus
     public default DoubleStreamPlus skip(long offset) {
         return DoubleStreamPlus.from(doubleStream().skip(offset));
     }
+    
+    //-- Distinct --
     
     @Override
     public default DoubleStreamPlus distinct() {
@@ -617,7 +663,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default void forEach(DoubleConsumer action) {
-        terminate(stream -> {
+        terminate(this, stream -> {
             stream
             .forEach(action);
         });
@@ -628,8 +674,9 @@ public interface DoubleStreamPlus
     @Sequential
     @Override
     public default void forEachOrdered(DoubleConsumer action) {
-        terminate(stream -> {
+        terminate(this, stream -> {
             stream
+            .sequential    ()
             .forEachOrdered(action);
         });
     }
@@ -638,7 +685,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default double reduce(double identity, DoubleBinaryOperator reducer) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .reduce(identity, reducer);
         });
@@ -648,7 +695,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default OptionalDouble reduce(DoubleBinaryOperator reducer) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .reduce(reducer);
         });
@@ -661,7 +708,7 @@ public interface DoubleStreamPlus
             Supplier<R>          supplier,
             ObjDoubleConsumer<R> accumulator,
             BiConsumer<R, R>     combiner) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .collect(supplier, accumulator, combiner);
         });
@@ -673,7 +720,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default OptionalDouble min() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.min();
         });
     }
@@ -682,7 +729,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default OptionalDouble max() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.max();
         });
     }
@@ -691,7 +738,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default long count() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .count();
         });
@@ -701,7 +748,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default double sum() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.sum();
         });
     }
@@ -710,7 +757,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default OptionalDouble average() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.average();
         });
     }
@@ -719,7 +766,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default DoubleSummaryStatistics summaryStatistics() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .summaryStatistics();
         });
@@ -730,7 +777,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default boolean anyMatch(DoublePredicate predicate) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .anyMatch(predicate);
         });
@@ -740,7 +787,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default boolean allMatch(DoublePredicate predicate) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .allMatch(predicate);
         });
@@ -750,7 +797,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default boolean noneMatch(DoublePredicate predicate) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .noneMatch(predicate);
         });
@@ -759,7 +806,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default OptionalDouble findFirst() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .findFirst();
         });
@@ -768,7 +815,7 @@ public interface DoubleStreamPlus
     @Terminal
     @Override
     public default OptionalDouble findAny() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .findAny();
         });
@@ -783,20 +830,21 @@ public interface DoubleStreamPlus
     @Sequential
     @Terminal
     public default OptionalDouble lastResult() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             boolean[] isAdded = new boolean[] { false };
             double[]  dataRef = new double[1];
             stream.peek(i -> isAdded[0] = true).forEach(i -> dataRef[0] = i);
             return isAdded[0] ? OptionalDouble.of(dataRef[0]) : OptionalDouble.empty();
         });
     }
+    
     //== Conversion ==
     
     @Eager
     @Terminal
     @Override
     public default double[] toArray() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .toArray();
         });

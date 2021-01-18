@@ -25,37 +25,67 @@ package functionalj.list.doublelist;
 
 import java.util.Objects;
 import java.util.function.DoublePredicate;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.DoubleStream;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import lombok.val;
 
 
-class DoubleFuncListDerivedFromDoubleFuncList
-                implements DoubleFuncList {
+class DoubleFuncListDerived implements DoubleFuncList {
     
     private static final DoubleBiFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
     private static final DoublePredicate           toZero        = (double i)          -> i  == 0;
+
+    //-- Data --
     
-    private AsDoubleFuncList source;
+    private final Object source;
+    private final Function<DoubleStream, DoubleStream> action;
     
-    public DoubleFuncListDerivedFromDoubleFuncList(AsDoubleFuncList souce) {
-        this.source = Objects.requireNonNull(souce);
+    //-- Constructors --
+    
+    DoubleFuncListDerived(AsDoubleFuncList source, Function<DoubleStream, DoubleStream> action) {
+        this.source = Objects.requireNonNull(source);
+        this.action = Objects.requireNonNull(action);
+    }
+    DoubleFuncListDerived(Supplier<DoubleStream> streams) {
+        this.action = stream -> stream;
+        this.source = streams;
+    }
+    DoubleFuncListDerived(Supplier<DoubleStream> streams, Function<DoubleStream, DoubleStream> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = streams;
     }
     
-    @Override
-    public DoubleFuncList asDoubleFuncList() {
-        return source.asDoubleFuncList();
-    }
+    //-- Source Stream --
     
-    @Override
-    public DoubleStreamPlus doubleStreamPlus() {
-        return asDoubleFuncList().doubleStreamPlus();
+    @SuppressWarnings("unchecked")
+    private DoubleStream getSourceStream() {
+        if (source == null)
+            return DoubleStream.empty();
+        if (source instanceof IntFuncList)
+            return (DoubleStream)((DoubleFuncList)source).doubleStream();
+        if (source instanceof Supplier)
+            return ((Supplier<DoubleStream>)source).get();
+        throw new IllegalStateException();
     }
     
     @Override
     public DoubleStreamPlus doubleStream() {
-        return doubleStreamPlus();
+        DoubleStream theStream = getSourceStream();
+        DoubleStream newStream = action.apply(theStream);
+        return DoubleStreamPlus.from(newStream);
+    }
+    
+    public boolean isLazy() {
+        return true;
+    }
+    
+    public boolean isEager() {
+        return false;
     }
     
     @Override
@@ -69,14 +99,17 @@ class DoubleFuncListDerivedFromDoubleFuncList
         return new ImmutableDoubleFuncList(data, false);
     }
     
-    public String toString() {
-        return asDoubleFuncList().toListString();
+    @Override
+    public ImmutableDoubleFuncList toImmutableList() {
+        return ImmutableDoubleFuncList.from(this);
     }
     
+    @Override
     public int hashCode() {
         return mapToInt(Double::hashCode).reduce(43, (hash, each) -> hash*43 + each);
     }
     
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof DoubleFuncList))
             return false;
@@ -85,11 +118,13 @@ class DoubleFuncListDerivedFromDoubleFuncList
             return false;
         
         val anotherList = (DoubleFuncList)o;
-        if (size() != anotherList.size())
-            return false;
-        
-        return DoubleFuncList.zipOf(this.asDoubleFuncList(), anotherList.asDoubleFuncList(), zeroForEquals)
+        return DoubleFuncList.zipOf(this, anotherList.asDoubleFuncList(), zeroForEquals)
                 .allMatch(toZero);
+    }
+    
+    @Override
+    public String toString() {
+        return asDoubleFuncList().toListString();
     }
     
 }

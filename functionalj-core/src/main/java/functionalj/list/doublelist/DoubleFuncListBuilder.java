@@ -21,79 +21,65 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.list;
+package functionalj.list.doublelist;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.OptionalDouble;
 
-import functionalj.stream.StreamPlus;
+import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.doublestream.GrowOnlyDoubleArray;
 
-/**
- * Builder for FuncList.
- *
- * @param <DATA>  the data type.
- * 
- * @author nawaman
- */
-public class FuncListBuilder<DATA> {
-    
-    private final List<DATA> list;
+public class DoubleFuncListBuilder {
+
+    private final GrowOnlyDoubleArray list;
     
     // This constructor must not be public or protected.
-    FuncListBuilder(ArrayList<DATA> list) {
+    DoubleFuncListBuilder(GrowOnlyDoubleArray list) {
         this.list = list;
     }
     
-    public FuncListBuilder() {
-        list = new ArrayList<DATA>();
+    public DoubleFuncListBuilder() {
+        list = new GrowOnlyDoubleArray();
     }
     
-    @SafeVarargs
-    public FuncListBuilder(DATA ... values) {
-        list = new ArrayList<DATA>((values != null) ? values.length : 0);
-        if (values != null) {
-            for (DATA value : values) {
-                list.add(value);
-            }
-        }
+    public DoubleFuncListBuilder(double ... values) {
+        list = new GrowOnlyDoubleArray(values);
     }
     
-    public FuncListBuilder<DATA> add(DATA data) {
+    public DoubleFuncListBuilder add(int data) {
         list.add(data);
         return this;
     }
     
-    public FuncList<DATA> build() {
-        int length = list.size();
-        return new FuncListDerived<>(list, stream -> stream.limit(length));
+    public DoubleFuncList build() {
+        int length = list.length();
+        return DoubleFuncList.from(() -> list.stream().limit(length));
     }
     
-    public FuncList<DATA> toFuncList() {
+    public DoubleFuncList toFuncList() {
         return build();
     }
     
     public int size() {
-        return list.size();
+        return list.length();
     }
     public boolean isEmpty() {
         return size() == 0;
     }
     
-    public StreamPlus<DATA> stream() {
-        return StreamPlus.from(list.stream());
+    public DoubleStreamPlus stream() {
+        return DoubleStreamPlus.from(list.stream());
     }
     
-    public DATA get(int i) {
+    public double get(int i) {
         return list.get(i);
     }
     
-    public Optional<DATA> at(int i) {
-        if (i < 0 || i >= list.size())
-            return Optional.empty();
+    public OptionalDouble at(int i) {
+        if (i < 0 || i >= list.length())
+            return OptionalDouble.empty();
         
-        return Optional.ofNullable(list.get(i));
+        return OptionalDouble.of(list.get(i));
     }
     
     public String toString() {
@@ -104,7 +90,7 @@ public class FuncListBuilder<DATA> {
         return list.hashCode();
     }
     
-    public boolean equals(FuncListBuilder<DATA> array) {
+    public boolean equals(DoubleFuncListBuilder array) {
         return Objects.equals(list, array.list);
     }
 }

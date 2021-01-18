@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,12 +27,15 @@ import static functionalj.tuple.IntIntTuple.intTuple;
 import static functionalj.tuple.Tuple.tuple2;
 
 import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.stream.markers.Eager;
@@ -55,11 +58,41 @@ public interface AsIntStreamPlusWithStatistic {
                 .count();
     }
     
+    @Eager
+    @Terminal
+    public default long count() {
+        return intStreamPlus().count();
+    }
+    
+    @Eager
+    @Terminal
+    public default int sum() {
+        return intStreamPlus().sum();
+    }
+    
     /** @return the product of all the number */
     @Eager
     @Terminal
     public default OptionalInt product() {
         return intStreamPlus().reduce((a, b) -> a*b);
+    }
+    
+    @Eager
+    @Terminal
+    public default OptionalDouble average() {
+        return intStreamPlus().average();
+    }
+    
+    @Eager
+    @Terminal
+    public default OptionalInt min() {
+        return intStreamPlus().min();
+    }
+    
+    @Eager
+    @Terminal
+    public default OptionalInt max() {
+        return intStreamPlus().max();
     }
     
     /** Return the value whose mapped value is the smallest. */
@@ -244,6 +277,42 @@ public interface AsIntStreamPlusWithStatistic {
         return tuple2(
                 IntStreamPlusHelper.dummy.equals(min) ? OptionalInt.empty() : OptionalInt.of((Integer)min),
                 IntStreamPlusHelper.dummy.equals(max) ? OptionalInt.empty() : OptionalInt.of((Integer)max));
+    }
+    
+    @Eager
+    @Terminal
+    public default IntSummaryStatistics summaryStatistics() {
+        return intStreamPlus().summaryStatistics();
+    }
+    
+    /** Map each value using the mapper to a comparable value and use it to find a minimal value then return the index */
+    public default <D extends Comparable<D>> OptionalInt minIndexBy(IntFunction<D> mapper) {
+        return minIndexBy(__ -> true, mapper);
+    }
+    
+    /** Map each value using the mapper to a comparable value and use it to find a maximum value then return the index */
+    public default <D extends Comparable<D>> OptionalInt maxIndexBy(IntFunction<D> mapper) {
+        return maxIndexBy(__ -> true, mapper);
+    }
+    
+    /** Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index */
+    public default <D extends Comparable<D>> OptionalInt minIndexBy(IntPredicate filter, IntFunction<D> mapper) {
+        val min = intStreamPlus()
+                .mapWithIndex()
+                .filter  (t -> filter.test(t._2))
+                .minBy   (t -> mapper.apply(t._2))
+                .map   (t -> t._1);
+        return min.isPresent() ? OptionalInt.of(min.get().intValue()) : OptionalInt.empty();
+    }
+    
+    /** Using the mapper to map each value that passes the filter to a comparable and use it to find a maximum value then return the index */
+    public default <D extends Comparable<D>> OptionalInt maxIndexBy(IntPredicate filter, IntFunction<D> mapper) {
+        val max = intStreamPlus()
+                .mapWithIndex()
+                .filter  (t -> filter.test(t._2))
+                .maxBy   (t -> mapper.apply(t._2))
+                .map   (t -> t._1);
+        return max.isPresent() ? OptionalInt.of(max.get().intValue()) : OptionalInt.empty();
     }
     
 }

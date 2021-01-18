@@ -51,8 +51,7 @@ public interface IntStreamPlusWithSplit
     public default Tuple2<IntStreamPlus, IntStreamPlus> split(
             IntPredicate predicate) {
         Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
-        IntFuncList FuncList = ()->intStreamPlus();
-        return FuncList
+        return IntFuncList.from(()->intStreamPlus())
                 .split(predicate)
                 .map(toStreamPlus, toStreamPlus);
     }
@@ -66,8 +65,7 @@ public interface IntStreamPlusWithSplit
             KEY key1, IntPredicate predicate,
             KEY key2) {
         Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
-        IntFuncList FuncList = ()->intStreamPlus();
-        return FuncList
+        return IntFuncList.from(()->intStreamPlus())
                 .split(key1, predicate, key2)
                 .mapValue(toStreamPlus);
     }
@@ -82,8 +80,7 @@ public interface IntStreamPlusWithSplit
             KEY key2, IntPredicate predicate2,
             KEY key3) {
         Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
-        IntFuncList FuncList = ()->intStreamPlus();
-        return FuncList
+        return IntFuncList.from(()->intStreamPlus())
                 .split(key1, predicate1, key2, predicate2, key3)
                 .mapValue(toStreamPlus);
     }
@@ -99,8 +96,7 @@ public interface IntStreamPlusWithSplit
             KEY key3, IntPredicate predicate3,
             KEY key4) {
         Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
-        IntFuncList FuncList = ()->intStreamPlus();
-        return FuncList
+        return IntFuncList.from(()->intStreamPlus())
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4)
                 .mapValue(toStreamPlus);
     }
@@ -117,8 +113,7 @@ public interface IntStreamPlusWithSplit
             KEY key4, IntPredicate predicate4,
             KEY key5) {
         Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
-        IntFuncList FuncList = ()->intStreamPlus();
-        return FuncList
+        return IntFuncList.from(()->intStreamPlus())
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5)
                 .mapValue(toStreamPlus);
     }
@@ -136,9 +131,9 @@ public interface IntStreamPlusWithSplit
             KEY key5, IntPredicate predicate5,
             KEY key6) {
         Function<IntFuncList, IntStreamPlus> toStreamPlus = IntFuncList::intStreamPlus;
-        IntFuncList FuncList = ()->intStreamPlus();
-        return FuncList
+        return IntFuncList.from(()->intStreamPlus())
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6)
                 .mapValue(toStreamPlus);
     }
+    
 }

@@ -87,7 +87,7 @@ public interface DoubleStreamPlusWithFilter {
     }
     
     /** Map each value to another object and used it to filter the value. */
-    public default <T> DoubleStreamPlus filterAsObj(
+    public default <T> DoubleStreamPlus filterAsObject(
             DoubleFunction<T>    mapper,
             Predicate<? super T> predicate) {
         val streamPlus = doubleStreamPlus();
@@ -99,7 +99,7 @@ public interface DoubleStreamPlusWithFilter {
                 });
     }
     
-    public default <T> DoubleStreamPlus filterAsObj(
+    public default <T> DoubleStreamPlus filterAsObject(
             Function<Double, ? extends T> mapper,
             Predicate<? super T>          predicate) {
         val streamPlus = doubleStreamPlus();

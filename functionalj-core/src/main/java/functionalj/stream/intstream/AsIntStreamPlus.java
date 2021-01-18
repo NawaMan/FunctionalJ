@@ -23,24 +23,21 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
-import java.util.IntSummaryStatistics;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.BiConsumer;
-import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
-import java.util.function.IntPredicate;
-import java.util.function.ObjIntConsumer;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import functionalj.stream.markers.Eager;
-import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
-import lombok.val;
 
+
+class AsIntStreamPlusHelper {
+    
+    /** @return  the stream plus instance of this object. */
+    public static IntStreamPlus streamFrom(AsIntStreamPlus streamPlus) {
+        return streamPlus.intStreamPlus();
+    }
+    
+}
 
 /**
  * Classes implementing this interface can provider a StreamPlus instance of itself.
@@ -51,15 +48,12 @@ import lombok.val;
 public interface AsIntStreamPlus
                     extends
                         AsIntStreamPlusWithConversion,
-                        AsIntStreamPlusWithGroupingBy,
+                        AsIntStreamPlusWithCollect,
                         AsIntStreamPlusWithForEach,
+                        AsIntStreamPlusWithGroupingBy,
                         AsIntStreamPlusWithMatch,
+                        AsIntStreamPlusWithReduce,
                         AsIntStreamPlusWithStatistic {
-    
-    /** @return  the stream plus instance of this object. */
-    public static IntStreamPlus streamFrom(AsIntStreamPlus streamPlus) {
-        return streamPlus.intStreamPlus();
-    }
     
     /** @return  the stream plus instance of this object. */
     public IntStreamPlus intStreamPlus();
@@ -69,148 +63,11 @@ public interface AsIntStreamPlus
         return intStreamPlus();
     }
     
-    //== Terminal operations ==
-    
-    /** @return a iterator of this FuncList. */
-    public default IntIteratorPlus iterator() {
-        return streamFrom(this).iterator();
-    }
-    
-    /** @return a spliterator of this FuncList. */
-    public default Spliterator.OfInt spliterator() {
-        val iterator = iterator();
-        return Spliterators.spliteratorUnknownSize(iterator, 0);
-    }
-    
+    /** Iterate all element through the action */
     @Eager
     @Terminal
     public default void forEach(IntConsumer action) {
-        streamFrom(this).forEach(action);
-    }
-    
-    @Eager
-    @Terminal
-    @Sequential
-    public default void forEachOrdered(IntConsumer action) {
-        streamFrom(this).forEachOrdered(action);
-    }
-    
-    @Eager
-    @Terminal
-    public default int reduce(int identity, IntBinaryOperator reducer) {
-        return streamFrom(this).reduce(identity, reducer);
-    }
-    
-    @Eager
-    @Terminal
-    public default OptionalInt reduce(IntBinaryOperator reducer) {
-        return streamFrom(this).reduce(reducer);
-    }
-    
-    @Eager
-    @Terminal
-    public default <R> R collect(
-            Supplier<R>       supplier,
-            ObjIntConsumer<R> accumulator,
-            BiConsumer<R, R>  combiner) {
-        return streamFrom(this).collect(supplier, accumulator, combiner);
-    }
-    
-    @Eager
-    @Terminal
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <R> R collect(IntCollectorPlus<?, R> collector) {
-        Supplier<R>       supplier    = (Supplier)      collector.supplier();
-        ObjIntConsumer<R> accumulator = (ObjIntConsumer)collector.accumulator();
-        BiConsumer<R, R>  combiner    = (BiConsumer)    collector.combiner();
-        return streamFrom(this).collect(supplier, accumulator, combiner);
-    }
-    
-    //-- statistics --
-    
-    @Eager
-    @Terminal
-    public default OptionalInt min() {
-        return streamFrom(this).min();
-    }
-    
-    @Eager
-    @Terminal
-    public default OptionalInt max() {
-        return streamFrom(this).max();
-    }
-    
-    @Eager
-    @Terminal
-    public default long count() {
-        return streamFrom(this).count();
-    }
-    
-    @Eager
-    @Terminal
-    public default int sum() {
-        return streamFrom(this).sum();
-    }
-    
-    @Eager
-    @Terminal
-    public default OptionalDouble average() {
-        return streamFrom(this).average();
-    }
-    
-    @Eager
-    @Terminal
-    public default IntSummaryStatistics summaryStatistics() {
-        return streamFrom(this).summaryStatistics();
-    }
-    
-    //-- Match --
-    
-    @Terminal
-    public default boolean anyMatch(IntPredicate predicate) {
-        return streamFrom(this).anyMatch(predicate);
-    }
-    
-    @Eager
-    @Terminal
-    public default boolean allMatch(IntPredicate predicate) {
-        return streamFrom(this).allMatch(predicate);
-    }
-    
-    @Eager
-    @Terminal
-    public default boolean noneMatch(IntPredicate predicate) {
-        return streamFrom(this).noneMatch(predicate);
-    }
-    
-    @Terminal
-    public default OptionalInt findFirst() {
-        return streamFrom(this).findFirst();
-    }
-    
-    @Terminal
-    public default OptionalInt findAny() {
-        return streamFrom(this).findAny();
-    }
-    
-    @Sequential
-    @Terminal
-    public default OptionalInt firstResult() {
-        return streamFrom(this).firstResult();
-    }
-    
-    @Sequential
-    @Terminal
-    public default OptionalInt lastResult() {
-        return streamFrom(this).lastResult();
-    }
-    
-    //== Conversion ==
-    
-    @Eager
-    @Terminal
-    public default int[] toArray() {
-        return streamFrom(this).toArray();
+        intStreamPlus().forEach(action);
     }
     
 }

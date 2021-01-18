@@ -27,8 +27,11 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
@@ -47,6 +50,51 @@ import lombok.val;
 public interface AsStreamPlusWithConversion<DATA> {
     
     public StreamPlus<DATA> streamPlus();
+    
+    
+    /** @return a iterator of this FuncList. */
+    public default IteratorPlus<DATA> iterator() {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .iterator();
+    }
+    
+    /** @return a spliterator of this FuncList. */
+    public default Spliterator<DATA> spliterator() {
+        val iterator = iterator();
+        return Spliterators
+                .spliteratorUnknownSize(iterator, 0);
+    }
+    
+    /** 
+     * @return a functional list containing the elements.
+     * 
+     * Note: This method will materialize the elements and put in a list.
+     **/
+    @Eager
+    @Terminal
+    public default FuncList<DATA> toFuncList() {
+        return toImmutableList();
+    }
+    
+    
+    //-- toArray --
+    
+    @Eager
+    @Terminal
+    public default Object[] toArray() {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .toArray();
+    }
+    
+    @Eager
+    @Terminal
+    public default <A> A[] toArray(IntFunction<A[]> generator) {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .toArray(generator);
+    }
     
     //-- toArray --
     
@@ -91,10 +139,11 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default ArrayList<DATA> toArrayList() {
-        // TODO - This is not efficient but without knowing the size, it is not so easy to do efficiently
-        //        The proper solution for this is to have the stream itself contain the marker if it knows its size.
-        //        May be by using peekSize() method to check the size and the forEach to populate it.
-        return new ArrayList<DATA>(toJavaList());
+        val streamPlus = streamPlus();
+        val newList    = new ArrayList<DATA>();
+        streamPlus
+            .forEach(value -> newList.add(value));
+        return newList;
     }
     
     /** @return an immutable list containing the elements. */
@@ -110,7 +159,8 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Terminal
     public default List<DATA> toJavaList() {
         val streamPlus = streamPlus();
-        return streamPlus.collect(Collectors.toList());
+        return streamPlus
+                .collect(Collectors.toList());
     }
     
     /** @return a list containing the elements. */

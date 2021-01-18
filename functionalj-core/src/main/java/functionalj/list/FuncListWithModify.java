@@ -23,6 +23,9 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.list.AsFuncListHelper.funcListOf;
+import static functionalj.list.FuncList.deriveToObj;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -58,7 +61,8 @@ public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
      */
     @Sequential
     public default FuncList<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        return FuncList.deriveFrom(this, stream -> stream.accumulate(accumulator));
+        val funcList = funcListOf(this);
+        return FuncList.deriveFrom(funcList, stream -> stream.accumulate(accumulator));
     }
     
     //== restate ==
@@ -118,6 +122,7 @@ public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
      *   the unfinished actions will be canceled.
      */
     public default <T> FuncList<Result<T>> spawn(Function<DATA, ? extends UncompletedAction<T>> mapToAction) {
-        return FuncList.deriveToObj(this, stream -> stream.spawn(mapToAction));
+        val funcList = funcListOf(this);
+        return deriveToObj(funcList, stream -> stream.spawn(mapToAction));
     }
 }

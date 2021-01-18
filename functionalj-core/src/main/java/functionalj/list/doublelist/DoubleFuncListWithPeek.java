@@ -24,7 +24,6 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.DoubleFuncList.deriveFrom;
-import static functionalj.list.doublelist.DoubleFuncList.from;
 
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
@@ -38,7 +37,7 @@ public interface DoubleFuncListWithPeek extends AsDoubleFuncList {
     public default DoubleFuncList peekBy(
             DoublePredicate selector,
             DoubleConsumer  theConsumer) {
-        return from((DoubleFuncList)(() -> doubleStreamPlus().peekBy(selector, theConsumer)));
+        return DoubleFuncList.from(() -> doubleStreamPlus().peekBy(selector, theConsumer));
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj

@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
@@ -37,6 +39,73 @@ import lombok.val;
 public interface AsIntStreamPlusWithMatch {
     
     public IntStreamPlus intStreamPlus();
+    
+    
+    //-- Match --
+
+    /** Check if any element match the predicate */
+    @Terminal
+    public default boolean anyMatch(IntPredicate predicate) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .anyMatch(predicate);
+    }
+    
+    /** Check if all elements match the predicate */
+    @Terminal
+    public default boolean allMatch(IntPredicate predicate) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .allMatch(predicate);
+    }
+    
+    /** Check if none of the elements match the predicate */
+    @Terminal
+    public default boolean noneMatch(IntPredicate predicate) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .noneMatch(predicate);
+    }
+    
+    /** Returns the sequentially first element */
+    @Terminal
+    public default OptionalInt findFirst() {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .findFirst();
+    }
+    
+    /** Returns the any element */
+    @Terminal
+    public default OptionalInt findAny() {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .findAny();
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalInt findLast() {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .findLast();
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalInt firstResult() {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .firstResult();
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalInt lastResult() {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .lastResult();
+    }
     
     /** Return the first element that matches the predicate. */
     @Terminal
@@ -103,6 +172,28 @@ public interface AsIntStreamPlusWithMatch {
         return streamPlus
                 .filterAsObject(mapper, theCondition)
                 .findAny();
+    }
+    
+    //== Contains ==
+    
+    /** Check if the list contains all the given values */
+    public default boolean containsAllOf(int ... values) {
+        val set = new HashSet<Integer>(values.length);
+        for (val value : values) {
+            set.add(value);
+        }
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .peek(set::remove)
+                .anyMatch(__ -> set.isEmpty());
+    }
+    
+    public default boolean containsAnyOf(int ... values) {
+        return anyMatch(each -> IntStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsNoneOf(int ... values) {
+        return noneMatch(each -> IntStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }
     
 }

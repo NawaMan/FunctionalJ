@@ -24,6 +24,7 @@
 package functionalj.stream;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import functionalj.function.IntObjBiConsumer;
 import functionalj.stream.markers.Eager;
@@ -34,6 +35,14 @@ import lombok.val;
 public interface AsStreamPlusWithForEach<DATA> {
     
     public StreamPlus<DATA> streamPlus();
+    
+    
+    /** Iterate in order all element through the action */
+    public default void forEachOrdered(Consumer<? super DATA> action) {
+        val streamPlus = streamPlus();
+        streamPlus
+        .forEachOrdered(action);
+    }
     
     /** For each with the index. */
     @Eager

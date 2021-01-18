@@ -23,61 +23,74 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
+import lombok.val;
+
 public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
     
     /** Limit the size of the stream to the given size. */
     public default FuncList<DATA> limit(Long maxSize) {
-        return deriveFrom(this, stream -> stream.limit(maxSize));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.limit(maxSize));
     }
     
     /** Skip to the given offset position. */
     public default FuncList<DATA> skip(Long startAt) {
-        return deriveFrom(this, stream -> stream.skip(startAt));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.skip(startAt));
     }
     
     /** Skip any value while the condition is true. */
     public default FuncList<DATA> skipWhile(Predicate<? super DATA> condition) {
-        return deriveFrom(this, stream -> stream.skipWhile(condition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.skipWhile(condition));
     }
     
     /** Skip any value until the condition is true. */
     public default FuncList<DATA> skipUntil(Predicate<? super DATA> condition) {
-        return deriveFrom(this, stream -> stream.skipUntil(condition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.skipUntil(condition));
     }
     
     /** Accept any value while the condition is true. */
     public default FuncList<DATA> takeWhile(Predicate<? super DATA> condition) {
-        return deriveFrom(this, stream -> stream.takeWhile(condition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.takeWhile(condition));
     }
     
     /** Accept any value while the condition is true. */
     public default FuncList<DATA> takeWhile(BiPredicate<? super DATA, ? super DATA> condition) {
-        return deriveFrom(this, stream -> stream.takeWhile(condition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.takeWhile(condition));
     }
     
     /** Accept any value until the condition is true. */
     public default FuncList<DATA> takeUntil(Predicate<? super DATA> condition) {
-        return deriveFrom(this, stream -> stream.takeUntil(condition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.takeUntil(condition));
     }
     
     /** Accept any value until the condition is true. */
     public default FuncList<DATA> takeUntil(BiPredicate<? super DATA, ? super DATA> condition) {
-        return deriveFrom(this, stream -> stream.takeUntil(condition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.takeUntil(condition));
     }
     
     /** Accept any value until the condition is false - include the item that the condition is false. */
     public default FuncList<DATA> dropAfter(Predicate<? super DATA> condition) {
-        return deriveFrom(this, stream -> stream.dropAfter(condition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.dropAfter(condition));
     }
     
     /** Accept any value until the condition is false - include the item that the condition is false. */
     public default FuncList<DATA> dropAfter(BiPredicate<? super DATA, ? super DATA> condition) {
-        return deriveFrom(this, stream -> stream.dropAfter(condition));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.dropAfter(condition));
     }
     
 }

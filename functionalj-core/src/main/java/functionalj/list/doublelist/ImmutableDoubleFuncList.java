@@ -23,13 +23,21 @@
 // ============================================================================
 package functionalj.list.doublelist;
 
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.OptionalDouble;
 import java.util.function.DoublePredicate;
 import java.util.stream.DoubleStream;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 import lombok.val;
+
+
+//TODO - Override methods in FuncListWithMapGroup to make it faster
+//TODO - Override methods in FuncListWithMapWithIndex to make it faster
 
 
 public class ImmutableDoubleFuncList implements DoubleFuncList {
@@ -37,18 +45,21 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
     private static final DoubleBiFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
     private static final DoublePredicate           toZero        = (double i)             -> i  == 0;
     
-    private final double[]   data;
-    private final boolean isLazy;
-    
-    private volatile String  toStringCache = null;
-    private volatile Integer hashcodeCache = null;
+    private static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
     
     private static ImmutableDoubleFuncList emptyList = new ImmutableDoubleFuncList(new double[0], true);
     
+    /** @return an empty list */
     public static ImmutableDoubleFuncList empty() {
         return emptyList;
     }
     
+    /** @return an empty list */
+    public static ImmutableDoubleFuncList emptyDoubleList() {
+        return emptyList;
+    }
+    
+    /** @return the list containing the given elements */
     public static ImmutableDoubleFuncList of(double ... source) {
        if ((source == null) || source.length == 0)
             return emptyList;
@@ -57,24 +68,36 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         return new ImmutableDoubleFuncList(newArray, true);
     }
     
-    public static ImmutableDoubleFuncList from(DoubleFuncList list) {
-        if (list == null)
+    /** @return the list containing the given elements */
+    public static ImmutableDoubleFuncList listOf(double ... source) {
+       if ((source == null) || source.length == 0)
             return emptyList;
-        if (list instanceof ImmutableDoubleFuncList)
-            return (ImmutableDoubleFuncList)list;
-        
-        val data   = list.toArray();
-        val isLazy = list.isLazy();
-        return new ImmutableDoubleFuncList(data, isLazy);
+       
+        val newArray = source.clone();
+        return new ImmutableDoubleFuncList(newArray, true);
     }
     
-    public static ImmutableDoubleFuncList from(double[] data) {
+    public static ImmutableDoubleFuncList from(boolean isLazy, double[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;
         
-        return new ImmutableDoubleFuncList(data.clone(), true);
+        return new ImmutableDoubleFuncList(data.clone(), isLazy);
     }
     
+    /** @return the list containing the given elements */
+    public static ImmutableDoubleFuncList from(boolean isLazy, AsDoubleFuncList funcList) {
+        if (funcList == null)
+            return emptyList;
+        
+        if (funcList instanceof ImmutableDoubleFuncList)
+            if (isLazy == funcList.asDoubleFuncList().isLazy())
+                return (ImmutableDoubleFuncList)funcList;
+        
+        val data = funcList.toArray();
+        return new ImmutableDoubleFuncList(data, isLazy);
+    }
+    
+    /** @return the list containing the element from the given stream */
     public static ImmutableDoubleFuncList from(DoubleStream source) {
         if ((source == null))
             return emptyList;
@@ -82,28 +105,69 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         return new ImmutableDoubleFuncList(source.toArray(), true);
     }
     
+    /** @return the list containing the element from the given stream */
+    public static ImmutableDoubleFuncList from(boolean isLazy, DoubleStream source) {
+        if ((source == null))
+            return emptyList;
+        
+        return new ImmutableDoubleFuncList(source.toArray(), isLazy);
+    }
+    
+    /** @return the list containing the element from the given list. */
+    public static ImmutableDoubleFuncList from(DoubleFuncList funcList) {
+        if ((funcList == null))
+            return emptyList;
+        
+        if (funcList instanceof ImmutableDoubleFuncList)
+            return (ImmutableDoubleFuncList)funcList;
+        
+        val isLazy = funcList.asDoubleFuncList().isLazy();
+        return ImmutableDoubleFuncList.from(isLazy, funcList);
+    }
+    
+    /** @return the list containing the element from the given collections. */
+    public static ImmutableDoubleFuncList from(Collection<Integer> collection, double valueForNull) {
+        val ints     = new double[collection.size()];
+        val iterator = collection.iterator();
+        for (int i = 0; (i < ints.length) && iterator.hasNext(); i++) {
+            Integer integer = iterator.next();
+            ints[i] = (integer != null) ? integer.intValue() : valueForNull;
+        }
+        return new ImmutableDoubleFuncList(ints, true);
+    }
+    
+    //-- Data --
+    
+    private final double[] data;
+    private final boolean  isLazy;
+    
+    private volatile String  toStringCache = null;
+    private volatile Integer hashcodeCache = null;
+    
+    //-- Constructors --
+    
+    ImmutableDoubleFuncList(double[] data) {
+        this(data, true);
+    }
+    
     ImmutableDoubleFuncList(double[] data, boolean isLazy) {
-        this.data = Objects.requireNonNull(data);
+        this.data = (data == null) ? EMPTY_DOUBLE_ARRAY : data;
         this.isLazy = isLazy;
     }
     
-    ImmutableDoubleFuncList(DoubleFuncList source, boolean isLazy) {
-        this(source.toArray(), isLazy);
-    }
-    
-    @Override
-    public DoubleFuncList asDoubleFuncList() {
-        return ()->doubleStreamPlus();
-    }
-    
-    @Override
-    public DoubleStreamPlus doubleStreamPlus() {
-        return DoubleStreamPlus.of(data);
-    }
-
     @Override
     public DoubleStreamPlus doubleStream() {
-        return doubleStreamPlus();
+        return DoubleStreamPlus.from(Arrays.stream(data));
+    }
+    
+    @Override
+    public boolean isLazy() {
+        return isLazy;
+    }
+    
+    @Override
+    public boolean isEager() {
+        return !isLazy;
     }
     
     @Override
@@ -123,10 +187,11 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
     }
     
     @Override
-    public boolean isLazy() {
-        return isLazy;
+    public ImmutableDoubleFuncList toImmutableList() {
+        return this;
     }
     
+    @Override
     public String toString() {
         if (toStringCache != null)
             return toStringCache;
@@ -140,6 +205,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         }
     }
     
+    @Override
     public int hashCode() {
         if (hashcodeCache != null)
             return hashcodeCache;
@@ -153,6 +219,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         }
     }
     
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof DoubleFuncList))
             return false;
@@ -166,6 +233,65 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         
         return DoubleFuncList.zipOf(this, anotherList, zeroForEquals)
                 .allMatch(toZero);
+    }
+    
+    // -- Short cut --
+    
+    @Override
+    public int size() {
+        return data.length;
+    }
+    
+    @Override
+    public boolean isEmpty() {
+        return (data.length == 0);
+    }
+    
+    @Override
+    public double[] toArray() {
+        return data.clone();
+    }
+    
+    @Override
+    public double get(int index) {
+        return data[index];
+    }
+    
+    @Override
+    public int indexOf(double value) {
+        for (int i = 0; i < data.length; i++) {
+            if (value == data[i])
+                return i;
+        }
+        return -1;
+    }
+    
+    @Override
+    public int lastIndexOf(double value) {
+        for (int i = data.length; i-->0;) {
+            if (value == data[i])
+                return i;
+        }
+        return -1;
+    }
+    
+    @Sequential
+    @Terminal
+    @Override
+    public OptionalDouble firstResult() {
+        return (this.data.length == 0)
+                ? OptionalDouble.empty()
+                : OptionalDouble.of(this.data[0]);
+    }
+    
+    @Sequential
+    @Terminal
+    @Override
+    public OptionalDouble lastResult() {
+        int size = this.data.length;
+        return (size == 0)
+                ? OptionalDouble.empty()
+                : OptionalDouble.of(this.data[size - 1]);
     }
     
 }

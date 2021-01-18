@@ -194,10 +194,10 @@ public class IntFuncListTest {
     
     @Test
     public void testFrom_FuncList() {
-        run(IntFuncList.from(IntFuncList.of(One, Two, Three)), list -> {
+        run(IntFuncList.of(One, Two, Three), list -> {
             assertStrings("[1, 2, 3]", list);
         });
-        run(IntFuncList.from(IntFuncList.of(One, Two, Three)), list -> {
+        run(IntFuncList.of(One, Two, Three), list -> {
             assertStrings("[1, 2, 3]", list);
         });
     }
@@ -205,7 +205,7 @@ public class IntFuncListTest {
     @Ignore("Taking too long - run manually as needed.")
     @Test
     public void testFrom_FuncList_infinite() {
-        run(IntFuncList.from(IntFuncList.loop()), list -> {
+        run(IntFuncList.loop(), list -> {
             try {
                 list.toList();
                 fail("Expect an exception.");
@@ -372,25 +372,13 @@ public class IntFuncListTest {
     
     @Test
     public void testNew() {
-        run(IntFuncList.newFuncList().add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[1, 2, 3]", list);
-        });
-        run(IntFuncList.newIntFuncList().add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[1, 2, 3]", list);
-        });
-        run(IntFuncList.newList().add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[1, 2, 3]", list);
-        });
-        run(IntFuncList.newIntList().add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[1, 2, 3]", list);
-        });
         run(IntFuncList.newBuilder().add(One).add(Two).add(Three).build(), list -> {
             assertStrings("[1, 2, 3]", list);
         });
-        run(IntFuncList.preparing().add(One).add(Two).add(Three).build(), list -> {
+        run(IntFuncList.newIntListBuilder().add(One).add(Two).add(Three).build(), list -> {
             assertStrings("[1, 2, 3]", list);
         });
-        run(IntFuncList.preparingInts().add(One).add(Two).add(Three).build(), list -> {
+        run(IntFuncList.newListBuilder().add(One).add(Two).add(Three).build(), list -> {
             assertStrings("[1, 2, 3]", list);
         });
     }

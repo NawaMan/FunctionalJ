@@ -29,13 +29,10 @@ import static functionalj.stream.ZipWithOption.RequireBoth;
 
 import java.util.Iterator;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.result.NoMoreResultException;
-import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -44,31 +41,19 @@ public interface StreamPlusWithCombine<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    public <TARGET> StreamPlus<TARGET> derive(Function<StreamPlus<DATA>, Stream<TARGET>> action);
-    
-    public IntStreamPlus deriveToInt(Function<StreamPlus<DATA>, IntStream> action);
-    
-    public <TARGET> StreamPlus<TARGET> deriveToObj(Function<StreamPlus<DATA>, Stream<TARGET>> action);
-    
     
     /** Concatenate the given head stream in front of this stream. */
-    @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> prependWith(Stream<DATA> head) {
         return StreamPlus.concat(
-                StreamPlus.of(head),
-                StreamPlus.of(this)
-               )
-               .flatMap(s -> (StreamPlus<DATA>)s);
+                StreamPlus.from(head),
+                streamPlus());
     }
     
     /** Concatenate the given tail stream to this stream. */
-    @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> appendWith(Stream<DATA> tail) {
         return StreamPlus.concat(
-                StreamPlus.of(this),
-                StreamPlus.of(tail)
-               )
-               .flatMap(s -> (StreamPlus<DATA>)s);
+                streamPlus(),
+                StreamPlus.from(tail));
     }
     
     /**
@@ -108,7 +93,7 @@ public interface StreamPlusWithCombine<DATA> {
      *   Another stream: [1, 2, 3, 4, 5] <br>
      *   Result stream:  [(A, 1), (B, 2), (C, 3)] <br>
      */
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
+    public default <ANOTHER> StreamPlus<Tuple2<DATA,ANOTHER>> zipWith(Stream<ANOTHER> anotherStream) {
         return zipWith(anotherStream, RequireBoth, Tuple2::of);
     }
     
@@ -121,9 +106,9 @@ public interface StreamPlusWithCombine<DATA> {
      *   Another stream: [1, 2, 3, 4, 5] <br>
      *   Result stream:  [(A, 1), (B, 2), (C, 3), (null, 4), (null, 5)] <br>
      */
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(
-            Stream<B>     anotherStream,
-            ZipWithOption option) {
+    public default <ANOTHER> StreamPlus<Tuple2<DATA,ANOTHER>> zipWith(
+            Stream<ANOTHER> anotherStream,
+            ZipWithOption   option) {
         return zipWith(anotherStream, option, Tuple2::of);
     }
     
@@ -153,13 +138,12 @@ public interface StreamPlusWithCombine<DATA> {
      *   Combinator:     (v1,v2) -> v1 + "-" + v2
      *   Result stream:  [A-1, B-2, C-3, null-4, null-5] <br>
      */
-    // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
-    public default <B, C> StreamPlus<C> zipWith(
-            Stream<B>              anotherStream,
-            ZipWithOption          option,
-            BiFunction<DATA, B, C> combinator) {
+    public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
+            Stream<ANOTHER>                   anotherStream,
+            ZipWithOption                     option,
+            BiFunction<DATA, ANOTHER, TARGET> combinator) {
         val iteratorA = streamPlus().iterator();
-        val iteratorB = StreamPlus.from(anotherStream).iterator();
+        val iteratorB = IteratorPlus.from(anotherStream.iterator());
         return StreamPlusHelper.doZipWith(option, combinator, iteratorA, iteratorB);
     }
     
@@ -174,15 +158,15 @@ public interface StreamPlusWithCombine<DATA> {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default StreamPlus<DATA> choose(
-            Stream<DATA>                    anotherStream,
-            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+                                        Stream<DATA>                    anotherStream,
+                                        BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
         return choose(anotherStream, AllowUnpaired, selectThisNotAnother);
     }
     
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
-     *
+     * 
      * For an example: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
@@ -194,7 +178,7 @@ public interface StreamPlusWithCombine<DATA> {
             ZipWithOption                   option,
             BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
         val iteratorA = this.streamPlus().iterator();
-        val iteratorB = StreamPlus.from(anotherStream).iterator();
+        val iteratorB = anotherStream.iterator();
         val iterator = new Iterator<DATA>() {
             private boolean hasNextA;
             private boolean hasNextB;

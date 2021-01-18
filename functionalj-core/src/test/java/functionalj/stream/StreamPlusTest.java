@@ -514,12 +514,6 @@ public class StreamPlusTest {
     
     //-- AsStreamPlus --
     
-    @Test
-    public void testStreamOf_fromAsStreamPlus() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Two, Three]", AsStreamPlus.streamFrom(stream).toListString());
-    }
-    
     //-- AsStreamPlusWithConversion --
     
     @Test
@@ -935,14 +929,16 @@ public class StreamPlusTest {
     @Test
     public void testPrependWith() {
         assertStrings("[One, Two, Three, Four]",
-                streamOf("Three", "Four").prependWith(streamOf("One", "Two"))
+                streamOf("Three", "Four")
+                .prependWith(streamOf("One", "Two"))
                 .toList());
     }
     
     @Test
     public void testAppendWith() {
         assertStrings("[One, Two, Three, Four]",
-                streamOf("One", "Two").appendWith(streamOf("Three", "Four"))
+                streamOf("One", "Two")
+                .appendWith(streamOf("Three", "Four"))
                 .toList());
     }
     

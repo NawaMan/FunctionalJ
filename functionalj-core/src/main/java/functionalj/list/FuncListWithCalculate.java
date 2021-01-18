@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.list;
 
-import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.stream.Collected.collectedOf;
 
 import functionalj.stream.StreamProcessor;
@@ -36,13 +35,15 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
-public interface FuncListWithCalculate<DATA> extends AsFuncList<DATA>{
+public interface FuncListWithCalculate<DATA> {
+    
+    public FuncList<DATA> asFuncList();
     
     
     /** Perform the calculation using the data of this funcList */
     public default <A, T> T calculate(
             StreamProcessor<? extends DATA, T> processor) {
-        val funcList = funcListOf(this);
+        val funcList  = asFuncList();
         val collected = collectedOf(funcList, processor);
         funcList
         .forEach(each -> {
@@ -56,7 +57,7 @@ public interface FuncListWithCalculate<DATA> extends AsFuncList<DATA>{
     public default <T1, T2> Tuple2<T1, T2> calculate(
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2) {
-        val funcList = funcListOf(this);
+        val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);
         val collected2 = collectedOf(funcList, processor2);
         funcList
@@ -74,7 +75,7 @@ public interface FuncListWithCalculate<DATA> extends AsFuncList<DATA>{
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2,
             StreamProcessor<DATA, T3> processor3) {
-        val funcList = funcListOf(this);
+        val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);
         val collected2 = collectedOf(funcList, processor2);
         val collected3 = collectedOf(funcList, processor3);
@@ -96,7 +97,7 @@ public interface FuncListWithCalculate<DATA> extends AsFuncList<DATA>{
             StreamProcessor<DATA, T2> processor2,
             StreamProcessor<DATA, T3> processor3,
             StreamProcessor<DATA, T4> processor4) {
-        val funcList = funcListOf(this);
+        val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);
         val collected2 = collectedOf(funcList, processor2);
         val collected3 = collectedOf(funcList, processor3);
@@ -122,7 +123,7 @@ public interface FuncListWithCalculate<DATA> extends AsFuncList<DATA>{
             StreamProcessor<DATA, T3> processor3,
             StreamProcessor<DATA, T4> processor4,
             StreamProcessor<DATA, T5> processor5) {
-        val funcList = funcListOf(this);
+        val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);
         val collected2 = collectedOf(funcList, processor2);
         val collected3 = collectedOf(funcList, processor3);
@@ -152,7 +153,7 @@ public interface FuncListWithCalculate<DATA> extends AsFuncList<DATA>{
             StreamProcessor<DATA, T4> processor4,
             StreamProcessor<DATA, T5> processor5,
             StreamProcessor<DATA, T6> processor6) {
-        val funcList = funcListOf(this);
+        val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);
         val collected2 = collectedOf(funcList, processor2);
         val collected3 = collectedOf(funcList, processor3);

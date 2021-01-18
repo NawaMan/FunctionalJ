@@ -23,13 +23,21 @@
 // ============================================================================
 package functionalj.list.intlist;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.OptionalInt;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 import lombok.val;
+
+
+//TODO - Override methods in FuncListWithMapGroup to make it faster
+//TODO - Override methods in FuncListWithMapWithIndex to make it faster
 
 
 public class ImmutableIntFuncList implements IntFuncList {
@@ -41,14 +49,17 @@ public class ImmutableIntFuncList implements IntFuncList {
     
     private static ImmutableIntFuncList emptyList = new ImmutableIntFuncList(EMPTY_INT_ARRAY, true);
     
+    /** @return an empty list */
     public static ImmutableIntFuncList empty() {
         return emptyList;
     }
     
+    /** @return an empty list */
     public static ImmutableIntFuncList emptyIntList() {
         return emptyList;
     }
     
+    /** @return the list containing the given elements */
     public static ImmutableIntFuncList of(int ... source) {
        if ((source == null) || source.length == 0)
             return emptyList;
@@ -57,16 +68,13 @@ public class ImmutableIntFuncList implements IntFuncList {
         return new ImmutableIntFuncList(newArray, true);
     }
     
+    /** @return the list containing the given elements */
     public static ImmutableIntFuncList listOf(int ... source) {
        if ((source == null) || source.length == 0)
             return emptyList;
        
         val newArray = source.clone();
         return new ImmutableIntFuncList(newArray, true);
-    }
-    
-    public static ImmutableIntFuncList from(int[] data) {
-        return from(true, data);
     }
     
     public static ImmutableIntFuncList from(boolean isLazy, int[] data) {
@@ -76,6 +84,48 @@ public class ImmutableIntFuncList implements IntFuncList {
         return new ImmutableIntFuncList(data.clone(), isLazy);
     }
     
+    /** @return the list containing the given elements */
+    public static ImmutableIntFuncList from(boolean isLazy, AsIntFuncList funcList) {
+        if (funcList == null)
+            return emptyList;
+        
+        if (funcList instanceof ImmutableIntFuncList)
+            if (isLazy == funcList.asIntFuncList().isLazy())
+                return (ImmutableIntFuncList)funcList;
+        
+        val data = funcList.toArray();
+        return new ImmutableIntFuncList(data, isLazy);
+    }
+    
+    /** @return the list containing the element from the given stream */
+    public static ImmutableIntFuncList from(IntStream source) {
+        if ((source == null))
+            return emptyList;
+        
+        return new ImmutableIntFuncList(source.toArray(), true);
+    }
+    
+    /** @return the list containing the element from the given stream */
+    public static ImmutableIntFuncList from(boolean isLazy, IntStream source) {
+        if ((source == null))
+            return emptyList;
+        
+        return new ImmutableIntFuncList(source.toArray(), isLazy);
+    }
+    
+    /** @return the list containing the element from the given list. */
+    public static ImmutableIntFuncList from(AsIntFuncList funcList) {
+        if (funcList == null)
+            return emptyList;
+        
+        if (funcList instanceof ImmutableIntFuncList)
+            return (ImmutableIntFuncList)funcList;
+        
+        val isLazy = funcList.asIntFuncList().isLazy();
+        return ImmutableIntFuncList.from(isLazy, funcList);
+    }
+    
+    /** @return the list containing the element from the given collections. */
     public static ImmutableIntFuncList from(Collection<Integer> collection, int valueForNull) {
         val ints     = new int[collection.size()];
         val iterator = collection.iterator();
@@ -83,45 +133,19 @@ public class ImmutableIntFuncList implements IntFuncList {
             Integer integer = iterator.next();
             ints[i] = (integer != null) ? integer.intValue() : valueForNull;
         }
-        return new ImmutableIntFuncList(ints);
+        return new ImmutableIntFuncList(ints, true);
     }
     
-    public static ImmutableIntFuncList from(AsIntFuncList FuncList) {
-        if (FuncList == null)
-            return ImmutableIntFuncList.empty();
-        
-        return new ImmutableIntFuncList(FuncList.toArray());
-    }
-    
-    public static ImmutableIntFuncList from(boolean isLazy, AsIntFuncList FuncList) {
-        if (FuncList == null)
-            return ImmutableIntFuncList.empty();
-        
-        return new ImmutableIntFuncList(FuncList.toArray(), isLazy);
-    }
-    
-    public static ImmutableIntFuncList from(IntStream source) {
-        if ((source == null))
-            return emptyList;
-        
-        return new ImmutableIntFuncList(source.toArray());
-    }
-    
-    public static ImmutableIntFuncList from(IntFuncList funcList) {
-        if (funcList instanceof ImmutableIntFuncList)
-            return (ImmutableIntFuncList)funcList;
-        if (funcList == null)
-            return ImmutableIntFuncList.empty();
-        
-        return new ImmutableIntFuncList(funcList.toArray(), funcList.isLazy());
-    }
+    //-- Data --
     
     private final int[]   data;
     private final boolean isLazy;
     
     private volatile String  toStringCache = null;
     private volatile Integer hashcodeCache = null;
-
+    
+    //-- Constructors --
+    
     ImmutableIntFuncList(int[] data) {
         this(data, true);
     }
@@ -132,18 +156,8 @@ public class ImmutableIntFuncList implements IntFuncList {
     }
     
     @Override
-    public IntFuncList intFuncList() {
-        return ()->intStreamPlus();
-    }
-    
-    @Override
-    public IntStreamPlus intStreamPlus() {
-        return IntStreamPlus.of(data);
-    }
-    
-    @Override
     public IntStreamPlus intStream() {
-        return intStreamPlus();
+        return IntStreamPlus.from(Arrays.stream(data));
     }
     
     @Override
@@ -178,6 +192,52 @@ public class ImmutableIntFuncList implements IntFuncList {
     }
     
     @Override
+    public String toString() {
+        if (toStringCache != null)
+            return toStringCache;
+        
+        synchronized (this) {
+            if (toStringCache != null)
+                return toStringCache;
+            
+            toStringCache = toListString();
+            return toStringCache;
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        if (hashcodeCache != null)
+            return hashcodeCache;
+        
+        synchronized (this) {
+            if (hashcodeCache != null)
+                return hashcodeCache;
+            
+            hashcodeCache = reduce(43, (hash, each) -> hash*43 + each);
+            return hashcodeCache;
+        }
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof IntFuncList))
+            return false;
+        
+        if (hashCode() != o.hashCode())
+            return false;
+        
+        val anotherList = (IntFuncList)o;
+        if (size() != anotherList.size())
+            return false;
+        
+        return IntFuncList.zipOf(this, anotherList, zeroForEquals)
+                .allMatch(toZero);
+    }
+    
+    // -- Short cut --
+    
+    @Override
     public int size() {
         return data.length;
     }
@@ -197,45 +257,41 @@ public class ImmutableIntFuncList implements IntFuncList {
         return data[index];
     }
     
-    public String toString() {
-        if (toStringCache != null)
-            return toStringCache;
-        
-        synchronized (this) {
-            if (toStringCache != null)
-                return toStringCache;
-            
-            toStringCache = toListString();
-            return toStringCache;
+    @Override
+    public int indexOf(int value) {
+        for (int i = 0; i < data.length; i++) {
+            if (value == data[i])
+                return i;
         }
+        return -1;
     }
     
-    public int hashCode() {
-        if (hashcodeCache != null)
-            return hashcodeCache;
-        
-        synchronized (this) {
-            if (hashcodeCache != null)
-                return hashcodeCache;
-            
-            hashcodeCache = reduce(43, (hash, each) -> hash*43 + each);
-            return hashcodeCache;
+    @Override
+    public int lastIndexOf(int value) {
+        for (int i = data.length; i-->0;) {
+            if (value == data[i])
+                return i;
         }
+        return -1;
     }
     
-    public boolean equals(Object o) {
-        if (!(o instanceof IntFuncList))
-            return false;
-        
-        if (hashCode() != o.hashCode())
-            return false;
-        
-        val anotherList = (IntFuncList)o;
-        if (size() != anotherList.size())
-            return false;
-        
-        return IntFuncList.zipOf(this.intFuncList(), anotherList.intFuncList(), zeroForEquals)
-                .allMatch(toZero);
+    @Sequential
+    @Terminal
+    @Override
+    public OptionalInt firstResult() {
+        return (this.data.length == 0)
+                ? OptionalInt.empty()
+                : OptionalInt.of(this.data[0]);
+    }
+    
+    @Sequential
+    @Terminal
+    @Override
+    public OptionalInt lastResult() {
+        int size = this.data.length;
+        return (size == 0)
+                ? OptionalInt.empty()
+                : OptionalInt.of(this.data[size - 1]);
     }
     
 }

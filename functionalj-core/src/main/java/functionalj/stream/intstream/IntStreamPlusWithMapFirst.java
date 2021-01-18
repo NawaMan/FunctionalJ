@@ -26,10 +26,7 @@ package functionalj.stream.intstream;
 import static functionalj.stream.intstream.IntStreamPlusMapFirstAddOnHelper.doMapFirst;
 
 import java.util.function.IntFunction;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import functionalj.function.Func1;
 import functionalj.functions.ThrowFuncs;
 import functionalj.stream.StreamPlus;
 import lombok.val;
@@ -71,11 +68,6 @@ public interface IntStreamPlusWithMapFirst {
     
     public IntStreamPlus intStreamPlus();
     
-    public IntStreamPlus derive(Func1<IntStreamPlus, IntStream> action);
-    
-    public IntStreamPlus deriveToInt(Func1<IntStreamPlus, IntStream> action);
-    
-    public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<IntStreamPlus, Stream<TARGET>> action);
     
     /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(

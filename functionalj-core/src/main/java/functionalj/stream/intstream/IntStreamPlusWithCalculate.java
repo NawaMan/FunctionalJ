@@ -38,12 +38,12 @@ import lombok.val;
 public interface IntStreamPlusWithCalculate {
 
      public void forEach(IntConsumer action);
-    
-    
-    //== Calculate ==
-    
-    //TODO - Optimize this so the concurrent one can has benefit from the Java implementation
-    
+     
+     
+     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
+     //        Still not sure how to do that.
+     
+     /** Perform the calculation using the data of this stream */
     public default <RESULT, ACCUMULATED> RESULT calculate(
             IntCollectorPlus<ACCUMULATED, RESULT> collector) {
         val collected = new Collected.ByCollectedInt<>(collector);
@@ -54,6 +54,7 @@ public interface IntStreamPlusWithCalculate {
         return value;
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2>
                         Tuple2<RESULT1, RESULT2> 
@@ -72,6 +73,7 @@ public interface IntStreamPlusWithCalculate {
         );
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2, 
                     ACCUMULATED3, RESULT3>
@@ -95,6 +97,7 @@ public interface IntStreamPlusWithCalculate {
         );
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2, 
                     ACCUMULATED3, RESULT3, 
@@ -123,6 +126,7 @@ public interface IntStreamPlusWithCalculate {
         );
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2, 
                     ACCUMULATED3, RESULT3, 
@@ -156,6 +160,7 @@ public interface IntStreamPlusWithCalculate {
         );
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2, 
                     ACCUMULATED3, RESULT3, 

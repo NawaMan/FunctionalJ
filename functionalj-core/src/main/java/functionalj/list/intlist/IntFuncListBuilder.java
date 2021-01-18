@@ -30,9 +30,7 @@ public class IntFuncListBuilder {
     
     public IntFuncList build() {
         int length = list.length();
-        return () -> {
-            return list.stream().limit(length);
-        };
+        return IntFuncList.from(() -> list.stream().limit(length));
     }
     
     public IntFuncList toFuncList() {

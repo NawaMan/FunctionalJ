@@ -53,16 +53,14 @@ public interface IntStreamPlusWithCombine {
     public default IntStreamPlus prependWith(IntStream head) {
         return IntStreamPlus.concat(
                 IntStreamPlus.from(head),
-                IntStreamPlus.from(intStreamPlus())
-            );
+                IntStreamPlus.from(intStreamPlus()));
     }
     
     /** Concatenate the given tail stream to this stream. */
     public default IntStreamPlus appendWith(IntStream tail) {
         return IntStreamPlus.concat(
                 IntStreamPlus.from(intStreamPlus()),
-                IntStreamPlus.from(tail)
-            );
+                IntStreamPlus.from(tail));
     }
     
     /**
@@ -75,8 +73,8 @@ public interface IntStreamPlusWithCombine {
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
     public default IntStreamPlus mergeWith(IntStream anotherStream) {
-        val thisStream = intStreamPlus();
-        val iteratorA  = IntIteratorPlus.from(thisStream   .iterator());
+        val streamPlus = intStreamPlus();
+        val iteratorA  = IntIteratorPlus.from(streamPlus   .iterator());
         val iteratorB  = IntIteratorPlus.from(anotherStream.iterator());
         
         val resultStream
@@ -85,7 +83,7 @@ public interface IntStreamPlusWithCombine {
         
         resultStream
                 .onClose(()->{
-                    funcUnit0(()->thisStream   .close()).runCarelessly();
+                    funcUnit0(()->streamPlus   .close()).runCarelessly();
                     funcUnit0(()->anotherStream.close()).runCarelessly();
                 });
         return resultStream;
@@ -247,11 +245,11 @@ public interface IntStreamPlusWithCombine {
     }
     
     /**
-     * Create a new stream by choosing value from each stream suing the selector.
+     * Create a new stream by choosing value from each stream using the selector.
      * The parameter option can be used to select when the stream should end.
      * In the case that the unpair is allow,
      *   the value from the longer stream is automatically used after the shorter stream ended.
-     *
+     * 
      * For an example with ZipWithOption.AllowUnpaired: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>

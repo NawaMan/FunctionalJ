@@ -24,6 +24,7 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.DoubleFuncList.deriveToDouble;
+import static functionalj.list.doublelist.DoubleFuncList.deriveToInt;
 import static functionalj.list.doublelist.DoubleFuncList.deriveToObj;
 
 import java.util.function.DoubleFunction;
@@ -32,7 +33,9 @@ import java.util.function.DoubleUnaryOperator;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntDoubleBiFunction;
 import functionalj.function.IntDoubleToDoubleFunction;
+import functionalj.function.IntDoubleToIntegerFunction;
 import functionalj.list.FuncList;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.tuple.IntDoubleTuple;
 
 public interface DoubleFuncListWithMapWithIndex extends AsDoubleFuncList {
@@ -52,6 +55,11 @@ public interface DoubleFuncListWithMapWithIndex extends AsDoubleFuncList {
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> FuncList<T> mapToObjWithIndex(IntDoubleBiFunction<T> combinator) {
         return deriveToObj(this, stream -> stream.mapToObjWithIndex(combinator));
+    }
+    
+    /** Create a stream whose value is the combination between value of this stream and its index. */
+    public default IntFuncList mapToIntWithIndex(IntDoubleToIntegerFunction combinator) {
+        return deriveToInt(this, stream -> stream.mapToIntWithIndex(combinator));
     }
     
     /** Create a stream whose value is the combination between the mapped value of this stream and its index. */

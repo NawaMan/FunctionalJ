@@ -35,10 +35,10 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
-
 public interface StreamPlusWithCalculate<DATA> {
 
     public void forEach(Consumer<? super DATA> action);
+    
     
     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
     //        Still not sure how to do that.

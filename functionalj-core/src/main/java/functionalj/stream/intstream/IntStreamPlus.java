@@ -24,6 +24,7 @@
 package functionalj.stream.intstream;
 
 import static functionalj.function.Func.itself;
+import static functionalj.stream.intstream.IntStreamPlusHelper.terminate;
 
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
@@ -51,11 +52,11 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.Func1;
-import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
+import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
@@ -91,7 +92,12 @@ public interface IntStreamPlus
             IntStreamPlusWithSort,
             IntStreamPlusWithSplit {
     
-    // //== Constructor ==
+    /** Throw a no more element exception. This is used for generator. */
+    public static int noMoreElement() throws NoMoreResultException {
+        return SupplierBackedIterator.noMoreElement();
+    }
+    
+    //== Constructor ==
     
     /** Returns an empty IntStreamPlus. */
     public static IntStreamPlus empty() {
@@ -101,8 +107,7 @@ public interface IntStreamPlus
     
     /** Returns an empty StreamPlus. */
     public static IntStreamPlus emptyIntStream() {
-        return IntStreamPlus
-                .from(IntStream.empty());
+        return empty();
     }
     
     /** Returns an empty StreamPlus. */
@@ -145,12 +150,12 @@ public interface IntStreamPlus
         return IntStreamPlus.generate(()->1).limit(count);
     }
     
-    /** Create a StreamPlus that is the repeat of the given array of data. */
+    /** Create a stream that is the repeat of the given array of data. */
     public static IntStreamPlus repeat(int ... data) {
         return cycle(data);
     }
     
-    /** Create a StreamPlus that is the repeat of the given array of data. */
+    /** Create a stream that is the repeat of the given array of data. */
     public static IntStreamPlus cycle(int ... data) {
         val ints = Arrays.copyOf(data, data.length);
         val size = ints.length;
@@ -160,13 +165,13 @@ public interface IntStreamPlus
                 .map(i -> data[i % size]));
     }
     
-    /** Create a StreamPlus that for a loop with the number of time given - the value is the index of the loop. */
+    /** Create a stream that for a loop with the number of time given - the value is the index of the loop. */
     public static IntStreamPlus loop() {
         return IntStreamPlus
                 .infinite();
     }
     
-    /** Create a StreamPlus that for a loop with the number of time given - the value is the index of the loop. */
+    /** Create a stream that for a loop with the number of time given - the value is the index of the loop. */
     public static IntStreamPlus loop(int time) {
         return IntStreamPlus
                 .infinite()
@@ -185,10 +190,15 @@ public interface IntStreamPlus
                 .limit(time);
     }
     
-    /** Create a StreamPlus that for an infinite loop - the value is the index of the loop. */
+    /** Create a stream that for an infinite loop - the value is the index of the loop. */
     public static IntStreamPlus infinite() {
         return IntStreamPlus
                 .from(IntStream.range(0, Integer.MAX_VALUE));
+    }
+    
+    /** Create a stream that for an infinite loop - the value is the index of the loop. */
+    public static IntStreamPlus infiniteInt() {
+        return infinite();
     }
     
     public static IntStreamPlus naturalNumbers() {
@@ -222,8 +232,7 @@ public interface IntStreamPlus
         return StreamPlus
                 .of          (streams)
                 .map         (s -> IntStreamPlus.from(s))
-                .flatMapToInt(s -> s.intStream())
-                .mapToInt    (i -> i);
+                .flatMapToInt(s -> s.intStream());
     }
     
     /** Concatenate all the given streams. */
@@ -299,7 +308,7 @@ public interface IntStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator compounder) {
+    public static IntStreamPlus iterate(int seed1, int seed2, IntBiFunctionPrimitive compounder) {
         return IntStreamPlus.from(StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(Long.MAX_VALUE, 0) {
             private final    AtomicInteger first  = new AtomicInteger(seed1);
             private final    AtomicInteger second = new AtomicInteger(seed2);
@@ -344,7 +353,7 @@ public interface IntStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static IntStreamPlus compound(int seed1, int seed2, IntBinaryOperator f) {
+    public static IntStreamPlus compound(int seed1, int seed2, IntBiFunctionPrimitive f) {
         return iterate(seed1, seed2, f);
     }
     
@@ -410,27 +419,41 @@ public interface IntStreamPlus
     
     //== Core ==
     
+    /** Return the stream of data behind this stream. */
     public IntStream intStream();
     
-    public default IntStreamPlus derive(Func1<IntStreamPlus, IntStream> action) {
-        return IntStreamPlus.from(action.apply(this));
-    }
     
-    public default IntStreamPlus deriveToInt(Func1<IntStreamPlus, IntStream> action) {
-        return IntStreamPlus.from(action.apply(this));
-    }
-    
-    public default <TARGET> StreamPlus<TARGET> deriveToObj(Func1<IntStreamPlus, Stream<TARGET>> action) {
-        return StreamPlus.from(action.apply(this));
-    }
-    
+    /** Return this stream. */
     public default IntStreamPlus intStreamPlus() {
         return this;
     }
     
+    //-- Derive --
+    
+    public default IntStreamPlus derive(Function<IntStreamPlus, IntStream> action) {
+        return IntStreamPlus
+                .from(action.apply(this));
+    }
+    
+    public default IntStreamPlus deriveToInt(Function<IntStreamPlus, IntStream> action) {
+        return IntStreamPlus
+                .from(action.apply(this));
+    }
+    
+    public default DoubleStreamPlus deriveToDouble(Function<IntStreamPlus, DoubleStream> action) {
+        return DoubleStreamPlus
+                .from(action.apply(this));
+    }
+    
+    public default <TARGET> StreamPlus<TARGET> deriveToObj(Function<IntStreamPlus, Stream<TARGET>> action) {
+        return StreamPlus
+                .from(action.apply(this));
+    }
+    
     @Override
     public default StreamPlus<Integer> boxed() {
-        return StreamPlus.from(intStream().boxed());
+        return StreamPlus
+                .from(intStream().boxed());
     }
     
     @Override
@@ -440,42 +463,7 @@ public interface IntStreamPlus
     
     @Override
     public default LongStream asLongStream() {
-        return mapToLong(i -> i);
-    }
-    
-    // //== Helper functions ==
-    
-    public default <TARGET> TARGET terminate(
-            Function<IntStream, TARGET> action) {
-        val stream = intStream();
-        try {
-            val result = action.apply(stream);
-            return result;
-        } finally {
-            stream.close();
-        }
-    }
-    
-    public default void terminate(FuncUnit1<IntStream> action) {
-        val stream = intStream();
-        try {
-            action.accept(stream);
-        } finally {
-            stream.close();
-        }
-    }
-    
-    public default IntStreamPlus sequential(Func1<IntStreamPlus, IntStreamPlus> action) {
-        val isParallel = isParallel();
-        val orgIntStreamPlus = sequential();
-        val newIntStreamPlus = action.apply(orgIntStreamPlus);
-        if (newIntStreamPlus.isParallel() == isParallel)
-            return newIntStreamPlus;
-        
-        if (isParallel)
-            return newIntStreamPlus.parallel();
-        
-        return newIntStreamPlus.sequential();
+        return mapToLong(value -> value);
     }
     
     //-- Characteristics --
@@ -490,8 +478,10 @@ public interface IntStreamPlus
      *
      * @return a sequential stream
      */
+    @Override
     public default IntStreamPlus sequential() {
-        return IntStreamPlus.from(intStream().sequential());
+        return IntStreamPlus
+                .from(intStream().sequential());
     }
     
     /**
@@ -506,7 +496,8 @@ public interface IntStreamPlus
      */
     @Override
     public default IntStreamPlus parallel() {
-        return IntStreamPlus.from(intStream().parallel());
+        return IntStreamPlus
+                .from(intStream().parallel());
     }
     
     /**
@@ -522,7 +513,8 @@ public interface IntStreamPlus
      */
     @Override
     public default IntStreamPlus unordered() {
-        return IntStreamPlus.from(intStream().unordered());
+        return IntStreamPlus
+                .from(intStream().unordered());
     }
     
     /**
@@ -534,7 +526,8 @@ public interface IntStreamPlus
      */
     @Override
     public default boolean isParallel() {
-        return intStream().isParallel();
+        return intStream()
+                .isParallel();
     }
     
     //-- Close --
@@ -542,12 +535,14 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default void close() {
-        intStream().close();
+        intStream()
+            .close();
     }
     
     @Override
     public default IntStreamPlus onClose(Runnable closeHandler) {
-        return IntStreamPlus.from(intStream().onClose(closeHandler));
+        return IntStreamPlus
+                .from(intStream().onClose(closeHandler));
     }
     
     //-- Iterator --
@@ -555,16 +550,15 @@ public interface IntStreamPlus
     /** @return a iterator of this FuncList. */
     @Override
     public default IntIteratorPlus iterator() {
-        return IntIteratorPlus.from(intStream().iterator());
+        return IntIteratorPlus
+                .from(intStream().iterator());
     }
     
     /** @return a spliterator of this FuncList. */
     @Override
     public default Spliterator.OfInt spliterator() {
-        return terminate(s -> {
-            val iterator = iterator();
-            return Spliterators.spliteratorUnknownSize(iterator, 0);
-        });
+        val iterator = iterator();
+        return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
     //== Functionalities ==
@@ -614,6 +608,10 @@ public interface IntStreamPlus
         return DoubleStreamPlus.from(mapToObj(mapper).flatMapToDouble(itself()));
     }
     
+    public default <DATA> StreamPlus<DATA> flatMapToObj(IntFunction<? extends Stream<DATA>> mapper) {
+        return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
+    }
+    
     //-- Filter --
     
     @Override
@@ -639,6 +637,8 @@ public interface IntStreamPlus
     public default IntStreamPlus skip(long offset) {
         return IntStreamPlus.from(intStream().skip(offset));
     }
+    
+    //-- Distinct --
     
     @Override
     public default IntStreamPlus distinct() {
@@ -668,7 +668,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default void forEach(IntConsumer action) {
-        terminate(stream -> {
+        terminate(this, stream -> {
             stream
             .forEach(action);
         });
@@ -679,8 +679,9 @@ public interface IntStreamPlus
     @Sequential
     @Override
     public default void forEachOrdered(IntConsumer action) {
-        terminate(stream -> {
+        terminate(this, stream -> {
             stream
+            .sequential    ()
             .forEachOrdered(action);
         });
     }
@@ -689,7 +690,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default int reduce(int identity, IntBinaryOperator reducer) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .reduce(identity, reducer);
         });
@@ -699,7 +700,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default OptionalInt reduce(IntBinaryOperator reducer) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .reduce(reducer);
         });
@@ -712,7 +713,7 @@ public interface IntStreamPlus
             Supplier<R>       supplier,
             ObjIntConsumer<R> accumulator,
             BiConsumer<R, R>  combiner) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .collect(supplier, accumulator, combiner);
         });
@@ -724,7 +725,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default OptionalInt min() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.min();
         });
     }
@@ -733,7 +734,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default OptionalInt max() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.max();
         });
     }
@@ -742,7 +743,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default long count() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .count();
         });
@@ -752,7 +753,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default int sum() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.sum();
         });
     }
@@ -761,7 +762,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default OptionalDouble average() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.average();
         });
     }
@@ -770,7 +771,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default IntSummaryStatistics summaryStatistics() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .summaryStatistics();
         });
@@ -781,7 +782,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default boolean anyMatch(IntPredicate predicate) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .anyMatch(predicate);
         });
@@ -791,7 +792,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default boolean allMatch(IntPredicate predicate) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .allMatch(predicate);
         });
@@ -801,7 +802,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default boolean noneMatch(IntPredicate predicate) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .noneMatch(predicate);
         });
@@ -810,7 +811,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default OptionalInt findFirst() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .findFirst();
         });
@@ -819,7 +820,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default OptionalInt findAny() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .findAny();
         });
@@ -834,7 +835,7 @@ public interface IntStreamPlus
     @Sequential
     @Terminal
     public default OptionalInt lastResult() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             boolean[] isAdded = new boolean[] { false };
             int[]     dataRef = new int[0];
             stream.peek(i -> isAdded[0] = true).forEach(i -> dataRef[0] = i);
@@ -848,7 +849,7 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default int[] toArray() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .toArray();
         });

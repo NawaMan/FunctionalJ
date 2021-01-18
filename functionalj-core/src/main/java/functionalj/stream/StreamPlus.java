@@ -56,6 +56,7 @@ import functionalj.function.DoubleDoubleBiFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
+import functionalj.list.FuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
 import functionalj.stream.doublestream.DoubleStreamPlus;
@@ -131,7 +132,8 @@ public interface StreamPlus<DATA>
     
     /** Returns an empty StreamPlus. */
     public static <TARGET> StreamPlus<TARGET> empty() {
-        return StreamPlus.from(Stream.empty());
+        return StreamPlus
+                .from(Stream.empty());
     }
     
     /** Returns an empty StreamPlus. */
@@ -150,6 +152,8 @@ public interface StreamPlus<DATA>
     public static <TARGET> StreamPlus<TARGET> streamOf(TARGET ... data) {
         return StreamPlus.of(data);
     }
+    
+    //-- from other type --
     
     /** Create a StreamPlus from the given data. */
     public static <TARGET> StreamPlus<TARGET> from(TARGET[] data, int start, int length) {
@@ -177,6 +181,61 @@ public interface StreamPlus<DATA>
     public static <TARGET> StreamPlus<TARGET> from(Enumeration<TARGET> enumeration) {
         val iterable = (Iterable<TARGET>)() -> new EnumerationBackedIterator<TARGET>(enumeration);
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+    }
+    
+    /** @return  the streams containing null value. */
+    public static <TARGET> StreamPlus<TARGET> nulls() {
+        return generateWith(() -> null);
+    }
+    
+    /** @return  the streams containing null value. */
+    public static <TARGET> StreamPlus<TARGET> nulls(Class<TARGET> dataClass) {
+        return generateWith(() -> null);
+    }
+    
+    /** Create a list that is the repeat of the given array of data. */
+    @SuppressWarnings("unchecked")
+    public static <TARGET> StreamPlus<TARGET> repeat(TARGET ... data) {
+        return cycle(data);
+    }
+    
+    /** Create a list that is the repeat of the given list of data. */
+    public static <TARGET> StreamPlus<TARGET> repeat(FuncList<TARGET> data) {
+        return cycle(data);
+    }
+    
+    /** Create a FuncList that is the repeat of the given array of data. */
+    @SafeVarargs
+    public static <TARGET> StreamPlus<TARGET> cycle(TARGET ... data) {
+        val size = data.length;
+        return IntStreamPlus
+                .wholeNumbers()
+                .mapToObj(i -> data[i % size]);
+    }
+    
+    /** Create a FuncList that is the repeat of the given list of data. */
+    public static <TARGET> StreamPlus<TARGET> cycle(FuncList<TARGET> data) {
+        val size = data.size();
+        return IntStreamPlus
+                .wholeNumbers()
+                .mapToObj(i -> data.get(i % size));
+    }
+    
+    /** Create a FuncList that for an infinite loop - the value is boolean true */
+    public static <TARGET> StreamPlus<TARGET> loop() {
+        return nulls();
+    }
+    
+    /** Create a FuncList that for a loop with the number of time given - the value is the index of the loop. */
+    public static <TARGET> StreamPlus<TARGET> loop(int times) {
+        return nulls((Class<TARGET>)null).limit(times);
+    }
+    
+    /** Create a FuncList that for an infinite loop - the value is the index of the loop. */
+    public static StreamPlus<Integer> infiniteInt() {
+        return IntStreamPlus
+                .wholeNumbers()
+                .boxed();
     }
     
     /** Concatenate all the given streams. */
@@ -226,6 +285,8 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
+    //== Iterate + Compound ==
+    
     /**
      * Create a StreamPlus by apply the compounder to the seed over and over.
      *
@@ -240,7 +301,6 @@ public interface StreamPlus<DATA>
      *
      * Note: this is an alias of compound()
      **/
-    // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> StreamPlus<TARGET> iterate(
             TARGET                   seed,
             Function<TARGET, TARGET> compounder) {
@@ -261,7 +321,6 @@ public interface StreamPlus<DATA>
      *
      * Note: this is an alias of iterate()
      **/
-    // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> StreamPlus<TARGET> compound(
             TARGET                   seed,
             Function<TARGET, TARGET> compounder) {
@@ -331,13 +390,14 @@ public interface StreamPlus<DATA>
      *
      * Note: this is an alias of iterate()
      **/
-    // TODO - Make it a throwable version of BinaryOperator
     public static <TARGET> StreamPlus<TARGET> compound(
             TARGET                             seed1,
             TARGET                             seed2,
             BiFunction<TARGET, TARGET, TARGET> compounder) {
         return iterate(seed1, seed2, compounder);
     }
+    
+    //== ZipOf ==
     
     /**
      * Create a StreamPlus by combining elements together into a StreamPlus of tuples.
@@ -353,7 +413,7 @@ public interface StreamPlus<DATA>
             Stream<T1> stream1,
             Stream<T2> stream2) {
         return StreamPlus.from(stream1)
-                .zipWith(stream2, ZipWithOption.RequireBoth);
+                .zipWith(StreamPlus.from(stream2), ZipWithOption.RequireBoth);
     }
     
     /**
@@ -372,7 +432,7 @@ public interface StreamPlus<DATA>
             Stream<T2>                 stream2,
             BiFunction<T1, T2, TARGET> merger) {
         return StreamPlus.from(stream1)
-                .zipWith(stream2, ZipWithOption.RequireBoth, merger);
+                .zipWith(StreamPlus.from(stream2), ZipWithOption.RequireBoth, merger);
     }
     
     /**
@@ -435,20 +495,28 @@ public interface StreamPlus<DATA>
     
     //-- Derive --
     
-    public default <TARGET> StreamPlus<TARGET> derive(Function<StreamPlus<DATA>, Stream<TARGET>> action) {
-        return StreamPlus.from(action.apply(this));
+    public default <TARGET> StreamPlus<TARGET> derive(
+            Function<StreamPlus<DATA>, Stream<TARGET>> action) {
+        return StreamPlus
+                .from(action.apply(this));
     }
     
-    public default IntStreamPlus deriveToInt(Function<StreamPlus<DATA>, IntStream> action) {
-        return IntStreamPlus.from(action.apply(this));
+    public default IntStreamPlus deriveToInt(
+            Function<StreamPlus<DATA>, IntStream> action) {
+        return IntStreamPlus
+                .from(action.apply(this));
     }
     
-    public default DoubleStreamPlus deriveToDouble(Function<StreamPlus<DATA>, DoubleStream> action) {
-        return DoubleStreamPlus.from(action.apply(this));
+    public default DoubleStreamPlus deriveToDouble(
+            Function<StreamPlus<DATA>, DoubleStream> action) {
+        return DoubleStreamPlus
+                .from(action.apply(this));
     }
     
-    public default <TARGET> StreamPlus<TARGET> deriveToObj(Function<StreamPlus<DATA>, Stream<TARGET>> action) {
-        return StreamPlus.from(action.apply(this));
+    public default <TARGET> StreamPlus<TARGET> deriveToObj(
+            Function<StreamPlus<DATA>, Stream<TARGET>> action) {
+        return StreamPlus
+                .from(action.apply(this));
     }
     
     //-- Characteristics --
@@ -465,8 +533,8 @@ public interface StreamPlus<DATA>
      */
     @Override
     public default StreamPlus<DATA> sequential() {
-        return StreamPlus.from(stream()
-                .sequential());
+        return StreamPlus
+                .from(stream().sequential());
     }
     
     /**
@@ -481,8 +549,8 @@ public interface StreamPlus<DATA>
      */
     @Override
     public default StreamPlus<DATA> parallel() {
-        return StreamPlus.from(stream()
-                .parallel());
+        return StreamPlus
+                .from(stream().parallel());
     }
     
     /**
@@ -498,8 +566,8 @@ public interface StreamPlus<DATA>
      */
     @Override
     public default StreamPlus<DATA> unordered() {
-        return StreamPlus.from(stream()
-                .unordered());
+        return StreamPlus
+                .from(stream().unordered());
     }
     
     /**
@@ -543,6 +611,8 @@ public interface StreamPlus<DATA>
         val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
+    
+    //== Functionalities ==
     
     //-- Map --
     
@@ -591,6 +661,10 @@ public interface StreamPlus<DATA>
     @Override
     public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
         return DoubleStreamPlus.from(stream().flatMapToDouble(mapper));
+    }
+    
+    public default <T> StreamPlus<T> flatMapToObj(Function<? super DATA, ? extends Stream<? extends T>> mapper) {
+        return StreamPlus.from(stream().flatMap(mapper));
     }
     
     //-- Filter --
@@ -710,6 +784,7 @@ public interface StreamPlus<DATA>
         });
     }
     
+    @SuppressWarnings("hiding")
     @Eager
     @Terminal
     @Override

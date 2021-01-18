@@ -21,35 +21,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.list;
+package functionalj.list.intlist;
 
-import static functionalj.list.AsFuncListHelper.funcListOf;
-import static functionalj.list.FuncList.deriveFrom;
+import java.util.ArrayList;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
+import functionalj.list.FuncList;
+import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.stream.intstream.GrowOnlyIntArray;
 import lombok.val;
 
-public interface FuncListWithFlatMap<DATA> extends AsFuncList<DATA> {
+
+public class IntFuncListHelper {
     
-    /** FlatMap with the given mapper for only the value that pass the condition. */
-    public default FuncList<DATA> flatMapOnly(
-            Predicate<? super DATA>                          checker, 
-            Function<? super DATA, ? extends FuncList<DATA>> mapper) {
-        val funcList = funcListOf(this);
-        return deriveFrom(funcList, stream -> stream.flatMapOnly(checker, value -> mapper.apply(value).stream()));
-    }
-    
-    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
-    public default <T> FuncList<T> flatMapIf(
-            Predicate<? super DATA>                       checker, 
-            Function<? super DATA, ? extends FuncList<T>> mapper, 
-            Function<? super DATA, ? extends FuncList<T>> elseMapper) {
-        val funcList = funcListOf(this);
-        return deriveFrom(funcList, stream -> {
-            return stream.flatMapIf(checker, value -> mapper.apply(value).stream(), value -> elseMapper.apply(value).stream());
-        });
+    static <D> FuncList<IntFuncList> segmentByPercentiles(AsIntFuncList asList, DoubleFuncList percentiles) {
+        val list = asList.asIntFuncList().sorted();
+        val size = list.size();
+        DoubleFuncList indexes 
+                = percentiles
+                .append(100.0)
+                .sorted()
+                .map   (d -> (int)Math.round(d*size/100))
+                .toImmutableList();
+        
+        val lists   = new ArrayList<GrowOnlyIntArray>();
+        for (int i = 0; i < indexes.size(); i++) {
+            lists.add(new GrowOnlyIntArray());
+        }
+        int idx = 0;
+        for (int i = 0; i < size; i++) {
+            if (i >= indexes.get(idx)) {
+                idx++;
+            }
+            val l = lists.get(idx);
+            val element = list.get(i);
+            l.add(element);
+        }
+        
+        return FuncList.from(lists.stream().map(each -> each.toFuncList()));
     }
     
 }

@@ -23,24 +23,29 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
 
+import java.util.List;
 import java.util.function.BiFunction;
 
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
     
     
     /** Concatenate the given head stream in front of this stream. */
-    public default FuncList<DATA> prependWith(FuncList<DATA> head) {
-        return deriveFrom(this, stream -> stream.prependWith(head.stream()));
+    public default FuncList<DATA> prependWith(List<DATA> head) {
+        val funcList = funcListOf(this);
+        return FuncList.concat(FuncList.from(head), funcList);
     }
 
     /** Concatenate the given tail stream to this stream. */
-    public default FuncList<DATA> appendWith(FuncList<DATA> tail) {
-        return deriveFrom(this, stream -> stream.appendWith(tail.streamPlus()));
+    public default FuncList<DATA> appendWith(List<DATA> tail) {
+        val funcList = funcListOf(this);
+        return FuncList.concat(funcList, FuncList.from(tail));
     }
     
     /**
@@ -52,8 +57,9 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
      *   Another list: [1, 2, 3, 4, 5] <br>
      *   Result list:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
-    public default FuncList<DATA> mergeWith(FuncList<DATA> anotherList) {
-        return deriveFrom(this, stream -> stream.mergeWith(anotherList.stream()));
+    public default FuncList<DATA> mergeWith(List<DATA> anotherList) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mergeWith(anotherList.stream()));
     }
     
     //-- Zip --
@@ -67,8 +73,9 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
      *   Another list: [1, 2, 3, 4, 5] <br>
      *   Result list:  [(A, 1), (B, 2), (C, 3)] <br>
      */
-    public default <B> FuncList<Tuple2<DATA,B>> zipWith(FuncList<B> anotherList) {
-        return deriveFrom(this, stream -> stream.zipWith(anotherList.stream()));
+    public default <ANOTHER> FuncList<Tuple2<DATA,ANOTHER>> zipWith(List<ANOTHER> anotherList) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream()));
     }
     
     /**
@@ -80,10 +87,11 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
      *   Another list: [1, 2, 3, 4, 5] <br>
      *   Result list:  [(A, 1), (B, 2), (C, 3), (null, 4), (null, 5)] <br>
      */
-    public default <B> FuncList<Tuple2<DATA,B>> zipWith(
-            FuncList<B>   anotherList,
+    public default <ANOTHER> FuncList<Tuple2<DATA,ANOTHER>> zipWith(
+            List<ANOTHER> anotherList,
             ZipWithOption option) {
-        return deriveFrom(this, stream -> stream.zipWith(anotherList.stream(), option));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream(), option));
     }
     
     /**
@@ -96,10 +104,11 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
      *   Combinator:   (v1,v2) -> v1 + "-" + v2
      *   Result list:  [A-1, B-2, C-3] <br>
      */
-    public default <B, C> FuncList<C> zipWith(
-            FuncList<B>            anotherList, 
-            BiFunction<DATA, B, C> combinator) {
-        return deriveFrom(this, stream -> stream.zipWith(anotherList.stream(), combinator));
+    public default <ANOTHER, TARGET> FuncList<TARGET> zipWith(
+            List<ANOTHER>                     anotherList, 
+            BiFunction<DATA, ANOTHER, TARGET> combinator) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream(), combinator));
     }
     
     /**
@@ -112,11 +121,12 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
      *   Combinator:   (v1,v2) -> v1 + "-" + v2
      *   Result list:  [A-1, B-2, C-3, null-4, null-5] <br>
      */
-    public default <B, C> FuncList<C> zipWith(
-            FuncList<B>            anotherList, 
-            ZipWithOption          option,
-            BiFunction<DATA, B, C> combinator) {
-        return deriveFrom(this, stream -> stream.zipWith(anotherList.stream(), option, combinator));
+    public default <ANOTHER, TARGET> FuncList<TARGET> zipWith(
+            List<ANOTHER>                     anotherList, 
+            ZipWithOption                     option,
+            BiFunction<DATA, ANOTHER, TARGET> combinator) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream(), option, combinator));
     }
     
     /**
@@ -130,9 +140,10 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default FuncList<DATA> choose(
-            FuncList<DATA>                  anotherFuncList,
+            List<DATA>                      anotherFuncList,
             BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveFrom(this, stream -> stream.choose(anotherFuncList.stream(), selectThisNotAnother));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.choose(anotherFuncList.stream(), selectThisNotAnother));
     }
     
     /**
@@ -146,10 +157,11 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default FuncList<DATA> choose(
-            FuncList<DATA>                  anotherFuncList,
+            List<DATA>                      anotherFuncList,
             ZipWithOption                   option,
             BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveFrom(this, stream -> stream.choose(anotherFuncList.stream(), option, selectThisNotAnother));
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.choose(anotherFuncList.stream(), option, selectThisNotAnother));
     }
     
 }

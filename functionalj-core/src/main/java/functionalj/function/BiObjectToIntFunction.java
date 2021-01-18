@@ -23,22 +23,25 @@
 // ============================================================================
 package functionalj.function;
 
+import java.util.function.BiFunction;
+
 import lombok.val;
 
 @FunctionalInterface
-public interface BiObjectToIntFunction extends ToIntBiDoubleFunction<Double> {
+public interface BiObjectToIntFunction<INPUT1, INPUT2> extends BiFunction<INPUT1, INPUT2, Integer> {
     
-    public int applyAsDoubleAndDouble(double data, double doubleValue);
+    public int applyAsInt(INPUT1 input1, INPUT2 input2);
     
-    public default int applyAsInt(Double data, double doubleValue) {
-        return applyAsDoubleAndDouble(data, doubleValue);
+    public default Integer apply(INPUT1 input1, INPUT2 input2) {
+        return applyAsInt(input1, input2);
     }
     
-    public static double apply(ToDoubleBiDoubleFunction<Double> function, double value, double anotherValue) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <INPUT1, INPUT2> int apply(BiFunction<INPUT1, INPUT2, Integer> function, INPUT1 input1, INPUT2 input2) {
         val resValue 
             = (function instanceof BiObjectToIntFunction)
-            ? ((BiObjectToIntFunction)function).applyAsDoubleAndDouble(value, anotherValue)
-            : function.applyAsDouble(value, anotherValue);
+            ? ((BiObjectToIntFunction)function).applyAsInt(input1, input2)
+            : function.apply(input1, input2);
         return resValue;
     }
 }

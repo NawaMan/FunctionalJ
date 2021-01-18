@@ -25,38 +25,67 @@ package functionalj.list.intlist;
 
 
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.IntPredicate;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 
-class IntFuncListDerivedFromIntFuncList
-                implements IntFuncList {
+public class IntFuncListDerived implements IntFuncList {
     
     private static final IntBiFunctionPrimitive zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
     private static final IntPredicate           toZero        = (int i)          -> i  == 0;
     
-    private AsIntFuncList source;
+    //-- Data --
     
-    public IntFuncListDerivedFromIntFuncList(AsIntFuncList souce) {
-        this.source = Objects.requireNonNull(souce);
+    private final Object source;
+    private final Function<IntStream, IntStream> action;
+    
+    //-- Constructors --
+    
+    IntFuncListDerived(AsIntFuncList source, Function<IntStream, IntStream> action) {
+        this.source = Objects.requireNonNull(source);
+        this.action = Objects.requireNonNull(action);
+    }
+    IntFuncListDerived(Supplier<IntStream> streams) {
+        this.action = stream -> stream;
+        this.source = streams;
+    }
+    IntFuncListDerived(Supplier<IntStream> streams, Function<IntStream, IntStream> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = streams;
     }
     
-    @Override
-    public IntFuncList asIntFuncList() {
-        return source.asIntFuncList();
+    //-- Source Stream --
+    
+    @SuppressWarnings("unchecked")
+    private IntStream getSourceStream() {
+        if (source == null)
+            return IntStream.empty();
+        if (source instanceof IntFuncList)
+            return (IntStream)((IntFuncList)source).intStream();
+        if (source instanceof Supplier)
+            return ((Supplier<IntStream>)source).get();
+        throw new IllegalStateException();
     }
     
-    @Override
-    public IntStreamPlus intStreamPlus() {
-        return intFuncList().intStreamPlus();
-    }
-
     @Override
     public IntStreamPlus intStream() {
-        return intStreamPlus();
+        IntStream theStream = getSourceStream();
+        IntStream newStream = action.apply(theStream);
+        return IntStreamPlus.from(newStream);
+    }
+    
+    public boolean isLazy() {
+        return true;
+    }
+    
+    public boolean isEager() {
+        return false;
     }
     
     @Override
@@ -70,14 +99,17 @@ class IntFuncListDerivedFromIntFuncList
         return new ImmutableIntFuncList(data, false);
     }
     
-    public String toString() {
-        return intFuncList().toListString();
+    @Override
+    public ImmutableIntFuncList toImmutableList() {
+        return ImmutableIntFuncList.from(this);
     }
     
+    @Override
     public int hashCode() {
         return reduce(43, (hash, each) -> hash*43 + each);
     }
     
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof IntFuncList))
             return false;
@@ -86,11 +118,13 @@ class IntFuncListDerivedFromIntFuncList
             return false;
         
         val anotherList = (IntFuncList)o;
-        if (size() != anotherList.size())
-            return false;
-        
-        return IntFuncList.zipOf(this.intFuncList(), anotherList.intFuncList(), zeroForEquals)
+        return IntFuncList.zipOf(this, anotherList, zeroForEquals)
                 .allMatch(toZero);
+    }
+    
+    @Override
+    public String toString() {
+        return asIntFuncList().toListString();
     }
     
 }

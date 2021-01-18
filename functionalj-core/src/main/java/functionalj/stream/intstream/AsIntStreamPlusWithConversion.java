@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,6 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BinaryOperator;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
@@ -39,6 +41,7 @@ import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.list.intlist.ImmutableIntFuncList;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.stream.markers.Eager;
@@ -50,7 +53,41 @@ public interface AsIntStreamPlusWithConversion {
     
     public IntStreamPlus intStreamPlus();
     
+    /** @return a iterator of this FuncList. */
+    public default IntIteratorPlus iterator() {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .iterator();
+    }
+    
+    /** @return a spliterator of this FuncList. */
+    public default Spliterator.OfInt spliterator() {
+        val iterator = iterator();
+        return Spliterators
+                .spliteratorUnknownSize(iterator, 0);
+    }
+    
+    /** 
+     * @return a functional list containing the elements.
+     * 
+     * Note: This method will materialize the elements and put in a list.
+     **/
+    @Eager
+    @Terminal
+    public default IntFuncList toFuncList() {
+        return toImmutableList();
+    }
+    
+    
     //-- toArray --
+    
+    @Eager
+    @Terminal
+    public default int[] toArray() {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .toArray();
+    }
     
     /** Map the data to byte and return the byte array of all the results. */
     @Eager
@@ -93,12 +130,11 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default ArrayList<Integer> toArrayList() {
-        //TODO - This is not efficient but without knowing the size, it is not so easy to do efficiently
-        //       The proper solution for this is to have the stream itself contain the marker if it knows its size.
-        //       May be by using peekSize() method to check the size and the forEach to populate it.
         val streamPlus = intStreamPlus();
-        val javaList = streamPlus.boxed().toJavaList();
-        return new ArrayList<Integer>(javaList);
+        val newList    = new ArrayList<Integer>();
+        streamPlus
+            .forEach(value -> newList.add(value));
+        return newList;
     }
     
     /** @return an immutable list containing the elements. */

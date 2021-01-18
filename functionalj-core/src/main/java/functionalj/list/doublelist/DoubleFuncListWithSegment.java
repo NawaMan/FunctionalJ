@@ -24,22 +24,20 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.FuncList.deriveFrom;
-import static functionalj.list.doublelist.DoubleFuncList.from;
 
 import java.util.Comparator;
-import java.util.function.BiFunction;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
-import java.util.function.DoubleUnaryOperator;
 
 import functionalj.list.FuncList;
 import functionalj.list.intlist.IntFuncList;
+import functionalj.stream.IncompletedSegment;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
-public interface DoubleFuncListWithReshape extends AsDoubleFuncList {
+public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
     
     /**
      * Segment the stream into sub stream with the fix length of count.
@@ -65,6 +63,22 @@ public interface DoubleFuncListWithReshape extends AsDoubleFuncList {
     }
     
     /**
+     * Segment the stream into sub stream with the fix length of count.
+     * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
+     *
+     * @param count        the element count of the sub stream.
+     * @param includeTail  the option indicating if the last sub stream that does not have count element is to be included
+     *                       as opposed to thrown away.
+     * @return             the stream of sub stream.
+     */
+    public default FuncList<DoubleStreamPlus> segmentSize(
+            int                count,
+            IncompletedSegment incompletedSegment) {
+        val includeTail = (incompletedSegment == IncompletedSegment.included);
+        return deriveFrom(this, stream -> stream.segmentSize(count, includeTail));
+    }
+    
+    /**
      * Segment the stream into sub stream whenever the start condition is true.
      * The tail sub stream will always be included.
      */
@@ -77,6 +91,14 @@ public interface DoubleFuncListWithReshape extends AsDoubleFuncList {
             DoublePredicate startCondition,
             boolean         includeIncompletedSegment) {
         return deriveFrom(this, stream -> stream.segment(startCondition, includeIncompletedSegment));
+    }
+    
+    /** Segment the stream into sub stream whenever the start condition is true. */
+    public default FuncList<DoubleStreamPlus> segment(
+            DoublePredicate    startCondition,
+            IncompletedSegment incompletedSegment) {
+        val includeTail = (incompletedSegment == IncompletedSegment.included);
+        return deriveFrom(this, stream -> stream.segment(startCondition, includeTail));
     }
     
     /**
@@ -97,6 +119,15 @@ public interface DoubleFuncListWithReshape extends AsDoubleFuncList {
         return deriveFrom(this, stream -> stream.segment(startCondition, endCondition, includeIncompletedSegment));
     }
     
+    /** Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true. */
+    public default FuncList<DoubleStreamPlus> segment(
+            DoublePredicate    startCondition,
+            DoublePredicate    endCondition,
+            IncompletedSegment incompletedSegment) {
+        val includeTail = (incompletedSegment == IncompletedSegment.included);
+        return deriveFrom(this, stream -> stream.segment(startCondition, endCondition, includeTail));
+    }
+    
     /**
      * Create a stream of sub-stream which size is derived from the value.
      * 
@@ -107,66 +138,30 @@ public interface DoubleFuncListWithReshape extends AsDoubleFuncList {
         return deriveFrom(this, stream -> stream.segmentSize(segmentSize));
     }
     
-    /** Combine the current value with the one before it using then combinator everytime the condition to collapse is true. */
+    /** Combine the current value with the one before it using then combinator every times the condition to collapse is true. */
     public default DoubleFuncList collapseWhen(
             DoublePredicate      conditionToCollapse,
             DoubleBinaryOperator concatFunc) {
-        return from((DoubleFuncList)(() -> doubleStreamPlus().collapseWhen(conditionToCollapse, concatFunc)));
-    }
-    
-    /**
-     * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
-     *
-     * If the segmentSize function return null or 0, the value will be used as is (no collapse).
-     */
-    public default DoubleFuncList collapseSize(
-            DoubleFunction<Integer> segmentSize,
-            DoubleBinaryOperator    combinator) {
-        DoubleFuncList FuncList = () -> doubleStreamPlus().collapseSize(segmentSize, combinator);
-        return from(FuncList);
-    }
-    
-    /**
-     * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
-     * The value is mapped using the mapper function before combined.
-     *
-     * If the segmentSize function return null or 0, the value will be used as is (no collapse).
-     */
-    public default DoubleFuncList collapseSize(
-            DoubleFunction<Integer> segmentSize,
-            DoubleUnaryOperator     mapper,
-            DoubleBinaryOperator    combinator) {
-        DoubleFuncList FuncList = () -> doubleStreamPlus().collapseSize(segmentSize, mapper, combinator);
-        return from(FuncList);
-    }
-    
-    /**
-     * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
-     * The value is mapped using the mapper function before combined.
-     *
-     * If the segmentSize function return null or 0, the value will be used as is (no collapse).
-     */
-    public default <TARGET> FuncList<TARGET> collapseSize(
-            DoubleFunction<Integer>            segmentSize,
-            DoubleFunction<TARGET>             mapper,
-            BiFunction<TARGET, TARGET, TARGET> combinator) {
-        return deriveFrom(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
+        return DoubleFuncList.from(() -> doubleStreamPlus().collapseWhen(conditionToCollapse, concatFunc));
     }
     
     //-- More - then StreamPlus --
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(int ... percentiles) {
+    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(
+            int ... percentiles) {
         return DoubleFuncListHelper.segmentByPercentiles(this, IntFuncList.of(percentiles).mapToDouble());
     }
-
+    
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(double ... percentiles) {
+    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(
+            double ... percentiles) {
         return DoubleFuncListHelper.segmentByPercentiles(this, DoubleFuncList.of(percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(DoubleFuncList percentiles) {
+    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(
+            DoubleFuncList percentiles) {
         return DoubleFuncListHelper.segmentByPercentiles(this, percentiles);
     }
     
@@ -179,20 +174,20 @@ public interface DoubleFuncListWithReshape extends AsDoubleFuncList {
     }
     
     /** Split the stream into segment based on the given percentiles. **/
+    public default <T extends Comparable<? super T>> FuncList<DoubleFuncList> segmentByPercentiles(
+            DoubleFunction<T> mapper,
+            int ...           percentiles) {
+        val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
+        return segmentByPercentiles(mapper, percentileList);
+    }
+    
+    /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
             Comparator<T>     comparator,
             int ...           percentiles) {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
-    }
-    
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T extends Comparable<? super T>> FuncList<DoubleFuncList> segmentByPercentiles(
-            DoubleFunction<T> mapper,
-            int ...           percentiles) {
-        val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
-        return segmentByPercentiles(mapper, percentileList);
     }
     
     /** Split the stream into segment based on the given percentiles. **/

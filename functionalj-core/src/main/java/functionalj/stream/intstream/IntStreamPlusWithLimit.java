@@ -40,14 +40,14 @@ public interface IntStreamPlusWithLimit {
     
     public IntStreamPlus intStreamPlus();
     
+    
     /** Limit the size of the stream to the given size. */
     public default IntStreamPlus limit(Long maxSize) {
         val streamPlus = intStreamPlus();
         return ((maxSize == null) || (maxSize.longValue() < 0))
                 ? streamPlus
-                : IntStreamPlus.from(
-                        streamPlus
-                        .limit((long)maxSize));
+                : streamPlus
+                    .limit((long)maxSize);
     }
     
     /** Skip to the given offset position. */
@@ -55,9 +55,8 @@ public interface IntStreamPlusWithLimit {
         val streamPlus = intStreamPlus();
         return ((offset == null) || (offset.longValue() < 0))
                 ? streamPlus
-                : IntStreamPlus.from(
-                        streamPlus
-                        .skip((long)offset));
+                : streamPlus
+                    .skip((long)offset);
     }
     
     /** Skip any value while the condition is true. */
@@ -99,68 +98,64 @@ public interface IntStreamPlusWithLimit {
     /** Accept any value while the condition is true. */
     @Sequential
     public default IntStreamPlus takeWhile(IntPredicate condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
             val splitr = stream.spliterator();
-            return IntStreamPlus.from(
-                    StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-                        boolean stillGoing = true;
-                        @Override
-                        public boolean tryAdvance(IntConsumer consumer) {
-                            if (stillGoing) {
-                                IntConsumer action = elem -> {
-                                    if (condition.test(elem)) {
-                                        consumer.accept(elem);
-                                    } else {
-                                        stillGoing = false;
-                                    }
-                                };
-                                boolean hadNext = splitr.tryAdvance(action);
-                                return hadNext && stillGoing;
+            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                @Override
+                public boolean tryAdvance(IntConsumer consumer) {
+                    if (stillGoing) {
+                        IntConsumer action = elem -> {
+                            if (condition.test(elem)) {
+                                consumer.accept(elem);
+                            } else {
+                                stillGoing = false;
                             }
-                            return false;
-                        }
-                    }, false)
-                );
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+            return IntStreamPlus.from(resultStream);
         });
     }
     
     /** Accept any value while the condition is true. */
     @Sequential
     public default IntStreamPlus takeWhile(IntBiPredicatePrimitive condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
             val splitr = stream.spliterator();
-            return IntStreamPlus.from(
-                    StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-                        boolean stillGoing = true;
-                        boolean isFirst    = true;
-                        int     prevValue  = -1;
-                        @Override
-                        public boolean tryAdvance(IntConsumer consumer) {
-                            if (stillGoing) {
-                                IntConsumer action = elem -> {
-                                    if (!isFirst) {
-                                        if (condition.test(prevValue, elem)) {
-                                            consumer.accept(elem);
-                                        } else {
-                                            stillGoing = false;
-                                        }
-                                    } else {
-                                        consumer.accept(elem);
-                                        isFirst = false;
-                                    }
-                                    prevValue = elem;
-                                };
-                                boolean hadNext = splitr.tryAdvance(action);
-                                return hadNext && stillGoing;
+            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                boolean isFirst    = true;
+                int     prevValue  = -1;
+                @Override
+                public boolean tryAdvance(IntConsumer consumer) {
+                    if (stillGoing) {
+                        IntConsumer action = elem -> {
+                            if (!isFirst) {
+                                if (condition.test(prevValue, elem)) {
+                                    consumer.accept(elem);
+                                } else {
+                                    stillGoing = false;
+                                }
+                            } else {
+                                consumer.accept(elem);
+                                isFirst = false;
                             }
-                            return false;
-                        }
-                    }, false)
-                );
+                            prevValue = elem;
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+            return IntStreamPlus.from(resultStream);
         });
     }
     
@@ -228,69 +223,66 @@ public interface IntStreamPlusWithLimit {
         });
     }
     
-    /** Accept any value while the condition is true. */
+    /** Accept any value until the condition is false - include the item that the condition is false. */
     @Sequential
     public default IntStreamPlus dropAfter(IntPredicate condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
             val splitr = stream.spliterator();
-            return IntStreamPlus.from(
-                    StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-                        boolean stillGoing = true;
-                        @Override
-                        public boolean tryAdvance(IntConsumer consumer) {
-                            if (stillGoing) {
-                                IntConsumer action = elem -> {
-                                    consumer.accept(elem);
-                                    if (condition.test(elem)) {
-                                        stillGoing = false;
-                                    }
-                                };
-                                boolean hadNext = splitr.tryAdvance(action);
-                                return hadNext && stillGoing;
+            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                
+                @Override
+                public boolean tryAdvance(IntConsumer consumer) {
+                    if (stillGoing) {
+                        IntConsumer action = elem -> {
+                            consumer.accept(elem);
+                            if (condition.test(elem)) {
+                                stillGoing = false;
                             }
-                            return false;
-                        }
-                    }, false)
-                );
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+            return IntStreamPlus.from(resultStream);
         });
     }
     
-    /** Accept any value while the condition is true. */
+    /** Accept any value until the condition is false - include the item that the condition is false. */
     @Sequential
     public default IntStreamPlus dropAfter(IntBiPredicatePrimitive condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
             val splitr = stream.spliterator();
-            return IntStreamPlus.from(
-                    StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-                        boolean stillGoing = true;
-                        boolean isFirst    = true;
-                        int     prevValue  = -1;
-                        @Override
-                        public boolean tryAdvance(IntConsumer consumer) {
-                            if (stillGoing) {
-                                IntConsumer action = elem -> {
-                                    if (!isFirst) {
-                                        consumer.accept(elem);
-                                        if (condition.test(prevValue, elem)) {
-                                            stillGoing = false;
-                                        }
-                                    } else {
-                                        consumer.accept(elem);
-                                        isFirst = false;
-                                    }
-                                    prevValue = elem;
-                                };
-                                boolean hadNext = splitr.tryAdvance(action);
-                                return hadNext && stillGoing;
+            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                boolean isFirst    = true;
+                int     prevValue  = -1;
+                @Override
+                public boolean tryAdvance(IntConsumer consumer) {
+                    if (stillGoing) {
+                        IntConsumer action = elem -> {
+                            if (!isFirst) {
+                                consumer.accept(elem);
+                                if (condition.test(prevValue, elem)) {
+                                    stillGoing = false;
+                                }
+                            } else {
+                                consumer.accept(elem);
+                                isFirst = false;
                             }
-                            return false;
-                        }
-                    }, false)
-                );
+                            prevValue = elem;
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+            return IntStreamPlus.from(resultStream);
         });
     }
     

@@ -141,10 +141,10 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
     }
     
     public IntFuncList FuncList() {
-        return (IntFuncList)()->{
+        return IntFuncList.from(()->{
             val iterable = (IntIterable)()->newIterator();
             return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
-        };
+        });
     }
     
     public int[] toArray() {

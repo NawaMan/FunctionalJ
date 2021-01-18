@@ -30,7 +30,9 @@ import java.util.function.DoubleUnaryOperator;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntDoubleBiFunction;
 import functionalj.function.IntDoubleToDoubleFunction;
+import functionalj.function.IntDoubleToIntegerFunction;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.IntDoubleTuple;
 import lombok.val;
 
@@ -60,6 +62,18 @@ public interface DoubleStreamPlusWithMapWithIndex {
         val streamPlus = doubleStreamPlus();
         return streamPlus
                 .map(each -> {
+                    val currentIndex = index.getAndIncrement();
+                    val target       = combinator.applyIntAndDouble(currentIndex, each);
+                    return target;
+                });
+    }
+    
+    /** Create a stream whose value is the combination between value of this stream and its index. */
+    public default IntStreamPlus mapToIntWithIndex(IntDoubleToIntegerFunction combinator) {
+        val index = new AtomicInteger();
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .mapToInt(each -> {
                     val currentIndex = index.getAndIncrement();
                     val target       = combinator.applyIntAndDouble(currentIndex, each);
                     return target;
