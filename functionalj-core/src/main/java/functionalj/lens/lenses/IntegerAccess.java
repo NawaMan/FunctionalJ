@@ -711,13 +711,36 @@ public interface IntegerAccess<HOST>
         };
     }
     
-    public default DoubleAccessPrimitive<HOST> pow(int value) {
+    public default IntegerAccessPrimitive<HOST> square() {
         return host -> {
-            int intValue     = applyAsInt(host);
-            int anotherValue = value;
-            return Math.pow(intValue, anotherValue);
+            int intValue = applyAsInt(host);
+            return intValue * intValue;
         };
     }
+    
+    public default DoubleAccessPrimitive<HOST> squareRoot () {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return Math.sqrt(intValue);
+        };
+    }
+    
+    public default IntegerAccessPrimitive<HOST> factorial() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            if (intValue <= 0) {
+                return 1;
+            }
+            
+            // TODO - We should set up a Ref so people can over write this with a better (like faster) method.
+            int factorial = 1;
+            for (int i = 1; i <= intValue; i++) {
+                factorial *= i;
+            }
+            return factorial;
+        };
+    }
+    
     public default DoubleAccessPrimitive<HOST> pow(IntSupplier valueSupplier) {
         return host -> {
             int intValue     = applyAsInt(host);

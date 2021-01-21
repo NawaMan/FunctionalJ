@@ -62,17 +62,38 @@ import functionalj.stream.intstream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlusHelper;
 import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 import functionalj.tuple.IntIntTuple;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
 // TODO - Use this for byte, short and char
 
-public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, IntFuncListWithCalculate, IntFuncListWithCombine,
-        IntFuncListWithFilter, IntFuncListWithFlatMap, IntFuncListWithLimit, IntFuncListWithMap, IntFuncListWithMapFirst,
-        IntFuncListWithMapGroup, IntFuncListWithMapThen, IntFuncListWithMapToMap, IntFuncListWithMapToTuple, IntFuncListWithMapWithIndex,
-        IntFuncListWithModify, IntFuncListWithPeek, IntFuncListWithPipe, IntFuncListWithSegment, IntFuncListWithSort, IntFuncListWithSplit,
-        IntFuncListWithStatistic {
+public interface IntFuncList 
+        extends 
+            AsIntFuncList, 
+            IntIterable, 
+            IntPredicate, 
+            IntFuncListWithCalculate, 
+            IntFuncListWithCombine,
+            IntFuncListWithFilter, 
+            IntFuncListWithFlatMap, 
+            IntFuncListWithLimit, 
+            IntFuncListWithMap, 
+            IntFuncListWithMapFirst,
+            IntFuncListWithMapGroup, 
+            IntFuncListWithMapThen, 
+            IntFuncListWithMapToMap, 
+            IntFuncListWithMapToTuple, 
+            IntFuncListWithMapWithIndex,
+            IntFuncListWithModify, 
+            IntFuncListWithPeek, 
+            IntFuncListWithPipe, 
+            IntFuncListWithSegment, 
+            IntFuncListWithSort, 
+            IntFuncListWithSplit,
+            IntFuncListWithStatistic {
     
     /** Throw a no more element exception. This is used for generator. */
     public static int noMoreElement() throws NoMoreResultException {
@@ -127,6 +148,8 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
         return ImmutableIntFuncList.of(data);
     }
     
+    //-- From --
+    
     /** Create a FuncList from the given ints. */
     public static ImmutableIntFuncList from(int[] datas) {
         return new ImmutableIntFuncList(datas);
@@ -135,7 +158,11 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
     /** Create a FuncList from the given collection. */
     public static ImmutableIntFuncList from(Collection<Integer> data, int valueForNull) {
         IntStream intStream = StreamPlus.from(data.stream()).fillNull((Integer) valueForNull).mapToInt(theInteger);
-        return ImmutableIntFuncList.from(intStream);
+        ImmutableIntFuncList list = ImmutableIntFuncList.from(intStream);
+        if (!(data instanceof FuncList))
+            return list;
+        val funcList = (FuncList<Integer>)data;
+        return funcList.isLazy() ? list : (ImmutableIntFuncList)list.eager();
     }
     
     /** Create a FuncList from the given FuncList. */
@@ -186,7 +213,17 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
     }
     
     /** Create a list that is the repeat of the given array of data. */
+    public static IntFuncList repeat(IntFuncList data) {
+        return IntFuncList.from(() -> IntStreamPlus.repeat(data));
+    }
+    
+    /** Create a list that is the repeat of the given array of data. */
     public static IntFuncList cycle(int... data) {
+        return IntFuncList.from(() -> IntStreamPlus.cycle(data));
+    }
+    
+    /** Create a list that is the repeat of the given list of data. */
+    public static IntFuncList cycle(AsIntFuncList data) {
         return IntFuncList.from(() -> IntStreamPlus.cycle(data));
     }
     
@@ -201,7 +238,7 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
     }
     
     public static IntFuncList loopBy(int step) {
-        return IntFuncList.from(() -> IntStreamPlus.loop(step));
+        return IntFuncList.from(() -> IntStreamPlus.loopBy(step));
     }
     
     public static IntFuncList loopBy(int step, int times) {
@@ -335,20 +372,20 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
      *
      * The result stream = [(A,1), (B,2), (C,3), (D,4)].
      **/
-    public static FuncList<IntIntTuple> zipOf(IntFuncList list1, IntFuncList list2) {
+    public static FuncList<IntIntTuple> zipOf(AsIntFuncList list1, AsIntFuncList list2) {
         return FuncList.from(() -> {
             return IntStreamPlus.zipOf(list1.intStream(), list2.intStream());
         });
     }
     
-    public static FuncList<IntIntTuple> zipOf(IntFuncList list1, int defaultValue1, IntFuncList list2, int defaultValue2) {
+    public static FuncList<IntIntTuple> zipOf(AsIntFuncList list1, int defaultValue1, IntFuncList list2, int defaultValue2) {
         return FuncList.from(() -> {
             return IntStreamPlus.zipOf(list1.intStream(), defaultValue1, list2.intStream(), defaultValue2);
         });
     }
     
     /** Zip integers from two IntFuncLists and combine it into another object. */
-    public static IntFuncList zipOf(IntFuncList list1, IntFuncList list2, IntBiFunctionPrimitive merger) {
+    public static IntFuncList zipOf(AsIntFuncList list1, AsIntFuncList list2, IntBiFunctionPrimitive merger) {
         return IntFuncList.from(() -> {
             return IntStreamPlus.zipOf(list1.intStream(), list2.intStream(), merger);
         });
@@ -358,7 +395,7 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
      * Zip integers from an int stream and another object stream and combine it into another object. The result stream has the size of the
      * shortest stream.
      */
-    public static IntFuncList zipOf(IntFuncList list1, int defaultValue1, IntFuncList list2, int defaultValue2,
+    public static IntFuncList zipOf(AsIntFuncList list1, int defaultValue1, AsIntFuncList list2, int defaultValue2,
             IntBiFunctionPrimitive merger) {
         return IntFuncList.from(() -> {
             return IntStreamPlus.zipOf(list1.intStream(), defaultValue1, list2.intStream(), defaultValue2, merger);
@@ -523,6 +560,11 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
     
     // -- Map --
     
+    /** Map each value into a string value. */
+    public default FuncList<String> mapToString() {
+        return FuncList.deriveFrom(this, stream -> stream.mapToObj(i -> String.valueOf(i)));
+    }
+    
     /** Map each value into other value using the function. */
     public default IntFuncList map(IntUnaryOperator mapper) {
         return deriveFrom(this, streamble -> streamble.intStream().map(mapper));
@@ -533,7 +575,7 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
         return deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
     
-    /** Map each value into a double value using the function. */
+    /** Map each value into a double value. */
     public default DoubleFuncList mapToDouble() {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(i -> i));
     }
@@ -829,7 +871,7 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
             return this;
         
         val first = limit(fromIndexInclusive);
-        val tail  = skip(toIndexExclusive + 1);
+        val tail  = skip(toIndexExclusive);
         return IntFuncList.concat(first, tail);
     }
     
@@ -940,6 +982,12 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
     /** Returns the any element */
     public default OptionalInt findAny() {
         return intStream().findAny();
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalInt findLast() {
+        return intStream().findLast();
     }
     
 }

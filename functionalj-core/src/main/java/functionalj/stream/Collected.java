@@ -165,8 +165,13 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         
         public ByCollectedInt(IntCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector   = collector;
-            this.accumulated = collector.supplier().get();
-            this.accumulator = collector.intAccumulator();
+            this.accumulated 
+                    = collector
+                    .supplier()
+                    .get();
+            this.accumulator 
+                    = collector
+                    .intAccumulator();
         }
         
         public void accumulate(int each) {

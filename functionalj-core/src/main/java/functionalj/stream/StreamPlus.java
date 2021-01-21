@@ -26,6 +26,7 @@ package functionalj.stream;
 import static functionalj.function.Func.themAll;
 import static functionalj.stream.StreamPlusHelper.terminate;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -214,14 +215,15 @@ public interface StreamPlus<DATA>
     }
     
     /** Create a FuncList that is the repeat of the given list of data. */
-    public static <TARGET> StreamPlus<TARGET> cycle(FuncList<TARGET> data) {
-        val size = data.size();
+    public static <TARGET> StreamPlus<TARGET> cycle(Collection<TARGET> collection) {
+        val list = FuncList.from(collection);
+        val size = list.size();
         return IntStreamPlus
                 .wholeNumbers()
-                .mapToObj(i -> data.get(i % size));
+                .mapToObj(i -> list.get(i % size));
     }
     
-    /** Create a FuncList that for an infinite loop - the value is boolean true */
+    /** Create a FuncList that for an infinite loop - the value is null */
     public static <TARGET> StreamPlus<TARGET> loop() {
         return nulls();
     }

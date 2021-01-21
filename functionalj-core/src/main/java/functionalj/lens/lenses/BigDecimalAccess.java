@@ -117,7 +117,7 @@ public interface BigDecimalAccess<HOST>
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.remainder(v2);
         }
-
+        
         @Override
         public Tuple2<BigDecimal, BigDecimal> divideAndRemainder(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
@@ -125,14 +125,14 @@ public interface BigDecimalAccess<HOST>
             BigDecimal[] rs = v1.divideAndRemainder(v2);
             return Tuple.of(rs[0], rs[1]);
         }
-
+        
         @Override
         public BigDecimal pow(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.pow(v2.intValue());
         }
-
+        
         @Override
         public BigDecimal abs(BigDecimal number) {
             BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
@@ -148,7 +148,7 @@ public interface BigDecimalAccess<HOST>
             BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
             return BigDecimal.valueOf(v.signum());
         }
-
+        
         @Override
         public BigDecimal min(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
@@ -163,5 +163,21 @@ public interface BigDecimalAccess<HOST>
         }
         
     };
+    
+    // TODO - Add more.
+    
+//    Math.acos(doubleValue)
+//    Math.asin(doubleValue)
+//    Math.tan(doubleValue)
+//    Math.tan2(doubleValue)
+//    Math.cos(doubleValue)
+//    Math.cosh(doubleValue)
+//    Math.sin(doubleValue)
+//    Math.sinh(doubleValue)
+//    Math.tan(doubleValue)
+//    Math.tanh(doubleValue)
+//    
+//    Math.toDegrees(doubleValue)
+//    Math.toRadians(doubleValue)
     
 }

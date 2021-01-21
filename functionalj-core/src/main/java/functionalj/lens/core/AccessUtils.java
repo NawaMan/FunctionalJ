@@ -133,6 +133,23 @@ public class AccessUtils {
     }
     
     public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> 
+            OptionalAccess<HOST, TYPE, TYPELENS> createOptionalAccess(
+                        Function<HOST, Optional<TYPE>>           accessOptional,
+                        Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
+        val accessWithSub = new AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPELENS>() {
+            @Override
+            public Optional<TYPE> applyUnsafe(HOST host) throws Exception {
+                return accessOptional.apply(host);
+            }
+            @Override
+            public TYPELENS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return createSubLens.apply(accessToParameter);
+            }
+        };
+        return () -> accessWithSub;
+    }
+    
+    public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> 
             NullableAccess<HOST, TYPE, TYPELENS> createNullableAccess(
                         Function<HOST, Nullable<TYPE>>           accessNullable,
                         Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {

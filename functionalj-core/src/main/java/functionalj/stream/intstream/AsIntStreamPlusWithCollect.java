@@ -1,6 +1,7 @@
 package functionalj.stream.intstream;
 
 import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 
@@ -33,9 +34,18 @@ public interface AsIntStreamPlusWithCollect {
     @Terminal
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <RESULT> RESULT collect(IntCollectorPlus<?, RESULT> collector) {
-        Supplier<RESULT>       supplier    = (Supplier)      collector.supplier();
-        ObjIntConsumer<RESULT> accumulator = (ObjIntConsumer)collector.accumulator();
-        BiConsumer<RESULT, RESULT>  combiner    = (BiConsumer)    collector.combiner();
+        Supplier<RESULT>           supplier = (Supplier)collector.supplier();
+        BiConsumer<RESULT, RESULT> combiner = (RESULT r1, RESULT r2) -> {
+            BinaryOperator simpleCombiner = collector.combiner();
+            simpleCombiner.apply(r1, r2);
+        };
+        ObjIntConsumer<RESULT> accumulator = (RESULT r, int v) -> {
+            // This is ridiculous but work. Sorry.
+            Object     objectR           = (Object)r;
+            RESULT     resultR           = (RESULT)objectR;
+            BiConsumer simpleAccumulator = collector.accumulator();
+            simpleAccumulator.accept(resultR, v);
+        };
         val streamPlus = intStreamPlus();
         return streamPlus
                 .collect(supplier, accumulator, combiner);

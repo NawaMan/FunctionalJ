@@ -24,12 +24,14 @@
 package functionalj.lens.lenses;
 
 import static functionalj.lens.core.AccessUtils.createNullableAccess;
+import static functionalj.lens.core.AccessUtils.createOptionalAccess;
 import static functionalj.lens.core.AccessUtils.createResultAccess;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -350,6 +352,17 @@ public interface AnyAccess<HOST, DATA>
                 
                 return value;
             };
+        }
+        public static <HOST, DATA, ACCESS extends AnyAccess<HOST, DATA>> 
+                OptionalAccess<HOST, DATA, ACCESS> toOptional(
+                        Function<HOST, DATA>                   access, 
+                        Function<Function<HOST, DATA>, ACCESS> createSubLens) {
+            return createOptionalAccess(
+                    host -> {
+                        val value = access.apply(host);
+                        return Optional.ofNullable(value);
+                    },
+                    createSubLens);
         }
         public static <HOST, DATA, ACCESS extends AnyAccess<HOST, DATA>> 
                 NullableAccess<HOST, DATA, ACCESS> toNullable(

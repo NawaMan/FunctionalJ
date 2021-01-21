@@ -30,41 +30,20 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
 
-import functionalj.stream.CollectorPlus;
 import lombok.val;
 
-
-public interface DoubleCollectorPlus<ACCUMULATED, RESULT>
-        extends
-            CollectorPlus<Double, ACCUMULATED, RESULT>,
-            DoubleStreamProcessor<RESULT> {
-    
-    Supplier<ACCUMULATED>          supplier();
-    DoubleAccumulator<ACCUMULATED> doubleAccumulator();
-    BinaryOperator<ACCUMULATED>    combiner();
-    Function<ACCUMULATED, RESULT>  finisher();
-    Set<Characteristics>           characteristics();
-    
-    
-    default BiConsumer<ACCUMULATED, Double> accumulator() {
-        return doubleAccumulator();
-    }
-    
-    
-    default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToDoubleFunction<SOURCE> mapper) {
-        val collector = new CollectorFromDouble<>(this, mapper);
-        return CollectorPlus.from(collector);
-    }
-}
-
-class DoubleCollector<ACCUMULATED, RESULT>
-        implements Collector<Double, ACCUMULATED, RESULT> {
-    
+public class CollectorFromDouble<SOURCE, ACCUMULATED, RESULT>
+        implements Collector<SOURCE, ACCUMULATED, RESULT> {
     private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
+    private final ToDoubleFunction<SOURCE>                 mapper;
     
-    public DoubleCollector(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
+    public CollectorFromDouble(
+            DoubleCollectorPlus<ACCUMULATED, RESULT> collector,
+            ToDoubleFunction<SOURCE>                 mapper) {
         this.collector = collector;
+        this.mapper    = mapper;
     }
     
     @Override
@@ -72,8 +51,12 @@ class DoubleCollector<ACCUMULATED, RESULT>
         return collector.supplier();
     }
     @Override
-    public BiConsumer<ACCUMULATED, Double> accumulator() {
-        return collector.accumulator();
+    public BiConsumer<ACCUMULATED, SOURCE> accumulator() {
+        val accumulator = collector.accumulator();
+        return (a, s)->{
+            val d = mapper.applyAsDouble(s);
+            accumulator.accept(a, d);
+        };
     }
     @Override
     public BinaryOperator<ACCUMULATED> combiner() {

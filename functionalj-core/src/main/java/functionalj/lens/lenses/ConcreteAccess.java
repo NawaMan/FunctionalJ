@@ -54,6 +54,9 @@ public interface ConcreteAccess<HOST, DATA, ACCESS extends AnyAccess<HOST, DATA>
     public default <EXCEPTION extends RuntimeException> ACCESS orThrow(Supplier<EXCEPTION> exceptionSupplier) {
         return newAccess(__internal__.orThrow(this, exceptionSupplier));
     }
+    public default OptionalAccess<HOST, DATA, ACCESS> toOptional() {
+        return __internal__.toOptional(this, f -> newAccess(f));
+    }
     public default NullableAccess<HOST, DATA, ACCESS> toNullable() {
         return __internal__.toNullable(this, f -> newAccess(f));
     }

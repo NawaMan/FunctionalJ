@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -31,6 +33,7 @@ import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 
+import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
 import functionalj.stream.CollectorPlus;
 import lombok.val;
 
@@ -55,6 +58,10 @@ public interface IntCollectorPlus<ACCUMULATED, RESULT>
     default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToIntFunction<SOURCE> mapper) {
         val collector = new CollectorFromInt<>(this, mapper);
         return CollectorPlus.from(collector);
+    }
+    
+    default IntCollectorPlus<ACCUMULATED, RESULT> ofInt(IntegerToIntegerAccessPrimitive mapper) {
+        return new IntCollectorFromInt<>(this, mapper);
     }
 }
 
@@ -126,3 +133,120 @@ class CollectorFromInt<SOURCE, ACCUMULATED, RESULT>
         return collector.characteristics();
     }
 }
+
+class IntCollectorFromInt<ACCUMULATED, RESULT>
+        implements IntCollectorPlus<ACCUMULATED, RESULT> {
+    
+    private final IntCollectorPlus<ACCUMULATED, RESULT> collector;
+    private final IntegerToIntegerAccessPrimitive       mapper;
+    
+    public IntCollectorFromInt(
+            IntCollectorPlus<ACCUMULATED, RESULT> collector,
+            IntegerToIntegerAccessPrimitive       mapper) {
+        this.collector = requireNonNull(collector);
+        this.mapper    = requireNonNull(mapper);
+    }
+    
+    @Override
+    public Supplier<ACCUMULATED> supplier() {
+        return collector.supplier();
+    }
+    
+    @Override
+    public IntAccumulator<ACCUMULATED> intAccumulator() {
+        val accumulator = collector.accumulator();
+        return (a, s)->{
+            val d = mapper.applyAsInt(s);
+            accumulator.accept(a, d);
+        };
+    }
+    
+    @Override
+    public BinaryOperator<ACCUMULATED> combiner() {
+        return collector.combiner();
+    }
+    
+    @Override
+    public Function<ACCUMULATED, RESULT> finisher() {
+        return collector.finisher();
+    }
+    
+    @Override
+    public Set<Characteristics> characteristics() {
+        return collector.characteristics();
+    }
+    
+    @Override
+    public Collector<Integer, ACCUMULATED, RESULT> collector() {
+        ToIntFunction<Integer> newMapper = (Integer i) -> mapper.applyAsInt(i);
+        return new CollectorFromInt<Integer, ACCUMULATED, RESULT>(collector, newMapper);
+    }
+    
+    @Override
+    public RESULT process(IntStreamPlus stream) {
+        return stream.map(mapper).collect(collector);
+    }
+    
+}
+
+// TODO - Implement this.
+//
+//class IntCollectorFromDouble<ACCUMULATED, RESULT>
+//        implements DoubleCollectorPlus<ACCUMULATED, RESULT> {
+//    
+//    private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
+//    private final DoubleToIntegerAccessPrimitive        mapper;
+//    
+//    public IntCollectorFromDouble(
+//            DoubleCollectorPlus<ACCUMULATED, RESULT> collector,
+//            DoubleToIntegerAccessPrimitive           mapper) {
+//        this.collector = requireNonNull(collector);
+//        this.mapper    = requireNonNull(mapper);
+//    }
+//    
+//    @Override
+//    public Supplier<ACCUMULATED> supplier() {
+//        return collector.supplier();
+//    }
+//    
+//    @Override
+//    public DoubleAccumulator<ACCUMULATED> doubleAccumulator() {
+//        val accumulator = collector.accumulator();
+//        return (a, s)->{
+//            val d = mapper.applyAsInt(s);
+//            accumulator.accept(a, d);
+//        };
+//    }
+//    
+//    @Override
+//    public BinaryOperator<ACCUMULATED> combiner() {
+//        return collector.combiner();
+//    }
+//    
+//    @Override
+//    public Function<ACCUMULATED, RESULT> finisher() {
+//        return collector.finisher();
+//    }
+//    
+//    @Override
+//    public Set<Characteristics> characteristics() {
+//        return collector.characteristics();
+//    }
+//    
+//    @Override
+//    public Collector<Double, ACCUMULATED, RESULT> collector() {
+//        ToDoubleFunction<Double> newMapper;
+//        DoubleCollectorPlus<ACCUMULATED, RESULT> myC;
+//        //        ToIntFunction<Integer> newMapper = (Integer i) -> mapper.applyAsInt(i);
+////        return new CollectorFromDouble<Integer, ACCUMULATED, RESULT>(collector, newMapper);
+//        CollectorFromDouble<Double, ACCUMULATED, RESULT> collectorFromDouble = new CollectorFromDouble<Double, ACCUMULATED, RESULT>(myC, newMapper);
+//        return collectorFromDouble;
+//    }
+//    
+//    @Override
+//    public RESULT process(DoubleStreamPlus stream) {
+//        return stream.mapToInt(mapper).collect(collector);
+//    }
+//    
+//}
+

@@ -23,9 +23,14 @@
 // ============================================================================
 package functionalj.stream.doublestream;
 
+@FunctionalInterface
 public interface DoubleStreamProcessor<TARGET> extends AsDoubleStreamProcessor<TARGET> {
     
     public TARGET process(DoubleStreamPlus stream);
+    
+    public default DoubleStreamProcessor<TARGET> asDoubleStreamProcessor() {
+        return this::process;
+    }
     
     
     // TODO - uncomment this

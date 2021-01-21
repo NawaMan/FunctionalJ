@@ -706,6 +706,20 @@ public interface LongAccess<HOST>
         };
     }
     
+    public default LongAccessPrimitive<HOST> square() {
+        return host -> {
+            long longValue = applyAsLong(host);
+            return longValue * longValue;
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> squareRoot () {
+        return host -> {
+            long longValue = applyAsLong(host);
+            return Math.sqrt(longValue);
+        };
+    }
+    
     public default DoubleAccessPrimitive<HOST> pow(long value) {
         return host -> {
             long longValue     = applyAsLong(host);

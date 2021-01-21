@@ -89,8 +89,8 @@ public interface AsIntStreamPlusWithGroupingBy {
     /** Group the elements by determining the grouping keys and aggregate the result */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            IntFunction<KEY>          keyMapper,
-            IntStreamProcessor<VALUE> processor) {
+            IntFunction<KEY>            keyMapper,
+            AsIntStreamProcessor<VALUE> processor) {
         FuncMap<KEY, IntFuncList> groupingBy = groupingBy(keyMapper);
         return (FuncMap<KEY, VALUE>) groupingBy
                 .mapValue(stream -> stream.calculate((IntStreamProcessor) processor.asIntStreamProcessor()));

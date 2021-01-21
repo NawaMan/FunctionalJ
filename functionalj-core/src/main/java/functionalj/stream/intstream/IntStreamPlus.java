@@ -54,6 +54,7 @@ import java.util.stream.StreamSupport;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
+import functionalj.list.intlist.AsIntFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.SupplierBackedIterator;
@@ -156,13 +157,27 @@ public interface IntStreamPlus
     }
     
     /** Create a stream that is the repeat of the given array of data. */
+    public static IntStreamPlus repeat(AsIntFuncList data) {
+        return cycle(data);
+    }
+    
+    /** Create a stream that is the repeat of the given array of data. */
     public static IntStreamPlus cycle(int ... data) {
-        val ints = Arrays.copyOf(data, data.length);
-        val size = ints.length;
+        val size = data.length;
         return IntStreamPlus.from(
                 IntStream
                 .iterate(0, i -> i + 1)
                 .map(i -> data[i % size]));
+    }
+    
+    /** Create a stream that is the repeat of the given array of data. */
+    public static IntStreamPlus cycle(AsIntFuncList ints) {
+        val list = ints.asIntFuncList();
+        val size = list.size();
+        return IntStreamPlus.from(
+                IntStream
+                .iterate(0, i -> i + 1)
+                .map(i -> list.get(i % size)));
     }
     
     /** Create a stream that for a loop with the number of time given - the value is the index of the loop. */
@@ -823,6 +838,17 @@ public interface IntStreamPlus
         return terminate(this, stream -> {
             return stream
                     .findAny();
+        });
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalInt findLast() {
+        return terminate(this, stream -> {
+            boolean[] isAdded = new boolean[] { false };
+            int[]     dataRef = new int[1];
+            stream.peek(i -> isAdded[0] = true).forEach(i -> dataRef[0] = i);
+            return isAdded[0] ? OptionalInt.of(dataRef[0]) : OptionalInt.empty();
         });
     }
     

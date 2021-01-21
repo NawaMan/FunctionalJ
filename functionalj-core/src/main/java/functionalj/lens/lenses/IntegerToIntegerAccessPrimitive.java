@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 
@@ -32,14 +33,22 @@ import lombok.val;
 
 
 @FunctionalInterface
-public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, IntegerAccessPrimitive<Integer> {
+public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, IntegerAccessPrimitive<Integer>, IntFunction<Integer> {
     
     public int applyIntToInt(int host);
+
     
-    public default int applyAsInt(int operand) {
-        return applyIntToInt(operand);
+    @Override
+    public default Integer apply(int host) {
+        return applyIntToInt(host);
     }
     
+    @Override
+    public default int applyAsInt(int host) {
+        return applyIntToInt(host);
+    }
+    
+    @Override
     public default int applyAsInt(Integer host) {
         return applyIntToInt(host);
     }
@@ -748,6 +757,20 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
             int intValue     = applyAsInt(host);
             int anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, intValue);
             return intValue % anotherValue;
+        };
+    }
+    
+    public default IntegerToIntegerAccessPrimitive square() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue * intValue;
+        };
+    }
+    
+    public default IntegerToDoubleAccessPrimitive squareRoot () {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return Math.sqrt(intValue);
         };
     }
     

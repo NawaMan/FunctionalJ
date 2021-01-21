@@ -189,6 +189,27 @@ public interface DoubleAccess<HOST>
         };
     }
     
+    public default LongAccessPrimitive<HOST> round() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.round(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> ceil() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.ceil(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> floor() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.floor(doubleValue);
+        };
+    }
+    
     public default DoubleAccessPrimitive<HOST> toDouble() {
         return host -> {
             double doubleValue = applyAsDouble(host);
@@ -659,9 +680,39 @@ public interface DoubleAccess<HOST>
     }
     public default DoubleAccessPrimitive<HOST> remainderBy(ToDoubleBiDoubleFunction<HOST> valueFunction) {
         return host -> {
-            double doubleValue     = applyAsDouble(host);
+            double doubleValue  = applyAsDouble(host);
             double anotherValue = valueFunction.applyAsDouble(host, doubleValue);
             return doubleValue % anotherValue;
+        };
+    }
+    
+    
+    // TODO - Add more
+//    Math.addExact((int)0, (int)0)
+//    Math.addExact((long)0, (long)0)
+//    Math.decrementExact((int)0)
+//    Math.decrementExact((long)0)
+//    Math.incrementExact((int)0)
+//    Math.incrementExact((long)0)
+//    Math.multiplyExact(int, int)
+//    Math.multiplyExact(long, long)
+//    Math.negateExact(int)
+//    Math.negateExact(long)
+//    Math.subtractExact(int, int)
+//    Math.subtractExact(long, long)
+//    Math.toIntExact(0)
+    
+    public default DoubleAccessPrimitive<HOST> square() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue * doubleValue;
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> squareRoot () {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.sqrt(doubleValue);
         };
     }
     
@@ -691,6 +742,64 @@ public interface DoubleAccess<HOST>
             double doubleValue     = applyAsDouble(host);
             double anotherValue = valueFunction.applyAsDouble(host, doubleValue);
             return Math.pow(doubleValue, anotherValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> exp() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.exp(doubleValue);
+        };
+    }
+    
+    /**
+     * Returns <i>e</i><sup>x</sup>&nbsp;-1.  Note that for values of
+     * <i>x</i> near 0, the exact sum of
+     * {@code expm1(x)}&nbsp;+&nbsp;1 is much closer to the true
+     * result of <i>e</i><sup>x</sup> than {@code exp(x)}.
+     **/
+    public default DoubleAccessPrimitive<HOST> expm1() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.expm1(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> log() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.log(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> log10() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.log10(doubleValue);
+        };
+    }
+    
+    /**
+     * Returns the base 10 logarithm of a {@code double} value.
+     * Special cases:
+     *
+     * <ul><li>If the argument is NaN or less than zero, then the result
+     * is NaN.
+     * <li>If the argument is positive infinity, then the result is
+     * positive infinity.
+     * <li>If the argument is positive zero or negative zero, then the
+     * result is negative infinity.
+     * <li> If the argument is equal to 10<sup><i>n</i></sup> for
+     * integer <i>n</i>, then the result is <i>n</i>.
+     * </ul>
+     *
+     * <p>The computed result must be within 1 ulp of the exact result.
+     * Results must be semi-monotonic.
+     */
+    public default DoubleAccessPrimitive<HOST> log1p() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.log1p(doubleValue);
         };
     }
     
@@ -751,4 +860,21 @@ public interface DoubleAccess<HOST>
             return Math.max(doubleValue, anotherValue);
         };
     }
+    
+    // TODO - Add more.
+    
+//    Math.acos(doubleValue)
+//    Math.asin(doubleValue)
+//    Math.tan(doubleValue)
+//    Math.tan2(doubleValue)
+//    Math.cos(doubleValue)
+//    Math.cosh(doubleValue)
+//    Math.sin(doubleValue)
+//    Math.sinh(doubleValue)
+//    Math.tan(doubleValue)
+//    Math.tanh(doubleValue)
+//    
+//    Math.toDegrees(doubleValue)
+//    Math.toRadians(doubleValue)
+    
 }

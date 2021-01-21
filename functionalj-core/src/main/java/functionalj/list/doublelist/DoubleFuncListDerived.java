@@ -114,9 +114,6 @@ class DoubleFuncListDerived implements DoubleFuncList {
         if (!(o instanceof DoubleFuncList))
             return false;
         
-        if (hashCode() != o.hashCode())
-            return false;
-        
         val anotherList = (DoubleFuncList)o;
         return DoubleFuncList.zipOf(this, anotherList.asDoubleFuncList(), zeroForEquals)
                 .allMatch(toZero);

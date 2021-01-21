@@ -208,7 +208,7 @@ public interface FuncList<DATA>
     
     /** Returns a list that contains nulls. */
     public static <TARGET> FuncList<TARGET> nulls(Class<TARGET> dataClass) {
-        return FuncList.from(()->StreamPlus.nulls());
+        return FuncList.from(()->StreamPlus.nulls(dataClass));
     }
     
     /** Create a list that is the repeat of the given array of data. */
@@ -229,11 +229,11 @@ public interface FuncList<DATA>
     }
     
     /** Create a FuncList that is the repeat of the given list of data. */
-    public static <TARGET> FuncList<TARGET> cycle(FuncList<TARGET> data) {
+    public static <TARGET> FuncList<TARGET> cycle(Collection<TARGET> data) {
         return FuncList.from(()->StreamPlus.cycle(data));
     }
     
-    /** Create a FuncList that for an infinite loop - the value is boolean true */
+    /** Create a FuncList that for an infinite loop - the value is null */
     public static <TARGET> FuncList<TARGET> loop() {
         return FuncList.from(()->StreamPlus.loop());
     }
@@ -656,6 +656,11 @@ public interface FuncList<DATA>
     }
     
     //-- Map --
+    
+    /** Map each value into a string value. */
+    public default FuncList<String> mapToString() {
+        return FuncList.deriveFrom(this, stream -> stream.mapToObj(i -> String.valueOf(i)));
+    }
     
     /** Map each value into other value using the function. */
     public default <TARGET> FuncList<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {

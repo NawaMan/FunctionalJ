@@ -38,7 +38,7 @@ import lombok.val;
 public class IntFuncListDerived implements IntFuncList {
     
     private static final IntBiFunctionPrimitive zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
-    private static final IntPredicate           toZero        = (int i)          -> i  == 0;
+    private static final IntPredicate           notZero       = (int i)          -> i  != 0;
     
     //-- Data --
     
@@ -111,15 +111,15 @@ public class IntFuncListDerived implements IntFuncList {
     
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof IntFuncList))
+        if (!(o instanceof AsIntFuncList))
             return false;
         
-        if (hashCode() != o.hashCode())
+        val anotherList = (AsIntFuncList)o;
+        if (size() != anotherList.size())
             return false;
         
-        val anotherList = (IntFuncList)o;
-        return IntFuncList.zipOf(this, anotherList, zeroForEquals)
-                .allMatch(toZero);
+        return !IntFuncList.zipOf(this, anotherList, zeroForEquals)
+                .anyMatch(notZero);
     }
     
     @Override

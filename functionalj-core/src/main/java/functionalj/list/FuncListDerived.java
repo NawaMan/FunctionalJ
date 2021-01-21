@@ -115,12 +115,12 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public boolean equals(Object o) {
-        if ((o instanceof Collection))
+        if (!(o instanceof Collection))
             return false;
         
         val anotherList = FuncList.from((Collection)o);
-        return zipWith(anotherList, AllowUnpaired, Objects::equals)
-                .findFirst(Boolean.TRUE::equals)
+        return !zipWith(anotherList, AllowUnpaired, Objects::equals)
+                .findFirst(Boolean.FALSE::equals)
                 .isPresent();
     }
     

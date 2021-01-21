@@ -124,7 +124,6 @@ public interface StreamPlusWithModify<DATA> {
         });
         val seed = Tuple2.of((DATA)null, this.streamPlus());
         
-        // NOTE: The reason for the using untyped-generic is because "DATA" of this class is not seen as compatible with StreamPlus's.
         return StreamPlus
                 .iterate  (seed, func)
                 .takeUntil(t -> t == null)

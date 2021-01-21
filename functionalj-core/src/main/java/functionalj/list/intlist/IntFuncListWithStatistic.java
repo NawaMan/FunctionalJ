@@ -42,15 +42,38 @@ public interface IntFuncListWithStatistic extends AsIntFuncList {
     }
     
     /** @return the product of all the number */
+    public default int sum() {
+        return funcListOf(this)
+                .intStreamPlus()
+                .sum();
+    }
+    
+    /** @return the product of all the number */
     public default OptionalInt product() {
         return funcListOf(this)
+                .intStreamPlus()
                 .product();
+    }
+    
+    /** Return the value whose mapped value is the smallest. */
+    public default OptionalInt min() {
+        return funcListOf(this)
+                .intStreamPlus()
+                .min();
+    }
+    
+    /** Return the value whose mapped value is the biggest. */
+    public default OptionalInt max() {
+        return funcListOf(this)
+                .intStreamPlus()
+                .max();
     }
     
     /** Return the value whose mapped value is the smallest. */
     public default <D extends Comparable<D>> OptionalInt minBy(
             IntFunction<D> mapper) {
         return funcListOf(this)
+                .intStreamPlus()
                 .minBy(mapper);
     }
     
@@ -58,6 +81,7 @@ public interface IntFuncListWithStatistic extends AsIntFuncList {
     public default <D extends Comparable<D>> OptionalInt maxBy(
             IntFunction<D> mapper) {
         return funcListOf(this)
+                .intStreamPlus()
                 .maxBy(mapper);
     }
     
@@ -66,14 +90,16 @@ public interface IntFuncListWithStatistic extends AsIntFuncList {
             IntFunction<D>        mapper,
             Comparator<? super D> comparator) {
         return funcListOf(this)
+                .intStreamPlus()
                 .minBy(mapper, comparator);
     }
     
     /** Return the value whose mapped value is the biggest using the comparator. */
     public default <D> OptionalInt maxBy(
             IntFunction<D>         mapper,
-            Comparator<? super D> comparator) {
+            Comparator<? super D>  comparator) {
         return funcListOf(this)
+                .intStreamPlus()
                 .maxBy(mapper, comparator);
     }
     
@@ -81,6 +107,7 @@ public interface IntFuncListWithStatistic extends AsIntFuncList {
     public default Tuple2<OptionalInt, OptionalInt> minMax(
             IntBiFunctionPrimitive comparator) {
         return funcListOf(this)
+                .intStreamPlus()
                 .minMax(comparator);
     }
     
@@ -88,14 +115,16 @@ public interface IntFuncListWithStatistic extends AsIntFuncList {
     public default <D extends Comparable<D>> Tuple2<OptionalInt, OptionalInt> minMaxBy(
             IntFunction<D> mapper) {
         return funcListOf(this)
+                .intStreamPlus()
                 .minMaxBy(mapper);
     }
     
     /** Return the value whose mapped value is the smallest and the biggest using the comparator. */
     public default <D> Tuple2<OptionalInt, OptionalInt> minMaxBy(
-            IntFunction<D>     mapper,
+            IntFunction<D>        mapper,
             Comparator<? super D> comparator) {
         return funcListOf(this)
+                .intStreamPlus()
                 .minMaxBy(mapper, comparator);
     }
     
@@ -153,14 +182,16 @@ public interface IntFuncListWithStatistic extends AsIntFuncList {
     }
     
     public default <D extends Comparable<D>> OptionalInt maxIndexOf(
-            IntPredicate   filter,
-            IntFunction<D> mapper) {
+            IntPredicate     filter,
+            IntUnaryOperator mapper) {
         return funcListOf(this)
                 .mapWithIndex()
+                .map   (t -> t.map2ToInt(mapper))
                 .filter(t -> filter.test(t._2))
-                .maxBy (t -> mapper.apply(t._2))
+                .maxBy (t -> mapper.applyAsInt(t._2))
                 .map   (t -> OptionalInt.of(t._1))
-                .orElse(OptionalInt.empty());
+                .orElse(OptionalInt.empty())
+                ;
     }
     
 }

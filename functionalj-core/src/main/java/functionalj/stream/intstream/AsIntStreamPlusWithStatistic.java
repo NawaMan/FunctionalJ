@@ -33,11 +33,11 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
+import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.IntIntTuple;
@@ -194,7 +194,7 @@ public interface AsIntStreamPlusWithStatistic {
     /** Return the value is the smallest and the biggest using the comparator. */
     @Eager
     @Terminal
-    public default Tuple2<OptionalInt, OptionalInt> minMax(IntBinaryOperator comparator) {
+    public default Tuple2<OptionalInt, OptionalInt> minMax(IntBiFunctionPrimitive comparator) {
         val streamPlus = intStreamPlus();
         val minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
         val maxRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);

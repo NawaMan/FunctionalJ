@@ -49,6 +49,7 @@ public interface Access {
     public static final BooleanLens<Boolean>    theBoolean = BooleanLens.of(LensSpec.of(Boolean.class));
     public static final StringLens<String>      theString  = StringLens .of(LensSpec.of(String.class));
     public static final TheInteger              theInteger = TheInteger.theInteger;
+    public static final TheInteger              theInt     = TheInteger.theInteger;
     public static final TheLong                 theLong    = TheLong.theLong;
     public static final TheDouble               theDouble  = TheDouble.theDouble;
     // TODO - Make "theNumber"

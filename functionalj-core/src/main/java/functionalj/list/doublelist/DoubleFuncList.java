@@ -633,6 +633,11 @@ public interface DoubleFuncList
     
     //-- Map --
     
+    /** Map each value into a string value. */
+    public default FuncList<String> mapToString() {
+        return FuncList.deriveFrom(this, stream -> stream.mapToObj(i -> String.valueOf(i)));
+    }
+    
     /** Map each value into other value using the function. */
     public default DoubleFuncList map(DoubleUnaryOperator mapper) {
         return deriveFrom(this, streamble -> streamble.doubleStream().map(mapper));
@@ -956,7 +961,7 @@ public interface DoubleFuncList
             return this;
         
         val first  = limit(fromIndexInclusive);
-        val tail   = skip(toIndexExclusive + 1);
+        val tail   = skip(toIndexExclusive);
         return DoubleFuncList.concat(first, tail);
     }
     
