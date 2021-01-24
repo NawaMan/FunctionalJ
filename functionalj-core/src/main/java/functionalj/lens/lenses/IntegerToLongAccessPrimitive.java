@@ -23,8 +23,10 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.IntToLongFunction;
+
 @FunctionalInterface
-public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Integer> {
+public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Integer>, IntToLongFunction {
     
     public long applyIntToLong(int host);
     
@@ -34,6 +36,13 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
     
     public default long applyAsLong(Integer host) {
         return applyIntToLong(host);
+    }
+    
+    public default IntegerToIntegerAccessPrimitive toInteger() {
+        return host -> {
+            long longValue = applyAsLong(host);
+            return (int)longValue;
+        };
     }
     
 }

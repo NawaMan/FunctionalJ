@@ -31,6 +31,7 @@ import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
+import functionalj.stream.ZipWithOption;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.IntTuple2;
 
@@ -191,15 +192,31 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.
      * The value from the longer stream is automatically used after the shorter stream ended.
+     */
+    public default IntFuncList choose(IntFuncList anotherFuncList, IntBiPredicatePrimitive selectThisNotAnother) {
+        return deriveToInt(this, stream -> stream.choose(anotherFuncList.intStreamPlus(), selectThisNotAnother));
+    }
+    
+    /**
+     * Create a new stream by choosing value from each stream suing the selector.
+     * The combine stream ended when both stream ended.
+     * 
+     * For AllowUnpaired, the values from the longer stream
      * 
      * For an example with ZipWithOption.AllowUnpaired: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
      *   Selector:       (v1,v2) -> v1 > v2 <br>
      *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
+     * 
+     * For an example with ZipWithOption.RequireBoth: <br>
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5]
      */
-    public default IntFuncList choose(IntFuncList anotherFuncList, IntBiPredicatePrimitive selectThisNotAnother) {
-        return deriveToInt(this, stream -> stream.choose(anotherFuncList.intStreamPlus(), selectThisNotAnother));
+    public default IntFuncList choose(IntFuncList anotherFuncList, ZipWithOption option, IntBiPredicatePrimitive selectThisNotAnother) {
+        return deriveToInt(this, stream -> stream.choose(anotherFuncList.intStreamPlus(), option, selectThisNotAnother));
     }
     
 }

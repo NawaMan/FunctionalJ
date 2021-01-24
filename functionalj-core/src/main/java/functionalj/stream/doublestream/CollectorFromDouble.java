@@ -30,7 +30,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collector;
-import java.util.stream.Collector.Characteristics;
 
 import lombok.val;
 

@@ -82,7 +82,7 @@ public interface DoubleStreamPlus
             DoubleStreamPlusWithMapToTuple,
             DoubleStreamPlusWithMapWithIndex,
             DoubleStreamPlusWithModify,
-            DoubleStreamPlusWithReshape,
+            DoubleStreamPlusWithSegment,
             DoubleStreamPlusWithPeek,
             DoubleStreamPlusWithPipe,
             DoubleStreamPlusWithSort,
@@ -586,6 +586,10 @@ public interface DoubleStreamPlus
     @Override
     public default <T> StreamPlus<T> mapToObj(DoubleFunction<? extends T> mapper) {
         return StreamPlus.from(doubleStream().mapToObj(mapper));
+    }
+    
+    public default StreamPlus<String> mapToString() {
+        return mapToObj(i -> "" + i);
     }
     
     //-- FlatMap --

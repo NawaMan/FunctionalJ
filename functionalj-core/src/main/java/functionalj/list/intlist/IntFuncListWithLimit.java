@@ -57,6 +57,11 @@ public interface IntFuncListWithLimit extends AsIntFuncList {
         return deriveToInt(this, stream -> stream.takeWhile(condition));
     }
     
+    /** Accept any value while the condition is true. */
+    public default IntFuncList takeWhile(IntBiPredicatePrimitive condition) {
+        return deriveToInt(this, stream -> stream.takeWhile(condition));
+    }
+    
     /** Accept any value until the condition is true. */
     public default IntFuncList takeUntil(IntPredicate condition) {
         return deriveToInt(this, stream -> stream.takeUntil(condition));

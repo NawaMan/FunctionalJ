@@ -196,17 +196,17 @@ public interface DoubleAccess<HOST>
         };
     }
     
-    public default DoubleAccessPrimitive<HOST> ceil() {
+    public default LongAccessPrimitive<HOST> ceil() {
         return host -> {
             double doubleValue = applyAsDouble(host);
-            return Math.ceil(doubleValue);
+            return (long)Math.ceil(doubleValue);
         };
     }
     
-    public default DoubleAccessPrimitive<HOST> floor() {
+    public default LongAccessPrimitive<HOST> floor() {
         return host -> {
             double doubleValue = applyAsDouble(host);
-            return Math.floor(doubleValue);
+            return (long)Math.floor(doubleValue);
         };
     }
     

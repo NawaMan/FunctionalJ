@@ -36,7 +36,7 @@ import lombok.val;
 public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, IntegerAccessPrimitive<Integer>, IntFunction<Integer> {
     
     public int applyIntToInt(int host);
-
+    
     
     @Override
     public default Integer apply(int host) {
@@ -774,6 +774,22 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         };
     }
     
+    public default IntegerToIntegerAccessPrimitive factorial() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            if (intValue <= 0) {
+                return 1;
+            }
+            
+            // TODO - We should set up a Ref so people can over write this with a better (like faster) method.
+            int factorial = 1;
+            for (int i = 1; i <= intValue; i++) {
+                factorial *= i;
+            }
+            return factorial;
+        };
+    }
+    
     public default IntegerToDoubleAccessPrimitive pow(int value) {
         return host -> {
             int intValue     = applyAsInt(host);
@@ -858,6 +874,13 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
             int intValue     = applyAsInt(host);
             int anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, intValue);
             return Math.max(intValue, anotherValue);
+        };
+    }
+    
+    public default IntegerToStringPrimitive asString() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return "" + intValue;
         };
     }
     

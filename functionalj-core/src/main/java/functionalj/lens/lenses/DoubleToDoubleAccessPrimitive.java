@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 
@@ -61,6 +62,18 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     
     
     //-- Compare --
+    
+    public default DoubleToBooleanAccessPrimitive that(DoublePredicate checker) {
+        return host -> checker.test(host);
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIs(Double value) {
+        return host -> host == value;
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsNot(Double value) {
+        return host -> host != value;
+    }
     
     public default DoubleToIntegerAccessPrimitive toInteger() {
         return host -> {

@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.DoublePredicate;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntToDoubleFunction;
@@ -91,18 +90,6 @@ public interface IntStreamPlusWithFilter {
     public default <T> IntStreamPlus filterAsObject(
             IntFunction<T>       mapper,
             Predicate<? super T> predicate) {
-        val streamPlus = intStreamPlus();
-        return streamPlus
-                .filter(value -> {
-                    val target = mapper.apply(value);
-                    val isPass = predicate.test(target);
-                    return isPass;
-                });
-    }
-    
-    public default <T> IntStreamPlus filterAsObject(
-            Function<Integer, ? extends T> mapper,
-            Predicate<? super T>           predicate) {
         val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(value -> {

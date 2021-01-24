@@ -46,7 +46,7 @@ public class DoubleFuncListBuilder {
         list = new GrowOnlyDoubleArray(values);
     }
     
-    public DoubleFuncListBuilder add(int data) {
+    public DoubleFuncListBuilder add(double data) {
         list.add(data);
         return this;
     }

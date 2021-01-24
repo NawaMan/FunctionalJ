@@ -148,6 +148,14 @@ public interface IntegerToDoubleAccessPrimitive extends DoubleAccessPrimitive<In
 //            return (double)doubleValue;
 //        };
 //    }
+    
+    public default IntegerToLongAccessPrimitive round() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.round(doubleValue);
+        };
+    }
+    
 //    
 //    public default DoubleAccessPrimitive<HOST> toZero() {
 //        return host -> 0;

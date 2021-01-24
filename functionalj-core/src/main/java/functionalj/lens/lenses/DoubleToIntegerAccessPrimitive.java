@@ -37,5 +37,20 @@ public interface DoubleToIntegerAccessPrimitive extends IntegerAccessPrimitive<D
         return applyDoubleToInt(host);
     }
     
-
+    // TODO - Will need to duplicate some of the thing here :-(
+    
+    public default DoubleToBooleanAccessPrimitive thatIsOdd() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue % 2 != 0;
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsEven() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue % 2 == 0;
+        };
+    }
+    
 }

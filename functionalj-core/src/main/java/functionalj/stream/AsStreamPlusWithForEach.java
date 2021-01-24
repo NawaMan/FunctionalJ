@@ -90,4 +90,9 @@ public interface AsStreamPlusWithForEach<DATA> {
         });
     }
     
+    // TODO - addAllTo(List|Set)
+    // TODO - insertAllTo(index, List|Set)
+    // TODO - putAllTo(Map)
+    
+    
 }

@@ -87,7 +87,7 @@ public interface IntStreamPlus
             IntStreamPlusWithMapToTuple,
             IntStreamPlusWithMapWithIndex,
             IntStreamPlusWithModify,
-            IntStreamPlusWithReshape,
+            IntStreamPlusWithSegment,
             IntStreamPlusWithPeek,
             IntStreamPlusWithPipe,
             IntStreamPlusWithSort,
@@ -606,6 +606,10 @@ public interface IntStreamPlus
     @Override
     public default <T> StreamPlus<T> mapToObj(IntFunction<? extends T> mapper) {
         return StreamPlus.from(intStream().mapToObj(mapper));
+    }
+    
+    public default StreamPlus<String> mapToString() {
+        return mapToObj(i -> "" + i);
     }
     
     //-- FlatMap --

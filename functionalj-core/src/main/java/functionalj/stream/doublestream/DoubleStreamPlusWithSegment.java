@@ -23,125 +23,137 @@
 // ============================================================================
 package functionalj.stream.doublestream;
 
-import static functionalj.stream.doublestream.DoubleStreamPlusHelper.sequentialToObj;
-
+import java.util.Objects;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
+import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
+import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.list.doublelist.DoubleFuncListBuilder;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.markers.Sequential;
 import lombok.val;
 
 
-public interface DoubleStreamPlusWithReshape extends AsDoubleStreamPlus {
-
+public interface DoubleStreamPlusWithSegment extends AsDoubleStreamPlus {
+    
     public DoubleStreamPlus doubleStreamPlus();
+    
     
     /**
      * Segment the stream into sub stream with the fix length of count.
      * The last portion may be shorter.
      **/
-    public default StreamPlus<DoubleStreamPlus> segmentSize(int count) {
-        return segmentSize(count, true);
-    }
-    
-    /**
-     * Segment the stream into sub stream with the fix length of count.
-     * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
-     *
-     * @param count        the element count of the sub stream.
-     * @param includeTail  the flag indicating if the last sub stream that does not have count element is to be included
-     *                       as opposed to thrown away.
-     * @return             the stream of sub stream.
-     */
-    public default StreamPlus<DoubleStreamPlus> segmentSize(int count, boolean includeTail) {
+    @Sequential
+    public default StreamPlus<DoubleStreamPlus> segment(int count) {
+        if (count <= 0) {
+            return StreamPlus.empty();
+        }
+        if (count <= 1) {
+            return doubleStreamPlus().mapToObj(each -> DoubleStreamPlus.of(each));
+        }
+        
         val index = new AtomicInteger(0);
-        return segment(data -> {
+        return segmentWhen(data -> {
                     val currentIndex = index.getAndIncrement();
                     return (currentIndex % count) == 0;
-                },
-                includeTail);
+                });
     }
     
     /**
-     * Segment the stream into sub stream with the fix length of count.
-     * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
+     * Create a stream of sub-stream which size is derived from the value.
      *
-     * @param count               the element count of the sub stream.
-     * @param incompletedSegment  the option indicating if the last sub stream that does not have count element is to be included
-     *                              as opposed to thrown away.
-     * @return                    the stream of sub stream.
+     * If the segmentSize function return 0,
+     *   the value will be ignored.
      */
-    public default StreamPlus<DoubleStreamPlus> segmentSize(int count, IncompletedSegment incompletedSegment) {
-        return segmentSize(count, (incompletedSegment == IncompletedSegment.included));
+    @Sequential
+    public default StreamPlus<DoubleStreamPlus> segment(DoubleToIntFunction segmentSize) {
+        Objects.requireNonNull(segmentSize);
+        
+        val splitr      = doubleStreamPlus().spliterator();
+        val isSequence  = false;
+        val spliterator = new Spliterators.AbstractSpliterator<DoubleStreamPlus>(splitr.estimateSize(), 0) {
+            int count = -1;
+            @Override
+            public boolean tryAdvance(Consumer<? super DoubleStreamPlus> consumer) {
+                val eachListBuilder = DoubleFuncList.newBuilder();
+                boolean hasThis;
+                do {
+                    hasThis = splitr.tryAdvance((DoubleConsumer)(eachValue -> {
+                        if (count < 1) {
+                            count = segmentSize.applyAsInt(eachValue);
+                        }
+                        if (count > 0) {
+                            eachListBuilder.add(eachValue);
+                        }
+                    }));
+                }
+                while(hasThis && (--count > 0));
+                
+                val eachList = eachListBuilder.build();
+                val useThis  = !eachList.isEmpty();
+                if (useThis) {
+                    consumer.accept(eachList.doubleStreamPlus());
+                }
+                return hasThis;
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
     
     /**
      * Segment the stream into sub stream whenever the start condition is true.
      * The tail sub stream will always be included.
      */
-    public default StreamPlus<DoubleStreamPlus> segment(DoublePredicate startCondition) {
-        return segment(startCondition, true);
-    }
-    
-    /** Segment the stream into sub stream whenever the start condition is true. */
-    public default StreamPlus<DoubleStreamPlus> segment(
-            DoublePredicate startCondition,
-            IncompletedSegment incompletedSegment) {
-        return segment(startCondition, (incompletedSegment == IncompletedSegment.included));
-    }
-    
-    /** Segment the stream into sub stream whenever the start condition is true. */
-    public default StreamPlus<DoubleStreamPlus> segment(
-            DoublePredicate startCondition,
-            boolean         includeIncompletedSegment) {
-        // TODO - Find a way to make it fully lazy. Try tryAdvance.
-        val newStorage   = (Supplier<GrowOnlyDoubleArray>)GrowOnlyDoubleArray::new;
-        val toStreamPlus = (Function<GrowOnlyDoubleArray, DoubleStreamPlus>)GrowOnlyDoubleArray::stream;
+    public default StreamPlus<DoubleStreamPlus> segmentWhen(DoublePredicate startCondition) {
+        Objects.requireNonNull(startCondition);
         
-        val streamPlus = doubleStreamPlus();
-        return sequentialToObj(streamPlus, stream -> {
-            val list   = new AtomicReference<>(newStorage.get());
-            val adding = new AtomicBoolean(false);
-            
-            DoubleFunction<DoubleStreamPlus> streamOrNull = ((double data) ->{
-                if (startCondition.test(data)) {
-                    adding.set(true);
-                    val resultList = list.getAndUpdate(l -> newStorage.get());
-                    list.get().add(data);
-                    return resultList.isEmpty() ? null : toStreamPlus.apply(resultList);
+        val splitr       = doubleStreamPlus().spliterator();
+        val isSequence   = false;
+        val spliterator  = new Spliterators.AbstractSpliterator<DoubleStreamPlus>(splitr.estimateSize(), 0) {
+            DoubleFuncListBuilder eachListBuilder = DoubleFuncList.newBuilder();
+            boolean               hasNewList      = false;
+            @Override
+            public boolean tryAdvance(Consumer<? super DoubleStreamPlus> consumer) {
+                boolean hasThis;
+                do {
+                    hasThis = splitr.tryAdvance((DoubleConsumer)(eachValue -> {
+                        if (startCondition.test(eachValue)) {
+                            val eachList = eachListBuilder.build();
+                            eachListBuilder = DoubleFuncList.newBuilder();
+                            
+                            val hasNewList = !eachList.isEmpty();
+                            if (hasNewList) {
+                                consumer.accept(eachList.doubleStreamPlus());
+                            }
+                        }
+                        eachListBuilder.add(eachValue);
+                    }));
+                } while(hasThis && !hasNewList);
+                if (hasNewList) {
+                    hasNewList = false;
+                    return true;
                 }
-                if (adding.get()) {
-                    list.get().add(data);
+                
+                val eachList = eachListBuilder.build();
+                eachListBuilder = DoubleFuncList.newBuilder();
+                val useThis  = !eachList.isEmpty();
+                if (useThis) {
+                    consumer.accept(eachList.doubleStreamPlus());
                 }
-                return null;
-            });
-            val mainStream = StreamPlus.from(stream.mapToObj(streamOrNull)).filterNonNull();
-            if (!includeIncompletedSegment)
-                return mainStream;
-            
-            val mainSupplier = (Supplier<StreamPlus<DoubleStreamPlus>>)()->mainStream;
-            val tailSupplier = (Supplier<StreamPlus<DoubleStreamPlus>>)()->StreamPlus.of(toStreamPlus.apply(list.get()));
-            val resultStream
-                    = StreamPlus.of(mainSupplier, tailSupplier)
-                    .flatMap(Supplier::get);
-            
-            resultStream
-            .onClose(()->stream.close());
-            
-            return resultStream;
-        });
+                return hasThis || useThis;
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
     
     /**

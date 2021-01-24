@@ -32,8 +32,9 @@ import lombok.val;
 
 public class FuncListHelper {
     
-    static <D> FuncList<FuncList<D>> segmentByPercentiles(FuncList<D> list, DoubleFuncList percentiles) {
-        val size    = list.size();
+    static <D> FuncList<FuncList<D>> segmentByPercentiles(AsFuncList<D> funcList, DoubleFuncList percentiles) {
+        val list = funcList.asFuncList();
+        val size = list.size();
         DoubleFuncList indexes = percentiles
                 .append(100.0)
                 .sorted()

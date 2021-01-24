@@ -94,6 +94,20 @@ public interface IntegerAccess<HOST>
     // TODO - Move back to NumberAccess
     // TODO - Add Byte/Character
     
+    public default BooleanAccessPrimitive<HOST> thatIsOdd() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue % 2 != 0;
+        };
+    }
+    
+    public default BooleanAccessPrimitive<HOST> thatIsEven() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue % 2 == 0;
+        };
+    }
+    
     public default BooleanAccessPrimitive<HOST> thatIsZero() {
         return host -> {
             int intValue = applyAsInt(host);
