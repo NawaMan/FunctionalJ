@@ -166,8 +166,8 @@ public interface IntStreamPlusWithCombine {
     }
     
     public default StreamPlus<IntIntTuple> zipWith(
-            IntStream anotherStream,
             int       defaultValue1,
+            IntStream anotherStream,
             int       defaultValue2) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
@@ -207,15 +207,6 @@ public interface IntStreamPlusWithCombine {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB);
-    }
-    
-    public default <T> StreamPlus<T> zipToObjWith(
-            IntStream           anotherStream,
-            int                 defaultValue,
-            IntIntBiFunction<T> merger) {
-        IntIteratorPlus iteratorA = intStreamPlus().iterator();
-        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
-        return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue);
     }
     
     public default <T> StreamPlus<T> zipToObjWith(

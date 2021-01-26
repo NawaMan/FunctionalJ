@@ -29,6 +29,7 @@ import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
+import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.DoubleBiPredicatePrimitive;
@@ -45,9 +46,8 @@ public interface DoubleStreamPlusWithLimit {
         val streamPlus = doubleStreamPlus();
         return ((maxSize == null) || (maxSize.longValue() < 0))
                 ? streamPlus
-                : DoubleStreamPlus.from(
-                        streamPlus
-                        .limit((long)maxSize));
+                : streamPlus
+                    .limit((long)maxSize);
     }
     
     /** Skip to the given offset position. */
@@ -55,9 +55,8 @@ public interface DoubleStreamPlusWithLimit {
         val streamPlus = doubleStreamPlus();
         return ((offset == null) || (offset.longValue() < 0))
                 ? streamPlus
-                : DoubleStreamPlus.from(
-                        streamPlus
-                        .skip((long)offset));
+                : streamPlus
+                    .skip((long)offset);
     }
     
     /** Skip any value while the condition is true. */
@@ -75,6 +74,48 @@ public interface DoubleStreamPlusWithLimit {
                 
                 return !isStillTrue.get();
             });
+        });
+    }
+    
+    /** Skip any value while the condition is true. */
+    @Sequential
+    public default DoubleStreamPlus skipWhile(DoubleBiPredicatePrimitive condition) {
+        val streamPlus = doubleStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+                boolean isStillSkipping = true;
+                boolean isFirst         = true;
+                double  prevValue       = Double.NaN;
+                @Override
+                public boolean tryAdvance(DoubleConsumer consumer) {
+                    DoubleConsumer action = elem -> {
+                        if (isStillSkipping) {
+                            if (!isFirst) {
+                                if (condition.test(prevValue, elem)) {
+                                    isStillSkipping = false;
+                                }
+                            } else {
+                                isFirst = false;
+                            }
+                            if (!isStillSkipping) {
+                                consumer.accept(prevValue);
+                            }
+                            prevValue = elem;
+                        } else {
+                            consumer.accept(prevValue);
+                            prevValue = elem;
+                        }
+                    };
+                    boolean hadNext = orgSpliterator.tryAdvance(action);
+                    if (!isStillSkipping && !hadNext) {
+                        consumer.accept(prevValue);
+                    }
+                    return hadNext;
+                }
+            };
+            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            return DoubleStreamPlus.from(newStream);
         });
     }
     
@@ -96,70 +137,111 @@ public interface DoubleStreamPlusWithLimit {
         });
     }
     
+    /** Skip any value until the condition is true. */
+    @Sequential
+    public default DoubleStreamPlus skipUntil(DoubleBiPredicatePrimitive condition) {
+        val streamPlus = doubleStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+                boolean isStillSkipping = true;
+                boolean isFirst         = true;
+                double  prevValue       = Integer.MIN_VALUE;
+                @Override
+                public boolean tryAdvance(DoubleConsumer consumer) {
+                    DoubleConsumer action = elem -> {
+                        if (isStillSkipping) {
+                            if (!isFirst) {
+                                if (!condition.test(prevValue, elem)) {
+                                    isStillSkipping = false;
+                                }
+                            } else {
+                                isFirst = false;
+                            }
+                            if (!isStillSkipping) {
+                                consumer.accept(prevValue);
+                            }
+                            prevValue = elem;
+                        } else {
+                            consumer.accept(prevValue);
+                            prevValue = elem;
+                        }
+                    };
+                    boolean hadNext = orgSpliterator.tryAdvance(action);
+                    if (!isStillSkipping && !hadNext) {
+                        consumer.accept(prevValue);
+                    }
+                    return hadNext;
+                }
+            };
+            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            return DoubleStreamPlus.from(newStream);
+        });
+    }
+    
     /** Accept any value while the condition is true. */
     @Sequential
     public default DoubleStreamPlus takeWhile(DoublePredicate condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            return DoubleStreamPlus.from(
-                    StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-                        boolean stillGoing = true;
-                        @Override
-                        public boolean tryAdvance(DoubleConsumer consumer) {
-                            if (stillGoing) {
-                                DoubleConsumer action = elem -> {
-                                    if (condition.test(elem)) {
-                                        consumer.accept(elem);
-                                    } else {
-                                        stillGoing = false;
-                                    }
-                                };
-                                boolean hadNext = splitr.tryAdvance(action);
-                                return hadNext && stillGoing;
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+                boolean stillGoing = true;
+                @Override
+                public boolean tryAdvance(DoubleConsumer consumer) {
+                    if (stillGoing) {
+                        DoubleConsumer action = elem -> {
+                            if (condition.test(elem)) {
+                                consumer.accept(elem);
+                            } else {
+                                stillGoing = false;
                             }
-                            return false;
-                        }
-                    }, false)
-                );
+                        };
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            };
+            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            return DoubleStreamPlus.from(newStream);
         });
     }
     
     /** Accept any value while the condition is true. */
     @Sequential
     public default DoubleStreamPlus takeWhile(DoubleBiPredicatePrimitive condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            return DoubleStreamPlus.from(
-                    StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-                        boolean stillGoing = true;
-                        boolean isFirst    = true;
-                        double  prevValue  = Double.NaN;
-                        @Override
-                        public boolean tryAdvance(DoubleConsumer consumer) {
-                            if (stillGoing) {
-                                DoubleConsumer action = elem -> {
-                                    if (!isFirst) {
-                                        if (condition.test(prevValue, elem)) {
-                                            consumer.accept(elem);
-                                        } else {
-                                            stillGoing = false;
-                                        }
-                                    } else {
-                                        isFirst = false;
-                                    }
-                                    prevValue = elem;
-                                };
-                                boolean hadNext = splitr.tryAdvance(action);
-                                return hadNext && stillGoing;
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+                boolean stillGoing = true;
+                boolean isFirst    = true;
+                double  prevValue  = Double.NaN;
+                @Override
+                public boolean tryAdvance(DoubleConsumer consumer) {
+                    if (stillGoing) {
+                        DoubleConsumer action = elem -> {
+                            if (!isFirst) {
+                                if (condition.test(prevValue, elem)) {
+                                    consumer.accept(elem);
+                                } else {
+                                    stillGoing = false;
+                                }
+                            } else {
+                                consumer.accept(elem);
+                                isFirst = false;
                             }
-                            return false;
-                        }
-                    }, false)
-                );
+                            prevValue = elem;
+                        };
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            };
+            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            return DoubleStreamPlus.from(newStream);
         });
     }
     
@@ -168,8 +250,8 @@ public interface DoubleStreamPlusWithLimit {
     public default DoubleStreamPlus takeUntil(DoublePredicate condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
@@ -181,42 +263,14 @@ public interface DoubleStreamPlusWithLimit {
                                 stillGoing = false;
                             }
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return DoubleStreamPlus.from(resultStream);
-        });
-    }
-    
-    /** Accept any value while the condition is true. */
-    @Sequential
-    public default DoubleStreamPlus dropAfter(DoublePredicate condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
-        val streamPlus = doubleStreamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            return DoubleStreamPlus.from(
-                    StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-                        boolean stillGoing = true;
-                        @Override
-                        public boolean tryAdvance(DoubleConsumer consumer) {
-                            if (stillGoing) {
-                                DoubleConsumer action = elem -> {
-                                    consumer.accept(elem);
-                                    if (condition.test(elem)) {
-                                        stillGoing = false;
-                                    }
-                                };
-                                boolean hadNext = splitr.tryAdvance(action);
-                                return hadNext && stillGoing;
-                            }
-                            return false;
-                        }
-                    }, false)
-                );
+            };
+            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            return DoubleStreamPlus.from(newStream);
         });
     }
     
@@ -225,8 +279,8 @@ public interface DoubleStreamPlusWithLimit {
     public default DoubleStreamPlus takeUntil(DoubleBiPredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 boolean isFirst    = true;
                 double  prevValue  = -1;
@@ -241,53 +295,84 @@ public interface DoubleStreamPlusWithLimit {
                                     stillGoing = false;
                                 }
                             } else {
+                                consumer.accept(elem);
                                 isFirst = false;
                             }
                             prevValue = elem;
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return DoubleStreamPlus.from(resultStream);
+            };
+            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            return DoubleStreamPlus.from(newStream);
+        });
+    }
+    
+    /** Accept any value while the condition is true. */
+    @Sequential
+    public default DoubleStreamPlus dropAfter(DoublePredicate condition) {
+        val streamPlus = doubleStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+                boolean stillGoing = true;
+                
+                @Override
+                public boolean tryAdvance(DoubleConsumer consumer) {
+                    if (stillGoing) {
+                        DoubleConsumer action = elem -> {
+                            consumer.accept(elem);
+                            if (condition.test(elem)) {
+                                stillGoing = false;
+                            }
+                        };
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            };
+            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            return DoubleStreamPlus.from(newStream);
         });
     }
     
     /** Accept any value while the condition is true. */
     @Sequential
     public default DoubleStreamPlus dropAfter(DoubleBiPredicatePrimitive condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            return DoubleStreamPlus.from(
-                    StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-                        boolean stillGoing = true;
-                        boolean isFirst    = true;
-                        double  prevValue  = -1;
-                        @Override
-                        public boolean tryAdvance(DoubleConsumer consumer) {
-                            if (stillGoing) {
-                                DoubleConsumer action = elem -> {
-                                    if (!isFirst) {
-                                        consumer.accept(elem);
-                                        if (condition.test(prevValue, elem)) {
-                                            stillGoing = false;
-                                        }
-                                    } else {
-                                        isFirst = false;
-                                    }
-                                    prevValue = elem;
-                                };
-                                boolean hadNext = splitr.tryAdvance(action);
-                                return hadNext && stillGoing;
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+                boolean stillGoing = true;
+                boolean isFirst    = true;
+                double  prevValue  = -1;
+                @Override
+                public boolean tryAdvance(DoubleConsumer consumer) {
+                    if (stillGoing) {
+                        DoubleConsumer action = elem -> {
+                            if (!isFirst) {
+                                consumer.accept(elem);
+                                if (condition.test(prevValue, elem)) {
+                                    stillGoing = false;
+                                }
+                            } else {
+                                consumer.accept(elem);
+                                isFirst = false;
                             }
-                            return false;
-                        }
-                    }, false)
-                );
+                            prevValue = elem;
+                        };
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            };
+            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            return DoubleStreamPlus.from(newStream);
         });
     }
     

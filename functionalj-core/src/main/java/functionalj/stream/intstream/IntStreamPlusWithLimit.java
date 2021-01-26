@@ -29,6 +29,7 @@ import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.IntBiPredicatePrimitive;
@@ -77,6 +78,48 @@ public interface IntStreamPlusWithLimit {
         });
     }
     
+    /** Skip any value while the condition is true. */
+    @Sequential
+    public default IntStreamPlus skipWhile(IntBiPredicatePrimitive condition) {
+        val streamPlus = intStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
+                boolean isStillSkipping = true;
+                boolean isFirst         = true;
+                int     prevValue       = Integer.MIN_VALUE;
+                @Override
+                public boolean tryAdvance(IntConsumer consumer) {
+                    IntConsumer action = elem -> {
+                        if (isStillSkipping) {
+                            if (!isFirst) {
+                                if (condition.test(prevValue, elem)) {
+                                    isStillSkipping = false;
+                                }
+                            } else {
+                                isFirst = false;
+                            }
+                            if (!isStillSkipping) {
+                                consumer.accept(prevValue);
+                            }
+                            prevValue = elem;
+                        } else {
+                            consumer.accept(prevValue);
+                            prevValue = elem;
+                        }
+                    };
+                    boolean hadNext = orgSpliterator.tryAdvance(action);
+                    if (!isStillSkipping && !hadNext) {
+                        consumer.accept(prevValue);
+                    }
+                    return hadNext;
+                }
+            };
+            IntStream newStream = StreamSupport.intStream(newSpliterator, false);
+            return IntStreamPlus.from(newStream);
+        });
+    }
+    
     /** Skip any value until the condition is true. */
     @Sequential
     public default IntStreamPlus skipUntil(IntPredicate condition) {
@@ -95,13 +138,55 @@ public interface IntStreamPlusWithLimit {
         });
     }
     
+    /** Skip any value until the condition is true. */
+    @Sequential
+    public default IntStreamPlus skipUntil(IntBiPredicatePrimitive condition) {
+        val streamPlus = intStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val orgSpliterator = stream.spliterator();
+            val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
+                boolean isStillSkipping = true;
+                boolean isFirst         = true;
+                int     prevValue       = Integer.MIN_VALUE;
+                @Override
+                public boolean tryAdvance(IntConsumer consumer) {
+                    IntConsumer action = elem -> {
+                        if (isStillSkipping) {
+                            if (!isFirst) {
+                                if (!condition.test(prevValue, elem)) {
+                                    isStillSkipping = false;
+                                }
+                            } else {
+                                isFirst = false;
+                            }
+                            if (!isStillSkipping) {
+                                consumer.accept(prevValue);
+                            }
+                            prevValue = elem;
+                        } else {
+                            consumer.accept(prevValue);
+                            prevValue = elem;
+                        }
+                    };
+                    boolean hadNext = orgSpliterator.tryAdvance(action);
+                    if (!isStillSkipping && !hadNext) {
+                        consumer.accept(prevValue);
+                    }
+                    return hadNext;
+                }
+            };
+            IntStream newStream = StreamSupport.intStream(newSpliterator, false);
+            return IntStreamPlus.from(newStream);
+        });
+    }
+    
     /** Accept any value while the condition is true. */
     @Sequential
     public default IntStreamPlus takeWhile(IntPredicate condition) {
         val streamPlus = intStreamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 @Override
                 public boolean tryAdvance(IntConsumer consumer) {
@@ -113,13 +198,14 @@ public interface IntStreamPlusWithLimit {
                                 stillGoing = false;
                             }
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return IntStreamPlus.from(resultStream);
+            };
+            IntStream newStream = StreamSupport.intStream(newSpliterator, false);
+            return IntStreamPlus.from(newStream);
         });
     }
     
@@ -127,9 +213,9 @@ public interface IntStreamPlusWithLimit {
     @Sequential
     public default IntStreamPlus takeWhile(IntBiPredicatePrimitive condition) {
         val streamPlus = intStreamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 boolean isFirst    = true;
                 int     prevValue  = -1;
@@ -149,13 +235,14 @@ public interface IntStreamPlusWithLimit {
                             }
                             prevValue = elem;
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return IntStreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.intStream(newSpliterator, false);
+            return IntStreamPlus.from(newStream);
         });
     }
     
@@ -163,9 +250,9 @@ public interface IntStreamPlusWithLimit {
     @Sequential
     public default IntStreamPlus takeUntil(IntPredicate condition) {
         val streamPlus = intStreamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 @Override
                 public boolean tryAdvance(IntConsumer consumer) {
@@ -177,13 +264,14 @@ public interface IntStreamPlusWithLimit {
                                 stillGoing = false;
                             }
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return IntStreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.intStream(newSpliterator, false);
+            return IntStreamPlus.from(newStream);
         });
     }
     
@@ -191,9 +279,9 @@ public interface IntStreamPlusWithLimit {
     @Sequential
     public default IntStreamPlus takeUntil(IntBiPredicatePrimitive condition) {
         val streamPlus = intStreamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 boolean isFirst    = true;
                 int     prevValue  = -1;
@@ -213,13 +301,14 @@ public interface IntStreamPlusWithLimit {
                             }
                             prevValue = elem;
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return IntStreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.intStream(newSpliterator, false);
+            return IntStreamPlus.from(newStream);
         });
     }
     
@@ -227,9 +316,9 @@ public interface IntStreamPlusWithLimit {
     @Sequential
     public default IntStreamPlus dropAfter(IntPredicate condition) {
         val streamPlus = intStreamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 
                 @Override
@@ -241,13 +330,14 @@ public interface IntStreamPlusWithLimit {
                                 stillGoing = false;
                             }
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return IntStreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.intStream(newSpliterator, false);
+            return IntStreamPlus.from(newStream);
         });
     }
     
@@ -255,9 +345,9 @@ public interface IntStreamPlusWithLimit {
     @Sequential
     public default IntStreamPlus dropAfter(IntBiPredicatePrimitive condition) {
         val streamPlus = intStreamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 boolean isFirst    = true;
                 int     prevValue  = -1;
@@ -276,13 +366,14 @@ public interface IntStreamPlusWithLimit {
                             }
                             prevValue = elem;
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return IntStreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.intStream(newSpliterator, false);
+            return IntStreamPlus.from(newStream);
         });
     }
     

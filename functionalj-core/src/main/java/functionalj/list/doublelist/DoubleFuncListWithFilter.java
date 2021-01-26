@@ -25,6 +25,7 @@ package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.DoubleFuncList.deriveFrom;
 
+import java.util.Collection;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
@@ -65,11 +66,7 @@ public interface DoubleFuncListWithFilter extends AsDoubleFuncList {
     public default <T> DoubleFuncList filterAsObject(
             DoubleFunction<T>    mapper,
             Predicate<? super T> predicate) {
-        DoublePredicate newMapper = value -> {
-            val newValue = mapper.apply(value);
-            return predicate.test(newValue);
-        };
-        return deriveFrom(this, stream -> stream.filter(newMapper));
+        return deriveFrom(this, stream -> stream.filterAsObject(mapper, predicate));
     }
     
     /** Map each value to another object and used it to filter the value. */
@@ -105,13 +102,28 @@ public interface DoubleFuncListWithFilter extends AsDoubleFuncList {
         return deriveFrom(this, stream -> stream.filterIn(collection));
     }
     
+    /** Filter only the value that is in the given collections. */
+    public default DoubleFuncList filterIn(Collection<Double> collection) {
+        return deriveFrom(this, stream -> stream.filterIn(collection));
+    }
+    
     /** Filter only the value that the predicate returns false. */
     public default DoubleFuncList exclude(DoublePredicate predicate) {
         return deriveFrom(this, stream -> stream.exclude(predicate));
     }
     
+    /** Filter only the value that is not in the given items. */
+    public default DoubleFuncList excludeIn(double ... items) {
+        return deriveFrom(this, stream -> stream.excludeIn(items));
+    }
+    
     /** Filter out any value that is in the given collection. */
     public default DoubleFuncList excludeIn(DoubleFuncList collection) {
+        return deriveFrom(this, stream -> stream.excludeIn(collection));
+    }
+    
+    /** Filter only the value that is in the given collections. */
+    public default DoubleFuncList excludeIn(Collection<Double> collection) {
         return deriveFrom(this, stream -> stream.excludeIn(collection));
     }
     

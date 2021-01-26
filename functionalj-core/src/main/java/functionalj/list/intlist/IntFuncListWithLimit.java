@@ -47,8 +47,18 @@ public interface IntFuncListWithLimit extends AsIntFuncList {
         return deriveToInt(this, stream -> stream.skipWhile(condition));
     }
     
+    /** Skip any value while the condition is true. */
+    public default IntFuncList skipWhile(IntBiPredicatePrimitive condition) {
+        return deriveToInt(this, stream -> stream.skipWhile(condition));
+    }
+    
     /** Skip any value until the condition is true. */
     public default IntFuncList skipUntil(IntPredicate condition) {
+        return deriveToInt(this, stream -> stream.skipUntil(condition));
+    }
+    
+    /** Skip any value until the condition is true. */
+    public default IntFuncList skipUntil(IntBiPredicatePrimitive condition) {
         return deriveToInt(this, stream -> stream.skipUntil(condition));
     }
     

@@ -176,13 +176,13 @@ public interface DoubleStreamPlus
                 .limit(time);
     }
     
-    public static DoubleStreamPlus loopBy(int step) {
+    public static DoubleStreamPlus loopBy(double step) {
         return DoubleStreamPlus
                 .infinite()
                 .map(i -> i * step);
     }
     
-    public static DoubleStreamPlus loopBy(int step, int time) {
+    public static DoubleStreamPlus loopBy(double step, int time) {
         return DoubleStreamPlus
                 .loopBy(step)
                 .limit(time);

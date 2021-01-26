@@ -63,6 +63,8 @@ import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlusHelper;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 import functionalj.tuple.DoubleDoubleTuple;
 import functionalj.tuple.IntDoubleTuple;
 import lombok.val;
@@ -148,6 +150,8 @@ public interface DoubleFuncList
         return ImmutableDoubleFuncList.of(data);
     }
     
+    //-- From --
+    
     /** Create a FuncList from the given doubles. */
     public static ImmutableDoubleFuncList from(double[] datas) {
         return ImmutableDoubleFuncList.of(datas);
@@ -155,16 +159,21 @@ public interface DoubleFuncList
     
     /** Create a FuncList from the given collection. */
     public static ImmutableDoubleFuncList from(Collection<Double> data, double valueForNull) {
-        DoubleStream doubleStream = StreamPlus.from(data.stream())
+        DoubleStream doubleStream 
+                = StreamPlus.from(data.stream())
                 .fillNull   ((Double)valueForNull)
                 .mapToDouble(theDouble);
-        return ImmutableDoubleFuncList.from(doubleStream);
+        ImmutableDoubleFuncList list = ImmutableDoubleFuncList.from(doubleStream);
+        if (!(data instanceof FuncList))
+            return list;
+        val funcList = (FuncList<Double>)data;
+        return funcList.isLazy() ? list : (ImmutableDoubleFuncList)list.eager();
     }
     
     /** Create a FuncList from the given FuncList. */
     public static DoubleFuncList from(boolean isLazy, AsDoubleFuncList asFuncList) {
         val funcList = asFuncList.asDoubleFuncList();
-        return isLazy ? funcList.lazy() :funcList.eager();
+        return isLazy ? funcList.lazy() : funcList.eager();
     }
     
     /** Create a FuncList from the given stream. */
@@ -178,10 +187,10 @@ public interface DoubleFuncList
      * The provided stream should produce the same sequence of values.
      **/
     public static DoubleFuncList from(Supplier<DoubleStream> supplier) {
-        return new DoubleFuncListDerived(()->DoubleStreamPlus.from(supplier.get()));
+        return new DoubleFuncListDerived(() -> DoubleStreamPlus.from(supplier.get()));
     }
     
-    //== Create ==
+    // == Create ==
     
     /** Returns the infinite streams of zeroes. */
     public static DoubleFuncList zeroes() {
@@ -190,7 +199,7 @@ public interface DoubleFuncList
     
     /** Returns a list that contains zeroes. */
     public static DoubleFuncList zeroes(int count) {
-        return DoubleFuncList.from(()->DoubleStreamPlus.zeroes(count));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.zeroes(count));
     }
     
     /** Returns the list of ones. */
@@ -200,39 +209,39 @@ public interface DoubleFuncList
     
     /** Returns a list that contains ones. */
     public static DoubleFuncList ones(int count) {
-        return DoubleFuncList.from(()->DoubleStreamPlus.ones(count));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.ones(count));
     }
     
     /** Create a list that is the repeat of the given array of data. */
     public static DoubleFuncList repeat(double ... data) {
-        return DoubleFuncList.from(()->DoubleStreamPlus.repeat(data));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.repeat(data));
     }
     
     /** Create a list that is the repeat of the given array of data. */
     public static DoubleFuncList cycle(double ... data) {
-        return DoubleFuncList.from(()->DoubleStreamPlus.cycle(data));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.cycle(data));
     }
     
     /** Create a list that for a loop with the number of time given - the value is the index of the loop. */
     public static DoubleFuncList loop() {
-        return DoubleFuncList.from(()->DoubleStreamPlus.loop());
+        return DoubleFuncList.from(() -> DoubleStreamPlus.loop());
     }
     
     /** Create a list that for a loop with the number of time given - the value is the index of the loop. */
     public static DoubleFuncList loop(int times) {
-        return DoubleFuncList.from(()->DoubleStreamPlus.loop(times));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.loop(times));
     }
     
-    public static DoubleFuncList loopBy(int step) {
-        return DoubleFuncList.from(()->DoubleStreamPlus.loopBy(step));
+    public static DoubleFuncList loopBy(double step) {
+        return DoubleFuncList.from(() -> DoubleStreamPlus.loopBy(step));
     }
     
-    public static DoubleFuncList loopBy(int step, int times) {
-        return DoubleFuncList.from(()->DoubleStreamPlus.loopBy(step, times));
+    public static DoubleFuncList loopBy(double step, int times) {
+        return DoubleFuncList.from(() -> DoubleStreamPlus.loopBy(step, times));
     }
     
     public static DoubleFuncList infinite() {
-        return DoubleFuncList.from(()->DoubleStreamPlus.infinite());
+        return DoubleFuncList.from(() -> DoubleStreamPlus.infinite());
     }
     
     public static DoubleFuncList naturalNumbers() {
@@ -312,7 +321,7 @@ public interface DoubleFuncList
     
     /**
      * Create a list by apply the compounder to the seed over and over.
-     *
+     * 
      * For example: let say seed = 1 and f(x) = x*2.
      * The result stream will be:
      *      1 <- seed,
@@ -327,7 +336,7 @@ public interface DoubleFuncList
     public static DoubleFuncList iterate(
             double                        seed, 
             DoubleToDoubleAccessPrimitive compounder) {
-        return DoubleFuncList.from(()->DoubleStreamPlus.iterate(seed, compounder));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.iterate(seed, compounder));
     }
     
     /**
@@ -347,7 +356,7 @@ public interface DoubleFuncList
     public static DoubleFuncList compound(
             double                        seed, 
             DoubleToDoubleAccessPrimitive compounder) {
-        return DoubleFuncList.from(()->DoubleStreamPlus.compound(seed, compounder));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.compound(seed, compounder));
     }
     
     /**
@@ -802,7 +811,7 @@ public interface DoubleFuncList
         return indexesOf(each -> Objects.equals(o, each)).findFirst().orElse(-1);
     }
     
-    public default int lastIndexOf(double o){
+    public default int lastIndexOf(double o) {
         return indexesOf(each -> Objects.equals(o, each)).last().orElse(-1);
     }
     
@@ -833,7 +842,7 @@ public interface DoubleFuncList
     }
     
     /** Returns the element at the index. */
-    public default OptionalDouble at(int index){
+    public default OptionalDouble at(int index) {
         return skip(index)
                 .limit(1)
                 .findFirst()
@@ -980,7 +989,7 @@ public interface DoubleFuncList
             return this;
         
         val array = toArray();
-        val mid = length / 2;
+        val mid   = length / 2;
         for (int i = 0; i < mid; i++) {
             val j = length - i - 1;
             val temp = array[i];
@@ -1035,7 +1044,7 @@ public interface DoubleFuncList
         return DoubleStreamPlus
                 .of(c)
                 .anyMatch(each -> doubleStream()
-                        .anyMatch(o -> Objects.equals(each, o)));
+                                    .anyMatch(o -> Objects.equals(each, o)));
     }
     
     public default boolean containsAllOf(Collection<Double> c) {
@@ -1047,7 +1056,7 @@ public interface DoubleFuncList
     public default boolean containsSomeOf(Collection<Double> c) {
         return c.stream()
                 .anyMatch(each -> doubleStream()
-                        .anyMatch(o -> Objects.equals(each, o)));
+                                    .anyMatch(o -> Objects.equals(each, o)));
     }
     
     public default double get(int index) {
@@ -1084,6 +1093,12 @@ public interface DoubleFuncList
     /** Returns the any element */
     public default OptionalDouble findAny() {
         return doubleStream().findAny();
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalDouble findLast() {
+        return doubleStream().findLast();
     }
     
 }

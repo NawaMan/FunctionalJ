@@ -60,8 +60,8 @@ public interface IntFuncListWithMapGroup extends AsIntFuncList {
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default <TARGET> FuncList<TARGET> mapGroupToObj(IntIntBiFunction<TARGET> combinator) {
-        return deriveToObj(this, stream -> stream.mapGroupToObj(combinator));
+    public default <TARGET> FuncList<TARGET> mapTwoToObj(IntIntBiFunction<TARGET> combinator) {
+        return deriveToObj(this, stream -> stream.mapTwoToObj(combinator));
     }
     
     /** @return  the stream of  each previous value and each current value. */

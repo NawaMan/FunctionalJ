@@ -95,6 +95,7 @@ public interface IntFuncList
             IntFuncListWithSplit,
             IntFuncListWithStatistic {
     
+    
     /** Throw a no more element exception. This is used for generator. */
     public static int noMoreElement() throws NoMoreResultException {
         SupplierBackedIterator.noMoreElement();
@@ -157,7 +158,10 @@ public interface IntFuncList
     
     /** Create a FuncList from the given collection. */
     public static ImmutableIntFuncList from(Collection<Integer> data, int valueForNull) {
-        IntStream intStream = StreamPlus.from(data.stream()).fillNull((Integer) valueForNull).mapToInt(theInteger);
+        IntStream intStream 
+                = StreamPlus.from(data.stream())
+                .fillNull((Integer)valueForNull)
+                .mapToInt(theInteger);
         ImmutableIntFuncList list = ImmutableIntFuncList.from(intStream);
         if (!(data instanceof FuncList))
             return list;
@@ -213,17 +217,17 @@ public interface IntFuncList
     }
     
     /** Create a list that is the repeat of the given array of data. */
-    public static IntFuncList repeat(IntFuncList data) {
-        return IntFuncList.from(() -> IntStreamPlus.repeat(data));
-    }
-    
-    /** Create a list that is the repeat of the given array of data. */
     public static IntFuncList cycle(int... data) {
         return IntFuncList.from(() -> IntStreamPlus.cycle(data));
     }
     
     /** Create a list that is the repeat of the given list of data. */
-    public static IntFuncList cycle(AsIntFuncList data) {
+    public static IntFuncList repeat(IntFuncList data) {
+        return IntFuncList.from(() -> IntStreamPlus.repeat(data));
+    }
+    
+    /** Create a list that is the repeat of the given list of data. */
+    public static IntFuncList cycle(IntFuncList data) {
         return IntFuncList.from(() -> IntStreamPlus.cycle(data));
     }
     
@@ -275,7 +279,7 @@ public interface IntFuncList
         return IntFuncList.from(() -> IntStreamPlus.range(startInclusive, endExclusive));
     }
     
-    // -- Concat + Combine --
+    //-- Concat + Combine --
     
     /** Concatenate all the given streams. */
     public static IntFuncList concat(IntFuncList... lists) {
@@ -294,7 +298,7 @@ public interface IntFuncList
     }
     
     // TODO - Rethink ... as this will generate un-repeatable stream.
-    // we may want to do cache here.
+    //          we may want to do cache here.
     
     /**
      * Create a FuncList from the supplier of suppliers. The supplier will be repeatedly asked for value until NoMoreResultException is
@@ -316,21 +320,35 @@ public interface IntFuncList
     
     /**
      * Create a list by apply the compounder to the seed over and over.
-     *
-     * For example: let say seed = 1 and f(x) = x*2. The result stream will be: 1 <- seed, 2 <- (1*2), 4 <- ((1*2)*2), 8 <- (((1*2)*2)*2),
-     * 16 <- ((((1*2)*2)*2)*2) ...
+     * 
+     * For example: let say seed = 1 and f(x) = x*2.
+     * The result stream will be:
+     *      1 <- seed,
+     *      2 <- (1*2),
+     *      4 <- ((1*2)*2),
+     *      8 <- (((1*2)*2)*2),
+     *      16 <- ((((1*2)*2)*2)*2)
+     *      ...
      *
      * Note: this is an alias of compound()
      **/
-    public static IntFuncList iterate(int seed, IntegerToIntegerAccessPrimitive compounder) {
+    public static IntFuncList iterate(
+            int                             seed, 
+            IntegerToIntegerAccessPrimitive compounder) {
         return IntFuncList.from(() -> IntStreamPlus.iterate(seed, compounder));
     }
     
     /**
      * Create a list by apply the compounder to the seed over and over.
      *
-     * For example: let say seed = 1 and f(x) = x*2. The result stream will be: 1 <- seed, 2 <- (1*2), 4 <- ((1*2)*2), 8 <- (((1*2)*2)*2),
-     * 16 <- ((((1*2)*2)*2)*2) ...
+     * For example: let say seed = 1 and f(x) = x*2.
+     * The result stream will be:
+     *      1 <- seed,
+     *      2 <- (1*2),
+     *      4 <- ((1*2)*2),
+     *      8 <- (((1*2)*2)*2),
+     *      16 <- ((((1*2)*2)*2)*2)
+     *      ...
      *
      * Note: this is an alias of iterate()
      **/
@@ -341,8 +359,15 @@ public interface IntFuncList
     /**
      * Create a list by apply the compounder to the seeds over and over.
      *
-     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b. The result stream will be: 1 <- seed1, 1 <- seed2, 2 <- (1+1), 3 <-
-     * (1+2), 5 <- (2+3), 8 <- (5+8) ...
+     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
+     * The result stream will be:
+     *      1 <- seed1,
+     *      1 <- seed2,
+     *      2 <- (1+1),
+     *      3 <- (1+2),
+     *      5 <- (2+3),
+     *      8 <- (5+8)
+     *      ...
      *
      * Note: this is an alias of compound()
      **/
@@ -435,11 +460,13 @@ public interface IntFuncList
         return this;
     }
     
-    // -- Derive --
+    //-- Derive --
     
     /** Create a FuncList from the given FuncList. */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static <SOURCE> IntFuncList deriveFrom(List<SOURCE> list, Function<StreamPlus<SOURCE>, IntStream> action) {
+    public static <SOURCE> IntFuncList deriveFrom(
+            List<SOURCE>                            list,
+            Function<StreamPlus<SOURCE>, IntStream> action) {
         boolean isLazy = (list instanceof FuncList) ? ((FuncList) list).isLazy() : true;
         
         if (!isLazy) {
@@ -458,7 +485,9 @@ public interface IntFuncList
     }
     
     /** Create a FuncList from the given IntFuncList. */
-    public static <TARGET> IntFuncList deriveFrom(AsIntFuncList asFuncList, Function<IntStreamPlus, IntStream> action) {
+    public static <TARGET> IntFuncList deriveFrom(
+            AsIntFuncList                      asFuncList, 
+            Function<IntStreamPlus, IntStream> action) {
         boolean isLazy = asFuncList.asIntFuncList().isLazy();
         if (!isLazy) {
             val orgStreamPlus = asFuncList.intStreamPlus();
@@ -475,7 +504,9 @@ public interface IntFuncList
     }
     
     /** Create a FuncList from the given DoubleFuncList. */
-    public static <TARGET> IntFuncList deriveFrom(AsDoubleFuncList asFuncList, Function<DoubleStreamPlus, IntStream> action) {
+    public static <TARGET> IntFuncList deriveFrom(
+            AsDoubleFuncList                      asFuncList, 
+            Function<DoubleStreamPlus, IntStream> action) {
         boolean isLazy = asFuncList.asDoubleFuncList().isLazy();
         if (!isLazy) {
             val orgStreamPlus = asFuncList.doubleStreamPlus();
@@ -492,21 +523,27 @@ public interface IntFuncList
     }
     
     /** Create a FuncList from another FuncList. */
-    public static IntFuncList deriveToInt(AsIntFuncList funcList, Function<IntStreamPlus, IntStream> action) {
+    public static IntFuncList deriveToInt(
+            AsIntFuncList                      funcList, 
+            Function<IntStreamPlus, IntStream> action) {
         return IntFuncList.deriveFrom(funcList, action);
     }
     
     /** Create a FuncList from another FuncList. */
-    public static DoubleFuncList deriveToDouble(AsIntFuncList funcList, Function<IntStreamPlus, DoubleStream> action) {
+    public static DoubleFuncList deriveToDouble(
+            AsIntFuncList                         funcList, 
+            Function<IntStreamPlus, DoubleStream> action) {
         return DoubleFuncList.deriveFrom(funcList, action);
     }
     
     /** Create a FuncList from another FuncList. */
-    public static <TARGET> FuncList<TARGET> deriveToObj(AsIntFuncList funcList, Function<IntStreamPlus, Stream<TARGET>> action) {
+    public static <TARGET> FuncList<TARGET> deriveToObj(
+            AsIntFuncList                           funcList, 
+            Function<IntStreamPlus, Stream<TARGET>> action) {
         return FuncList.deriveFrom(funcList, action);
     }
     
-    // -- Predicate --
+    //-- Predicate --
     
     /** Test if the data is in the list */
     @Override
@@ -524,7 +561,7 @@ public interface IntFuncList
         return false;
     }
     
-    // -- Lazy + Eager --
+    //-- Lazy + Eager --
     
     /** Return a lazy list with the data of this list. */
     public IntFuncList lazy();
@@ -537,14 +574,14 @@ public interface IntFuncList
         return toImmutableList();
     }
     
-    // -- Iterable --
+    //-- Iterable --
     
     /** @return the iterable of this FuncList. */
     public default IntIterable iterable() {
         return () -> iterator();
     }
     
-    // -- Iterator --
+    //-- Iterator --
     
     /** @return a iterator of this list. */
     @Override
@@ -558,7 +595,7 @@ public interface IntFuncList
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
-    // -- Map --
+    //-- Map --
     
     /** Map each value into a string value. */
     public default FuncList<String> mapToString() {
@@ -589,7 +626,7 @@ public interface IntFuncList
         return FuncList.deriveFrom(this, stream -> stream.mapToObj(mapper));
     }
     
-    // -- FlatMap --
+    //-- FlatMap --
     
     /** Map a value into a FuncList and then flatten that list */
     public default IntFuncList flatMap(IntFunction<? extends AsIntFuncList> mapper) {
@@ -606,7 +643,7 @@ public interface IntFuncList
         return DoubleFuncList.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
     }
     
-    // -- Filter --
+    //-- Filter --
     
     /** Select only the element that passes the predicate */
     public default IntFuncList filter(IntPredicate predicate) {
@@ -618,14 +655,14 @@ public interface IntFuncList
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
     
-    // -- Peek --
+    //-- Peek --
     
     /** Consume each value using the action whenever a termination operation is called */
     public default IntFuncList peek(IntConsumer action) {
         return deriveFrom(this, stream -> stream.peek(action));
     }
     
-    // -- Limit/Skip --
+    //-- Limit/Skip --
     
     /** Limit the size */
     public default IntFuncList limit(long maxSize) {
@@ -638,14 +675,14 @@ public interface IntFuncList
         return deriveFrom(this, stream -> stream.skip(offset));
     }
     
-    // -- Distinct --
+    //-- Distinct --
     
     /** Remove duplicates */
     public default IntFuncList distinct() {
         return deriveFrom(this, stream -> stream.distinct());
     }
     
-    // -- Sorted --
+    //-- Sorted --
     
     /** Sort the values in this stream */
     public default IntFuncList sorted() {
@@ -657,7 +694,7 @@ public interface IntFuncList
         return deriveFrom(this, stream -> stream.sorted(comparator));
     }
     
-    // -- Terminate --
+    //-- Terminate --
     
     /** Process each value using the given action */
     public default void forEach(IntConsumer action) {
@@ -671,7 +708,7 @@ public interface IntFuncList
         intStream().forEachOrdered(action);
     }
     
-    // == Conversion ==
+    //== Conversion ==
     
     public default IntFuncList toFuncList() {
         return this;
@@ -692,7 +729,7 @@ public interface IntFuncList
         return new IntFuncListBuilder(toArray());
     }
     
-    // == Nullable, Optional and Result
+    //== Nullable, Optional and Result
     
     public default Nullable<IntFuncList> __nullable() {
         return Nullable.of(this);
@@ -726,7 +763,9 @@ public interface IntFuncList
     
     /** Returns the first element. */
     public default OptionalInt first() {
-        return intStream().limit(1).findFirst();
+        return intStream()
+                .limit(1)
+                .findFirst();
     }
     
     /** Returns the first elements */
@@ -748,7 +787,10 @@ public interface IntFuncList
     
     /** Returns the element at the index. */
     public default OptionalInt at(int index) {
-        return skip(index).limit(1).findFirst();
+        return skip(index)
+                .limit(1)
+                .findFirst()
+                ;
     }
     
     /** Returns the second to the last elements. */
@@ -917,7 +959,7 @@ public interface IntFuncList
         return new ImmutableIntFuncList(array, isLazy());
     }
     
-    // -- Query --
+    //-- Query --
     
     /** Returns the list of tuple of the index and the value for which the value match the predicate. */
     public default FuncList<IntIntTuple> query(IntPredicate check) {
@@ -933,19 +975,29 @@ public interface IntFuncList
     }
     
     public default boolean containsAllOf(int... array) {
-        return IntStreamPlus.of(array).allMatch(each -> intStream().anyMatch(value -> Objects.equals(each, value)));
+        return IntStreamPlus
+                .of(array)
+                .allMatch(each -> intStream()
+                                    .anyMatch(value -> Objects.equals(each, value)));
     }
     
     public default boolean containsSomeOf(int... c) {
-        return IntStreamPlus.of(c).anyMatch(each -> intStream().anyMatch(o -> Objects.equals(each, o)));
+        return IntStreamPlus
+                .of(c)
+                .anyMatch(each -> intStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
     }
     
     public default boolean containsAllOf(Collection<Integer> c) {
-        return c.stream().allMatch(each -> intStream().anyMatch(o -> Objects.equals(each, o)));
+        return c.stream()
+                .allMatch(each -> intStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
     }
     
     public default boolean containsSomeOf(Collection<Integer> c) {
-        return c.stream().anyMatch(each -> intStream().anyMatch(o -> Objects.equals(each, o)));
+        return c.stream()
+                .anyMatch(each -> intStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
     }
     
     public default int get(int index) {
@@ -957,7 +1009,7 @@ public interface IntFuncList
         return ref[0][0];
     }
     
-    // -- Match --
+    //-- Match --
     
     /** Check if any element match the predicate */
     public default boolean anyMatch(IntPredicate predicate) {

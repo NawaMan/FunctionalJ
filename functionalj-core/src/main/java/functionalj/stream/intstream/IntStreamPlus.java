@@ -409,7 +409,7 @@ public interface IntStreamPlus
     public static StreamPlus<IntIntTuple> zipOf(
             IntStream stream1, int defaultValue1,
             IntStream stream2, int defaultValue2) {
-        return IntStreamPlus.from(stream1).zipWith(stream2, defaultValue1, defaultValue2);
+        return IntStreamPlus.from(stream1).zipWith(defaultValue1, stream2, defaultValue2);
     }
     
     public static IntStreamPlus zipOf(

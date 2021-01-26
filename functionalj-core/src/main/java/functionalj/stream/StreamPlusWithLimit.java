@@ -77,6 +77,48 @@ public interface StreamPlusWithLimit<DATA> {
         });
     }
     
+    /** Skip any value while the condition is true. */
+    @Sequential
+    public default StreamPlus<DATA> skipWhile(BiPredicate<? super DATA, ? super DATA> condition) {
+        val streamPlus = streamPlus();
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
+                boolean isStillSkipping = true;
+                boolean isFirst         = true;
+                DATA    prevValue       = null;
+                @Override
+                public boolean tryAdvance(Consumer<? super DATA> consumer) {
+                    Consumer<? super DATA> action = elem -> {
+                        if (isStillSkipping) {
+                            if (!isFirst) {
+                                if (condition.test(prevValue, elem)) {
+                                    isStillSkipping = false;
+                                }
+                            } else {
+                                isFirst = false;
+                            }
+                            if (!isStillSkipping) {
+                                consumer.accept(prevValue);
+                            }
+                            prevValue = elem;
+                        } else {
+                            consumer.accept(prevValue);
+                            prevValue = elem;
+                        }
+                    };
+                    boolean hadNext = orgSpliterator.tryAdvance(action);
+                    if (!isStillSkipping && !hadNext) {
+                        consumer.accept(prevValue);
+                    }
+                    return hadNext;
+                }
+            };
+            val newStream = StreamSupport.stream(newSpliterator, false);
+            return StreamPlus.from(newStream);
+        });
+    }
+    
     /** Skip any value until the condition is true. */
     @Sequential
     public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
@@ -95,13 +137,55 @@ public interface StreamPlusWithLimit<DATA> {
         });
     }
     
+    /** Skip any value until the condition is true. */
+    @Sequential
+    public default StreamPlus<DATA> skipUntil(BiPredicate<? super DATA, ? super DATA> condition) {
+        val streamPlus = streamPlus();
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
+                boolean isStillSkipping = true;
+                boolean isFirst         = true;
+                DATA    prevValue       = null;
+                @Override
+                public boolean tryAdvance(Consumer<? super DATA> consumer) {
+                    Consumer<? super DATA> action = elem -> {
+                        if (isStillSkipping) {
+                            if (!isFirst) {
+                                if (!condition.test(prevValue, elem)) {
+                                    isStillSkipping = false;
+                                }
+                            } else {
+                                isFirst = false;
+                            }
+                            if (!isStillSkipping) {
+                                consumer.accept(prevValue);
+                            }
+                            prevValue = elem;
+                        } else {
+                            consumer.accept(prevValue);
+                            prevValue = elem;
+                        }
+                    };
+                    boolean hadNext = orgSpliterator.tryAdvance(action);
+                    if (!isStillSkipping && !hadNext) {
+                        consumer.accept(prevValue);
+                    }
+                    return hadNext;
+                }
+            };
+            val newStream = StreamSupport.stream(newSpliterator, false);
+            return StreamPlus.from(newStream);
+        });
+    }
+    
     /** Accept any value while the condition is true. */
     @Sequential
     public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
@@ -113,13 +197,14 @@ public interface StreamPlusWithLimit<DATA> {
                                 stillGoing = false;
                             }
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return StreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.stream(newSpliterator, false);
+            return StreamPlus.from(newStream);
         });
     }
     
@@ -127,9 +212,9 @@ public interface StreamPlusWithLimit<DATA> {
     @Sequential
     public default StreamPlus<DATA> takeWhile(BiPredicate<? super DATA, ? super DATA> condition) {
         val streamPlus = streamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 boolean isFirst    = true;
                 DATA    prevValue  = null;
@@ -149,13 +234,14 @@ public interface StreamPlusWithLimit<DATA> {
                             }
                             prevValue = elem;
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return StreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.stream(newSpliterator, false);
+            return StreamPlus.from(newStream);
         });
     }
     
@@ -163,9 +249,9 @@ public interface StreamPlusWithLimit<DATA> {
     @Sequential
     public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
@@ -177,13 +263,14 @@ public interface StreamPlusWithLimit<DATA> {
                                 stillGoing = false;
                             }
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return StreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.stream(newSpliterator, false);
+            return StreamPlus.from(newStream);
         });
     }
     
@@ -191,9 +278,9 @@ public interface StreamPlusWithLimit<DATA> {
     @Sequential
     public default StreamPlus<DATA> takeUntil(BiPredicate<? super DATA, ? super DATA> condition) {
         val streamPlus = streamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 boolean isFirst    = true;
                 DATA    prevValue  = null;
@@ -213,13 +300,14 @@ public interface StreamPlusWithLimit<DATA> {
                             }
                             prevValue = elem;
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;
                 }
-            }, false);
-            return StreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.stream(newSpliterator, false);
+            return StreamPlus.from(newStream);
         });
     }
     
@@ -227,9 +315,9 @@ public interface StreamPlusWithLimit<DATA> {
     @Sequential
     public default StreamPlus<DATA> dropAfter(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 
                 @Override
@@ -241,13 +329,14 @@ public interface StreamPlusWithLimit<DATA> {
                                 stillGoing = false;
                             }
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext;
                     }
                     return false;
                 }
-            }, false);
-            return StreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.stream(newSpliterator, false);
+            return StreamPlus.from(newStream);
         });
     }
     
@@ -255,9 +344,9 @@ public interface StreamPlusWithLimit<DATA> {
     @Sequential
     public default StreamPlus<DATA> dropAfter(BiPredicate<? super DATA, ? super DATA> condition) {
         val streamPlus = streamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+        return sequential(streamPlus, orgStreamPlus -> {
+            val orgSpliterator = orgStreamPlus.spliterator();
+            val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
                 boolean stillGoing = true;
                 boolean isFirst    = true;
                 DATA    prevValue  = null;
@@ -276,13 +365,14 @@ public interface StreamPlusWithLimit<DATA> {
                             }
                             prevValue = elem;
                         };
-                        boolean hadNext = splitr.tryAdvance(action);
+                        boolean hadNext = orgSpliterator.tryAdvance(action);
                         return hadNext;
                     }
                     return false;
                 }
-            }, false);
-            return StreamPlus.from(resultStream);
+            };
+            val newStream = StreamSupport.stream(newSpliterator, false);
+            return StreamPlus.from(newStream);
         });
     }
     

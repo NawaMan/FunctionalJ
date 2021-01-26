@@ -2055,6 +2055,15 @@ public class IntFuncListTest {
                         "(100,0), (200,1), (300,2), (-1,3), (-1,4), (-1,5), (-1,6), (-1,7), (-1,8), (-1,9)",
                         listA.zipWith(listB, -1).join(", "));
             });
+        run(IntFuncList.of(100, 200, 300, 400, 500),
+                IntFuncList.infinite().limit(3),
+                (listA, listB) -> {
+                    assertStrings(
+                            // 100 200  300 -1 -1 -1 -1 -1 -1 -1
+                            //   0   1    2  3  4  5  6  7  8  9
+                            "(100,0), (200,1), (300,2), (400,-1), (500,-1)",
+                            listA.zipWith(-100, listB, -1).join(", "));
+                });
         run(IntFuncList.of(100, 200, 300),
             IntFuncList.infinite().limit(10),
             (listA, listB) -> {
@@ -2072,6 +2081,76 @@ public class IntFuncListTest {
                        //   0   1    2  3  4  5  6  7  8  9
                         "100, 201, 302, 2, 3, 4, 5, 6, 7, 8",
                         listA.zipWith(listB, -1, (iA, iB) -> iA + iB).join(", "));
+            });
+        run(IntFuncList.of(100, 200, 300, 400, 500),
+            IntFuncList.infinite().limit(3),
+            (listA, listB) -> {
+                assertStrings(
+                        // 100 200  300 -1 -1 -1 -1 -1 -1 -1
+                        //   0   1    2  3  4  5  6  7  8  9
+                        "10000, 20001, 30002, 39999, 49999",
+                        listA.zipWith(-100, listB, -1, (a, b) -> a*100 + b).join(", "));
+            });
+    }
+    
+    @Test
+    public void testZipWith_object() {
+        run(IntFuncList.of(100, 200, 300),
+            IntFuncList.infinite().limit(10),
+            (listA, listB) -> {
+                assertStrings(
+                        "(100,0), (200,1), (300,2)",
+                        listA.zipWith(listB.boxed()).join(", "));
+            });
+        run(IntFuncList.of(100, 200, 300),
+            IntFuncList.infinite().limit(10),
+            (listA, listB) -> {
+                assertStrings(
+                        "(100,0), (200,1), (300,2), (-1,3), (-1,4), (-1,5), (-1,6), (-1,7), (-1,8), (-1,9)",
+                        listA.zipWith(-1, listB.boxed()).join(", "));
+            });
+        run(IntFuncList.of(100, 200, 300),
+            IntFuncList.infinite().limit(10),
+            (listA, listB) -> {
+                assertStrings(
+                        "100->0, 200->1, 300->2",
+                        listA.zipWith(listB.boxed(), (a, b) -> a + "->" + b).join(", "));
+            });
+        run(IntFuncList.of(100, 200, 300, 400, 500),
+            IntFuncList.infinite().limit(3),
+            (listA, listB) -> {
+                assertStrings(
+                        // 100 200  300 -1 -1 -1 -1 -1 -1 -1
+                        //   0   1    2  3  4  5  6  7  8  9
+                        "10000, 20001, 30002, 39999, 49999",
+                        listA.zipWith(-100, listB, -1, (a, b) -> a*100 + b).join(", "));
+            });
+        run(IntFuncList.of(100, 200, 300),
+            IntFuncList.infinite().limit(10),
+            (listA, listB) -> {
+                assertStrings(
+                        // 100 200  300
+                        //   0   1    2
+                        "100<->0, 200<->1, 300<->2",
+                        listA.zipToObjWith(listB, (iA, iB) -> iA + "<->" + iB).join(", "));
+            });
+        run(IntFuncList.of(100, 200, 300),
+            IntFuncList.infinite().limit(10),
+            (listA, listB) -> {
+                assertStrings(
+                        // 100 200  300
+                        //   0   1    2
+                        "100<->0, 200<->1, 300<->2, -100<->3, -100<->4, -100<->5, -100<->6, -100<->7, -100<->8, -100<->9",
+                        listA.zipToObjWith(-100, listB, -1, (iA, iB) -> iA + "<->" + iB).join(", "));
+            });
+        run(IntFuncList.of(100, 200, 300),
+            IntFuncList.infinite().limit(10),
+            (listA, listB) -> {
+                assertStrings(
+                        // 100 200  300
+                        //   0   1    2
+                        "100<->0, 200<->1, 300<->2, -100<->3, -100<->4, -100<->5, -100<->6, -100<->7, -100<->8, -100<->9",
+                        listA.zipToObjWith(-100, listB.boxed(), (iA, iB) -> iA + "<->" + iB).join(", "));
             });
     }
     
@@ -2317,6 +2396,8 @@ public class IntFuncListTest {
         run(IntFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
             assertStrings("[3, 4, 5, 4, 3, 2, 1]",       list.skipWhile(i -> i < 3));
             assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipWhile(i -> i > 3));
+            assertStrings("[5, 4, 3, 2, 1]",             list.skipWhile((p, e) -> p == e + 1));
+            assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipWhile((p, e) -> p == e - 1));
         });
     }
     
@@ -2325,6 +2406,8 @@ public class IntFuncListTest {
         run(IntFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
             assertStrings("[4, 5, 4, 3, 2, 1]",          list.skipUntil(i -> i > 3));
             assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipUntil(i -> i < 3));
+            assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipUntil((p, e) -> p == e + 1));
+            assertStrings("[5, 4, 3, 2, 1]",             list.skipUntil((p, e) -> p == e - 1));
         });
     }
     
@@ -2644,6 +2727,15 @@ public class IntFuncListTest {
     }
     
     @Test
+    public void testMapGroup() {
+        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
+            assertStrings(
+                    "[12, 23, 34, 45, 56, 67, 78]",
+                    list.mapTwo((a, b) -> a*10 + b));
+        });
+    }
+    
+    @Test
     public void testMapGroupToInt() {
         run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
             assertStrings(
@@ -2664,6 +2756,24 @@ public class IntFuncListTest {
             assertStrings(
                     "[12.0, 23.0, 34.0, 45.0, 56.0, 67.0, 78.0]",
                     list.mapGroupToDouble(2, ints -> Integer.parseInt(ints.mapToString().join())));
+        });
+    }
+    
+    @Test
+    public void testMapGroupToObj() {
+        run(IntFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
+            assertStrings(
+                    "[(1,2), (2,3), (3,4), (4,5), (5,6), (6,7), (7,8)]",
+                    list.mapTwoToObj());
+            assertStrings(
+                    "[1-2, 2-3, 3-4, 4-5, 5-6, 6-7, 7-8]",
+                    list.mapTwoToObj((a,b) -> a + "-" + b));
+            assertStrings(
+                    "[[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6], [5, 6, 7], [6, 7, 8]]",
+                    list.mapGroupToObj(3).map(IntStreamPlus::toListString));
+            assertStrings(
+                    "[123, 234, 345, 456, 567, 678]",
+                    list.mapGroupToObj(3, ints -> Integer.parseInt(ints.mapToString().join())));
         });
     }
     
@@ -3060,11 +3170,26 @@ public class IntFuncListTest {
     @Test
     public void testMapToObjWithIndex_combine() {
         run(IntFuncList.of(One, Three, Five, Seven, Eleven), list -> {
-        assertStrings(
-                "[0: 1, 1: 3, 2: 5, 3: 7, 4: 11]",
-                list
-                .mapToObjWithIndex((i, each) -> i + ": " + each)
-                );
+            assertStrings(
+                    "[0: 1, 1: 3, 2: 5, 3: 7, 4: 11]",
+                    list
+                    .mapToObjWithIndex((i, each) -> i + ": " + each)
+                    );
+            assertStrings(
+                    "[0: 2, 1: 6, 2: 10, 3: 14, 4: 22]",
+                    list
+                    .mapWithIndex(i -> i*2, (i, each) -> i + ": " + each)
+                    );
+            assertStrings(
+                    "[0: 2, 1: 6, 2: 10, 3: 14, 4: 22]",
+                    list
+                    .mapWithIndex(i -> i*2, (i, each) -> i + ": " + each)
+                    );
+            assertStrings(
+                    "[0: 2, 1: 6, 2: 10, 3: 14, 4: 22]",
+                    list
+                    .mapToObjWithIndex(i -> "" + i*2, (i, each) -> i + ": " + each)
+                    );
         });
     }
     
@@ -3201,6 +3326,13 @@ public class IntFuncListTest {
     public void testPeekBy_map() {
         run(IntFuncList.of(0, One, 2, Three, 4, Five), list -> {
             val elementStrings = new ArrayList<String>();
+            list
+                .peekBy(s -> !("" + s).contains("2"), e -> elementStrings.add("" + e))
+                .join() // To terminate the stream
+                ;
+            assertStrings("[0, 1, 3, 4, 5]", elementStrings);
+            
+            elementStrings.clear();
             list
                 .peekBy(e -> "<" + e + ">", s -> !s.contains("2"), e -> elementStrings.add("" + e))
                 .join() // To terminate the stream

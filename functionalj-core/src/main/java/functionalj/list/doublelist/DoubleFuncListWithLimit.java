@@ -52,6 +52,11 @@ public interface DoubleFuncListWithLimit extends AsDoubleFuncList {
         return deriveToDouble(this, stream -> stream.skipUntil(condition));
     }
     
+    /** Skip any value until the condition is true. */
+    public default DoubleFuncList takeWhile(DoubleBiPredicatePrimitive condition) {
+        return deriveToDouble(this, stream -> stream.takeWhile(condition));
+    }
+    
     /** Accept any value while the condition is true. */
     public default DoubleFuncList takeWhile(DoublePredicate condition) {
         return deriveToDouble(this, stream -> stream.takeWhile(condition));

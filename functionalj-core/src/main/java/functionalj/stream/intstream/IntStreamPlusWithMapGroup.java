@@ -221,7 +221,7 @@ public interface IntStreamPlusWithMapGroup {
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default <TARGET> StreamPlus<TARGET> mapGroupToObj(IntIntBiFunction<TARGET> combinator) {
+    public default <TARGET> StreamPlus<TARGET> mapTwoToObj(IntIntBiFunction<TARGET> combinator) {
         return IntStreamPlusWithMapGroupHelper.mapGroup(
                 intStreamPlus(), 2, 
                 (array, start, end, consumer) -> {
