@@ -3,7 +3,6 @@ package functionalj.stream.doublestream;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.ObjDoubleConsumer;
-import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 
 import functionalj.function.Func;

@@ -89,11 +89,6 @@ public class DoubleFuncListTest {
         assertEquals(str, "" + obj);
     }
     
-    private <T> void run(FuncList<T> list, FuncUnit1<FuncList<T>> action) {
-        action.accept(list);
-        action.accept(list);
-    }
-    
     private void run(DoubleFuncList list, FuncUnit1<DoubleFuncList> action) {
         action.accept(list);
         action.accept(list);

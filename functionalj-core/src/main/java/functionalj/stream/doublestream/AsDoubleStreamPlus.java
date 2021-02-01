@@ -25,22 +25,11 @@ package functionalj.stream.doublestream;
 
 import static functionalj.stream.doublestream.AsDoubleStreamPlusHelper.streamFrom;
 
-import java.util.DoubleSummaryStatistics;
-import java.util.OptionalDouble;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.BiConsumer;
-import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
-import java.util.function.DoublePredicate;
-import java.util.function.ObjDoubleConsumer;
-import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 
 import functionalj.stream.markers.Eager;
-import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
-import lombok.val;
 
 class AsDoubleStreamPlusHelper {
     

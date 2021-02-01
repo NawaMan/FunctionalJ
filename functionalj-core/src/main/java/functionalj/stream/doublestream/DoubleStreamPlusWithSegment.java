@@ -25,15 +25,10 @@ package functionalj.stream.doublestream;
 
 import java.util.Objects;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
-import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
-import java.util.function.DoubleUnaryOperator;
 import java.util.stream.StreamSupport;
 
 import functionalj.list.doublelist.DoubleFuncList;

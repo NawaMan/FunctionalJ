@@ -27,20 +27,13 @@ import static functionalj.list.FuncList.deriveFrom;
 import static functionalj.list.doublelist.AsDoubleFuncListHelper.funcListOf;
 
 import java.util.Comparator;
-import java.util.Objects;
-import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
-import java.util.stream.StreamSupport;
 
 import functionalj.list.FuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.IncompletedSegment;
-import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Sequential;

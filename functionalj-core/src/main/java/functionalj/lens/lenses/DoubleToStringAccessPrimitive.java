@@ -24,14 +24,6 @@
 package functionalj.lens.lenses;
 
 import java.util.function.DoubleFunction;
-import java.util.function.DoublePredicate;
-import java.util.function.DoubleSupplier;
-import java.util.function.DoubleToIntFunction;
-import java.util.function.DoubleUnaryOperator;
-
-import functionalj.function.DoubleBiFunctionPrimitive;
-import functionalj.function.ToDoubleBiDoubleFunction;
-import lombok.val;
 
 
 @FunctionalInterface
