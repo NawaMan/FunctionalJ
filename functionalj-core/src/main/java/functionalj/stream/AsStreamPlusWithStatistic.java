@@ -76,7 +76,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
     /** Return the value whose mapped value is the smallest. */
     @Eager
     @Terminal
-    public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
+    public default <D extends Comparable<D>> Optional<DATA> minBy(Function<DATA, D> mapper) {
         val streamPlus = streamPlus();
         return streamPlus
                 .min((a,b) -> {
@@ -89,7 +89,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
     /** Return the value whose mapped value is the biggest. */
     @Eager
     @Terminal
-    public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
+    public default <D extends Comparable<D>> Optional<DATA> maxBy(Function<DATA, D> mapper) {
         val streamPlus = streamPlus();
         return streamPlus
                 .max((a,b) -> {
@@ -103,7 +103,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
     @Eager
     @Terminal
     public default <D> Optional<DATA> minBy(
-            Func1<DATA, D>        mapper, 
+            Function<DATA, D>     mapper, 
             Comparator<? super D> comparator) {
         val streamPlus = streamPlus();
         return streamPlus
@@ -118,7 +118,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
     @Eager
     @Terminal
     public default <D> Optional<DATA> maxBy(
-            Func1<DATA, D>        mapper, 
+            Function<DATA, D>     mapper, 
             Comparator<? super D> comparator) {
         val streamPlus = streamPlus();
         return streamPlus

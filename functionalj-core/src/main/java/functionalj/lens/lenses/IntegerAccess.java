@@ -90,6 +90,14 @@ public interface IntegerAccess<HOST>
     
     //-- Compare --
     
+    public default IntComparator ascendingOrder() {
+        return (a, b) -> Integer.compare(a, b);
+    }
+    
+    public default IntComparator descendingOrder() {
+        return (a, b) -> Integer.compare(b, a);
+    }
+    
     // TODO - Supplier and BiFunction
     // TODO - Move back to NumberAccess
     // TODO - Add Byte/Character

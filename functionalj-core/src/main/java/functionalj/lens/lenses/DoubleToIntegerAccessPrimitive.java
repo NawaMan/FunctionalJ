@@ -23,9 +23,12 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.DoubleFunction;
 import java.util.function.DoubleToIntFunction;
 
-public interface DoubleToIntegerAccessPrimitive extends IntegerAccessPrimitive<Double>, DoubleToIntFunction {
+
+@FunctionalInterface
+public interface DoubleToIntegerAccessPrimitive extends IntegerAccessPrimitive<Double>, DoubleToIntFunction, DoubleFunction<Integer> {
     
     public int applyDoubleToInt(double host);
     
@@ -34,6 +37,11 @@ public interface DoubleToIntegerAccessPrimitive extends IntegerAccessPrimitive<D
     }
     
     public default int applyAsInt(Double host) {
+        return applyDoubleToInt(host);
+    }
+    
+    @Override
+    public default Integer apply(double host) {
         return applyDoubleToInt(host);
     }
     
@@ -50,6 +58,35 @@ public interface DoubleToIntegerAccessPrimitive extends IntegerAccessPrimitive<D
         return host -> {
             int intValue = applyAsInt(host);
             return intValue % 2 == 0;
+        };
+    }
+    public default DoubleToStringAccessPrimitive asString() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return "" + intValue;
+        };
+    }
+    
+    public default DoubleToIntegerAccessPrimitive factorial() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            if (intValue <= 0) {
+                return 1;
+            }
+            
+            // TODO - We should set up a Ref so people can over write this with a better (like faster) method.
+            int factorial = 1;
+            for (int i = 1; i <= intValue; i++) {
+                factorial *= i;
+            }
+            return factorial;
+        };
+    }
+    
+    public default DoubleToDoubleAccessPrimitive toDouble() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return (double)intValue;
         };
     }
     

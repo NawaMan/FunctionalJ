@@ -114,11 +114,11 @@ public class IntFuncListDerived implements IntFuncList {
         if (!(o instanceof AsIntFuncList))
             return false;
         
-        val anotherList = (AsIntFuncList)o;
+        val anotherList = (IntFuncList)o;
         if (size() != anotherList.size())
             return false;
         
-        return !IntFuncList.zipOf(this, anotherList, zeroForEquals)
+        return !IntFuncList.zipOf(this, anotherList.asIntFuncList(), zeroForEquals)
                 .anyMatch(notZero);
     }
     

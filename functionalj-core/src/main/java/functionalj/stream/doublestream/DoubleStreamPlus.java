@@ -31,7 +31,7 @@ import java.util.DoubleSummaryStatistics;
 import java.util.OptionalDouble;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -53,6 +53,7 @@ import java.util.stream.StreamSupport;
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
 import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
+import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.SupplierBackedIterator;
@@ -152,7 +153,12 @@ public interface DoubleStreamPlus
     public static DoubleStreamPlus repeat(double ... data) {
         return cycle(data);
     }
-
+    
+    /** Create a stream that is the repeat of the given array of data. */
+    public static DoubleStreamPlus repeat(AsDoubleFuncList data) {
+        return cycle(data);
+    }
+    
     /** Create a stream that is the repeat of the given array of data. */
     public static DoubleStreamPlus cycle(double ... data) {
         val doubles = Arrays.copyOf(data, data.length);
@@ -161,6 +167,16 @@ public interface DoubleStreamPlus
                 IntStream
                 .iterate(0, i -> i + 1)
                 .mapToDouble(i -> data[i % size]));
+    }
+    
+    /** Create a stream that is the repeat of the given array of data. */
+    public static DoubleStreamPlus cycle(AsDoubleFuncList doubles) {
+        val list = doubles.asDoubleFuncList();
+        val size = list.size();
+        return DoubleStreamPlus.from(
+                IntStream
+                .iterate(0, i -> i + 1)
+                .mapToDouble(i -> list.get(i % size)));
     }
     
     /** Create a stream that for a loop with the number of time given - the value is the index of the loop. */
@@ -224,8 +240,15 @@ public interface DoubleStreamPlus
                 .asDoubleStream();
     }
     
-    /** Create a StreamPlus that for a loop from the start value inclusively bu the given step. */
-    public static DoubleStreamPlus rangeStep(double startInclusive, double step) {
+    /** Create a FuncList that for a loop with the number of time given - the value is the index of the loop. */
+    public static DoubleStreamPlus range(double startInclusive, double endExclusive) {
+        return DoubleStreamPlus
+                .iterate(startInclusive, d -> d + 1)
+                .takeUntil(d -> d >= endExclusive);
+    }
+    
+    /** Create a StreamPlus that for a loop from the start value inclusively by the given step. */
+    public static DoubleStreamPlus stepFrom(double startInclusive, double step) {
         return DoubleStreamPlus
                 .iterate(startInclusive, d -> d + step);
     }
@@ -274,9 +297,7 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static DoubleStreamPlus iterate(
-            double                        seed, 
-            DoubleToDoubleAccessPrimitive compounder) {
+    public static DoubleStreamPlus iterate(double seed, DoubleToDoubleAccessPrimitive compounder) {
         return DoubleStreamPlus.from(DoubleStream.iterate(seed, compounder));
     }
     
@@ -294,9 +315,7 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static DoubleStreamPlus compound(
-            double                        seed, 
-            DoubleToDoubleAccessPrimitive compounder) {
+    public static DoubleStreamPlus compound(double seed, DoubleToDoubleAccessPrimitive compounder) {
         return iterate(seed, compounder);
     }
     
@@ -315,26 +334,33 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static DoubleStreamPlus iterate(
-            double                    seed1, 
-            double                    seed2, 
-            DoubleBiFunctionPrimitive compounder) {
-        val counter = new AtomicInteger(0);
-        val value1  = new double[] { seed1 };
-        val value2  = new double[] { seed2 };
-        return DoubleStreamPlus.generate(()->{
-            if (counter.getAndIncrement() == 0)
-                return seed1;
-            if (counter.getAndIncrement() == 2)
-                return seed2;
-            
-            double i2 = value1[0];
-            double i1 = value2[0];
-            value2[0] = i2;
-            double i  = compounder.applyAsDouble(i1, i2);
-            value2[0] = i;
-            return i;
-        });
+    public static DoubleStreamPlus iterate(double seed1, double seed2, DoubleBiFunctionPrimitive compounder) {
+        return DoubleStreamPlus.from(StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(Long.MAX_VALUE, 0) {
+            private final    double[] first  = new double[] { seed1 };
+            private final    double[] second = new double[] { seed2 };
+            private volatile AtomicBoolean isInOrder = null;
+            @Override
+            public boolean tryAdvance(DoubleConsumer action) {
+                if (isInOrder == null) {
+                    action.accept(seed1);
+                    action.accept(seed2);
+                    isInOrder = new AtomicBoolean(true);
+                }
+                
+                boolean inOrder = isInOrder.get();
+                if (inOrder) {
+                    double next = compounder.applyAsDouble(first[0], second[0]);
+                    action.accept(next);
+                    first[0] = next;
+                } else {
+                    double next = compounder.applyAsDouble(second[0], first[0]);
+                    action.accept(next);
+                    second[0] = next;
+                }
+                isInOrder.set(!inOrder);
+                return true;
+            }
+        }, false));
     }
     
     /**
@@ -352,10 +378,7 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static DoubleStreamPlus compound(
-            double                    seed1, 
-            double                    seed2, 
-            DoubleBiFunctionPrimitive compounder) {
+    public static DoubleStreamPlus compound(double seed1, double seed2, DoubleBiFunctionPrimitive compounder) {
         return iterate(seed1, seed2, compounder);
     }
     
@@ -369,9 +392,7 @@ public interface DoubleStreamPlus
      *
      * The result stream = [(A,1), (B,2), (C,3), (D,4)].
      **/
-    public static StreamPlus<DoubleDoubleTuple> zipOf(
-            DoubleStream stream1,
-            DoubleStream stream2) {
+    public static StreamPlus<DoubleDoubleTuple> zipOf(DoubleStream stream1, DoubleStream stream2) {
         return DoubleStreamPlus.from(stream1).zipWith(stream2);
     }
     
@@ -596,7 +617,7 @@ public interface DoubleStreamPlus
     
     @Override
     public default DoubleStreamPlus flatMap(DoubleFunction<? extends DoubleStream> mapper) {
-        return flatMap(mapper);
+        return DoubleStreamPlus.from(doubleStream().flatMap(mapper));
     }
     
     public default IntStreamPlus flatMapToInt(DoubleFunction<? extends IntStream> mapper) {
@@ -822,6 +843,17 @@ public interface DoubleStreamPlus
         return terminate(this, stream -> {
             return stream
                     .findAny();
+        });
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalDouble findLast() {
+        return terminate(this, stream -> {
+            boolean[] isAdded = new boolean[] { false };
+            double[]  dataRef = new double[1];
+            stream.peek(i -> isAdded[0] = true).forEach(i -> dataRef[0] = i);
+            return isAdded[0] ? OptionalDouble.of(dataRef[0]) : OptionalDouble.empty();
         });
     }
     

@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,42 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.list.doublelist;
+package functionalj.lens.lenses;
 
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Objects;
 
-import functionalj.list.FuncList;
-import functionalj.stream.doublestream.GrowOnlyDoubleArray;
-import lombok.val;
-
-
-public class DoubleFuncListHelper {
+@FunctionalInterface
+public interface DoubleComparator extends Comparator<Double> {
     
-    static <D> FuncList<DoubleFuncList> segmentByPercentiles(AsDoubleFuncList asList, DoubleFuncList percentiles) {
-        val list = asList.asDoubleFuncList();
-        val size = list.size();
-        DoubleFuncList indexes 
-                = percentiles
-                .append(100.0)
-                .sorted()
-                .map   (d -> (int)Math.round(d*size/100))
-                .toImmutableList();
-        
-        val lists   = new ArrayList<GrowOnlyDoubleArray>();
-        for (int i = 0; i < indexes.size(); i++) {
-            lists.add(new GrowOnlyDoubleArray());
-        }
-        int idx = 0;
-        for (int i = 0; i < size; i++) {
-            if (i >= indexes.get(idx)) {
-                idx++;
-            }
-            val l = lists.get(idx);
-            val element = list.get(i);
-            l.add(element);
+    public int compareDouble(double o1, double o2);
+    
+    public default int compare(Double o1, Double o2) {
+        return compareDouble(o1, o2);
+    }
+    
+    
+    public static DoubleComparator compare(DoubleComparator comparator) {
+        return Objects.requireNonNull(comparator);
+    }
+    
+    public static int compare(double a, double b, Comparator<Double> comparator) {
+        if (!(comparator instanceof DoubleComparator)) {
+            return comparator.compare(a, b);
         }
         
-        return FuncList.from(lists.stream().map(each -> each.toFuncList()));
+        return ((DoubleComparator)comparator).compareDouble(a, b);
     }
     
 }

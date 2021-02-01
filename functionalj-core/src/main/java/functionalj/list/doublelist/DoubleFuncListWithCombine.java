@@ -229,7 +229,7 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default DoubleFuncList choose(
-            DoubleFuncList           anotherFuncList,
+            DoubleFuncList             anotherFuncList,
             ZipWithOption              option, 
             DoubleBiPredicatePrimitive selectThisNotAnother) {
         return deriveToDouble(this, stream -> stream.choose(anotherFuncList.doubleStreamPlus(), option, selectThisNotAnother));

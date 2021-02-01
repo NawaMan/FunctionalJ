@@ -125,4 +125,9 @@ public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.spawn(mapToAction));
     }
+    
+    // TODO - Try to get with timeout.
+    //        May add similar to iterator or popable
+    
+    
 }

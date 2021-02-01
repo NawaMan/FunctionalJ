@@ -33,14 +33,13 @@ import java.util.stream.Collector;
 
 import lombok.val;
 
-public class CollectorFromDouble<SOURCE, ACCUMULATED, RESULT>
+public class CollectorFromDouble<SOURCE, ACCUMULATED, RESULT> 
         implements Collector<SOURCE, ACCUMULATED, RESULT> {
+    
     private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
     private final ToDoubleFunction<SOURCE>                 mapper;
     
-    public CollectorFromDouble(
-            DoubleCollectorPlus<ACCUMULATED, RESULT> collector,
-            ToDoubleFunction<SOURCE>                 mapper) {
+    public CollectorFromDouble(DoubleCollectorPlus<ACCUMULATED, RESULT> collector, ToDoubleFunction<SOURCE> mapper) {
         this.collector = collector;
         this.mapper    = mapper;
     }
@@ -49,22 +48,26 @@ public class CollectorFromDouble<SOURCE, ACCUMULATED, RESULT>
     public Supplier<ACCUMULATED> supplier() {
         return collector.supplier();
     }
+    
     @Override
     public BiConsumer<ACCUMULATED, SOURCE> accumulator() {
         val accumulator = collector.accumulator();
-        return (a, s)->{
+        return (a, s) -> {
             val d = mapper.applyAsDouble(s);
             accumulator.accept(a, d);
         };
     }
+    
     @Override
     public BinaryOperator<ACCUMULATED> combiner() {
         return collector.combiner();
     }
+    
     @Override
     public Function<ACCUMULATED, RESULT> finisher() {
         return collector.finisher();
     }
+    
     @Override
     public Set<Characteristics> characteristics() {
         return collector.characteristics();

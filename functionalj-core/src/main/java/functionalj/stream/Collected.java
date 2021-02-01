@@ -219,7 +219,8 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         public RESULT finish();
     }
     
-    public static class ByCollectedDouble<ACCUMULATED, RESULT> {
+    public static class ByCollectedDouble<ACCUMULATED, RESULT>
+                            implements CollectedDouble<ACCUMULATED, RESULT> {
         
         private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
         private final DoubleAccumulator<ACCUMULATED>           accumulator;

@@ -33,6 +33,10 @@ class AsIntFuncListHelper {
         return asFuncList.asIntFuncList();
     }
     
+    static IntStreamPlus streamPlusOf(AsIntFuncList asFuncList) {
+        return asFuncList.asIntFuncList().intStreamPlus();
+    }
+    
 }
 
 @FunctionalInterface

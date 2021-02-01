@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
@@ -33,7 +34,7 @@ import lombok.val;
 
 
 @FunctionalInterface
-public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, DoubleAccessPrimitive<Double> {
+public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, DoubleAccessPrimitive<Double>, DoubleFunction<Double> {
     
     public double applyDoubleToDouble(double host);
     
@@ -44,6 +45,11 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     public default double applyAsDouble(Double host) {
         return applyDoubleToDouble(host);
     }
+
+    @Override
+    public default Double apply(double host) {
+        return applyDoubleToDouble(host);
+    }
     
     public static double apply(DoubleAccess<Double> access, double value) {
         val resValue 
@@ -51,6 +57,13 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             ? ((DoubleToDoubleAccessPrimitive)access).applyDoubleToDouble(value)
             : access.applyAsDouble(value);
         return resValue;
+    }
+    
+    public default DoubleToStringAccessPrimitive asString() {
+        return host -> {
+                    val d = apply(host);
+                    return "" + d;
+                };
     }
     
     public default DoubleAccessBoxed<Double> boxed() {
@@ -64,15 +77,101 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     //-- Compare --
     
     public default DoubleToBooleanAccessPrimitive that(DoublePredicate checker) {
-        return host -> checker.test(host);
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return checker.test(doubleValue);
+        };
     }
     
     public default DoubleToBooleanAccessPrimitive thatIs(Double value) {
-        return host -> host == value;
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue == value;
+        };
     }
     
     public default DoubleToBooleanAccessPrimitive thatIsNot(Double value) {
-        return host -> host != value;
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue != value;
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIs(DoubleSupplier value) {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue == value.getAsDouble();
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsNot(DoubleSupplier value) {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue != value.getAsDouble();
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIs(DoubleUnaryOperator value) {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue == value.applyAsDouble(host);
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsNot(DoubleUnaryOperator value) {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue != value.applyAsDouble(host);
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsOne() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue == 1.0;
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsZero() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue == 0.0;
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsMinusOne() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue == -1.0;
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsFourtyTwo() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue == 42.0;
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsNotOne() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue != 1.0;
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsNotZero() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue != 0.0;
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsNotMinusOne() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue != -1.0;
+        };
     }
     
     public default DoubleToIntegerAccessPrimitive toInteger() {
@@ -421,10 +520,26 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
         return thatLessThanOrEqualsTo(anotherFunction);
     }
     
-    public default DoubleToLongAccessPrimitive round() {
+    public default DoubleToIntegerAccessPrimitive roundToInt() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return (int)Math.round(doubleValue);
+        };
+    }
+    
+    public default DoubleToLongAccessPrimitive roundToLong() {
         return host -> {
             double doubleValue = applyAsDouble(host);
             return Math.round(doubleValue);
+        };
+    }
+    
+    // TODO - Trunkate decimal 1.414212 & 2 = 1.41 (x100.round./100)
+    
+    public default DoubleToDoubleAccessPrimitive round() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return (double)Math.round(doubleValue);
         };
     }
     
@@ -591,6 +706,20 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             double doubleValue    = applyAsDouble(host);
             double anotherValue = DoubleBiFunctionPrimitive.apply(anotherFunction, host, doubleValue);
             return doubleValue % anotherValue;
+        };
+    }
+    
+    public default DoubleToDoubleAccessPrimitive square() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue * doubleValue;
+        };
+    }
+    
+    public default DoubleToDoubleAccessPrimitive squareRoot () {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.sqrt(doubleValue);
         };
     }
     

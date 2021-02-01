@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,13 +25,14 @@ package functionalj.stream.doublestream;
 
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
+import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
+import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.Func1;
-import functionalj.function.FuncUnit1;
+import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
@@ -103,10 +104,10 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
         return DoubleStreamPlus.from(StreamSupport.doubleStream(iterable.spliterator(), false));
     }
     
-//    public default DoubleFuncList toList() {
-//        return stream().toImmutableList();
-//    }
-//
+    public default DoubleFuncList toList() {
+        return stream().toImmutableList();
+    }
+
     public default OptionalDouble pullNext() {
         if (hasNext())
              return OptionalDouble.of(nextDouble());
@@ -131,7 +132,7 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
         return this;
     }
     
-    public default DoubleIteratorPlus useNext(int count, FuncUnit1<DoubleStreamPlus> usage) {
+    public default DoubleIteratorPlus useNext(int count, Consumer<DoubleStreamPlus> usage) {
         double[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
             try (val iterator = new ArrayBackedDoubleIteratorPlus(array)) {
@@ -153,7 +154,7 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
         }
     }
     
-    public default <TARGET> Result<TARGET> mapNext(int count, Func1<DoubleStreamPlus, TARGET> mapper) {
+    public default <TARGET> Result<TARGET> mapNext(int count, Function<DoubleStreamPlus, TARGET> mapper) {
         val array = stream().limit(count).toArray();
         if ((array.length == 0) && (count != 0))
             return Result.ofNoMore();

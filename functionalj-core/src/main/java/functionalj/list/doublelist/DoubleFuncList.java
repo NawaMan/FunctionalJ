@@ -222,6 +222,16 @@ public interface DoubleFuncList
         return DoubleFuncList.from(() -> DoubleStreamPlus.cycle(data));
     }
     
+    /** Create a list that is the repeat of the given array of data. */
+    public static DoubleFuncList repeat(DoubleFuncList data) {
+        return DoubleFuncList.from(() -> DoubleStreamPlus.repeat(data));
+    }
+    
+    /** Create a list that is the repeat of the given array of data. */
+    public static DoubleFuncList cycle(DoubleFuncList data) {
+        return DoubleFuncList.from(() -> DoubleStreamPlus.cycle(data));
+    }
+    
     /** Create a list that for a loop with the number of time given - the value is the index of the loop. */
     public static DoubleFuncList loop() {
         return DoubleFuncList.from(() -> DoubleStreamPlus.loop());
@@ -245,38 +255,31 @@ public interface DoubleFuncList
     }
     
     public static DoubleFuncList naturalNumbers() {
-        return DoubleFuncList.from(
-                IntStream
-                .range(1, Integer.MAX_VALUE)
-                .mapToDouble(i -> 1.0*i));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.naturalNumbers());
     }
     
     public static DoubleFuncList naturalNumbers(int count) {
-        return DoubleFuncList.from(
-                IntStream
-                .range(1, count + 1)
-                .mapToDouble(i -> 1.0*i));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.naturalNumbers(count));
     }
     
     /** Returns the infinite streams of wholes numbers -- 0, 1, 2, 3, .... */
     public static DoubleFuncList wholeNumbers() {
-        return DoubleFuncList.from(
-                IntStream
-                .range(0, Integer.MAX_VALUE)
-                .mapToDouble(i -> 1.0*i));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.wholeNumbers());
     }
     
     /** Create a FuncList that for a loop with the number of time given - the value is the index of the loop. */
     public static DoubleFuncList wholeNumbers(int count) {
-        return DoubleFuncList.from(
-                IntStream
-                .range(0, count + 1)
-                .mapToDouble(i -> 1.0*i));
+        return DoubleFuncList.from(() -> DoubleStreamPlus.wholeNumbers(count));
     }
     
-    /** Create a StreamPlus that for a loop from the start value inclusively bu the given step. */
-    public static DoubleFuncList rangeStep(double startInclusive, double step) {
-        return wholeNumbers().map(d -> d * step + startInclusive);
+    /** Create a FuncList that for a loop with the number of time given - the value is the index of the loop. */
+    public static DoubleFuncList range(double startInclusive, double endExclusive) {
+        return DoubleFuncList.from(() -> DoubleStreamPlus.range(startInclusive, endExclusive));
+    }
+    
+    /** Create a StreamPlus that for a loop from the start value inclusively by the given step. */
+    public static DoubleFuncList stepFrom(double startInclusive, double step) {
+        return DoubleFuncList.from(() -> DoubleStreamPlus.stepFrom(startInclusive, step));
     }
     
     //-- Concat + Combine --
@@ -628,10 +631,10 @@ public interface DoubleFuncList
     
     //-- Iterator --
     
-    /** @return a iterator of this FuncList. */
+    /** @return a iterator of this list. */
     @Override
     public default DoubleIteratorPlus iterator() {
-        return () -> iterator();
+        return DoubleIteratorPlus.from(doubleStream());
     }
     
     /** @return a spliterator of this FuncList. */
@@ -931,7 +934,7 @@ public interface DoubleFuncList
     }
     
     /** Returns the new list from this list without the element. */
-    public default DoubleFuncList exclude(int element) {
+    public default DoubleFuncList exclude(double element) {
         return filter(each -> each != element);
     }
     

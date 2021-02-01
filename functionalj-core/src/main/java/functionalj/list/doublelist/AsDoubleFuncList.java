@@ -33,6 +33,10 @@ class AsDoubleFuncListHelper {
         return asFuncList.asDoubleFuncList();
     }
     
+    static DoubleStreamPlus streamPlusOf(AsDoubleFuncList asFuncList) {
+        return asFuncList.asDoubleFuncList().doubleStreamPlus();
+    }
+    
 }
 
 @FunctionalInterface

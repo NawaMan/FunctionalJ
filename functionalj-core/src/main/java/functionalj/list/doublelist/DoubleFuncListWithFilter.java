@@ -36,7 +36,6 @@ import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 import functionalj.function.IntDoublePredicate;
-import lombok.val;
 
 
 public interface DoubleFuncListWithFilter extends AsDoubleFuncList {

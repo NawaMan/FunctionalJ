@@ -350,7 +350,6 @@ public interface IntStreamPlus
                 return true;
             }
         }, false));
-    
     }
     
     /**
@@ -382,9 +381,7 @@ public interface IntStreamPlus
      *
      * The result stream = [(A,1), (B,2), (C,3), (D,4)].
      **/
-    public static StreamPlus<IntIntTuple> zipOf(
-            IntStream stream1,
-            IntStream stream2) {
+    public static StreamPlus<IntIntTuple> zipOf(IntStream stream1, IntStream stream2) {
         return IntStreamPlus.from(stream1).zipWith(stream2);
     }
     

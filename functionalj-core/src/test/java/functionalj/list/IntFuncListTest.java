@@ -1788,9 +1788,9 @@ public class IntFuncListTest {
     static class SumHalf implements IntCollectorPlus<int[], Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         @Override public Supplier<int[]>                    supplier()                    { return ()       -> new int[] { 0 }; }
-        @Override public IntAccumulator<int[]>              intAccumulator()              { return (a, i)   -> { a[0] += i / 2; }; }
+        @Override public IntAccumulator<int[]>              intAccumulator()              { return (a, i)   -> { a[0] += i; }; }
         @Override public BinaryOperator<int[]>              combiner()                    { return (a1, a2) -> new int[] { a1[0] + a2[0] }; }
-        @Override public Function<int[], Integer>           finisher()                    { return (a)      -> a[0]; }
+        @Override public Function<int[], Integer>           finisher()                    { return (a)      -> a[0] / 2; }
         @Override public Set<Characteristics>               characteristics()             { return characteristics; }
         @Override public Collector<Integer, int[], Integer> collector()                   { return this; }
         @Override public Integer                            process(IntStreamPlus stream) { return stream.map(i -> i/2).sum(); }
@@ -1850,7 +1850,7 @@ public class IntFuncListTest {
     public void testCalculate() {
         run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
             val sumHalf = new SumHalf();
-            assertStrings("9", list.calculate(sumHalf).intValue());
+            assertStrings("10", list.calculate(sumHalf).intValue());
         });
     }
     
@@ -1859,7 +1859,10 @@ public class IntFuncListTest {
         run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
             val sumHalf = new SumHalf();
             val average = new Average();
-            assertStrings("(9,OptionalDouble[20.0])", list.calculate(sumHalf, average));
+            assertStrings(
+                    "(10,"
+                    + "OptionalDouble[20.0])", 
+                    list.calculate(sumHalf, average));
         });
     }
     
@@ -1879,7 +1882,11 @@ public class IntFuncListTest {
             val sumHalf = new SumHalf();
             val average = new Average();
             val minInt  = new MinInt();
-            assertStrings("(9,OptionalDouble[20.0],OptionalInt[0])", list.calculate(sumHalf, average, minInt));
+            assertStrings(
+                    "(10,"
+                    + "OptionalDouble[20.0],"
+                    + "OptionalInt[0])", 
+                    list.calculate(sumHalf, average, minInt));
         });
     }
     
@@ -1892,7 +1899,10 @@ public class IntFuncListTest {
             val value   = list
                             .calculate(sumHalf, average, minInt)
                             .mapTo((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
-            assertStrings("sumH: 9, avg: OptionalDouble[20.0], min: OptionalInt[0]", value);
+            assertStrings(
+                    "sumH: 10, "
+                    + "avg: OptionalDouble[20.0], "
+                    + "min: OptionalInt[0]", value);
         });
     }
     
@@ -1904,7 +1914,10 @@ public class IntFuncListTest {
             val minInt  = new MinInt();
             val maxInt  = new MaxInt();
             assertStrings(
-                    "(9,OptionalDouble[20.0],OptionalInt[0],OptionalInt[11])", 
+                    "(10,"
+                    + "OptionalDouble[20.0],"
+                    + "OptionalInt[0],"
+                    + "OptionalInt[11])", 
                     list.calculate(sumHalf, average, minInt, maxInt));
         });
     }
@@ -1920,7 +1933,10 @@ public class IntFuncListTest {
                             .calculate(sumHalf, average, minInt, maxInt)
                             .mapTo((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
             assertStrings(
-                    "sumH: 9, avg: OptionalDouble[20.0], min: OptionalInt[0], max: OptionalInt[11]", 
+                    "sumH: 10, "
+                    + "avg: OptionalDouble[20.0], "
+                    + "min: OptionalInt[0], "
+                    + "max: OptionalInt[11]", 
                     value);
         });
     }
@@ -1934,7 +1950,10 @@ public class IntFuncListTest {
             val maxInt  = new MaxInt();
             val sumInt  = new SumInt();
             assertStrings(
-                    "(9,OptionalDouble[20.0],OptionalInt[0],OptionalInt[11],20)",
+                    "(10,"
+                    + "OptionalDouble[20.0],"
+                    + "OptionalInt[0],"
+                    + "OptionalInt[11],20)",
                     list.calculate(sumHalf, average, minInt, maxInt, sumInt));
         });
     }
@@ -1953,7 +1972,12 @@ public class IntFuncListTest {
                                 return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI;
                             });
             assertStrings(
-                    "sumH: 9, avg: OptionalDouble[20.0], min: OptionalInt[0], max: OptionalInt[11], max: OptionalInt[11], sumI: 20", 
+                    "sumH: 10, "
+                    + "avg: OptionalDouble[20.0], "
+                    + "min: OptionalInt[0], "
+                    + "max: OptionalInt[11], "
+                    + "max: OptionalInt[11], "
+                    + "sumI: 20", 
                     value);
         });
     }
@@ -1968,7 +1992,12 @@ public class IntFuncListTest {
             val sumInt  = new SumInt();
             val avgInt  = new AvgInt();
             assertStrings(
-                    "(9,OptionalDouble[20.0],OptionalInt[0],OptionalInt[11],20,OptionalInt[5])", 
+                    "(10,"
+                    + "OptionalDouble[20.0],"
+                    + "OptionalInt[0],"
+                    + "OptionalInt[11],"
+                    + "20,"
+                    + "OptionalInt[5])", 
                     list.calculate(sumHalf, average, minInt, maxInt, sumInt, avgInt));
         });
     }
@@ -1987,7 +2016,14 @@ public class IntFuncListTest {
                             .mapTo((sumH, avg, min, max, sumI, avgI) -> {
                                 return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI + ", avgI: " + avgI;
                             });
-            assertStrings("sumH: 9, avg: OptionalDouble[20.0], min: OptionalInt[0], max: OptionalInt[11], max: OptionalInt[11], sumI: 20, avgI: OptionalInt[5]", value);
+            assertStrings(
+                    "sumH: 10, "
+                    + "avg: OptionalDouble[20.0], "
+                    + "min: OptionalInt[0], "
+                    + "max: OptionalInt[11], "
+                    + "max: OptionalInt[11], "
+                    + "sumI: 20, "
+                    + "avgI: OptionalInt[5]", value);
         });
     }
     
@@ -3725,7 +3761,7 @@ public class IntFuncListTest {
             assertStrings(
                     "[4, 3, 2, 1]",
                     list.sortedBy(
-                            theInteger.plus(2).square(),
+                            i -> (i + 2)*(i + 2),
                             (a,b)->b-a));
             // Using comparable access.
             assertStrings(

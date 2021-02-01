@@ -149,7 +149,7 @@ public interface IntegerToDoubleAccessPrimitive extends DoubleAccessPrimitive<In
 //        };
 //    }
     
-    public default IntegerToLongAccessPrimitive round() {
+    public default IntegerToDoubleAccessPrimitive round() {
         return host -> {
             double doubleValue = applyAsDouble(host);
             return Math.round(doubleValue);

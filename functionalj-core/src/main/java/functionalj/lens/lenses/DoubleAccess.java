@@ -88,6 +88,14 @@ public interface DoubleAccess<HOST>
     
     //-- Compare --
     
+    public default DoubleComparator ascendingOrder() {
+        return (a, b) -> Double.compare(a, b);
+    }
+    
+    public default DoubleComparator descendingOrder() {
+        return (a, b) -> Double.compare(b, a);
+    }
+    
     // TODO - Supplier and BiFunction
     // TODO - Move back to NumberAccess
     // TODO - Add Byte/Character
@@ -189,10 +197,24 @@ public interface DoubleAccess<HOST>
         };
     }
     
-    public default LongAccessPrimitive<HOST> round() {
+    public default IntegerAccessPrimitive<HOST> roundToInt() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return (int)Math.round(doubleValue);
+        };
+    }
+    
+    public default LongAccessPrimitive<HOST> roundToLong() {
         return host -> {
             double doubleValue = applyAsDouble(host);
             return Math.round(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> round() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return (double)Math.round(doubleValue);
         };
     }
     

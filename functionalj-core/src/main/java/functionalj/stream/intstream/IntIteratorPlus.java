@@ -25,13 +25,13 @@ package functionalj.stream.intstream;
 
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.Func1;
-import functionalj.function.FuncUnit1;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.AutoCloseableResult;
@@ -59,7 +59,6 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
             public OfInt asIterator() {
                 return iterator;
             }
-            
         };
     }
     
@@ -133,7 +132,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
         return this;
     }
     
-    public default IntIteratorPlus useNext(int count, FuncUnit1<IntStreamPlus> usage) {
+    public default IntIteratorPlus useNext(int count, Consumer<IntStreamPlus> usage) {
         int[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
             try (val iterator = new ArrayBackedIntIteratorPlus(array)) {
@@ -155,7 +154,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
         }
     }
     
-    public default <TARGET> Result<TARGET> mapNext(int count, Func1<IntStreamPlus, TARGET> mapper) {
+    public default <TARGET> Result<TARGET> mapNext(int count, Function<IntStreamPlus, TARGET> mapper) {
         val array = stream().limit(count).toArray();
         if ((array.length == 0) && (count != 0))
             return Result.ofNoMore();

@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream.doublestream;
 
+import static functionalj.stream.doublestream.AsDoubleStreamPlusHelper.streamFrom;
+
 import java.util.DoubleSummaryStatistics;
 import java.util.OptionalDouble;
 import java.util.Spliterator;
@@ -40,6 +42,14 @@ import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
 
+class AsDoubleStreamPlusHelper {
+    
+    /** @return  the stream plus instance of this object. */
+    public static DoubleStreamPlus streamFrom(AsDoubleStreamPlus streamPlus) {
+        return streamPlus.doubleStreamPlus();
+    }
+    
+}
 
 /**
  * Classes implementing this interface can provider a StreamPlus instance of itself.
@@ -50,15 +60,12 @@ import lombok.val;
 public interface AsDoubleStreamPlus
                     extends
                         AsDoubleStreamPlusWithConversion,
+                        AsDoubleStreamPlusWithCollect,
                         AsDoubleStreamPlusWithForEach,
                         AsDoubleStreamPlusWithGroupingBy,
                         AsDoubleStreamPlusWithMatch,
+                        AsDoubleStreamPlusWithReduce,
                         AsDoubleStreamPlusWithStatistic {
-    
-    /** @return  the stream plus instance of this object. */
-    public static DoubleStreamPlus streamFrom(AsDoubleStreamPlus streamPlus) {
-        return streamPlus.doubleStreamPlus();
-    }
     
     /** @return  the stream plus instance of this object. */
     public DoubleStreamPlus doubleStreamPlus();
@@ -68,148 +75,148 @@ public interface AsDoubleStreamPlus
         return doubleStreamPlus();
     }
     
-    //== Terminal operations ==
-    
-    /** @return a iterator of this FuncList. */
-    public default DoubleIteratorPlus iterator() {
-        return streamFrom(this).iterator();
-    }
-    
-    /** @return a spliterator of this FuncList. */
-    public default Spliterator.OfDouble spliterator() {
-        val iterator = iterator();
-        return Spliterators.spliteratorUnknownSize(iterator, 0);
-    }
-    
+//    //== Terminal operations ==
+//    
+//    /** @return a iterator of this FuncList. */
+//    public default DoubleIteratorPlus iterator() {
+//        return streamFrom(this).iterator();
+//    }
+//    
+//    /** @return a spliterator of this FuncList. */
+//    public default Spliterator.OfDouble spliterator() {
+//        val iterator = iterator();
+//        return Spliterators.spliteratorUnknownSize(iterator, 0);
+//    }
+//    
     @Eager
     @Terminal
     public default void forEach(DoubleConsumer action) {
         streamFrom(this).forEach(action);
     }
-    
-    @Eager
-    @Terminal
-    @Sequential
-    public default void forEachOrdered(DoubleConsumer action) {
-        streamFrom(this).forEachOrdered(action);
-    }
-    
-    @Eager
-    @Terminal
-    public default double reduce(double identity, DoubleBinaryOperator reducer) {
-        return streamFrom(this).reduce(identity, reducer);
-    }
-    
-    @Eager
-    @Terminal
-    public default OptionalDouble reduce(DoubleBinaryOperator reducer) {
-        return streamFrom(this).reduce(reducer);
-    }
-    
-    @Eager
-    @Terminal
-    public default <R> R collect(
-            Supplier<R>          supplier,
-            ObjDoubleConsumer<R> accumulator,
-            BiConsumer<R, R>     combiner) {
-        return streamFrom(this).collect(supplier, accumulator, combiner);
-    }
-    
-    @Eager
-    @Terminal
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <R> R collect(DoubleCollectorPlus<?, R> collector) {
-        Supplier<R>          supplier    = (Supplier)         collector.supplier();
-        ObjDoubleConsumer<R> accumulator = (ObjDoubleConsumer)collector.accumulator();
-        BiConsumer<R, R>     combiner    = (BiConsumer)       collector.combiner();
-        return streamFrom(this).collect(supplier, accumulator, combiner);
-    }
-    
-    //-- statistics --
-    
-    @Eager
-    @Terminal
-    public default OptionalDouble min() {
-        return streamFrom(this).min();
-    }
-    
-    @Eager
-    @Terminal
-    public default OptionalDouble max() {
-        return streamFrom(this).max();
-    }
-    
-    @Eager
-    @Terminal
-    public default long count() {
-        return streamFrom(this).count();
-    }
-    
-    @Eager
-    @Terminal
-    public default double sum() {
-        return streamFrom(this).sum();
-    }
-    
-    @Eager
-    @Terminal
-    public default OptionalDouble average() {
-        return streamFrom(this).average();
-    }
-    
-    @Eager
-    @Terminal
-    public default DoubleSummaryStatistics summaryStatistics() {
-        return streamFrom(this).summaryStatistics();
-    }
-    
-    //-- Match --
-    
-    @Terminal
-    public default boolean anyMatch(DoublePredicate predicate) {
-        return streamFrom(this).anyMatch(predicate);
-    }
-    
-    @Eager
-    @Terminal
-    public default boolean allMatch(DoublePredicate predicate) {
-        return streamFrom(this).allMatch(predicate);
-    }
-    
-    @Eager
-    @Terminal
-    public default boolean noneMatch(DoublePredicate predicate) {
-        return streamFrom(this).noneMatch(predicate);
-    }
-    
-    @Terminal
-    public default OptionalDouble findFirst() {
-        return streamFrom(this).findFirst();
-    }
-    
-    @Terminal
-    public default OptionalDouble findAny() {
-        return streamFrom(this).findAny();
-    }
-    
-    @Sequential
-    @Terminal
-    public default OptionalDouble firstResult() {
-        return streamFrom(this).firstResult();
-    }
-    
-    @Sequential
-    @Terminal
-    public default OptionalDouble lastResult() {
-        return streamFrom(this).lastResult();
-    }
-    
-    //== Conversion ==
-    
-    @Eager
-    @Terminal
-    public default double[] toArray() {
-        return streamFrom(this).toArray();
-    }
-    
+//    
+//    @Eager
+//    @Terminal
+//    @Sequential
+//    public default void forEachOrdered(DoubleConsumer action) {
+//        streamFrom(this).forEachOrdered(action);
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default double reduce(double identity, DoubleBinaryOperator reducer) {
+//        return streamFrom(this).reduce(identity, reducer);
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default OptionalDouble reduce(DoubleBinaryOperator reducer) {
+//        return streamFrom(this).reduce(reducer);
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default <R> R collect(
+//            Supplier<R>          supplier,
+//            ObjDoubleConsumer<R> accumulator,
+//            BiConsumer<R, R>     combiner) {
+//        return streamFrom(this).collect(supplier, accumulator, combiner);
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    @SuppressWarnings({ "unchecked", "rawtypes" })
+//    public default <R> R collect(DoubleCollectorPlus<?, R> collector) {
+//        Supplier<R>          supplier    = (Supplier)         collector.supplier();
+//        ObjDoubleConsumer<R> accumulator = (ObjDoubleConsumer)collector.accumulator();
+//        BiConsumer<R, R>     combiner    = (BiConsumer)       collector.combiner();
+//        return streamFrom(this).collect(supplier, accumulator, combiner);
+//    }
+//    
+//    //-- statistics --
+//    
+//    @Eager
+//    @Terminal
+//    public default OptionalDouble min() {
+//        return streamFrom(this).min();
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default OptionalDouble max() {
+//        return streamFrom(this).max();
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default long count() {
+//        return streamFrom(this).count();
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default double sum() {
+//        return streamFrom(this).sum();
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default OptionalDouble average() {
+//        return streamFrom(this).average();
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default DoubleSummaryStatistics summaryStatistics() {
+//        return streamFrom(this).summaryStatistics();
+//    }
+//    
+//    //-- Match --
+//    
+//    @Terminal
+//    public default boolean anyMatch(DoublePredicate predicate) {
+//        return streamFrom(this).anyMatch(predicate);
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default boolean allMatch(DoublePredicate predicate) {
+//        return streamFrom(this).allMatch(predicate);
+//    }
+//    
+//    @Eager
+//    @Terminal
+//    public default boolean noneMatch(DoublePredicate predicate) {
+//        return streamFrom(this).noneMatch(predicate);
+//    }
+//    
+//    @Terminal
+//    public default OptionalDouble findFirst() {
+//        return streamFrom(this).findFirst();
+//    }
+//    
+//    @Terminal
+//    public default OptionalDouble findAny() {
+//        return streamFrom(this).findAny();
+//    }
+//    
+//    @Sequential
+//    @Terminal
+//    public default OptionalDouble firstResult() {
+//        return streamFrom(this).firstResult();
+//    }
+//    
+//    @Sequential
+//    @Terminal
+//    public default OptionalDouble lastResult() {
+//        return streamFrom(this).lastResult();
+//    }
+//    
+//    //== Conversion ==
+//    
+//    @Eager
+//    @Terminal
+//    public default double[] toArray() {
+//        return streamFrom(this).toArray();
+//    }
+//    
 }

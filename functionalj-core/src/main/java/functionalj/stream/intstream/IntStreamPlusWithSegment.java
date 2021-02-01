@@ -43,6 +43,7 @@ public interface IntStreamPlusWithSegment {
     
     public IntStreamPlus intStreamPlus();
     
+    
     /**
      * Segment the stream into sub stream with the fix length of count.
      * The last portion may be shorter.
@@ -116,7 +117,7 @@ public interface IntStreamPlusWithSegment {
                 return hasThis;
             }
         };
-            return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
+        return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
     
     /**

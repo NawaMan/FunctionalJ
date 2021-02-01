@@ -85,15 +85,15 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
     }
     
     /** @return the list containing the given elements */
-    public static ImmutableDoubleFuncList from(boolean isLazy, AsDoubleFuncList funcList) {
-        if (funcList == null)
+    public static ImmutableDoubleFuncList from(boolean isLazy, AsDoubleFuncList asFuncList) {
+        if (asFuncList == null)
             return emptyList;
         
-        if (funcList instanceof ImmutableDoubleFuncList)
-            if (isLazy == funcList.asDoubleFuncList().isLazy())
-                return (ImmutableDoubleFuncList)funcList;
+        if (asFuncList instanceof ImmutableDoubleFuncList)
+            if (isLazy == asFuncList.asDoubleFuncList().isLazy())
+                return (ImmutableDoubleFuncList)asFuncList;
         
-        val data = funcList.toArray();
+        val data = asFuncList.asDoubleFuncList().toArray();
         return new ImmutableDoubleFuncList(data, isLazy);
     }
     

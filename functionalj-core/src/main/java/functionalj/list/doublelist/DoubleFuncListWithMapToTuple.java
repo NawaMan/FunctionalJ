@@ -47,7 +47,7 @@ public interface DoubleFuncListWithMapToTuple extends AsDoubleFuncList {
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3> 
-            FuncList<Tuple3<T1, T2, T3>> mapTuple(
+            FuncList<Tuple3<T1, T2, T3>> mapToTuple(
                 DoubleFunction<? extends T1> mapper1,
                 DoubleFunction<? extends T2> mapper2,
                 DoubleFunction<? extends T3> mapper3) {
@@ -56,7 +56,7 @@ public interface DoubleFuncListWithMapToTuple extends AsDoubleFuncList {
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4> 
-            FuncList<Tuple4<T1, T2, T3, T4>> mapTuple(
+            FuncList<Tuple4<T1, T2, T3, T4>> mapToTuple(
                 DoubleFunction<? extends T1> mapper1,
                 DoubleFunction<? extends T2> mapper2,
                 DoubleFunction<? extends T3> mapper3,
@@ -66,7 +66,7 @@ public interface DoubleFuncListWithMapToTuple extends AsDoubleFuncList {
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5> 
-            FuncList<Tuple5<T1, T2, T3, T4, T5>> mapTuple(
+            FuncList<Tuple5<T1, T2, T3, T4, T5>> mapToTuple(
                 DoubleFunction<? extends T1> mapper1,
                 DoubleFunction<? extends T2> mapper2,
                 DoubleFunction<? extends T3> mapper3,
@@ -77,7 +77,7 @@ public interface DoubleFuncListWithMapToTuple extends AsDoubleFuncList {
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5, T6> 
-            FuncList<Tuple6<T1, T2, T3, T4, T5, T6>> mapTuple(
+            FuncList<Tuple6<T1, T2, T3, T4, T5, T6>> mapToTuple(
                 DoubleFunction<? extends T1> mapper1,
                 DoubleFunction<? extends T2> mapper2,
                 DoubleFunction<? extends T3> mapper3,

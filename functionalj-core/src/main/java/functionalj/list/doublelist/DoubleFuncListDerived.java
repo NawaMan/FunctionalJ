@@ -35,11 +35,11 @@ import functionalj.stream.doublestream.DoubleStreamPlus;
 import lombok.val;
 
 
-class DoubleFuncListDerived implements DoubleFuncList {
+public class DoubleFuncListDerived implements DoubleFuncList {
     
     private static final DoubleBiFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
-    private static final DoublePredicate           toZero        = (double i)          -> i  == 0;
-
+    private static final DoublePredicate           notZero       = (double d)             -> d  != 0;
+    
     //-- Data --
     
     private final Object source;
@@ -115,8 +115,11 @@ class DoubleFuncListDerived implements DoubleFuncList {
             return false;
         
         val anotherList = (DoubleFuncList)o;
-        return DoubleFuncList.zipOf(this, anotherList.asDoubleFuncList(), zeroForEquals)
-                .allMatch(toZero);
+        if (size() != anotherList.size())
+            return false;
+        
+        return !DoubleFuncList.zipOf(this, anotherList.asDoubleFuncList(), zeroForEquals)
+                .allMatch(notZero);
     }
     
     @Override

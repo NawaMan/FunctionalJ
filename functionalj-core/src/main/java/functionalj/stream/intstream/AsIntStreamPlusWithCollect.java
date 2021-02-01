@@ -5,6 +5,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 
+import functionalj.function.Func;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
@@ -33,22 +34,24 @@ public interface AsIntStreamPlusWithCollect {
     @Eager
     @Terminal
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <RESULT> RESULT collect(IntCollectorPlus<?, RESULT> collector) {
-        Supplier<RESULT>           supplier = (Supplier)collector.supplier();
-        BiConsumer<RESULT, RESULT> combiner = (RESULT r1, RESULT r2) -> {
+    public default <ACCUMULATOR, RESULT> RESULT collect(IntCollectorPlus<ACCUMULATOR, RESULT> collector) {
+        val supplier = (Supplier)collector.supplier();
+        val combiner = Func.f((ACCUMULATOR r1, ACCUMULATOR r2) -> {
             BinaryOperator simpleCombiner = collector.combiner();
             simpleCombiner.apply(r1, r2);
-        };
-        ObjIntConsumer<RESULT> accumulator = (RESULT r, int v) -> {
+        });
+        ObjIntConsumer<ACCUMULATOR> accumulator = (ACCUMULATOR r, int v) -> {
             // This is ridiculous but work. Sorry.
-            Object     objectR           = (Object)r;
-            RESULT     resultR           = (RESULT)objectR;
-            BiConsumer simpleAccumulator = collector.accumulator();
+            Object      objectR           = (Object)r;
+            ACCUMULATOR resultR           = (ACCUMULATOR)objectR;
+            BiConsumer  simpleAccumulator = collector.accumulator();
             simpleAccumulator.accept(resultR, v);
         };
-        val streamPlus = intStreamPlus();
-        return streamPlus
-                .collect(supplier, accumulator, combiner);
+        val finisher    = collector.finisher();
+        val streamPlus  = intStreamPlus();
+        val accumulated = streamPlus.collect(supplier, accumulator, combiner);
+        val result      = finisher.apply((ACCUMULATOR)accumulated);
+        return result;
     }
     
 }
