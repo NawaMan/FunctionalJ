@@ -64,7 +64,7 @@ public class PromisesTest {
     }
     
     @Test
-    public void testOf2_happySwitch() {
+    public void testOf2_happy_comprehension() {
         val control1 = DeferAction.of(String.class).start();
         val control2 = DeferAction.of(Integer.class).start();
         

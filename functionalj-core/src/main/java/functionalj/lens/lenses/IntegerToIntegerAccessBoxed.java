@@ -25,6 +25,7 @@ package functionalj.lens.lenses;
 
 import java.util.function.IntFunction;
 
+
 @FunctionalInterface
 public interface IntegerToIntegerAccessBoxed extends IntegerAccessBoxed<Integer>, IntFunction<Integer> {
     
