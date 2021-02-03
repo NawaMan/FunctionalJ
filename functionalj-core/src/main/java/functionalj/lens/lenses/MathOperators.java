@@ -11,11 +11,11 @@ public interface MathOperators<NUMBER> {
     public NUMBER one();
     public NUMBER minusOne();
     
-    public Integer    toInteger(NUMBER number);
-    public Long       toLong(NUMBER number);
-    public Double     toDouble(NUMBER number);
-    public BigInteger toBigInteger(NUMBER number);
-    public BigDecimal toBigDecimal(NUMBER number);
+    public Integer    asInteger(NUMBER number);
+    public Long       asLong(NUMBER number);
+    public Double     asDouble(NUMBER number);
+    public BigInteger asBigInteger(NUMBER number);
+    public BigDecimal asBigDecimal(NUMBER number);
     
     public NUMBER add(NUMBER number1, NUMBER number2);
     public NUMBER subtract(NUMBER number1, NUMBER number2);

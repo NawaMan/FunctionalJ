@@ -67,23 +67,23 @@ public interface BigDecimalAccess<HOST>
             return BigDecimalAccessConstants.MINUS_ONE;
         }
         @Override
-        public Integer toInteger(BigDecimal number) {
-            return toBigDecimal(number).intValue();
+        public Integer asInteger(BigDecimal number) {
+            return asBigDecimal(number).intValue();
         }
         @Override
-        public Long toLong(BigDecimal number) {
-            return toBigDecimal(number).longValue();
+        public Long asLong(BigDecimal number) {
+            return asBigDecimal(number).longValue();
         }
         @Override
-        public Double toDouble(BigDecimal number) {
-            return toBigDecimal(number).doubleValue();
+        public Double asDouble(BigDecimal number) {
+            return asBigDecimal(number).doubleValue();
         }
         @Override
-        public BigInteger toBigInteger(BigDecimal number) {
-            return toBigDecimal(number).toBigInteger();
+        public BigInteger asBigInteger(BigDecimal number) {
+            return asBigDecimal(number).toBigInteger();
         }
         @Override
-        public BigDecimal toBigDecimal(BigDecimal number) {
+        public BigDecimal asBigDecimal(BigDecimal number) {
             return Nullable.of(number).orElse(BigDecimal.ZERO);
         }
         

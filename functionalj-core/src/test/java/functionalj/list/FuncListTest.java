@@ -2666,7 +2666,7 @@ public class FuncListTest {
                     list.mapTwoToDouble((a, b) -> a.length() * b.length()));
             assertStrings(
                     "[9.0, 15.0, 20.0, 16.0, 12.0, 15.0, 25.0]",
-                    list.mapGroupToDouble(2, stream -> stream.mapToDouble(theString.length().toDouble()).product().getAsDouble()));
+                    list.mapGroupToDouble(2, stream -> stream.mapToDouble(theString.length().asDouble()).product().getAsDouble()));
         });
     }
     

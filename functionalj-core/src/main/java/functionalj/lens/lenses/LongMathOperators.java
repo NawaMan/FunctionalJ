@@ -24,24 +24,24 @@ public class LongMathOperators implements MathOperators<Long> {
         return -1L;
     }
     @Override
-    public Integer toInteger(Long number) {
-        return toLong(number).intValue();
+    public Integer asInteger(Long number) {
+        return asLong(number).intValue();
     }
     @Override
-    public Long toLong(Long number) {
+    public Long asLong(Long number) {
         return Nullable.of(number).orElse(0L);
     }
     @Override
-    public Double toDouble(Long number) {
-        return (double)toLong(number);
+    public Double asDouble(Long number) {
+        return (double)asLong(number);
     }
     @Override
-    public BigInteger toBigInteger(Long number) {
-        return BigInteger.valueOf(toLong(number));
+    public BigInteger asBigInteger(Long number) {
+        return BigInteger.valueOf(asLong(number));
     }
     @Override
-    public BigDecimal toBigDecimal(Long number) {
-        return new BigDecimal(toLong(number));
+    public BigDecimal asBigDecimal(Long number) {
+        return new BigDecimal(asLong(number));
     }
     
     @Override

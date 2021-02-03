@@ -45,7 +45,7 @@ public class NumberAccessTest {
                          theString, 
                          theString.length(),
                          theString.length().thatLessThan(4),
-                         theString.length().plus($I.time(2)).toDouble()));
+                         theString.length().plus($I.time(2)).asDouble()));
     }
     
 }

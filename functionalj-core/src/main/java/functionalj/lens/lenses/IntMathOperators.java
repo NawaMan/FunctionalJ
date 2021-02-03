@@ -24,24 +24,24 @@ public class IntMathOperators implements MathOperators<Integer> {
         return -1;
     }
     @Override
-    public Integer toInteger(Integer number) {
+    public Integer asInteger(Integer number) {
         return (number == null) ? 0 : number.intValue();
     }
     @Override
-    public Long toLong(Integer number) {
-        return (long)toInteger(number);
+    public Long asLong(Integer number) {
+        return (long)asInteger(number);
     }
     @Override
-    public Double toDouble(Integer number) {
-        return (double)toInteger(number);
+    public Double asDouble(Integer number) {
+        return (double)asInteger(number);
     }
     @Override
-    public BigInteger toBigInteger(Integer number) {
-        return BigInteger.valueOf(toInteger(number));
+    public BigInteger asBigInteger(Integer number) {
+        return BigInteger.valueOf(asInteger(number));
     }
     @Override
-    public BigDecimal toBigDecimal(Integer number) {
-        return new BigDecimal(toInteger(number));
+    public BigDecimal asBigDecimal(Integer number) {
+        return new BigDecimal(asInteger(number));
     }
     
     @Override

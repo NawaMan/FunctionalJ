@@ -24,24 +24,24 @@ public class DoubleMathOperators implements MathOperators<Double> {
         return -1.0;
     }
     @Override
-    public Integer toInteger(Double number) {
-        return toDouble(number).intValue();
+    public Integer asInteger(Double number) {
+        return asDouble(number).intValue();
     }
     @Override
-    public Long toLong(Double number) {
-        return toDouble(number).longValue();
+    public Long asLong(Double number) {
+        return asDouble(number).longValue();
     }
     @Override
-    public Double toDouble(Double number) {
+    public Double asDouble(Double number) {
         return Nullable.of(number).orElse(0.0);
     }
     @Override
-    public BigInteger toBigInteger(Double number) {
-        return BigInteger.valueOf(toLong(number));
+    public BigInteger asBigInteger(Double number) {
+        return BigInteger.valueOf(asLong(number));
     }
     @Override
-    public BigDecimal toBigDecimal(Double number) {
-        return new BigDecimal(toDouble(number));
+    public BigDecimal asBigDecimal(Double number) {
+        return new BigDecimal(asDouble(number));
     }
     
     @Override

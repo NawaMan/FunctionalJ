@@ -26,14 +26,10 @@ package functionalj.lens.lenses;
 import static java.util.Objects.requireNonNull;
 
 import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
-import java.util.function.IntUnaryOperator;
-import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
 import functionalj.function.Func1;
-import functionalj.function.IntSupplierPrimitive;
 import functionalj.function.ToIntBiIntFunction;
 import lombok.val;
 
@@ -72,7 +68,7 @@ public interface IntegerAccess<HOST>
         return access;
     }
     
-    public static <H> IntegerAccess<H> ofPrimitive(ToIntFunction<H> accessToValue) {
+    public static <H> IntegerAccessPrimitive<H> ofPrimitive(ToIntFunction<H> accessToValue) {
         requireNonNull(accessToValue);
         val access = (IntegerAccessPrimitive<H>)accessToValue::applyAsInt;
         return access;
@@ -98,7 +94,7 @@ public interface IntegerAccess<HOST>
     //-- conversion --
     
     @Override
-    public default IntegerAccessPrimitive<HOST> toInteger() {
+    public default IntegerAccessPrimitive<HOST> asInteger() {
         return host -> {
             int intValue = applyAsInt(host);
             return intValue;
@@ -106,7 +102,7 @@ public interface IntegerAccess<HOST>
     }
     
     @Override
-    public default LongAccessPrimitive<HOST> toLong() {
+    public default LongAccessPrimitive<HOST> asLong() {
         return host -> {
             int intValue = applyAsInt(host);
             return (long)intValue;
@@ -114,7 +110,7 @@ public interface IntegerAccess<HOST>
     }
     
     @Override
-    public default DoubleAccessPrimitive<HOST> toDouble() {
+    public default DoubleAccessPrimitive<HOST> asDouble() {
         return host -> {
             int intValue = applyAsInt(host);
             return (double)intValue;
@@ -135,63 +131,14 @@ public interface IntegerAccess<HOST>
         return host -> -1;
     }
     
-    public default IntegerAccess<HOST> to(int value) {
-        return intPrimitiveAccess(0, i -> value);
-    }
-    
-    public default IntegerAccess<HOST> to(Supplier<Integer> valueSupplier) {
-        if (valueSupplier instanceof IntSupplier) {
-            return intPrimitiveAccess(0, i -> ((IntSupplier)valueSupplier).getAsInt());
-        }
-        
-        return intBoxedAccess(0, i -> valueSupplier.get());
-    }
-    
-    public default IntegerAccess<HOST> to(Function<Integer, Integer> valueFunction) {
-        if (valueFunction instanceof IntUnaryOperator) {
-            return intPrimitiveAccess(0, i -> ((IntUnaryOperator)valueFunction).applyAsInt(i));
-        }
-        if (valueFunction instanceof ToIntFunction) {
-            return intPrimitiveAccess(0, i -> ((ToIntFunction<Integer>)valueFunction).applyAsInt(i));
-        }
-        if (valueFunction instanceof IntFunction) {
-            return intPrimitiveAccess(0, i -> ((IntFunction<Integer>)valueFunction).apply(i));
-        }
-        
-        return intBoxedAccess(0, i -> valueFunction.apply(i));
-    }
-    
-    public default IntegerAccess<HOST> toPrimitive(int value) {
-        return intPrimitiveAccess(0, i -> value);
-    }
-    
-    public default IntegerAccess<HOST> toPrimitive(IntSupplier valueSupplier) {
-        return intPrimitiveAccess(0, i -> valueSupplier.getAsInt());
-    }
-    
-    public default IntegerAccess<HOST> toPrimitive(ToIntFunction<Integer> valueFunction) {
-        return intPrimitiveAccess(0, i -> valueFunction.applyAsInt(i));
-    }
-    
-    //-- Compare --
-    
-    public default IntComparator ascendingOrder() {
-        return (a, b) -> Integer.compare(a, b);
-    }
-    
-    public default IntComparator descendingOrder() {
-        return (a, b) -> Integer.compare(b, a);
-    }
-
-    
-    public default IntegerAccessPrimitive<HOST> compareTo(int anotherValue) {
+    public default IntegerAccessPrimitive<HOST> to(int anotherValue) {
         return host -> {
             int intValue = applyAsInt(host);
             int compare  = Integer.compare(intValue, anotherValue);
             return compare;
         };
     }
-    public default IntegerAccessPrimitive<HOST> compareTo(IntSupplier anotherSupplier) {
+    public default IntegerAccessPrimitive<HOST> to(IntSupplier anotherSupplier) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = anotherSupplier.getAsInt();
@@ -199,15 +146,15 @@ public interface IntegerAccess<HOST>
             return compare;
         };
     }
-    public default IntegerAccessPrimitive<HOST> compareTo(IntegerAccess<HOST> anotherAccess) {
+    public default IntegerAccessPrimitive<HOST> to(ToIntFunction<HOST> anotherFunction) {
         return host -> {
             int intValue     = applyAsInt(host);
-            int anotherValue = anotherAccess.applyAsInt(host);
+            int anotherValue = anotherFunction.applyAsInt(host);
             int compare      = Integer.compare(intValue, anotherValue);
             return compare;
         };
     }
-    public default IntegerAccessPrimitive<HOST> compareTo(ToIntBiIntFunction<HOST> anotherFunction) {
+    public default IntegerAccessPrimitive<HOST> to(ToIntBiIntFunction<HOST> anotherFunction) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = anotherFunction.applyAsInt(host, intValue);
@@ -216,18 +163,7 @@ public interface IntegerAccess<HOST>
         };
     }
     
-    public default IntegerAccessPrimitive<HOST> cmp(int anotherValue) {
-        return compareTo(anotherValue);
-    }
-    public default IntegerAccessPrimitive<HOST> cmp(IntSupplier anotherSupplier) {
-        return compareTo(anotherSupplier);
-    }
-    public default IntegerAccessPrimitive<HOST> cmp(IntegerAccess<HOST> anotherAccess) {
-        return compareTo(anotherAccess);
-    }
-    public default IntegerAccessPrimitive<HOST> cmp(ToIntBiIntFunction<HOST> anotherFunction) {
-        return compareTo(anotherFunction);
-    }
+    //-- Equality --
     
     public default BooleanAccessPrimitive<HOST> thatIsZero() {
         return host -> {
@@ -346,6 +282,61 @@ public interface IntegerAccess<HOST>
     }
     public default BooleanAccessPrimitive<HOST> neq(ToIntBiIntFunction<HOST> anotherFunction) {
         return thatNotEquals(anotherFunction);
+    }
+    
+    //-- Compare --
+    
+    public default IntComparator ascendingOrder() {
+        return (a, b) -> Integer.compare(a, b);
+    }
+    
+    public default IntComparator descendingOrder() {
+        return (a, b) -> Integer.compare(b, a);
+    }
+    
+    public default IntegerAccessPrimitive<HOST> compareTo(int anotherValue) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int compare  = Integer.compare(intValue, anotherValue);
+            return compare;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> compareTo(IntSupplier anotherSupplier) {
+        return host -> {
+            int intValue     = applyAsInt(host);
+            int anotherValue = anotherSupplier.getAsInt();
+            int compare      = Integer.compare(intValue, anotherValue);
+            return compare;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> compareTo(ToIntFunction<HOST> anotherFunction) {
+        return host -> {
+            int intValue     = applyAsInt(host);
+            int anotherValue = anotherFunction.applyAsInt(host);
+            int compare      = Integer.compare(intValue, anotherValue);
+            return compare;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> compareTo(ToIntBiIntFunction<HOST> anotherFunction) {
+        return host -> {
+            int intValue     = applyAsInt(host);
+            int anotherValue = anotherFunction.applyAsInt(host, intValue);
+            int compare      = Integer.compare(intValue, anotherValue);
+            return compare;
+        };
+    }
+    
+    public default IntegerAccessPrimitive<HOST> cmp(int anotherValue) {
+        return compareTo(anotherValue);
+    }
+    public default IntegerAccessPrimitive<HOST> cmp(IntSupplier anotherSupplier) {
+        return compareTo(anotherSupplier);
+    }
+    public default IntegerAccessPrimitive<HOST> cmp(IntegerAccess<HOST> anotherAccess) {
+        return compareTo(anotherAccess);
+    }
+    public default IntegerAccessPrimitive<HOST> cmp(ToIntBiIntFunction<HOST> anotherFunction) {
+        return compareTo(anotherFunction);
     }
     
     public default BooleanAccessPrimitive<HOST> thatGreaterThan(int anotherValue) {
@@ -512,6 +503,8 @@ public interface IntegerAccess<HOST>
         return thatLessThanOrEqualsTo(anotherFunction);
     }
     
+    //-- Min+Max --
+    
     public default IntegerAccessPrimitive<HOST> min(int value) {
         return host -> {
             int intValue     = applyAsInt(host);
@@ -614,98 +607,6 @@ public interface IntegerAccess<HOST>
             return (intValue == 0) ? 0 : (intValue < 0) ? -1 : 1;
         };
     }
-    
-    
-    //-- Bit wise --
-    
-    public default IntegerAccessPrimitive<HOST> bitAnd(int value) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            return intValue & value;
-        };
-    }
-    public default IntegerAccessPrimitive<HOST> bitAnd(IntSupplier anotherSupplier) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            int value    = anotherSupplier.getAsInt();
-            return intValue & value;
-        };
-    }
-    public default IntegerAccessPrimitive<HOST> bitAnd(IntegerAccess<HOST> anotherAccess) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            int value    = anotherAccess.applyAsInt(host);
-            return intValue & value;
-        };
-    }
-    public default IntegerAccessPrimitive<HOST> bitAnd(ToIntBiIntFunction<HOST> anotherFunction) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            int value    = anotherFunction.applyAsInt(host, intValue);
-            return intValue & value;
-        };
-    }
-    
-    public default IntegerAccessPrimitive<HOST> bitOr(int value) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            return intValue | value;
-        };
-    }
-    public default IntegerAccessPrimitive<HOST> bitOr(IntSupplier anotherSupplier) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            int value    = anotherSupplier.getAsInt();
-            return intValue | value;
-        };
-    }
-    public default IntegerAccessPrimitive<HOST> bitOr(IntegerAccess<HOST> anotherAccess) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            int value    = anotherAccess.applyAsInt(host);
-            return intValue | value;
-        };
-    }
-    public default IntegerAccessPrimitive<HOST> bitOr(ToIntBiIntFunction<HOST> anotherFunction) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            int value    = anotherFunction.applyAsInt(host, intValue);
-            return intValue | value;
-        };
-    }
-    
-    public default BooleanAccessPrimitive<HOST> bitAt(int bitIndex) {
-        val p = (int)Math.pow(2, bitIndex);
-        return host -> {
-            int intValue = applyAsInt(host);
-            return (intValue & p) != 0;
-        };
-    }
-    public default BooleanAccessPrimitive<HOST> bitAt(IntSupplier anotherSupplier) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            int value    = anotherSupplier.getAsInt();
-            val p        = (int)Math.pow(2, value);
-            return (intValue & p) != 0;
-        };
-    }
-    public default BooleanAccessPrimitive<HOST> bitAt(IntegerAccess<HOST> anotherAccess) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            int value    = anotherAccess.applyAsInt(host);
-            val p        = (int)Math.pow(2, value);
-            return (intValue & p) != 0;
-        };
-    }
-    public default BooleanAccessPrimitive<HOST> bitAt(ToIntBiIntFunction<HOST> anotherFunction) {
-        return host -> {
-            int intValue = applyAsInt(host);
-            int value    = anotherFunction.applyAsInt(host, intValue);
-            val p        = (int)Math.pow(2, value);
-            return (intValue & p) != 0;
-        };
-    }
-    
     
     public default IntegerAccessPrimitive<HOST> plus(int value) {
         return host -> {
@@ -904,6 +805,94 @@ public interface IntegerAccess<HOST>
         };
     }
     
-////  public BigDecimal[] divideAndRemainder(BigDecimal divisor); --  Tuple
+    //-- Bit wise --
+    
+    public default IntegerAccessPrimitive<HOST> bitAnd(int value) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue & value;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> bitAnd(IntSupplier anotherSupplier) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int value    = anotherSupplier.getAsInt();
+            return intValue & value;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> bitAnd(IntegerAccess<HOST> anotherAccess) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int value    = anotherAccess.applyAsInt(host);
+            return intValue & value;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> bitAnd(ToIntBiIntFunction<HOST> anotherFunction) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int value    = anotherFunction.applyAsInt(host, intValue);
+            return intValue & value;
+        };
+    }
+    
+    public default IntegerAccessPrimitive<HOST> bitOr(int value) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue | value;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> bitOr(IntSupplier anotherSupplier) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int value    = anotherSupplier.getAsInt();
+            return intValue | value;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> bitOr(IntegerAccess<HOST> anotherAccess) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int value    = anotherAccess.applyAsInt(host);
+            return intValue | value;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> bitOr(ToIntBiIntFunction<HOST> anotherFunction) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int value    = anotherFunction.applyAsInt(host, intValue);
+            return intValue | value;
+        };
+    }
+    
+    public default BooleanAccessPrimitive<HOST> bitAt(int bitIndex) {
+        val p = (int)Math.pow(2, bitIndex);
+        return host -> {
+            int intValue = applyAsInt(host);
+            return (intValue & p) != 0;
+        };
+    }
+    public default BooleanAccessPrimitive<HOST> bitAt(IntSupplier anotherSupplier) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int value    = anotherSupplier.getAsInt();
+            val p        = (int)Math.pow(2, value);
+            return (intValue & p) != 0;
+        };
+    }
+    public default BooleanAccessPrimitive<HOST> bitAt(IntegerAccess<HOST> anotherAccess) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int value    = anotherAccess.applyAsInt(host);
+            val p        = (int)Math.pow(2, value);
+            return (intValue & p) != 0;
+        };
+    }
+    public default BooleanAccessPrimitive<HOST> bitAt(ToIntBiIntFunction<HOST> anotherFunction) {
+        return host -> {
+            int intValue = applyAsInt(host);
+            int value    = anotherFunction.applyAsInt(host, intValue);
+            val p        = (int)Math.pow(2, value);
+            return (intValue & p) != 0;
+        };
+    }
     
 }
