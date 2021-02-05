@@ -2252,7 +2252,7 @@ public class IntFuncListTest {
             assertStrings(
                     "[1, 3, 5]", 
                     list.filterAsLong(
-                            theInteger.square().toLong(), 
+                            theInteger.square().asLong(), 
                             theLong.thatIsOdd()));
         });
     }
@@ -2263,7 +2263,7 @@ public class IntFuncListTest {
             assertStrings(
                     "[1, 3, 5]", 
                     list.filterAsDouble(
-                            theInteger.square().toDouble() , 
+                            theInteger.square().asDouble() , 
                             theDouble.toInteger().thatIsOdd()));
         });
     }

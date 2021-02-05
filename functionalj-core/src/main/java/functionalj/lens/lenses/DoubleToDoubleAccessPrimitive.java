@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.lens.lenses.DoubleAccessPrivate.equalPrecisionToUse;
+
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
@@ -276,29 +278,33 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     
     public default DoubleToBooleanAccessPrimitive thatEquals(double anotherValue) {
         return host -> {
-            double doubleValue = applyAsDouble(host);
-            return doubleValue == anotherValue;
+            val value     = applyAsDouble(host);
+            val precision = equalPrecisionToUse.get().getAsDouble();
+            return Math.abs(value - anotherValue) <= precision;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatEquals(DoubleSupplier anotherSupplier) {
         return host -> {
-            double doubleValue    = applyAsDouble(host);
+            double value    = applyAsDouble(host);
             double anotherValue = anotherSupplier.getAsDouble();
-            return doubleValue == anotherValue;
+            val precision = equalPrecisionToUse.get().getAsDouble();
+            return Math.abs(value - anotherValue) <= precision;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatEquals(DoubleAccess<Double> anotherAccess) {
         return host -> {
-            double doubleValue    = applyAsDouble(host);
+            double value    = applyAsDouble(host);
             double anotherValue = DoubleToDoubleAccessPrimitive.apply(anotherAccess, host);
-            return doubleValue == anotherValue;
+            val precision = equalPrecisionToUse.get().getAsDouble();
+            return Math.abs(value - anotherValue) <= precision;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatEquals(ToDoubleBiDoubleFunction<Double> anotherFunction) {
         return host -> {
-            double doubleValue    = applyAsDouble(host);
-            double anotherValue = DoubleBiFunctionPrimitive.apply(anotherFunction, host, doubleValue);
-            return doubleValue == anotherValue;
+            double value    = applyAsDouble(host);
+            double anotherValue = DoubleBiFunctionPrimitive.apply(anotherFunction, host, value);
+            val precision = equalPrecisionToUse.get().getAsDouble();
+            return Math.abs(value - anotherValue) <= precision;
         };
     }
     
@@ -317,29 +323,33 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     
     public default DoubleToBooleanAccessPrimitive thatNotEquals(double anotherValue) {
         return host -> {
-            double doubleValue = applyAsDouble(host);
-            return doubleValue != anotherValue;
+            val value = applyAsDouble(host);
+            val precision    = equalPrecisionToUse.get().getAsDouble();
+            return Math.abs(value - anotherValue) <= precision;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatNotEquals(DoubleSupplier anotherSupplier) {
         return host -> {
-            double doubleValue    = applyAsDouble(host);
-            double anotherValue = anotherSupplier.getAsDouble();
-            return doubleValue != anotherValue;
+            val value        = applyAsDouble(host);
+            val anotherValue = anotherSupplier.getAsDouble();
+            val precision    = equalPrecisionToUse.get().getAsDouble();
+            return Math.abs(value - anotherValue) <= precision;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatNotEquals(DoubleAccess<Double> anotherAccess) {
         return host -> {
-            double doubleValue    = applyAsDouble(host);
-            double anotherValue = DoubleToDoubleAccessPrimitive.apply(anotherAccess, host);
-            return doubleValue != anotherValue;
+            val value        = applyAsDouble(host);
+            val anotherValue = DoubleToDoubleAccessPrimitive.apply(anotherAccess, host);
+            val precision    = equalPrecisionToUse.get().getAsDouble();
+            return Math.abs(value - anotherValue) <= precision;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatNotEquals(ToDoubleBiDoubleFunction<Double> anotherFunction) {
         return host -> {
-            double doubleValue    = applyAsDouble(host);
-            double anotherValue = DoubleBiFunctionPrimitive.apply(anotherFunction, host, doubleValue);
-            return doubleValue != anotherValue;
+            val value        = applyAsDouble(host);
+            val anotherValue = DoubleBiFunctionPrimitive.apply(anotherFunction, host, value);
+            val precision    = equalPrecisionToUse.get().getAsDouble();
+            return Math.abs(value - anotherValue) <= precision;
         };
     }
     
@@ -543,14 +553,14 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
         };
     }
     
-    public default DoubleToLongAccessPrimitive ceil() {
+    public default DoubleToDoubleAccessPrimitive ceil() {
         return host -> {
             double doubleValue = applyAsDouble(host);
             return (long)Math.ceil(doubleValue);
         };
     }
     
-    public default DoubleToLongAccessPrimitive floor() {
+    public default DoubleToDoubleAccessPrimitive floor() {
         return host -> {
             double doubleValue = applyAsDouble(host);
             return (long)Math.floor(doubleValue);
