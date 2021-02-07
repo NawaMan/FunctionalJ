@@ -100,7 +100,7 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("rawtypes")
-    private static final Result NULL = new ImmutableResult<>(null);
+    private static final Result NULL = new Value<>(null);
     
     /**
      * Returns the Null result.
@@ -288,6 +288,10 @@ public abstract class Result<DATA>
         return invalidResult;
     }
     
+    public static <D> Value<D> Value(D data) {
+        return new Value<D>(data);
+    }
+    
     public static <D> Result<D> ofValue(D value) {
         return valueOf(value);
     }
@@ -296,7 +300,7 @@ public abstract class Result<DATA>
         if (value == null)
             return Result.ofNull();
         
-        return new ImmutableResult<D>(value, (Exception)null);
+        return new Value<D>(value, (Exception)null);
     }
     
     public static <D> Result<D> from(Supplier<? extends D> supplier) {
@@ -322,11 +326,11 @@ public abstract class Result<DATA>
     }
     
     public static <D> Result<D> ofException(String exceptionMsg) {
-        return new ImmutableResult<D>((D)null, new FunctionInvocationException(exceptionMsg));
+        return new Value<D>((D)null, new FunctionInvocationException(exceptionMsg));
     }
     
     public static <D> Result<D> ofException(Exception exception) {
-        return new ImmutableResult<D>(null, (exception != null) ? exception : new FunctionInvocationException("Unknown reason."));
+        return new Value<D>(null, (exception != null) ? exception : new FunctionInvocationException("Unknown reason."));
     }
     
     public static <D> Result<D> ofResult(Result<D> result) {
@@ -1108,7 +1112,7 @@ public abstract class Result<DATA>
     public final String toString() {
         @SuppressWarnings("rawtypes")
         val clss = (Class)this.getClass();
-        val clssName = ((clss == ImmutableResult.class) || (clss == DerivedResult.class))
+        val clssName = ((clss == Value.class) || (clss == DerivedResult.class))
                 ? "Result"
                 : clss.getSimpleName();
         return clssName

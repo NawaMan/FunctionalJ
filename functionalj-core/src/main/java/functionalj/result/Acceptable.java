@@ -26,7 +26,7 @@ package functionalj.result;
 import functionalj.list.FuncList;
 import functionalj.validator.Validator;
 
-public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
+public abstract class Acceptable<DATA> extends Value<DATA> {
     
     protected Acceptable(DATA data, Validation<DATA> validating) {
         this(data, FuncList.of(validating.toValidator()));

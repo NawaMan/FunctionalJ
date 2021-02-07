@@ -52,11 +52,12 @@ public interface Access {
     public static final TheInteger              theInt     = TheInteger.theInteger;
     public static final TheLong                 theLong    = TheLong.theLong;
     public static final TheDouble               theDouble  = TheDouble.theDouble;
-    // TODO - Make "theNumber"
+    public static final TheDouble               theNumber  = TheDouble.theDouble;
     
     public static final BigIntegerLens<BigInteger> theBigInteger = BigIntegerLens.of(LensSpec.of(BigInteger.class));
     public static final BigDecimalLens<BigDecimal> theBigDecimal = BigDecimalLens.of(LensSpec.of(BigDecimal.class));
     
+    public static final AnyLens<Object, Object>    $$ = theObject;
     public static final AnyLens<Object, Object>    $O = theObject;
     public static final BooleanLens<Boolean>       $B = theBoolean;
     public static final StringLens<String>         $S = theString;
@@ -91,13 +92,15 @@ public interface Access {
     }
     
     //-- Each --
-    
+
+    public static final AnyLens<Object, Object>         each        = theObject;
     public static final AnyLens<Object, Object>         eachObject  = theObject;
     public static final BooleanLens<Boolean>            eachBoolean = theBoolean;
     public static final StringLens<String>              eachString  = theString;
     public static final IntegerToIntegerAccessPrimitive eachInteger = theInteger;
     public static final LongToLongAccessPrimitive       eachLong    = theLong;
     public static final DoubleToDoubleAccessPrimitive   eachDouble  = theDouble;
+    public static final DoubleToDoubleAccessPrimitive   eachNumber  = theDouble;
     
     public static final BigIntegerLens<BigInteger> eachBigInteger = theBigInteger;
     public static final BigDecimalLens<BigDecimal> eachBigDecimal = theBigDecimal;

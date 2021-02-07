@@ -28,21 +28,27 @@ import functionalj.validator.Validator;
 import lombok.val;
 
 
-public class ImmutableResult<DATA> extends Result<DATA> {
+public class Value<DATA> extends Result<DATA> {
+    
+    
+    public static <D> Value<D> of(D data) {
+        return new Value<D>(data);
+    }
+    
     
     private final Object data;
     
-    public ImmutableResult(DATA data) {
+    public Value(DATA data) {
         this(data, (Exception)null);
     }
-    ImmutableResult(DATA data, Exception exception) {
+    Value(DATA data, Exception exception) {
         if (exception != null) {
             this.data = new ExceptionHolder(exception);
         } else {
             this.data = data;
         }
     }
-    ImmutableResult(DATA data, FuncList<Validator<? super DATA>> validators) {
+    Value(DATA data, FuncList<Validator<? super DATA>> validators) {
         Object theData = data;
         if (validators != null) {
             for (val validator : validators) {

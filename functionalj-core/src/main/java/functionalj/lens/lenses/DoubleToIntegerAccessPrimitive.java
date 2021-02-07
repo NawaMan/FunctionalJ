@@ -83,7 +83,7 @@ public interface DoubleToIntegerAccessPrimitive extends IntegerAccessPrimitive<D
         };
     }
     
-    public default DoubleToDoubleAccessPrimitive toDouble() {
+    public default DoubleToDoubleAccessPrimitive asDouble() {
         return host -> {
             int intValue = applyAsInt(host);
             return (double)intValue;

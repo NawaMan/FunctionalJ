@@ -57,7 +57,7 @@ public interface BooleanAccess<HOST>
             val access = (BooleanAccessBoxed<H>)func1::applyUnsafe;
             return access;
         }
-
+        
         val func   = (Function<H, Boolean>)accessToValue;
         val access = (BooleanAccessBoxed<H>)(host -> func.apply(host));
         return access;
@@ -73,7 +73,7 @@ public interface BooleanAccess<HOST>
     public boolean test(HOST host);
     
     public Boolean applyUnsafe(HOST host) throws Exception;
-
+    
     
     @Override
     public default BooleanAccess<HOST> newAccess(Function<HOST, Boolean> accessToValue) {

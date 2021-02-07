@@ -2264,7 +2264,7 @@ public class IntFuncListTest {
                     "[1, 3, 5]", 
                     list.filterAsDouble(
                             theInteger.square().asDouble() , 
-                            theDouble.toInteger().thatIsOdd()));
+                            theDouble.asInteger().thatIsOdd()));
         });
     }
     

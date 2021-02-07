@@ -32,6 +32,8 @@ import functionalj.list.FuncList;
 import lombok.val;
 
 
+// TODO - Add a wrapper for various function so the call to it will use the substitution.
+
 public abstract class Substitution<DATA> {
     
     public static <D> Substitution<D> of(Ref<D> ref, D value) {

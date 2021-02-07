@@ -125,6 +125,13 @@ public interface AnyAccess<HOST, DATA>
                     return any.toString();
                 });
     }
+    public default StringAccess<HOST> asString(String template) {
+        return stringAccess(
+                null,
+                any -> {
+                    return String.format(template, any);
+                });
+    }
     
     public default IntegerAccessBoxed<HOST> intBoxedAccess(int defaultValue, Function<DATA, Integer> function) {
         return host -> {

@@ -1195,7 +1195,7 @@ public class DoubleFuncListTest {
             assertStrings(
                     "{0:[1.0], 1:[2.0, 3.0], 2:[4.0, 5.0]}",
                     list
-                    .groupingBy(theDouble.dividedBy(2).toInteger())
+                    .groupingBy(theDouble.dividedBy(2).asInteger())
                     .sortedByKey(theInteger));
         });
     }
@@ -1206,7 +1206,7 @@ public class DoubleFuncListTest {
             assertStrings(
                     "{0:[1.0], 1:[2.0, 3.0], 2:[4.0, 5.0]}",
                     list
-                    .groupingBy(theDouble.dividedBy(2).toInteger(), l -> l)
+                    .groupingBy(theDouble.dividedBy(2).asInteger(), l -> l)
                     .sortedByKey(theInteger));
         });
     }
@@ -1218,7 +1218,7 @@ public class DoubleFuncListTest {
 //                    "{0:[1.0], 1:[2.0, 3.0], 2:[4.0, 5.0]}"    << Before sum
                     "{0:1.0, 1:5.0, 2:9.0}",
                     list
-                    .groupingBy(theDouble.dividedBy(2).toInteger(), () -> new Sum())
+                    .groupingBy(theDouble.dividedBy(2).asInteger(), () -> new Sum())
                     .sortedByKey(theInteger));
         });
     }
@@ -1233,7 +1233,7 @@ public class DoubleFuncListTest {
 //                  "{0:[0.5], 1:[2.5],      3:[4.5]}"         << Half
                     "{0:0.5, 1:2.5, 2:4.5}",
                     list
-                    .groupingBy(theDouble.dividedBy(2).toInteger(), sumHalf)
+                    .groupingBy(theDouble.dividedBy(2).asInteger(), sumHalf)
                     .sortedByKey(theInteger));
         });
     }
@@ -1271,7 +1271,7 @@ public class DoubleFuncListTest {
     }
     
     @Test
-    public void testMapToDouble() {
+    public void testMapasDouble() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertStrings(
                     "[1.0, 1.4142135623730951, 1.7320508075688772]", 
@@ -1310,7 +1310,7 @@ public class DoubleFuncListTest {
     }
     
     @Test
-    public void testFlatMapToDouble() {
+    public void testFlatMapasDouble() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
             assertStrings(
                     "[1.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 4.0]",
@@ -2226,7 +2226,7 @@ public class DoubleFuncListTest {
                     "[1.0, 3.0, 5.0]", 
                     list.filter(
                             theDouble.square(), 
-                            theDouble.toInteger().thatIsOdd()));
+                            theDouble.asInteger().thatIsOdd()));
         });
     }
     
@@ -2236,7 +2236,7 @@ public class DoubleFuncListTest {
             assertStrings(
                     "[1.0, 3.0, 5.0]", 
                     list.filterAsInt(
-                            theDouble.square().toInteger(),
+                            theDouble.square().asInteger(),
                             theInteger.thatIsOdd()));
         });
     }
@@ -2247,7 +2247,7 @@ public class DoubleFuncListTest {
             assertStrings(
                     "[1.0, 3.0, 5.0]", 
                     list.filterAsLong(
-                            theDouble.square().toLong(), 
+                            theDouble.square().asLong(), 
                             theLong.thatIsOdd()));
         });
     }
@@ -2258,8 +2258,8 @@ public class DoubleFuncListTest {
             assertStrings(
                     "[1.0, 3.0, 5.0]", 
                     list.filterAsDouble(
-                            theDouble.square().toDouble() , 
-                            theDouble.toInteger().thatIsOdd()));
+                            theDouble.square().asDouble(), 
+                            theDouble.asInteger().thatIsOdd()));
         });
     }
     
@@ -2520,7 +2520,7 @@ public class DoubleFuncListTest {
             assertStrings("[1.0, 2.0, 9.0]",
                     list
                     .mapOnly(
-                            theDouble.toInteger().thatIsOdd(),
+                            theDouble.asInteger().thatIsOdd(),
                             theDouble.square())
                     );
         });
@@ -2532,7 +2532,7 @@ public class DoubleFuncListTest {
             assertStrings("[1.0, 1.414, 9.0]",
                     list
                     .mapIf(
-                            theDouble.toInteger().thatIsOdd(),
+                            theDouble.asInteger().thatIsOdd(),
                             theDouble.square(),
                             theDouble.squareRoot().time(1000).round().dividedBy(1000)
                     ));
@@ -2545,9 +2545,9 @@ public class DoubleFuncListTest {
             assertStrings("[1.0, 1, 9.0]",
                     list
                     .mapToObjIf(
-                            theDouble.toInteger().thatIsOdd(),
+                            theDouble.asInteger().thatIsOdd(),
                             theDouble.square().asString(),
-                            theDouble.squareRoot().round().toInteger().asString()
+                            theDouble.squareRoot().round().asInteger().asString()
                     ));
         });
     }
@@ -2688,7 +2688,7 @@ public class DoubleFuncListTest {
                                 theDouble.plus(1),
                                 theDouble.time(3),
                                 theDouble.square(),
-                                theDouble.toInteger().factorial().toDouble(),
+                                theDouble.asInteger().factorial().asDouble(),
                                 (a, b, c, d, e) -> a + "-" + b + "-" + c + "-" + d + "-" + e)
                         );
         });
@@ -2705,7 +2705,7 @@ public class DoubleFuncListTest {
                             theDouble.plus(1),
                             theDouble.time(3),
                             theDouble.square(),
-                            theDouble.toInteger().factorial().toDouble(),
+                            theDouble.asInteger().factorial().asDouble(),
                             theDouble.negate(),
                             (a, b, c, d, e, f) -> a + "-" + b + "-" + c + "-" + d + "-" + e + "-" + f)
                         );
@@ -2779,7 +2779,7 @@ public class DoubleFuncListTest {
     }
     
     @Test
-    public void testMapGroupToDouble() {
+    public void testMapGroupasDouble() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
             assertStrings(
                     "[12.0, 23.0, 34.0, 45.0, 56.0, 67.0, 78.0]",
@@ -3029,7 +3029,7 @@ public class DoubleFuncListTest {
                             "<6>", theDouble.pow(4),
                             "<7>", theDouble.square(),
                             "<8>", theDouble.squareRoot(),
-                            "<9>", theDouble.toInteger().factorial().toDouble())
+                            "<9>", theDouble.asInteger().factorial().asDouble())
                     .map(map -> map.sorted())
                     );
         });
@@ -3060,8 +3060,8 @@ public class DoubleFuncListTest {
                             "<6>", theDouble.pow(4),
                             "<7>", theDouble.square(),
                             "<8>", theDouble.squareRoot(),
-                            "<9>", theDouble.toInteger().factorial().toDouble(),
-                            "<10>", theDouble.dividedBy(2).toInteger())
+                            "<9>", theDouble.asInteger().factorial().asDouble(),
+                            "<10>", theDouble.dividedBy(2).asInteger())
                     .map(map -> map.sorted())
                     );
         });
@@ -3146,7 +3146,7 @@ public class DoubleFuncListTest {
                             theDouble.plus(1),
                             theDouble.time(3),
                             theDouble.square(),
-                            theDouble.toInteger().factorial())
+                            theDouble.asInteger().factorial())
                     );
         });
     }
@@ -3168,7 +3168,7 @@ public class DoubleFuncListTest {
                             theDouble.plus(1),
                             theDouble.time(3),
                             theDouble.square(),
-                            theDouble.toInteger().factorial(),
+                            theDouble.asInteger().factorial(),
                             theDouble.negate())
                     );
         });
