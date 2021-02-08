@@ -31,6 +31,7 @@ import java.util.function.ToIntFunction;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.ToIntBiIntFunction;
+import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 
 
@@ -214,7 +215,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         };
     }
     
-    public default IntegerToBooleanAccessPrimitive thatIsAnyOF(int ... otherValues) {
+    public default IntegerToBooleanAccessPrimitive thatIsAnyOf(int ... otherValues) {
         return host -> {
             val value = applyAsInt(host);
             for (val anotherValue : otherValues) {
@@ -223,6 +224,12 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
                 }
             }
             return false;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive thatIsAnyOf(IntFuncList otherValues) {
+        return host -> {
+            val value = applyAsInt(host);
+            return otherValues.anyMatch(anotherValue -> value == anotherValue);
         };
     }
     
@@ -235,6 +242,12 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
                 }
             }
             return true;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive thatIsoneOf(IntFuncList otherValues) {
+        return host -> {
+            val value = applyAsInt(host);
+            return otherValues.noneMatch(anotherValue -> value == anotherValue);
         };
     }
     
@@ -307,14 +320,14 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     public default IntegerToBooleanAccessPrimitive thatEquals(IntegerAccess<Integer> anotherAccess) {
         return host -> {
             val value        = applyAsInt(host);
-            int anotherValue = IntegerToIntegerAccessPrimitive.apply(anotherAccess, host);
+            val anotherValue = IntegerToIntegerAccessPrimitive.apply(anotherAccess, host);
             return value == anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatEquals(ToIntBiIntFunction<Integer> anotherFunction) {
         return host -> {
             val value        = applyAsInt(host);
-            int anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, value);
+            val anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, value);
             return value == anotherValue;
         };
     }
@@ -348,14 +361,14 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     public default IntegerToBooleanAccessPrimitive thatNotEquals(IntegerAccess<Integer> anotherAccess) {
         return host -> {
             val value        = applyAsInt(host);
-            int anotherValue = IntegerToIntegerAccessPrimitive.apply(anotherAccess, host);
+            val anotherValue = IntegerToIntegerAccessPrimitive.apply(anotherAccess, host);
             return value != anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatNotEquals(ToIntBiIntFunction<Integer> anotherFunction) {
         return host -> {
             val value        = applyAsInt(host);
-            int anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, value);
+            val anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, value);
             return value != anotherValue;
         };
     }
@@ -378,31 +391,31 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     public default IntegerToIntegerAccessPrimitive compareTo(int anotherValue) {
         return host -> {
             val value   = applyAsInt(host);
-            int compare = Integer.compare(value, anotherValue);
+            val compare = Integer.compare(value, anotherValue);
             return compare;
         };
     }
     public default IntegerToIntegerAccessPrimitive compareTo(IntSupplier anotherSupplier) {
         return host -> {
             val value        = applyAsInt(host);
-            int anotherValue = anotherSupplier.getAsInt();
-            int compare      = Integer.compare(value, anotherValue);
+            val anotherValue = anotherSupplier.getAsInt();
+            val compare      = Integer.compare(value, anotherValue);
             return compare;
         };
     }
     public default IntegerToIntegerAccessPrimitive compareTo(IntegerAccess<Integer> anotherAccess) {
         return host -> {
             val value        = applyAsInt(host);
-            int anotherValue = IntegerToIntegerAccessPrimitive.apply(anotherAccess, host);
-            int compare      = Integer.compare(value, anotherValue);
+            val anotherValue = IntegerToIntegerAccessPrimitive.apply(anotherAccess, host);
+            val compare      = Integer.compare(value, anotherValue);
             return compare;
         };
     }
     public default IntegerToIntegerAccessPrimitive compareTo(ToIntBiIntFunction<Integer> anotherFunction) {
         return host -> {
             val value        = applyAsInt(host);
-            int anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, value);
-            int compare      = Integer.compare(value, anotherValue);
+            val anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, value);
+            val compare      = Integer.compare(value, anotherValue);
             return compare;
         };
     }
@@ -879,7 +892,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         return host -> {
             val value        = applyAsInt(host);
             val anotherValue = anotherAccess.getAsInt();
-            return 1.0 * value / anotherValue;
+            return 1.0*value / anotherValue;
         };
     }
     public default IntegerToDoubleAccessPrimitive dividedBy(IntegerAccess<Integer> anotherAccess) {
@@ -893,7 +906,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         return host -> {
             val value        = applyAsInt(host);
             val anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, value);
-            return 1.0 * value / anotherValue;
+            return 1.0*value / anotherValue;
         };
     }
     
