@@ -23,23 +23,46 @@
 // ============================================================================
 package functionalj.function;
 
+import java.util.function.BiFunction;
+import java.util.function.ToIntBiFunction;
+
 import functionalj.functions.ThrowFuncs;
 
+
 @FunctionalInterface
-public interface IntDoubleToDoubleFunction extends Func2<Integer, Double, Double> {
+public interface IntegerDoubleToIntegerFunction extends ToIntBiFunction<Integer, Double>, Func2<Integer, Double, Integer> {
     
-    public double applyIntAndDoubleUnsafe(int input1, double input2) throws Exception;
+    public int applyIntAndDoubleUnsafe(int intValue, double doubleValue) throws Exception;
     
-    public default double applyIntAndDouble(int input1, double input2) {
+    
+    public default int applyIntAndDouble(int intValue, double doubleValue) {
         try {
-            return applyIntAndDoubleUnsafe(input1, input2);
+            return applyIntAndDoubleUnsafe(intValue, doubleValue);
         } catch(Exception exception) {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
     
     @Override
-    public default Double applyUnsafe(Integer input1, Double input2) throws Exception {
-        return applyIntAndDoubleUnsafe(input1, input2);
+    public default int applyAsInt(Integer intValue, Double doubleValue) {
+        return applyIntAndDouble(intValue, doubleValue);
+    }
+    
+    @Override
+    public default Integer applyUnsafe(Integer intValue, Double doubleValue) throws Exception {
+        return applyIntAndDoubleUnsafe(intValue, doubleValue);
+    }
+    
+    public static double apply(ToIntBiFunction<Integer, Double> function, int intValue, double doubleValue) {
+        return (function instanceof DoubleDoubleToIntFunctionPrimitive)
+                ? ((DoubleDoubleToIntFunctionPrimitive)function).applyAsDoubleAndDouble(doubleValue, intValue)
+                : function.applyAsInt(intValue, doubleValue);
+    }
+    
+    
+    public static double apply(BiFunction<Integer, Double, Integer> function, int intValue, double doubleValue) {
+        return (function instanceof DoubleDoubleToIntFunctionPrimitive)
+                ? ((DoubleDoubleToIntFunctionPrimitive)function).applyAsDoubleAndDouble(doubleValue, intValue)
+                : function.apply(intValue, doubleValue);
     }
 }

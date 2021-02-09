@@ -42,7 +42,7 @@ import lombok.val;
  **/
 @FunctionalInterface
 public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, DoubleAccessPrimitive<Double>, DoubleFunction<Double> {
-
+    
     public static double apply(DoubleAccess<Double> access, double value) {
         val resValue 
             = (access instanceof DoubleToDoubleAccessPrimitive)

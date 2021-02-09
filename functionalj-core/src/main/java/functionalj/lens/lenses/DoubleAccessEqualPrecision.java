@@ -13,15 +13,15 @@ import lombok.val;
 public class DoubleAccessEqualPrecision<HOST> implements BooleanAccessPrimitive<HOST> {
     
     final DoubleAccessEqual<HOST> equals;
-    final DoubleUnaryOperator     precisionFunction;
+    final DoubleUnaryOperator     precisionFromErrorFunction;
     
     public DoubleAccessEqualPrecision(
             @NonNull DoubleAccessEqual<HOST> equals,
-            @NonNull DoubleUnaryOperator     precisionFunction) {
+            @NonNull DoubleUnaryOperator        precisionFromErrorFunction) {
         this.equals
                 = requireNonNull(equals);
-        this.precisionFunction
-                = nullable(precisionFunction)
+        this.precisionFromErrorFunction
+                = nullable(precisionFromErrorFunction)
                 .orElse((error) -> equalPrecisionToUse.get().getAsDouble());
     }
     
@@ -30,7 +30,7 @@ public class DoubleAccessEqualPrecision<HOST> implements BooleanAccessPrimitive<
         val value        = equals.access.applyAsDouble(host);
         val anotherValue = equals.anotherValueFunction.applyAsDouble(host, value);
         val error        = Math.abs(value - anotherValue);
-        val precision    = precisionFunction.applyAsDouble(error);
+        val precision    = precisionFromErrorFunction.applyAsDouble(error);
         return equals.isNegate != (error <= precision);
     }
     

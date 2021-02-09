@@ -23,30 +23,29 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-
 import static functionalj.lens.lenses.DoubleAccess.equalPrecisionToUse;
 
-import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 
+import functionalj.function.DoubleIntegerToDoubleFunction;
 import lombok.NonNull;
 import lombok.val;
 
-public class DoubleAccessEqualPrimitive extends DoubleAccessEqual<Double> implements DoubleToBooleanAccessPrimitive {
+public class IntegerToDoubleAccessEqualPrimitive extends DoubleAccessEqual<Integer> implements IntegerToBooleanAccessPrimitive {
     
-    final DoubleBinaryOperator anotherValueFunction;
+    final DoubleIntegerToDoubleFunction anotherValueFunction;
     
-    DoubleAccessEqualPrimitive(
+    IntegerToDoubleAccessEqualPrimitive(
             boolean isNegate,
-            @NonNull DoubleToDoubleAccessPrimitive access,
-            @NonNull DoubleBinaryOperator          anotherValueFunction) {
+            @NonNull IntegerToDoubleAccessPrimitive access,
+            @NonNull DoubleIntegerToDoubleFunction  anotherValueFunction) {
         super(isNegate, access, (host, value) -> anotherValueFunction.applyAsDouble(host, value));
         this.anotherValueFunction = anotherValueFunction;
     }
     
     @Override
-    public boolean test(double host) {
+    public boolean test(int host) {
         val value        = access.applyAsDouble(host);
         val anotherValue = anotherValueFunction.applyAsDouble(host, value);
         val error        = Math.abs(value - anotherValue);
@@ -55,24 +54,24 @@ public class DoubleAccessEqualPrimitive extends DoubleAccessEqual<Double> implem
     }
     
     @Override
-    public boolean applyDoubleToBoolean(double host) {
+    public boolean applyIntToBoolean(int host) {
         return test(host);
     }
     
-    public DoubleAccessEqualPrecisionPrimitive withIn(double precision) {
-        return new DoubleAccessEqualPrecisionPrimitive(this, error -> precision);
+    public IntegerToDoubleAccessEqualPrecisionPrimitive withIn(double precision) {
+        return new IntegerToDoubleAccessEqualPrecisionPrimitive(this, error -> precision);
     }
     
-    public DoubleAccessEqualPrecisionPrimitive withPrecision(double precision) {
-        return new DoubleAccessEqualPrecisionPrimitive(this, error -> precision);
+    public IntegerToDoubleAccessEqualPrecisionPrimitive withPrecision(double precision) {
+        return new IntegerToDoubleAccessEqualPrecisionPrimitive(this, error -> precision);
     }
     
-    public DoubleAccessEqualPrecisionPrimitive withPrecision(@NonNull DoubleSupplier precisionSupplier) {
-        return new DoubleAccessEqualPrecisionPrimitive(this, error -> precisionSupplier.getAsDouble());
+    public IntegerToDoubleAccessEqualPrecisionPrimitive withPrecision(@NonNull DoubleSupplier precisionSupplier) {
+        return new IntegerToDoubleAccessEqualPrecisionPrimitive(this, error -> precisionSupplier.getAsDouble());
     }
     
-    public DoubleAccessEqualPrecisionPrimitive withPrecision(@NonNull DoubleUnaryOperator precisionFunction) {
-        return new DoubleAccessEqualPrecisionPrimitive(this, precisionFunction);
+    public IntegerToDoubleAccessEqualPrecisionPrimitive withPrecision(@NonNull DoubleUnaryOperator precisionFunction) {
+        return new IntegerToDoubleAccessEqualPrecisionPrimitive(this, precisionFunction);
     }
     
 }

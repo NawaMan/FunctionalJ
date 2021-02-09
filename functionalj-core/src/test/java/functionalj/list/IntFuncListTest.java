@@ -1184,7 +1184,7 @@ public class IntFuncListTest {
             assertStrings(
                     "{1:[1, 2], 2:[3, 4], 3:[5]}",
                     list
-                    .groupingBy(theInteger.dividedBy(2).toInteger())
+                    .groupingBy(theInteger.dividedBy(2).asInteger())
                     .sortedByKey(theInteger));
         });
     }
@@ -1195,7 +1195,7 @@ public class IntFuncListTest {
             assertStrings(
                     "{1:[1.0, 2.0], 2:[3.0, 4.0], 3:[5.0]}",
                     list
-                    .groupingBy(theInteger.dividedBy(2).toInteger(), l -> l.mapToDouble())
+                    .groupingBy(theInteger.dividedBy(2).asInteger(), l -> l.mapToDouble())
                     .sortedByKey(theInteger));
         });
     }
@@ -1207,7 +1207,7 @@ public class IntFuncListTest {
 //                    "{1:[1, 2], 2:[3, 4], 3:[5]}",  << Before sum
                     "{1:3, 2:7, 3:5}",
                     list
-                    .groupingBy(theInteger.dividedBy(2).toInteger(), () -> new Sum())
+                    .groupingBy(theInteger.dividedBy(2).asInteger(), () -> new Sum())
                     .sortedByKey(theInteger));
         });
     }
@@ -1221,7 +1221,7 @@ public class IntFuncListTest {
 //                  "{1:[0, 1], 2:[1, 2], 3:[2]}",  << Half
                     "{1:1, 2:3, 3:2}",
                     list
-                    .groupingBy(theInteger.dividedBy(2).toInteger(), sumHalf)
+                    .groupingBy(theInteger.dividedBy(2).asInteger(), sumHalf)
                     .sortedByKey(theInteger));
         });
     }
@@ -2539,7 +2539,7 @@ public class IntFuncListTest {
                     .mapIf(
                             theInteger.thatIsOdd(),
                             theInteger.square(),
-                            theInteger.squareRoot().round().toInteger()
+                            theInteger.squareRoot().round().asInteger()
                     ));
         });
     }
@@ -2552,7 +2552,7 @@ public class IntFuncListTest {
                     .mapToObjIf(
                             theInteger.thatIsOdd(),
                             theInteger.square().asString(),
-                            theInteger.squareRoot().round().toInteger().asString()
+                            theInteger.squareRoot().round().asInteger().asString()
                     ));
         });
     }
@@ -2950,7 +2950,7 @@ public class IntFuncListTest {
                             "<3>", theInteger.plus(1),
                             "<4>", theInteger.minus(2),
                             "<5>", theInteger.time(3),
-                            "<6>", theInteger.pow(4).toInteger())
+                            "<6>", theInteger.pow(4).asInteger())
                     .map(map -> map.sorted())
                     );
         });
@@ -2976,7 +2976,7 @@ public class IntFuncListTest {
                             "<3>", theInteger.plus(1),
                             "<4>", theInteger.minus(2),
                             "<5>", theInteger.time(3),
-                            "<6>", theInteger.pow(4).toInteger(),
+                            "<6>", theInteger.pow(4).asInteger(),
                             "<7>", theInteger.square())
                     .map(map -> map.sorted())
                     );
@@ -2987,15 +2987,13 @@ public class IntFuncListTest {
     public void testMapToMap_8() {
         run(IntFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
             assertStrings(
-                    "["
-                    + "{<1>:1, <2>:-1, <3>:2, <4>:-1, <5>:3, <6>:1, <7>:1, <8>:1}, "
-                    + "{<1>:3, <2>:-3, <3>:4, <4>:1, <5>:9, <6>:81, <7>:9, <8>:2}, "
-                    + "{<1>:5, <2>:-5, <3>:6, <4>:3, <5>:15, <6>:625, <7>:25, <8>:2}, "
-                    + "{<1>:7, <2>:-7, <3>:8, <4>:5, <5>:21, <6>:2401, <7>:49, <8>:3}, "
-                    + "{<1>:11, <2>:-11, <3>:12, <4>:9, <5>:33, <6>:14641, <7>:121, <8>:3}, "
-                    + "{<1>:13, <2>:-13, <3>:14, <4>:11, <5>:39, <6>:28561, <7>:169, <8>:4}, "
-                    + "{<1>:17, <2>:-17, <3>:18, <4>:15, <5>:51, <6>:83521, <7>:289, <8>:4}"
-                    + "]",
+                      "{<1>:1, <2>:-1, <3>:2, <4>:-1, <5>:3, <6>:1, <7>:1, <8>:1},\n"
+                    + "{<1>:3, <2>:-3, <3>:4, <4>:1, <5>:9, <6>:81, <7>:9, <8>:2},\n"
+                    + "{<1>:5, <2>:-5, <3>:6, <4>:3, <5>:15, <6>:625, <7>:25, <8>:2},\n"
+                    + "{<1>:7, <2>:-7, <3>:8, <4>:5, <5>:21, <6>:2401, <7>:49, <8>:3},\n"
+                    + "{<1>:11, <2>:-11, <3>:12, <4>:9, <5>:33, <6>:14641, <7>:121, <8>:3},\n"
+                    + "{<1>:13, <2>:-13, <3>:14, <4>:11, <5>:39, <6>:28561, <7>:169, <8>:4},\n"
+                    + "{<1>:17, <2>:-17, <3>:18, <4>:15, <5>:51, <6>:83521, <7>:289, <8>:4}",
                     list
                     .mapToMap(
                             "<1>", theInteger,
@@ -3003,10 +3001,11 @@ public class IntFuncListTest {
                             "<3>", theInteger.plus(1),
                             "<4>", theInteger.minus(2),
                             "<5>", theInteger.time(3),
-                            "<6>", theInteger.pow(4).toInteger(),
+                            "<6>", theInteger.pow(4).asInteger(),
                             "<7>", theInteger.square(),
-                            "<8>", theInteger.squareRoot().toInteger())
+                            "<8>", theInteger.squareRoot().asInteger())
                     .map(map -> map.sorted())
+                    .join(",\n")
                     );
         });
     }
@@ -3031,9 +3030,9 @@ public class IntFuncListTest {
                             "<3>", theInteger.plus(1),
                             "<4>", theInteger.minus(2),
                             "<5>", theInteger.time(3),
-                            "<6>", theInteger.pow(4).toInteger(),
+                            "<6>", theInteger.pow(4).asInteger(),
                             "<7>", theInteger.square(),
-                            "<8>", theInteger.squareRoot().toInteger(),
+                            "<8>", theInteger.squareRoot().asInteger(),
                             "<9>", theInteger.factorial())
                     .map(map -> map.sorted())
                     );
@@ -3062,11 +3061,11 @@ public class IntFuncListTest {
                             "<3>", theInteger.plus(1),
                             "<4>", theInteger.minus(2),
                             "<5>", theInteger.time(3),
-                            "<6>", theInteger.pow(4).toInteger(),
+                            "<6>", theInteger.pow(4).asInteger(),
                             "<7>", theInteger.square(),
-                            "<8>", theInteger.squareRoot().toInteger(),
+                            "<8>", theInteger.squareRoot().asInteger(),
                             "<9>", theInteger.factorial(),
-                            "<10>", theInteger.dividedBy(2).toInteger())
+                            "<10>", theInteger.dividedBy(2).asInteger())
                     .map(map -> map.sorted())
                     );
         });

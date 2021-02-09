@@ -101,10 +101,10 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         return host -> applyAsInt(host);
     }
     
-    public default IntegerToStringPrimitive asString() {
+    public default IntegerToStringAccessPrimitive asString() {
         return host -> "" + applyAsInt(host);
     }
-    public default IntegerToStringPrimitive asString(String template) {
+    public default IntegerToStringAccessPrimitive asString(String template) {
         return host -> {
             val value = applyAsInt(host);
             return String.format(template, value);

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 //
@@ -21,25 +21,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.lens.lenses;
 
-import functionalj.functions.ThrowFuncs;
+import java.util.function.IntFunction;
+
 
 @FunctionalInterface
-public interface IntDoubleToIntegerFunction extends Func2<Integer, Double, Integer> {
+public interface IntegerToStringAccessPrimitive extends StringAccess<Integer>, IntFunction<String> {
     
-    public int applyIntAndDoubleUnsafe(int input1, double input2) throws Exception;
+    public String applyIntToString(int host);
     
-    public default int applyIntAndDouble(int input1, double input2) {
-        try {
-            return applyIntAndDoubleUnsafe(input1, input2);
-        } catch(Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(exception);
-        }
+    
+    @Override
+    public default String applyUnsafe(Integer input) throws Exception {
+        return applyIntToString(input);
     }
     
     @Override
-    public default Integer applyUnsafe(Integer input1, Double input2) throws Exception {
-        return applyIntAndDoubleUnsafe(input1, input2);
+    public default String apply(int value) {
+        return applyIntToString(value);
     }
+    
 }

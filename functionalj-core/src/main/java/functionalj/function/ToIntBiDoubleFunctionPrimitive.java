@@ -26,7 +26,7 @@ package functionalj.function;
 import lombok.val;
 
 @FunctionalInterface
-public interface ToIntBiDoubleFunctionPrimitive extends ToIntBiDoubleFunction<Double> {
+public interface ToIntBiDoubleFunctionPrimitive extends ToIntegerBiDoubleFunction<Double> {
     
     public int applyAsDoubleAndDouble(double data, double longValue);
     
@@ -35,7 +35,7 @@ public interface ToIntBiDoubleFunctionPrimitive extends ToIntBiDoubleFunction<Do
     }
     
     
-    public static int apply(ToIntBiDoubleFunction<Double> function, double value, double anotherValue) {
+    public static int apply(ToIntegerBiDoubleFunction<Double> function, double value, double anotherValue) {
         val resValue 
             = (function instanceof ToIntBiDoubleFunctionPrimitive)
             ? ((ToIntBiDoubleFunctionPrimitive)function).applyAsDoubleAndDouble(value, anotherValue)

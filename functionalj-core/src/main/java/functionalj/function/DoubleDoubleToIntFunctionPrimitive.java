@@ -24,7 +24,7 @@
 package functionalj.function;
 
 @FunctionalInterface
-public interface DoubleDoubleToIntFunctionPrimitive extends ToIntBiDoubleFunction<Double> {
+public interface DoubleDoubleToIntFunctionPrimitive extends ToIntegerBiDoubleFunction<Double> {
     
     public int applyAsDoubleAndDouble(double data, double doubleValue);
     

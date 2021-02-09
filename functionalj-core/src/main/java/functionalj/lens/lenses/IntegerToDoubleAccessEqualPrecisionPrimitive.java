@@ -5,21 +5,21 @@ import java.util.function.DoubleUnaryOperator;
 import lombok.NonNull;
 import lombok.val;
 
-public class DoubleAccessEqualPrecisionPrimitive extends DoubleAccessEqualPrecision<Double> implements DoubleToBooleanAccessPrimitive {
+public class IntegerToDoubleAccessEqualPrecisionPrimitive extends DoubleAccessEqualPrecision<Integer> implements IntegerToBooleanAccessPrimitive {
     
-    public DoubleAccessEqualPrecisionPrimitive(
-            @NonNull DoubleAccessEqualPrimitive equals,
-            @NonNull DoubleUnaryOperator        precisionFromErrorFunction) {
+    public IntegerToDoubleAccessEqualPrecisionPrimitive(
+            @NonNull IntegerToDoubleAccessEqualPrimitive equals,
+            @NonNull DoubleUnaryOperator                 precisionFromErrorFunction) {
         super(equals, precisionFromErrorFunction);
     }
     
     @Override
-    public boolean applyDoubleToBoolean(double host) {
+    public boolean applyIntToBoolean(int host) {
         return test(host);
     }
     
     @Override
-    public boolean test(double host) {
+    public boolean test(int host) {
         val value        = equals.access.applyAsDouble(host);
         val anotherValue = equals.anotherValueFunction.applyAsDouble(host, value);
         val error        = Math.abs(value - anotherValue);

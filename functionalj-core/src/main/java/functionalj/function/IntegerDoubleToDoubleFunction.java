@@ -28,31 +28,35 @@ import java.util.function.ToDoubleBiFunction;
 
 
 @FunctionalInterface
-public interface DoubleIntegerToDoubleFunction extends ToDoubleBiFunction<Integer, Double>, BiFunction<Integer, Double, Double> {
+public interface IntegerDoubleToDoubleFunction extends ToDoubleBiFunction<Integer, Double>, Func2<Integer, Double, Double> {
     
-    public double applyAsIntegerAndDouble(int intValue, double doubleValue);
+    public double applyAsDoubleAndInteger(int intValue, double doubleValue);
     
     @Override
     public default double applyAsDouble(Integer intValue, Double doubleValue) {
-        return applyAsIntegerAndDouble(intValue, doubleValue);
+        return applyAsDoubleAndInteger(intValue, doubleValue);
     }
     
     @Override
     public default Double apply(Integer intValue, Double doubleValue) {
-        return applyAsIntegerAndDouble(intValue, doubleValue);
+        return applyAsDoubleAndInteger(intValue, doubleValue);
+    }
+    
+    @Override
+    public default Double applyUnsafe(Integer intValue, Double doubleValue) throws Exception {
+        return applyAsDoubleAndInteger(intValue, doubleValue);
+    }
+    
+    public static double apply(ToDoubleBiFunction<Double, Integer> function, Integer intValue, double doubleValue) {
+        return (function instanceof DoubleDoubleToIntFunctionPrimitive)
+                ? ((DoubleDoubleToIntFunctionPrimitive)function).applyAsDoubleAndDouble(doubleValue, intValue)
+                : function.applyAsDouble(doubleValue, intValue);
     }
     
     
-    public static double apply(ToDoubleBiFunction<Integer, Double> function, Integer intValue, double doubleValue) {
-        return (function instanceof DoubleIntegerToDoubleFunction)
-                ? ((DoubleIntegerToDoubleFunction)function).applyAsIntegerAndDouble(intValue, doubleValue)
-                : function.applyAsDouble(intValue, doubleValue);
-    }
-    
-    
-    public static double apply(BiFunction<Integer, Double, Double> function, Integer intValue, double doubleValue) {
-        return (function instanceof DoubleIntegerToDoubleFunction)
-                ? ((DoubleIntegerToDoubleFunction)function).applyAsIntegerAndDouble(intValue, doubleValue)
-                : function.apply(intValue, doubleValue);
+    public static double apply(BiFunction<Double, Integer, Integer> function, double doubleValue, Integer intValue) {
+        return (function instanceof DoubleDoubleToIntFunctionPrimitive)
+                ? ((DoubleDoubleToIntFunctionPrimitive)function).applyAsDoubleAndDouble(doubleValue, intValue)
+                : function.apply(doubleValue, intValue);
     }
 }
