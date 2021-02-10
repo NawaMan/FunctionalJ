@@ -23,23 +23,30 @@
 // ============================================================================
 package functionalj.function;
 
-import lombok.val;
+import java.util.function.BiFunction;
+import java.util.function.ToIntBiFunction;
+
 
 @FunctionalInterface
-public interface DoubleBiFunctionPrimitive extends ToDoubleBiDoubleFunction<Double> {
+public interface ObjectObjectToIntegerFunction<INPUT1, INPUT2> extends ToIntBiFunction<INPUT1, INPUT2>, Func2<INPUT1, INPUT2, Integer> {
     
-    public double applyAsDoubleAndDouble(double data, double doubleValue);
+    public static <I1, I2> ObjectObjectToIntegerFunction<I1, I2> of(ToIntBiFunction<I1, I2> function) {
+        return (function instanceof ObjectObjectToIntegerFunction)
+                ? (ObjectObjectToIntegerFunction<I1, I2>)function
+                : ((i1, i2) -> function.applyAsInt(i1, i2));
+    }
     
-    public default double applyAsDouble(Double data, double doubleValue) {
-        return applyAsDoubleAndDouble(data, doubleValue);
+    public static <I1, I2> ObjectObjectToIntegerFunction<I1, I2> of(BiFunction<I1, I2, Integer> function) {
+        return (function instanceof ObjectObjectToIntegerFunction)
+                ? (ObjectObjectToIntegerFunction<I1, I2>)function
+                : ((i1, i2) -> function.apply(i1, i2));
     }
     
     
-    public static double apply(ToDoubleBiDoubleFunction<Double> function, double value, double anotherValue) {
-        val resValue 
-            = (function instanceof DoubleBiFunctionPrimitive)
-            ? ((DoubleBiFunctionPrimitive)function).applyAsDoubleAndDouble(value, anotherValue)
-            : function.applyAsDouble(value, anotherValue);
-        return resValue;
+    public int applyAsInt(INPUT1 input1, INPUT2 input2);
+    
+    public default Integer applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception {
+        return applyAsInt(input1, input2);
     }
+    
 }

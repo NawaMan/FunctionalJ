@@ -31,7 +31,7 @@ public class TheDouble implements DoubleToDoubleAccessPrimitive {
     
     
     @Override
-    public double applyDoubleToDouble(double host) {
+    public double applyToDouble(double host) {
         return host;
     }
     

@@ -23,40 +23,30 @@
 // ============================================================================
 package functionalj.function;
 
-import java.util.function.BiFunction;
-import java.util.function.ToDoubleBiFunction;
+import java.util.function.ToIntBiFunction;
 
 
 @FunctionalInterface
-public interface IntegerDoubleToDoubleFunction extends ToDoubleBiFunction<Integer, Double>, Func2<Integer, Double, Double> {
+public interface ObjectDoubleToIntegerFunctionPrimitive<DATA> 
+        extends
+            Func2<DATA, Double, Integer>,
+            ToIntBiFunction<DATA, Double> {
     
-    public double applyAsDoubleAndInteger(int intValue, double doubleValue);
     
-    @Override
-    public default double applyAsDouble(Integer intValue, Double doubleValue) {
-        return applyAsDoubleAndInteger(intValue, doubleValue);
-    }
-    
-    @Override
-    public default Double apply(Integer intValue, Double doubleValue) {
-        return applyAsDoubleAndInteger(intValue, doubleValue);
-    }
+    public int applyObjectDouble(DATA data, double doubleValue);
     
     @Override
-    public default Double applyUnsafe(Integer intValue, Double doubleValue) throws Exception {
-        return applyAsDoubleAndInteger(intValue, doubleValue);
+    public default Integer applyUnsafe(DATA data, Double doubleValue) throws Exception {
+        return applyObjectDouble(data, doubleValue);
     }
     
-    public static double apply(ToDoubleBiFunction<Double, Integer> function, Integer intValue, double doubleValue) {
-        return (function instanceof DoubleDoubleToIntFunctionPrimitive)
-                ? ((DoubleDoubleToIntFunctionPrimitive)function).applyAsDoubleAndDouble(doubleValue, intValue)
-                : function.applyAsDouble(doubleValue, intValue);
+    @Override
+    public default Integer apply(DATA data, Double doubleValue) {
+        return applyObjectDouble(data, doubleValue);
     }
     
-    
-    public static double apply(BiFunction<Double, Integer, Integer> function, double doubleValue, Integer intValue) {
-        return (function instanceof DoubleDoubleToIntFunctionPrimitive)
-                ? ((DoubleDoubleToIntFunctionPrimitive)function).applyAsDoubleAndDouble(doubleValue, intValue)
-                : function.apply(doubleValue, intValue);
+    @Override
+    public default int applyAsInt(DATA data, Double doubleValue) {
+        return applyObjectDouble(data, doubleValue);
     }
 }

@@ -32,7 +32,7 @@ import java.util.function.DoublePredicate;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleBiPredicatePrimitive;
+import functionalj.function.DoubleDoublePredicatePrimitive;
 import functionalj.stream.markers.Sequential;
 import lombok.val;
 
@@ -79,7 +79,7 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Skip any value while the condition is true. */
     @Sequential
-    public default DoubleStreamPlus skipWhile(DoubleBiPredicatePrimitive condition) {
+    public default DoubleStreamPlus skipWhile(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
@@ -139,7 +139,7 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Skip any value until the condition is true. */
     @Sequential
-    public default DoubleStreamPlus skipUntil(DoubleBiPredicatePrimitive condition) {
+    public default DoubleStreamPlus skipUntil(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
@@ -210,7 +210,7 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default DoubleStreamPlus takeWhile(DoubleBiPredicatePrimitive condition) {
+    public default DoubleStreamPlus takeWhile(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
@@ -276,7 +276,7 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default DoubleStreamPlus takeUntil(DoubleBiPredicatePrimitive condition) {
+    public default DoubleStreamPlus takeUntil(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
@@ -342,7 +342,7 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default DoubleStreamPlus dropAfter(DoubleBiPredicatePrimitive condition) {
+    public default DoubleStreamPlus dropAfter(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();

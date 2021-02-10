@@ -48,7 +48,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import functionalj.function.DoubleDoubleBiFunction;
+import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func;
 import functionalj.function.IntIntBiFunction;
@@ -451,7 +451,7 @@ public interface FuncList<DATA>
     public static <T1, T2, TARGET> FuncList<TARGET> zipOf(
             AsDoubleFuncList               list1,
             AsDoubleFuncList               list2,
-            DoubleDoubleBiFunction<TARGET> merger) {
+            DoubleDoubleFunction<TARGET> merger) {
         return FuncList.from(() -> {
             return StreamPlus.zipOf(
                     list1.doubleStream(),

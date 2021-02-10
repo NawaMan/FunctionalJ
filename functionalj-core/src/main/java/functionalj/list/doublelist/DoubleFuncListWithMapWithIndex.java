@@ -32,7 +32,7 @@ import java.util.function.DoubleUnaryOperator;
 
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntDoubleBiFunction;
-import functionalj.function.IntegerDoubleToDoubleFunction;
+import functionalj.function.IntegerDoubleToDoubleFunctionPrimitive;
 import functionalj.function.IntegerDoubleToIntegerFunction;
 import functionalj.list.FuncList;
 import functionalj.list.intlist.IntFuncList;
@@ -48,7 +48,7 @@ public interface DoubleFuncListWithMapWithIndex extends AsDoubleFuncList {
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
-    public default DoubleFuncList mapWithIndex(IntegerDoubleToDoubleFunction combinator) {
+    public default DoubleFuncList mapWithIndex(IntegerDoubleToDoubleFunctionPrimitive combinator) {
         return deriveToDouble(this, stream -> stream.mapWithIndex(combinator));
     }
     

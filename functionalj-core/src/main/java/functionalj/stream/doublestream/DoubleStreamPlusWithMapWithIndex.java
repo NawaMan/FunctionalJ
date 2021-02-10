@@ -29,7 +29,7 @@ import java.util.function.DoubleUnaryOperator;
 
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntDoubleBiFunction;
-import functionalj.function.IntegerDoubleToDoubleFunction;
+import functionalj.function.IntegerDoubleToDoubleFunctionPrimitive;
 import functionalj.function.IntegerDoubleToIntegerFunction;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -57,13 +57,13 @@ public interface DoubleStreamPlusWithMapWithIndex {
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
-    public default DoubleStreamPlus mapWithIndex(IntegerDoubleToDoubleFunction combinator) {
+    public default DoubleStreamPlus mapWithIndex(IntegerDoubleToDoubleFunctionPrimitive combinator) {
         val index = new AtomicInteger();
         val streamPlus = doubleStreamPlus();
         return streamPlus
                 .map(each -> {
                     val currentIndex = index.getAndIncrement();
-                    val target       = combinator.applyAsDoubleAndInteger(currentIndex, each);
+                    val target       = combinator.applyIntegerDouble(currentIndex, each);
                     return target;
                 });
     }

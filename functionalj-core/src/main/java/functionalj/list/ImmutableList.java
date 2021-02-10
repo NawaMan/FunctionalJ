@@ -38,7 +38,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import functionalj.function.BiObjectToIntFunction;
+import functionalj.function.ObjectObjectToIntegerFunction;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.markers.Sequential;
@@ -52,7 +52,7 @@ import lombok.val;
 
 public final class ImmutableList<DATA> implements FuncList<DATA> {
     
-    private static final BiObjectToIntFunction<Object, Object> zeroForEquals = (Object i1, Object i2) -> Objects.equals(i1, i2) ? 0 : 1;
+    private static final ObjectObjectToIntegerFunction<Object, Object> zeroForEquals = (Object i1, Object i2) -> Objects.equals(i1, i2) ? 0 : 1;
     private static final Predicate<Integer>                    toZero        = (Integer i)            -> i  == 0;
     
     private final static ImmutableList<?> EMPTY = new ImmutableList<>(Collections.emptyList());

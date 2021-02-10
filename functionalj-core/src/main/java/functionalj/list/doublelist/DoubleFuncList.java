@@ -45,7 +45,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import functionalj.function.DoubleBiFunctionPrimitive;
+import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
 import functionalj.function.Func;
 import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
@@ -380,7 +380,7 @@ public interface DoubleFuncList
     public static DoubleFuncList iterate(
             double                    seed1,
             double                    seed2,
-            DoubleBiFunctionPrimitive compounder) {
+            DoubleDoubleToDoubleFunctionPrimitive compounder) {
         return DoubleFuncList.from(()->DoubleStreamPlus.iterate(seed1, seed2, compounder));
     }
     
@@ -402,7 +402,7 @@ public interface DoubleFuncList
     public static DoubleFuncList compound(
             double                    seed1,
             double                    seed2,
-            DoubleBiFunctionPrimitive compounder) {
+            DoubleDoubleToDoubleFunctionPrimitive compounder) {
         return iterate(seed1, seed2, compounder);
     }
     
@@ -442,7 +442,7 @@ public interface DoubleFuncList
     public static DoubleFuncList zipOf(
             DoubleFuncList            list1,
             DoubleFuncList            list2,
-            DoubleBiFunctionPrimitive merger) {
+            DoubleDoubleToDoubleFunctionPrimitive merger) {
         return DoubleFuncList.from(() -> {
             return DoubleStreamPlus.zipOf(
                     list1.doubleStream(),
@@ -458,7 +458,7 @@ public interface DoubleFuncList
     public static DoubleFuncList zipOf(
             DoubleFuncList            list1, double defaultValue1,
             DoubleFuncList            list2, double defaultValue2,
-            DoubleBiFunctionPrimitive merger) {
+            DoubleDoubleToDoubleFunctionPrimitive merger) {
         return DoubleFuncList.from(() -> {
             return DoubleStreamPlus.zipOf(
                     list1.doubleStream(), defaultValue1,

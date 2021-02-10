@@ -29,7 +29,7 @@ import java.util.OptionalDouble;
 import java.util.function.DoublePredicate;
 import java.util.stream.DoubleStream;
 
-import functionalj.function.DoubleBiFunctionPrimitive;
+import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -42,7 +42,7 @@ import lombok.val;
 
 public class ImmutableDoubleFuncList implements DoubleFuncList {
     
-    private static final DoubleBiFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
+    private static final DoubleDoubleToDoubleFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
     private static final DoublePredicate           toZero        = (double i)             -> i  == 0;
     
     private static final double[] EMPTY_DOUBLE_ARRAY = new double[0];

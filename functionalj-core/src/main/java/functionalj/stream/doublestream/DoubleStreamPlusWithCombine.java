@@ -31,9 +31,9 @@ import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleBiFunctionPrimitive;
-import functionalj.function.DoubleBiPredicatePrimitive;
-import functionalj.function.DoubleDoubleBiFunction;
+import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
+import functionalj.function.DoubleDoublePredicatePrimitive;
+import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.IteratorPlus;
@@ -178,7 +178,7 @@ public interface DoubleStreamPlusWithCombine {
     
     public default DoubleStreamPlus zipWith(
             DoubleStream              anotherStream,
-            DoubleBiFunctionPrimitive merger) {
+            DoubleDoubleToDoubleFunctionPrimitive merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleWith(merger, iteratorA, iteratorB);
@@ -187,7 +187,7 @@ public interface DoubleStreamPlusWithCombine {
     public default DoubleStreamPlus zipWith(
             DoubleStream              anotherStream,
             double                    defaultValue,
-            DoubleBiFunctionPrimitive merger) {
+            DoubleDoubleToDoubleFunctionPrimitive merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleWith(merger, iteratorA, iteratorB, defaultValue);
@@ -197,7 +197,7 @@ public interface DoubleStreamPlusWithCombine {
             DoubleStream              anotherStream,
             double                    defaultValue1,
             double                    defaultValue2,
-            DoubleBiFunctionPrimitive merger) {
+            DoubleDoubleToDoubleFunctionPrimitive merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
@@ -205,7 +205,7 @@ public interface DoubleStreamPlusWithCombine {
     
     public default <T> StreamPlus<T> zipToObjWith(
             DoubleStream              anotherStream,
-            DoubleDoubleBiFunction<T> merger) {
+            DoubleDoubleFunction<T> merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleObjWith(merger, iteratorA, iteratorB);
@@ -214,7 +214,7 @@ public interface DoubleStreamPlusWithCombine {
     public default <T> StreamPlus<T> zipToObjWith(
             DoubleStream              anotherStream,
             double                    defaultValue,
-            DoubleDoubleBiFunction<T> merger) {
+            DoubleDoubleFunction<T> merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleObjWith(merger, iteratorA, iteratorB, defaultValue);
@@ -224,7 +224,7 @@ public interface DoubleStreamPlusWithCombine {
             DoubleStream              anotherStream,
             double                    defaultValue1,
             double                    defaultValue2,
-            DoubleDoubleBiFunction<T> merger) {
+            DoubleDoubleFunction<T> merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleObjWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
@@ -242,7 +242,7 @@ public interface DoubleStreamPlusWithCombine {
      */
     public default DoubleStreamPlus choose(
                                         DoubleStream               anotherStream, 
-                                        DoubleBiPredicatePrimitive selectThisNotAnother) {
+                                        DoubleDoublePredicatePrimitive selectThisNotAnother) {
         return choose(anotherStream, AllowUnpaired, selectThisNotAnother);
     }
     
@@ -261,7 +261,7 @@ public interface DoubleStreamPlusWithCombine {
     public default DoubleStreamPlus choose(
                                         DoubleStream               anotherStream, 
                                         ZipWithOption              option, 
-                                        DoubleBiPredicatePrimitive selectThisNotAnother) {
+                                        DoubleDoublePredicatePrimitive selectThisNotAnother) {
         val iteratorA = this.doubleStreamPlus().iterator();
         val iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         val iterator = new PrimitiveIterator.OfDouble() {

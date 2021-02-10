@@ -34,7 +34,7 @@ import java.util.function.DoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleBiFunctionPrimitive;
+import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
@@ -69,7 +69,7 @@ public interface DoubleStreamPlusWithModify {
      *     ...
      */
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
-    public default DoubleStreamPlus accumulate(DoubleBiFunctionPrimitive accumulator) {
+    public default DoubleStreamPlus accumulate(DoubleDoubleToDoubleFunctionPrimitive accumulator) {
         val splitr = doubleStreamPlus().spliterator();
         val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
             double  acc  = 0;
@@ -80,7 +80,7 @@ public interface DoubleStreamPlusWithModify {
                     if (!used) {
                         acc = elem;
                     } else {
-                        acc = accumulator.applyAsDoubleAndDouble(acc, elem);
+                        acc = accumulator.applyAsDouble(acc, elem);
                     }
                     
                     used = true;

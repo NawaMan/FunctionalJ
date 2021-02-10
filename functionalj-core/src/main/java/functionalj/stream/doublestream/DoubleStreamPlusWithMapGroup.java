@@ -32,7 +32,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleDoubleBiFunction;
+import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
 import functionalj.function.Func1;
 import functionalj.function.Func4;
@@ -219,7 +219,7 @@ public interface DoubleStreamPlusWithMapGroup {
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default <TARGET> StreamPlus<TARGET> mapGroupToObj(DoubleDoubleBiFunction<TARGET> combinator) {
+    public default <TARGET> StreamPlus<TARGET> mapGroupToObj(DoubleDoubleFunction<TARGET> combinator) {
         return DoubleStreamPlusWithMapGroupHelper.mapGroup(
                 doubleStreamPlus(), 2, 
                 (array, start, end, consumer) -> {

@@ -28,7 +28,7 @@ import static functionalj.list.doublelist.DoubleFuncList.deriveToDouble;
 
 import java.util.function.DoublePredicate;
 
-import functionalj.function.DoubleBiPredicatePrimitive;
+import functionalj.function.DoubleDoublePredicatePrimitive;
 
 public interface DoubleFuncListWithLimit extends AsDoubleFuncList {
     
@@ -48,7 +48,7 @@ public interface DoubleFuncListWithLimit extends AsDoubleFuncList {
     }
     
     /** Skip any value while the condition is true. */
-    public default DoubleFuncList skipWhile(DoubleBiPredicatePrimitive condition) {
+    public default DoubleFuncList skipWhile(DoubleDoublePredicatePrimitive condition) {
         return deriveToDouble(this, stream -> stream.skipWhile(condition));
     }
     
@@ -58,7 +58,7 @@ public interface DoubleFuncListWithLimit extends AsDoubleFuncList {
     }
     
     /** Skip any value until the condition is true. */
-    public default DoubleFuncList skipUntil(DoubleBiPredicatePrimitive condition) {
+    public default DoubleFuncList skipUntil(DoubleDoublePredicatePrimitive condition) {
         return deriveToDouble(this, stream -> stream.skipUntil(condition));
     }
     
@@ -68,7 +68,7 @@ public interface DoubleFuncListWithLimit extends AsDoubleFuncList {
     }
     
     /** Accept any value while the condition is true. */
-    public default DoubleFuncList takeWhile(DoubleBiPredicatePrimitive condition) {
+    public default DoubleFuncList takeWhile(DoubleDoublePredicatePrimitive condition) {
         return deriveToDouble(this, stream -> stream.takeWhile(condition));
     }
     
@@ -78,7 +78,7 @@ public interface DoubleFuncListWithLimit extends AsDoubleFuncList {
     }
     
     /** Accept any value until the condition is true. */
-    public default DoubleFuncList takeUntil(DoubleBiPredicatePrimitive condition) {
+    public default DoubleFuncList takeUntil(DoubleDoublePredicatePrimitive condition) {
         return deriveToDouble(this, stream -> stream.takeUntil(condition));
     }
     
@@ -88,7 +88,7 @@ public interface DoubleFuncListWithLimit extends AsDoubleFuncList {
     }
     
     /** Accept any value while the condition is true. */
-    public default DoubleFuncList dropAfter(DoubleBiPredicatePrimitive condition) {
+    public default DoubleFuncList dropAfter(DoubleDoublePredicatePrimitive condition) {
         return deriveToDouble(this, stream -> stream.dropAfter(condition));
     }
     

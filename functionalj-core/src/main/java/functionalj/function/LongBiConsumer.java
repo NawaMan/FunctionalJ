@@ -42,7 +42,7 @@ public interface LongBiConsumer extends LongObjBiConsumer<Long> {
     public static void accept(BiConsumer<? super Long, ? super Long> consumer, long input1, long input2) {
         if (consumer instanceof LongBiConsumer) {
             ((LongBiConsumer)consumer).acceptAsLongLong(input1, input2);
-        } else if (consumer instanceof IntObjBiConsumer) {
+        } else if (consumer instanceof IntegerObjectBiConsumer) {
             ((LongObjBiConsumer<Long>)consumer).acceptAsLong(input1, input2);
         } else {
             consumer.accept(input1, input2);

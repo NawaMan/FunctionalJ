@@ -50,7 +50,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleBiFunctionPrimitive;
+import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
 import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
 import functionalj.list.doublelist.AsDoubleFuncList;
@@ -334,7 +334,7 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static DoubleStreamPlus iterate(double seed1, double seed2, DoubleBiFunctionPrimitive compounder) {
+    public static DoubleStreamPlus iterate(double seed1, double seed2, DoubleDoubleToDoubleFunctionPrimitive compounder) {
         return DoubleStreamPlus.from(StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(Long.MAX_VALUE, 0) {
             private final    double[] first  = new double[] { seed1 };
             private final    double[] second = new double[] { seed2 };
@@ -378,7 +378,7 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static DoubleStreamPlus compound(double seed1, double seed2, DoubleBiFunctionPrimitive compounder) {
+    public static DoubleStreamPlus compound(double seed1, double seed2, DoubleDoubleToDoubleFunctionPrimitive compounder) {
         return iterate(seed1, seed2, compounder);
     }
     
@@ -423,20 +423,20 @@ public interface DoubleStreamPlus
     public static DoubleStreamPlus zipOf(
             DoubleStream              stream1,
             DoubleStream              stream2,
-            DoubleBiFunctionPrimitive merger) {
+            DoubleDoubleToDoubleFunctionPrimitive merger) {
         return DoubleStreamPlus.from(stream1).zipWith(stream2, merger);
     }
     public static DoubleStreamPlus zipOf(
             DoubleStream              stream1,
             DoubleStream              stream2,
             double                    defaultValue,
-            DoubleBiFunctionPrimitive merger) {
+            DoubleDoubleToDoubleFunctionPrimitive merger) {
         return DoubleStreamPlus.from(stream1).zipWith(stream2, defaultValue, merger);
     }
     public static DoubleStreamPlus zipOf(
             DoubleStream stream1, double defaultValue1,
             DoubleStream stream2, double defaultValue2,
-            DoubleBiFunctionPrimitive merger) {
+            DoubleDoubleToDoubleFunctionPrimitive merger) {
         return DoubleStreamPlus.from(stream1).zipWith(stream2, defaultValue1, defaultValue2, merger);
     }
     

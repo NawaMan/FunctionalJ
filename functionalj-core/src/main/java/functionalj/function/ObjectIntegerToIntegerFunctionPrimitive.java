@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,40 +23,23 @@
 // ============================================================================
 package functionalj.function;
 
-import java.util.function.BiPredicate;
+import java.util.function.BiFunction;
+import java.util.function.ToIntBiFunction;
 
 
 @FunctionalInterface
-public interface DoubleBiPredicatePrimitive extends Func2<Double, Double, Boolean>, BiPredicate<Double, Double> {
+public interface ObjectIntegerToIntegerFunctionPrimitive<DATA> extends BiFunction<DATA, Integer, Integer>, ToIntBiFunction<DATA, Integer> {
     
-    public boolean testDoubleDouble(double i1, double i2);
+    public int applyObjectInteger(DATA data, int intValue);
+    
     
     @Override
-    public default boolean test(Double i1, Double i2) {
-        return testDoubleDouble(i1, i2);
-    }
-    
-    public default BiPredicate<Double, Double> toPredicate() {
-        return (value1, value2) -> test(value1, value2);
+    public default Integer apply(DATA data, Integer doubleValue) {
+        return applyObjectInteger(data, doubleValue);
     }
     
     @Override
-    public default Boolean applyUnsafe(Double input1, Double input2) throws Exception {
-        return test(input1, input2);
+    public default int applyAsInt(DATA data, Integer intValue) {
+        return applyObjectInteger(data, intValue);
     }
-    
-    public static DoubleBiPredicatePrimitive doubleBiPredicate(Func2<Double, Double, Boolean> predicate) {
-        if (predicate instanceof DoubleBiPredicatePrimitive)
-            return ((DoubleBiPredicatePrimitive)predicate);
-        
-        return predicate::apply;
-    }
-    
-    public static DoubleBiPredicatePrimitive doublePredicate(BiPredicate<Double, Double> predicate) {
-        if (predicate instanceof DoubleBiPredicatePrimitive)
-            return ((DoubleBiPredicatePrimitive)predicate);
-        
-        return predicate::test;
-    }
-    
 }

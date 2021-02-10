@@ -23,18 +23,42 @@
 // ============================================================================
 package functionalj.function;
 
+import java.util.function.ToIntBiFunction;
+
+
 @FunctionalInterface
-public interface DoubleDoubleToIntFunctionPrimitive extends ToIntegerBiDoubleFunction<Double> {
+public interface IntegerDoubleToIntegerFunctionPrimitive 
+            extends 
+                ToIntBiFunction<Integer, Double>, 
+                ObjectDoubleToIntegerFunctionPrimitive<Integer> {
     
-    public int applyAsDoubleAndDouble(double data, double doubleValue);
-    
-    public default int applyAsInt(Double data, double doubleValue) {
-        return applyAsDoubleAndDouble(data, doubleValue);
+    public static IntegerDoubleToIntegerFunctionPrimitive of(IntegerDoubleToIntegerFunctionPrimitive function) {
+        return function;
+        
+    }
+    public static IntegerDoubleToIntegerFunctionPrimitive from(ToIntBiFunction<Integer, Double> function) {
+        return (function instanceof IntegerDoubleToIntegerFunctionPrimitive)
+                ? (IntegerDoubleToIntegerFunctionPrimitive)function
+                : ((d1, d2) -> function.applyAsInt(d1, d2));
+    }
+    public static IntegerDoubleToIntegerFunctionPrimitive from(ObjectDoubleToIntegerFunctionPrimitive<Integer> function) {
+        return (function instanceof IntegerDoubleToIntegerFunctionPrimitive)
+                ? (IntegerDoubleToIntegerFunctionPrimitive)function
+                : ((d1, d2) -> function.applyObjectDouble(d1, d2));
     }
     
-    public static double apply(ObjectDoubleToDoubleFunctionPrimitive<Double> function, double value, double anotherValue) {
-        return (function instanceof DoubleDoubleToIntFunctionPrimitive)
-                ? ((DoubleDoubleToIntFunctionPrimitive)function).applyAsDoubleAndDouble(value, anotherValue)
-                : function.applyAsDouble(value, anotherValue);
+    //-- functionality --
+    
+    public int applyIntegerDouble(int intValue, double doubleValue);
+    
+    
+    public default int applyAsInt(Integer intValue, Double doubleValue) {
+        return applyIntegerDouble(intValue, doubleValue);
     }
+    
+    @Override
+    public default int applyObjectDouble(Integer data, double doubleValue) {
+        return applyIntegerDouble(data, doubleValue);
+    }
+    
 }

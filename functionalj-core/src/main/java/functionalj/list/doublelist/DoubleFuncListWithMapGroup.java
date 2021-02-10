@@ -27,7 +27,7 @@ import java.util.function.DoubleBinaryOperator;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 
-import functionalj.function.DoubleDoubleBiFunction;
+import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
@@ -55,7 +55,7 @@ public interface DoubleFuncListWithMapGroup extends AsDoubleFuncList {
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default <TARGET> FuncList<TARGET> mapGroupToObj(DoubleDoubleBiFunction<TARGET> combinator) {
+    public default <TARGET> FuncList<TARGET> mapGroupToObj(DoubleDoubleFunction<TARGET> combinator) {
         return FuncList.deriveFrom(this, stream -> stream.mapGroupToObj(combinator));
     }
     

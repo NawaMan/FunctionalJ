@@ -53,7 +53,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleDoubleBiFunction;
+import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
@@ -468,7 +468,7 @@ public interface StreamPlus<DATA>
     public static <TARGET> StreamPlus<TARGET> zipOf(
             DoubleStream                   stream1,
             DoubleStream                   stream2,
-            DoubleDoubleBiFunction<TARGET> merger) {
+            DoubleDoubleFunction<TARGET> merger) {
         return DoubleStreamPlus.from(stream1)
                 .zipToObjWith(stream2, merger);
     }

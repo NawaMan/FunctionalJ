@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func;
 import functionalj.lens.core.AccessCreator;
-import functionalj.result.Result;
 import lombok.val;
 
 

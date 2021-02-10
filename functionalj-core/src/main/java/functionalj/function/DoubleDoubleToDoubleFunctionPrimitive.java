@@ -23,25 +23,43 @@
 // ============================================================================
 package functionalj.function;
 
-import java.util.function.BiFunction;
+import java.util.function.DoubleBinaryOperator;
 
-import lombok.val;
 
 @FunctionalInterface
-public interface BiObjectToIntFunction<INPUT1, INPUT2> extends BiFunction<INPUT1, INPUT2, Integer> {
+public interface DoubleDoubleToDoubleFunctionPrimitive extends DoubleBinaryOperator, ObjectDoubleToDoubleFunctionPrimitive<Double> {
     
-    public int applyAsInt(INPUT1 input1, INPUT2 input2);
-    
-    public default Integer apply(INPUT1 input1, INPUT2 input2) {
-        return applyAsInt(input1, input2);
+    public static DoubleDoublePredicatePrimitive of(DoubleDoublePredicatePrimitive function) {
+        return function;
+        
+    }
+    public static DoubleDoubleToDoubleFunctionPrimitive from(DoubleBinaryOperator function) {
+        return (function instanceof DoubleDoubleToDoubleFunctionPrimitive)
+                ? (DoubleDoubleToDoubleFunctionPrimitive)function
+                : ((d1, d2) -> function.applyAsDouble(d1, d2));
+    }
+    public static DoubleDoubleToDoubleFunctionPrimitive from(ObjectDoubleToDoubleFunctionPrimitive<Double> function) {
+        return (function instanceof DoubleDoubleToDoubleFunctionPrimitive)
+                ? (DoubleDoubleToDoubleFunctionPrimitive)function
+                : ((d1, d2) -> function.applyObjectDouble(d1, d2));
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static <INPUT1, INPUT2> int apply(BiFunction<INPUT1, INPUT2, Integer> function, INPUT1 input1, INPUT2 input2) {
-        val resValue 
-            = (function instanceof BiObjectToIntFunction)
-            ? ((BiObjectToIntFunction)function).applyAsInt(input1, input2)
-            : function.apply(input1, input2);
-        return resValue;
+    //-- functionality --
+    
+    public double applyDoubleDouble(double data, double doubleValue);
+    
+    
+    public default double applyAsDouble(double data, double doubleValue) {
+        return applyDoubleDouble(data, doubleValue);
     }
+    
+    public default double applyAsDouble(Double data, double doubleValue) {
+        return applyDoubleDouble(data, doubleValue);
+    }
+    
+    @Override
+    public default double applyObjectDouble(Double data, double doubleValue) {
+        return applyDoubleDouble(data, doubleValue);
+    }
+    
 }

@@ -27,9 +27,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleSupplier;
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
+import java.util.function.IntSupplier;
+import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
+import java.util.function.ToDoubleBiFunction;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
 
+import functionalj.lens.lenses.DoubleAccess;
+import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
+import functionalj.lens.lenses.DoubleToIntegerAccessPrimitive;
+import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerToDoubleAccessPrimitive;
+import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.HasPromise;
@@ -437,5 +452,70 @@ public interface Apply {
     public static <I1, I2, I3, I4, I5, I6, O> Result<O> $$(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) {
         return Result.of(()->func.apply(input1, input2, input3, input4, input5, input6));
     }
+    
+    public static <HOST> Integer access(IntegerAccess<HOST> access, HOST host) {
+        return access.apply(host);
+    }
+    public static <HOST> Double access(DoubleAccess<HOST> access, HOST host) {
+        return access.apply(host);
+    }
+    
+    //== Primitive ==
+    
+    public static int getPrimitive(IntSupplier supplier) {
+        return supplier.getAsInt();
+    }
+    public static double getPrimitive(DoubleSupplier supplier) {
+        return supplier.getAsDouble();
+    }
+    
+    public static int applyPrimitive(IntUnaryOperator function, int value) {
+        return function.applyAsInt(value);
+    }
+    public static double applyPrimitive(DoubleUnaryOperator function, double value) {
+        return function.applyAsDouble(value);
+    }
+    public static double applyPrimitive(ToDoubleFunction<Integer> function, int value) {
+        return function.applyAsDouble(value);
+    }
+    public static double applyPrimitive(ToDoubleFunction<Double> function, double value) {
+        return function.applyAsDouble(value);
+    }
+    public static double applyPrimitive(ToIntFunction<Integer> function, int value) {
+        return function.applyAsInt(value);
+    }
+    public static double applyPrimitive(ToIntFunction<Double> function, double value) {
+        return function.applyAsInt(value);
+    }
+    public static <HOST> int applyPrimitive(ToIntFunction<HOST> function, HOST value) {
+        return function.applyAsInt(value);
+    }
+    public static <HOST> double applyPrimitive(ToDoubleFunction<HOST> function, HOST value) {
+        return function.applyAsDouble(value);
+    }
+    
+    public static int applyPrimitive(IntBinaryOperator function, int value1, int value2) {
+        return function.applyAsInt(value1, value2);
+    }
+    public static double applyPrimitive(DoubleBinaryOperator function, double value1, double value2) {
+        return function.applyAsDouble(value1, value2);
+    }
+    public static double applyPrimitive(ToDoubleBiFunction<Integer, Double> function, int value1, double value2) {
+        return function.applyAsDouble(value1, value2);
+    }
+    
+    public static int accessPrimitive(IntegerToIntegerAccessPrimitive access, int host) {
+        return access.applyAsInt(host);
+    }
+    public static double accessPrimitive(DoubleToDoubleAccessPrimitive access, double host) {
+        return access.applyAsDouble(host);
+    }
+    public static double accessPrimitive(IntegerToDoubleAccessPrimitive access, int host) {
+        return access.applyIntToDouble(host);
+    }
+    public static int accessPrimitive(DoubleToIntegerAccessPrimitive access, double host) {
+        return access.applyDoubleToInt(host);
+    }
+    
     
 }

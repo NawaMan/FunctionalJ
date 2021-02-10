@@ -23,9 +23,42 @@
 // ============================================================================
 package functionalj.function;
 
+import java.util.function.ToDoubleBiFunction;
+
+
 @FunctionalInterface
-public interface ToDoubleBiDoubleFunction<DATA> {
+public interface IntegerDoubleToDoubleFunctionPrimitive 
+            extends 
+                ToDoubleBiFunction<Integer, Double>, 
+                ObjectDoubleToDoubleFunctionPrimitive<Integer> {
     
-    public double applyAsDouble(DATA data, double intValue);
+    public static IntegerDoubleToDoubleFunctionPrimitive of(IntegerDoubleToDoubleFunctionPrimitive function) {
+        return function;
+        
+    }
+    public static IntegerDoubleToDoubleFunctionPrimitive from(ToDoubleBiFunction<Integer, Double> function) {
+        return (function instanceof IntegerDoubleToDoubleFunctionPrimitive)
+                ? (IntegerDoubleToDoubleFunctionPrimitive)function
+                : ((d1, d2) -> function.applyAsDouble(d1, d2));
+    }
+    public static IntegerDoubleToDoubleFunctionPrimitive from(ObjectDoubleToDoubleFunctionPrimitive<Integer> function) {
+        return (function instanceof IntegerDoubleToDoubleFunctionPrimitive)
+                ? (IntegerDoubleToDoubleFunctionPrimitive)function
+                : ((d1, d2) -> function.applyObjectDouble(d1, d2));
+    }
+    
+    //-- functionality --
+    
+    public double applyIntegerDouble(int intValue, double doubleValue);
+    
+    
+    public default double applyAsDouble(Integer intValue, Double doubleValue) {
+        return applyIntegerDouble(intValue, doubleValue);
+    }
+    
+    @Override
+    public default double applyObjectDouble(Integer data, double doubleValue) {
+        return applyIntegerDouble(data, doubleValue);
+    }
     
 }

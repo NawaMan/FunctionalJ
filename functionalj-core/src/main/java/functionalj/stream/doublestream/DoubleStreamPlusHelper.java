@@ -33,8 +33,8 @@ import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleBiFunctionPrimitive;
-import functionalj.function.DoubleDoubleBiFunction;
+import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
+import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func1;
 import functionalj.stream.IteratorPlus;
@@ -203,7 +203,7 @@ public class DoubleStreamPlusHelper {
     }
     
     static DoubleStreamPlus doZipDoubleDoubleWith(
-            DoubleBiFunctionPrimitive merger,
+            DoubleDoubleToDoubleFunctionPrimitive merger,
             DoubleIteratorPlus        iteratorA,
             DoubleIteratorPlus        iteratorB) {
         
@@ -220,7 +220,7 @@ public class DoubleStreamPlusHelper {
                 if (hasNextA && hasNextB) {
                     double nextA  = iteratorA.nextDouble();
                     double nextB  = iteratorB.nextDouble();
-                    double choice = merger.applyAsDoubleAndDouble(nextA, nextB);
+                    double choice = merger.applyAsDouble(nextA, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
@@ -239,7 +239,7 @@ public class DoubleStreamPlusHelper {
     }
     
     static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(
-            DoubleDoubleBiFunction<TARGET> merger,
+            DoubleDoubleFunction<TARGET> merger,
             DoubleIteratorPlus             iteratorA,
             DoubleIteratorPlus             iteratorB) {
         
@@ -256,7 +256,7 @@ public class DoubleStreamPlusHelper {
                 if (hasNextA && hasNextB) {
                     double nextA  = iteratorA.nextDouble();
                     double nextB  = iteratorB.nextDouble();
-                    TARGET choice = merger.applyDouble(nextA, nextB);
+                    TARGET choice = merger.apply(nextA, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
@@ -275,7 +275,7 @@ public class DoubleStreamPlusHelper {
     }
     
     static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(
-            DoubleDoubleBiFunction<TARGET> merger,
+            DoubleDoubleFunction<TARGET> merger,
             DoubleIteratorPlus             iteratorA,
             DoubleIteratorPlus             iteratorB,
             double                         defaultValue) {
@@ -293,17 +293,17 @@ public class DoubleStreamPlusHelper {
                 if (hasNextA && hasNextB) {
                     double nextA  = iteratorA.nextDouble();
                     double nextB  = iteratorB.nextDouble();
-                    TARGET choice = merger.applyDouble(nextA, nextB);
+                    TARGET choice = merger.apply(nextA, nextB);
                     return choice;
                 }
                 if (hasNextA) {
                     double nextA = iteratorA.nextDouble();
-                    TARGET choice = merger.applyDouble(nextA, defaultValue);
+                    TARGET choice = merger.apply(nextA, defaultValue);
                     return choice;
                 }
                 if (hasNextB) {
                     double nextB = iteratorB.nextDouble();
-                    TARGET choice = merger.applyDouble(defaultValue, nextB);
+                    TARGET choice = merger.apply(defaultValue, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
@@ -320,7 +320,7 @@ public class DoubleStreamPlusHelper {
     }
     
     static DoubleStreamPlus doZipDoubleDoubleWith(
-            DoubleBiFunctionPrimitive merger,
+            DoubleDoubleToDoubleFunctionPrimitive merger,
             DoubleIteratorPlus        iteratorA,
             DoubleIteratorPlus        iteratorB,
             double                    defaultValue) {
@@ -338,17 +338,17 @@ public class DoubleStreamPlusHelper {
                 if (hasNextA && hasNextB) {
                     double nextA  = iteratorA.nextDouble();
                     double nextB  = iteratorB.nextDouble();
-                    double choice = merger.applyAsDoubleAndDouble(nextA, nextB);
+                    double choice = merger.applyAsDouble(nextA, nextB);
                     return choice;
                 }
                 if (hasNextA) {
                     double nextA = iteratorA.nextDouble();
-                    double choice = merger.applyAsDoubleAndDouble(nextA, defaultValue);
+                    double choice = merger.applyAsDouble(nextA, defaultValue);
                     return choice;
                 }
                 if (hasNextB) {
                     double nextB = iteratorB.nextDouble();
-                    double choice = merger.applyAsDoubleAndDouble(defaultValue, nextB);
+                    double choice = merger.applyAsDouble(defaultValue, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
@@ -367,7 +367,7 @@ public class DoubleStreamPlusHelper {
     }
     
     static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(
-            DoubleDoubleBiFunction<TARGET> merger,
+            DoubleDoubleFunction<TARGET> merger,
             DoubleIteratorPlus             iteratorA,
             DoubleIteratorPlus             iteratorB,
             double                         defaultValueA,
@@ -386,17 +386,17 @@ public class DoubleStreamPlusHelper {
                 if (hasNextA && hasNextB) {
                     double nextA  = iteratorA.nextDouble();
                     double nextB  = iteratorB.nextDouble();
-                    TARGET choice = merger.applyDouble(nextA, nextB);
+                    TARGET choice = merger.apply(nextA, nextB);
                     return choice;
                 }
                 if (hasNextA) {
                     double nextA = iteratorA.nextDouble();
-                    TARGET choice = merger.applyDouble(nextA, defaultValueB);
+                    TARGET choice = merger.apply(nextA, defaultValueB);
                     return choice;
                 }
                 if (hasNextB) {
                     double nextB = iteratorB.nextDouble();
-                    TARGET choice = merger.applyDouble(defaultValueA, nextB);
+                    TARGET choice = merger.apply(defaultValueA, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
@@ -415,7 +415,7 @@ public class DoubleStreamPlusHelper {
     }
     
     static DoubleStreamPlus doZipDoubleDoubleWith(
-            DoubleBiFunctionPrimitive merger,
+            DoubleDoubleToDoubleFunctionPrimitive merger,
             DoubleIteratorPlus        iteratorA,
             DoubleIteratorPlus        iteratorB,
             double                    defaultValueA,
@@ -434,17 +434,17 @@ public class DoubleStreamPlusHelper {
                 if (hasNextA && hasNextB) {
                     double nextA  = iteratorA.nextDouble();
                     double nextB  = iteratorB.nextDouble();
-                    double choice = merger.applyAsDoubleAndDouble(nextA, nextB);
+                    double choice = merger.applyAsDouble(nextA, nextB);
                     return choice;
                 }
                 if (hasNextA) {
                     double nextA = iteratorA.nextDouble();
-                    double choice = merger.applyAsDoubleAndDouble(nextA, defaultValueB);
+                    double choice = merger.applyAsDouble(nextA, defaultValueB);
                     return choice;
                 }
                 if (hasNextB) {
                     double nextB = iteratorB.nextDouble();
-                    double choice = merger.applyAsDoubleAndDouble(defaultValueA, nextB);
+                    double choice = merger.applyAsDouble(defaultValueA, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
@@ -465,7 +465,6 @@ public class DoubleStreamPlusHelper {
     static DoubleStreamPlus doMergeInt(
             DoubleIteratorPlus iteratorA,
             DoubleIteratorPlus iteratorB) {
-        @SuppressWarnings("resource")
         val iterator = new DoubleIteratorPlus() {
             private boolean isA = true;
             
@@ -505,7 +504,7 @@ public class DoubleStreamPlusHelper {
     
     static DoubleStreamPlus doChoiceWith(
             ZipWithOption             option,
-            DoubleBiFunctionPrimitive merger,
+            DoubleDoubleToDoubleFunctionPrimitive merger,
             DoubleIteratorPlus        iteratorA,
             DoubleIteratorPlus        iteratorB) {
         
@@ -524,7 +523,7 @@ public class DoubleStreamPlusHelper {
                 if (hasNextA && hasNextB) {
                     double nextA  = iteratorA.nextDouble();
                     double nextB  = iteratorB.nextDouble();
-                    double choice = merger.applyAsDoubleAndDouble(nextA, nextB);
+                    double choice = merger.applyAsDouble(nextA, nextB);
                     return choice;
                 }
                 if (hasNextA) {

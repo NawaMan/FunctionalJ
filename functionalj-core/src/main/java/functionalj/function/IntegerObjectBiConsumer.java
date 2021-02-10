@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,35 +23,25 @@
 // ============================================================================
 package functionalj.function;
 
-import java.util.function.Function;
-import java.util.function.IntFunction;
+import java.util.function.BiConsumer;
 
-public interface IntFunctionPrimitive<TARGET> extends IntFunction<TARGET>, Func1<Integer, TARGET> {
+@FunctionalInterface
+public interface IntegerObjectBiConsumer<DATA> extends FuncUnit2<Integer, DATA> {
     
-    public static <T> IntFunctionPrimitive<T> of(Function<Integer, T> function) {
-        if (function instanceof IntFunctionPrimitive)
-            return (IntFunctionPrimitive<T>)function;
-        
-        return i -> function.apply(i);
-    }
-    public static <T> IntFunctionPrimitive<T> intFunction(Function<Integer, T> function) {
-        if (function instanceof IntFunctionPrimitive)
-            return (IntFunctionPrimitive<T>)function;
-        
-        return i -> function.apply(i);
+    public void acceptAsInt(int input1, DATA input2);
+    
+    
+    public default void acceptUnsafe(Integer input1, DATA input2) throws Exception {
+        acceptAsInt(input1, input2);
     }
     
     
-    public TARGET applyInt(int value);
-    
-    @Override
-    public default TARGET apply(int value) {
-        return applyInt(value);
-    }
-    
-    @Override
-    public default TARGET applyUnsafe(Integer input) throws Exception {
-        return applyInt(input);
+    public static <D> void accept(BiConsumer<Integer, D> function, int input1, D input2) {
+        if (function instanceof IntegerObjectBiConsumer) {
+            ((IntegerObjectBiConsumer<D>)function).acceptAsInt(input1, input2);
+        } else {
+            function.accept(input1, input2);
+        }
     }
     
 }

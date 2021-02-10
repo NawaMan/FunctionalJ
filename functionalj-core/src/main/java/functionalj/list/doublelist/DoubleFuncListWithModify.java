@@ -28,7 +28,7 @@ import static functionalj.list.doublelist.DoubleFuncList.deriveToObj;
 
 import java.util.function.DoubleFunction;
 
-import functionalj.function.DoubleBiFunctionPrimitive;
+import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.promise.UncompletedAction;
@@ -54,7 +54,7 @@ public interface DoubleFuncListWithModify extends AsDoubleFuncList {
      *     output2 = acc2 with acc3 = acc2 ~ rest2 and rest3 = rest of rest2
      *     ...
      */
-    public default DoubleFuncList accumulate(DoubleBiFunctionPrimitive accumulator) {
+    public default DoubleFuncList accumulate(DoubleDoubleToDoubleFunctionPrimitive accumulator) {
         return deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
     

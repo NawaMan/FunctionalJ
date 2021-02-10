@@ -29,7 +29,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 
-import functionalj.function.DoubleBiFunctionPrimitive;
+import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import lombok.val;
@@ -37,7 +37,7 @@ import lombok.val;
 
 public class DoubleFuncListDerived implements DoubleFuncList {
     
-    private static final DoubleBiFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
+    private static final DoubleDoubleToDoubleFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
     private static final DoublePredicate           notZero       = (double d)             -> d  != 0;
     
     //-- Data --

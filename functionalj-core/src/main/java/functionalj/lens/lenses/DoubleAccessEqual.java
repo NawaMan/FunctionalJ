@@ -3,7 +3,7 @@ package functionalj.lens.lenses;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 
-import functionalj.function.ToDoubleBiDoubleFunction;
+import functionalj.function.ObjectDoubleToDoubleFunctionPrimitive;
 import lombok.NonNull;
 import lombok.val;
 
@@ -12,12 +12,12 @@ public class DoubleAccessEqual<HOST> implements BooleanAccessPrimitive<HOST> {
     
     final boolean isNegate;
     final DoubleAccess<HOST> access;
-    final ToDoubleBiDoubleFunction<HOST> anotherValueFunction;
+    final ObjectDoubleToDoubleFunctionPrimitive<HOST> anotherValueFunction;
     
     DoubleAccessEqual(
             boolean isNegate,
             @NonNull DoubleAccess<HOST> access,
-            @NonNull ToDoubleBiDoubleFunction<HOST> anotherValueFunction) {
+            @NonNull ObjectDoubleToDoubleFunctionPrimitive<HOST> anotherValueFunction) {
         this.isNegate             = isNegate;
         this.access               = access;
         this.anotherValueFunction = anotherValueFunction;
