@@ -18,9 +18,10 @@ public class IntegerAccessTest {
      * If the boxing is done, large amount of memory will be used as we are running 100000 ints.
      **/
     @SuppressWarnings("unused")
-    @Ignore("The test fail since: Feb 10 - Will investigate later.")
     @Test
     public void testPrimitive() {
+        // TODO - Add refactor this to be more understandable.
+        
         int loop = 100000;
         
         long beforeUsedMem = currentUsedMemory();
@@ -88,25 +89,44 @@ public class IntegerAccessTest {
         return afterUsedMem - beforeUsedMem;
     }
     
-    @Ignore("The test fail since: Feb 10 - Will investigate later.")
+    @Ignore("This test should be run manually in debug with break point in the constructor of Integer.")
     @Test
     public void testPrimitive2() {
-        for (int i = 0; i < 100000; i++) {
-            $I.time(2).apply(i);
+        int loop  = 100000;
+        int start = 0;
+        int end   = loop;
+        
+        
+        for (int i = start; i < end; i++) {
+            $I.time(2).applyAsInt(i);
         }
         long mem1 = currentUsedMemory();
-        for (int i = 0; i < 100000; i++) {
-            $I.time(2).apply(i);
+        for (int i = start; i < end; i++) {
+            $I.time(2).applyAsInt(i);
         }
         long mem2 = currentUsedMemory();
         System.out.println("mem1: " + mem1);
         System.out.println("mem2: " + mem2 + "; diff: " + (mem2 - mem1));
         
-        for (int i = 0; i < 100000; i++) {
-            $I.time(2).apply(i);
+        for (int i = start; i < end; i++) {
+            $I.time(2).applyAsInt(i);
         }
         long mem3 = currentUsedMemory();
         System.out.println("mem3: " + mem3 + "; diff: " + (mem3 - mem2));
+        
+        for (int i = start; i < end; i++) {
+            $I.time(2).applyAsInt(i);
+        }
+        long mem4 = currentUsedMemory();
+        System.out.println("mem4: " + mem4 + "; diff: " + (mem4 - mem3));
+        
+        start = loop;
+        end   = loop*2;
+        for (int i = start; i < end; i++) {
+            $I.time(2).applyAsInt(i);
+        }
+        long mem5 = currentUsedMemory();
+        System.out.println("mem5: " + mem5 + "; diff: " + (mem5 - mem4));
         
     }
     

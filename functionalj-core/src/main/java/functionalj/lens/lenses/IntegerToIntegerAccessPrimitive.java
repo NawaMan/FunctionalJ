@@ -92,27 +92,27 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     
     @Override
     public default IntegerToIntegerAccessPrimitive asInteger() {
-        return host -> access(this, host);
+        return host -> accessPrimitive(this, host);
     }
     
     @Override
     public default IntegerToLongAccessPrimitive asLong() {
-        return host -> access(this, host);
+        return host -> accessPrimitive(this, host);
     }
     
     @Override
     public default IntegerToDoubleAccessPrimitive asDouble() {
-        return host -> access(this, host);
+        return host -> accessPrimitive(this, host);
     }
     
     @Override
     public default IntegerToStringAccessPrimitive asString() {
-        return host -> "" + access(this, host);
+        return host -> "" + accessPrimitive(this, host);
     }
     @Override
     public default IntegerToStringAccessPrimitive asString(String template) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return String.format(template, value);
         };
     }
@@ -122,7 +122,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive that(IntPredicate checker) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return checker.test(value);
         };
     }
@@ -130,21 +130,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIs(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value == anotherValue;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatIs(IntSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value == anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatIs(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value == anotherValue;
         };
@@ -153,21 +153,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNot(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value != anotherValue;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNot(IntSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value != anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatIsNot(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value != anotherValue;
         };
@@ -176,7 +176,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsAnyOf(int ... otherValues) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             for (val anotherValue : otherValues) {
                 if (value == anotherValue) {
                     return true;
@@ -188,7 +188,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsAnyOf(IntFuncList otherValues) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return otherValues.anyMatch(anotherValue -> value == anotherValue);
         };
     }
@@ -196,7 +196,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNoneOf(int ... otherValues) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             for (val anotherValue : otherValues) {
                 if (value == anotherValue) {
                     return false;
@@ -208,7 +208,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNoneOf(IntFuncList otherValues) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return otherValues.noneMatch(anotherValue -> value == anotherValue);
         };
     }
@@ -251,28 +251,28 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsPositive() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value > 0;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNegative() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value < 0;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNotPositive() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value <= 0;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNotNegative() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value >= 0;
         };
     }
@@ -280,21 +280,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatEquals(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value == anotherValue;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatEquals(IntSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value == anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatEquals(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value == anotherValue;
         };
@@ -315,21 +315,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatNotEquals(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value != anotherValue;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatNotEquals(IntSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             int anotherValue = getPrimitive(anotherSupplier);
             return value != anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatNotEquals(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value != anotherValue;
         };
@@ -386,8 +386,8 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntComparator ascendingOrder() {
         return (a, b) -> {
-            val aValue = access(this, a);
-            val bValue = access(this, b);
+            val aValue = accessPrimitive(this, a);
+            val bValue = accessPrimitive(this, b);
             return comparePrimitive(aValue, bValue);
         };
     }
@@ -404,7 +404,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive compareTo(int anotherValue) {
         return host -> {
-            val value   = access(this, host);
+            val value   = accessPrimitive(this, host);
             val compare = comparePrimitive(value, anotherValue);
             return compare;
         };
@@ -412,7 +412,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive compareTo(IntSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             val compare      = comparePrimitive(value, anotherValue);
             return compare;
@@ -420,7 +420,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     }
     public default IntegerToIntegerAccessPrimitive compareTo(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             val compare      = comparePrimitive(value, anotherValue);
             return compare;
@@ -442,21 +442,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatGreaterThan(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value > anotherValue;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatGreaterThan(IntSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value > anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatGreaterThan(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value > anotherValue;
         };
@@ -477,21 +477,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatLessThan(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value < anotherValue;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatLessThan(IntSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value < anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatLessThan(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value < anotherValue;
         };
@@ -512,21 +512,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value >= anotherValue;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(IntSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value >= anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value >= anotherValue;
         };
@@ -547,21 +547,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatLessThanOrEqualsTo(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value <= anotherValue;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatLessThanOrEqualsTo(IntSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value <= anotherValue;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatLessThanOrEqualsTo(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value <= anotherValue;
         };
@@ -584,21 +584,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive min(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.min(value, anotherValue);
         };
     }
     @Override
     public default IntegerToIntegerAccessPrimitive min(IntSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return Math.min(value, anotherValue);
         };
     }
     public default IntegerToIntegerAccessPrimitive min(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return Math.min(value, anotherValue);
         };
@@ -607,21 +607,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive max(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.max(value, anotherValue);
         };
     }
     @Override
     public default IntegerToIntegerAccessPrimitive max(IntSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return Math.max(value, anotherValue);
         };
     }
     public default IntegerToIntegerAccessPrimitive max(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return Math.max(value, anotherValue);
         };
@@ -632,7 +632,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsOdd() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value % 2 != 0;
         };
     }
@@ -640,7 +640,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsEven() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value % 2 == 0;
         };
     }
@@ -648,21 +648,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value % anotherValue == 0;
         };
     }
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(IntSupplier anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = anotherAccess.getAsInt();
             return value % anotherValue == 0;
         };
     }
     public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value % anotherValue == 0;
         };
@@ -671,7 +671,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive abs() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return (value < 0) ? -value : value;
         };
     }
@@ -679,7 +679,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive negate() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return -value;
         };
     }
@@ -687,7 +687,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive signum() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return (value == 0) ? 0 : (value < 0) ? -1 : 1;
         };
     }
@@ -695,21 +695,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive plus(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value + anotherValue;
         };
     }
     @Override
     public default IntegerToIntegerAccessPrimitive plus(IntSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value + anotherValue;
         };
     }
     public default IntegerToIntegerAccessPrimitive plus(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value + anotherValue;
         };
@@ -718,21 +718,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive minus(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value - anotherValue;
         };
     }
     @Override
     public default IntegerToIntegerAccessPrimitive minus(IntSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value - anotherValue;
         };
     }
     public default IntegerToIntegerAccessPrimitive minus(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value - anotherValue;
         };
@@ -741,21 +741,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive time(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value * anotherValue;
         };
     }
     @Override
     public default IntegerToIntegerAccessPrimitive time(IntSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value * anotherValue;
         };
     }
     public default IntegerToIntegerAccessPrimitive time(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value * anotherValue;
         };
@@ -764,21 +764,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToDoubleAccessPrimitive dividedBy(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return 1.0 * value / anotherValue;
         };
     }
     @Override
     public default IntegerToDoubleAccessPrimitive dividedBy(IntSupplier anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = anotherAccess.getAsInt();
             return 1.0*value / anotherValue;
         };
     }
     public default IntegerToDoubleAccessPrimitive dividedBy(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return 1.0*value / anotherValue;
         };
@@ -787,21 +787,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive remainderBy(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value % anotherValue;
         };
     }
     @Override
     public default IntegerToIntegerAccessPrimitive remainderBy(IntSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value % anotherValue;
         };
     }
     public default IntegerToIntegerAccessPrimitive remainderBy(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value % anotherValue;
         };
@@ -810,7 +810,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive square() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value * value;
         };
     }
@@ -818,7 +818,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToDoubleAccessPrimitive squareRoot () {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.sqrt(value);
         };
     }
@@ -826,7 +826,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToIntegerAccessPrimitive factorial() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             if (value <= 0) {
                 return 1;
             }
@@ -840,21 +840,21 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntegerToDoubleAccessPrimitive pow(int anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.pow(value, anotherValue);
         };
     }
     @Override
     public default IntegerToDoubleAccessPrimitive pow(IntSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return Math.pow(value, anotherValue);
         };
     }
     public default IntegerToDoubleAccessPrimitive pow(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return Math.pow(value, anotherValue);
         };

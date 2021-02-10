@@ -40,10 +40,10 @@ import lombok.val;
 
 
 public interface LongAccess<HOST> 
-        extends 
-            NumberAccess<HOST, Long, LongAccess<HOST>>, 
-            ToLongFunction<HOST>,
-            ConcreteAccess<HOST, Long, LongAccess<HOST>> {
+                    extends 
+                        NumberAccess<HOST, Long, LongAccess<HOST>>, 
+                        ToLongFunction<HOST>,
+                        ConcreteAccess<HOST, Long, LongAccess<HOST>> {
     
     
     public static <H> LongAccess<H> of(Function<H, Long> accessToValue) {
@@ -77,15 +77,22 @@ public interface LongAccess<HOST>
         return access;
     }
     
+    @Override
+    public default LongAccess<HOST> newAccess(Function<HOST, Long> accessToValue) {
+        return of(accessToValue);
+    }
+    
+    //== abstract functionalities ==
     
     public long applyAsLong(HOST host);
     
     public Long applyUnsafe(HOST host) throws Exception;
     
     
-    @Override
-    public default LongAccess<HOST> newAccess(Function<HOST, Long> accessToValue) {
-        return of(accessToValue);
+    //-- conversion --
+    
+    public default LongAccessBoxed<HOST> boxed() {
+        return host -> apply(host);
     }
     
     public default InstantAccess<HOST> toInstant() {

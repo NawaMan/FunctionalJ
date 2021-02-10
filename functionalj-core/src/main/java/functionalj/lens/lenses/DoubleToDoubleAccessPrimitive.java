@@ -103,7 +103,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     
     @Override
     public default DoubleToDoubleAccessPrimitive asDouble() {
-        return host -> access(this, host);
+        return host -> accessPrimitive(this, host);
     }
     
     @Override
@@ -119,7 +119,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToIntegerAccessPrimitive asInteger(int negativeOverflowValue, int positiveOverflowValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             if (value < Integer.MIN_VALUE)
                 return negativeOverflowValue;
             
@@ -133,7 +133,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToLongAccessPrimitive asLong(long negativeOverflowValue, long positiveOverflowValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             if (value < Long.MIN_VALUE)
                 return negativeOverflowValue;
             
@@ -147,7 +147,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive round() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.round(value);
         };
     }
@@ -164,7 +164,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive ceil() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.ceil(value);
         };
     }
@@ -182,7 +182,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive floor() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.floor(value);
         };
     }
@@ -198,7 +198,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive roundBy(double precision) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             if (precision == 0.0) {
                 return Math.round(value);
             }
@@ -209,7 +209,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive roundBy(DoubleSupplier precisionSupplier) {
         return host -> {
-            val value     = access(this, host);
+            val value     = accessPrimitive(this, host);
             val precision = getPrimitive(precisionSupplier);
             if (precision == 0.0) {
                 return Math.round(value);
@@ -220,7 +220,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     }
     public default DoubleToDoubleAccessPrimitive roundBy(DoubleToDoubleAccessPrimitive precisionFunction) {
         return host -> {
-            val value     = access(this, host);
+            val value     = accessPrimitive(this, host);
             val precision = accessPrimitive(precisionFunction, host);
             if (precision == 0.0) {
                 return Math.round(value);
@@ -233,7 +233,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive ceilBy(double precision) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             if (precision == 0.0) {
                 return Math.ceil(value);
             }
@@ -244,7 +244,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive ceilBy(DoubleSupplier precisionSupplier) {
         return host -> {
-            val value     = access(this, host);
+            val value     = accessPrimitive(this, host);
             val precision = getPrimitive(precisionSupplier);
             if (precision == 0.0) {
                 return Math.ceil(value);
@@ -255,7 +255,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     }
     public default DoubleToDoubleAccessPrimitive ceilBy(DoubleToDoubleAccessPrimitive precisionFunction) {
         return host -> {
-            val value     = access(this, host);
+            val value     = accessPrimitive(this, host);
             val precision = accessPrimitive(precisionFunction, host);
             if (precision == 0.0) {
                 return Math.ceil(value);
@@ -268,7 +268,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive floorBy(double precision) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             if (precision == 0.0) {
                 return Math.floor(value);
             }
@@ -279,7 +279,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive floorBy(DoubleSupplier precisionSupplier) {
         return host -> {
-            val value     = access(this, host);
+            val value     = accessPrimitive(this, host);
             val precision = getPrimitive(precisionSupplier);
             if (precision == 0.0) {
                 return Math.floor(value);
@@ -290,7 +290,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     }
     public default DoubleToDoubleAccessPrimitive floorBy(DoubleToDoubleAccessPrimitive precisionFunction) {
         return host -> {
-            val value     = access(this, host);
+            val value     = accessPrimitive(this, host);
             val precision = accessPrimitive(precisionFunction, host);
             if (precision == 0.0) {
                 return Math.floor(value);
@@ -302,12 +302,12 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     
     @Override
     public default DoubleToStringAccessPrimitive asString() {
-        return host -> "" + access(this, host);
+        return host -> "" + accessPrimitive(this, host);
     }
     @Override
     public default DoubleToStringAccessPrimitive asString(String template) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return String.format(template, value);
         };
     }
@@ -320,7 +320,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive that(DoublePredicate checker) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return checker.test(value);
         };
     }
@@ -328,21 +328,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIs(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value == anotherValue;
         };
     }
     @Override
     public default DoubleToBooleanAccessPrimitive thatIs(DoubleSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value == anotherValue;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatIs(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value == anotherValue;
         };
@@ -351,21 +351,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNot(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value != anotherValue;
         };
     }
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNot(DoubleSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value != anotherValue;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatIsNot(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value != anotherValue;
         };
@@ -374,7 +374,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsAnyOf(double ... otherValues) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             for (val anotherValue : otherValues) {
                 if (value == anotherValue) {
                     return true;
@@ -386,7 +386,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsAnyOf(DoubleFuncList otherValues) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return otherValues.anyMatch(anotherValue -> value == anotherValue);
         };
     }
@@ -394,7 +394,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNoneOf(double ... otherValues) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             for (val anotherValue : otherValues) {
                 if (value == anotherValue) {
                     return false;
@@ -406,7 +406,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNoneOf(DoubleFuncList otherValues) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return otherValues.noneMatch(anotherValue -> value == anotherValue);
         };
     }
@@ -449,7 +449,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsPositive() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value > 0;
         };
     }
@@ -457,7 +457,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNegative() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value < 0;
         };
     }
@@ -465,7 +465,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNotPositive() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value <= 0;
         };
     }
@@ -473,7 +473,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNotNegative() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value >= 0;
         };
     }
@@ -584,7 +584,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToIntegerAccessPrimitive compareTo(double anotherValue) {
         return host -> {
-            val value   = access(this, host);
+            val value   = accessPrimitive(this, host);
             val compare = comparePrimitive(value, anotherValue);
             return compare;
         };
@@ -592,7 +592,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToIntegerAccessPrimitive compareTo(DoubleSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             val compare      = comparePrimitive(value, anotherValue);
             return compare;
@@ -600,7 +600,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     }
     public default DoubleToIntegerAccessPrimitive compareTo(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             val compare      = comparePrimitive(value, anotherValue);
             return compare;
@@ -622,21 +622,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatGreaterThan(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value > anotherValue;
         };
     }
     @Override
     public default DoubleToBooleanAccessPrimitive thatGreaterThan(DoubleSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value > anotherValue;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatGreaterThan(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value > anotherValue;
         };
@@ -657,21 +657,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatLessThan(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value < anotherValue;
         };
     }
     @Override
     public default DoubleToBooleanAccessPrimitive thatLessThan(DoubleSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value < anotherValue;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatLessThan(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value < anotherValue;
         };
@@ -692,21 +692,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value >= anotherValue;
         };
     }
     @Override
     public default DoubleToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(DoubleSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value >= anotherValue;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value >= anotherValue;
         };
@@ -727,21 +727,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatLessThanOrEqualsTo(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value <= anotherValue;
         };
     }
     @Override
     public default DoubleToBooleanAccessPrimitive thatLessThanOrEqualsTo(DoubleSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value <= anotherValue;
         };
     }
     public default DoubleToBooleanAccessPrimitive thatLessThanOrEqualsTo(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value <= anotherValue;
         };
@@ -764,21 +764,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive min(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.min(value, anotherValue);
         };
     }
     @Override
     public default DoubleToDoubleAccessPrimitive min(DoubleSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return Math.min(value, anotherValue);
         };
     }
     public default DoubleToDoubleAccessPrimitive min(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return Math.min(value, anotherValue);
         };
@@ -787,21 +787,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive max(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.max(value, anotherValue);
         };
     }
     @Override
     public default DoubleToDoubleAccessPrimitive max(DoubleSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return Math.max(value, anotherValue);
         };
     }
     public default DoubleToDoubleAccessPrimitive max(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return Math.max(value, anotherValue);
         };
@@ -812,7 +812,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsRound() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return 1.0*Math.round(value) == value;
         };
     }
@@ -820,7 +820,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive abs() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return (value < 0) ? -value : value;
         };
     }
@@ -828,7 +828,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive negate() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return -value;
         };
     }
@@ -836,7 +836,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive signum() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return (value == 0) ? 0 : (value < 0) ? -1 : 1;
         };
     }
@@ -844,21 +844,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive plus(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value + anotherValue;
         };
     }
     @Override
     public default DoubleToDoubleAccessPrimitive plus(DoubleSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value + anotherValue;
         };
     }
     public default DoubleToDoubleAccessPrimitive plus(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value + anotherValue;
         };
@@ -867,21 +867,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive minus(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value - anotherValue;
         };
     }
     @Override
     public default DoubleToDoubleAccessPrimitive minus(DoubleSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value - anotherValue;
         };
     }
     public default DoubleToDoubleAccessPrimitive minus(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value - anotherValue;
         };
@@ -890,21 +890,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive time(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value * anotherValue;
         };
     }
     @Override
     public default DoubleToDoubleAccessPrimitive time(DoubleSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value * anotherValue;
         };
     }
     public default DoubleToDoubleAccessPrimitive time(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value * anotherValue;
         };
@@ -913,21 +913,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive dividedBy(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return 1.0 * value / anotherValue;
         };
     }
     @Override
     public default DoubleToDoubleAccessPrimitive dividedBy(DoubleSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return 1.0 * value / anotherValue;
         };
     }
     public default DoubleToDoubleAccessPrimitive dividedBy(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return 1.0*value / anotherValue;
         };
@@ -936,7 +936,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive remainderBy(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             val division = Math.floor(value / anotherValue);
             return value - (division * anotherValue);
         };
@@ -944,7 +944,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive remainderBy(DoubleSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             val division = Math.floor(value / anotherValue);
             return value - (division * anotherValue);
@@ -952,7 +952,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     }
     public default DoubleToDoubleAccessPrimitive remainderBy(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             val division     = Math.floor(value / anotherValue);
             return value - (division * anotherValue);
@@ -962,7 +962,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive square() {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return value * value;
         };
     }
@@ -970,7 +970,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive squareRoot () {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.sqrt(value);
         };
     }
@@ -978,21 +978,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive pow(double anotherValue) {
         return host -> {
-            val value = access(this, host);
+            val value = accessPrimitive(this, host);
             return Math.pow(value, anotherValue);
         };
     }
     @Override
     public default DoubleToDoubleAccessPrimitive pow(DoubleSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return Math.pow(value, anotherValue);
         };
     }
     public default DoubleToDoubleAccessPrimitive pow(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return Math.pow(value, anotherValue);
         };
@@ -1001,7 +1001,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive exp() {
         return host -> {
-            double doubleValue = access(this, host);
+            double doubleValue = accessPrimitive(this, host);
             return Math.exp(doubleValue);
         };
     }
@@ -1015,7 +1015,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive expm1() {
         return host -> {
-            double doubleValue = access(this, host);
+            double doubleValue = accessPrimitive(this, host);
             return Math.expm1(doubleValue);
         };
     }
@@ -1023,7 +1023,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive log() {
         return host -> {
-            double doubleValue = access(this, host);
+            double doubleValue = accessPrimitive(this, host);
             return Math.log(doubleValue);
         };
     }
@@ -1031,7 +1031,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive log10() {
         return host -> {
-            double doubleValue = access(this, host);
+            double doubleValue = accessPrimitive(this, host);
             return Math.log10(doubleValue);
         };
     }
@@ -1056,7 +1056,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleToDoubleAccessPrimitive log1p() {
         return host -> {
-            double doubleValue = access(this, host);
+            double doubleValue = accessPrimitive(this, host);
             return Math.log1p(doubleValue);
         };
     }
