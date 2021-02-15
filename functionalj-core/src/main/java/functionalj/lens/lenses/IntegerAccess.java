@@ -29,6 +29,8 @@ import static functionalj.function.Apply.getPrimitive;
 import static functionalj.function.Compare.compareOrNull;
 import static java.util.Objects.requireNonNull;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
@@ -129,6 +131,18 @@ public interface IntegerAccess<HOST>
         return host -> {
             val value = access(this, host);
             return String.format(template, value);
+        };
+    }
+    public default BigIntegerAccess<HOST> asBitInteger() {
+        return host -> {
+            val value = access(this, host);
+            return BigInteger.valueOf(value);
+        };
+    }
+    public default BigDecimalAccess<HOST> asBitDecimal() {
+        return host -> {
+            val value = access(this, host);
+            return BigDecimal.valueOf(value);
         };
     }
     

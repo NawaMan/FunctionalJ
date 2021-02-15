@@ -96,7 +96,7 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
         };
     }
     
-    default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, DATA data) {
+    default Func1<HOST, HOST> changeWhen(Predicate<DATA> check, DATA data) {
         return host -> {
             val originalData = apply(host);
             val shouldChange = check.test(originalData);
@@ -107,7 +107,7 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
             return apply(host, newData);
         };
     }
-    default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, Supplier<DATA> dataSupplier) {
+    default Func1<HOST, HOST> changeWhen(Predicate<DATA> check, Supplier<DATA> dataSupplier) {
         return host -> {
             val originalData = apply(host);
             val shouldChange = check.test(originalData);
@@ -118,7 +118,7 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
             return apply(host, newData);
         };
     }
-    default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, Function<DATA, DATA> dataMapper) {
+    default Func1<HOST, HOST> changeWhen(Predicate<DATA> check, Function<DATA, DATA> dataMapper) {
         return host -> {
             val originalData = apply(host);
             val shouldChange = check.test(originalData);
@@ -129,7 +129,7 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
             return apply(host, newData);
         };
     }
-    default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, BiFunction<HOST, DATA, DATA> mapper) {
+    default Func1<HOST, HOST> changeWhen(Predicate<DATA> check, BiFunction<HOST, DATA, DATA> mapper) {
         return host -> {
             val originalData = apply(host);
             val shouldChange = check.test(originalData);

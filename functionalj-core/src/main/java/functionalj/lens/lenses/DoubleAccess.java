@@ -29,6 +29,7 @@ import static functionalj.function.Apply.getPrimitive;
 import static functionalj.function.Compare.compareOrNull;
 import static java.util.Objects.requireNonNull;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
@@ -331,6 +332,19 @@ public interface DoubleAccess<HOST>
         return host -> {
             val value = access(this, host);
             return String.format(template, value);
+        };
+    }
+    
+    public default BigIntegerAccess<HOST> asBitInteger() {
+        return host -> {
+            val value = access(this, host);
+            return BigDecimal.valueOf(value).toBigInteger();
+        };
+    }
+    public default BigDecimalAccess<HOST> asBitDecimal() {
+        return host -> {
+            val value = access(this, host);
+            return BigDecimal.valueOf(value);
         };
     }
     
