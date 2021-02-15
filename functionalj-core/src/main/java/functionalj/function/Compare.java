@@ -6,9 +6,14 @@ public interface Compare {
         if ((a == null) || (b == null))
             return null;
         
-        return Double.compare(a, b);
+        return Integer.compare(a, b);
     }
-    
+    public static Integer compareOrNull(Long a, Long b) {
+        if ((a == null) || (b == null))
+            return null;
+        
+        return Long.compare(a, b);
+    }
     public static Integer compareOrNull(Double a, Double b) {
         if ((a == null) || (b == null))
             return null;
@@ -17,9 +22,11 @@ public interface Compare {
     }
     
     public static int comparePrimitive(int a, int b) {
-        return Double.compare(a, b);
+        return Integer.compare(a, b);
     }
-    
+    public static int comparePrimitive(long a, long b) {
+        return Long.compare(a, b);
+    }
     public static int comparePrimitive(double a, double b) {
         return Double.compare(a, b);
     }

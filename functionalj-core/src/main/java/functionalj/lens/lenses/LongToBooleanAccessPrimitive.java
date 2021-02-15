@@ -23,12 +23,23 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.LongPredicate;
 
+import lombok.val;
+
 @FunctionalInterface
-public interface LongToBooleanAccessPrimitive extends BooleanAccessPrimitive<Long>, LongPredicate {
+public interface LongToBooleanAccessPrimitive 
+                    extends 
+                        BooleanAccessPrimitive<Long>,
+                        LongPredicate {
+    
+    //== abstract functionalities ==
     
     public boolean applyLongToBoolean(long host);
+    
+    
+    //== default functionalities ==
     
     public default boolean test(long value) {
         return applyLongToBoolean(value);
@@ -46,9 +57,57 @@ public interface LongToBooleanAccessPrimitive extends BooleanAccessPrimitive<Lon
         return applyLongToBoolean(host);
     }
     
+    //== Functionality ==
+    
     @Override
     public default LongToBooleanAccessPrimitive negate() {
-        return host -> !applyLongToBoolean(host);
+        return host -> {
+            val boolValue = test(host);
+            return !boolValue;
+        };
+    }
+    
+    
+    public default LongToBooleanAccessPrimitive or(boolean anotherBoolean) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue || anotherBoolean;
+        };
+    }
+    public default LongToBooleanAccessPrimitive or(BooleanSupplier anotherSupplier) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue || anotherValue;
+        };
+    }
+    public default LongToBooleanAccessPrimitive or(LongToBooleanAccessPrimitive anotherAccess) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue || anotherValue;
+        };
+    }
+    
+    public default LongToBooleanAccessPrimitive and(boolean anotherBoolean) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue && anotherBoolean;
+        };
+    }
+    public default LongToBooleanAccessPrimitive and(BooleanSupplier anotherSupplier) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue && anotherValue;
+        };
+    }
+    public default LongToBooleanAccessPrimitive and(LongToBooleanAccessPrimitive anotherAccess) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue && anotherValue;
+        };
     }
     
 }

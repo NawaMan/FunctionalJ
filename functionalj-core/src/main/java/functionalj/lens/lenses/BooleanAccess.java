@@ -25,6 +25,7 @@ package functionalj.lens.lenses;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -33,10 +34,10 @@ import lombok.val;
 
 
 public interface BooleanAccess<HOST> 
-        extends 
-            AnyAccess<HOST, Boolean>, 
-            Predicate<HOST>, 
-            ConcreteAccess<HOST, Boolean, BooleanAccess<HOST>> {
+                    extends 
+                        AnyAccess<HOST, Boolean>, 
+                        Predicate<HOST>, 
+                        ConcreteAccess<HOST, Boolean, BooleanAccess<HOST>> {
     
     public static <H> BooleanAccess<H> of(Function<H, Boolean> accessToValue) {
         requireNonNull(accessToValue);
@@ -69,16 +70,18 @@ public interface BooleanAccess<HOST>
         return access;
     }
     
+    @Override
+    public default BooleanAccess<HOST> newAccess(Function<HOST, Boolean> accessToValue) {
+        return of(accessToValue);
+    }
+    
+    //== abstract functionalities ==
     
     public boolean test(HOST host);
     
     public Boolean applyUnsafe(HOST host) throws Exception;
     
-    
-    @Override
-    public default BooleanAccess<HOST> newAccess(Function<HOST, Boolean> accessToValue) {
-        return of(accessToValue);
-    }
+    //== Functionality ==
     
     public default BooleanAccessPrimitive<HOST> nagate() {
         return host -> {
@@ -86,30 +89,47 @@ public interface BooleanAccess<HOST>
             return !boolValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> or(boolean anotherBoolean) {
         return host -> {
             val boolValue = test(host);
             return boolValue || anotherBoolean;
         };
     }
+    public default BooleanAccessPrimitive<HOST> or(BooleanSupplier anotherSupplier) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue || anotherValue;
+        };
+    }
+    public default BooleanAccessPrimitive<HOST> or(BooleanAccess<HOST> anotherAccess) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue || anotherValue;
+        };
+    }
+    
     public default BooleanAccessPrimitive<HOST> and(boolean anotherBoolean) {
         return host -> {
             val boolValue = test(host);
             return boolValue && anotherBoolean;
         };
     }
-    public default BooleanAccessPrimitive<HOST> or(Predicate<? super HOST> anotherPredicate) {
+    public default BooleanAccessPrimitive<HOST> and(BooleanSupplier anotherSupplier) {
         return host -> {
-            val boolValue = test(host);
-            return boolValue || anotherPredicate.test(host);
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue && anotherValue;
         };
     }
-    public default BooleanAccessPrimitive<HOST> and(Predicate<? super HOST> anotherPredicate) {
+    public default BooleanAccessPrimitive<HOST> and(BooleanAccess<HOST> anotherAccess) {
         return host -> {
-            val boolValue = test(host);
-            return boolValue && anotherPredicate.test(host);
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue && anotherValue;
         };
     }
     
 }
-

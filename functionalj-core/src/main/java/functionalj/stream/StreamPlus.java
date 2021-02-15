@@ -786,7 +786,6 @@ public interface StreamPlus<DATA>
         });
     }
     
-    @SuppressWarnings("hiding")
     @Eager
     @Terminal
     @Override

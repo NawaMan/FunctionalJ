@@ -23,752 +23,858 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.function.Apply.accessPrimitive;
+import static functionalj.function.Apply.getPrimitive;
+import static functionalj.function.Compare.comparePrimitive;
+
+import java.util.function.Function;
+import java.util.function.LongFunction;
+import java.util.function.LongPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.LongUnaryOperator;
 
-import functionalj.function.LongBiFunctionPrimitive;
-import functionalj.function.ToLongBiLongFunction;
 import lombok.val;
 
 
+/**
+ * Classes implementing this interface know how to access from a long to a long value.
+ **/
 @FunctionalInterface
-public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccessPrimitive<Long> {
+public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccessPrimitive<Long>, LongFunction<Long> {
+    
+    //== Constructor ==
+    
+    public static LongToLongAccessPrimitive of(LongToLongAccessPrimitive accessToValue) {
+        return accessToValue;
+    }
+    
+    public static LongToLongAccessPrimitive from(LongUnaryOperator accessToValue) {
+        return host -> accessToValue.applyAsLong(host);
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive newAccess(Function<Long, Long> accessToValue) {
+        return accessToValue::apply;
+    }
+    
+    public default LongToLongAccessPrimitive newAccess(LongUnaryOperator accessToValue) {
+        return accessToValue::applyAsLong;
+    }
+    
+    //== abstract functionalities ==
     
     public long applyLongToLong(long host);
     
+    
+    @Override
+    public default Long apply(long host) {
+        return applyLongToLong(host);
+    }
+    
+    @Override
     public default long applyAsLong(long host) {
         return applyLongToLong(host);
     }
     
+    @Override
     public default long applyAsLong(Long host) {
         return applyLongToLong(host);
     }
     
-    public static long apply(LongAccess<Long> access, long value) {
-        val resValue 
-            = (access instanceof LongToLongAccessPrimitive)
-            ? ((LongToLongAccessPrimitive)access).applyLongToLong(value)
-            : access.applyAsLong(value);
-        return resValue;
-    }
     
+    //-- conversion --
+    
+    @Override
     public default LongToLongAccessBoxed boxed() {
+        return host -> apply(host);
+    }
+    
+    @Override
+    public default LongToIntegerAccessPrimitive asInteger() {
+        return asInteger(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+    
+    @Override
+    public default LongToIntegerAccessPrimitive asInteger(int overflowValue) {
+        return asInteger(overflowValue);
+    }
+    
+    @Override
+    public default LongToIntegerAccessPrimitive asInteger(int negativeOverflowValue, int positiveOverflowValue) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return longValue;
+            val value = accessPrimitive(this, host);
+            if (value < Integer.MIN_VALUE)
+                return negativeOverflowValue;
+            
+            if (value > Integer.MAX_VALUE)
+                return positiveOverflowValue;
+            
+            return (int)Math.round(value);
         };
     }
     
-    
-    //-- Compare --
-    
-    public default LongToIntegerAccessPrimitive toInteger() {
-        return host -> {
-            long longValue = applyAsLong(host);
-            return (int)longValue;
-        };
+    @Override
+    public default LongToLongAccessPrimitive asLong() {
+        return host -> accessPrimitive(this, host);
     }
     
-    public default LongToLongAccessPrimitive toLong() {
-        return host -> {
-            long longValue = applyAsLong(host);
-            return longValue;
-        };
+    @Override
+    public default LongToDoubleAccessPrimitive asDouble() {
+        return host -> accessPrimitive(this, host);
     }
     
-    public default LongToDoubleAccessPrimitive toDouble() {
+    @Override
+    public default LongToStringAccessPrimitive asString() {
+        return host -> "" + accessPrimitive(this, host);
+    }
+    @Override
+    public default LongToStringAccessPrimitive asString(String template) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return (double)longValue;
+            val value = accessPrimitive(this, host);
+            return String.format(template, value);
         };
     }
     
-    public default LongToLongAccessPrimitive toZero() {
-        return host -> 0;
-    }
+    //-- Equality --
     
-    public default LongToLongAccessPrimitive toOne() {
-        return host -> 1;
-    }
-    
-    public default LongToLongAccessPrimitive toMinusOne() {
-        return host -> -1;
-    }
-    
-    public default LongToLongAccessPrimitive abs() {
+    @Override
+    public default LongToBooleanAccessPrimitive that(LongPredicate checker) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return (longValue < 0) ? -longValue : longValue;
+            val value = accessPrimitive(this, host);
+            return checker.test(value);
         };
     }
     
-    public default LongToLongAccessPrimitive negate() {
+    @Override
+    public default LongToBooleanAccessPrimitive thatIs(long anotherValue) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return -longValue;
+            val value = accessPrimitive(this, host);
+            return value == anotherValue;
+        };
+    }
+    @Override
+    public default LongToBooleanAccessPrimitive thatIs(LongSupplier anotherSupplier) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(anotherSupplier);
+            return value == anotherValue;
+        };
+    }
+    public default LongToBooleanAccessPrimitive thatIs(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value == anotherValue;
         };
     }
     
-    public default LongToLongAccessPrimitive signum() {
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsNot(long anotherValue) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return (longValue == 0) ? 0 : (longValue < 0) ? -1 : 1;
+            val value = accessPrimitive(this, host);
+            return value != anotherValue;
+        };
+    }
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsNot(LongSupplier anotherSupplier) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(anotherSupplier);
+            return value != anotherValue;
+        };
+    }
+    public default LongToBooleanAccessPrimitive thatIsNot(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value != anotherValue;
         };
     }
     
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsAnyOf(long ... otherValues) {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            for (val anotherValue : otherValues) {
+                if (value == anotherValue) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+//    @Override
+//    public default LongToBooleanAccessPrimitive thatIsAnyOf(LongFuncList otherValues) {
+//        return host -> {
+//            val value = accessPrimitive(this, host);
+//            return otherValues.anyMatch(anotherValue -> value == anotherValue);
+//        };
+//    }
     
-    public default LongToLongAccessPrimitive bitAnd(long value) {
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsNoneOf(long ... otherValues) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return longValue & value;
+            val value = accessPrimitive(this, host);
+            for (val anotherValue : otherValues) {
+                if (value == anotherValue) {
+                    return false;
+                }
+            }
+            return true;
         };
     }
-    public default LongToLongAccessPrimitive bitAnd(LongSupplier anotherSupplier) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = anotherSupplier.getAsLong();
-            return longValue & anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive bitAnd(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue & anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive bitAnd(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue & anotherValue;
-        };
-    }
+//    @Override
+//    public default LongToBooleanAccessPrimitive thatIsNoneOf(LongFuncList otherValues) {
+//        return host -> {
+//            val value = accessPrimitive(this, host);
+//            return otherValues.noneMatch(anotherValue -> value == anotherValue);
+//        };
+//    }
     
-    public default LongToLongAccessPrimitive bitOr(long value) {
-        return host -> {
-            long longValue = applyAsLong(host);
-            return longValue | value;
-        };
-    }
-    public default LongToLongAccessPrimitive bitOr(LongSupplier anotherSupplier) {
-        return host -> {
-            long longValue = applyAsLong(host);
-            long value    = anotherSupplier.getAsLong();
-            return longValue | value;
-        };
-    }
-    public default LongToLongAccessPrimitive bitOr(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue | anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive bitOr(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue | anotherValue;
-        };
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsOne() {
+        return thatIs(1);
     }
     
-    public default LongToBooleanAccessPrimitive bitAt(long bitIndex) {
-        val p = (int)Math.pow(2, bitIndex);
-        return host -> {
-            long longValue = applyAsLong(host);
-            return (longValue & p) != 0;
-        };
-    }
-    public default LongToBooleanAccessPrimitive bitAt(LongSupplier anotherSupplier) {
-        return host -> {
-            long longValue = applyAsLong(host);
-            long value    = anotherSupplier.getAsLong();
-            val p        = (int)Math.pow(2, value);
-            return (longValue & p) != 0;
-        };
-    }
-    public default LongToBooleanAccessPrimitive bitAt(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            val p            = (int)Math.pow(2, anotherValue);
-            return (longValue & p) != 0;
-        };
-    }
-    public default LongToBooleanAccessPrimitive bitAt(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            val p        = (int)Math.pow(2, anotherValue);
-            return (longValue & p) != 0;
-        };
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsZero() {
+        return thatIs(0);
     }
     
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsMinusOne() {
+        return thatIs(-1);
+    }
     
-    public default LongToIntegerAccessPrimitive compareTo(long anotherValue) {
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsFourtyTwo() {
+        return thatIs(42);
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsNotOne() {
+        return thatIsNot(1);
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsNotZero() {
+        return thatIsNot(0);
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsNotMinusOne() {
+        return thatIsNot(-1);
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsPositive() {
         return host -> {
-            long longValue = applyAsLong(host);
-            int  compare  = Long.compare(longValue, anotherValue);
-            return compare;
+            val value = accessPrimitive(this, host);
+            return value > 0;
         };
     }
-    public default LongToIntegerAccessPrimitive compareTo(LongSupplier anotherSupplier) {
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsNegative() {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = anotherSupplier.getAsLong();
-            int  compare      = Long.compare(longValue, anotherValue);
-            return compare;
+            val value = accessPrimitive(this, host);
+            return value < 0;
         };
     }
-    public default LongToIntegerAccessPrimitive compareTo(LongAccess<Long> anotherAccess) {
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsNotPositive() {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            int  compare      = Long.compare(longValue, anotherValue);
-            return compare;
+            val value = accessPrimitive(this, host);
+            return value <= 0;
         };
     }
-    public default LongToIntegerAccessPrimitive compareTo(ToLongBiLongFunction<Long> anotherFunction) {
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsNotNegative() {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            int  compare      = Long.compare(longValue, anotherValue);
-            return compare;
+            val value = accessPrimitive(this, host);
+            return value >= 0;
         };
     }
     
-    public default LongToIntegerAccessPrimitive cmp(long anotherValue) {
-        return compareTo(anotherValue);
-    }
-    public default LongToIntegerAccessPrimitive cmp(LongSupplier anotherSupplier) {
-        return compareTo(anotherSupplier);
-    }
-    public default LongToIntegerAccessPrimitive cmp(LongAccess<Long> anotherAccess) {
-        return compareTo(anotherAccess);
-    }
-    public default LongToIntegerAccessPrimitive cmp(ToLongBiLongFunction<Long> anotherFunction) {
-        return compareTo(anotherFunction);
-    }
-    
-    public default LongToBooleanAccessPrimitive thatIsOdd() {
-        return host -> {
-            long theValue = applyAsLong(host);
-            return theValue % 2 == 1;
-        };
-    }
-    
-    public default LongToBooleanAccessPrimitive thatIsEven() {
-        return host -> {
-            long theValue = applyAsLong(host);
-            return theValue % 2 == 0;
-        };
-    }
-    
+    @Override
     public default LongToBooleanAccessPrimitive thatEquals(long anotherValue) {
         return host -> {
-            long theValue = applyAsLong(host);
-            return theValue == anotherValue;
+            val value = accessPrimitive(this, host);
+            return value == anotherValue;
         };
     }
+    @Override
     public default LongToBooleanAccessPrimitive thatEquals(LongSupplier anotherSupplier) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = anotherSupplier.getAsLong();
-            return longValue == anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(anotherSupplier);
+            return value == anotherValue;
         };
     }
-    public default LongToBooleanAccessPrimitive thatEquals(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive thatEquals(LongToLongAccessPrimitive anotherAccess) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue == anotherValue;
-        };
-    }
-    public default LongToBooleanAccessPrimitive thatEquals(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue == anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value == anotherValue;
         };
     }
     
+    @Override
     public default LongToBooleanAccessPrimitive eq(long anotherValue) {
         return thatEquals(anotherValue);
     }
+    @Override
     public default LongToBooleanAccessPrimitive eq(LongSupplier anotherSupplier) {
         return thatEquals(anotherSupplier);
     }
-    public default LongToBooleanAccessPrimitive eq(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive eq(LongToLongAccessPrimitive anotherAccess) {
         return thatEquals(anotherAccess);
     }
-    public default LongToBooleanAccessPrimitive eq(ToLongBiLongFunction<Long> anotherFunction) {
-        return thatEquals(anotherFunction);
-    }
     
+    @Override
     public default LongToBooleanAccessPrimitive thatNotEquals(long anotherValue) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return longValue != anotherValue;
+            val value = accessPrimitive(this, host);
+            return value != anotherValue;
         };
     }
+    @Override
     public default LongToBooleanAccessPrimitive thatNotEquals(LongSupplier anotherSupplier) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = anotherSupplier.getAsLong();
-            return longValue != anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(anotherSupplier);
+            return value != anotherValue;
         };
     }
-    public default LongToBooleanAccessPrimitive thatNotEquals(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive thatNotEquals(LongToLongAccessPrimitive anotherAccess) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue != anotherValue;
-        };
-    }
-    public default LongToBooleanAccessPrimitive thatNotEquals(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue != anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value != anotherValue;
         };
     }
     
+    @Override
     public default LongToBooleanAccessPrimitive neq(long anotherValue) {
         return thatNotEquals(anotherValue);
     }
+    @Override
     public default LongToBooleanAccessPrimitive neq(LongSupplier anotherSupplier) {
         return thatNotEquals(anotherSupplier);
     }
-    public default LongToBooleanAccessPrimitive neq(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive neq(LongToLongAccessPrimitive anotherAccess) {
         return thatNotEquals(anotherAccess);
     }
-    public default LongToBooleanAccessPrimitive neq(ToLongBiLongFunction<Long> anotherFunction) {
-        return thatNotEquals(anotherFunction);
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatEqualsOne() {
+        return thatEquals(1);
     }
     
+    @Override
+    public default LongToBooleanAccessPrimitive thatEqualsZero() {
+        return thatEquals(0);
+    }
+    
+    public default LongToBooleanAccessPrimitive thatEqualsMinusOne() {
+        return thatEquals(-1);
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatEqualsFourtyTwo() {
+        return thatEquals(42);
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatNotEqualsOne() {
+        return thatEquals(1);
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatNotEqualsZero() {
+        return thatEquals(0);
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatNotEqualsMinusOne() {
+        return thatEquals(-1);
+    }
+    
+    //-- Compare --
+    
+    @Override
+    public default LongComparator ascendingOrder() {
+        return (a, b) -> {
+            val aValue = accessPrimitive(this, a);
+            val bValue = accessPrimitive(this, b);
+            return comparePrimitive(aValue, bValue);
+        };
+    }
+    
+    @Override
+    public default LongComparator descendingOrder() {
+        return (a, b) -> {
+            val aValue = accessPrimitive(this, a);
+            val bValue = accessPrimitive(this, b);
+            return comparePrimitive(bValue, aValue);
+        };
+    }
+    
+    @Override
+    public default LongToIntegerAccessPrimitive compareTo(long anotherValue) {
+        return host -> {
+            val value   = accessPrimitive(this, host);
+            val compare = comparePrimitive(value, anotherValue);
+            return compare;
+        };
+    }
+    @Override
+    public default LongToIntegerAccessPrimitive compareTo(LongSupplier anotherSupplier) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(anotherSupplier);
+            val compare      = comparePrimitive(value, anotherValue);
+            return compare;
+        };
+    }
+    public default LongToIntegerAccessPrimitive compareTo(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            val compare      = comparePrimitive(value, anotherValue);
+            return compare;
+        };
+    }
+    
+    @Override
+    public default LongToIntegerAccessPrimitive cmp(long anotherValue) {
+        return compareTo(anotherValue);
+    }
+    @Override
+    public default LongToIntegerAccessPrimitive cmp(LongSupplier anotherSupplier) {
+        return compareTo(anotherSupplier);
+    }
+    public default LongToIntegerAccessPrimitive cmp(LongToLongAccessPrimitive anotherAccess) {
+        return compareTo(anotherAccess);
+    }
+    
+    @Override
     public default LongToBooleanAccessPrimitive thatGreaterThan(long anotherValue) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return longValue > anotherValue;
+            val value = accessPrimitive(this, host);
+            return value > anotherValue;
         };
     }
+    @Override
     public default LongToBooleanAccessPrimitive thatGreaterThan(LongSupplier anotherSupplier) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = anotherSupplier.getAsLong();
-            return longValue > anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(anotherSupplier);
+            return value > anotherValue;
         };
     }
-    public default LongToBooleanAccessPrimitive thatGreaterThan(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive thatGreaterThan(LongToLongAccessPrimitive anotherAccess) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue > anotherValue;
-        };
-    }
-    public default LongToBooleanAccessPrimitive thatGreaterThan(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue > anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value > anotherValue;
         };
     }
     
+    @Override
     public default LongToBooleanAccessPrimitive gt(long anotherValue) {
         return thatGreaterThan(anotherValue);
     }
+    @Override
     public default LongToBooleanAccessPrimitive gt(LongSupplier anotherSupplier) {
         return thatGreaterThan(anotherSupplier);
     }
-    public default LongToBooleanAccessPrimitive gt(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive gt(LongToLongAccessPrimitive anotherAccess) {
         return thatGreaterThan(anotherAccess);
     }
-    public default LongToBooleanAccessPrimitive gt(ToLongBiLongFunction<Long> anotherFunction) {
-        return thatGreaterThan(anotherFunction);
-    }
     
+    @Override
     public default LongToBooleanAccessPrimitive thatLessThan(long anotherValue) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return longValue < anotherValue;
+            val value = accessPrimitive(this, host);
+            return value < anotherValue;
         };
     }
+    @Override
     public default LongToBooleanAccessPrimitive thatLessThan(LongSupplier anotherSupplier) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = anotherSupplier.getAsLong();
-            return longValue < anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(anotherSupplier);
+            return value < anotherValue;
         };
     }
-    public default LongToBooleanAccessPrimitive thatLessThan(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive thatLessThan(LongToLongAccessPrimitive anotherAccess) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue < anotherValue;
-        };
-    }
-    public default LongToBooleanAccessPrimitive thatLessThan(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue < anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value < anotherValue;
         };
     }
     
+    @Override
     public default LongToBooleanAccessPrimitive lt(long anotherValue) {
         return thatLessThan(anotherValue);
     }
+    @Override
     public default LongToBooleanAccessPrimitive lt(LongSupplier anotherSupplier) {
         return thatLessThan(anotherSupplier);
     }
-    public default LongToBooleanAccessPrimitive lt(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive lt(LongToLongAccessPrimitive anotherAccess) {
         return thatLessThan(anotherAccess);
     }
-    public default LongToBooleanAccessPrimitive lt(ToLongBiLongFunction<Long> anotherFunction) {
-        return thatLessThan(anotherFunction);
-    }
     
+    @Override
     public default LongToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(long anotherValue) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return longValue >= anotherValue;
+            val value = accessPrimitive(this, host);
+            return value >= anotherValue;
         };
     }
+    @Override
     public default LongToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(LongSupplier anotherSupplier) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = anotherSupplier.getAsLong();
-            return longValue >= anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(anotherSupplier);
+            return value >= anotherValue;
         };
     }
-    public default LongToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(LongToLongAccessPrimitive anotherAccess) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue >= anotherValue;
-        };
-    }
-    public default LongToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue >= anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value >= anotherValue;
         };
     }
     
+    @Override
     public default LongToBooleanAccessPrimitive gteq(long anotherValue) {
         return thatGreaterThanOrEqualsTo(anotherValue);
     }
+    @Override
     public default LongToBooleanAccessPrimitive gteq(LongSupplier anotherSupplier) {
         return thatGreaterThanOrEqualsTo(anotherSupplier);
     }
-    public default LongToBooleanAccessPrimitive gteq(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive gteq(LongToLongAccessPrimitive anotherAccess) {
         return thatGreaterThanOrEqualsTo(anotherAccess);
     }
-    public default LongToBooleanAccessPrimitive gteq(ToLongBiLongFunction<Long> anotherFunction) {
-        return thatGreaterThanOrEqualsTo(anotherFunction);
-    }
     
+    @Override
     public default LongToBooleanAccessPrimitive thatLessThanOrEqualsTo(long anotherValue) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return longValue <= anotherValue;
+            val value = accessPrimitive(this, host);
+            return value <= anotherValue;
         };
     }
+    @Override
     public default LongToBooleanAccessPrimitive thatLessThanOrEqualsTo(LongSupplier anotherSupplier) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = anotherSupplier.getAsLong();
-            return longValue <= anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(anotherSupplier);
+            return value <= anotherValue;
         };
     }
-    public default LongToBooleanAccessPrimitive thatLessThanOrEqualsTo(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive thatLessThanOrEqualsTo(LongToLongAccessPrimitive anotherAccess) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue <= anotherValue;
-        };
-    }
-    public default LongToBooleanAccessPrimitive thatLessThanOrEqualsTo(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue <= anotherValue;
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value <= anotherValue;
         };
     }
     
+    @Override
     public default LongToBooleanAccessPrimitive lteq(long anotherValue) {
         return thatLessThanOrEqualsTo(anotherValue);
     }
+    @Override
     public default LongToBooleanAccessPrimitive lteq(LongSupplier anotherSupplier) {
         return thatLessThanOrEqualsTo(anotherSupplier);
     }
-    public default LongToBooleanAccessPrimitive lteq(LongAccess<Long> anotherAccess) {
+    public default LongToBooleanAccessPrimitive lteq(LongToLongAccessPrimitive anotherAccess) {
         return thatLessThanOrEqualsTo(anotherAccess);
     }
-    public default LongToBooleanAccessPrimitive lteq(ToLongBiLongFunction<Long> anotherFunction) {
-        return thatLessThanOrEqualsTo(anotherFunction);
-    }
     
-    public default LongToLongAccessPrimitive plus(long value) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = value;
-            return longValue + anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive plus(LongSupplier valueSupplier) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = valueSupplier.getAsLong();
-            return longValue + anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive plus(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue + anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive plus(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue + anotherValue;
-        };
-    }
+    //-- Min+Max --
     
-    public default LongToLongAccessPrimitive minus(long value) {
+    @Override
+    public default LongToLongAccessPrimitive min(long anotherValue) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = value;
-            return longValue - anotherValue;
+            val value = accessPrimitive(this, host);
+            return Math.min(value, anotherValue);
         };
     }
-    public default LongToLongAccessPrimitive minus(LongSupplier valueSupplier) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = valueSupplier.getAsLong();
-            return longValue - anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive minus(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue - anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive minus(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue - anotherValue;
-        };
-    }
-    
-    public default LongToLongAccessPrimitive time(long value) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = value;
-            return longValue * anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive time(LongSupplier valueSupplier) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = valueSupplier.getAsLong();
-            return longValue * anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive time(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue * anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive time(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue * anotherValue;
-        };
-    }
-    
-    public default LongToDoubleAccessPrimitive dividedBy(long value) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = value;
-            return 1.0 * longValue / anotherValue;
-        };
-    }
-    public default LongToDoubleAccessPrimitive dividedBy(LongSupplier anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = anotherAccess.getAsLong();
-            return 1.0*longValue / anotherValue;
-        };
-    }
-    public default LongToDoubleAccessPrimitive dividedBy(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return 1.0*longValue / anotherValue;
-        };
-    }
-    public default LongToDoubleAccessPrimitive dividedBy(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return 1.0*longValue / anotherValue;
-        };
-    }
-    
-    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(long value) {
-        return host -> {
-            long intValue     = applyAsLong(host);
-            long anotherValue = value;
-            return intValue % anotherValue == 0;
-        };
-    }
-    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(LongSupplier anotherAccess) {
-        return host -> {
-            long intValue     = applyAsLong(host);
-            long anotherValue = anotherAccess.getAsLong();
-            return intValue % anotherValue == 0;
-        };
-    }
-    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long intValue     = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return intValue % anotherValue == 0;
-        };
-    }
-    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long intValue     = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, intValue);
-            return intValue % anotherValue == 0;
-        };
-    }
-    
-    public default LongToLongAccessPrimitive remainderBy(long value) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = value;
-            return longValue % anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive remainderBy(LongSupplier valueSupplier) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = valueSupplier.getAsLong();
-            return longValue % anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive remainderBy(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return longValue % anotherValue;
-        };
-    }
-    public default LongToLongAccessPrimitive remainderBy(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return longValue % anotherValue;
-        };
-    }
-    
-    public default LongToDoubleAccessPrimitive pow(long value) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = value;
-            return Math.pow(longValue, anotherValue);
-        };
-    }
-    public default LongToDoubleAccessPrimitive pow(LongSupplier valueSupplier) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = valueSupplier.getAsLong();
-            return Math.pow(longValue, anotherValue);
-        };
-    }
-    public default LongToDoubleAccessPrimitive pow(LongAccess<Long> anotherAccess) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return Math.pow(longValue, anotherValue);
-        };
-    }
-    public default LongToDoubleAccessPrimitive pow(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return Math.pow(longValue, anotherValue);
-        };
-    }
-    
-    public default LongToLongAccessPrimitive min(long value) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = value;
-            return Math.min(longValue, anotherValue);
-        };
-    }
+    @Override
     public default LongToLongAccessPrimitive min(LongSupplier valueSupplier) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = valueSupplier.getAsLong();
-            return Math.min(longValue, anotherValue);
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(valueSupplier);
+            return Math.min(value, anotherValue);
         };
     }
-    public default LongToLongAccessPrimitive min(LongAccess<Long> anotherAccess) {
+    public default LongToLongAccessPrimitive min(LongToLongAccessPrimitive anotherAccess) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return Math.min(longValue, anotherValue);
-        };
-    }
-    public default LongToLongAccessPrimitive min(ToLongBiLongFunction<Long> anotherFunction) {
-        return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return Math.min(longValue, anotherValue);
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return Math.min(value, anotherValue);
         };
     }
     
-    public default LongToLongAccessPrimitive max(long value) {
+    @Override
+    public default LongToLongAccessPrimitive max(long anotherValue) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = value;
-            return Math.max(longValue, anotherValue);
+            val value = accessPrimitive(this, host);
+            return Math.max(value, anotherValue);
         };
     }
+    @Override
     public default LongToLongAccessPrimitive max(LongSupplier valueSupplier) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = valueSupplier.getAsLong();
-            return Math.max(longValue, anotherValue);
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(valueSupplier);
+            return Math.max(value, anotherValue);
         };
     }
-    public default LongToLongAccessPrimitive max(LongAccess<Long> anotherAccess) {
+    public default LongToLongAccessPrimitive max(LongToLongAccessPrimitive anotherAccess) {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            return Math.max(longValue, anotherValue);
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return Math.max(value, anotherValue);
         };
     }
-    public default LongToLongAccessPrimitive max(ToLongBiLongFunction<Long> anotherFunction) {
+    
+    //-- Math --
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsOdd() {
         return host -> {
-            long longValue    = applyAsLong(host);
-            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            return Math.max(longValue, anotherValue);
+            val value = accessPrimitive(this, host);
+            return value % 2 != 0;
+        };
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsEven() {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return value % 2 == 0;
+        };
+    }
+    
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(long anotherValue) {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return value % anotherValue == 0;
+        };
+    }
+    @Override
+    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(LongSupplier anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = anotherAccess.getAsLong();
+            return value % anotherValue == 0;
+        };
+    }
+    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value % anotherValue == 0;
+        };
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive abs() {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return (value < 0) ? -value : value;
+        };
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive negate() {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return -value;
+        };
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive signum() {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return (value == 0) ? 0 : (value < 0) ? -1 : 1;
+        };
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive plus(long anotherValue) {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return value + anotherValue;
+        };
+    }
+    @Override
+    public default LongToLongAccessPrimitive plus(LongSupplier valueSupplier) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(valueSupplier);
+            return value + anotherValue;
+        };
+    }
+    public default LongToLongAccessPrimitive plus(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value + anotherValue;
+        };
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive minus(long anotherValue) {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return value - anotherValue;
+        };
+    }
+    @Override
+    public default LongToLongAccessPrimitive minus(LongSupplier valueSupplier) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(valueSupplier);
+            return value - anotherValue;
+        };
+    }
+    public default LongToLongAccessPrimitive minus(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value - anotherValue;
+        };
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive time(long anotherValue) {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return value * anotherValue;
+        };
+    }
+    @Override
+    public default LongToLongAccessPrimitive time(LongSupplier valueSupplier) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(valueSupplier);
+            return value * anotherValue;
+        };
+    }
+    public default LongToLongAccessPrimitive time(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value * anotherValue;
+        };
+    }
+    
+    @Override
+    public default LongToDoubleAccessPrimitive dividedBy(long anotherValue) {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return 1.0 * value / anotherValue;
+        };
+    }
+    @Override
+    public default LongToDoubleAccessPrimitive dividedBy(LongSupplier anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = anotherAccess.getAsLong();
+            return 1.0*value / anotherValue;
+        };
+    }
+    public default LongToDoubleAccessPrimitive dividedBy(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return 1.0*value / anotherValue;
+        };
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive remainderBy(long anotherValue) {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return value % anotherValue;
+        };
+    }
+    @Override
+    public default LongToLongAccessPrimitive remainderBy(LongSupplier valueSupplier) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(valueSupplier);
+            return value % anotherValue;
+        };
+    }
+    public default LongToLongAccessPrimitive remainderBy(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return value % anotherValue;
+        };
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive square() {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return value * value;
+        };
+    }
+    
+    @Override
+    public default LongToDoubleAccessPrimitive squareRoot () {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return Math.sqrt(value);
+        };
+    }
+    
+    @Override
+    public default LongToLongAccessPrimitive factorial() {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            if (value <= 0) {
+                return 1;
+            }
+            
+            return factorialRef.get().applyAsLong(value);
+        };
+    }
+    
+    // TODO - Make this Long once we are ready.
+    
+    @Override
+    public default LongToLongAccessPrimitive pow(long anotherValue) {
+        return host -> {
+            val value = accessPrimitive(this, host);
+            return (long)Math.pow(value, anotherValue);
+        };
+    }
+    @Override
+    public default LongToLongAccessPrimitive pow(LongSupplier valueSupplier) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = getPrimitive(valueSupplier);
+            return (long)Math.pow(value, anotherValue);
+        };
+    }
+    public default LongToLongAccessPrimitive pow(LongToLongAccessPrimitive anotherAccess) {
+        return host -> {
+            val value        = accessPrimitive(this, host);
+            val anotherValue = accessPrimitive(anotherAccess, host);
+            return (long)Math.pow(value, anotherValue);
         };
     }
     

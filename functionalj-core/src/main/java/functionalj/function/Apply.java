@@ -34,17 +34,27 @@ import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
+import java.util.function.LongBinaryOperator;
+import java.util.function.LongSupplier;
+import java.util.function.LongUnaryOperator;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleBiFunction;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import functionalj.lens.lenses.DoubleAccess;
 import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
 import functionalj.lens.lenses.DoubleToIntegerAccessPrimitive;
+import functionalj.lens.lenses.DoubleToLongAccessPrimitive;
 import functionalj.lens.lenses.IntegerAccess;
 import functionalj.lens.lenses.IntegerToDoubleAccessPrimitive;
 import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
+import functionalj.lens.lenses.IntegerToLongAccessPrimitive;
+import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongToDoubleAccessPrimitive;
+import functionalj.lens.lenses.LongToIntegerAccessPrimitive;
+import functionalj.lens.lenses.LongToLongAccessPrimitive;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.HasPromise;
@@ -456,6 +466,9 @@ public interface Apply {
     public static <HOST> Integer access(IntegerAccess<HOST> access, HOST host) {
         return access.apply(host);
     }
+    public static <HOST> Long access(LongAccess<HOST> access, HOST host) {
+        return access.apply(host);
+    }
     public static <HOST> Double access(DoubleAccess<HOST> access, HOST host) {
         return access.apply(host);
     }
@@ -465,6 +478,9 @@ public interface Apply {
     public static int getPrimitive(IntSupplier supplier) {
         return supplier.getAsInt();
     }
+    public static long getPrimitive(LongSupplier supplier) {
+        return supplier.getAsLong();
+    }
     public static double getPrimitive(DoubleSupplier supplier) {
         return supplier.getAsDouble();
     }
@@ -472,23 +488,38 @@ public interface Apply {
     public static int applyPrimitive(IntUnaryOperator function, int value) {
         return function.applyAsInt(value);
     }
+    public static long applyPrimitive(LongUnaryOperator function, long value) {
+        return function.applyAsLong(value);
+    }
     public static double applyPrimitive(DoubleUnaryOperator function, double value) {
         return function.applyAsDouble(value);
     }
+    
     public static double applyPrimitive(ToDoubleFunction<Integer> function, int value) {
+        return function.applyAsDouble(value);
+    }
+    public static double applyPrimitive(ToDoubleFunction<Long> function, long value) {
         return function.applyAsDouble(value);
     }
     public static double applyPrimitive(ToDoubleFunction<Double> function, double value) {
         return function.applyAsDouble(value);
     }
+    
     public static double applyPrimitive(ToIntFunction<Integer> function, int value) {
+        return function.applyAsInt(value);
+    }
+    public static double applyPrimitive(ToIntFunction<Long> function, long value) {
         return function.applyAsInt(value);
     }
     public static double applyPrimitive(ToIntFunction<Double> function, double value) {
         return function.applyAsInt(value);
     }
+    
     public static <HOST> int applyPrimitive(ToIntFunction<HOST> function, HOST value) {
         return function.applyAsInt(value);
+    }
+    public static <HOST> long applyPrimitive(ToLongFunction<HOST> function, HOST value) {
+        return function.applyAsLong(value);
     }
     public static <HOST> double applyPrimitive(ToDoubleFunction<HOST> function, HOST value) {
         return function.applyAsDouble(value);
@@ -497,9 +528,13 @@ public interface Apply {
     public static int applyPrimitive(IntBinaryOperator function, int value1, int value2) {
         return function.applyAsInt(value1, value2);
     }
+    public static long applyPrimitive(LongBinaryOperator function, long value1, long value2) {
+        return function.applyAsLong(value1, value2);
+    }
     public static double applyPrimitive(DoubleBinaryOperator function, double value1, double value2) {
         return function.applyAsDouble(value1, value2);
     }
+    
     public static double applyPrimitive(ToDoubleBiFunction<Integer, Double> function, int value1, double value2) {
         return function.applyAsDouble(value1, value2);
     }
@@ -507,15 +542,31 @@ public interface Apply {
     public static int accessPrimitive(IntegerToIntegerAccessPrimitive access, int host) {
         return access.applyAsInt(host);
     }
-    public static double accessPrimitive(DoubleToDoubleAccessPrimitive access, double host) {
-        return access.applyAsDouble(host);
-    }
-    public static double accessPrimitive(IntegerToDoubleAccessPrimitive access, int host) {
-        return access.applyIntToDouble(host);
+    public static int accessPrimitive(LongToIntegerAccessPrimitive access, long host) {
+        return access.applyLongToInt(host);
     }
     public static int accessPrimitive(DoubleToIntegerAccessPrimitive access, double host) {
         return access.applyDoubleToInt(host);
     }
     
+    public static long accessPrimitive(IntegerToLongAccessPrimitive access, int host) {
+        return access.applyIntToLong(host);
+    }
+    public static long accessPrimitive(LongToLongAccessPrimitive access, long host) {
+        return access.applyAsLong(host);
+    }
+    public static long accessPrimitive(DoubleToLongAccessPrimitive access, double host) {
+        return access.applyAsLong(host);
+    }
+    
+    public static double accessPrimitive(IntegerToDoubleAccessPrimitive access, int host) {
+        return access.applyIntToDouble(host);
+    }
+    public static double accessPrimitive(LongToDoubleAccessPrimitive access, long host) {
+        return access.applyLongToDouble(host);
+    }
+    public static double accessPrimitive(DoubleToDoubleAccessPrimitive access, double host) {
+        return access.applyAsDouble(host);
+    }
     
 }

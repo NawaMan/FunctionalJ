@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-import static functionalj.function.Apply.access;
 import static functionalj.function.Apply.accessPrimitive;
 import static functionalj.function.Apply.getPrimitive;
 import static functionalj.function.Compare.comparePrimitive;
@@ -566,8 +565,8 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleComparator ascendingOrder() {
         return (a, b) -> {
-            val aValue = access(this, a);
-            val bValue = access(this, b);
+            val aValue = accessPrimitive(this, a);
+            val bValue = accessPrimitive(this, b);
             return comparePrimitive(aValue, bValue);
         };
     }
@@ -575,8 +574,8 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     @Override
     public default DoubleComparator descendingOrder() {
         return (a, b) -> {
-            val aValue = access(this, a);
-            val bValue = access(this, b);
+            val aValue = accessPrimitive(this, a);
+            val bValue = accessPrimitive(this, b);
             return comparePrimitive(bValue, aValue);
         };
     }

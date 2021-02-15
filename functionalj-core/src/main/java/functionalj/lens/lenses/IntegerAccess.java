@@ -120,9 +120,11 @@ public interface IntegerAccess<HOST>
         return host -> access(this, host);
     }
     
+    @Override
     public default StringAccess<HOST> asString() {
         return host -> "" + access(this, host);
     }
+    @Override
     public default StringAccess<HOST> asString(String template) {
         return host -> {
             val value = access(this, host);
@@ -752,24 +754,24 @@ public interface IntegerAccess<HOST>
     
     // TODO - Make this Long once we are ready.
     
-    public default DoubleAccessPrimitive<HOST> pow(int anotherValue) {
+    public default LongAccessPrimitive<HOST> pow(int anotherValue) {
         return host -> {
             val value = access(this, host);
-            return Math.pow(value, anotherValue);
+            return (long)Math.pow(value, anotherValue);
         };
     }
-    public default DoubleAccessPrimitive<HOST> pow(IntSupplier valueSupplier) {
+    public default LongAccessPrimitive<HOST> pow(IntSupplier valueSupplier) {
         return host -> {
             val value        = access(this, host);
             val anotherValue = getPrimitive(valueSupplier);
-            return Math.pow(value, anotherValue);
+            return (long)Math.pow(value, anotherValue);
         };
     }
-    public default DoubleAccessPrimitive<HOST> pow(ToIntFunction<HOST> valueFunction) {
+    public default LongAccessPrimitive<HOST> pow(ToIntFunction<HOST> valueFunction) {
         return host -> {
             val value        = access(this, host);
             val anotherValue = applyPrimitive(valueFunction, host);
-            return Math.pow(value, anotherValue);
+            return (long)Math.pow(value, anotherValue);
         };
     }
     

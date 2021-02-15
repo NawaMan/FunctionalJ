@@ -23,17 +23,30 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.IntPredicate;
 
+import lombok.val;
+
 @FunctionalInterface
-public interface IntegerToBooleanAccessPrimitive extends BooleanAccessPrimitive<Integer>, IntPredicate {
+public interface IntegerToBooleanAccessPrimitive 
+                    extends 
+                        BooleanAccessPrimitive<Integer>, 
+                        IntPredicate {
+    
+    //== abstract functionalities ==
     
     public boolean applyIntToBoolean(int host);
     
+    
+    //== default functionalities ==
+    
+    @Override
     public default boolean test(int value) {
         return applyIntToBoolean(value);
     }
     
+    @Override
     public default boolean test(Integer host) {
         return applyIntToBoolean(host);
     }
@@ -46,9 +59,57 @@ public interface IntegerToBooleanAccessPrimitive extends BooleanAccessPrimitive<
         return applyIntToBoolean(host);
     }
     
+    //== Functionality ==
+    
     @Override
     public default IntegerToBooleanAccessPrimitive negate() {
-        return host -> !applyIntToBoolean(host);
+        return host -> {
+            val boolValue = test(host);
+            return !boolValue;
+        };
+    }
+    
+    
+    public default IntegerToBooleanAccessPrimitive or(boolean anotherBoolean) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue || anotherBoolean;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive or(BooleanSupplier anotherSupplier) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue || anotherValue;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive or(IntegerToBooleanAccessPrimitive anotherAccess) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue || anotherValue;
+        };
+    }
+    
+    public default IntegerToBooleanAccessPrimitive and(boolean anotherBoolean) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue && anotherBoolean;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive and(BooleanSupplier anotherSupplier) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue && anotherValue;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive and(IntegerToBooleanAccessPrimitive anotherAccess) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue && anotherValue;
+        };
     }
     
 }

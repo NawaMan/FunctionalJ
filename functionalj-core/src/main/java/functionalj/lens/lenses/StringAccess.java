@@ -24,6 +24,7 @@
 package functionalj.lens.lenses;
 
 import static functionalj.functions.StrFuncs.toStr;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 import java.math.BigDecimal;
@@ -44,16 +45,70 @@ import functionalj.result.Result;
 import lombok.val;
 
 
+class StringAccessHelper {
+    
+    static StringAccess<String> $(Object ... objs) {
+        return str -> {
+            val eachToString = stringFrom(str);
+            return Stream.of(objs).map(eachToString).collect(joining());
+        };
+    }
+    
+    static Func1<Object, String> stringFrom(String str) {
+        return each -> stringFrom(each, str);
+    }
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static String stringFrom(Object each, String str) {
+        if (each instanceof Supplier) {
+            Supplier supplier = (Supplier)each;
+            Object   newValue = supplier.get();
+            return toStr(newValue);
+        }
+        if (each instanceof Function) {
+            Function function = (Function)each;
+            Object   newValue = function.apply(str);
+            return toStr(newValue);
+        }
+        return toStr(each);
+    }
+    
+}
+
+
+
+/**
+ * Classes implementing this interface know how to access to a String value.
+ **/
 @FunctionalInterface
 public interface StringAccess<HOST> 
-        extends 
-            ObjectAccess<HOST, String>, 
-            ConcreteAccess<HOST, String, StringAccess<HOST>> {
+                    extends 
+                        ObjectAccess<HOST, String>, 
+                        ConcreteAccess<HOST, String, StringAccess<HOST>> {
+    
+    public static <H> StringAccess<H> of(Function<H, String> accessToValue) {
+        requireNonNull(accessToValue);
+        
+        if (accessToValue instanceof StringAccess) {
+            return (StringAccess<H>)accessToValue;
+        }
+        
+        if (accessToValue instanceof Func1) {
+            val func1  = (Func1<H, String>)accessToValue;
+            val access = (StringAccess<H>)func1::applyUnsafe;
+            return access;
+        }
+        
+        val func   = (Function<H, String>)accessToValue;
+        val access = (StringAccess<H>)(host -> func.apply(host));
+        return access;
+    }
     
     @Override
     public default StringAccess<HOST> newAccess(Function<HOST, String> access) {
         return access::apply;
     }
+    
+    //== functionalities ==
     
     public default CharacterAccessPrimitive<HOST> charAt(int index) {
         return host -> {
@@ -81,7 +136,7 @@ public interface StringAccess<HOST>
     
     public default StringAccess<HOST> concat(Object ... suffixes) {
         return stringAccess("", str -> {
-            val eachToString = __internal__.stringFrom(str);
+            val eachToString = StringAccessHelper.stringFrom(str);
             String suffix = Stream.of(suffixes).map(eachToString).collect(joining());
             return str + suffix;
         });
@@ -89,21 +144,21 @@ public interface StringAccess<HOST>
     
     public default StringAccess<HOST> withPrefix(Object ... prefixes) {
         return stringAccess("", str -> {
-            val eachToString = __internal__.stringFrom(str);
+            val eachToString = StringAccessHelper.stringFrom(str);
             String prefix = Stream.of(prefixes).map(eachToString).collect(joining());
             return prefix + str;
         });
     }
     public default StringAccess<HOST> withSuffix(Object ... suffixes) {
         return stringAccess("", str -> {
-            val eachToString = __internal__.stringFrom(str);
+            val eachToString = StringAccessHelper.stringFrom(str);
             String prefix = Stream.of(suffixes).map(eachToString).collect(joining());
             return str + prefix;
         });
     }
     public default StringAccess<HOST> wrapBy(Object prefix, Object suffix) {
         return stringAccess("", str -> { 
-            val eachToString = __internal__.stringFrom(str);
+            val eachToString = StringAccessHelper.stringFrom(str);
             String prefixStr = eachToString.apply(prefix);
             String suffixStr = eachToString.apply(suffix);
             return prefixStr + str + suffixStr;
@@ -131,9 +186,9 @@ public interface StringAccess<HOST>
         return booleanAccess(isSuffixEmpty, str->str.endsWith(suffix));
     }
     
-	public default StringAccess<HOST> format(String format, Object... args) {
+    public default StringAccess<HOST> format(String format, Object... args) {
         return stringAccess(null, str->{
-            val eachToString = __internal__.stringFrom(str);
+            val eachToString = StringAccessHelper.stringFrom(str);
             val argStrs      = Stream.of(args).map(eachToString).toArray();
             return String.format(format, (Object[])argStrs);
         });
@@ -259,184 +314,181 @@ public interface StringAccess<HOST>
         return stringAccess(null, str->str.trim());
     }
     
-    public default IntegerAccessPrimitive<HOST> toInteger() {
+    //== parse ==
+    
+    //-- integer --
+    
+    public default IntegerAccessPrimitive<HOST> asInteger() {
         return host -> {
             val valueStr = apply(host);
             return Integer.parseInt(valueStr);
         };
     }
-    
-    public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> asInteger() {
-        return ResultAccess.of(host -> {
-            val valueStr = apply(host);
-            return Result.from(()->Integer.parseInt(valueStr));
-        }, func -> (IntegerAccessBoxed<HOST>)(func::apply));
-    }
-    
-    public default IntegerAccessPrimitive<HOST> toInteger(int radix) {
+    public default IntegerAccessPrimitive<HOST> asInteger(int radix) {
         return host -> {
             val valueStr = apply(host);
             return Integer.parseInt(valueStr, radix);
         };
     }
     
-    public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> asInteger(int radix) {
+    public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> parseInteger() {
+        return ResultAccess.of(host -> {
+            val valueStr = apply(host);
+            return Result.from(()->Integer.parseInt(valueStr));
+        }, func -> (IntegerAccessBoxed<HOST>)(func::apply));
+    }
+    public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> parseInteger(int radix) {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->Integer.parseInt(valueStr, radix));
         }, func -> (IntegerAccessBoxed<HOST>)(func::apply));
     }
     
-    public default LongAccessPrimitive<HOST> toLong() {
+    //-- long --
+    
+    public default LongAccessPrimitive<HOST> asLong() {
         return host -> {
             val valueStr = apply(host);
             return Long.parseLong(valueStr);
         };
     }
-    
-    public default ResultAccess<HOST, Long, LongAccess<HOST>> asLong() {
-        return ResultAccess.of(host -> {
-            val valueStr = apply(host);
-            return Result.from(()->Long.parseLong(valueStr));
-        }, func -> (LongAccessBoxed<HOST>)(func::apply));
-    }
-    
-    public default LongAccessPrimitive<HOST> toLong(int radix) {
+    public default LongAccessPrimitive<HOST> asLong(int radix) {
         return host -> {
             val valueStr = apply(host);
             return Long.parseLong(valueStr, radix);
         };
     }
-    public default ResultAccess<HOST, Long, LongAccess<HOST>> asLong(int radix) {
+    
+    public default ResultAccess<HOST, Long, LongAccess<HOST>> parseLong() {
+        return ResultAccess.of(host -> {
+            val valueStr = apply(host);
+            return Result.from(()->Long.parseLong(valueStr));
+        }, func -> (LongAccessBoxed<HOST>)(func::apply));
+    }
+    public default ResultAccess<HOST, Long, LongAccess<HOST>> parseLong(int radix) {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->Long.parseLong(valueStr, radix));
         }, func -> (LongAccessBoxed<HOST>)(func::apply));
     }
     
-    public default DoubleAccessPrimitive<HOST> toDouble() {
+    //-- double --
+    
+    public default DoubleAccessPrimitive<HOST> asDouble() {
         return host -> {
             val valueStr = apply(host);
             return Double.parseDouble(valueStr);
         };
     }
-    
-    public default ResultAccess<HOST, Double, DoubleAccess<HOST>> asDouble() {
+    public default ResultAccess<HOST, Double, DoubleAccess<HOST>> parseDouble() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->Double.parseDouble(valueStr));
         }, func -> (DoubleAccessBoxed<HOST>)(func::apply));
     }
     
-    public default BigIntegerAccess<HOST> toBigInteger() {
+    //-- big integer --
+    
+    public default BigIntegerAccess<HOST> asBigInteger() {
         return host -> {
             val valueStr = apply(host);
             return new BigInteger(valueStr);
         };
     }
-    
-    public default ResultAccess<HOST, BigInteger, BigIntegerAccess<HOST>> asBigInteger() {
+    public default ResultAccess<HOST, BigInteger, BigIntegerAccess<HOST>> parseBigInteger() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->new BigInteger(valueStr));
         }, func -> (BigIntegerAccess<HOST>)(func::apply));
     }
     
-    public default BigDecimalAccess<HOST> toBigDecimal() {
+    //-- big decimal --
+    
+    public default BigDecimalAccess<HOST> asBigDecimal() {
         return host -> {
             val valueStr = apply(host);
             return new BigDecimal(valueStr);
         };
     }
-    
-    public default ResultAccess<HOST, BigDecimal, BigDecimalAccess<HOST>> asBigDecimal() {
+    public default ResultAccess<HOST, BigDecimal, BigDecimalAccess<HOST>> parseBigDecimal() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->new BigDecimal(valueStr));
         }, func -> (BigDecimalAccess<HOST>)(func::apply));
     }
     
-    public default LocalDateAccess<HOST> toLocalDate() {
+    //-- local date --
+    
+    public default LocalDateAccess<HOST> asLocalDate() {
         return host -> {
             val valueStr = apply(host);
             return LocalDate.parse(valueStr);
         };
     }
-    
-    public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> asLocalDate() {
-        return ResultAccess.of(host -> {
-            val valueStr = apply(host);
-            return Result.from(()->LocalDate.parse(valueStr));
-        }, func -> (LocalDateAccess<HOST>)(func::apply));
-    }
-    
-    public default LocalDateAccess<HOST> toLocalDate(DateTimeFormatter formatter) {
+    public default LocalDateAccess<HOST> asLocalDate(DateTimeFormatter formatter) {
         return host -> {
             val valueStr = apply(host);
             return LocalDate.parse(valueStr, formatter);
         };
     }
+    public default LocalDateAccess<HOST> asLocalDate(String formatterPattern) {
+        val formatter = DateTimeFormatter.ofPattern(formatterPattern);
+        return asLocalDate(formatter);
+    }
     
-    public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> asLocalDate(DateTimeFormatter formatter) {
+    public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> parseLocalDate() {
+        return ResultAccess.of(host -> {
+            val valueStr = apply(host);
+            return Result.from(()->LocalDate.parse(valueStr));
+        }, func -> (LocalDateAccess<HOST>)(func::apply));
+    }
+    public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> parseLocalDate(DateTimeFormatter formatter) {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->LocalDate.parse(valueStr, formatter));
         }, func -> (LocalDateAccess<HOST>)(func::apply));
     }
+    public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> parseLocalDate(String formatterPattern) {
+        val formatter = DateTimeFormatter.ofPattern(formatterPattern);
+        return parseLocalDate(formatter);
+    }
     
-    public default LocalDateTimeAccess<HOST> toLocalDateTime() {
+    //-- local date time --
+    
+    public default LocalDateTimeAccess<HOST> asLocalDateTime() {
         return host -> {
             val valueStr = apply(host);
             return LocalDateTime.parse(valueStr);
         };
     }
-    
-    public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> asLocalDateTime() {
-        return ResultAccess.of(host -> {
-            val valueStr = apply(host);
-            return Result.from(()->LocalDateTime.parse(valueStr));
-        }, func -> (LocalDateTimeAccess<HOST>)(func::apply));
-    }
-    
-    public default LocalDateTimeAccess<HOST> toLocalDateTime(DateTimeFormatter formatter) {
+    public default LocalDateTimeAccess<HOST> asLocalDateTime(DateTimeFormatter formatter) {
         return host -> {
             val valueStr = apply(host);
             return LocalDateTime.parse(valueStr, formatter);
         };
     }
+    public default LocalDateTimeAccess<HOST> asLocalDateTime(String formatterPattern) {
+        val formatter = DateTimeFormatter.ofPattern(formatterPattern);
+        return asLocalDateTime(formatter);
+    }
     
-    public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> asLocalDateTime(DateTimeFormatter formatter) {
+    public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> parseLocalDateTime() {
+        return ResultAccess.of(host -> {
+            val valueStr = apply(host);
+            return Result.from(()->LocalDateTime.parse(valueStr));
+        }, func -> (LocalDateTimeAccess<HOST>)(func::apply));
+    }
+    public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> parseLocalDateTime(DateTimeFormatter formatter) {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->LocalDateTime.parse(valueStr, formatter));
         }, func -> (LocalDateTimeAccess<HOST>)(func::apply));
     }
-    
-    public static StringAccess<String> $(Object ... objs) {
-        return str -> {
-            val eachToString = __internal__.stringFrom(str);
-            return Stream.of(objs).map(eachToString).collect(joining());
-        };
+    public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> parseLocalDateTime(String formatterPattern) {
+        val formatter = DateTimeFormatter.ofPattern(formatterPattern);
+        return parseLocalDateTime(formatter);
     }
     
-    public static final class __internal__ {
-        private static Func1<Object, String> stringFrom(String str) {
-            return each -> stringFrom(each, str);
-        }
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        private static String stringFrom(Object each, String str) {
-            if (each instanceof Supplier) {
-                Supplier supplier = (Supplier)each;
-                Object   newValue = supplier.get();
-                return toStr(newValue);
-            }
-            if (each instanceof Function) {
-                Function function = (Function)each;
-                Object   newValue = function.apply(str);
-                return toStr(newValue);
-            }
-            return toStr(each);
-        }
-    }
+    //-- TODO Add Zoned date and stuff.
     
 }

@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-import static functionalj.function.Apply.access;
 import static functionalj.function.Apply.accessPrimitive;
 import static functionalj.function.Apply.getPrimitive;
 import static functionalj.function.Compare.comparePrimitive;
@@ -323,7 +322,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     public default IntegerToBooleanAccessPrimitive thatNotEquals(IntSupplier anotherSupplier) {
         return host -> {
             val value        = accessPrimitive(this, host);
-            int anotherValue = getPrimitive(anotherSupplier);
+            val anotherValue = getPrimitive(anotherSupplier);
             return value != anotherValue;
         };
     }
@@ -395,8 +394,8 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     @Override
     public default IntComparator descendingOrder() {
         return (a, b) -> {
-            val aValue = access(this, a);
-            val bValue = access(this, b);
+            val aValue = accessPrimitive(this, a);
+            val bValue = accessPrimitive(this, b);
             return comparePrimitive(bValue, aValue);
         };
     }
@@ -838,25 +837,25 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     // TODO - Make this Long once we are ready.
     
     @Override
-    public default IntegerToDoubleAccessPrimitive pow(int anotherValue) {
+    public default IntegerToLongAccessPrimitive pow(int anotherValue) {
         return host -> {
             val value = accessPrimitive(this, host);
-            return Math.pow(value, anotherValue);
+            return (long)Math.pow(value, anotherValue);
         };
     }
     @Override
-    public default IntegerToDoubleAccessPrimitive pow(IntSupplier valueSupplier) {
+    public default IntegerToLongAccessPrimitive pow(IntSupplier valueSupplier) {
         return host -> {
             val value        = accessPrimitive(this, host);
             val anotherValue = getPrimitive(valueSupplier);
-            return Math.pow(value, anotherValue);
+            return (long)Math.pow(value, anotherValue);
         };
     }
-    public default IntegerToDoubleAccessPrimitive pow(IntegerToIntegerAccessPrimitive anotherAccess) {
+    public default IntegerToLongAccessPrimitive pow(IntegerToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
-            return Math.pow(value, anotherValue);
+            return (long)Math.pow(value, anotherValue);
         };
     }
     

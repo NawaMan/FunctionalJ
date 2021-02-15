@@ -23,17 +23,30 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoublePredicate;
 
+import lombok.val;
+
 @FunctionalInterface
-public interface DoubleToBooleanAccessPrimitive extends BooleanAccessPrimitive<Double>, DoublePredicate {
+public interface DoubleToBooleanAccessPrimitive 
+                    extends 
+                        BooleanAccessPrimitive<Double>, 
+                        DoublePredicate {
+    
+    //== abstract functionalities ==
     
     public boolean applyDoubleToBoolean(double host);
     
+    
+    //== default functionalities ==
+    
+    @Override
     public default boolean test(double value) {
         return applyDoubleToBoolean(value);
     }
     
+    @Override
     public default boolean test(Double host) {
         return applyDoubleToBoolean(host);
     }
@@ -46,9 +59,57 @@ public interface DoubleToBooleanAccessPrimitive extends BooleanAccessPrimitive<D
         return applyDoubleToBoolean(host);
     }
     
+    //== Functionality ==
+    
     @Override
     public default DoubleToBooleanAccessPrimitive negate() {
-        return host -> !applyDoubleToBoolean(host);
+        return host -> {
+            val boolValue = test(host);
+            return !boolValue;
+        };
+    }
+    
+    
+    public default DoubleToBooleanAccessPrimitive or(boolean anotherBoolean) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue || anotherBoolean;
+        };
+    }
+    public default DoubleToBooleanAccessPrimitive or(BooleanSupplier anotherSupplier) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue || anotherValue;
+        };
+    }
+    public default DoubleToBooleanAccessPrimitive or(DoubleToBooleanAccessPrimitive anotherAccess) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue || anotherValue;
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive and(boolean anotherBoolean) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue && anotherBoolean;
+        };
+    }
+    public default DoubleToBooleanAccessPrimitive and(BooleanSupplier anotherSupplier) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue && anotherValue;
+        };
+    }
+    public default DoubleToBooleanAccessPrimitive and(DoubleToBooleanAccessPrimitive anotherAccess) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue && anotherValue;
+        };
     }
     
 }

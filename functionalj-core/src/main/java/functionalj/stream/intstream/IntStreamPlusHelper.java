@@ -463,7 +463,6 @@ public class IntStreamPlusHelper {
     static IntStreamPlus doMergeInt(
             IntIteratorPlus iteratorA,
             IntIteratorPlus iteratorB) {
-        @SuppressWarnings("resource")
         val iterator = new IntIteratorPlus() {
             private boolean isA = true;
             
