@@ -4,7 +4,6 @@ import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.theDouble;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theLong;
-import static functionalj.list.FuncList.listOf;
 import static functionalj.ref.Run.With;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
@@ -884,8 +883,13 @@ public class DoubleFuncListTest {
     @Test
     public void testJavaList_containsAllOf() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
-            assertTrue (list.containsAllOf(listOf(Two, Three)));
-            assertFalse(list.containsAllOf(listOf(Two, Five)));
+            assertTrue (list.containsAllOf(Two, Three));
+            assertTrue (list.containsAllOf(FuncList.      listOf(Two, Three)));
+            assertTrue (list.containsAllOf(DoubleFuncList.listOf(Two, Three)));
+            
+            assertFalse(list.containsAllOf(Two, Five));
+            assertFalse(list.containsAllOf(FuncList.      listOf(Two, Five)));
+            assertFalse(list.containsAllOf(DoubleFuncList.listOf(Two, Five)));
         });
     }
     
@@ -893,8 +897,25 @@ public class DoubleFuncListTest {
     public void testJavaList_containsSomeOf() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertTrue (list.containsSomeOf(Two, Five));
-            assertTrue (list.containsSomeOf(listOf(Two, Five)));
-            assertFalse(list.containsSomeOf(listOf(Five, Seven)));
+            assertTrue (list.containsSomeOf(FuncList.      listOf(Two, Five)));
+            assertTrue (list.containsSomeOf(DoubleFuncList.listOf(Two, Five)));
+            
+            assertFalse(list.containsSomeOf(Five, Seven));
+            assertFalse(list.containsSomeOf(FuncList.      listOf(Five, Seven)));
+            assertFalse(list.containsSomeOf(DoubleFuncList.listOf(Five, Seven)));
+        });
+    }
+    
+    @Test
+    public void testJavaList_containsNoneOf() {
+        run(DoubleFuncList.of(One, Two, Three), list -> {
+            assertTrue (list.containsNoneOf(Five, Six));
+            assertTrue (list.containsNoneOf(FuncList.      listOf(Five, Six)));
+            assertTrue (list.containsNoneOf(DoubleFuncList.listOf(Five, Six)));
+            
+            assertFalse(list.containsNoneOf(Two, Five));
+            assertFalse(list.containsNoneOf(FuncList      .listOf(Two, Five)));
+            assertFalse(list.containsNoneOf(DoubleFuncList.listOf(Two, Five)));
         });
     }
     

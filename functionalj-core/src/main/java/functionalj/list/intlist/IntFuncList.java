@@ -1040,7 +1040,7 @@ public interface IntFuncList
                         .anyMatch(o -> Objects.equals(each, o)));
     }
     
-    public default boolean containsAllOf(Collection<Long> c) {
+    public default boolean containsAllOf(Collection<Integer> c) {
         return c.stream()
                 .allMatch(each -> intStream()
                                     .anyMatch(o -> Objects.equals(each, o)));
