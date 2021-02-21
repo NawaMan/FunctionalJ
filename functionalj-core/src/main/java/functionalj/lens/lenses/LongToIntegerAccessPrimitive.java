@@ -384,7 +384,7 @@ public interface LongToIntegerAccessPrimitive
     //-- Compare --
     
     @Override
-    public default LongComparator ascendingOrder() {
+    public default LongComparator inOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);
@@ -393,7 +393,7 @@ public interface LongToIntegerAccessPrimitive
     }
     
     @Override
-    public default LongComparator descendingOrder() {
+    public default LongComparator inReverseOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);

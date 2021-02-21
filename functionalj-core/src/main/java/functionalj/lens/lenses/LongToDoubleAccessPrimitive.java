@@ -32,6 +32,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.function.LongToDoubleFunction;
 
 import functionalj.function.LongComparator;
 import functionalj.list.doublelist.DoubleFuncList;
@@ -42,7 +43,7 @@ import lombok.val;
  * Classes implementing this interface know how to access from a long to a double value.
  **/
 @FunctionalInterface
-public interface LongToDoubleAccessPrimitive extends DoubleAccessPrimitive<Long> {
+public interface LongToDoubleAccessPrimitive extends DoubleAccessPrimitive<Long>, LongToDoubleFunction {
 
     //== Constructor ==
     
@@ -542,7 +543,7 @@ public interface LongToDoubleAccessPrimitive extends DoubleAccessPrimitive<Long>
     //-- Compare --
     
     @Override
-    public default LongComparator ascendingOrder() {
+    public default LongComparator inOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);
@@ -551,7 +552,7 @@ public interface LongToDoubleAccessPrimitive extends DoubleAccessPrimitive<Long>
     }
     
     @Override
-    public default LongComparator descendingOrder() {
+    public default LongComparator inReverseOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);

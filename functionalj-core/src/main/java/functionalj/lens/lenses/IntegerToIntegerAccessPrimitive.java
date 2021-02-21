@@ -384,7 +384,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     //-- Compare --
     
     @Override
-    public default IntComparator ascendingOrder() {
+    public default IntComparator inOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);
@@ -393,7 +393,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     }
     
     @Override
-    public default IntComparator descendingOrder() {
+    public default IntComparator inReverseOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);

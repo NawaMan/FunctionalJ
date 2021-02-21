@@ -27,7 +27,7 @@ package functionalj.function;
 @FunctionalInterface
 public interface LongLongToDoubleFunctionPrimitive extends ToDoubleBiLongFunction<Long> {
     
-    public int applyAsLongAndLong(long data, long doubleValue);
+    public double applyAsLongAndLong(long data, long doubleValue);
     
     public default double applyAsDouble(Long data, long doubleValue) {
         return applyAsLongAndLong(data, doubleValue);

@@ -380,7 +380,7 @@ public interface DoubleToIntegerAccessPrimitive
     //-- Compare --
     
     @Override
-    public default DoubleComparator ascendingOrder() {
+    public default DoubleComparator inOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);
@@ -389,7 +389,7 @@ public interface DoubleToIntegerAccessPrimitive
     }
     
     @Override
-    public default DoubleComparator descendingOrder() {
+    public default DoubleComparator inReverseOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);

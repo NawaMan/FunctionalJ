@@ -1034,7 +1034,13 @@ public interface IntFuncList
                                     .anyMatch(o -> Objects.equals(each, o)));
     }
     
-    public default boolean containsAllOf(Collection<Integer> c) {
+    public default boolean containsNoneOf(int... c) {
+        return IntStreamPlus.of(c)
+                .noneMatch(each -> intStream()
+                        .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsAllOf(Collection<Long> c) {
         return c.stream()
                 .allMatch(each -> intStream()
                                     .anyMatch(o -> Objects.equals(each, o)));
@@ -1043,6 +1049,30 @@ public interface IntFuncList
     public default boolean containsSomeOf(Collection<Integer> c) {
         return c.stream()
                 .anyMatch(each -> intStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsNoneOf(Collection<Integer> c) {
+        return c.stream()
+                .noneMatch(each -> intStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsAllOf(IntFuncList c) {
+        return c.intStream()
+                .allMatch(each -> intStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsSomeOf(IntFuncList c) {
+        return c.intStream()
+                .anyMatch(each -> intStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsNoneOf(IntFuncList c) {
+        return c.intStream()
+                .noneMatch(each -> intStream()
                                     .anyMatch(o -> Objects.equals(each, o)));
     }
     

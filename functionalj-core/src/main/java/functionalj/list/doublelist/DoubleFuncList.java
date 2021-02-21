@@ -1070,7 +1070,13 @@ public interface DoubleFuncList
                                     .anyMatch(o -> Objects.equals(each, o)));
     }
     
-    public default boolean containsAllOf(Collection<Double> c) {
+    public default boolean containsNoneOf(double... c) {
+        return DoubleStreamPlus.of(c)
+                .noneMatch(each -> doubleStream()
+                        .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsAllOf(Collection<Long> c) {
         return c.stream()
                 .allMatch(each -> doubleStream()
                                     .anyMatch(o -> Objects.equals(each, o)));
@@ -1079,6 +1085,30 @@ public interface DoubleFuncList
     public default boolean containsSomeOf(Collection<Double> c) {
         return c.stream()
                 .anyMatch(each -> doubleStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsNoneOf(Collection<Long> c) {
+        return c.stream()
+                .noneMatch(each -> doubleStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsAllOf(DoubleFuncList c) {
+        return c.doubleStream()
+                .allMatch(each -> doubleStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsSomeOf(DoubleFuncList c) {
+        return c.doubleStream()
+                .anyMatch(each -> doubleStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsNoneOf(DoubleFuncList c) {
+        return c.doubleStream()
+                .noneMatch(each -> doubleStream()
                                     .anyMatch(o -> Objects.equals(each, o)));
     }
     

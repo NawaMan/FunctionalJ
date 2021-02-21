@@ -564,7 +564,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     //-- Compare --
     
     @Override
-    public default DoubleComparator ascendingOrder() {
+    public default DoubleComparator inOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);
@@ -573,7 +573,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     }
     
     @Override
-    public default DoubleComparator descendingOrder() {
+    public default DoubleComparator inReverseOrder() {
         return (a, b) -> {
             val aValue = accessPrimitive(this, a);
             val bValue = accessPrimitive(this, b);

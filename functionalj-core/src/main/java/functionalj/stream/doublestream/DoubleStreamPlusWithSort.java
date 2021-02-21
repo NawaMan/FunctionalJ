@@ -61,4 +61,6 @@ public interface DoubleStreamPlusWithSort {
                 });
     }
     
+    // TODO - sortedAsIntBy, sortedAsLongBy, sortedAsDoubleBy
+    
 }

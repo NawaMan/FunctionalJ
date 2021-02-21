@@ -78,7 +78,7 @@ import nullablej.nullable.Nullable;
 
 public interface LongFuncList 
         extends 
-            AsLongFuncList, 
+            AsLongFuncList,
             LongIterable, 
             LongPredicate, 
             LongFuncListWithCalculate, 
@@ -1035,15 +1035,45 @@ public interface LongFuncList
                                     .anyMatch(o -> Objects.equals(each, o)));
     }
     
-    public default boolean containsAllOf(Collection<Integer> c) {
+    public default boolean containsNoneOf(long... c) {
+        return LongStreamPlus.of(c)
+                .noneMatch(each -> longStream()
+                        .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsAllOf(Collection<Long> c) {
         return c.stream()
                 .allMatch(each -> longStream()
                                     .anyMatch(o -> Objects.equals(each, o)));
     }
     
-    public default boolean containsSomeOf(Collection<Integer> c) {
+    public default boolean containsSomeOf(Collection<Long> c) {
         return c.stream()
                 .anyMatch(each -> longStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsNoneOf(Collection<Long> c) {
+        return c.stream()
+                .noneMatch(each -> longStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsAllOf(LongFuncList c) {
+        return c.longStream()
+                .allMatch(each -> longStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsSomeOf(LongFuncList c) {
+        return c.longStream()
+                .anyMatch(each -> longStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsNoneOf(LongFuncList c) {
+        return c.longStream()
+                .noneMatch(each -> longStream()
                                     .anyMatch(o -> Objects.equals(each, o)));
     }
     

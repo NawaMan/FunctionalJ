@@ -54,6 +54,7 @@ import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
+import functionalj.function.LongLongBiFunction;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.doublelist.ImmutableDoubleFuncList;
@@ -444,6 +445,22 @@ public interface FuncList<DATA>
             return StreamPlus.zipOf(
                     list1.intStream(),
                     list2.stream(),
+                    merger);
+        });
+    }
+    
+    /**
+     * Zip integers from two IntFuncLists and combine it into another object.
+     * The result stream has the size of the shortest FuncList.
+     */
+    public static <T1, T2, TARGET> FuncList<TARGET> zipOf(
+            AsLongFuncList            list1,
+            AsLongFuncList            list2,
+            LongLongBiFunction<TARGET> merger) {
+        return FuncList.from(() -> {
+            return StreamPlus.zipOf(
+                    list1.longStream(),
+                    list2.longStream(),
                     merger);
         });
     }

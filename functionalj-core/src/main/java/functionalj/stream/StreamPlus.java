@@ -57,6 +57,7 @@ import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
+import functionalj.function.LongLongBiFunction;
 import functionalj.list.FuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
@@ -460,6 +461,18 @@ public interface StreamPlus<DATA>
             IntObjBiFunction<ANOTHER, TARGET> merger) {
         return IntStreamPlus.from(stream1)
                 .zipWith(stream2, merger);
+    }
+    
+    /**
+     * Zip integers from two IntStreams and combine it into another object.
+     * The result stream has the size of the shortest stream.
+     */
+    public static <TARGET> StreamPlus<TARGET> zipOf(
+            LongStream                 stream1,
+            LongStream                 stream2,
+            LongLongBiFunction<TARGET> merger) {
+        return LongStreamPlus.from(stream1)
+                .zipToObjWith(stream2, merger);
     }
     
     /**

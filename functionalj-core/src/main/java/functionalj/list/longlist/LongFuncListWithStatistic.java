@@ -27,6 +27,7 @@ import static functionalj.list.longlist.AsLongFuncListHelper.funcListOf;
 import static functionalj.list.longlist.AsLongFuncListHelper.streamPlusOf;
 
 import java.util.Comparator;
+import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
@@ -111,53 +112,53 @@ public interface LongFuncListWithStatistic extends AsLongFuncList {
     
     /** Return the value whose mapped value is the smallest and the biggest using the comparator. */
     public default <D> Tuple2<OptionalLong, OptionalLong> minMaxBy(
-            LongFunction<D>        mapper,
+            LongFunction<D>       mapper,
             Comparator<? super D> comparator) {
         return streamPlusOf(this)
                 .minMaxBy(mapper, comparator);
     }
     
-    public default <D extends Comparable<D>> OptionalLong minIndex() {
+    public default <D extends Comparable<D>> OptionalInt minIndex() {
         return minIndexBy(i -> true, i -> i);
     }
     
-    public default <D extends Comparable<D>> OptionalLong maxIndex() {
+    public default <D extends Comparable<D>> OptionalInt maxIndex() {
         return maxIndexBy(i -> true, i -> i);
     }
     
-    public default <D extends Comparable<D>> OptionalLong minIndexBy(LongFunction<D> mapper) {
+    public default <D extends Comparable<D>> OptionalInt minIndexBy(LongFunction<D> mapper) {
         return minIndexBy(i -> true, mapper);
     }
     
-    public default <D extends Comparable<D>> OptionalLong maxIndexBy(LongFunction<D> mapper) {
+    public default <D extends Comparable<D>> OptionalInt maxIndexBy(LongFunction<D> mapper) {
         return maxIndexBy(i -> true, mapper);
     }
     
     /** Map each value using the mapper to a comparable value and use it to find a minimal value then return the index */
-    public default <D extends Comparable<D>> OptionalLong minIndexBy(
+    public default <D extends Comparable<D>> OptionalInt minIndexBy(
             LongPredicate   filter,
             LongFunction<D> mapper) {
         return funcListOf(this)
                 .mapWithIndex()
                 .filter(t -> filter.test(t._2))
                 .minBy (t -> mapper.apply(t._2))
-                .map   (t -> OptionalLong.of(t._1))
-                .orElse(OptionalLong.empty());
+                .map   (t -> OptionalInt.of(t._1))
+                .orElse(OptionalInt.empty());
     }
     
     /** Map each value using the mapper to a comparable value and use it to find a maximum value then return the index */
-    public default <D extends Comparable<D>> OptionalLong maxIndexBy(
+    public default <D extends Comparable<D>> OptionalInt maxIndexBy(
             LongPredicate   filter,
             LongFunction<D> mapper) {
         return funcListOf(this)
                 .mapWithIndex()
                 .filter(t -> filter.test(t._2))
                 .maxBy (t -> mapper.apply(t._2))
-                .map   (t -> OptionalLong.of(t._1))
-                .orElse(OptionalLong.empty());
+                .map   (t -> OptionalInt.of(t._1))
+                .orElse(OptionalInt.empty());
     }
     
-    public default <D extends Comparable<D>> OptionalLong minIndexOf(
+    public default <D extends Comparable<D>> OptionalInt minIndexOf(
             LongPredicate     filter,
             LongUnaryOperator mapper) {
         return funcListOf(this)
@@ -165,12 +166,12 @@ public interface LongFuncListWithStatistic extends AsLongFuncList {
                 .map   (t -> t.map2ToLong(mapper))
                 .filter(t -> filter.test(t._2))
                 .minBy (t -> mapper.applyAsLong(t._2))
-                .map   (t -> OptionalLong.of(t._1))
-                .orElse(OptionalLong.empty())
+                .map   (t -> OptionalInt.of(t._1))
+                .orElse(OptionalInt.empty())
                 ;
     }
     
-    public default <D extends Comparable<D>> OptionalLong maxIndexOf(
+    public default <D extends Comparable<D>> OptionalInt maxIndexOf(
             LongPredicate     filter,
             LongUnaryOperator mapper) {
         return funcListOf(this)
@@ -178,8 +179,8 @@ public interface LongFuncListWithStatistic extends AsLongFuncList {
                 .map   (t -> t.map2ToLong(mapper))
                 .filter(t -> filter.test(t._2))
                 .maxBy (t -> mapper.applyAsLong(t._2))
-                .map   (t -> OptionalLong.of(t._1))
-                .orElse(OptionalLong.empty());
+                .map   (t -> OptionalInt.of(t._1))
+                .orElse(OptionalInt.empty());
     }
     
 }

@@ -61,4 +61,6 @@ public interface LongStreamPlusWithSort {
                 });
     }
     
+    // TODO - sortedAsIntBy, sortedAsLongBy, sortedAsDoubleBy
+    
 }

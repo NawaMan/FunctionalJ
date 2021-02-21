@@ -61,4 +61,6 @@ public interface IntStreamPlusWithSort {
                 });
     }
     
+    // TODO - sortedAsIntBy, sortedAsLongBy, sortedAsDoubleBy
+    
 }

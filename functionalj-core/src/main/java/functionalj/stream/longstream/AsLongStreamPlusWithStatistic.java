@@ -31,6 +31,7 @@ import java.util.LongSummaryStatistics;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.LongFunction;
@@ -286,33 +287,33 @@ public interface AsLongStreamPlusWithStatistic {
     }
     
     /** Map each value using the mapper to a comparable value and use it to find a minimal value then return the index */
-    public default <D extends Comparable<D>> OptionalLong minIndexBy(LongFunction<D> mapper) {
+    public default <D extends Comparable<D>> OptionalInt minIndexBy(LongFunction<D> mapper) {
         return minIndexBy(__ -> true, mapper);
     }
     
     /** Map each value using the mapper to a comparable value and use it to find a maximum value then return the index */
-    public default <D extends Comparable<D>> OptionalLong maxIndexBy(LongFunction<D> mapper) {
+    public default <D extends Comparable<D>> OptionalInt maxIndexBy(LongFunction<D> mapper) {
         return maxIndexBy(__ -> true, mapper);
     }
     
     /** Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index */
-    public default <D extends Comparable<D>> OptionalLong minIndexBy(LongPredicate filter, LongFunction<D> mapper) {
+    public default <D extends Comparable<D>> OptionalInt minIndexBy(LongPredicate filter, LongFunction<D> mapper) {
         val min = longStreamPlus()
                 .mapWithIndex()
                 .filter  (t -> filter.test(t._2))
                 .minBy   (t -> mapper.apply(t._2))
                 .map   (t -> t._1);
-        return min.isPresent() ? OptionalLong.of(min.get().longValue()) : OptionalLong.empty();
+        return min.isPresent() ? OptionalInt.of(min.get().intValue()) : OptionalInt.empty();
     }
     
     /** Using the mapper to map each value that passes the filter to a comparable and use it to find a maximum value then return the index */
-    public default <D extends Comparable<D>> OptionalLong maxIndexBy(LongPredicate filter, LongFunction<D> mapper) {
+    public default <D extends Comparable<D>> OptionalInt maxIndexBy(LongPredicate filter, LongFunction<D> mapper) {
         val max = longStreamPlus()
                 .mapWithIndex()
                 .filter  (t -> filter.test(t._2))
                 .maxBy   (t -> mapper.apply(t._2))
                 .map   (t -> t._1);
-        return max.isPresent() ? OptionalLong.of(max.get().intValue()) : OptionalLong.empty();
+        return max.isPresent() ? OptionalInt.of(max.get().intValue()) : OptionalInt.empty();
     }
     
 }

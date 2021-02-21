@@ -216,6 +216,11 @@ public interface LongStreamPlus
         return infinite();
     }
     
+    /** Create a stream that for an infinite loop - the value is the index of the loop. */
+    public static LongStreamPlus infiniteLong() {
+        return infinite();
+    }
+    
     public static LongStreamPlus naturalNumbers() {
         return LongStreamPlus
                 .from(LongStream.range(1, Long.MAX_VALUE));
@@ -228,7 +233,7 @@ public interface LongStreamPlus
     
     public static LongStreamPlus wholeNumbers() {
         return LongStreamPlus
-                .from(LongStream.range(1, Long.MAX_VALUE));
+                .from(LongStream.range(0, Long.MAX_VALUE));
     }
     
     public static LongStreamPlus wholeNumbers(long count) {

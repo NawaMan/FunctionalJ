@@ -400,7 +400,7 @@ public interface LongAccess<HOST>
     
     //-- Compare --
     
-    public default Comparator<HOST> ascendingOrder() {
+    public default Comparator<HOST> inOrder() {
         return (a, b) -> {
             val aValue = this.apply(a);
             val bValue = this.apply(b);
@@ -408,7 +408,7 @@ public interface LongAccess<HOST>
         };
     }
     
-    public default Comparator<HOST> descendingOrder() {
+    public default Comparator<HOST> inReverseOrder() {
         return (a, b) -> {
             val aValue = this.apply(a);
             val bValue = this.apply(b);
