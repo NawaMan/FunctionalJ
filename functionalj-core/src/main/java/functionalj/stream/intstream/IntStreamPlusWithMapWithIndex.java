@@ -103,9 +103,9 @@ public interface IntStreamPlusWithMapWithIndex {
         val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val i      = index.getAndIncrement();
-                    val value  = valueMapper.apply(each);
-                    val target = combiner.apply(i, value);
+                    val currentIndex = index.getAndIncrement();
+                    val value        = valueMapper.apply(each);
+                    val target       = combiner.apply(currentIndex, value);
                     return target;
                 });
     }

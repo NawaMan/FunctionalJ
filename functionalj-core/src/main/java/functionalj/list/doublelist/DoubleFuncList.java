@@ -33,6 +33,7 @@ import java.util.OptionalDouble;
 import java.util.Random;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
@@ -45,14 +46,13 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
 import functionalj.function.Func;
-import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.intlist.IntFuncList;
+import functionalj.list.longlist.AsLongFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
@@ -62,6 +62,7 @@ import functionalj.stream.doublestream.DoubleIteratorPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlusHelper;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -337,8 +338,8 @@ public interface DoubleFuncList
      * Note: this is an alias of compound()
      **/
     public static DoubleFuncList iterate(
-            double                        seed, 
-            DoubleToDoubleAccessPrimitive compounder) {
+            double              seed, 
+            DoubleUnaryOperator compounder) {
         return DoubleFuncList.from(() -> DoubleStreamPlus.iterate(seed, compounder));
     }
     
@@ -357,8 +358,8 @@ public interface DoubleFuncList
      * Note: this is an alias of iterate()
      **/
     public static DoubleFuncList compound(
-            double                        seed, 
-            DoubleToDoubleAccessPrimitive compounder) {
+            double              seed, 
+            DoubleUnaryOperator compounder) {
         return DoubleFuncList.from(() -> DoubleStreamPlus.compound(seed, compounder));
     }
     
@@ -378,9 +379,9 @@ public interface DoubleFuncList
      * Note: this is an alias of compound()
      **/
     public static DoubleFuncList iterate(
-            double                    seed1,
-            double                    seed2,
-            DoubleDoubleToDoubleFunctionPrimitive compounder) {
+            double               seed1,
+            double               seed2,
+            DoubleBinaryOperator compounder) {
         return DoubleFuncList.from(()->DoubleStreamPlus.iterate(seed1, seed2, compounder));
     }
     
@@ -400,9 +401,9 @@ public interface DoubleFuncList
      * Note: this is an alias of iterate()
      **/
     public static DoubleFuncList compound(
-            double                    seed1,
-            double                    seed2,
-            DoubleDoubleToDoubleFunctionPrimitive compounder) {
+            double               seed1,
+            double               seed2,
+            DoubleBinaryOperator compounder) {
         return iterate(seed1, seed2, compounder);
     }
     
@@ -440,9 +441,9 @@ public interface DoubleFuncList
     
     /** Zip integers from two IntFuncLists and combine it into another object. */
     public static DoubleFuncList zipOf(
-            DoubleFuncList            list1,
-            DoubleFuncList            list2,
-            DoubleDoubleToDoubleFunctionPrimitive merger) {
+            DoubleFuncList       list1,
+            DoubleFuncList       list2,
+            DoubleBinaryOperator merger) {
         return DoubleFuncList.from(() -> {
             return DoubleStreamPlus.zipOf(
                     list1.doubleStream(),
@@ -456,9 +457,9 @@ public interface DoubleFuncList
      * The result stream has the size of the shortest stream.
      */
     public static DoubleFuncList zipOf(
-            DoubleFuncList            list1, double defaultValue1,
-            DoubleFuncList            list2, double defaultValue2,
-            DoubleDoubleToDoubleFunctionPrimitive merger) {
+            DoubleFuncList       list1, double defaultValue1,
+            DoubleFuncList       list2, double defaultValue2,
+            DoubleBinaryOperator merger) {
         return DoubleFuncList.from(() -> {
             return DoubleStreamPlus.zipOf(
                     list1.doubleStream(), defaultValue1,
@@ -547,6 +548,25 @@ public interface DoubleFuncList
         return DoubleFuncList.from(() -> {
             val orgStreamPlus = asFuncList.intStreamPlus();
             val newStream = action.apply(orgStreamPlus);
+            return DoubleStreamPlus.from(newStream);
+        });
+    }
+    
+    /** Create a FuncList from the given IntFuncList. */
+    public static <TARGET> DoubleFuncList deriveFrom(
+            AsLongFuncList                        asFuncList, 
+            Function<LongStreamPlus, DoubleStream> action) {
+        boolean isLazy = asFuncList.asLongFuncList().isLazy();
+        if (!isLazy) {
+            val orgStreamPlus = asFuncList.longStreamPlus();
+            val newStream     = action.apply(orgStreamPlus);
+            val newStreamPlus = DoubleStreamPlus.from(newStream);
+            return ImmutableDoubleFuncList.from(isLazy, newStreamPlus);
+        }
+        
+        return DoubleFuncList.from(() -> {
+            val orgStreamPlus = asFuncList.longStreamPlus();
+            val newStream     = action.apply(orgStreamPlus);
             return DoubleStreamPlus.from(newStream);
         });
     }

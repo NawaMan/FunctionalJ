@@ -27,13 +27,13 @@ import static functionalj.function.FuncUnit0.funcUnit0;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 
 import java.util.PrimitiveIterator;
+import java.util.function.DoubleBinaryOperator;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
-import functionalj.function.DoubleDoublePredicatePrimitive;
 import functionalj.function.DoubleDoubleFunction;
+import functionalj.function.DoubleDoublePredicatePrimitive;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.IteratorPlus;
@@ -177,27 +177,27 @@ public interface DoubleStreamPlusWithCombine {
     }
     
     public default DoubleStreamPlus zipWith(
-            DoubleStream              anotherStream,
-            DoubleDoubleToDoubleFunctionPrimitive merger) {
+            DoubleStream         anotherStream,
+            DoubleBinaryOperator merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleWith(merger, iteratorA, iteratorB);
     }
     
     public default DoubleStreamPlus zipWith(
-            DoubleStream              anotherStream,
-            double                    defaultValue,
-            DoubleDoubleToDoubleFunctionPrimitive merger) {
+            DoubleStream         anotherStream,
+            double               defaultValue,
+            DoubleBinaryOperator merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleWith(merger, iteratorA, iteratorB, defaultValue);
     }
     
     public default DoubleStreamPlus zipWith(
-            DoubleStream              anotherStream,
-            double                    defaultValue1,
-            double                    defaultValue2,
-            DoubleDoubleToDoubleFunctionPrimitive merger) {
+            DoubleStream         anotherStream,
+            double               defaultValue1,
+            double               defaultValue2,
+            DoubleBinaryOperator merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);

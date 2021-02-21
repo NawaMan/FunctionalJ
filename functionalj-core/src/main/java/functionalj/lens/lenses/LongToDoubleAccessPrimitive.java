@@ -33,6 +33,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 
+import functionalj.function.LongComparator;
 import functionalj.list.doublelist.DoubleFuncList;
 import lombok.val;
 

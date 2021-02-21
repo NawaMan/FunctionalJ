@@ -34,6 +34,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.IntToDoubleFunction;
 
+import functionalj.function.IntComparator;
 import functionalj.list.doublelist.DoubleFuncList;
 import lombok.val;
 

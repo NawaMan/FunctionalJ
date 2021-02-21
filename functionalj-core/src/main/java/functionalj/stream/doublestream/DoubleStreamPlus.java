@@ -50,14 +50,13 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
-import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -165,7 +164,7 @@ public interface DoubleStreamPlus
         val size    = doubles.length;
         return DoubleStreamPlus.from(
                 IntStream
-                .iterate(0, i -> i + 1)
+                .range(0, Integer.MAX_VALUE)
                 .mapToDouble(i -> data[i % size]));
     }
     
@@ -297,7 +296,7 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static DoubleStreamPlus iterate(double seed, DoubleToDoubleAccessPrimitive compounder) {
+    public static DoubleStreamPlus iterate(double seed, DoubleUnaryOperator compounder) {
         return DoubleStreamPlus.from(DoubleStream.iterate(seed, compounder));
     }
     
@@ -315,7 +314,7 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static DoubleStreamPlus compound(double seed, DoubleToDoubleAccessPrimitive compounder) {
+    public static DoubleStreamPlus compound(double seed, DoubleUnaryOperator compounder) {
         return iterate(seed, compounder);
     }
     
@@ -334,7 +333,7 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static DoubleStreamPlus iterate(double seed1, double seed2, DoubleDoubleToDoubleFunctionPrimitive compounder) {
+    public static DoubleStreamPlus iterate(double seed1, double seed2, DoubleBinaryOperator compounder) {
         return DoubleStreamPlus.from(StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(Long.MAX_VALUE, 0) {
             private final    double[] first  = new double[] { seed1 };
             private final    double[] second = new double[] { seed2 };
@@ -378,7 +377,7 @@ public interface DoubleStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static DoubleStreamPlus compound(double seed1, double seed2, DoubleDoubleToDoubleFunctionPrimitive compounder) {
+    public static DoubleStreamPlus compound(double seed1, double seed2, DoubleBinaryOperator compounder) {
         return iterate(seed1, seed2, compounder);
     }
     
@@ -421,22 +420,22 @@ public interface DoubleStreamPlus
     }
     
     public static DoubleStreamPlus zipOf(
-            DoubleStream              stream1,
-            DoubleStream              stream2,
-            DoubleDoubleToDoubleFunctionPrimitive merger) {
+            DoubleStream         stream1,
+            DoubleStream         stream2,
+            DoubleBinaryOperator merger) {
         return DoubleStreamPlus.from(stream1).zipWith(stream2, merger);
     }
     public static DoubleStreamPlus zipOf(
-            DoubleStream              stream1,
-            DoubleStream              stream2,
-            double                    defaultValue,
-            DoubleDoubleToDoubleFunctionPrimitive merger) {
+            DoubleStream         stream1,
+            DoubleStream         stream2,
+            double               defaultValue,
+            DoubleBinaryOperator merger) {
         return DoubleStreamPlus.from(stream1).zipWith(stream2, defaultValue, merger);
     }
     public static DoubleStreamPlus zipOf(
             DoubleStream stream1, double defaultValue1,
             DoubleStream stream2, double defaultValue2,
-            DoubleDoubleToDoubleFunctionPrimitive merger) {
+            DoubleBinaryOperator merger) {
         return DoubleStreamPlus.from(stream1).zipWith(stream2, defaultValue1, defaultValue2, merger);
     }
     
@@ -596,8 +595,8 @@ public interface DoubleStreamPlus
     }
     
     @Override
-    public default LongStream mapToLong(DoubleToLongFunction mapper) {
-        return doubleStream().mapToLong(mapper);
+    public default LongStreamPlus mapToLong(DoubleToLongFunction mapper) {
+        return LongStreamPlus.from(doubleStream().mapToLong(mapper));
     }
     
     public default DoubleStreamPlus mapToDouble(DoubleUnaryOperator mapper) {

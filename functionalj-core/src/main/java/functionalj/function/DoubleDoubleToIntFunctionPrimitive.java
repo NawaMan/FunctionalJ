@@ -32,9 +32,4 @@ public interface DoubleDoubleToIntFunctionPrimitive extends ToIntegerBiDoubleFun
         return applyAsDoubleAndDouble(data, doubleValue);
     }
     
-    public static double apply(ObjectDoubleToDoubleFunctionPrimitive<Double> function, double value, double anotherValue) {
-        return (function instanceof DoubleDoubleToIntFunctionPrimitive)
-                ? ((DoubleDoubleToIntFunctionPrimitive)function).applyAsDoubleAndDouble(value, anotherValue)
-                : function.applyAsDouble(value, anotherValue);
-    }
 }

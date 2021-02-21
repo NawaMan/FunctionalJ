@@ -26,10 +26,10 @@ package functionalj.list.intlist;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.OptionalInt;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
-import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -42,8 +42,8 @@ import lombok.val;
 
 public class ImmutableIntFuncList implements IntFuncList {
     
-    private static final IntBiFunctionPrimitive zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
-    private static final IntPredicate           toZero        = (int i)          -> i  == 0;
+    private static final IntBinaryOperator zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
+    private static final IntPredicate      toZero        = (int i)          -> i  == 0;
     
     private static final int[] EMPTY_INT_ARRAY = new int[0];
     

@@ -62,6 +62,7 @@ import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -629,8 +630,8 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default LongStream mapToLong(ToLongFunction<? super DATA> mapper) {
-        return stream().mapToLong(mapper);
+    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
+        return LongStreamPlus.from(stream().mapToLong(mapper));
     }
     
     @Override
@@ -656,8 +657,8 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default LongStream flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
-        return stream().flatMapToLong(mapper);
+    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
+        return LongStreamPlus.from(stream().flatMapToLong(mapper));
     }
     
     @Override

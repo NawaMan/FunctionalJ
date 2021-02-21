@@ -26,19 +26,19 @@ package functionalj.list.intlist;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 
 public class IntFuncListDerived implements IntFuncList {
     
-    private static final IntBiFunctionPrimitive zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
-    private static final IntPredicate           notZero       = (int i)          -> i  != 0;
+    private static final IntBinaryOperator zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
+    private static final IntPredicate      notZero       = (int i)          -> i  != 0;
     
     //-- Data --
     

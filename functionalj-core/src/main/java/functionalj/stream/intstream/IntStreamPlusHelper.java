@@ -30,10 +30,10 @@ import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.stream.IteratorPlus;
@@ -153,7 +153,7 @@ public class IntStreamPlusHelper {
                 if (!hasNextA)
                     throw new NoSuchElementException();
                 
-                int nextA = iteratorA.nextInt();
+                val nextA = iteratorA.nextInt();
                 val nextB = iteratorB.next();
                 return merger.apply(nextA, nextB);
             }
@@ -185,7 +185,7 @@ public class IntStreamPlusHelper {
                 return hasNextA || hasNextB;
             }
             public TARGET next() {
-                int nextA = hasNextA ? iteratorA.nextInt() : defaultValue;
+                val nextA = hasNextA ? iteratorA.nextInt() : defaultValue;
                 B   nextB = hasNextB ? iteratorB.next()    : null;
                 return merger.apply(nextA, nextB);
             }
@@ -201,9 +201,9 @@ public class IntStreamPlusHelper {
     }
     
     static IntStreamPlus doZipIntIntWith(
-            IntBiFunctionPrimitive merger,
-            IntIteratorPlus        iteratorA,
-            IntIteratorPlus        iteratorB) {
+            IntBinaryOperator merger,
+            IntIteratorPlus   iteratorA,
+            IntIteratorPlus   iteratorB) {
         
         val iterator = new PrimitiveIterator.OfInt() {
             private boolean hasNextA;
@@ -216,9 +216,9 @@ public class IntStreamPlusHelper {
             }
             public int nextInt() {
                 if (hasNextA && hasNextB) {
-                    int nextA  = iteratorA.nextInt();
-                    int nextB  = iteratorB.nextInt();
-                    int choice = merger.applyAsIntAndInt(nextA, nextB);
+                    val nextA  = iteratorA.nextInt();
+                    val nextB  = iteratorB.nextInt();
+                    val choice = merger.applyAsInt(nextA, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
@@ -252,8 +252,8 @@ public class IntStreamPlusHelper {
             }
             public TARGET next() {
                 if (hasNextA && hasNextB) {
-                    int    nextA  = iteratorA.nextInt();
-                    int    nextB  = iteratorB.nextInt();
+                    val    nextA  = iteratorA.nextInt();
+                    val    nextB  = iteratorB.nextInt();
                     TARGET choice = merger.applyInt(nextA, nextB);
                     return choice;
                 }
@@ -289,18 +289,18 @@ public class IntStreamPlusHelper {
             }
             public TARGET next() {
                 if (hasNextA && hasNextB) {
-                    int    nextA  = iteratorA.nextInt();
-                    int    nextB  = iteratorB.nextInt();
+                    val    nextA  = iteratorA.nextInt();
+                    val    nextB  = iteratorB.nextInt();
                     TARGET choice = merger.applyInt(nextA, nextB);
                     return choice;
                 }
                 if (hasNextA) {
-                    int    nextA = iteratorA.nextInt();
+                    val    nextA = iteratorA.nextInt();
                     TARGET choice = merger.applyInt(nextA, defaultValue);
                     return choice;
                 }
                 if (hasNextB) {
-                    int    nextB = iteratorB.nextInt();
+                    val    nextB = iteratorB.nextInt();
                     TARGET choice = merger.applyInt(defaultValue, nextB);
                     return choice;
                 }
@@ -318,10 +318,10 @@ public class IntStreamPlusHelper {
     }
     
     static IntStreamPlus doZipIntIntWith(
-            IntBiFunctionPrimitive merger,
-            IntIteratorPlus        iteratorA,
-            IntIteratorPlus        iteratorB,
-            int                    defaultValue) {
+            IntBinaryOperator merger,
+            IntIteratorPlus   iteratorA,
+            IntIteratorPlus   iteratorB,
+            int               defaultValue) {
         
         val iterator = new PrimitiveIterator.OfInt() {
             private boolean hasNextA;
@@ -334,19 +334,19 @@ public class IntStreamPlusHelper {
             }
             public int nextInt() {
                 if (hasNextA && hasNextB) {
-                    int nextA  = iteratorA.nextInt();
-                    int nextB  = iteratorB.nextInt();
-                    int choice = merger.applyAsIntAndInt(nextA, nextB);
+                    val nextA  = iteratorA.nextInt();
+                    val nextB  = iteratorB.nextInt();
+                    val choice = merger.applyAsInt(nextA, nextB);
                     return choice;
                 }
                 if (hasNextA) {
-                    int nextA = iteratorA.nextInt();
-                    int choice = merger.applyAsIntAndInt(nextA, defaultValue);
+                    val nextA = iteratorA.nextInt();
+                    val choice = merger.applyAsInt(nextA, defaultValue);
                     return choice;
                 }
                 if (hasNextB) {
-                    int nextB = iteratorB.nextInt();
-                    int choice = merger.applyAsIntAndInt(defaultValue, nextB);
+                    val nextB = iteratorB.nextInt();
+                    val choice = merger.applyAsInt(defaultValue, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
@@ -382,18 +382,18 @@ public class IntStreamPlusHelper {
             }
             public TARGET next() {
                 if (hasNextA && hasNextB) {
-                    int    nextA  = iteratorA.nextInt();
-                    int    nextB  = iteratorB.nextInt();
+                    val    nextA  = iteratorA.nextInt();
+                    val    nextB  = iteratorB.nextInt();
                     TARGET choice = merger.applyInt(nextA, nextB);
                     return choice;
                 }
                 if (hasNextA) {
-                    int    nextA = iteratorA.nextInt();
+                    val    nextA = iteratorA.nextInt();
                     TARGET choice = merger.applyInt(nextA, defaultValueB);
                     return choice;
                 }
                 if (hasNextB) {
-                    int    nextB = iteratorB.nextInt();
+                    val    nextB = iteratorB.nextInt();
                     TARGET choice = merger.applyInt(defaultValueA, nextB);
                     return choice;
                 }
@@ -413,11 +413,11 @@ public class IntStreamPlusHelper {
     }
     
     static IntStreamPlus doZipIntIntWith(
-            IntBiFunctionPrimitive merger,
-            IntIteratorPlus        iteratorA,
-            IntIteratorPlus        iteratorB,
-            int                    defaultValueA,
-            int                    defaultValueB) {
+            IntBinaryOperator merger,
+            IntIteratorPlus   iteratorA,
+            IntIteratorPlus   iteratorB,
+            int               defaultValueA,
+            int               defaultValueB) {
         
         val iterator = new PrimitiveIterator.OfInt() {
             private boolean hasNextA;
@@ -430,19 +430,19 @@ public class IntStreamPlusHelper {
             }
             public int nextInt() {
                 if (hasNextA && hasNextB) {
-                    int nextA  = iteratorA.nextInt();
-                    int nextB  = iteratorB.nextInt();
-                    int choice = merger.applyAsIntAndInt(nextA, nextB);
+                    val nextA  = iteratorA.nextInt();
+                    val nextB  = iteratorB.nextInt();
+                    val choice = merger.applyAsInt(nextA, nextB);
                     return choice;
                 }
                 if (hasNextA) {
-                    int nextA = iteratorA.nextInt();
-                    int choice = merger.applyAsIntAndInt(nextA, defaultValueB);
+                    val nextA = iteratorA.nextInt();
+                    val choice = merger.applyAsInt(nextA, defaultValueB);
                     return choice;
                 }
                 if (hasNextB) {
-                    int nextB = iteratorB.nextInt();
-                    int choice = merger.applyAsIntAndInt(defaultValueA, nextB);
+                    val nextB = iteratorB.nextInt();
+                    val choice = merger.applyAsInt(defaultValueA, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();

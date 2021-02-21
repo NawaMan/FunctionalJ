@@ -33,6 +33,7 @@ import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
 
+import functionalj.function.DoubleComparator;
 import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 

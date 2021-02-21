@@ -52,13 +52,13 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.IntBiFunctionPrimitive;
-import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
+import functionalj.function.IntComparator;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -166,7 +166,7 @@ public interface IntStreamPlus
         val size = data.length;
         return IntStreamPlus.from(
                 IntStream
-                .iterate(0, i -> i + 1)
+                .range(0, Integer.MAX_VALUE)
                 .map(i -> data[i % size]));
     }
     
@@ -286,7 +286,7 @@ public interface IntStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static IntStreamPlus iterate(int seed, IntegerToIntegerAccessPrimitive compounder) {
+    public static IntStreamPlus iterate(int seed, IntUnaryOperator compounder) {
         return IntStreamPlus.from(IntStream.iterate(seed, compounder));
     }
     
@@ -304,7 +304,7 @@ public interface IntStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static IntStreamPlus compound(int seed, IntegerToIntegerAccessPrimitive compounder) {
+    public static IntStreamPlus compound(int seed, IntUnaryOperator compounder) {
         return iterate(seed, compounder);
     }
     
@@ -323,7 +323,7 @@ public interface IntStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static IntStreamPlus iterate(int seed1, int seed2, IntBiFunctionPrimitive compounder) {
+    public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator compounder) {
         return IntStreamPlus.from(StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(Long.MAX_VALUE, 0) {
             private final    AtomicInteger first  = new AtomicInteger(seed1);
             private final    AtomicInteger second = new AtomicInteger(seed2);
@@ -367,7 +367,7 @@ public interface IntStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static IntStreamPlus compound(int seed1, int seed2, IntBiFunctionPrimitive f) {
+    public static IntStreamPlus compound(int seed1, int seed2, IntBinaryOperator f) {
         return iterate(seed1, seed2, f);
     }
     
@@ -410,22 +410,22 @@ public interface IntStreamPlus
     }
     
     public static IntStreamPlus zipOf(
-            IntStream              stream1,
-            IntStream              stream2,
-            IntBiFunctionPrimitive merger) {
+            IntStream         stream1,
+            IntStream         stream2,
+            IntBinaryOperator merger) {
         return IntStreamPlus.from(stream1).zipWith(stream2, merger);
     }
     public static IntStreamPlus zipOf(
-            IntStream              stream1,
-            IntStream              stream2,
-            int                    defaultValue,
-            IntBiFunctionPrimitive merger) {
+            IntStream         stream1,
+            IntStream         stream2,
+            int               defaultValue,
+            IntBinaryOperator merger) {
         return IntStreamPlus.from(stream1).zipWith(stream2, defaultValue, merger);
     }
     public static IntStreamPlus zipOf(
             IntStream stream1, int defaultValue1,
             IntStream stream2, int defaultValue2,
-            IntBiFunctionPrimitive merger) {
+            IntBinaryOperator merger) {
         return IntStreamPlus.from(stream1).zipWith(stream2, defaultValue1, defaultValue2, merger);
     }
     
@@ -468,14 +468,18 @@ public interface IntStreamPlus
                 .from(intStream().boxed());
     }
     
-    @Override
-    public default DoubleStreamPlus asDoubleStream() {
-        return mapToDouble(i -> i);
+    public default IntStreamPlus asIntStream() {
+        return this;
     }
     
     @Override
     public default LongStream asLongStream() {
         return mapToLong(value -> value);
+    }
+    
+    @Override
+    public default DoubleStreamPlus asDoubleStream() {
+        return mapToDouble(i -> i);
     }
     
     //-- Characteristics --
@@ -587,8 +591,8 @@ public interface IntStreamPlus
     }
     
     @Override
-    public default LongStream mapToLong(IntToLongFunction mapper) {
-        return intStream().mapToLong(mapper);
+    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
+        return LongStreamPlus.from(intStream().mapToLong(mapper));
     }
     
     public default DoubleStreamPlus mapToDouble() {
@@ -618,6 +622,10 @@ public interface IntStreamPlus
     
     public default IntStreamPlus flatMapToInt(IntFunction<? extends IntStream> mapper) {
         return flatMap(mapper);
+    }
+    
+    public default LongStreamPlus flatMapToLong(IntFunction<? extends LongStream> mapper) {
+        return LongStreamPlus.from(mapToObj(mapper).flatMapToLong(itself()));
     }
     
     public default DoubleStreamPlus flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
@@ -670,11 +678,11 @@ public interface IntStreamPlus
     }
     
     @Eager
-    public default IntStreamPlus sorted(IntBiFunctionPrimitive comparator) {
+    public default IntStreamPlus sorted(IntComparator comparator) {
         return IntStreamPlus.from(
                 intStream()
                 .boxed   ()
-                .sorted  ((a,b) -> comparator.applyAsIntAndInt(a, b))
+                .sorted  ((a,b) -> comparator.compare(a, b))
                 .mapToInt(i -> i));
     }
     

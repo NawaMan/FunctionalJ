@@ -140,7 +140,7 @@ public class ArrayBackedDoubleIteratorPlus implements DoubleIteratorPlus, Primit
         }
     }
     
-    public DoubleFuncList FuncList() {
+    public DoubleFuncList funcList() {
         return DoubleFuncList.from(()->{
             val iterable = (DoubleIterable)()->newIterator();
             return DoubleStreamPlus.from(StreamSupport.doubleStream(iterable.spliterator(), false));

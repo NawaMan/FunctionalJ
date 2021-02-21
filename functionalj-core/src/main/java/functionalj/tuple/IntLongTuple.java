@@ -33,7 +33,7 @@ public class IntLongTuple implements Tuple2<Integer, Long>, Map.Entry<Integer, L
     public static  IntLongTuple of(int i1, long i2) {
         return new IntLongTuple(i1, i2);
     }
-    public static  IntLongTuple intTuple(int i1, long i2) {
+    public static  IntLongTuple tuple(int i1, long i2) {
         return new IntLongTuple(i1, i2);
     }
     

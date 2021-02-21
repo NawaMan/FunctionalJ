@@ -31,12 +31,17 @@ import functionalj.list.AsFuncList;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.intlist.IntFuncList;
+import functionalj.list.longlist.AsLongFuncList;
+import functionalj.list.longlist.LongFuncList;
 import functionalj.stream.doublestream.DoubleAccumulator;
 import functionalj.stream.doublestream.DoubleCollectorPlus;
 import functionalj.stream.doublestream.DoubleStreamProcessor;
 import functionalj.stream.intstream.IntAccumulator;
 import functionalj.stream.intstream.IntCollectorPlus;
 import functionalj.stream.intstream.IntStreamProcessor;
+import functionalj.stream.longstream.LongAccumulator;
+import functionalj.stream.longstream.LongCollectorPlus;
+import functionalj.stream.longstream.LongStreamProcessor;
 import lombok.val;
 
 
@@ -77,6 +82,17 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         
         Objects.requireNonNull(funcList);
         return new ByIntStreamProcessor<>(funcList, processor);
+    }
+    @SuppressWarnings("unchecked")
+    public static <A, R> CollectedLong<A, R> ofLong(
+            AsLongFuncList         funcList,
+            LongStreamProcessor<R> processor) {
+        Objects.requireNonNull(processor);
+        if (processor instanceof Collector)
+            return new ByCollectedLong<>(((LongCollectorPlus<A, R>)processor));
+        
+        Objects.requireNonNull(funcList);
+        return new ByLongStreamProcessor<>(funcList, processor);
     }
     @SuppressWarnings("unchecked")
     public static <A, R> CollectedDouble<A, R> ofDouble(
@@ -206,6 +222,73 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
             return processor.process(intStream);
         }
     }
+    
+    //-- Long --
+    
+    public static interface CollectedLong<ACCUMULATED, RESULT> {
+        
+        public static <A, R> CollectedLong<A, R> collectedOf(
+                LongFuncList         FuncList,
+                LongStreamProcessor<R> processor) {
+            return Collected.ofLong(FuncList, processor);
+        }
+        
+        public void   accumulate(long each);
+        public RESULT finish();
+    }
+    
+    public static class ByCollectedLong<ACCUMULATED, RESULT>
+                    implements CollectedLong<ACCUMULATED, RESULT> {
+        
+        private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
+        private final LongAccumulator<ACCUMULATED>           accumulator;
+        private final ACCUMULATED                            accumulated;
+        
+        public ByCollectedLong(LongCollectorPlus<ACCUMULATED, RESULT> collector) {
+            this.collector   = collector;
+            this.accumulated 
+                    = collector
+                    .supplier()
+                    .get();
+            this.accumulator 
+                    = collector
+                    .longAccumulator();
+        }
+        
+        public void accumulate(long each) {
+            accumulator.accept(accumulated, each);
+        }
+        
+        public RESULT finish() {
+            val finisher = collector.finisher();
+            return finisher.apply(accumulated);
+        }
+        
+    }
+    
+    public static class ByLongStreamProcessor<ACCUMULATED, RESULT>
+                    implements CollectedLong<ACCUMULATED, RESULT> {
+        
+        private final LongStreamProcessor<RESULT> processor;
+        private final AsLongFuncList              funcList;
+        
+        public ByLongStreamProcessor(
+                AsLongFuncList              funcList,
+                LongStreamProcessor<RESULT> processor) {
+            this.processor = processor;
+            this.funcList  = funcList;
+        }
+        
+        public void accumulate(long each) {
+        }
+        
+        public RESULT finish() {
+            val intStream = funcList.longStreamPlus();
+            return processor.process(intStream);
+        }
+    }
+    
+    //-- Doouble --
     
     public static interface CollectedDouble<ACCUMULATED, RESULT> {
         

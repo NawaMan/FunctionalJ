@@ -26,9 +26,9 @@ package functionalj.list.intlist;
 import static functionalj.list.intlist.IntFuncList.deriveFrom;
 import static functionalj.list.intlist.IntFuncList.deriveToObj;
 
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 
-import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.promise.UncompletedAction;
@@ -54,7 +54,7 @@ public interface IntFuncListWithModify extends AsIntFuncList {
      *     output2 = acc2 with acc3 = acc2 ~ rest2 and rest3 = rest of rest2
      *     ...
      */
-    public default IntFuncList accumulate(IntBiFunctionPrimitive accumulator) {
+    public default IntFuncList accumulate(IntBinaryOperator accumulator) {
         return deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
     

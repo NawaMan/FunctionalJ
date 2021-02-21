@@ -93,4 +93,5 @@ public class IntFuncListBuilder {
     public boolean equals(IntFuncListBuilder array) {
         return Objects.equals(list, array.list);
     }
+    
 }

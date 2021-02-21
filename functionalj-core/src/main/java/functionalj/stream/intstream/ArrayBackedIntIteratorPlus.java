@@ -1,3 +1,26 @@
+// ============================================================================
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream.intstream;
 
 import java.util.Arrays;
@@ -27,15 +50,15 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
     
     @SafeVarargs
     public static ArrayBackedIntIteratorPlus of(int ... array) {
-        int[] copiedArray = Arrays.copyOf(array, array.length);
+        val copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedIntIteratorPlus(copiedArray);
     }
     public static ArrayBackedIntIteratorPlus from(int[] array) {
-        int[] copiedArray = Arrays.copyOf(array, array.length);
+        val copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedIntIteratorPlus(copiedArray);
     }
     public static ArrayBackedIntIteratorPlus from(int[] array, int start, int length) {
-        int[] copiedArray = Arrays.copyOf(array, array.length);
+        val copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedIntIteratorPlus(copiedArray, start, length);
     }
     
@@ -61,7 +84,7 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
             
             @Override
             public int nextInt() {
-                int index = current.get();
+                val index = current.get();
                 if (index >= array.length)
                     throw new NoSuchElementException();
                 if (index < 0)
@@ -140,7 +163,7 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
         }
     }
     
-    public IntFuncList FuncList() {
+    public IntFuncList funcList() {
         return IntFuncList.from(()->{
             val iterable = (IntIterable)()->newIterator();
             return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));

@@ -31,7 +31,7 @@ public class LongLongTuple implements Tuple2<Long, Long>, Map.Entry<Long, Long> 
     public static  LongLongTuple of(long i1, long i2) {
         return new LongLongTuple(i1, i2);
     }
-    public static  LongLongTuple intTuple(long i1, long i2) {
+    public static  LongLongTuple longTuple(long i1, long i2) {
         return new LongLongTuple(i1, i2);
     }
     

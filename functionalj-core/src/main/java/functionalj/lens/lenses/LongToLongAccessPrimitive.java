@@ -33,6 +33,7 @@ import java.util.function.LongPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.LongUnaryOperator;
 
+import functionalj.function.LongComparator;
 import lombok.val;
 
 

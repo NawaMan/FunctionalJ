@@ -26,7 +26,8 @@ package functionalj.list.intlist;
 import static functionalj.list.intlist.IntFuncList.deriveToInt;
 import static functionalj.list.intlist.IntFuncList.deriveToObj;
 
-import functionalj.function.IntBiFunctionPrimitive;
+import java.util.function.IntBinaryOperator;
+
 import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
@@ -158,23 +159,23 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
     }
     
     public default IntFuncList zipWith(
-            IntFuncList            anotherFuncList, 
-            IntBiFunctionPrimitive merger) {
+            IntFuncList       anotherFuncList, 
+            IntBinaryOperator merger) {
         return deriveToInt(this, stream -> stream.zipWith(anotherFuncList.intStream(), merger));
     }
     
     public default IntFuncList zipWith(
-            IntFuncList            anotherFuncList, 
-            int                    defaultValue,
-            IntBiFunctionPrimitive merger) {
+            IntFuncList       anotherFuncList, 
+            int               defaultValue,
+            IntBinaryOperator merger) {
         return deriveToInt(this, stream -> stream.zipWith(anotherFuncList.intStream(), defaultValue, merger));
     }
     
     public default IntFuncList zipWith(
-            int                    defaultValue1,
-            IntFuncList            anotherFuncList,
-            int                    defaultValue2,
-            IntBiFunctionPrimitive merger) {
+            int               defaultValue1,
+            IntFuncList       anotherFuncList,
+            int               defaultValue2,
+            IntBinaryOperator merger) {
         return deriveToInt(this, stream -> stream.zipWith(anotherFuncList.intStream(), defaultValue1, defaultValue2, merger));
     }
     

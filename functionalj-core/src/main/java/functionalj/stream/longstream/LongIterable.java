@@ -21,31 +21,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens.lenses;
+package functionalj.stream.longstream;
 
-import java.util.Comparator;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.LongConsumer;
+
+import lombok.val;
+
 
 @FunctionalInterface
-public interface LongComparator extends Comparator<Long> {
+public interface LongIterable {
     
-    public int compareLong(long o1, long o2);
+    public LongIteratorPlus iterator();
     
-    public default int compare(Long o1, Long o2) {
-        return compareLong(o1, o2);
+    public default LongIterable __data() throws Exception {
+        return this;
     }
     
-    
-    public static LongComparator compare(LongComparator comparator) {
-        return Objects.requireNonNull(comparator);
-    }
-    
-    public static int compare(long a, long b, Comparator<Long> comparator) {
-        if (!(comparator instanceof LongComparator)) {
-            return comparator.compare(a, b);
+    default void forEach(LongConsumer action) {
+        Objects.requireNonNull(action);
+        val iterator = iterator();
+        while (iterator.hasNext()) {
+            val i = iterator.nextLong();
+            action.accept(i);
         }
-        
-        return ((LongComparator)comparator).compareLong(a, b);
+    }
+    
+    default Spliterator.OfLong spliterator() {
+        return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
     
 }

@@ -31,16 +31,15 @@ import java.util.function.IntConsumer;
 import lombok.val;
 
 
-
 @FunctionalInterface
 public interface IntIterable {
-
+    
     public IntIteratorPlus iterator();
-
+    
     public default IntIterable __data() throws Exception {
         return this;
     }
-
+    
     default void forEach(IntConsumer action) {
         Objects.requireNonNull(action);
         val iterator = iterator();
@@ -49,9 +48,9 @@ public interface IntIterable {
             action.accept(i);
         }
     }
-
+    
     default Spliterator.OfInt spliterator() {
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
-
+    
 }

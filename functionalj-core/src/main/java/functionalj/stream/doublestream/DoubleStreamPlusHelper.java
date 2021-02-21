@@ -29,11 +29,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
 import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func1;
@@ -203,9 +203,9 @@ public class DoubleStreamPlusHelper {
     }
     
     static DoubleStreamPlus doZipDoubleDoubleWith(
-            DoubleDoubleToDoubleFunctionPrimitive merger,
-            DoubleIteratorPlus        iteratorA,
-            DoubleIteratorPlus        iteratorB) {
+            DoubleBinaryOperator merger,
+            DoubleIteratorPlus   iteratorA,
+            DoubleIteratorPlus   iteratorB) {
         
         val iterator = new PrimitiveIterator.OfDouble() {
             private boolean hasNextA;
@@ -320,10 +320,10 @@ public class DoubleStreamPlusHelper {
     }
     
     static DoubleStreamPlus doZipDoubleDoubleWith(
-            DoubleDoubleToDoubleFunctionPrimitive merger,
-            DoubleIteratorPlus        iteratorA,
-            DoubleIteratorPlus        iteratorB,
-            double                    defaultValue) {
+            DoubleBinaryOperator merger,
+            DoubleIteratorPlus   iteratorA,
+            DoubleIteratorPlus   iteratorB,
+            double               defaultValue) {
         
         val iterator = new PrimitiveIterator.OfDouble() {
             private boolean hasNextA;
@@ -415,11 +415,11 @@ public class DoubleStreamPlusHelper {
     }
     
     static DoubleStreamPlus doZipDoubleDoubleWith(
-            DoubleDoubleToDoubleFunctionPrimitive merger,
-            DoubleIteratorPlus        iteratorA,
-            DoubleIteratorPlus        iteratorB,
-            double                    defaultValueA,
-            double                    defaultValueB) {
+            DoubleBinaryOperator merger,
+            DoubleIteratorPlus   iteratorA,
+            DoubleIteratorPlus   iteratorB,
+            double               defaultValueA,
+            double               defaultValueB) {
         
         val iterator = new PrimitiveIterator.OfDouble() {
             private boolean hasNextA;
@@ -503,10 +503,10 @@ public class DoubleStreamPlusHelper {
     }
     
     static DoubleStreamPlus doChoiceWith(
-            ZipWithOption             option,
-            DoubleDoubleToDoubleFunctionPrimitive merger,
-            DoubleIteratorPlus        iteratorA,
-            DoubleIteratorPlus        iteratorB) {
+            ZipWithOption        option,
+            DoubleBinaryOperator merger,
+            DoubleIteratorPlus   iteratorA,
+            DoubleIteratorPlus   iteratorB) {
         
         val iterator = new PrimitiveIterator.OfDouble() {
             private boolean hasNextA;

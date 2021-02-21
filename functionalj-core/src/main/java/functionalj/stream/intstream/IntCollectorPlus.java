@@ -29,11 +29,11 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 
-import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
 import functionalj.stream.CollectorPlus;
 import lombok.val;
 
@@ -60,7 +60,7 @@ public interface IntCollectorPlus<ACCUMULATED, RESULT>
         return CollectorPlus.from(collector);
     }
     
-    default IntCollectorPlus<ACCUMULATED, RESULT> ofInt(IntegerToIntegerAccessPrimitive mapper) {
+    default IntCollectorPlus<ACCUMULATED, RESULT> ofInt(IntUnaryOperator mapper) {
         return new IntCollectorFromInt<>(this, mapper);
     }
 }
@@ -138,11 +138,11 @@ class IntCollectorFromInt<ACCUMULATED, RESULT>
         implements IntCollectorPlus<ACCUMULATED, RESULT> {
     
     private final IntCollectorPlus<ACCUMULATED, RESULT> collector;
-    private final IntegerToIntegerAccessPrimitive       mapper;
+    private final IntUnaryOperator                      mapper;
     
     public IntCollectorFromInt(
             IntCollectorPlus<ACCUMULATED, RESULT> collector,
-            IntegerToIntegerAccessPrimitive       mapper) {
+            IntUnaryOperator                      mapper) {
         this.collector = requireNonNull(collector);
         this.mapper    = requireNonNull(mapper);
     }

@@ -33,9 +33,4 @@ public interface IntIntToDoubleFunctionPrimitive extends ToDoubleBiIntFunction<I
         return applyAsIntAndInt(data, doubleValue);
     }
     
-    public static double apply(ToDoubleBiIntFunction<Integer> function, int value, int anotherValue) {
-        return (function instanceof IntIntToDoubleFunctionPrimitive)
-                ? ((IntIntToDoubleFunctionPrimitive)function).applyAsIntAndInt(value, anotherValue)
-                : function.applyAsDouble(value, anotherValue);
-    }
 }

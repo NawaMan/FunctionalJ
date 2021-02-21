@@ -25,17 +25,21 @@ package functionalj.list.intlist;
 
 import static functionalj.list.intlist.IntFuncList.deriveToDouble;
 import static functionalj.list.intlist.IntFuncList.deriveToInt;
+import static functionalj.list.intlist.IntFuncList.deriveToLong;
 import static functionalj.list.intlist.IntFuncList.deriveToObj;
 
 import java.util.function.IntBinaryOperator;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import functionalj.function.Func1;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntIntToDoubleFunctionPrimitive;
+import functionalj.function.IntIntToLongFunctionPrimitive;
 import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.list.longlist.LongFuncList;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.IntIntTuple;
 
@@ -87,6 +91,18 @@ public interface IntFuncListWithMapGroup extends AsIntFuncList {
         return deriveToInt(this, stream -> stream.mapGroupToInt(count, combinator));
     }
     
+    //== Long ==
+    
+    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    public default LongFuncList mapTwoToLong(IntIntToLongFunctionPrimitive combinator) {
+        return deriveToLong(this, stream -> stream.mapTwoToLong(combinator));
+    }
+    
+    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    public default LongFuncList mapGroupToLong(int count, ToLongFunction<IntStreamPlus> combinator) {
+        return deriveToLong(this, stream -> stream.mapGroupToLong(count, combinator));
+    }
+    
     //== Double ==
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
@@ -98,7 +114,5 @@ public interface IntFuncListWithMapGroup extends AsIntFuncList {
     public default DoubleFuncList mapGroupToDouble(int count, ToDoubleFunction<IntStreamPlus> combinator) {
         return deriveToDouble(this, stream -> stream.mapGroupToDouble(count, combinator));
     }
-    
-
     
 }

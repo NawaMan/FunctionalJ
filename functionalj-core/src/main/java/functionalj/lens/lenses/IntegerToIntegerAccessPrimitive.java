@@ -33,6 +33,7 @@ import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 
+import functionalj.function.IntComparator;
 import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 

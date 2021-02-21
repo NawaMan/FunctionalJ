@@ -34,24 +34,28 @@ import java.util.Random;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.IntToDoubleFunction;
+import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import functionalj.function.Func;
-import functionalj.function.IntBiFunctionPrimitive;
-import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
+import functionalj.function.IntComparator;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.list.longlist.AsLongFuncList;
+import functionalj.list.longlist.LongFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
@@ -61,6 +65,7 @@ import functionalj.stream.intstream.IntIterable;
 import functionalj.stream.intstream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlusHelper;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -333,8 +338,8 @@ public interface IntFuncList
      * Note: this is an alias of compound()
      **/
     public static IntFuncList iterate(
-            int                             seed, 
-            IntegerToIntegerAccessPrimitive compounder) {
+            int               seed, 
+            IntUnaryOperator compounder) {
         return IntFuncList.from(() -> IntStreamPlus.iterate(seed, compounder));
     }
     
@@ -352,7 +357,7 @@ public interface IntFuncList
      *
      * Note: this is an alias of iterate()
      **/
-    public static IntFuncList compound(int seed, IntegerToIntegerAccessPrimitive compounder) {
+    public static IntFuncList compound(int seed, IntUnaryOperator compounder) {
         return IntFuncList.from(() -> IntStreamPlus.compound(seed, compounder));
     }
     
@@ -371,7 +376,7 @@ public interface IntFuncList
      *
      * Note: this is an alias of compound()
      **/
-    public static IntFuncList iterate(int seed1, int seed2, IntBiFunctionPrimitive compounder) {
+    public static IntFuncList iterate(int seed1, int seed2, IntBinaryOperator compounder) {
         return IntFuncList.from(() -> IntStreamPlus.iterate(seed1, seed2, compounder));
     }
     
@@ -383,7 +388,7 @@ public interface IntFuncList
      *
      * Note: this is an alias of iterate()
      **/
-    public static IntFuncList compound(int seed1, int seed2, IntBiFunctionPrimitive compounder) {
+    public static IntFuncList compound(int seed1, int seed2, IntBinaryOperator compounder) {
         return IntFuncList.from(() -> IntStreamPlus.compound(seed1, seed2, compounder));
     }
     
@@ -410,7 +415,10 @@ public interface IntFuncList
     }
     
     /** Zip integers from two IntFuncLists and combine it into another object. */
-    public static IntFuncList zipOf(AsIntFuncList list1, AsIntFuncList list2, IntBiFunctionPrimitive merger) {
+    public static IntFuncList zipOf(
+            AsIntFuncList list1, 
+            AsIntFuncList list2, 
+            IntBinaryOperator merger) {
         return IntFuncList.from(() -> {
             return IntStreamPlus.zipOf(list1.intStream(), list2.intStream(), merger);
         });
@@ -420,8 +428,10 @@ public interface IntFuncList
      * Zip integers from an int stream and another object stream and combine it into another object. The result stream has the size of the
      * shortest stream.
      */
-    public static IntFuncList zipOf(AsIntFuncList list1, int defaultValue1, AsIntFuncList list2, int defaultValue2,
-            IntBiFunctionPrimitive merger) {
+    public static IntFuncList zipOf(
+            AsIntFuncList list1, int defaultValue1, 
+            AsIntFuncList list2, int defaultValue2,
+            IntBinaryOperator merger) {
         return IntFuncList.from(() -> {
             return IntStreamPlus.zipOf(list1.intStream(), defaultValue1, list2.intStream(), defaultValue2, merger);
         });
@@ -503,6 +513,25 @@ public interface IntFuncList
         });
     }
     
+    /** Create a FuncList from the given IntFuncList. */
+    public static <TARGET> IntFuncList deriveFrom(
+            AsLongFuncList                      asFuncList, 
+            Function<LongStreamPlus, IntStream> action) {
+        boolean isLazy = asFuncList.asLongFuncList().isLazy();
+        if (!isLazy) {
+            val orgStreamPlus = asFuncList.longStreamPlus();
+            val newStream     = action.apply(orgStreamPlus);
+            val newStreamPlus = IntStreamPlus.from(newStream);
+            return ImmutableIntFuncList.from(isLazy, newStreamPlus);
+        }
+        
+        return IntFuncList.from(() -> {
+            val orgStreamPlus = asFuncList.longStreamPlus();
+            val newStream     = action.apply(orgStreamPlus);
+            return IntStreamPlus.from(newStream);
+        });
+    }
+    
     /** Create a FuncList from the given DoubleFuncList. */
     public static <TARGET> IntFuncList deriveFrom(
             AsDoubleFuncList                      asFuncList, 
@@ -527,6 +556,13 @@ public interface IntFuncList
             AsIntFuncList                      funcList, 
             Function<IntStreamPlus, IntStream> action) {
         return IntFuncList.deriveFrom(funcList, action);
+    }
+    
+    /** Create a FuncList from another FuncList. */
+    public static LongFuncList deriveToLong(
+            AsIntFuncList                       funcList, 
+            Function<IntStreamPlus, LongStream> action) {
+        return LongFuncList.deriveFrom(funcList, action);
     }
     
     /** Create a FuncList from another FuncList. */
@@ -612,6 +648,11 @@ public interface IntFuncList
         return deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
     
+    /** Map each value into an integer value using the function. */
+    public default LongFuncList mapToLong(IntToLongFunction mapper) {
+        return LongFuncList.deriveFrom(this, stream -> stream.mapToLong(mapper));
+    }
+    
     /** Map each value into a double value. */
     public default DoubleFuncList mapToDouble() {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(i -> i));
@@ -636,6 +677,11 @@ public interface IntFuncList
     /** Map a value into an integer FuncList and then flatten that list */
     public default IntFuncList flatMapToInt(IntFunction<? extends AsIntFuncList> mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).intStream()));
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default LongFuncList flatMapToLong(IntFunction<? extends AsLongFuncList> mapper) {
+        return LongFuncList.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
     }
     
     /** Map a value into a double FuncList and then flatten that list */
@@ -690,7 +736,7 @@ public interface IntFuncList
     }
     
     /** Sort the values in this stream using the given comparator */
-    public default IntFuncList sorted(IntBiFunctionPrimitive comparator) {
+    public default IntFuncList sorted(IntComparator comparator) {
         return deriveFrom(this, stream -> stream.sorted(comparator));
     }
     

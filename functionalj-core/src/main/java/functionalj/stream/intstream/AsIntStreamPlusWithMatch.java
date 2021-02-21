@@ -42,7 +42,7 @@ public interface AsIntStreamPlusWithMatch {
     
     
     //-- Match --
-
+    
     /** Check if any element match the predicate */
     @Terminal
     public default boolean anyMatch(IntPredicate predicate) {

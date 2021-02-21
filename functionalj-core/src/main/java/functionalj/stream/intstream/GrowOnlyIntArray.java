@@ -27,6 +27,7 @@ import java.util.OptionalInt;
 
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.StreamPlus;
+import lombok.val;
 
 // TODO - This is NOT thread safe (not even try to be).
 public final class GrowOnlyIntArray {
@@ -122,7 +123,7 @@ public final class GrowOnlyIntArray {
     }
     
     public boolean equals(GrowOnlyIntArray array) {
-        int score = stream().zipWith(array.stream(), (a,b) -> a == b ? 1 : 0).takeUntil(i -> i == 0).sum();
+        val score = stream().zipWith(array.stream(), (a,b) -> a == b ? 1 : 0).takeUntil(i -> i == 0).sum();
         return score == length;
     }
     

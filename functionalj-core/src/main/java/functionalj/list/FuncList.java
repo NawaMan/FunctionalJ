@@ -44,6 +44,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -59,6 +60,8 @@ import functionalj.list.doublelist.ImmutableDoubleFuncList;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
+import functionalj.list.longlist.AsLongFuncList;
+import functionalj.list.longlist.LongFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
 import functionalj.stream.IterablePlus;
@@ -67,6 +70,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.IntTuple2;
@@ -563,6 +567,25 @@ public interface FuncList<DATA>
         });
     }
     
+    /** Create a FuncList from the given IntFuncList. */
+    public static <TARGET> FuncList<TARGET> deriveFrom(
+            AsLongFuncList                           asFuncList,
+            Function<LongStreamPlus, Stream<TARGET>> action) {
+        boolean isLazy = asFuncList.asLongFuncList().isLazy();
+        if (!isLazy) {
+            val orgStreamPlus = asFuncList.longStreamPlus();
+            val newStream     = action.apply(orgStreamPlus);
+            val newStreamPlus = StreamPlus.from(newStream);
+            return ImmutableList.from(isLazy, newStreamPlus);
+        }
+        
+        return FuncList.from(() -> {
+            val orgStreamPlus = asFuncList.longStreamPlus();
+            val newStream = action.apply(orgStreamPlus);
+            return StreamPlus.from(newStream);
+        });
+    }
+    
     /** Create a FuncList from the given DoubleFuncList. */
     public static <TARGET> FuncList<TARGET> deriveFrom(
             AsDoubleFuncList                           funcList,
@@ -672,6 +695,11 @@ public interface FuncList<DATA>
         return IntFuncList.deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
     
+    /** Map each value into an integer value using the function. */
+    public default LongFuncList mapToLong(ToLongFunction<? super DATA> mapper) {
+        return LongFuncList.deriveFrom(this, stream -> stream.mapToLong(mapper));
+    }
+    
     /** Map each value into a double value using the function. */
     public default DoubleFuncList mapToDouble(ToDoubleFunction<? super DATA> mapper) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(mapper));
@@ -691,6 +719,11 @@ public interface FuncList<DATA>
     /** Map a value into an integer list and then flatten that list */
     public default IntFuncList flatMapToInt(Function<? super DATA, ? extends AsIntFuncList> mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.flatMapToInt(value -> mapper.apply(value).intStream()));
+    }
+    
+    /** Map a value into an integer list and then flatten that list */
+    public default LongFuncList flatMapToLong(Function<? super DATA, ? extends AsLongFuncList> mapper) {
+        return LongFuncList.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
     }
     
     /** Map a value into a double list and then flatten that list */

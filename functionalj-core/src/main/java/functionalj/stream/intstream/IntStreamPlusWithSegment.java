@@ -131,7 +131,7 @@ public interface IntStreamPlusWithSegment {
         val isSequence   = false;
         val spliterator  = new Spliterators.AbstractSpliterator<IntFuncList>(splitr.estimateSize(), 0) {
             IntFuncListBuilder eachListBuilder = IntFuncList.newBuilder();
-            boolean               hasNewList      = false;
+            boolean            hasNewList      = false;
             @Override
             public boolean tryAdvance(Consumer<? super IntFuncList> consumer) {
                 boolean hasThis;

@@ -27,11 +27,11 @@ import static functionalj.function.FuncUnit0.funcUnit0;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 
 import java.util.PrimitiveIterator;
+import java.util.function.IntBinaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
@@ -175,27 +175,27 @@ public interface IntStreamPlusWithCombine {
     }
     
     public default IntStreamPlus zipWith(
-            IntStream              anotherStream,
-            IntBiFunctionPrimitive merger) {
+            IntStream         anotherStream,
+            IntBinaryOperator merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB);
     }
     
     public default IntStreamPlus zipWith(
-            IntStream              anotherStream,
-            int                    defaultValue,
-            IntBiFunctionPrimitive merger) {
+            IntStream         anotherStream,
+            int               defaultValue,
+            IntBinaryOperator merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue);
     }
     
     public default IntStreamPlus zipWith(
-            IntStream              anotherStream,
-            int                    defaultValue1,
-            int                    defaultValue2,
-            IntBiFunctionPrimitive merger) {
+            IntStream         anotherStream,
+            int               defaultValue1,
+            int               defaultValue2,
+            IntBinaryOperator merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
@@ -230,8 +230,8 @@ public interface IntStreamPlusWithCombine {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default IntStreamPlus choose(
-                                    IntStream               anotherStream, 
-                                    IntBiPredicatePrimitive selectThisNotAnother) {
+            IntStream               anotherStream, 
+            IntBiPredicatePrimitive selectThisNotAnother) {
         return choose(anotherStream, AllowUnpaired, selectThisNotAnother);
     }
     
@@ -248,9 +248,9 @@ public interface IntStreamPlusWithCombine {
      *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
      */
     public default IntStreamPlus choose(
-                                    IntStream               anotherStream, 
-                                    ZipWithOption           option, 
-                                    IntBiPredicatePrimitive selectThisNotAnother) {
+            IntStream               anotherStream, 
+            ZipWithOption           option, 
+            IntBiPredicatePrimitive selectThisNotAnother) {
         val iteratorA = this.intStreamPlus().iterator();
         val iteratorB = IntStreamPlus.from(anotherStream).iterator();
         val iterator = new PrimitiveIterator.OfInt() {
