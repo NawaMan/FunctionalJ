@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.function.Apply.access;
 import static functionalj.function.Apply.accessPrimitive;
 import static functionalj.function.Apply.applyPrimitive;
 import static functionalj.function.Apply.getPrimitive;
@@ -935,6 +936,13 @@ public interface LongToDoubleAccessPrimitive extends DoubleAccessPrimitive<Long>
             val anotherValue = applyPrimitive(anotherAccess, host);
             val division = Math.floor(value / anotherValue);
             return value - (division * anotherValue);
+        };
+    }
+    
+    public default LongToDoubleAccessPrimitive inverse() {
+        return host -> {
+            val value = access(this, host);
+            return 1/(value * 1.0);
         };
     }
     

@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.function.Apply.access;
 import static functionalj.function.Apply.accessPrimitive;
 import static functionalj.function.Apply.getPrimitive;
 import static functionalj.function.Compare.comparePrimitive;
@@ -823,6 +824,13 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
             val value        = accessPrimitive(this, host);
             val anotherValue = accessPrimitive(anotherAccess, host);
             return value % anotherValue;
+        };
+    }
+    
+    public default LongToDoubleAccessPrimitive inverse() {
+        return host -> {
+            val value = access(this, host);
+            return 1/(value * 1.0);
         };
     }
     

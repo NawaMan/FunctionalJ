@@ -785,6 +785,13 @@ public interface LongAccess<HOST>
         };
     }
     
+    public default DoubleAccessPrimitive<HOST> inverse() {
+        return host -> {
+            val value = access(this, host);
+            return 1/(value * 1.0);
+        };
+    }
+    
     public default LongAccessPrimitive<HOST> square() {
         return host -> {
             val value = access(this, host);
