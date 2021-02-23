@@ -25,6 +25,9 @@ package functionalj.lens.lenses;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoublePredicate;
+import java.util.function.DoubleToIntFunction;
+import java.util.function.DoubleToLongFunction;
+import java.util.function.DoubleUnaryOperator;
 
 import lombok.val;
 
@@ -109,6 +112,62 @@ public interface DoubleToBooleanAccessPrimitive
             val boolValue    = test(host);
             val anotherValue = anotherAccess.apply(host);
             return boolValue && anotherValue;
+        };
+    }
+    
+    // TODO -Select Obj ... make sure we can put the lens of that object after.
+    
+    public default DoubleToIntegerAccessPrimitive selectInt(int choiceTrue, int choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue ? choiceTrue : choiceFalse;
+        };
+    }
+    
+    public default DoubleToIntegerAccessPrimitive selectInt(
+            DoubleToIntFunction choiceTrue, 
+            DoubleToIntFunction choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue 
+                    ? choiceTrue.applyAsInt(host)
+                    : choiceFalse.applyAsInt(host);
+        };
+    }
+    
+    public default DoubleToLongAccessPrimitive selectLong(long choiceTrue, long choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue ? choiceTrue : choiceFalse;
+        };
+    }
+    
+    public default DoubleToLongAccessPrimitive selectLong(
+            DoubleToLongFunction choiceTrue, 
+            DoubleToLongFunction choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue 
+                    ? choiceTrue.applyAsLong(host)
+                    : choiceFalse.applyAsLong(host);
+        };
+    }
+    
+    public default DoubleToDoubleAccessPrimitive selectDouble(double choiceTrue, double choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue ? choiceTrue : choiceFalse;
+        };
+    }
+    
+    public default DoubleToDoubleAccessPrimitive selectDouble(
+            DoubleUnaryOperator choiceTrue, 
+            DoubleUnaryOperator choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue 
+                    ? choiceTrue.applyAsDouble(host)
+                    : choiceFalse.applyAsDouble(host);
         };
     }
     
