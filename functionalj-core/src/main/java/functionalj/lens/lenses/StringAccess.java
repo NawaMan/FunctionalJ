@@ -516,10 +516,10 @@ public interface StringAccess<HOST>
     
     public default IntegerAccess<HOST> length() {
         return IntegerAccess.of(host -> {
-            if (host == null) return -1;
+            if (host == null) return 0;
             
             val value = apply(host);
-            if (value == null) return -1;
+            if (value == null) return 0;
             
             return value.length();
         });
