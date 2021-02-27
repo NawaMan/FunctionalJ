@@ -24,6 +24,7 @@
 package functionalj.lens.lenses;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
@@ -168,6 +169,24 @@ public interface DoubleToBooleanAccessPrimitive
             return boolValue 
                     ? choiceTrue.applyAsDouble(host)
                     : choiceFalse.applyAsDouble(host);
+        };
+    }
+    
+    public default DoubleToStringAccessPrimitive selectDouble(String choiceTrue, String choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue ? choiceTrue : choiceFalse;
+        };
+    }
+    
+    public default DoubleToStringAccessPrimitive selectDouble(
+            DoubleFunction<String> choiceTrue, 
+            DoubleFunction<String> choiceFalse) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue 
+                    ? choiceTrue.apply(host)
+                    : choiceFalse.apply(host);
         };
     }
     

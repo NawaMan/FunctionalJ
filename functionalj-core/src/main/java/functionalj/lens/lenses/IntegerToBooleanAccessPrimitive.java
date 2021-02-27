@@ -28,6 +28,7 @@ import java.util.function.IntPredicate;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
+import java.util.function.LongFunction;
 
 import lombok.val;
 
@@ -168,6 +169,24 @@ public interface IntegerToBooleanAccessPrimitive
             return boolValue 
                     ? choiceTrue.applyAsDouble(host)
                     : choiceFalse.applyAsDouble(host);
+        };
+    }
+    
+    public default IntegerToStringAccessPrimitive selectDouble(String choiceTrue, String choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue ? choiceTrue : choiceFalse;
+        };
+    }
+    
+    public default IntegerToStringAccessPrimitive selectDouble(
+            LongFunction<String> choiceTrue, 
+            LongFunction<String> choiceFalse) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue 
+                    ? choiceTrue.apply(host)
+                    : choiceFalse.apply(host);
         };
     }
     

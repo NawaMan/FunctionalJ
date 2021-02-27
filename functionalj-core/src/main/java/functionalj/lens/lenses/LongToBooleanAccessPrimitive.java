@@ -24,6 +24,7 @@
 package functionalj.lens.lenses;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
@@ -158,7 +159,7 @@ public interface LongToBooleanAccessPrimitive
         };
     }
     
-    public default IntegerToDoubleAccessPrimitive selectDouble(
+    public default LongToDoubleAccessPrimitive selectDouble(
             LongToDoubleFunction choiceTrue, 
             LongToDoubleFunction choiceFalse) {
         return host -> {
@@ -166,6 +167,24 @@ public interface LongToBooleanAccessPrimitive
             return boolValue 
                     ? choiceTrue.applyAsDouble(host)
                     : choiceFalse.applyAsDouble(host);
+        };
+    }
+    
+    public default LongToStringAccessPrimitive selectDouble(String choiceTrue, String choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue ? choiceTrue : choiceFalse;
+        };
+    }
+    
+    public default LongToStringAccessPrimitive selectDouble(
+            LongFunction<String> choiceTrue, 
+            LongFunction<String> choiceFalse) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue 
+                    ? choiceTrue.apply(host)
+                    : choiceFalse.apply(host);
         };
     }
     

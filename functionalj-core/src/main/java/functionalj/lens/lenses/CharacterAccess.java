@@ -83,7 +83,7 @@ public interface CharacterAccess<HOST>
         return of(accessToValue);
     }
     
-    public default IntegerAccessPrimitive<HOST> toInteger() {
+    public default IntegerAccessPrimitive<HOST> asInteger() {
         return host -> {
             char charValue = applyAsChar(host);
             return (int)charValue;
