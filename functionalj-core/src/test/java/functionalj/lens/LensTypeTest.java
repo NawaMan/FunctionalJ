@@ -24,7 +24,7 @@
 package functionalj.lens;
 
 import static functionalj.lens.Access.theList;
-import static functionalj.list.ImmutableList.listOf;
+import static functionalj.list.ImmutableFuncList.listOf;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;

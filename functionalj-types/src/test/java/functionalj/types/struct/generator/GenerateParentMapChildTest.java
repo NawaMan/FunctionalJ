@@ -72,7 +72,7 @@ public class GenerateParentMapChildTest {
                 "import functionalj.lens.lenses.MapLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
-                "import functionalj.map.ImmutableMap;\n" + 
+                "import functionalj.map.ImmutableFuncMap;\n" + 
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.IPostConstruct;\n" + 
                 "import functionalj.types.IStruct;\n" + 
@@ -101,7 +101,7 @@ public class GenerateParentMapChildTest {
                 "        this(null);\n" + 
                 "    }\n" + 
                 "    public Parent(Map<String, Child> children) {\n" + 
-                "        this.children = ImmutableMap.from(children);\n" + 
+                "        this.children = ImmutableFuncMap.from(children);\n" + 
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 

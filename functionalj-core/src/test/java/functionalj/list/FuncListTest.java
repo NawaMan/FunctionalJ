@@ -340,16 +340,16 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three),
             FuncList.of(One, Two, Three),
             (list1, list2) -> {
-                assertTrue  (list1 instanceof ImmutableList);
-                assertTrue  (list2 instanceof ImmutableList);
+                assertTrue  (list1 instanceof ImmutableFuncList);
+                assertTrue  (list2 instanceof ImmutableFuncList);
                 assertTrue  (Objects.equals(list1, list2));
                 assertEquals(list1, list2);
             });
         run(FuncList.of(One, Two, Three),
             FuncList.of(One, Two, Three, Four),
             (list1, list2) -> {
-                assertTrue  (list1 instanceof ImmutableList);
-                assertTrue  (list2 instanceof ImmutableList);
+                assertTrue  (list1 instanceof ImmutableFuncList);
+                assertTrue  (list2 instanceof ImmutableFuncList);
                 assertFalse    (Objects.equals(list1, list2));
                 assertNotEquals(list1, list2);
             });
@@ -376,15 +376,15 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three),
             FuncList.of(One, Two, Three),
             (list1, list2) -> {
-                assertTrue  (list1 instanceof ImmutableList);
-                assertTrue  (list2 instanceof ImmutableList);
+                assertTrue  (list1 instanceof ImmutableFuncList);
+                assertTrue  (list2 instanceof ImmutableFuncList);
                 assertEquals(list1.hashCode(), list2.hashCode());
             });
         run(FuncList.of(One, Two, Three),
             FuncList.of(One, Two, Three, Four),
             (list1, list2) -> {
-                assertTrue     (list1 instanceof ImmutableList);
-                assertTrue     (list2 instanceof ImmutableList);
+                assertTrue     (list1 instanceof ImmutableFuncList);
+                assertTrue     (list2 instanceof ImmutableFuncList);
                 assertNotEquals(list1.hashCode(), list2.hashCode());
             });
         
@@ -410,15 +410,15 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three),
             FuncList.of(One, Two, Three),
             (list1, list2) -> {
-                assertTrue  (list1 instanceof ImmutableList);
-                assertTrue  (list2 instanceof ImmutableList);
+                assertTrue  (list1 instanceof ImmutableFuncList);
+                assertTrue  (list2 instanceof ImmutableFuncList);
                 assertEquals(list1.toString(), list2.toString());
             });
         run(FuncList.of(One, Two, Three),
             FuncList.of(One, Two, Three, Four),
             (list1, list2) -> {
-                assertTrue     (list1 instanceof ImmutableList);
-                assertTrue     (list2 instanceof ImmutableList);
+                assertTrue     (list1 instanceof ImmutableFuncList);
+                assertTrue     (list2 instanceof ImmutableFuncList);
                 assertNotEquals(list1.toString(), list2.toString());
             });
         
@@ -806,10 +806,10 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three), list -> {
             val funcList = list.toImmutableList();
             assertStrings("[One, Two, Three]", funcList);
-            assertTrue(funcList instanceof ImmutableList);
+            assertTrue(funcList instanceof ImmutableFuncList);
             
             assertStrings("[One, Two, Three]", funcList.map(value -> value).toImmutableList());
-            assertTrue(funcList instanceof ImmutableList);
+            assertTrue(funcList instanceof ImmutableFuncList);
         });
     }
     

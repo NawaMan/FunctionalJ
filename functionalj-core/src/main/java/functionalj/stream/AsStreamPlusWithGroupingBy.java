@@ -33,7 +33,7 @@ import java.util.stream.Collector;
 
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import lombok.val;
 
 public interface AsStreamPlusWithGroupingBy<DATA> {
@@ -62,7 +62,7 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
         };
         combiner = (map1, map2) -> map1.putAll(map2);
         val theMap = streamPlus().collect(supplier, accumulator, combiner);
-        return ImmutableMap
+        return ImmutableFuncMap
                     .from    (theMap)
                     .mapValue(toFuncList);
     }

@@ -402,13 +402,13 @@ public class StructBuilder {
         val    getterType = getter.getType();
         String initValue  = null;
         if (getterType.isList()) {
-            initValue = String.format("ImmutableList.from(%1$s)", getterName);
+            initValue = String.format("ImmutableFuncList.from(%1$s)", getterName);
         } else if (getterType.isMap()) {
-            initValue = String.format("ImmutableMap.from(%1$s)", getterName);
+            initValue = String.format("ImmutableFuncMap.from(%1$s)", getterName);
         } else if (getterType.isFuncList()) {
-            initValue = String.format("ImmutableList.from(%1$s)", getterName);
+            initValue = String.format("ImmutableFuncList.from(%1$s)", getterName);
         } else if (getterType.isFuncMap()) {
-            initValue = String.format("ImmutableMap.from(%1$s)", getterName);
+            initValue = String.format("ImmutableFuncMap.from(%1$s)", getterName);
         } else if (getterType.isNullable()) {
             initValue = String.format("Nullable.of((%1$s == null) ? null : %1$s.get())", getterName);
         } else if (!getter.isNullable() && !getterType.isPrimitive()){
@@ -469,7 +469,7 @@ public class StructBuilder {
         val type = sourceSpec.getTargetType();
         val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0).toType()));
         val isFList = getter.getType().isFuncList();
-        val newArray = isFList ? "functionalj.list.ImmutableList.of" : Arrays.class.getCanonicalName() + ".asList";
+        val newArray = isFList ? "functionalj.list.ImmutableFuncList.of" : Arrays.class.getCanonicalName() + ".asList";
         val paramCall
                 = sourceSpec
                 .getGetters()

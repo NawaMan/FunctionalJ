@@ -36,7 +36,7 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
@@ -97,7 +97,7 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
         val e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
         val e3 = (k3 != null) ? ImmutableTuple.of(k3, (Object)_3()) : null;
         val e4 = (k4 != null) ? ImmutableTuple.of(k4, (Object)_4()) : null;
-        return ImmutableMap.ofEntries(e1, e2, e3, e4);
+        return ImmutableFuncMap.ofEntries(e1, e2, e3, e4);
     }
     
     //== mapTo ==

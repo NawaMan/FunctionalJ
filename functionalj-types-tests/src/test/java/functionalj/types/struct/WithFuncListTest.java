@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.types.Struct;
 
 public class WithFuncListTest {
@@ -45,8 +45,8 @@ public class WithFuncListTest {
     @Test
     public void testAccessToLens() {
         ParentWithFuncList parent = new ParentWithFuncList(
-                ImmutableList.of("One", "Two", "Three", "Four"), 
-                ImmutableList.empty());
+                ImmutableFuncList.of("One", "Two", "Three", "Four"), 
+                ImmutableFuncList.empty());
         assertEquals(
                 "[One, Two, Three, Four]",
                 "" + ParentWithFuncList.theParentWithFuncList

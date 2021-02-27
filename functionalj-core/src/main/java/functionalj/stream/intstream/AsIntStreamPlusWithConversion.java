@@ -39,11 +39,11 @@ import java.util.stream.Collectors;
 import functionalj.function.IntToByteFunction;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
@@ -160,7 +160,7 @@ public interface AsIntStreamPlusWithConversion {
     @Terminal
     public default FuncList<Integer> toList() {
         val streamPlus = intStreamPlus();
-        return ImmutableList.from(
+        return ImmutableFuncList.from(
                 streamPlus.boxed());
     }
     
@@ -218,7 +218,7 @@ public interface AsIntStreamPlusWithConversion {
     public default <KEY> FuncMap<KEY, Integer> toMap(IntFunction<KEY> keyMapper) {
         val streamPlus = intStreamPlus();
         val theMap     = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> i));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -232,7 +232,7 @@ public interface AsIntStreamPlusWithConversion {
             IntFunction<VALUE> valueMapper) {
         val streamPlus = intStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i)));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -247,7 +247,7 @@ public interface AsIntStreamPlusWithConversion {
             BinaryOperator<VALUE> mergeFunction) {
         val streamPlus = intStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i), mergeFunction));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -266,7 +266,7 @@ public interface AsIntStreamPlusWithConversion {
                         i -> keyMapper.apply(i),
                         i -> i,
                         (a, b) -> mergeFunction.applyAsInt(a, b)));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     //-- toSet --

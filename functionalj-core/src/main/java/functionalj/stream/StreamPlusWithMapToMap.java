@@ -28,7 +28,7 @@ import static functionalj.map.FuncMap.mapOf;
 import java.util.function.Function;
 
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import lombok.val;
 
 
@@ -92,7 +92,7 @@ public interface StreamPlusWithMapToMap<DATA> {
             KEY key5, Function<? super DATA, ? extends VALUE> mapper5) {
         val streamPlus = streamPlus();
         return streamPlus
-                .mapToObj(data -> ImmutableMap.of(
+                .mapToObj(data -> ImmutableFuncMap.of(
                     key1, mapper1.apply(data),
                     key2, mapper2.apply(data),
                     key3, mapper3.apply(data),

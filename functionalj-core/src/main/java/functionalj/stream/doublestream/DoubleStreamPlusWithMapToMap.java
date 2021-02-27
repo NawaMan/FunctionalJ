@@ -28,7 +28,7 @@ import static functionalj.map.FuncMap.mapOf;
 import java.util.function.DoubleFunction;
 
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
@@ -93,7 +93,7 @@ public interface DoubleStreamPlusWithMapToMap {
             KEY key5, DoubleFunction<? extends VALUE> mapper5) {
         val streamPlus = doubleStreamPlus();
         return streamPlus
-                .mapToObj(data -> ImmutableMap.of(
+                .mapToObj(data -> ImmutableFuncMap.of(
                     key1, mapper1.apply(data),
                     key2, mapper2.apply(data),
                     key3, mapper3.apply(data),

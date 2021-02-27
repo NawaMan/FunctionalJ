@@ -34,11 +34,11 @@ import java.util.stream.Collectors;
 
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.doublelist.ImmutableDoubleFuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
@@ -104,7 +104,7 @@ public interface AsDoubleStreamPlusWithConversion {
     @Terminal
     public default FuncList<Double> toList() {
         val streamPlus = doubleStreamPlus();
-        return ImmutableList.from(
+        return ImmutableFuncList.from(
                 streamPlus.boxed());
     }
     
@@ -162,7 +162,7 @@ public interface AsDoubleStreamPlusWithConversion {
     public default <KEY> FuncMap<KEY, Double> toMap(DoubleFunction<KEY> keyMapper) {
         val streamPlus = doubleStreamPlus();
         val theMap     = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> i));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -176,7 +176,7 @@ public interface AsDoubleStreamPlusWithConversion {
             DoubleFunction<VALUE> valueMapper) {
         val streamPlus = doubleStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i)));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -191,7 +191,7 @@ public interface AsDoubleStreamPlusWithConversion {
             BinaryOperator<VALUE> mergeFunction) {
         val streamPlus = doubleStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i), mergeFunction));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -210,7 +210,7 @@ public interface AsDoubleStreamPlusWithConversion {
                         i -> keyMapper.apply(i),
                         i -> i,
                         (a, b) -> mergeFunction.applyAsDouble(a, b)));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     //-- toSet --

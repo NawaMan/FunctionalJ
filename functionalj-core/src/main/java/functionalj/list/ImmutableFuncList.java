@@ -50,76 +50,76 @@ import lombok.val;
 // TODO - Override methods in FuncListWithMapWithIndex to make it faster
 
 
-public final class ImmutableList<DATA> implements FuncList<DATA> {
+public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     
     private static final ObjectObjectToIntegerFunction<Object, Object> zeroForEquals = (Object i1, Object i2) -> Objects.equals(i1, i2) ? 0 : 1;
     private static final Predicate<Integer>                    toZero        = (Integer i)            -> i  == 0;
     
-    private final static ImmutableList<?> EMPTY = new ImmutableList<>(Collections.emptyList());
+    private final static ImmutableFuncList<?> EMPTY = new ImmutableFuncList<>(Collections.emptyList());
     
     /** @return an empty list */
     @SuppressWarnings("unchecked")
-    public static final <T> ImmutableList<T> empty() {
-        return (ImmutableList<T>)EMPTY;
+    public static final <T> ImmutableFuncList<T> empty() {
+        return (ImmutableFuncList<T>)EMPTY;
     }
     
     /** @return the list containing the given elements */
     @SafeVarargs
-    public static <T> ImmutableList<T> of(T ... data) {
-        return new ImmutableList<>(Arrays.asList(data));
+    public static <T> ImmutableFuncList<T> of(T ... data) {
+        return new ImmutableFuncList<>(Arrays.asList(data));
     }
     
     /** @return the list containing the given elements */
     @SafeVarargs
-    public static <T> ImmutableList<T> listOf(T ... data) {
-        return new ImmutableList<T>(Arrays.asList(data));
+    public static <T> ImmutableFuncList<T> listOf(T ... data) {
+        return new ImmutableFuncList<T>(Arrays.asList(data));
     }
     
     /** @return the list containing the given elements */
-    public static <T> ImmutableList<T> from(boolean isLazy, AsFuncList<T> funcList) {
+    public static <T> ImmutableFuncList<T> from(boolean isLazy, AsFuncList<T> funcList) {
         if (funcList == null)
-            return ImmutableList.empty();
+            return ImmutableFuncList.empty();
         
-        return new ImmutableList<T>(funcList.asFuncList(), isLazy);
+        return new ImmutableFuncList<T>(funcList.asFuncList(), isLazy);
     }
     
     /** @return the list containing the element from the given stream */
-    public static <T> ImmutableList<T> from(Stream<T> stream) {
-        return new ImmutableList<T>(stream.collect(Collectors.toList()));
+    public static <T> ImmutableFuncList<T> from(Stream<T> stream) {
+        return new ImmutableFuncList<T>(stream.collect(Collectors.toList()));
     }
     
     /** @return the list containing the element from the given stream */
-    static <T> ImmutableList<T> from(boolean isLazy, Stream<T> stream) {
-        return new ImmutableList<T>(stream.collect(Collectors.toList()), isLazy);
+    static <T> ImmutableFuncList<T> from(boolean isLazy, Stream<T> stream) {
+        return new ImmutableFuncList<T>(stream.collect(Collectors.toList()), isLazy);
     }
     
     /** @return the list containing the element from the given list. */
-    public static <T> ImmutableList<T> from(ReadOnlyList<T> readOnlyList) {
-        if (readOnlyList instanceof ImmutableList)
-            return (ImmutableList<T>)readOnlyList;
+    public static <T> ImmutableFuncList<T> from(ReadOnlyList<T> readOnlyList) {
+        if (readOnlyList instanceof ImmutableFuncList)
+            return (ImmutableFuncList<T>)readOnlyList;
         if (readOnlyList == null)
-            return ImmutableList.empty();
+            return ImmutableFuncList.empty();
         
-        return new ImmutableList<T>(readOnlyList.toJavaList());
+        return new ImmutableFuncList<T>(readOnlyList.toJavaList());
     }
     
     /** @return the list containing the element from the given collections. */
-    public static <T> ImmutableList<T> from(Collection<T> collection) {
-        if (collection instanceof ImmutableList)
-            return (ImmutableList<T>)collection;
+    public static <T> ImmutableFuncList<T> from(Collection<T> collection) {
+        if (collection instanceof ImmutableFuncList)
+            return (ImmutableFuncList<T>)collection;
         if (collection == null)
-            return ImmutableList.empty();
+            return ImmutableFuncList.empty();
         if (collection instanceof FuncList) {
             val funcList = (FuncList<T>)collection;
-            return new ImmutableList<T>(funcList.toJavaList(), funcList.isLazy());
+            return new ImmutableFuncList<T>(funcList.toJavaList(), funcList.isLazy());
         }
         if (collection instanceof List) {
             val list = (List<T>)collection;
-            return new ImmutableList<T>(list, true);
+            return new ImmutableFuncList<T>(list, true);
         }
         
         val list = (List<T>)collection.stream().collect(Collectors.toList());
-        return new ImmutableList<T>(list, true);
+        return new ImmutableFuncList<T>(list, true);
     }
     
     //-- Data --
@@ -132,16 +132,16 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     
     //-- Constructors --
     
-    ImmutableList(Collection<DATA> data) {
+    ImmutableFuncList(Collection<DATA> data) {
         this(data, true);
     }
     
-    ImmutableList(Collection<DATA> data, boolean isLazy) {
+    ImmutableFuncList(Collection<DATA> data, boolean isLazy) {
         this.isLazy = isLazy;
         if (data == null) {
             this.data = Collections.emptyList();
-        } else if (data instanceof ImmutableList) {
-            this.data = ((ImmutableList<DATA>)data).data;
+        } else if (data instanceof ImmutableFuncList) {
+            this.data = ((ImmutableFuncList<DATA>)data).data;
         } else {
             val list = new ArrayList<DATA>();
             data.forEach(list::add);
@@ -169,7 +169,7 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         if (isLazy)
             return this;
         
-        return new ImmutableList<DATA>(data, true);
+        return new ImmutableFuncList<DATA>(data, true);
     }
     
     @Override
@@ -177,11 +177,11 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         if (!isLazy)
             return this;
         
-        return new ImmutableList<DATA>(data, false);
+        return new ImmutableFuncList<DATA>(data, false);
     }
     
     @Override
-    public ImmutableList<DATA> toImmutableList() {
+    public ImmutableFuncList<DATA> toImmutableList() {
         return this;
     }
     

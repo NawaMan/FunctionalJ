@@ -51,7 +51,7 @@ import java.util.stream.Stream;
 import functionalj.function.Func;
 import functionalj.function.IntComparator;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.longlist.AsLongFuncList;
@@ -298,7 +298,7 @@ public interface IntFuncList
      * {@link String#concat(String)}.
      **/
     public static IntFuncList combine(IntFuncList... lists) {
-        ImmutableList<IntFuncList> listOfList = FuncList.listOf(lists);
+        ImmutableFuncList<IntFuncList> listOfList = FuncList.listOf(lists);
         return listOfList.flatMapToInt(Func.itself());
     }
     

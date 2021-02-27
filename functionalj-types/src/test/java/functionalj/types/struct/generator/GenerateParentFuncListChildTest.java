@@ -76,7 +76,7 @@ public class GenerateParentFuncListChildTest {
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
                 "import functionalj.list.FuncList;\n" + 
-                "import functionalj.list.ImmutableList;\n" + 
+                "import functionalj.list.ImmutableFuncList;\n" + 
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.IPostConstruct;\n" + 
                 "import functionalj.types.IStruct;\n" + 
@@ -106,8 +106,8 @@ public class GenerateParentFuncListChildTest {
                 "        this(functionalj.list.FuncList.empty(), functionalj.list.FuncList.empty());\n" + 
                 "    }\n" + 
                 "    public Parent(FuncList<String> names, FuncList<Child> children) {\n" + 
-                "        this.names = ImmutableList.from(names);\n" + 
-                "        this.children = ImmutableList.from(children);\n" + 
+                "        this.names = ImmutableFuncList.from(names);\n" + 
+                "        this.children = ImmutableFuncList.from(children);\n" + 
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
@@ -121,7 +121,7 @@ public class GenerateParentFuncListChildTest {
                 "        return children;\n" + 
                 "    }\n" + 
                 "    public Parent withNames(String ... names) {\n" + 
-                "        return new Parent(functionalj.list.ImmutableList.of(names), children);\n" + 
+                "        return new Parent(functionalj.list.ImmutableFuncList.of(names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withNames(FuncList<String> names) {\n" + 
                 "        return new Parent(names, children);\n" + 
@@ -136,7 +136,7 @@ public class GenerateParentFuncListChildTest {
                 "        return new Parent(names.apply(this, this.names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Child ... children) {\n" + 
-                "        return new Parent(names, functionalj.list.ImmutableList.of(children));\n" + 
+                "        return new Parent(names, functionalj.list.ImmutableFuncList.of(children));\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(FuncList<Child> children) {\n" + 
                 "        return new Parent(names, children);\n" + 

@@ -73,7 +73,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
         return this;
     }
     public FuncMap<KEY, VALUE> eager() {
-        return new ImmutableMap<KEY, VALUE>(this, false);
+        return new ImmutableFuncMap<KEY, VALUE>(this, false);
     }
     
     private Stream<Map.Entry<KEY, SOURCE>> originalEntryStream() {
@@ -206,7 +206,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
         if (hasMissingKey)
             return false;
         
-        val thatMap = ImmutableMap.from((Map)o);
+        val thatMap = ImmutableFuncMap.from((Map)o);
         if (thatMap.size() != thisMap.size())
             return false;
         
@@ -446,7 +446,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
         // TODO: Find the way to do it
         val newMap = new HashMap<>(this.toMap());
         newMap.putAll(entries);
-        return ImmutableMap.from(newMap);
+        return ImmutableFuncMap.from(newMap);
     }
     
     @Override
@@ -539,8 +539,8 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     }
     
     @Override
-    public ImmutableMap<KEY, VALUE> toImmutableMap() {
-        return ImmutableMap.from(this);
+    public ImmutableFuncMap<KEY, VALUE> toImmutableMap() {
+        return ImmutableFuncMap.from(this);
     }
     
     @Override
@@ -548,7 +548,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
         val map = new TreeMap<KEY, VALUE>();
         entryStream()
             .forEach(e -> map.put(e.getKey(), e.getValue()));
-        return new ImmutableMap<KEY, VALUE>(map, isLazy());
+        return new ImmutableFuncMap<KEY, VALUE>(map, isLazy());
     }
     
     @Override
@@ -566,7 +566,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
         val map = new TreeMap<KEY, VALUE>(comparator);
         entryStream()
         .forEach(e -> map.put(e.getKey(), e.getValue()));
-        return new ImmutableMap<KEY, VALUE>(map, isLazy());
+        return new ImmutableFuncMap<KEY, VALUE>(map, isLazy());
     }
     
     @Override

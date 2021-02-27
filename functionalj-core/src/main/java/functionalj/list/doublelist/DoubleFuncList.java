@@ -49,7 +49,7 @@ import java.util.stream.Stream;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
 import functionalj.function.Func;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.list.longlist.AsLongFuncList;
@@ -297,7 +297,7 @@ public interface DoubleFuncList
      *   but allowing static import without colliding with {@link String#concat(String)}.
      **/
     public static DoubleFuncList combine(DoubleFuncList ... lists) {
-        ImmutableList<DoubleFuncList> listOfList = FuncList.listOf(lists);
+        ImmutableFuncList<DoubleFuncList> listOfList = FuncList.listOf(lists);
         return listOfList.flatMapToDouble(Func.itself());
     }
     

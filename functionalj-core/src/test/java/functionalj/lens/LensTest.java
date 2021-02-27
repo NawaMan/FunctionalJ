@@ -30,7 +30,7 @@ import static functionalj.lens.Access.theString;
 import static functionalj.lens.LensTest.Car.theCar;
 import static functionalj.lens.LensTest.Company.theCompany;
 import static functionalj.lens.LensTest.Driver.theDriver;
-import static functionalj.list.ImmutableList.listOf;
+import static functionalj.list.ImmutableFuncList.listOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static org.junit.Assert.assertEquals;

@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import lombok.val;
 
 public interface AsDoubleStreamPlusWithGroupingBy {
@@ -38,7 +38,7 @@ public interface AsDoubleStreamPlusWithGroupingBy {
         };
         combiner = (map1, map2) -> map1.putAll(map2);
         val theMap = doubleStreamPlus().boxed().collect(supplier, accumulator, combiner);
-        return ImmutableMap
+        return ImmutableFuncMap
                     .from    (theMap)
                     .mapValue(toFuncList);
     }

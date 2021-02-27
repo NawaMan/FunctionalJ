@@ -32,7 +32,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.function.Func1;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import lombok.val;
 
 
@@ -42,14 +42,14 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     private static final boolean NULL_UNSAFE = false;
     
     @SuppressWarnings("rawtypes")
-    private final ImmutableList<Func1> functions;
+    private final ImmutableFuncList<Func1> functions;
     
     @SuppressWarnings("rawtypes")
     private final Catch catchHandler;
     
     @SuppressWarnings("rawtypes")
     private PipeLine(List<Func1> functions, Catch catchHandler) {
-        this.functions    = ImmutableList.from(functions);
+        this.functions    = ImmutableFuncList.from(functions);
         this.catchHandler = catchHandler;
     }
     

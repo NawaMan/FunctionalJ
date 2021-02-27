@@ -35,7 +35,7 @@ import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import lombok.val;
 
 
@@ -106,7 +106,7 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 (list, newValue)->{
                     val newList = new ArrayList<>(list);
                     newList.set(list.size() - 1, newValue);
-                    return ImmutableList.from(newList);
+                    return ImmutableFuncList.from(newList);
                 });
     }
     

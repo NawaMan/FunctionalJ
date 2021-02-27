@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 
 public class NumberAccessTest {
     
@@ -40,7 +40,7 @@ public class NumberAccessTest {
         
         assertEquals(
                 "[(One,3,true,9.0), (Two,3,true,9.0), (Three,5,false,15.0), (Four,4,false,12.0)]",
-                "" + ImmutableList.of("One", "Two", "Three", "Four")
+                "" + ImmutableFuncList.of("One", "Two", "Three", "Four")
                     .mapToTuple(
                          theString, 
                          theString.length(),

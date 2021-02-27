@@ -73,13 +73,13 @@ public class GenConstructor implements IGenerateDefinition {
                 .requiredTypes()
                 .forEach(types::add);
             if (paramType.isList())
-                types.add(Core.ImmutableList.type());
+                types.add(Core.ImmutableFuncList.type());
             if (paramType.isMap())
-                types.add(Core.ImmutableMap.type());
+                types.add(Core.ImmutableFuncMap.type());
             if (paramType.isFuncList())
-                types.add(Core.ImmutableList.type());
+                types.add(Core.ImmutableFuncList.type());
             if (paramType.isFuncMap())
-                types.add(Core.ImmutableMap.type());
+                types.add(Core.ImmutableFuncMap.type());
             if (paramType.isNullable())
                 types.add(Core.Nullable.type());
             if (paramType.isOptional())

@@ -74,7 +74,7 @@ import org.junit.Test;
 import functionalj.function.Func0;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
@@ -561,7 +561,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("One", "Two", "Three");
         val list   = stream.toImmutableList();
         assertStrings("[One, Two, Three]", list.toString());
-        assertTrue(list instanceof ImmutableList);
+        assertTrue(list instanceof ImmutableFuncList);
     }
     
     @Test

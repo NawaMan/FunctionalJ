@@ -75,7 +75,7 @@ public class GenerateParentListChildTest {
                 "import functionalj.lens.lenses.ListLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
-                "import functionalj.list.ImmutableList;\n" + 
+                "import functionalj.list.ImmutableFuncList;\n" + 
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.IPostConstruct;\n" + 
                 "import functionalj.types.IStruct;\n" + 
@@ -106,8 +106,8 @@ public class GenerateParentListChildTest {
                 "        this(null, null);\n" + 
                 "    }\n" + 
                 "    public Parent(List<String> names, List<Child> children) {\n" + 
-                "        this.names = ImmutableList.from(names);\n" + 
-                "        this.children = ImmutableList.from(children);\n" + 
+                "        this.names = ImmutableFuncList.from(names);\n" + 
+                "        this.children = ImmutableFuncList.from(children);\n" + 
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 

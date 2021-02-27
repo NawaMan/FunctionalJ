@@ -32,42 +32,42 @@ import lombok.val;
 
 
 
-public final class ImmutableMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, VALUE> {
+public final class ImmutableFuncMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, VALUE> {
     
     @SuppressWarnings("unchecked")
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> from(Map<? extends KEY, ? extends VALUE> map) {
-        return (map instanceof ImmutableMap)
-                ? (ImmutableMap<KEY, VALUE>)map
-                : new ImmutableMap<KEY, VALUE>(map);
+    public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> from(Map<? extends KEY, ? extends VALUE> map) {
+        return (map instanceof ImmutableFuncMap)
+                ? (ImmutableFuncMap<KEY, VALUE>)map
+                : new ImmutableFuncMap<KEY, VALUE>(map);
     }
     @SuppressWarnings("unchecked")
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> from(FuncMap<? extends KEY, ? extends VALUE> map) {
-        return (map instanceof ImmutableMap)
-                ? (ImmutableMap<KEY, VALUE>)map
-                : new ImmutableMap<KEY, VALUE>(map);
+    public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> from(FuncMap<? extends KEY, ? extends VALUE> map) {
+        return (map instanceof ImmutableFuncMap)
+                ? (ImmutableFuncMap<KEY, VALUE>)map
+                : new ImmutableFuncMap<KEY, VALUE>(map);
     }
     
     @SuppressWarnings("unchecked")
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> empty() {
+    public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> empty() {
         return empty;
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static final ImmutableMap empty = new ImmutableMap(Collections.emptyMap());
+    private static final ImmutableFuncMap empty = new ImmutableFuncMap(Collections.emptyMap());
     
     private final boolean isLazy;
     
-    ImmutableMap(Map<? extends KEY, ? extends VALUE> map) {
+    ImmutableFuncMap(Map<? extends KEY, ? extends VALUE> map) {
         this(map, true);
     }
-    ImmutableMap(Map<? extends KEY, ? extends VALUE> map, boolean isLazy) {
+    ImmutableFuncMap(Map<? extends KEY, ? extends VALUE> map, boolean isLazy) {
         super(createBaseMap(map), null);
         this.isLazy = isLazy;
     }
     
     @SuppressWarnings("unchecked")
     private static <K,V> Map<K, V> createBaseMap(Map<? extends K, ? extends V> map) {
-        return (map instanceof ImmutableMap) ? (ImmutableMap<K, V>) map : new LinkedHashMap<K, V>(map);
+        return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<K, V>) map : new LinkedHashMap<K, V>(map);
     }
     
     public boolean isLazy() {
@@ -82,13 +82,13 @@ public final class ImmutableMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, V
         if (isLazy)
             return this;
         
-        return new ImmutableMap<KEY, VALUE>(this, true);
+        return new ImmutableFuncMap<KEY, VALUE>(this, true);
     }
     public FuncMap<KEY, VALUE> eager() {
         if (!isLazy)
             return this;
         
-        return new ImmutableMap<KEY, VALUE>(this, false);
+        return new ImmutableFuncMap<KEY, VALUE>(this, false);
     }
     
     @Override
@@ -99,7 +99,7 @@ public final class ImmutableMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, V
         val sortedMap = new TreeMap<KEY, VALUE>();
         entryStream()
             .forEach(e -> sortedMap.put(e.getKey(), e.getValue()));
-        return new ImmutableMap<KEY, VALUE>(sortedMap, isLazy());
+        return new ImmutableFuncMap<KEY, VALUE>(sortedMap, isLazy());
     }
     
 }

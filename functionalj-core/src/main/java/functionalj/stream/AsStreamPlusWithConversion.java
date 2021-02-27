@@ -39,9 +39,9 @@ import java.util.stream.Collectors;
 import functionalj.function.ToByteFunction;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
@@ -149,9 +149,9 @@ public interface AsStreamPlusWithConversion<DATA> {
     /** @return an immutable list containing the elements. */
     @Eager
     @Terminal
-    public default ImmutableList<DATA> toImmutableList() {
+    public default ImmutableFuncList<DATA> toImmutableList() {
         val streamPlus = streamPlus();
-        return ImmutableList.from(streamPlus);
+        return ImmutableFuncList.from(streamPlus);
     }
     
     /** @return an Java list containing the elements. */
@@ -224,7 +224,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, KEY> keyMapper) {
         val streamPlus = streamPlus();
         val theMap     = streamPlus.collect(Collectors.toMap(keyMapper, data -> data));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -238,7 +238,7 @@ public interface AsStreamPlusWithConversion<DATA> {
             Function<? super DATA, VALUE> valueMapper) {
         val streamPlus = streamPlus();
         val theMap = streamPlus.collect(Collectors.toMap(keyMapper, valueMapper));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -253,7 +253,7 @@ public interface AsStreamPlusWithConversion<DATA> {
             BinaryOperator<VALUE>         mergeFunction) {
         val streamPlus = streamPlus();
         val theMap = streamPlus.collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -267,7 +267,7 @@ public interface AsStreamPlusWithConversion<DATA> {
             BinaryOperator<DATA>        mergeFunction) {
         val streamPlus = streamPlus();
         val theMap = streamPlus.collect(Collectors.toMap(keyMapper, value -> value, mergeFunction));
-        return (FuncMap<KEY, DATA>) ImmutableMap.from(theMap);
+        return (FuncMap<KEY, DATA>) ImmutableFuncMap.from(theMap);
     }
     
     //-- toSet --

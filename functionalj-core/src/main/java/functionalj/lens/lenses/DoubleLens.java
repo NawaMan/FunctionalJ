@@ -45,7 +45,7 @@ public interface DoubleLens<HOST>
         LensSpec<HOST, Double> lensSpec = lensSpec();
         return lensSpec.getRead().apply(host);
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public default double applyAsDouble(HOST host) {
@@ -59,7 +59,7 @@ public interface DoubleLens<HOST>
         val value = lensSpec.apply(host);
         return value;
     }
-
+    
     @Override
     public default Double applyUnsafe(HOST host) throws Exception {
         LensSpec<HOST, Double> lensSpec = lensSpec();

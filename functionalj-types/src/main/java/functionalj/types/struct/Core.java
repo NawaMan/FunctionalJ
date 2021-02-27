@@ -68,10 +68,10 @@ public enum Core {
     
     LensSpec ("LensSpec", "functionalj.lens.core"),
     
-    FuncList     ("FuncList",      "functionalj.list"),
-    FuncMap      ("FuncMap",       "functionalj.map"),
-    ImmutableList("ImmutableList", "functionalj.list"),
-    ImmutableMap ("ImmutableMap",  "functionalj.map"),
+    FuncList         ("FuncList",          "functionalj.list"),
+    FuncMap          ("FuncMap",           "functionalj.map"),
+    ImmutableFuncList("ImmutableFuncList", "functionalj.list"),
+    ImmutableFuncMap ("ImmutableFuncMap",  "functionalj.map"),
     
     Nullable      ("Nullable",      "nullablej.nullable"),
     Optional      ("Optional",      "java.util"),

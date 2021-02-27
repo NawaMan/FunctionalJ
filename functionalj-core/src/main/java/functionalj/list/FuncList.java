@@ -112,52 +112,52 @@ public interface FuncList<DATA>
     }
     
     /** Returns an empty functional list. */
-    public static <TARGET> ImmutableList<TARGET> empty() {
-        return ImmutableList.empty();
+    public static <TARGET> ImmutableFuncList<TARGET> empty() {
+        return ImmutableFuncList.empty();
     }
     
     /** Returns an empty functional list. */
-    public static <TARGET> ImmutableList<TARGET> emptyList() {
-        return ImmutableList.empty();
+    public static <TARGET> ImmutableFuncList<TARGET> emptyList() {
+        return ImmutableFuncList.empty();
     }
     
     /** Returns an empty FuncList. */
-    public static <TARGET> ImmutableList<TARGET> empty(Class<TARGET> elementClass) {
-        return ImmutableList.empty();
+    public static <TARGET> ImmutableFuncList<TARGET> empty(Class<TARGET> elementClass) {
+        return ImmutableFuncList.empty();
     }
     
     /** Returns an empty FuncList. */
-    public static <TARGET> ImmutableList<TARGET> emptyList(Class<TARGET> elementClass) {
-        return ImmutableList.empty();
+    public static <TARGET> ImmutableFuncList<TARGET> emptyList(Class<TARGET> elementClass) {
+        return ImmutableFuncList.empty();
     }
     
     /** Create a FuncList from the given data. */
     @SafeVarargs
-    public static <TARGET> ImmutableList<TARGET> of(TARGET... data) {
-        return ImmutableList.of(data);
+    public static <TARGET> ImmutableFuncList<TARGET> of(TARGET... data) {
+        return ImmutableFuncList.of(data);
     }
     
     /** Create a FuncList from the given data. */
     @SafeVarargs
-    public static <TARGET> ImmutableList<TARGET> AllOf(TARGET... data) {
-        return ImmutableList.of(data);
+    public static <TARGET> ImmutableFuncList<TARGET> AllOf(TARGET... data) {
+        return ImmutableFuncList.of(data);
     }
     
     /** Create a FuncList from the given data. */
     @SafeVarargs
-    public static <TARGET> ImmutableList<TARGET> ListOf(TARGET... data) {
-        return ImmutableList.of(data);
+    public static <TARGET> ImmutableFuncList<TARGET> ListOf(TARGET... data) {
+        return ImmutableFuncList.of(data);
     }
     
     /** Create a FuncList from the given data. */
     @SafeVarargs
-    public static <TARGET> ImmutableList<TARGET> listOf(TARGET... data) {
-        return ImmutableList.of(data);
+    public static <TARGET> ImmutableFuncList<TARGET> listOf(TARGET... data) {
+        return ImmutableFuncList.of(data);
     }
     
     /** Create a FuncList from the given array. */
-    public static <TARGET> ImmutableList<TARGET> from(TARGET[] datas) {
-        return ImmutableList.of(datas);
+    public static <TARGET> ImmutableFuncList<TARGET> from(TARGET[] datas) {
+        return ImmutableFuncList.of(datas);
     }
     
     /** Create a FuncList from the given array. */
@@ -192,7 +192,7 @@ public interface FuncList<DATA>
     
     /** Create a FuncList from the given stream. */
     public static <TARGET> FuncList<TARGET> from(Stream<TARGET> stream) {
-        return ImmutableList.from(stream);
+        return ImmutableFuncList.from(stream);
     }
     
     /**
@@ -269,7 +269,7 @@ public interface FuncList<DATA>
      **/
     @SafeVarargs
     public static <TARGET> FuncList<TARGET> combine(FuncList<TARGET> ... lists) {
-        ImmutableList<FuncList<TARGET>> listOfList = FuncList.listOf(lists);
+        ImmutableFuncList<FuncList<TARGET>> listOfList = FuncList.listOf(lists);
         return listOfList.flatMap(Func.itself());
     }
     
@@ -553,7 +553,7 @@ public interface FuncList<DATA>
                     : StreamPlus.from(list.stream());
             val newStream     = action.apply(orgStreamPlus);
             val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableList.from(isLazy, newStreamPlus);
+            return ImmutableFuncList.from(isLazy, newStreamPlus);
         }
         
         return FuncList.from(()->{
@@ -574,7 +574,7 @@ public interface FuncList<DATA>
             val orgStreamPlus = asFuncList.intStreamPlus();
             val newStream     = action.apply(orgStreamPlus);
             val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableList.from(isLazy, newStreamPlus);
+            return ImmutableFuncList.from(isLazy, newStreamPlus);
         }
         
         return FuncList.from(() -> {
@@ -593,7 +593,7 @@ public interface FuncList<DATA>
             val orgStreamPlus = asFuncList.longStreamPlus();
             val newStream     = action.apply(orgStreamPlus);
             val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableList.from(isLazy, newStreamPlus);
+            return ImmutableFuncList.from(isLazy, newStreamPlus);
         }
         
         return FuncList.from(() -> {
@@ -612,7 +612,7 @@ public interface FuncList<DATA>
             val orgStreamPlus = funcList.doubleStreamPlus();
             val newStream     = action.apply(orgStreamPlus);
             val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableList.from(isLazy, newStreamPlus);
+            return ImmutableFuncList.from(isLazy, newStreamPlus);
         }
         
         return FuncList.from(() -> {
@@ -670,7 +670,7 @@ public interface FuncList<DATA>
     public FuncList<DATA> eager();
     
     /** Freeze the data of this list as an immutable list. */
-    public default ImmutableList<DATA> freeze() {
+    public default ImmutableFuncList<DATA> freeze() {
         return toImmutableList();
     }
     
@@ -1114,7 +1114,7 @@ public interface FuncList<DATA>
     }
     
     /** @return an immutable list containing the elements. */
-    public default ImmutableList<DATA> toImmutableList() {
+    public default ImmutableFuncList<DATA> toImmutableList() {
         return stream()
                 .toImmutableList();
     }

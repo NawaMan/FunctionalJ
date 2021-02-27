@@ -35,11 +35,11 @@ import java.util.stream.Collectors;
 
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.list.longlist.ImmutableLongFuncList;
 import functionalj.list.longlist.LongFuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
@@ -121,7 +121,7 @@ public interface AsLongStreamPlusWithConversion {
     @Terminal
     public default FuncList<Long> toList() {
         val streamPlus = longStreamPlus();
-        return ImmutableList.from(
+        return ImmutableFuncList.from(
                 streamPlus.boxed());
     }
     
@@ -179,7 +179,7 @@ public interface AsLongStreamPlusWithConversion {
     public default <KEY> FuncMap<KEY, Long> toMap(LongFunction<KEY> keyMapper) {
         val streamPlus = longStreamPlus();
         val theMap     = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> i));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -193,7 +193,7 @@ public interface AsLongStreamPlusWithConversion {
             LongFunction<VALUE> valueMapper) {
         val streamPlus = longStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i)));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -208,7 +208,7 @@ public interface AsLongStreamPlusWithConversion {
             BinaryOperator<VALUE> mergeFunction) {
         val streamPlus = longStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i), mergeFunction));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     /**
@@ -227,7 +227,7 @@ public interface AsLongStreamPlusWithConversion {
                         i -> keyMapper.apply(i),
                         i -> i,
                         (a, b) -> mergeFunction.applyAsLong(a, b)));
-        return ImmutableMap.from(theMap);
+        return ImmutableFuncMap.from(theMap);
     }
     
     //-- toSet --

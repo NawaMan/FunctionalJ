@@ -47,7 +47,7 @@ public interface ReadOnlyList<DATA>
                     extends List<DATA> {
     
     public static <T> ReadOnlyList<T> empty() {
-        return ImmutableList.empty();
+        return ImmutableFuncList.empty();
     }
     
     public static <T> ReadOnlyList<T> of(Collection<T> data) {
@@ -55,19 +55,19 @@ public interface ReadOnlyList<DATA>
             return (ReadOnlyList<T>)data;
         }
         
-        return ImmutableList.from(data);
+        return ImmutableFuncList.from(data);
     }
     
     @SafeVarargs
     public static <T> ReadOnlyList<T> of(T ... data) {
-        return ImmutableList.of(data);
+        return ImmutableFuncList.of(data);
     }
     
     @Override
     public StreamPlus<DATA> stream();
     
-    public default ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.from(this);
+    public default ImmutableFuncList<DATA> toImmutableList() {
+        return ImmutableFuncList.from(this);
     }
     
     public default List<DATA> toJavaList() {

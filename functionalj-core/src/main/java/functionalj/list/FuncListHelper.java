@@ -55,7 +55,7 @@ public class FuncListHelper {
             l.add(element);
         }
         
-        return FuncList.from(lists.stream().map(each -> ImmutableList.from(each.stream())));
+        return FuncList.from(lists.stream().map(each -> ImmutableFuncList.from(each.stream())));
     }
     
 }

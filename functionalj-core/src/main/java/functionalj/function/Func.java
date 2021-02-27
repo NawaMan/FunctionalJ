@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 import functionalj.environments.Env;
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
@@ -127,7 +127,7 @@ public interface Func {
     
     @SafeVarargs
     public static <T> FuncList<T> listOf(T ... data) {
-        return ImmutableList.of(data);
+        return ImmutableFuncList.of(data);
     }
     
     //== Of ==

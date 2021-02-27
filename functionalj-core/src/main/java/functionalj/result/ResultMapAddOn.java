@@ -33,7 +33,7 @@ import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
@@ -269,13 +269,13 @@ public interface ResultMapAddOn<DATA> {
     
     public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, Func1<? super DATA, ? extends VALUE> mapper) {
-        return map(data -> ImmutableMap.of(key, mapper.apply(data)));
+        return map(data -> ImmutableFuncMap.of(key, mapper.apply(data)));
     }
     
     public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Func1<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Func1<? super DATA, ? extends VALUE> mapper2) {
-        return map(data -> ImmutableMap.of(
+        return map(data -> ImmutableFuncMap.of(
                 key1, mapper1.apply(data),
                 key2, mapper2.apply(data)));
     }
@@ -284,7 +284,7 @@ public interface ResultMapAddOn<DATA> {
             KEY key1, Func1<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Func1<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Func1<? super DATA, ? extends VALUE> mapper3) {
-        return map(data -> ImmutableMap.of(
+        return map(data -> ImmutableFuncMap.of(
                 key1, mapper1.apply(data),
                 key2, mapper2.apply(data),
                 key3, mapper3.apply(data)));
@@ -295,7 +295,7 @@ public interface ResultMapAddOn<DATA> {
             KEY key2, Func1<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Func1<? super DATA, ? extends VALUE> mapper3,
             KEY key4, Func1<? super DATA, ? extends VALUE> mapper4) {
-        return map(data -> ImmutableMap.of(
+        return map(data -> ImmutableFuncMap.of(
                 key1, mapper1.apply(data),
                 key2, mapper2.apply(data),
                 key3, mapper3.apply(data),
@@ -308,7 +308,7 @@ public interface ResultMapAddOn<DATA> {
             KEY key3, Func1<? super DATA, ? extends VALUE> mapper3,
             KEY key4, Func1<? super DATA, ? extends VALUE> mapper4,
             KEY key5, Func1<? super DATA, ? extends VALUE> mapper5) {
-        return map(data -> ImmutableMap.of(
+        return map(data -> ImmutableFuncMap.of(
                 key1, mapper1.apply(data),
                 key2, mapper2.apply(data),
                 key3, mapper3.apply(data),
@@ -323,7 +323,7 @@ public interface ResultMapAddOn<DATA> {
             KEY key4, Func1<? super DATA, ? extends VALUE> mapper4,
             KEY key5, Func1<? super DATA, ? extends VALUE> mapper5,
             KEY key6, Func1<? super DATA, ? extends VALUE> mapper6) {
-        return map(data -> ImmutableMap.of(
+        return map(data -> ImmutableFuncMap.of(
                 key1, mapper1.apply(data),
                 key2, mapper2.apply(data),
                 key3, mapper3.apply(data),
@@ -340,7 +340,7 @@ public interface ResultMapAddOn<DATA> {
             KEY key5, Func1<? super DATA, ? extends VALUE> mapper5,
             KEY key6, Func1<? super DATA, ? extends VALUE> mapper6,
             KEY key7, Func1<? super DATA, ? extends VALUE> mapper7) {
-        return map(data -> ImmutableMap.of(
+        return map(data -> ImmutableFuncMap.of(
                 key1, mapper1.apply(data),
                 key2, mapper2.apply(data),
                 key3, mapper3.apply(data),
@@ -359,7 +359,7 @@ public interface ResultMapAddOn<DATA> {
             KEY key6, Func1<? super DATA, ? extends VALUE> mapper6,
             KEY key7, Func1<? super DATA, ? extends VALUE> mapper7,
             KEY key8, Func1<? super DATA, ? extends VALUE> mapper8) {
-        return map(data -> ImmutableMap.of(
+        return map(data -> ImmutableFuncMap.of(
                 key1, mapper1.apply(data),
                 key2, mapper2.apply(data),
                 key3, mapper3.apply(data),
@@ -380,7 +380,7 @@ public interface ResultMapAddOn<DATA> {
             KEY key7, Func1<? super DATA, ? extends VALUE> mapper7,
             KEY key8, Func1<? super DATA, ? extends VALUE> mapper8,
             KEY key9, Func1<? super DATA, ? extends VALUE> mapper9) {
-        return map(data -> ImmutableMap.of(
+        return map(data -> ImmutableFuncMap.of(
                 key1, mapper1.apply(data),
                 key2, mapper2.apply(data),
                 key3, mapper3.apply(data),
@@ -403,7 +403,7 @@ public interface ResultMapAddOn<DATA> {
             KEY key8, Func1<? super DATA, ? extends VALUE> mapper8,
             KEY key9, Func1<? super DATA, ? extends VALUE> mapper9,
             KEY key10, Func1<? super DATA, ? extends VALUE> mapper10) {
-        return map(data -> ImmutableMap.of(
+        return map(data -> ImmutableFuncMap.of(
                 key1, mapper1.apply(data),
                 key2, mapper2.apply(data),
                 key3, mapper3.apply(data),

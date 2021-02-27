@@ -24,13 +24,13 @@ public class FuncMapBuilder<K, V> {
         return new FuncMapBuilder<>(this.entries);
     }
     
-    public ImmutableMap<K, V> build() {
+    public ImmutableFuncMap<K, V> build() {
         val map = FuncMap.underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         for (Tuple2<K, V> entry : this.entries) {
             K key   = entry._1();
             V value = entry._2();
             map.put(key, value);
         }
-        return new ImmutableMap<K, V>(map);
+        return new ImmutableFuncMap<K, V>(map);
     }
 }

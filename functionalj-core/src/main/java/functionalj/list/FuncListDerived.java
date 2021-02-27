@@ -99,12 +99,12 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
     
     @Override
     public FuncList<DATA> eager() {
-        return new ImmutableList<DATA>(this, false);
+        return new ImmutableFuncList<DATA>(this, false);
     }
     
     @Override
-    public ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.from(this);
+    public ImmutableFuncList<DATA> toImmutableList() {
+        return ImmutableFuncList.from(this);
     }
     
     @Override
