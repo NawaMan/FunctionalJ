@@ -350,7 +350,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         return syncIf(
                 () ->(data instanceof ArrayList) && (size == data.size()), 
                 ()-> {
-                    for (val value : values) {
+                    for (DATA value : values) {
                         data.add(value);
                     }
                     return new ImmutableFuncList<>(data, data.size(), isLazy);
