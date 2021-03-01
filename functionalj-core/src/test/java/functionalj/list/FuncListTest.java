@@ -708,7 +708,11 @@ public class FuncListTest {
             val logs = new ArrayList<String>();
             
             // We want to confirm that the list is eager
-            val list = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(logs::add).toFuncList().eager();
+            val list = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten)
+                    .peek(logs::add)
+                    .toFuncList()
+                    .eager();
+            System.out.println("3: " + logs);
             // The function has been materialized so all element goes through peek.
             assertStrings("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs);
             // Even we only get part of it, 

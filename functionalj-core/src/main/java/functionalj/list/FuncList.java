@@ -813,11 +813,15 @@ public interface FuncList<DATA>
     //== Conversion ==
     
     /** @return the array list containing the elements. */
+    @SuppressWarnings("unchecked")
     @Eager
     @Terminal
     public default ArrayList<DATA> toArrayList() {
-        val list = new ArrayList<DATA>(size());
-        stream().forEach(list::add);
+        val array = toArray();
+        val list = new ArrayList<DATA>(array.length);
+        for (val each : array) {
+            list.add((DATA)each);
+        }
         return list;
     }
     

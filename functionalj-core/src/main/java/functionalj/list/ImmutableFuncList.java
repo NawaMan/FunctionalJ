@@ -23,18 +23,17 @@
 // ============================================================================
 package functionalj.list;
 
-import static java.util.Collections.unmodifiableList;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,9 +52,9 @@ import lombok.val;
 public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     
     private static final ObjectObjectToIntegerFunction<Object, Object> zeroForEquals = (Object i1, Object i2) -> Objects.equals(i1, i2) ? 0 : 1;
-    private static final Predicate<Integer>                    toZero        = (Integer i)            -> i  == 0;
+    private static final Predicate<Integer>                            toZero        = (Integer i)            -> i  == 0;
     
-    private final static ImmutableFuncList<?> EMPTY = new ImmutableFuncList<>(Collections.emptyList());
+    private final static ImmutableFuncList<?> EMPTY = new ImmutableFuncList<>(Collections.emptyList(), 0);
     
     /** @return an empty list */
     @SuppressWarnings("unchecked")
@@ -66,13 +65,19 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     /** @return the list containing the given elements */
     @SafeVarargs
     public static <T> ImmutableFuncList<T> of(T ... data) {
-        return new ImmutableFuncList<>(Arrays.asList(data));
+        val list = new ArrayList<T>(data.length);
+        for (val each : data)
+            list.add(each);
+        return new ImmutableFuncList<>(list, list.size());
     }
     
     /** @return the list containing the given elements */
     @SafeVarargs
     public static <T> ImmutableFuncList<T> listOf(T ... data) {
-        return new ImmutableFuncList<T>(Arrays.asList(data));
+        val list = new ArrayList<T>(data.length);
+        for (val each : data)
+            list.add(each);
+        return new ImmutableFuncList<T>(list, list.size());
     }
     
     /** @return the list containing the given elements */
@@ -80,17 +85,20 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         if (funcList == null)
             return ImmutableFuncList.empty();
         
-        return new ImmutableFuncList<T>(funcList.asFuncList(), isLazy);
+        FuncList<T> list = funcList.asFuncList();
+        return new ImmutableFuncList<T>(list, list.size(), isLazy);
     }
     
     /** @return the list containing the element from the given stream */
     public static <T> ImmutableFuncList<T> from(Stream<T> stream) {
-        return new ImmutableFuncList<T>(stream.collect(Collectors.toList()));
+        val list = stream.collect(Collectors.toList());
+        return new ImmutableFuncList<T>(list, list.size());
     }
     
     /** @return the list containing the element from the given stream */
     static <T> ImmutableFuncList<T> from(boolean isLazy, Stream<T> stream) {
-        return new ImmutableFuncList<T>(stream.collect(Collectors.toList()), isLazy);
+        val list = stream.collect(Collectors.toList());
+        return new ImmutableFuncList<T>(list, list.size(), isLazy);
     }
     
     /** @return the list containing the element from the given list. */
@@ -100,7 +108,8 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         if (readOnlyList == null)
             return ImmutableFuncList.empty();
         
-        return new ImmutableFuncList<T>(readOnlyList.toJavaList());
+        val list = readOnlyList.toJavaList();
+        return new ImmutableFuncList<T>(list, list.size());
     }
     
     /** @return the list containing the element from the given collections. */
@@ -111,32 +120,34 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             return ImmutableFuncList.empty();
         if (collection instanceof FuncList) {
             val funcList = (FuncList<T>)collection;
-            return new ImmutableFuncList<T>(funcList.toJavaList(), funcList.isLazy());
+            return new ImmutableFuncList<T>(funcList.toJavaList(), funcList.size(), funcList.isLazy());
         }
         if (collection instanceof List) {
             val list = (List<T>)collection;
-            return new ImmutableFuncList<T>(list, true);
+            return new ImmutableFuncList<T>(list, list.size(), true);
         }
         
         val list = (List<T>)collection.stream().collect(Collectors.toList());
-        return new ImmutableFuncList<T>(list, true);
+        return new ImmutableFuncList<T>(list, list.size(), true);
     }
     
     //-- Data --
     
     private final List<DATA> data;
     private final boolean    isLazy;
+    private final int        size;
     
     private volatile String  toStringCache = null;
     private volatile Integer hashcodeCache = null;
     
     //-- Constructors --
     
-    ImmutableFuncList(Collection<DATA> data) {
-        this(data, true);
+    ImmutableFuncList(Collection<DATA> data, int size) {
+        this(data, size, true);
     }
     
-    ImmutableFuncList(Collection<DATA> data, boolean isLazy) {
+    ImmutableFuncList(Collection<DATA> data, int size, boolean isLazy) {
+        this.size   = size;
         this.isLazy = isLazy;
         if (data == null) {
             this.data = Collections.emptyList();
@@ -145,13 +156,13 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         } else {
             val list = new ArrayList<DATA>();
             data.forEach(list::add);
-            this.data = unmodifiableList(list);
+            this.data = list;
         }
     }
     
     @Override
     public StreamPlus<DATA> stream() {
-        return StreamPlus.from(data.stream());
+        return StreamPlus.from(data.stream().limit(size));
     }
     
     @Override
@@ -169,7 +180,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         if (isLazy)
             return this;
         
-        return new ImmutableFuncList<DATA>(data, true);
+        return new ImmutableFuncList<DATA>(data, size, true);
     }
     
     @Override
@@ -177,7 +188,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         if (!isLazy)
             return this;
         
-        return new ImmutableFuncList<DATA>(data, false);
+        return new ImmutableFuncList<DATA>(data, size, false);
     }
     
     @Override
@@ -194,7 +205,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             if (toStringCache != null)
                 return toStringCache;
             
-            toStringCache = data.toString();
+            toStringCache = StreamPlus.from(data.stream().limit(size)).toListString();
             return toStringCache;
         }
     }
@@ -210,6 +221,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             
             hashcodeCache
                     = mapToInt(value -> (value != null) ? Objects.hash(value) : 0)
+                    .limit(size)
                     .reduce(43, (hash, each) -> hash*43 + each);
             return hashcodeCache;
         }
@@ -236,54 +248,71 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     
     @Override
     public int size() {
-        return data.size();
+        return size;
     }
     
     @Override
     public boolean isEmpty() {
-        return data.isEmpty();
+        return (size == 0);
     }
     
     @SuppressWarnings("unchecked")
     @Override
     public <TARGET> TARGET[] toArray(TARGET[] seed) {
-        int count = size();
-        if (seed.length != count) {
-            seed = (TARGET[])Array.newInstance(seed.getClass().getComponentType(), count);
+        if (seed.length != size) {
+            seed = (TARGET[])Array.newInstance(seed.getClass().getComponentType(), size);
         }
-        return data.toArray(seed);
+        
+        val seedArray  = seed;
+        val streamPlus = streamPlus();
+        streamPlus
+        .limit           (Math.min(size, seed.length - 0))
+        .forEachWithIndex((index, element) -> {
+            seedArray[index] = (TARGET)element;
+        });
+        return seed;
     }
     
     @Override
     public DATA get(int index) {
+        if (index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
         return data.get(index);
     }
     
     @Override
     public int indexOf(Object o) {
-        return data.indexOf(o);
+        int index = data.indexOf(o);
+        if (index >= size) {
+            return -1;
+        }
+        return index;
     }
     
     @Override
     public int lastIndexOf(Object o) {
-        return data.lastIndexOf(o);
+        // TODO - Improve this efficiency
+        return data.subList(0, size).lastIndexOf(o);
     }
     
     @Override
     public ListIterator<DATA> listIterator() {
-        return data.listIterator();
+        // TODO - Improve this efficiency
+        return data.subList(0, size).listIterator();
     }
     
     @Override
     public ListIterator<DATA> listIterator(int index) {
-        return data.listIterator();
+        // TODO - Improve this efficiency
+        return data.subList(0, size).listIterator();
     }
     
     @Sequential
     @Terminal
     @Override
     public Result<DATA> firstResult() {
-        return this.data.isEmpty()
+        return (size == 0)
                 ? Result.ofNotExist()
                 : Result.ofValue(this.data.get(0));
     }
@@ -292,10 +321,67 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     @Terminal
     @Override
     public Result<DATA> lastResult() {
-        int size = this.data.size();
         return (size == 0)
                 ? Result.ofNotExist()
                 : Result.ofValue(this.data.get(size - 1));
     }
     
+    //-- Append
+    
+    /**
+     * Add the given value to the end of the list.
+     * This method is for convenient. It is not really efficient if used to add a lot of data.
+     **/
+    public FuncList<DATA> append(DATA value) {
+        return syncIf(
+                () ->(data instanceof ArrayList) && (size == data.size()), 
+                ()-> {
+                    data.add(value);
+                    return new ImmutableFuncList<>(data, data.size(), isLazy);
+                },
+                () -> {
+                    return FuncList.super.append(value);
+                });
+    }
+    
+    /** Add the given values to the end of the list. */
+    @SuppressWarnings("unchecked")
+    public FuncList<DATA> appendAll(DATA ... values) {
+        return syncIf(
+                () ->(data instanceof ArrayList) && (size == data.size()), 
+                ()-> {
+                    for (val value : values) {
+                        data.add(value);
+                    }
+                    return new ImmutableFuncList<>(data, data.size(), isLazy);
+                },
+                () -> {
+                    return FuncList.super.appendAll(values);
+                });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public FuncList<DATA> appendAll(Collection<? extends DATA> collection) {
+        return syncIf(
+                () ->(data instanceof ArrayList) && (size == data.size()), 
+                ()-> {
+                    data.addAll(collection);
+                    return new ImmutableFuncList<>(data, data.size(), isLazy);
+                },
+                () -> {
+                    return FuncList.super.appendAll(collection);
+                });
+    }
+    
+    private FuncList<DATA> syncIf(
+            BooleanSupplier           condition,
+            Supplier<FuncList<DATA>>  matchAction,
+            Supplier<FuncList<DATA>>  elseAction) {
+        synchronized (this) {
+            if (condition.getAsBoolean()) {
+                return matchAction.get();
+            }
+        }
+        return elseAction.get();
+    }
 }
