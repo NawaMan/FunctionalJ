@@ -158,7 +158,7 @@ public interface IntFuncList
     
     /** Create a FuncList from the given ints. */
     public static ImmutableIntFuncList from(int[] datas) {
-        return new ImmutableIntFuncList(datas);
+        return new ImmutableIntFuncList(datas, datas.length);
     }
     
     /** Create a FuncList from the given collection. */
@@ -984,7 +984,7 @@ public interface IntFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableIntFuncList(array, isLazy());
+        return new ImmutableIntFuncList(array, array.length, isLazy());
     }
     
     /** Returns the new list with random order of this list. */
@@ -1002,7 +1002,7 @@ public interface IntFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableIntFuncList(array, isLazy());
+        return new ImmutableIntFuncList(array, array.length, isLazy());
     }
     
     //-- Query --

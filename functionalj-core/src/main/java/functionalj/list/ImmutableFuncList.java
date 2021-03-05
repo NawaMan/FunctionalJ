@@ -275,7 +275,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     
     @Override
     public DATA get(int index) {
-        if (index >= size) {
+        if ((index < 0) || (index >= size)) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
         return data.get(index);
@@ -333,6 +333,12 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
      * This method is for convenient. It is not really efficient if used to add a lot of data.
      **/
     public FuncList<DATA> append(DATA value) {
+        if (this == EMPTY) {
+            List<DATA> list = new ArrayList<DATA>();
+            list.add(value);
+            return new ImmutableFuncList<DATA>(list, 1, isLazy);
+        }
+        
         return syncIf(
                 () ->(data instanceof ArrayList) && (size == data.size()), 
                 ()-> {
@@ -347,6 +353,14 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     /** Add the given values to the end of the list. */
     @SuppressWarnings("unchecked")
     public FuncList<DATA> appendAll(DATA ... values) {
+//        if (this == EMPTY) {
+//            val list = new ArrayList<DATA>(values.length);
+//            for (DATA value : values) {
+//                list.add(value);
+//            }
+//            return new ImmutableFuncList<DATA>(list, list.size(), isLazy);
+//        }
+        
         return syncIf(
                 () ->(data instanceof ArrayList) && (size == data.size()), 
                 ()-> {
@@ -362,6 +376,12 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     
     /** Add the given value in the collection to the end of the list. */
     public FuncList<DATA> appendAll(Collection<? extends DATA> collection) {
+//        if (this == EMPTY) {
+//            val list = new ArrayList<DATA>(collection.size());
+//            list.addAll(collection);
+//            return new ImmutableFuncList<DATA>(list, list.size(), isLazy);
+//        }
+        
         return syncIf(
                 () ->(data instanceof ArrayList) && (size == data.size()), 
                 ()-> {

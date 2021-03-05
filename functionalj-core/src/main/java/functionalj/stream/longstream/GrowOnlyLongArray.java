@@ -96,6 +96,10 @@ public final class GrowOnlyLongArray {
         return LongFuncList.from(stream());
     }
     
+    public long[] toArray() {
+        return stream().toArray();
+    }
+    
     public long get(int i) {
         if (i < 0 || i >= length)
             throw new ArrayIndexOutOfBoundsException(i);

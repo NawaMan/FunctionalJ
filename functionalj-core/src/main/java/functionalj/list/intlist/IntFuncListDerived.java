@@ -96,7 +96,7 @@ public class IntFuncListDerived implements IntFuncList {
     @Override
     public IntFuncList eager() {
         val data = this.toArray();
-        return new ImmutableIntFuncList(data, false);
+        return new ImmutableIntFuncList(data, data.length, false);
     }
     
     @Override

@@ -158,6 +158,7 @@ public class ImmutableLongFuncList implements LongFuncList {
     @Override
     public LongStreamPlus longStream() {
         return LongStreamPlus.from(Arrays.stream(data));
+//        return IntStreamPlus.infinite().limit(size).map(i -> data.get(i));
     }
     
     @Override

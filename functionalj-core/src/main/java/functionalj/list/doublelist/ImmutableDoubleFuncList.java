@@ -158,6 +158,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
     @Override
     public DoubleStreamPlus doubleStream() {
         return DoubleStreamPlus.from(Arrays.stream(data));
+//        return IntStreamPlus.infinite().limit(size).map(i -> data.get(i));
     }
     
     @Override

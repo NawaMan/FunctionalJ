@@ -96,6 +96,10 @@ public final class GrowOnlyDoubleArray {
         return ImmutableDoubleFuncList.from(stream());
     }
     
+    public double[] toArray() {
+        return stream().toArray();
+    }
+    
     public double get(int i) {
         if (i < 0 || i >= length)
             throw new ArrayIndexOutOfBoundsException(i);

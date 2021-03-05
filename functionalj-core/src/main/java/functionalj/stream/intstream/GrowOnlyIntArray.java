@@ -96,6 +96,10 @@ public final class GrowOnlyIntArray {
         return IntFuncList.from(stream());
     }
     
+    public int[] toArray() {
+        return stream().toArray();
+    }
+    
     public int get(int i) {
         if (i < 0 || i >= length)
             throw new ArrayIndexOutOfBoundsException(i);

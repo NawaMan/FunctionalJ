@@ -35,4 +35,15 @@ public class ImmutableFuncListTest {
         assertEquals("[One, Two, Three, Four.point.two, B]", listTwoB.toString());
     }
     
+    @Test
+    public void testAppend_fromEmpty() {
+        val orgList = ImmutableFuncList.empty();
+        val listOne = orgList.appendAll("Four.point.one-A", "Four.point.one-B");
+        val listTwo = orgList.appendAll("Four.point.two-A", "Four.point.two-B", "Four.point.two-C");
+        
+        assertEquals("[]",                                                     orgList.toString());
+        assertEquals("[Four.point.one-A, Four.point.one-B]",                   listOne.toString());
+        assertEquals("[Four.point.two-A, Four.point.two-B, Four.point.two-C]", listTwo.toString());
+    }
+    
 }
