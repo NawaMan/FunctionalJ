@@ -96,7 +96,7 @@ public class LongFuncListDerived implements LongFuncList {
     @Override
     public LongFuncList eager() {
         val data = this.toArray();
-        return new ImmutableLongFuncList(data, false);
+        return new ImmutableLongFuncList(data, data.length, false);
     }
     
     @Override

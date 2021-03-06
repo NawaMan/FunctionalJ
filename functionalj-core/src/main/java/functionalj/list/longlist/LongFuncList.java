@@ -159,7 +159,7 @@ public interface LongFuncList
     
     /** Create a FuncList from the given longs. */
     public static ImmutableLongFuncList from(long[] datas) {
-        return new ImmutableLongFuncList(datas);
+        return new ImmutableLongFuncList(datas, datas.length);
     }
     
     /** Create a FuncList from the given collection. */
@@ -985,7 +985,7 @@ public interface LongFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableLongFuncList(array, isLazy());
+        return new ImmutableLongFuncList(array, array.length, isLazy());
     }
     
     /** Returns the new list with random order of this list. */
@@ -1003,7 +1003,7 @@ public interface LongFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableLongFuncList(array, isLazy());
+        return new ImmutableLongFuncList(array,array.length, isLazy());
     }
     
     //-- Query --

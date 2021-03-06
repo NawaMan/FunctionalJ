@@ -23,13 +23,15 @@
 // ============================================================================
 package functionalj.list.longlist;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.OptionalLong;
+import java.util.function.BooleanSupplier;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
+import java.util.function.Supplier;
 import java.util.stream.LongStream;
 
+import functionalj.stream.longstream.GrowOnlyLongArray;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -47,7 +49,7 @@ public class ImmutableLongFuncList implements LongFuncList {
     
     private static final long[] EMPTY_LONG_ARRAY = new long[0];
     
-    private static ImmutableLongFuncList emptyList = new ImmutableLongFuncList(EMPTY_LONG_ARRAY, true);
+    private static ImmutableLongFuncList emptyList = new ImmutableLongFuncList(EMPTY_LONG_ARRAY, 0, true);
     
     /** @return an empty list */
     public static ImmutableLongFuncList empty() {
@@ -65,7 +67,7 @@ public class ImmutableLongFuncList implements LongFuncList {
             return emptyList;
        
         val newArray = source.clone();
-        return new ImmutableLongFuncList(newArray, true);
+        return new ImmutableLongFuncList(newArray, newArray.length, true);
     }
     
     /** @return the list containing the given elements */
@@ -74,14 +76,15 @@ public class ImmutableLongFuncList implements LongFuncList {
             return emptyList;
        
         val newArray = source.clone();
-        return new ImmutableLongFuncList(newArray, true);
+        return new ImmutableLongFuncList(newArray, newArray.length, true);
     }
     
     public static ImmutableLongFuncList from(boolean isLazy, long[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;
         
-        return new ImmutableLongFuncList(data.clone(), isLazy);
+        val array = data.clone();
+        return new ImmutableLongFuncList(array, array.length, isLazy);
     }
     
     /** @return the list containing the given elements */
@@ -94,7 +97,7 @@ public class ImmutableLongFuncList implements LongFuncList {
                 return (ImmutableLongFuncList)funcList;
         
         val data = funcList.toArray();
-        return new ImmutableLongFuncList(data, isLazy);
+        return new ImmutableLongFuncList(data, data.length, isLazy);
     }
     
     /** @return the list containing the element from the given stream */
@@ -102,7 +105,8 @@ public class ImmutableLongFuncList implements LongFuncList {
         if ((source == null))
             return emptyList;
         
-        return new ImmutableLongFuncList(source.toArray(), true);
+        long[] array = source.toArray();
+        return new ImmutableLongFuncList(array, array.length, true);
     }
     
     /** @return the list containing the element from the given stream */
@@ -110,7 +114,8 @@ public class ImmutableLongFuncList implements LongFuncList {
         if ((source == null))
             return emptyList;
         
-        return new ImmutableLongFuncList(source.toArray(), isLazy);
+        long[] array = source.toArray();
+        return new ImmutableLongFuncList(array, array.length, isLazy);
     }
     
     /** @return the list containing the element from the given list. */
@@ -133,32 +138,39 @@ public class ImmutableLongFuncList implements LongFuncList {
             Long next = iterator.next();
             longs[i] = (next != null) ? next.longValue() : valueForNull;
         }
-        return new ImmutableLongFuncList(longs, true);
+        return new ImmutableLongFuncList(longs, longs.length, true);
     }
     
     //-- Data --
     
-    private final long[]  data;
-    private final boolean isLazy;
+    private final GrowOnlyLongArray data;
+    private final boolean           isLazy;
+    private final int               size;
     
     private volatile String  toStringCache = null;
     private volatile Integer hashcodeCache = null;
     
     //-- Constructors --
     
-    ImmutableLongFuncList(long[] data) {
-        this(data, true);
+    ImmutableLongFuncList(long[] data, int size) {
+        this(data, size, true);
     }
     
-    ImmutableLongFuncList(long[] data, boolean isLazy) {
-        this.data = (data == null) ? EMPTY_LONG_ARRAY : data;
+    ImmutableLongFuncList(long[] data, int size, boolean isLazy) {
+        this.data   = new GrowOnlyLongArray((data == null) ? EMPTY_LONG_ARRAY : data);
         this.isLazy = isLazy;
+        this.size   = size;
+    }
+    
+    private ImmutableLongFuncList(GrowOnlyLongArray data, int size, boolean isLazy) {
+        this.data   = data;
+        this.isLazy = isLazy;
+        this.size   = size;
     }
     
     @Override
     public LongStreamPlus longStream() {
-        return LongStreamPlus.from(Arrays.stream(data));
-//        return IntStreamPlus.infinite().limit(size).map(i -> data.get(i));
+        return LongStreamPlus.infinite().limit(size).map(i -> data.get((int)i));
     }
     
     @Override
@@ -176,7 +188,8 @@ public class ImmutableLongFuncList implements LongFuncList {
         if (isLazy)
             return this;
         
-        return new ImmutableLongFuncList(this.data, true);
+        long[] array = this.data.toArray();
+        return new ImmutableLongFuncList(array, size, true);
     }
     
     @Override
@@ -184,7 +197,8 @@ public class ImmutableLongFuncList implements LongFuncList {
         if (!isLazy)
             return this;
         
-        return new ImmutableLongFuncList(this.data, false);
+        long[] array = this.data.toArray();
+        return new ImmutableLongFuncList(array, size, false);
     }
     
     @Override
@@ -201,7 +215,7 @@ public class ImmutableLongFuncList implements LongFuncList {
             if (toStringCache != null)
                 return toStringCache;
             
-            toStringCache = toListString();
+            toStringCache = LongStreamPlus.from(data.stream().limit(size)).toListString();
             return toStringCache;
         }
     }
@@ -215,7 +229,7 @@ public class ImmutableLongFuncList implements LongFuncList {
             if (hashcodeCache != null)
                 return hashcodeCache;
             
-            hashcodeCache = Long.hashCode(reduce(43, (hash, each) -> hash*43 + each));
+            hashcodeCache = Long.hashCode(limit(size).reduce(43, (hash, each) -> hash*43 + each));
             return hashcodeCache;
         }
     }
@@ -240,28 +254,31 @@ public class ImmutableLongFuncList implements LongFuncList {
     
     @Override
     public int size() {
-        return data.length;
+        return size;
     }
     
     @Override
     public boolean isEmpty() {
-        return (data.length == 0);
+        return (size == 0);
     }
     
     @Override
     public long[] toArray() {
-        return data.clone();
+        return data.stream().toArray();
     }
     
     @Override
     public long get(int index) {
-        return data[index];
+        if ((index < 0) || (index >= size)) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        return data.get(index);
     }
     
     @Override
     public int indexOf(long value) {
-        for (int i = 0; i < data.length; i++) {
-            if (value == data[i])
+        for (int i = 0; i < size; i++) {
+            if (value == data.get(i))
                 return i;
         }
         return -1;
@@ -269,8 +286,8 @@ public class ImmutableLongFuncList implements LongFuncList {
     
     @Override
     public int lastIndexOf(long value) {
-        for (int i = data.length; i-->0;) {
-            if (value == data[i])
+        for (int i = size; i-->0;) {
+            if (value == data.get(i))
                 return i;
         }
         return -1;
@@ -280,19 +297,95 @@ public class ImmutableLongFuncList implements LongFuncList {
     @Terminal
     @Override
     public OptionalLong firstResult() {
-        return (this.data.length == 0)
+        return (this.size == 0)
                 ? OptionalLong.empty()
-                : OptionalLong.of(this.data[0]);
+                : OptionalLong.of(this.data.get(0));
     }
     
     @Sequential
     @Terminal
     @Override
     public OptionalLong lastResult() {
-        int size = this.data.length;
         return (size == 0)
                 ? OptionalLong.empty()
-                : OptionalLong.of(this.data[size - 1]);
+                : OptionalLong.of(this.data.get(size - 1));
+    }
+    
+    //-- Append
+    
+    /**
+     * Add the given value to the end of the list.
+     * This method is for convenient. It is not really efficient if used to add a lot of data.
+     **/
+    public LongFuncList append(int value) {
+        if (this == emptyList) {
+            GrowOnlyLongArray list = new GrowOnlyLongArray();
+            list.add(value);
+            return new ImmutableLongFuncList(list, 1, isLazy);
+        }
+        
+        return syncIf(
+                () ->(size == data.length()), 
+                ()-> {
+                    data.add(value);
+                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                },
+                () -> {
+                    return LongFuncList.super.append(value);
+                });
+    }
+    
+    /** Add the given values to the end of the list. */
+    public LongFuncList appendAll(long ... values) {
+        if (this == emptyList) {
+            GrowOnlyLongArray list = new GrowOnlyLongArray();
+            for (long value : values) {
+                list.add(value);
+            }
+            return new ImmutableLongFuncList(list, list.length(), isLazy);
+        }
+        
+        return syncIf(
+                () ->(size == data.length()), 
+                ()-> {
+                    for (long value : values) {
+                        data.add(value);
+                    }
+                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                },
+                () -> {
+                    return LongFuncList.super.appendAll(values);
+                });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public LongFuncList appendAll(GrowOnlyLongArray array) {
+        if (this == emptyList) {
+            GrowOnlyLongArray list = new GrowOnlyLongArray();
+            array.stream().forEach(data::add);
+            return new ImmutableLongFuncList(list, list.length(), isLazy);
+        }
+        return syncIf(
+                () ->(size == data.length()), 
+                ()-> {
+                    array.stream().forEach(data::add);
+                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                },
+                () -> {
+                    return LongFuncList.super.appendAll(array.toArray());
+                });
+    }
+    
+    private LongFuncList syncIf(
+            BooleanSupplier        condition,
+            Supplier<LongFuncList> matchAction,
+            Supplier<LongFuncList> elseAction) {
+        synchronized (this) {
+            if (condition.getAsBoolean()) {
+                return matchAction.get();
+            }
+        }
+        return elseAction.get();
     }
     
 }

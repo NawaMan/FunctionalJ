@@ -138,7 +138,7 @@ public class ImmutableIntFuncList implements IntFuncList {
             Integer integer = iterator.next();
             ints[i] = (integer != null) ? integer.intValue() : valueForNull;
         }
-        return new ImmutableIntFuncList(ints, ints.length,  true);
+        return new ImmutableIntFuncList(ints, ints.length, true);
     }
     
     //-- Data --
