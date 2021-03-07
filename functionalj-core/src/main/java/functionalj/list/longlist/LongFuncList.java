@@ -62,6 +62,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.longstream.GrowOnlyLongArray;
 import functionalj.stream.longstream.LongIterable;
 import functionalj.stream.longstream.LongIteratorPlus;
 import functionalj.stream.longstream.LongStreamPlus;
@@ -860,7 +861,23 @@ public interface LongFuncList
         return LongFuncList.concat(this, values);
     }
     
-    // TODO - add one for List and FuncList
+    /** Add the given value in the collection to the end of the list. */
+    public default LongFuncList appendAll(List<Long> longs, long fallbackValue) {
+        return LongFuncList.from(()->{
+            LongStreamPlus thisStream = this.longStream();
+            LongStream     longStream = longs.stream().mapToLong(l -> (l == null)? fallbackValue : l.longValue());
+            return LongStreamPlus.concat(thisStream, longStream);
+        });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public default LongFuncList appendAll(GrowOnlyLongArray array) {
+        return LongFuncList.from(()->{
+            LongStreamPlus thisStream = this.longStream();
+            LongStream     longStream = array.stream();
+            return LongStreamPlus.concat(thisStream, longStream);
+        });
+    }
     
     /** Add the given value to the beginning of the list */
     public default LongFuncList prepend(long value) {
@@ -878,6 +895,24 @@ public interface LongFuncList
             return this;
         
         return LongFuncList.concat(prefixFuncList, this);
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public default LongFuncList prependAll(List<Long> longs, long fallbackValue) {
+        return LongFuncList.from(()->{
+            LongStreamPlus thisStream = this.longStream();
+            LongStream     longStream = longs.stream().mapToLong(l -> (l == null)? fallbackValue : l.longValue());
+            return LongStreamPlus.concat(longStream, thisStream);
+        });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public default LongFuncList prependAll(GrowOnlyLongArray array) {
+        return LongFuncList.from(()->{
+            LongStreamPlus thisStream = this.longStream();
+            LongStream     longStream = array.stream();
+            return LongStreamPlus.concat(longStream, thisStream);
+        });
     }
     
     // TODO - add one for List and FuncList

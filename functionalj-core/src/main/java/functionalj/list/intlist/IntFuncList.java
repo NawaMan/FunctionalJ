@@ -61,6 +61,7 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.intstream.GrowOnlyIntArray;
 import functionalj.stream.intstream.IntIterable;
 import functionalj.stream.intstream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -859,7 +860,23 @@ public interface IntFuncList
         return IntFuncList.concat(this, values);
     }
     
-    // TODO - add one for List and FuncList
+    /** Add the given value in the collection to the end of the list. */
+    public default IntFuncList appendAll(List<Integer> ints, int fallbackValue) {
+        return IntFuncList.from(()->{
+            IntStreamPlus thisStream = this.intStream();
+            IntStream     intStream  = ints.stream().mapToInt(i -> (i == null)? fallbackValue : i.intValue());
+            return IntStreamPlus.concat(thisStream, intStream);
+        });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public default IntFuncList appendAll(GrowOnlyIntArray array) {
+        return IntFuncList.from(()->{
+            IntStreamPlus thisStream = this.intStream();
+            IntStream     intStream  = array.stream();
+            return IntStreamPlus.concat(thisStream, intStream);
+        });
+    }
     
     /** Add the given value to the beginning of the list */
     public default IntFuncList prepend(int value) {
@@ -877,6 +894,24 @@ public interface IntFuncList
             return this;
         
         return IntFuncList.concat(prefixFuncList, this);
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public default IntFuncList prependAll(List<Integer> ints, int fallbackValue) {
+        return IntFuncList.from(()->{
+            IntStreamPlus thisStream = this.intStream();
+            IntStream     intStream  = ints.stream().mapToInt(i -> (i == null)? fallbackValue : i.intValue());
+            return IntStreamPlus.concat(intStream, thisStream);
+        });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public default IntFuncList prependAll(GrowOnlyIntArray array) {
+        return IntFuncList.from(()->{
+            IntStreamPlus thisStream = this.intStream();
+            IntStream     intStream  = array.stream();
+            return IntStreamPlus.concat(intStream, thisStream);
+        });
     }
     
     // TODO - add one for List and FuncList

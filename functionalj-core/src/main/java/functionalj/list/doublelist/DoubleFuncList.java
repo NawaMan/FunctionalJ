@@ -44,6 +44,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
@@ -53,6 +54,7 @@ import functionalj.list.ImmutableFuncList;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.list.longlist.AsLongFuncList;
+import functionalj.list.longlist.LongFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
@@ -61,7 +63,9 @@ import functionalj.stream.doublestream.DoubleIterable;
 import functionalj.stream.doublestream.DoubleIteratorPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlusHelper;
+import functionalj.stream.doublestream.GrowOnlyDoubleArray;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.longstream.GrowOnlyLongArray;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
@@ -892,7 +896,23 @@ public interface DoubleFuncList
         return DoubleFuncList.concat(this, values);
     }
     
-    // TODO - add one for List and FuncList
+    /** Add the given value in the collection to the end of the list. */
+    public default DoubleFuncList appendAll(List<Double> doubles, double fallbackValue) {
+        return DoubleFuncList.from(()->{
+            DoubleStreamPlus thisStream   = this.doubleStream();
+            DoubleStream     doubleStream = doubles.stream().mapToDouble(d -> (d == null)? fallbackValue : d.doubleValue());
+            return DoubleStreamPlus.concat(thisStream, doubleStream);
+        });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public default DoubleFuncList appendAll(GrowOnlyDoubleArray array) {
+        return DoubleFuncList.from(()->{
+            DoubleStreamPlus thisStream   = this.doubleStream();
+            DoubleStream     doubleStream = array.stream();
+            return DoubleStreamPlus.concat(thisStream, doubleStream);
+        });
+    }
     
     /** Add the given value to the beginning of the list */
     public default DoubleFuncList prepend(int value) {
@@ -912,7 +932,23 @@ public interface DoubleFuncList
         return DoubleFuncList.concat(prefixFuncList, this);
     }
     
-    // TODO - add one for List and FuncList
+    /** Add the given value in the collection to the end of the list. */
+    public default DoubleFuncList prependAll(List<Double> doubles, double fallbackValue) {
+        return DoubleFuncList.from(()->{
+            DoubleStreamPlus thisStream = this.doubleStream();
+            DoubleStream     doubleStream = doubles.stream().mapToDouble(d -> (d == null)? fallbackValue : d.doubleValue());
+            return DoubleStreamPlus.concat(doubleStream, thisStream);
+        });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public default DoubleFuncList prependAll(GrowOnlyDoubleArray array) {
+        return DoubleFuncList.from(()->{
+            DoubleStreamPlus thisStream   = this.doubleStream();
+            DoubleStream     doubleStream = array.stream();
+            return DoubleStreamPlus.concat(doubleStream, thisStream);
+        });
+    }
     
     /** Returns a new functional list with the value replacing at the index. */
     public default DoubleFuncList with(int index, double value) {
