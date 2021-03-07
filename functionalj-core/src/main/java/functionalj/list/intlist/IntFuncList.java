@@ -859,6 +859,8 @@ public interface IntFuncList
         return IntFuncList.concat(this, values);
     }
     
+    // TODO - add one for List and FuncList
+    
     /** Add the given value to the beginning of the list */
     public default IntFuncList prepend(int value) {
         return IntFuncList.concat(IntFuncList.of(value), this);
@@ -876,6 +878,8 @@ public interface IntFuncList
         
         return IntFuncList.concat(prefixFuncList, this);
     }
+    
+    // TODO - add one for List and FuncList
     
     /** Returns a new functional list with the value replacing at the index. */
     public default IntFuncList with(int index, int value) {

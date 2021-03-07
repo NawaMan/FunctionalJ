@@ -24,6 +24,7 @@
 package functionalj.list.intlist;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.OptionalInt;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntBinaryOperator;
@@ -373,6 +374,51 @@ public class ImmutableIntFuncList implements IntFuncList {
                 },
                 () -> {
                     return IntFuncList.super.appendAll(array.toArray());
+                });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public IntFuncList appendAll(List<Integer> ints, int fallbackValue) {
+        if (this == emptyList) {
+            GrowOnlyIntArray list = new GrowOnlyIntArray();
+            ints.stream()
+                .mapToInt(i -> (i == null) ? fallbackValue : i.intValue())
+                .forEach(data::add);
+            return new ImmutableIntFuncList(list, list.length(), isLazy);
+        }
+        return syncIf(
+                () ->(size == data.length()), 
+                ()-> {
+                    ints.stream()
+                        .mapToInt(i -> (i == null) ? fallbackValue : i.intValue())
+                        .forEach(data::add);
+                    return new ImmutableIntFuncList(data, data.length(), isLazy);
+                },
+                () -> {
+                    GrowOnlyIntArray list = new GrowOnlyIntArray();
+                    ints.stream()
+                        .mapToInt(i -> (i == null) ? fallbackValue : i.intValue())
+                        .forEach(data::add);
+                    IntFuncList funcList = new ImmutableIntFuncList(list, list.length(), isLazy);
+                    return IntFuncList.super.appendAll(funcList);
+                });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public IntFuncList appendAll(IntFuncList ints) {
+        if (this == emptyList) {
+            GrowOnlyIntArray list = new GrowOnlyIntArray();
+            ints.forEach(data::add);
+            return new ImmutableIntFuncList(list, list.length(), isLazy);
+        }
+        return syncIf(
+                () ->(size == data.length()), 
+                ()-> {
+                    ints.forEach(data::add);
+                    return new ImmutableIntFuncList(data, data.length(), isLazy);
+                },
+                () -> {
+                    return IntFuncList.super.appendAll(ints);
                 });
     }
     

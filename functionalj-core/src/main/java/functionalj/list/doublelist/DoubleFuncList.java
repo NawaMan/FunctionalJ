@@ -892,6 +892,8 @@ public interface DoubleFuncList
         return DoubleFuncList.concat(this, values);
     }
     
+    // TODO - add one for List and FuncList
+    
     /** Add the given value to the beginning of the list */
     public default DoubleFuncList prepend(int value) {
         return DoubleFuncList.concat(DoubleFuncList.of(value), this);
@@ -909,6 +911,8 @@ public interface DoubleFuncList
         
         return DoubleFuncList.concat(prefixFuncList, this);
     }
+    
+    // TODO - add one for List and FuncList
     
     /** Returns a new functional list with the value replacing at the index. */
     public default DoubleFuncList with(int index, double value) {
@@ -1019,7 +1023,7 @@ public interface DoubleFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableDoubleFuncList(array, isLazy());
+        return new ImmutableDoubleFuncList(array, array.length, isLazy());
     }
     
     /** Returns the new list with random order of this list. */
@@ -1037,7 +1041,7 @@ public interface DoubleFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableDoubleFuncList(array, isLazy());
+        return new ImmutableDoubleFuncList(array, array.length, isLazy());
     }
     
     //-- Query --

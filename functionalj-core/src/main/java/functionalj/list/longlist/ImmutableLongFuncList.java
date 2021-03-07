@@ -24,6 +24,7 @@
 package functionalj.list.longlist;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.OptionalLong;
 import java.util.function.BooleanSupplier;
 import java.util.function.LongBinaryOperator;
@@ -31,6 +32,7 @@ import java.util.function.LongPredicate;
 import java.util.function.Supplier;
 import java.util.stream.LongStream;
 
+import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.GrowOnlyLongArray;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Sequential;
@@ -72,9 +74,9 @@ public class ImmutableLongFuncList implements LongFuncList {
     
     /** @return the list containing the given elements */
     public static ImmutableLongFuncList listOf(long ... source) {
-       if ((source == null) || source.length == 0)
+        if ((source == null) || source.length == 0)
             return emptyList;
-       
+        
         val newArray = source.clone();
         return new ImmutableLongFuncList(newArray, newArray.length, true);
     }
@@ -88,15 +90,15 @@ public class ImmutableLongFuncList implements LongFuncList {
     }
     
     /** @return the list containing the given elements */
-    public static ImmutableLongFuncList from(boolean isLazy, AsLongFuncList funcList) {
-        if (funcList == null)
+    public static ImmutableLongFuncList from(boolean isLazy, AsLongFuncList asFuncList) {
+        if (asFuncList == null)
             return emptyList;
         
-        if (funcList instanceof ImmutableLongFuncList)
-            if (isLazy == funcList.asLongFuncList().isLazy())
-                return (ImmutableLongFuncList)funcList;
+        if (asFuncList instanceof ImmutableLongFuncList)
+            if (isLazy == asFuncList.asLongFuncList().isLazy())
+                return (ImmutableLongFuncList)asFuncList;
         
-        val data = funcList.toArray();
+        val data = asFuncList.asLongFuncList().toArray();
         return new ImmutableLongFuncList(data, data.length, isLazy);
     }
     
@@ -170,7 +172,7 @@ public class ImmutableLongFuncList implements LongFuncList {
     
     @Override
     public LongStreamPlus longStream() {
-        return LongStreamPlus.infinite().limit(size).map(i -> data.get((int)i));
+        return IntStreamPlus.infinite().limit(size).mapToLong(i -> data.get(i));
     }
     
     @Override
@@ -317,7 +319,7 @@ public class ImmutableLongFuncList implements LongFuncList {
      * Add the given value to the end of the list.
      * This method is for convenient. It is not really efficient if used to add a lot of data.
      **/
-    public LongFuncList append(int value) {
+    public LongFuncList append(long value) {
         if (this == emptyList) {
             GrowOnlyLongArray list = new GrowOnlyLongArray();
             list.add(value);
@@ -373,6 +375,51 @@ public class ImmutableLongFuncList implements LongFuncList {
                 },
                 () -> {
                     return LongFuncList.super.appendAll(array.toArray());
+                });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public LongFuncList appendAll(List<Long> longs, long fallbackValue) {
+        if (this == emptyList) {
+            GrowOnlyLongArray list = new GrowOnlyLongArray();
+            longs.stream()
+                .mapToLong(l -> (l == null) ? fallbackValue : l.longValue())
+                .forEach(data::add);
+            return new ImmutableLongFuncList(list, list.length(), isLazy);
+        }
+        return syncIf(
+                () ->(size == data.length()), 
+                ()-> {
+                    longs.stream()
+                        .mapToLong(l -> (l == null) ? fallbackValue : l.longValue())
+                        .forEach(data::add);
+                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                },
+                () -> {
+                    GrowOnlyLongArray list = new GrowOnlyLongArray();
+                    longs.stream()
+                        .mapToLong(l -> (l == null) ? fallbackValue : l.longValue())
+                        .forEach(data::add);
+                    LongFuncList funcList = new ImmutableLongFuncList(list, list.length(), isLazy);
+                    return LongFuncList.super.appendAll(funcList);
+                });
+    }
+    
+    /** Add the given value in the collection to the end of the list. */
+    public LongFuncList appendAll(LongFuncList longs) {
+        if (this == emptyList) {
+            GrowOnlyLongArray list = new GrowOnlyLongArray();
+            longs.forEach(data::add);
+            return new ImmutableLongFuncList(list, list.length(), isLazy);
+        }
+        return syncIf(
+                () ->(size == data.length()), 
+                ()-> {
+                    longs.forEach(data::add);
+                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                },
+                () -> {
+                    return LongFuncList.super.appendAll(longs);
                 });
     }
     

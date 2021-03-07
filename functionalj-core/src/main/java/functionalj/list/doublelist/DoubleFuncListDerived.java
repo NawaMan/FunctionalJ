@@ -96,7 +96,7 @@ public class DoubleFuncListDerived implements DoubleFuncList {
     @Override
     public DoubleFuncList eager() {
         val data = this.toArray();
-        return new ImmutableDoubleFuncList(data, false);
+        return new ImmutableDoubleFuncList(data, data.length, false);
     }
     
     @Override

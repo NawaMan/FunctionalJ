@@ -860,6 +860,8 @@ public interface LongFuncList
         return LongFuncList.concat(this, values);
     }
     
+    // TODO - add one for List and FuncList
+    
     /** Add the given value to the beginning of the list */
     public default LongFuncList prepend(long value) {
         return LongFuncList.concat(LongFuncList.of(value), this);
@@ -877,6 +879,8 @@ public interface LongFuncList
         
         return LongFuncList.concat(prefixFuncList, this);
     }
+    
+    // TODO - add one for List and FuncList
     
     /** Returns a new functional list with the value replacing at the index. */
     public default LongFuncList with(int index, long value) {
