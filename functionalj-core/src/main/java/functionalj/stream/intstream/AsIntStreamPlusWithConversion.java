@@ -75,7 +75,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default IntFuncList toFuncList() {
-        return toImmutableList();
+        return IntFuncList.from(intStreamPlus());
     }
     
     

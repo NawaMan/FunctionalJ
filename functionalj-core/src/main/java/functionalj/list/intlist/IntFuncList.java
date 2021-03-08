@@ -183,7 +183,7 @@ public interface IntFuncList
     
     /** Create a FuncList from the given stream. */
     public static IntFuncList from(IntStream stream) {
-        return ImmutableIntFuncList.from(stream);
+        return new StreamBackedIntFuncList(stream);
     }
     
     /**

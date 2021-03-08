@@ -1,7 +1,11 @@
 package functionalj.list;
 
+import static functionalj.stream.ZipWithOption.AllowUnpaired;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -10,6 +14,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamPlusUtils;
 import lombok.val;
 
 public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
@@ -36,6 +41,7 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
     @Override
     public StreamPlus<DATA> stream() {
         val indexRef       = new AtomicInteger(0);
+        val valueConsumer  = (Consumer<DATA>)((DATA v) -> cache.add(v));
         val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(Long.MAX_VALUE, 0) {
             @Override
             public boolean tryAdvance(Consumer<? super DATA> consumer) {
@@ -47,7 +53,7 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
                 boolean hadNext = false;
                 synchronized (this) {
                     if (index >= cache.size()) {
-                        hadNext = spliterator.tryAdvance(cache::add);
+                        hadNext = spliterator.tryAdvance(valueConsumer);
                     }
                 }
                 if (fromCache(consumer, index))
@@ -67,6 +73,28 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
         };
         val newStream = StreamSupport.stream(newSpliterator, false);
         return StreamPlus.from(newStream);
+    }
+    
+    @Override
+    public int hashCode() {
+        return StreamPlusUtils.hashCode(this.stream());
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Collection))
+            return false;
+        
+        val anotherList = FuncList.from((Collection)o);
+        return !zipWith(anotherList, AllowUnpaired, Objects::equals)
+                .findFirst(Boolean.FALSE::equals)
+                .isPresent();
+    }
+    
+    @Override
+    public String toString() {
+        return asFuncList().toListString();
     }
     
 }

@@ -74,7 +74,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default FuncList<DATA> toFuncList() {
-        return toImmutableList();
+        return FuncList.from(streamPlus());
     }
     
     

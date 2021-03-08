@@ -192,7 +192,7 @@ public interface FuncList<DATA>
     
     /** Create a FuncList from the given stream. */
     public static <TARGET> FuncList<TARGET> from(Stream<TARGET> stream) {
-        return ImmutableFuncList.from(stream);
+        return new StreamBackedFuncList<TARGET>(stream);
     }
     
     /**
