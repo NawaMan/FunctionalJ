@@ -81,7 +81,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     }
     
     /** @return the list containing the given elements */
-    public static <T> ImmutableFuncList<T> from(boolean isLazy, AsFuncList<T> funcList) {
+    public static <T> FuncList<T> from(boolean isLazy, AsFuncList<T> funcList) {
         if (funcList == null)
             return ImmutableFuncList.empty();
         
@@ -96,7 +96,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     }
     
     /** @return the list containing the element from the given stream */
-    static <T> ImmutableFuncList<T> from(boolean isLazy, Stream<T> stream) {
+    static <T> FuncList<T> from(boolean isLazy, Stream<T> stream) {
         val list = stream.collect(Collectors.toList());
         return new ImmutableFuncList<T>(list, list.size(), isLazy);
     }

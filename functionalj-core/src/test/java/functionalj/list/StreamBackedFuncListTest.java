@@ -13,7 +13,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
-public class StreamBackFuncListTest {
+public class StreamBackedFuncListTest {
     
     @Test
     public void testPeekOne() {
@@ -22,7 +22,7 @@ public class StreamBackFuncListTest {
         
         val logs   = new ArrayList<String>();
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten").peek(logs::add);
-        val list   = new StreamBackFuncList<String>(stream);
+        val list   = new StreamBackedFuncList<String>(stream);
         
         assertEquals("[One, Two, Three]", list.stream().limit(3).toListString());
         assertEquals("[One, Two, Three]", list         .limit(3).toListString());
@@ -50,7 +50,7 @@ public class StreamBackFuncListTest {
     @Test
     public void testAppend() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        val list   = new StreamBackFuncList<String>(stream);
+        val list   = new StreamBackedFuncList<String>(stream);
         
         assertEquals("[One, Two, Three]", list.limit(3).toListString());
         
@@ -69,7 +69,7 @@ public class StreamBackFuncListTest {
                 .limit(size)
                 .boxed();
         
-        val list     = new StreamBackFuncList<Integer>(stream);
+        val list     = new StreamBackedFuncList<Integer>(stream);
         val executor = Executors.newFixedThreadPool(50);
         
         val expected = IntStreamPlus.infiniteInt().limit(size).boxed().toListString();
