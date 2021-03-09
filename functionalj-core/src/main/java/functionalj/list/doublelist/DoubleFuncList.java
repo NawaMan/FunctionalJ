@@ -180,7 +180,7 @@ public interface DoubleFuncList
     
     /** Create a FuncList from the given stream. */
     public static DoubleFuncList from(DoubleStream stream) {
-        return ImmutableDoubleFuncList.from(stream);
+        return new StreamBackedDoubleFuncList(stream);
     }
     
     /**

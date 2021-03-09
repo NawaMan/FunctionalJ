@@ -37,6 +37,7 @@ import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.doublelist.ImmutableDoubleFuncList;
+import functionalj.list.doublelist.StreamBackedDoubleFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.markers.Eager;
@@ -77,8 +78,7 @@ public interface AsDoubleStreamPlusWithConversion {
     @Terminal
     public default DoubleFuncList toFuncList() {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .toImmutableList();
+        return new StreamBackedDoubleFuncList(streamPlus);
     }
 
     /** @return an immutable list containing the elements. */

@@ -38,6 +38,7 @@ import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
 import functionalj.list.longlist.ImmutableLongFuncList;
 import functionalj.list.longlist.LongFuncList;
+import functionalj.list.longlist.StreamBackedLongFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.markers.Eager;
@@ -71,7 +72,7 @@ public interface AsLongStreamPlusWithConversion {
     @Eager
     @Terminal
     public default LongFuncList toFuncList() {
-        return toImmutableList();
+        return new StreamBackedLongFuncList(this.longStreamPlus());
     }
     
     

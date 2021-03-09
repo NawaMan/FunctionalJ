@@ -184,7 +184,7 @@ public interface LongFuncList
     
     /** Create a FuncList from the given stream. */
     public static LongFuncList from(LongStream stream) {
-        return ImmutableLongFuncList.from(stream);
+        return new StreamBackedLongFuncList(stream);
     }
     
     /**
