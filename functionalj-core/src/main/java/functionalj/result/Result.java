@@ -683,6 +683,10 @@ public abstract class Result<DATA>
         return FuncList.of(this.get());
     }
     
+    public final Func0<DATA> toSupplier() {
+        return ()->get();
+    }
+    
     @Override
     public Promise<DATA> getPromise() {
         return mapData(

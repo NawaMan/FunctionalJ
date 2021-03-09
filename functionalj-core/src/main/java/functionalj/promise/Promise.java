@@ -62,6 +62,7 @@ import lombok.val;
 
 // TODO - Find a way to make toString more useful ... like giving this a name.
 // TODO - Should extract important stuff to PromiseBase ... so it is not flooded with the less important things.
+
 public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeable<HasPromise<DATA>> {
     
     private static final int INITIAL_CAPACITY = 2;
@@ -164,7 +165,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>(INITIAL_CAPACITY);
     final List<FuncUnit1<Result<DATA>>>                          eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
     
-    private static final AtomicInteger ID = new AtomicInteger(0);
+    private static final AtomicInteger ID = new AtomicInteger(1);
     
     final AtomicReference<Object> dataRef = new AtomicReference<>();
     private final int id = ID.getAndIncrement();

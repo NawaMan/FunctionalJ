@@ -63,7 +63,7 @@ public class StreamBackedFuncListTest {
     
     @Test
     public void testThreadSafety() {
-        val size     = 500_000;
+        val size     = 100_000;
         val stream   
                 = infiniteInt()
                 .limit(size)
