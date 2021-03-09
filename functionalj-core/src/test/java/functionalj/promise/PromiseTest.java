@@ -534,4 +534,23 @@ public class PromiseTest {
         assertStrings("Result:{ Value: 42 }", r6.getResult());
     }
     
+    @Test
+    public void testName() {
+        val name = "ImportantPromise";
+        
+        val promiseControl = DeferAction.of(String.class);
+        val normalPromise  = promiseControl.getPromise();
+        val namedPromise   = normalPromise.named(name);
+        assertTrue   (normalPromise.toString().matches("^Promise#[0-9]*$"));
+        assertStrings(namedPromise.toString(), name);
+        
+        System.out.println(normalPromise.getStatus());
+        System.out.println(namedPromise.getStatus());
+        
+        promiseControl.complete("DONE!");
+        
+        System.out.println(normalPromise.getStatus());
+        System.out.println(namedPromise.getStatus());
+    }
+    
 }

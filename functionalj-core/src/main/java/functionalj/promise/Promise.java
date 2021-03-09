@@ -193,6 +193,15 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return this;
     }
     
+    public Promise<DATA> named(String name) {
+        FuncUnit2<Result<DATA>, Promise<DATA>> resultConsumer = (Result<DATA> r, Promise<DATA> targetPromise) -> {
+            targetPromise.makeDone(r);
+        };
+        val promise = new NamedPromise<DATA>(this, name);
+        onComplete(resultConsumer.elevateWith(promise));
+        return promise;
+    }
+    
     public HasPromise<DATA> __data() throws Exception {
         return this;
     }
