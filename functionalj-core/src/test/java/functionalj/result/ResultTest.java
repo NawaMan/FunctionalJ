@@ -28,9 +28,11 @@ import static functionalj.result.Result.Do;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import functionalj.function.Func;
@@ -338,6 +340,26 @@ public class ResultTest {
         assertEquals(
                 "[null, null, null, null, null, null, null, null, null, null, null, null, null]",
                 guess.toString());
+    }
+    
+    @Test
+    public void testExceptionInIf() {
+        // Exception thrown in ifXXX is propagated out.
+        try {
+            Result.ofNull().ifNull       (() -> { throw new IndexOutOfBoundsException("-1"); });
+            fail("Expect an exception!");
+        } catch (IndexOutOfBoundsException exception) {
+            assertEquals(
+                    "java.lang.IndexOutOfBoundsException: -1",
+                    "" + exception);
+        }
+    }
+    
+    @Test
+    public void testExceptionInWhen() {
+        // Exception thrown in whenXXX is captured as the result.
+        val result = Result.ofNull().whenAbsentGet(() -> { throw new IndexOutOfBoundsException();  });
+        assertEquals("Result:{ Exception: java.lang.IndexOutOfBoundsException }", "" + result);
     }
     
     // TODO - Fail gradle build - Put this back.
