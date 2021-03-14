@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.result;
 
+import static functionalj.function.Func.f;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -578,6 +579,7 @@ public abstract class Result<DATA>
     
     abstract Object __valueData();
     
+    
     public Result<DATA> or(Result<DATA> anotherResult) {
         if (this.isPresent())
             return this;
@@ -607,7 +609,7 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public <T> Result<T> mapValue(Func2<DATA, Exception, Result<T>> processor) {
+    public <T> Result<T> mapValue(BiFunction<DATA, Exception, Result<T>> processor) {
         return new DerivedResult<T>(this, org-> {
             try {
                 val data      = org.__valueData();
@@ -616,7 +618,7 @@ public abstract class Result<DATA>
                 val exception = isValue ? null       : ((ExceptionHolder)data).getException();
                 assert !((value != null) && (exception != null));
                 
-                val newValue = processor.applyUnsafe(value, exception);
+                val newValue = Func.from(processor).applyUnsafe(value, exception);
                 return newValue;
             } catch (Exception cause) {
                 return newException(cause);
@@ -693,7 +695,7 @@ public abstract class Result<DATA>
                 Promise::ofException,
                 (value, exception) -> {
                     return (exception == null)
-                            ? Promise.of(value)
+                            ? Promise.ofValue(value)
                             : Promise.ofException(exception);
                 }
         );
@@ -705,15 +707,15 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Result<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
+    public final <TARGET> Result<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         return mapValue(
-                (value, exception) -> {
+                f((value, exception) -> {
                     if (value == null)
                         return (Result<TARGET>)this;
                     
-                    val newValue = mapper.applyUnsafe(value);
+                    val newValue = Func.from(mapper).applyUnsafe(value);
                     return Result.valueOf(newValue);
-                }
+                })
         );
     }
     public final <T extends DATA> Result<T> as(Class<T> onlyClass) {
@@ -721,15 +723,15 @@ public abstract class Result<DATA>
                 .map (onlyClass::cast);
     }
     
-    public final Result<DATA> mapException(Func1<? super Exception, ? extends Exception> mapper) {
+    public final Result<DATA> mapException(Function<? super Exception, ? extends Exception> mapper) {
         return mapValue(
-                (value, exception) -> {
+                f((value, exception) -> {
                     if (exception == null)
                         return this;
                     
-                    val newException = mapper.applyUnsafe(exception);
+                    val newException = Func.from(mapper).applyUnsafe(exception);
                     return newException(newException);
-                }
+                })
         );
     }
     
@@ -744,15 +746,15 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Result<TARGET> flatMap(Func1<? super DATA, ? extends Result<TARGET>> mapper) {
+    public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Result<TARGET>> mapper) {
         return mapValue(
-                (value, exception) -> {
+                f((value, exception) -> {
                     if (value == null)
                         return (Result<TARGET>)this;
                     
-                    val monad = (Result<TARGET>)mapper.applyUnsafe(value);
+                    val monad = (Result<TARGET>)Func.from(mapper).applyUnsafe(value);
                     return monad;
-                }
+                })
         );
     }
     
@@ -806,7 +808,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if ((value == null) && (exception != null))
+                    if ((value == null) && (exception == null))
                         return newException(
                                 new ValidationException(
                                         new NullPointerException()));
@@ -818,7 +820,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if ((value == null) && (exception != null))
+                    if ((value == null) && (exception == null))
                         return newException(
                                 new ValidationException(message));
                     

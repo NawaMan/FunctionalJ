@@ -21,25 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.promise;
 
-import static functionalj.function.Func.f;
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
-import functionalj.promise.Promise;
-import functionalj.result.Result;
-
-public class Func2Test {
-
-    private Func2<String, String, String> concat = f(String::concat);
+public class NamedDeferValue<DATA> extends DeferValue<DATA> {
     
-    @Test
-    public void testApplyBare() {
-        assertEquals("Hello world!",                   "" + concat.apply  ("Hello",            " world!"));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Result .valueOf("Hello"), Result .valueOf(" world!")));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Promise.ofValue("Hello"), Promise.ofValue(" world!")).getResult());
+    private final String name;
+    
+    NamedDeferValue(@SuppressWarnings("rawtypes") Promise parent, String name) {
+        super(parent);
+        this.name = name;
     }
-
+    
+    public String name() {
+        return name;
+    }
+    
+    public String toString() {
+        return name;
+    }
+    
 }

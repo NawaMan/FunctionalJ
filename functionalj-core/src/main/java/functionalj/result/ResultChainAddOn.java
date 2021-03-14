@@ -23,12 +23,11 @@
 // ============================================================================
 package functionalj.result;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.function.Func0;
-import functionalj.function.Func1;
-import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
@@ -83,20 +82,20 @@ public interface ResultChainAddOn<DATA> {
     public Result<DATA> asResult();
     
     
-    public <TARGET> Result<TARGET> flatMap(Func1<? super DATA, ? extends Result<TARGET>> mapper);
+    public <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Result<TARGET>> mapper);
     
-    public default <TARGET> Result<TARGET> chain(Func1<? super DATA, ? extends Result<TARGET>> mapper) {
+    public default <TARGET> Result<TARGET> chain(Function<? super DATA, ? extends Result<TARGET>> mapper) {
         return flatMap(mapper);
     }
     
-    public default Result<DATA> chainOnly(Predicate<? super DATA> checker, Func1<? super DATA, Result<DATA>> mapper) {
+    public default Result<DATA> chainOnly(Predicate<? super DATA> checker, Function<? super DATA, Result<DATA>> mapper) {
         return chain(d -> checker.test(d) ? mapper.apply(d) : asResult());
     }
     
     public default <T> Result<T> chainIf(
             Predicate<? super DATA> checker, 
-            Func1<? super DATA, Result<T>> mapper, 
-            Func1<? super DATA, Result<T>> elseMapper) {
+            Function<? super DATA, Result<T>> mapper, 
+            Function<? super DATA, Result<T>> elseMapper) {
         return chain(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
     }
     
@@ -142,50 +141,50 @@ public interface ResultChainAddOn<DATA> {
     
     public default <T1, T2> 
         Result<Tuple2<T1, T2>> chainTuple(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2) {
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2) {
        return chainThen(mapper1, mapper2, (v1, v2)->{
           return Tuple.of(v1, v2);
        });
     }
     public default <T1, T2, T3> 
         Result<Tuple3<T1, T2, T3>> chainTuple(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2,
-            Func1<? super DATA, ? extends Result<T3>> mapper3) {
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2,
+            Function<? super DATA, ? extends Result<T3>> mapper3) {
        return chainThen(mapper1, mapper2, mapper3, (v1, v2, v3)->{
           return Tuple.of(v1, v2, v3);
        });
     }
     public default <T1, T2, T3, T4> 
        Result<Tuple4<T1, T2, T3, T4>> chainTuple(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2,
-            Func1<? super DATA, ? extends Result<T3>> mapper3,
-            Func1<? super DATA, ? extends Result<T4>> mapper4) {
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2,
+            Function<? super DATA, ? extends Result<T3>> mapper3,
+            Function<? super DATA, ? extends Result<T4>> mapper4) {
        return chainThen(mapper1, mapper2, mapper3, mapper4, (v1, v2, v3, v4)->{
           return Tuple.of(v1, v2, v3, v4);
        });
     }
     public default <T1, T2, T3, T4, T5> 
        Result<Tuple5<T1, T2, T3, T4, T5>> chainTuple(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2,
-            Func1<? super DATA, ? extends Result<T3>> mapper3,
-            Func1<? super DATA, ? extends Result<T4>> mapper4,
-            Func1<? super DATA, ? extends Result<T5>> mapper5) {
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2,
+            Function<? super DATA, ? extends Result<T3>> mapper3,
+            Function<? super DATA, ? extends Result<T4>> mapper4,
+            Function<? super DATA, ? extends Result<T5>> mapper5) {
        return chainThen(mapper1, mapper2, mapper3, mapper4, mapper5, (v1, v2, v3, v4, v5)->{
           return Tuple.of(v1, v2, v3, v4, v5);
        });
     }
     public default <T1, T2, T3, T4, T5, T6> 
        Result<Tuple6<T1, T2, T3, T4, T5, T6>> chainTuple(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2,
-            Func1<? super DATA, ? extends Result<T3>> mapper3,
-            Func1<? super DATA, ? extends Result<T4>> mapper4,
-            Func1<? super DATA, ? extends Result<T5>> mapper5,
-            Func1<? super DATA, ? extends Result<T6>> mapper6) {
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2,
+            Function<? super DATA, ? extends Result<T3>> mapper3,
+            Function<? super DATA, ? extends Result<T4>> mapper4,
+            Function<? super DATA, ? extends Result<T5>> mapper5,
+            Function<? super DATA, ? extends Result<T6>> mapper6) {
        return chainThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, (v1, v2, v3, v4, v5, v6)->{
           return Tuple.of(v1, v2, v3, v4, v5, v6);
        });
@@ -193,9 +192,9 @@ public interface ResultChainAddOn<DATA> {
     
     public default <T, T1, T2> 
        Result<T> chainThen(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2,
-            Func2<T1, T2, T> mapper) {
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2,
+            BiFunction<T1, T2, T> mapper) {
         return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();
             
@@ -212,9 +211,9 @@ public interface ResultChainAddOn<DATA> {
     
     public default <T, T1, T2, T3> 
         Result<T> chainThen(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2,
-            Func1<? super DATA, ? extends Result<T3>> mapper3,
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2,
+            Function<? super DATA, ? extends Result<T3>> mapper3,
             Func3<T1, T2, T3, T> mapper) {
         return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();
@@ -235,10 +234,10 @@ public interface ResultChainAddOn<DATA> {
     
     public default <T, T1, T2, T3, T4> 
         Result<T> chainThen(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2,
-            Func1<? super DATA, ? extends Result<T3>> mapper3,
-            Func1<? super DATA, ? extends Result<T4>> mapper4,
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2,
+            Function<? super DATA, ? extends Result<T3>> mapper3,
+            Function<? super DATA, ? extends Result<T4>> mapper4,
             Func4<T1, T2, T3, T4, T> mapper) {
         return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();
@@ -262,11 +261,11 @@ public interface ResultChainAddOn<DATA> {
     
     public default <T, T1, T2, T3, T4, T5> 
         Result<T> chainThen(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2,
-            Func1<? super DATA, ? extends Result<T3>> mapper3,
-            Func1<? super DATA, ? extends Result<T4>> mapper4,
-            Func1<? super DATA, ? extends Result<T5>> mapper5,
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2,
+            Function<? super DATA, ? extends Result<T3>> mapper3,
+            Function<? super DATA, ? extends Result<T4>> mapper4,
+            Function<? super DATA, ? extends Result<T5>> mapper5,
             Func5<T1, T2, T3, T4, T5, T> mapper) {
         return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();
@@ -293,12 +292,12 @@ public interface ResultChainAddOn<DATA> {
     
     public default <T, T1, T2, T3, T4, T5, T6> 
         Result<T> chainThen(
-            Func1<? super DATA, ? extends Result<T1>> mapper1,
-            Func1<? super DATA, ? extends Result<T2>> mapper2,
-            Func1<? super DATA, ? extends Result<T3>> mapper3,
-            Func1<? super DATA, ? extends Result<T4>> mapper4,
-            Func1<? super DATA, ? extends Result<T5>> mapper5,
-            Func1<? super DATA, ? extends Result<T6>> mapper6,
+            Function<? super DATA, ? extends Result<T1>> mapper1,
+            Function<? super DATA, ? extends Result<T2>> mapper2,
+            Function<? super DATA, ? extends Result<T3>> mapper3,
+            Function<? super DATA, ? extends Result<T4>> mapper4,
+            Function<? super DATA, ? extends Result<T5>> mapper5,
+            Function<? super DATA, ? extends Result<T6>> mapper6,
             Func6<T1, T2, T3, T4, T5, T6, T> mapper) {
         return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();

@@ -441,27 +441,125 @@ public interface Apply {
     
     //== $$ ==
     
+    /** Apply the function safely (return {@code Result<O>}). */
     public static <O> Result<O> $$(Supplier<O> func) {
+        return applySafely(func);
+    }
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <O> Result<O> $$(Ref<O> ref) {
+        return applySafely(ref);
+    }
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I, O> Result<O> $$(Function<I, O> func, I input) {
+        return applySafely(func, input);
+    }
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I1, I2, O> Result<O> $$(BiFunction<I1, I2, O> func, I1 input1, I2 input2) {
+        return applySafely(func, input1, input2);
+    }
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I1, I2, I3, O> Result<O> $$(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
+        return applySafely(func, input1, input2, input3);
+    }
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I1, I2, I3, I4, O> Result<O> $$(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
+        return applySafely(func, input1, input2, input3, input4);
+    }
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I1, I2, I3, I4, I5, O> Result<O> $$(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) {
+        return applySafely(func, input1, input2, input3, input4, input5);
+    }
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I1, I2, I3, I4, I5, I6, O> Result<O> $$(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) {
+        return applySafely(func, input1, input2, input3, input4, input5, input6);
+    }
+    
+    /** Apply the function safely (return {@code Result<O>}). */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <O> Result<O> applySafely(Supplier<O> func) {
+        if (func instanceof Func0)
+            return ((Func0) func).applySafely();
+        
         return Result.of(()->func.get());
     }
-    public static <O> Result<O> $$(Ref<O> ref) {
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <O> Result<O> applySafely(Ref<O> ref) {
         return ref.asResult();
     }
-    public static <I, O> Result<O> $$(Function<I, O> func, I input) {
+    /** Apply the function safely (return {@code Result<O>}). */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <I, O> Result<O> applySafely(Function<I, O> func, I input) {
+        if (func instanceof Func1)
+            return ((Func1) func).applySafely(input);
+        
         return Result.of(()->func.apply(input));
     }
-    public static <I1, I2, I3, O> Result<O> $$(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
-        return Result.of(()->func.apply(input1, input2, input3));
+    /** Apply the function safely (return {@code Result<O>}). */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <I1, I2, O> Result<O> applySafely(BiFunction<I1, I2, O> func, I1 input1, I2 input2) {
+        if (func instanceof Func2)
+            return ((Func2) func).applySafely(input1, input2);
+        
+        return Result.of(()->func.apply(input1, input2));
     }
-    public static <I1, I2, I3, I4, O> Result<O> $$(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
-        return Result.of(()->func.apply(input1, input2, input3, input4));
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I1, I2, I3, O> Result<O> applySafely(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
+        return func.applySafely(input1, input2, input3);
     }
-    public static <I1, I2, I3, I4, I5, O> Result<O> $$(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) {
-        return Result.of(()->func.apply(input1, input2, input3, input4, input5));
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I1, I2, I3, I4, O> Result<O> applySafely(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
+        return func.applySafely(input1, input2, input3, input4);
     }
-    public static <I1, I2, I3, I4, I5, I6, O> Result<O> $$(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) {
-        return Result.of(()->func.apply(input1, input2, input3, input4, input5, input6));
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I1, I2, I3, I4, I5, O> Result<O> applySafely(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) {
+        return func.applySafely(input1, input2, input3, input4, input5);
     }
+    /** Apply the function safely (return {@code Result<O>}). */
+    public static <I1, I2, I3, I4, I5, I6, O> Result<O> applySafely(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) {
+        return func.applySafely(input1, input2, input3, input4, input5, input6);
+    }
+    
+    //== $$$ ==
+    
+    /** Apply the function safely (might throw exception). */
+    public static <O> O applyUnsafe(Supplier<O> func) throws Exception {
+        if (func instanceof Func0)
+            return ((Func0<O>) func).applyUnsafe();
+        
+        return func.get();
+    }
+    /** Apply the function safely (might throw exception). */
+    public static <I, O> O $$$(Function<I, O> func, I input) throws Exception {
+        if (func instanceof Func1)
+            return ((Func1<I, O>)func).applyUnsafe(input);
+        
+        return func.apply(input);
+    }
+    /** Apply the function safely (might throw exception). */
+    public static <I1, I2, O> O $$$(BiFunction<I1, I2, O> func, I1 input1, I2 input2) throws Exception {
+        if (func instanceof Func2)
+            return ((Func2<I1, I2, O>)func).applyUnsafe(input1, input2);
+        
+        return func.apply(input1, input2);
+    }
+    /** Apply the function safely (might throw exception). */
+    public static <I1, I2, I3, O> O $$$(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) throws Exception {
+        return func.applyUnsafe(input1, input2, input3);
+    }
+    /** Apply the function safely (might throw exception). */
+    public static <I1, I2, I3, I4, O> O $$$(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) throws Exception {
+        return func.applyUnsafe(input1, input2, input3, input4);
+    }
+    /** Apply the function safely (might throw exception). */
+    public static <I1, I2, I3, I4, I5, O> O $$$(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) throws Exception {
+        return func.applyUnsafe(input1, input2, input3, input4, input5);
+    }
+    /** Apply the function safely (might throw exception). */
+    public static <I1, I2, I3, I4, I5, I6, O> O $$$(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) throws Exception {
+        return func.applyUnsafe(input1, input2, input3, input4, input5, input6);
+    }
+    
+    //== Access ==
     
     public static <HOST> Integer access(IntegerAccess<HOST> access, HOST host) {
         return access.apply(host);

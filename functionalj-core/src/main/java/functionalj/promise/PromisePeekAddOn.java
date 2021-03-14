@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,25 +21,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.promise;
 
-import static functionalj.function.Func.f;
-import static org.junit.Assert.assertEquals;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-import org.junit.Test;
-
-import functionalj.promise.Promise;
 import functionalj.result.Result;
 
-public class Func2Test {
 
-    private Func2<String, String, String> concat = f(String::concat);
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public interface PromisePeekAddOn<DATA> {
     
-    @Test
-    public void testApplyBare() {
-        assertEquals("Hello world!",                   "" + concat.apply  ("Hello",            " world!"));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Result .valueOf("Hello"), Result .valueOf(" world!")));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Promise.ofValue("Hello"), Promise.ofValue(" world!")).getResult());
+    
+    public <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper);
+    
+    
+    public default <T extends DATA> Promise<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
+        return mapResult(result -> result.peek(clzz, (Consumer)theConsumer));
     }
-
+    public default Promise<DATA> peek(Predicate<? super DATA> selector, Consumer<? super DATA> theConsumer) {
+        return mapResult(result -> result.peek((Predicate)selector, (Consumer)theConsumer));
+    }
+    public default <T> Promise<DATA> peek(Function<? super DATA, T> mapper, Consumer<? super T> theConsumer) {
+        return mapResult(result -> result.peek((Function)mapper, (Consumer)theConsumer));
+    }
+    
+    public default <T> Promise<DATA> peek(Function<? super DATA, T> mapper, Predicate<? super T> selector, Consumer<? super T> theConsumer) {
+        return mapResult(result -> result.peek((Function)mapper, (Predicate) selector, (Consumer)theConsumer));
+    }
+    
 }

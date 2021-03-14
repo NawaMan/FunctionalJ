@@ -28,10 +28,16 @@ import static functionalj.function.Func.f;
 import static functionalj.list.FuncList.listOf;
 import static functionalj.promise.RaceResult.Race;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
@@ -43,10 +49,15 @@ import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.function.FuncUnit0;
 import functionalj.function.FuncUnit1;
+import functionalj.function.FuncUnit2;
 import functionalj.function.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
+import functionalj.result.ResultStatus;
+import functionalj.result.ValidationException;
+import functionalj.tuple.Tuple2;
+import functionalj.validator.Validator;
 import lombok.val;
 
 
@@ -388,5 +399,380 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     // TODO - Other F-M-FM methods.
+    
+    //== Status ==
+    
+    public DeferAction<DATA> ifStatusRun(ResultStatus status, Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifStatusRun(status, runnable));
+    }
+    
+    public DeferAction<DATA> ifStatusAccept(ResultStatus status, Consumer<? super DATA> consumer) {
+        return new DeferAction<DATA>(this, promise.ifStatusAccept(status, consumer));
+    }
+    
+    public DeferAction<DATA> whenStatusUse(ResultStatus status, DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenStatusUse(status, fallbackValue));
+    }
+    public DeferAction<DATA> whenStatusGet(ResultStatus status, Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenStatusGet(status, fallbackSupplier));
+    }
+    public DeferAction<DATA> whenStatusApply(ResultStatus status, BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenStatusApply(status, recoverFunction));
+    }
+    
+    //== Validation ==
+    
+    public DeferAction<DATA> validateNotNull() {
+        return new DeferAction<DATA>(this, promise.validateNotNull());
+    }
+    public DeferAction<DATA> validateNotNull(String message) {
+        return new DeferAction<DATA>(this, promise.validateNotNull(message));
+    }
+    public DeferAction<DATA> validateUnavailable() {
+        return new DeferAction<DATA>(this, promise.validateUnavailable());
+    }
+    public DeferAction<DATA> validateNotReady() {
+        return new DeferAction<DATA>(this, promise.validateNotReady());
+    }
+    public DeferAction<DATA> validateResultCancelled() {
+        return new DeferAction<DATA>(this, promise.validateResultCancelled());
+    }
+    public DeferAction<DATA> validateResultNotExist() {
+        return new DeferAction<DATA>(this, promise.validateResultNotExist());
+    }
+    public DeferAction<DATA> validateNoMoreResult() {
+        return new DeferAction<DATA>(this, promise.validateNoMoreResult());
+    }
+    
+    public DeferAction<DATA> validate(String stringFormat, Predicate<? super DATA> validChecker) {
+        return new DeferAction<DATA>(this, promise.validate(stringFormat, validChecker));
+    }
+    
+    public <T> DeferAction<DATA> validate(String stringFormat, Func1<? super DATA, T> mapper, Predicate<? super T> validChecker) {
+        return new DeferAction<DATA>(this, promise.validate(stringFormat, mapper, validChecker));
+    }
+    public DeferAction<DATA> validate(Validator<DATA> validator) {
+        return new DeferAction<DATA>(this, promise.validate(validator));
+    }
+    
+    public DeferAction<Tuple2<DATA, FuncList<ValidationException>>> validate(@SuppressWarnings("unchecked") Validator<? super DATA> ... validators) {
+        return new DeferAction<Tuple2<DATA, FuncList<ValidationException>>>(this, promise.validate(validators));
+    }
+    
+    public DeferAction<Tuple2<DATA, FuncList<ValidationException>>> validate(List<Validator<? super DATA>> validators) {
+        return new DeferAction<Tuple2<DATA, FuncList<ValidationException>>>(this, promise.validate(validators));
+    }
+    
+    public DeferAction<DATA> ensureNotNull() {
+        return new DeferAction<DATA>(this, promise.ensureNotNull());
+    }
+    
+    // Alias of whenNotPresentUse
+    public DeferAction<DATA> otherwise(DATA elseValue) {
+        return new DeferAction<DATA>(this, promise.otherwise(elseValue));
+    }
+    
+    // Alias of whenNotPresentGet
+    public DeferAction<DATA> otherwiseGet(Supplier<? extends DATA> elseSupplier) {
+        return new DeferAction<DATA>(this, promise.otherwiseGet(elseSupplier));
+    }
+    
+    public DeferAction<DATA> printException() {
+        return new DeferAction<DATA>(this, promise.printException());
+    }
+    
+    public DeferAction<DATA> printException(PrintStream printStream) {
+        return new DeferAction<DATA>(this, promise.printException(printStream));
+    }
+    
+    public DeferAction<DATA> printException(PrintWriter printWriter) {
+        return new DeferAction<DATA>(this, promise.printException(printWriter));
+    }
+    
+    //== Peek ==
+    
+    public <T extends DATA> DeferAction<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
+        return new DeferAction<DATA>(this, promise.peek(clzz, theConsumer));
+    }
+    public DeferAction<DATA> peek(Predicate<? super DATA> selector, Consumer<? super DATA> theConsumer) {
+        return new DeferAction<DATA>(this, promise.peek(selector, theConsumer));
+    }
+    public <T> DeferAction<DATA> peek(Function<? super DATA, T> mapper, Consumer<? super T> theConsumer) {
+        return new DeferAction<DATA>(this, promise.peek(mapper, theConsumer));
+    }
+    
+    public <T> DeferAction<DATA> peek(Function<? super DATA, T> mapper, Predicate<? super T> selector, Consumer<? super T> theConsumer) {
+        return new DeferAction<DATA>(this, promise.peek(mapper, selector, theConsumer));
+    }
+    
+    //== If+When ==
+    
+    public DeferAction<DATA> useData(FuncUnit2<DATA, Exception> processor) {
+        return new DeferAction<DATA>(this, promise.useData(processor));
+    }
+    
+    public DeferAction<DATA> whenComplete(FuncUnit2<DATA, Exception> processor) {
+        return new DeferAction<DATA>(this, promise.whenComplete(processor));
+    }
+    
+    public DeferAction<DATA> whenComplete(FuncUnit1<Result<DATA>> processor) {
+        return new DeferAction<DATA>(this, promise.whenComplete(processor));
+    }
+    
+    //== Present ==
+    
+    public DeferAction<DATA> ifPresent(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifPresent(runnable));
+    }
+    
+    public DeferAction<DATA> ifPresent(Consumer<? super DATA> consumer) {
+        return new DeferAction<DATA>(this, promise.ifPresent(consumer));
+    }
+    
+    //== Absent ==
+    
+    public DeferAction<DATA> ifAbsent(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifAbsent(runnable));
+    }
+    
+    public DeferAction<DATA> ifAbsent(Consumer<? super DATA> consumer) {
+        return new DeferAction<DATA>(this, promise.ifAbsent(consumer));
+    }
+    
+    public DeferAction<DATA> ifAbsent(BiConsumer<? super DATA, ? super Exception> consumer) {
+        return new DeferAction<DATA>(this, promise.ifAbsent(consumer));
+    }
+    
+    public DeferAction<DATA> whenAbsentUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenAbsentUse(fallbackValue));
+    }
+    
+    public DeferAction<DATA> whenAbsentGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenAbsentGet(fallbackSupplier));
+    }
+    
+    public DeferAction<DATA> whenAbsentApply(BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenAbsentApply(recoverFunction));
+    }
+    
+    //== Null ==
+    
+    public DeferAction<DATA> ifNull(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifNull(runnable));
+    }
+    
+    public DeferAction<DATA> whenNullUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenNullUse(fallbackValue));
+    }
+    public DeferAction<DATA> whenNullGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenNullGet(fallbackSupplier));
+    }
+    
+    //== Value ==
+    
+    public DeferAction<DATA> ifValue(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifValue(runnable));
+    }
+    
+    public DeferAction<DATA> ifValue(Consumer<? super DATA> consumer) {
+        return new DeferAction<DATA>(this, promise.ifValue(consumer));
+    }
+    
+    //== NotValue ==
+    
+    public DeferAction<DATA> ifNotValue(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifNotValue(runnable));
+    }
+    
+    public DeferAction<DATA> ifNotValue(Consumer<? super DATA> consumer) {
+        return new DeferAction<DATA>(this, promise.ifNotValue(consumer));
+    }
+    
+    public DeferAction<DATA> ifNotValue(BiConsumer<? super DATA, ? super Exception> consumer) {
+        return new DeferAction<DATA>(this, promise.ifNotValue(consumer));
+    }
+    
+    public DeferAction<DATA> whenNotValueUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenNotValueUse(fallbackValue));
+    }
+    public DeferAction<DATA> whenNotValueGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenNotValueGet(fallbackSupplier));
+    }
+    public DeferAction<DATA> whenNotValueApply(BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenNotValueApply(recoverFunction));
+    }
+    
+    //== Valid ==
+    
+    public DeferAction<DATA> ifValid(Consumer<? super DATA> consumer) {
+        return new DeferAction<DATA>(this, promise.ifValid(consumer));
+    }
+    
+    //== Invalid ==
+    
+    public DeferAction<DATA> ifInvalid(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifInvalid(runnable));
+    }
+    
+    public DeferAction<DATA> ifInvalid(Consumer<? super Exception> consumer) {
+        return new DeferAction<DATA>(this, promise.ifInvalid(consumer));
+    }
+    
+    public DeferAction<DATA> whenInvalidUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenInvalidUse(fallbackValue));
+    }
+    public DeferAction<DATA> whenInvalidGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenInvalidGet(fallbackSupplier));
+    }
+    public DeferAction<DATA> whenInvalidApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenInvalidApply(recoverFunction));
+    }
+    
+    //== NotExist ==
+    
+    public DeferAction<DATA> ifNotExist(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifNotExist(runnable));
+    }
+    
+    public DeferAction<DATA> ifNotExist(Consumer<? super Exception> consumer) {
+        return new DeferAction<DATA>(this, promise.ifNotExist(consumer));
+    }
+    
+    public DeferAction<DATA> whenNotExistUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenNotExistUse(fallbackValue));
+    }
+    public DeferAction<DATA> whenNotExistGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenNotExistGet(fallbackSupplier));
+    }
+    public DeferAction<DATA> whenNotExistApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenNotExistApply(recoverFunction));
+    }
+    
+    //== Exception ==
+    
+    public DeferAction<DATA> ifException(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifException(runnable));
+    }
+    
+    public DeferAction<DATA> ifException(Consumer<? super Exception> consumer) {
+        return new DeferAction<DATA>(this, promise.ifException(consumer));
+    }
+    
+    public DeferAction<DATA> ifExceptionThenPrint() {
+        return new DeferAction<DATA>(this, promise.ifExceptionThenPrint());
+    }
+    public DeferAction<DATA> ifExceptionThenPrint(PrintStream printStream) {
+        return new DeferAction<DATA>(this, promise.ifExceptionThenPrint(printStream));
+    }
+    public DeferAction<DATA> ifExceptionThenPrint(PrintWriter printWriter) {
+        return new DeferAction<DATA>(this, promise.ifExceptionThenPrint(printWriter));
+    }
+    
+    public DeferAction<DATA> whenExceptionUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenExceptionUse(fallbackValue));
+    }
+    public DeferAction<DATA> whenExceptionGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenExceptionGet(fallbackSupplier));
+    }
+    public DeferAction<DATA> whenExceptionApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenExceptionApply(recoverFunction));
+    }
+    
+    public DeferAction<DATA> recover(DATA fallbackValue) {
+        return recover(Exception.class, fallbackValue);
+    }
+    public DeferAction<DATA> recover(Supplier<? extends DATA> fallbackSupplier) {
+        return recover(Exception.class, fallbackSupplier);
+    }
+    public DeferAction<DATA> recover(Func1<? super Exception,? extends DATA> recoverFunction) {
+        return recover(Exception.class, recoverFunction);
+    }
+    public DeferAction<DATA> recover(Class<? extends Throwable> problemClass, DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.recover(problemClass, fallbackValue));
+    }
+    public DeferAction<DATA> recover(Class<? extends Throwable> problemClass, Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.recover(problemClass, fallbackSupplier));
+    }
+    public DeferAction<DATA> recover(Class<? extends Throwable> problemClass, Func1<? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.recover(problemClass, recoverFunction));
+    }
+    
+    //== Cancelled ==
+    
+    public DeferAction<DATA> ifCancelled(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifCancelled(runnable));
+    }
+    
+    public DeferAction<DATA> whenCancelledUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenCancelledUse(fallbackValue));
+    }
+    public DeferAction<DATA> whenCancelledGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenCancelledGet(fallbackSupplier));
+    }
+    public DeferAction<DATA> whenCancelledApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenCancelledApply(recoverFunction));
+    }
+    
+    //== Ready ==
+    
+    public DeferAction<DATA> ifReady(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifReady(runnable));
+    }
+    
+    public DeferAction<DATA> ifReady(Consumer<? super DATA> consumer) {
+        return new DeferAction<DATA>(this, promise.ifReady(consumer));
+    }
+    
+    public DeferAction<DATA> ifReady(BiConsumer<? super DATA, ? super Exception> consumer) {
+        return new DeferAction<DATA>(this, promise.ifReady(consumer));
+    }
+    
+    public DeferAction<DATA> whenReadyUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenReadyUse(fallbackValue));
+    }
+    public DeferAction<DATA> whenReadyGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenReadyGet(fallbackSupplier));
+    }
+    public DeferAction<DATA> whenNotReadyApply(BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenNotReadyApply(recoverFunction));
+    }
+    
+    //== Not Ready ==
+    
+    public DeferAction<DATA> ifNotReady(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifNotReady(runnable));
+    }
+    public DeferAction<DATA> ifNotReady(Consumer<? super Exception> consumer) {
+        return new DeferAction<DATA>(this, promise.ifNotReady(consumer));
+    }
+    
+    public DeferAction<DATA> whenNotReadyUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenNotReadyUse(fallbackValue));
+    }
+    public DeferAction<DATA> whenNotReadyGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenNotReadyGet(fallbackSupplier));
+    }
+    public DeferAction<DATA> whenNotReadyApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenNotReadyApply(recoverFunction));
+    }
+    
+    //== No More Result ==
+    
+    public DeferAction<DATA> ifNoMore(Runnable runnable) {
+        return new DeferAction<DATA>(this, promise.ifNoMore(runnable));
+    }
+    public DeferAction<DATA> ifNoMore(Consumer<? super Exception> consumer) {
+        return new DeferAction<DATA>(this, promise.ifNoMore(consumer));
+    }
+    
+    public DeferAction<DATA> whenNoMoreUse(DATA fallbackValue) {
+        return new DeferAction<DATA>(this, promise.whenNoMoreUse(fallbackValue));
+    }
+    public DeferAction<DATA> whenNoMoreGet(Supplier<? extends DATA> fallbackSupplier) {
+        return new DeferAction<DATA>(this, promise.whenNoMoreGet(fallbackSupplier));
+    }
+    public DeferAction<DATA> whenNoMoreApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return new DeferAction<DATA>(this, promise.whenNoMoreApply(recoverFunction));
+    }
     
 }

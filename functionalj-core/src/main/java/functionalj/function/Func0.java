@@ -120,7 +120,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         };
     }
     
-    public default Func0<OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
+    public default Func0<OUTPUT> ifException(Consumer<? super Exception> exceptionHandler) {
         return ()->{
             try {
                 val outputValue = this.applyUnsafe();
@@ -179,7 +179,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-    public default Func0<OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
+    public default Func0<OUTPUT> whenAbsentGet(Supplier<? extends OUTPUT> defaultSupplier) {
         return ()->{
             try {
                 val outputValue = this.applyUnsafe();

@@ -47,7 +47,7 @@ public class PromiseTest {
     
     @Test
     public void testValue() {
-        val promise = Promise.of("Hello!");
+        val promise = Promise.ofValue("Hello!");
         assertEquals (PromiseStatus.COMPLETED,    promise.getStatus());
         assertStrings("Result:{ Value: Hello! }", promise.getCurrentResult());
         
@@ -349,7 +349,7 @@ public class PromiseTest {
         DeferAction.of(String.class)
         .use(promise -> {
             promise
-                .flatMap(str -> Promise.of(str.length()))
+                .flatMap(str -> Promise.ofValue(str.length()))
                 .onComplete(r -> list.add(r.toString()));
         })
         .start()

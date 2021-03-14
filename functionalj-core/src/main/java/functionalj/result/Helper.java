@@ -24,18 +24,20 @@
 package functionalj.result;
 
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.function.Func0;
-import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit2;
 import lombok.val;
 
 
-class helper {
+
+class Helper {
     
     static <DATA> Func2<DATA, Exception, Boolean> processIs(Predicate<ResultStatus> statusCheck) {
         return (DATA value, Exception exception) -> {
@@ -100,9 +102,9 @@ class helper {
     }
     
     static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenApply(
-            Predicate<ResultStatus>                  statusCheck,
-            Result<DATA>                             result,
-            Func1<? super Exception, ? extends DATA> recoverFunction) {
+            Predicate<ResultStatus>                     statusCheck,
+            Result<DATA>                                result,
+            Function<? super Exception, ? extends DATA> recoverFunction) {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
@@ -113,9 +115,9 @@ class helper {
     }
     
     static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenApply(
-            Predicate<ResultStatus>                        statusCheck,
-            Result<DATA>                                   result,
-            Func2<DATA, ? super Exception, ? extends DATA> recoverFunction) {
+            Predicate<ResultStatus>                             statusCheck,
+            Result<DATA>                                        result,
+            BiFunction<DATA, ? super Exception, ? extends DATA> recoverFunction) {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))

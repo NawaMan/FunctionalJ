@@ -23,9 +23,12 @@
 // ============================================================================
 package functionalj.promise;
 
+import static functionalj.function.Apply.$;
 import static functionalj.function.Func.carelessly;
 import static java.util.Objects.requireNonNull;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -52,18 +56,31 @@ import functionalj.function.Func6;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.function.NamedExpression;
+import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.ref.Ref;
 import functionalj.result.HasResult;
 import functionalj.result.Result;
+import functionalj.result.ResultStatus;
+import functionalj.result.ValidationException;
+import functionalj.tuple.Tuple2;
+import functionalj.validator.Validator;
 import lombok.val;
 
 
-
-// TODO - Find a way to make toString more useful ... like giving this a name.
 // TODO - Should extract important stuff to PromiseBase ... so it is not flooded with the less important things.
 
-public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeable<HasPromise<DATA>> {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class Promise<DATA> 
+                implements
+                    HasPromise<DATA>, 
+                    HasResult<DATA>, 
+                    Pipeable<HasPromise<DATA>>,
+                    PromiseChainAddOn<DATA>,
+                    PromiseFilterAddOn<DATA>,
+                    PromiseMapAddOn<DATA>,
+                    PromisePeekAddOn<DATA>,
+                    PromiseStatusAddOn<DATA> {
     
     private static final int INITIAL_CAPACITY = 2;
     
@@ -78,7 +95,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 .build()
                 .getPromise();
     }
-    public static <D> Promise<D> of(D value) {
+    public static <D> Promise<D> ofValue(D value) {
         return DeferAction.of((Class<D>)null)
                 .start()
                 .complete(value)
@@ -168,7 +185,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     private static final AtomicInteger ID = new AtomicInteger(1);
     
     final AtomicReference<Object> dataRef = new AtomicReference<>();
-    private final int id = ID.getAndIncrement();
+    final int id = ID.getAndIncrement();
     
     public int hashCode() {
         return id;
@@ -184,8 +201,13 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         dataRef.set(action);
     }
     
-    Promise(@SuppressWarnings("rawtypes") Promise parent) {
+    Promise(Promise parent) {
         this.dataRef.set(parent);
+    }
+    
+    Promise<DATA> parent() {
+        val data = this.dataRef.get();
+        return (data instanceof Promise) ? (Promise)data : null;
     }
     
     @Override
@@ -209,7 +231,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final PromiseStatus getStatus() {
         val data = dataRef.get();
         if (data instanceof Promise) {
-            @SuppressWarnings("unchecked")
             Promise<DATA> promise = (Promise<DATA>)data;
             PromiseStatus parentStatus = promise.getStatus();
             // Pending ... as the result is not yet propagated down
@@ -223,7 +244,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (consumers == data)
             return PromiseStatus.PENDING;
         if (data instanceof Result) {
-            @SuppressWarnings("unchecked")
             val result = (Result<DATA>)data;
             if (result.isCancelled())
                 return PromiseStatus.ABORTED;
@@ -242,7 +262,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     //== Internal working ==
     
-    @SuppressWarnings("unchecked")
     public final boolean start() {
         val data = dataRef.get();
         if (data instanceof Promise) {
@@ -269,22 +288,18 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     boolean abort() {
-        @SuppressWarnings("unchecked")
         val cancelResult = (Result<DATA>)Result.ofCancelled();
         return makeDone(cancelResult);
     }
     boolean abort(String message) {
-        @SuppressWarnings("unchecked")
         val cancelResult = (Result<DATA>)Result.ofCancelled(message);
         return makeDone(cancelResult);
     }
     boolean abort(Exception cause) {
-        @SuppressWarnings("unchecked")
         val cancelResult = (Result<DATA>)Result.ofCancelled(null, cause);
         return makeDone(cancelResult);
     }
     boolean abort(String message, Exception cause) {
-        @SuppressWarnings("unchecked")
         val cancelResult = (Result<DATA>)Result.ofCancelled(message, cause);
         return makeDone(cancelResult);
     }
@@ -295,7 +310,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     boolean makeFail(Exception exception) {
-        @SuppressWarnings("unchecked")
         val result = (Result<DATA>)Result.ofException(exception);
         return makeDone(result);
     }
@@ -310,7 +324,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             val data = promise.dataRef.get();
             try {
                 if (data instanceof Promise) {
-                    @SuppressWarnings("unchecked")
                     val parent = (Promise<DATA>)data;
                     try {
                         if (!promise.dataRef.compareAndSet(parent, result))
@@ -432,6 +445,10 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return subscription;
     }
     
+    public final DATA get() throws Exception {
+        return getResult().get();
+    }
+    
     public final Result<DATA> getResult() {
         long timeout = waitTimeout.whenAbsentUse(-1L).get().longValue();
         return getResult(timeout, TimeUnit.MILLISECONDS);
@@ -469,12 +486,10 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final Result<DATA> getCurrentResult() {
         val data = dataRef.get();
         if (data instanceof Result) {
-            @SuppressWarnings("unchecked")
             val result = (Result<DATA>)data;
             return result;
         }
         if (data instanceof Promise) {
-            @SuppressWarnings("unchecked")
             val parent = (Promise<DATA>)data;
             return parent.getCurrentResult();
         }
@@ -527,7 +542,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return this;
     }
     
-    @SuppressWarnings("unchecked")
     final SubscriptionRecord<DATA> doSubscribe(boolean isEavesdropping, Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         val toRunNow           = new AtomicBoolean(false);
         val returnSubscription = (SubscriptionRecord<DATA>)synchronouseOperation(()->{
@@ -596,7 +610,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     //== Functional ==
     
-    public final Promise<DATA> filter(Predicate<? super DATA> predicate) {
+    public Promise<DATA> filter(Predicate<? super DATA> predicate) {
         requireNonNull(predicate);
         return (Promise<DATA>)newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
             val result = r.filter(predicate);
@@ -604,7 +618,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         });
     }
     
-    public final Promise<DATA> peek(FuncUnit1<? super DATA> peeker) {
+    public Promise<DATA> peek(Consumer<? super DATA> peeker) {
         requireNonNull(peeker);
         return (Promise<DATA>)newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
             val result = r.peek(peeker);
@@ -612,8 +626,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         });
     }
     
-    @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
+    public <TARGET> Promise<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         requireNonNull(mapper);
         return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val result = r.map(mapper);
@@ -621,8 +634,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         });
     }
     
-    @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper) {
+    public <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper) {
         requireNonNull(mapper);
         return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val result = mapper.apply(r);
@@ -630,10 +642,10 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         });
     }
     
-    public final <TARGET> Promise<TARGET> flatMap(Func1<DATA, ? extends HasPromise<TARGET>> mapper) {
+    public <TARGET> Promise<TARGET> flatMap(Function<? super DATA, ? extends HasPromise<TARGET>> mapper) {
         return chain(mapper);
     }
-    public final <TARGET> Promise<TARGET> chain(Func1<DATA, ? extends HasPromise<TARGET>> mapper) {
+    public <TARGET> Promise<TARGET> chain(Function<? super DATA, ? extends HasPromise<TARGET>> mapper) {
         return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val targetResult = r.map(mapper);
             targetResult.ifPresent(hasPromise -> {
@@ -644,33 +656,150 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         });
     }
     
-    @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> whenAbsentUse(TARGET elseValue) {
-        return (Promise<TARGET>)newSubPromise((Result<DATA> result, Promise<TARGET> targetPromise) -> {
-            result
-            .ifPresent(value -> {
-                targetPromise.makeDone((Result<TARGET>)result);
-            })
-            .ifAbsent(() -> {
-                targetPromise.makeDone(Result.valueOf(elseValue));
-            });
+    public Promise<DATA> or(Result<DATA> anotherResult) {
+        return mapResult(r -> r.or((Result)anotherResult));
+    }
+    
+    public <T> Promise<T> mapValue(BiFunction<DATA, Exception, Result<T>> processor) {
+        return mapResult(result -> {
+            val excception = result.exception();
+            val value      = (excception != null) ? null : result.value();
+            return $(processor, (DATA)value, excception);
         });
     }
     
-    @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> whenAbsentGet(Supplier<TARGET> elseSupplier) {
-        return (Promise<TARGET>)newSubPromise((Result<DATA> result, Promise<TARGET> targetPromise) -> {
-            result
-            .ifPresent(value -> {
-                targetPromise.makeDone((Result<TARGET>)result);
-            })
-            .ifAbsent(() -> {
-                targetPromise.makeDone(Result.from(elseSupplier));
-            });
-        });
+    public <T extends DATA> Promise<T> as(Class<T> onlyClass) {
+        return as(onlyClass);
     }
     
-    // TODO - Consider if adding whenPresent, whenNull, whenException  add any value.
-    // TODO - Consider if adding ifException, ifCancel .... is any useful ... or just subscribe is good enough.
+    public Promise<DATA> mapException(Function<? super Exception, ? extends Exception> mapper) {
+        return (Promise)mapResult(result -> result.mapException(mapper));
+    }
+    
+    public <OPERANT, TARGET> Promise<TARGET> mapWith(
+            BiFunction<? super DATA, ? super OPERANT, ? extends TARGET> func,
+            Result<OPERANT> operantResult) {
+        return (Promise)mapResult(result -> result.mapWith((Func2)func, operantResult));
+    }
+    
+    public Promise<DATA> forValue(Consumer<? super DATA> theConsumer) {
+        return (Promise)mapResult(result -> result.forValue((Consumer)theConsumer));
+    }
+    
+    //== Status ==
+    
+    public Promise<DATA> ifStatusRun(ResultStatus status, Runnable runnable) {
+        return (Promise)mapResult(result -> result.ifStatusRun(status, runnable));
+    }
+    
+    public Promise<DATA> ifStatusAccept(ResultStatus status, Consumer<? super DATA> consumer) {
+        return (Promise)mapResult(result -> result.ifStatusAccept(status, (Consumer)consumer));
+    }
+    
+    public Promise<DATA> whenStatusUse(ResultStatus status, DATA fallbackValue) {
+        return (Promise)mapResult(result -> result.whenStatusUse(status, fallbackValue));
+    }
+    public Promise<DATA> whenStatusGet(ResultStatus status, Supplier<? extends DATA> fallbackSupplier) {
+        return (Promise)mapResult(result -> result.whenStatusGet(status, fallbackSupplier));
+    }
+    public Promise<DATA> whenStatusApply(ResultStatus status, BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return (Promise)mapResult(result -> result.whenStatusApply(status, (BiFunction)recoverFunction));
+    }
+    
+    //== Validation ==
+    
+    public Promise<DATA> validateNotNull() {
+        return (Promise)mapResult(result -> result.validateNotNull());
+    }
+    public Promise<DATA> validateNotNull(String message) {
+        return (Promise)mapResult(result -> result.validateNotNull(message));
+    }
+    public Promise<DATA> validateUnavailable() {
+        return (Promise)mapResult(result -> result.validateUnavailable());
+    }
+    public Promise<DATA> validateNotReady() {
+        return (Promise)mapResult(result -> result.validateNotReady());
+    }
+    public Promise<DATA> validateResultCancelled() {
+        return (Promise)mapResult(result -> result.validateResultCancelled());
+    }
+    public Promise<DATA> validateResultNotExist() {
+        return (Promise)mapResult(result -> result.validateResultNotExist());
+    }
+    public Promise<DATA> validateNoMoreResult() {
+        return (Promise)mapResult(result -> result.validateNoMoreResult());
+    }
+    
+    public Promise<DATA> validate(String stringFormat, Predicate<? super DATA> validChecker) {
+        return (Promise)mapResult(result -> result.validate(stringFormat, (Predicate)validChecker));
+    }
+    
+    public <T> Promise<DATA> validate(String stringFormat, Func1<? super DATA, T> mapper, Predicate<? super T> validChecker) {
+        return (Promise)mapResult(result -> result.validate(stringFormat, (Func1)mapper, (Predicate)validChecker));
+    }
+    public Promise<DATA> validate(Validator<DATA> validator) {
+        return (Promise)mapResult(result -> result.validate((Validator)validator));
+    }
+    
+    public Promise<Tuple2<DATA, FuncList<ValidationException>>> validate(Validator<? super DATA> ... validators) {
+        return (Promise)mapResult(result -> result.validate((Validator[])validators));
+    }
+    
+    public Promise<Tuple2<DATA, FuncList<ValidationException>>> validate(List<Validator<? super DATA>> validators) {
+        return (Promise)mapResult(result -> result.validate((List)validators));
+    }
+    
+    public Promise<DATA> ensureNotNull() {
+        return (Promise)mapResult(result -> result.ensureNotNull());
+    }
+    
+    // Alias of whenNotPresentUse
+    public Promise<DATA> otherwise(DATA elseValue) {
+        return (Promise)mapResult(result -> result.otherwise(elseValue));
+    }
+    
+    // Alias of whenNotPresentGet
+    public Promise<DATA> otherwiseGet(Supplier<? extends DATA> elseSupplier) {
+        return (Promise)mapResult(result -> result.otherwiseGet(elseSupplier));
+    }
+    
+    public Promise<DATA> printException() {
+        return (Promise)mapResult(result -> result.printException());
+    }
+    
+    public Promise<DATA> printException(PrintStream printStream) {
+        return (Promise)mapResult(result -> result.printException(printStream));
+    }
+    
+    public Promise<DATA> printException(PrintWriter printWriter) {
+        return (Promise)mapResult(result -> result.printException(printWriter));
+    }
+    
+    //== Disambiguous ==
+    
+    @Override
+    public Promise<DATA> ifException(Consumer<? super Exception> consumer) {
+        return PromiseStatusAddOn.super.ifException(consumer);
+    }
+    @Override
+    public Promise<DATA> ifExceptionThenPrint() {
+        return PromiseStatusAddOn.super.ifExceptionThenPrint();
+    }
+    @Override
+    public Promise<DATA> ifExceptionThenPrint(PrintStream printStream) {
+        return PromiseStatusAddOn.super.ifExceptionThenPrint(printStream);
+    }
+    @Override
+    public Promise<DATA> ifExceptionThenPrint(PrintWriter printWriter) {
+        return PromiseStatusAddOn.super.ifExceptionThenPrint(printWriter);
+    }
+    @Override
+    public Promise<DATA> whenAbsentUse(DATA fallbackValue) {
+        return PromiseStatusAddOn.super.whenAbsentUse(fallbackValue);
+    }
+    @Override
+    public Promise<DATA> whenAbsentGet(Supplier<? extends DATA> fallbackSupplier) {
+        return PromiseStatusAddOn.super.whenAbsentGet(fallbackSupplier);
+    }
     
 }

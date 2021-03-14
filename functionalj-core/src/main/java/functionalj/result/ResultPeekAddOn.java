@@ -24,10 +24,9 @@
 package functionalj.result;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.function.Func1;
-import functionalj.function.FuncUnit1;
 import lombok.val;
 
 
@@ -35,7 +34,7 @@ public interface ResultPeekAddOn<DATA> {
     
     public Result<DATA> peek(Consumer<? super DATA> consumer);
     
-    public default <T extends DATA> Result<DATA> peek(Class<T> clzz, FuncUnit1<? super T> theConsumer) {
+    public default <T extends DATA> Result<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
         return peek(value -> {
             if (!clzz.isInstance(value))
                 return;
@@ -44,7 +43,7 @@ public interface ResultPeekAddOn<DATA> {
             theConsumer.accept(target);
         });
     }
-    public default Result<DATA> peek(Predicate<? super DATA> selector, FuncUnit1<? super DATA> theConsumer) {
+    public default Result<DATA> peek(Predicate<? super DATA> selector, Consumer<? super DATA> theConsumer) {
         return peek(value -> {
             if (!selector.test(value))
                 return;
@@ -52,14 +51,14 @@ public interface ResultPeekAddOn<DATA> {
             theConsumer.accept(value);
         });
     }
-    public default <T> Result<DATA> peek(Func1<? super DATA, T> mapper, FuncUnit1<? super T> theConsumer) {
+    public default <T> Result<DATA> peek(Function<? super DATA, T> mapper, Consumer<? super T> theConsumer) {
         return peek(value -> {
             val target = mapper.apply(value);
             theConsumer.accept(target);
         });
     }
     
-    public default <T> Result<DATA> peek(Func1<? super DATA, T> mapper, Predicate<? super T> selector, FuncUnit1<? super T> theConsumer) {
+    public default <T> Result<DATA> peek(Function<? super DATA, T> mapper, Predicate<? super T> selector, Consumer<? super T> theConsumer) {
         return peek(value -> {
             val target = mapper.apply(value);
             if (selector.test(target))

@@ -21,25 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.promise;
 
-import static functionalj.function.Func.f;
-import static org.junit.Assert.assertEquals;
+import lombok.NonNull;
 
-import org.junit.Test;
-
-import functionalj.promise.Promise;
-import functionalj.result.Result;
-
-public class Func2Test {
-
-    private Func2<String, String, String> concat = f(String::concat);
+public class DeferValueAlreadyCompletedException extends Exception {
     
-    @Test
-    public void testApplyBare() {
-        assertEquals("Hello world!",                   "" + concat.apply  ("Hello",            " world!"));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Result .valueOf("Hello"), Result .valueOf(" world!")));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Promise.ofValue("Hello"), Promise.ofValue(" world!")).getResult());
+    private static final long serialVersionUID = 132558572228073374L;
+    
+    private final DeferValue<?> deferValue;
+    
+    DeferValueAlreadyCompletedException(@NonNull DeferValue<?> deferValue) {
+        super(deferValue + " is already completed with status: " + deferValue.getStatus());
+        this.deferValue = deferValue;
     }
-
+    
+    public DeferValue<?> deferValue() {
+        return deferValue;
+    }
+    
 }

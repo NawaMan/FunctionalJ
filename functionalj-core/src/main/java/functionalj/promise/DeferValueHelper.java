@@ -21,25 +21,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.promise;
 
-import static functionalj.function.Func.f;
-import static org.junit.Assert.assertEquals;
+import java.util.function.Function;
 
-import org.junit.Test;
-
-import functionalj.promise.Promise;
 import functionalj.result.Result;
+import lombok.val;
 
-public class Func2Test {
-
-    private Func2<String, String, String> concat = f(String::concat);
-    
-    @Test
-    public void testApplyBare() {
-        assertEquals("Hello world!",                   "" + concat.apply  ("Hello",            " world!"));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Result .valueOf("Hello"), Result .valueOf(" world!")));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Promise.ofValue("Hello"), Promise.ofValue(" world!")).getResult());
+class DeferValueHelper {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    static public <DATA, TARGET> DeferValue<TARGET> mapResult(
+            DeferValue<DATA>                                              originalLater, 
+            Function<Result<? super DATA>, Result<? extends TARGET>> mapper) {
+        val resultLater   = (originalLater instanceof NamedDeferValue) 
+                          ? new DeferValue<TARGET>(originalLater).named(((NamedDeferValue)originalLater).name())
+                          : new DeferValue<TARGET>(originalLater);
+        originalLater.onComplete(result -> {
+            val finalResult = mapper.apply(result);
+            Promise.makeDone(resultLater, (Result<TARGET>)finalResult);
+        });
+        return resultLater;
     }
-
 }

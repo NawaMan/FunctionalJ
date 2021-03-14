@@ -26,7 +26,9 @@ package functionalj.result;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.function.Func0;
@@ -51,7 +53,7 @@ public interface ResultStatusAddOn<DATA> {
     
     public <T> T mapData(Func1<Exception, T> exceptionGet, Func2<DATA, Exception, T> processor);
     
-    public <T> Result<T> mapValue(Func2<DATA, Exception, Result<T>> processor);
+    public <T> Result<T> mapValue(BiFunction<DATA, Exception, Result<T>> processor);
     
     public Result<DATA> asResult();
     
@@ -64,116 +66,142 @@ public interface ResultStatusAddOn<DATA> {
         return asResult();
     }
     
+    //== Status ==
+    
+    public default boolean isStatus(ResultStatus status) {
+        return mapData(returnFalse(), Helper.processIs(status::equals));
+    }
+    
+    public default Result<DATA> ifStatusRun(ResultStatus status, Runnable runnable) {
+        useData(Helper.processIf(status::equals, runnable));
+        return asResult();
+    }
+    
+    public default Result<DATA> ifStatusAccept(ResultStatus status, Consumer<? super DATA> consumer) {
+        useData(Helper.processIf(status::equals, consumer));
+        return asResult();
+    }
+    
+    public default Result<DATA> whenStatusUse(ResultStatus status, DATA fallbackValue) {
+        return mapValue(Helper.processWhenUse(status::equals, asResult(), fallbackValue));
+    }
+    public default Result<DATA> whenStatusGet(ResultStatus status, Supplier<? extends DATA> fallbackSupplier) {
+        return mapValue(Helper.processWhenGet(status::equals, asResult(), fallbackSupplier));
+    }
+    public default Result<DATA> whenStatusApply(ResultStatus status, BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(Helper.processWhenApply(status::equals, asResult(), recoverFunction));
+    }
+    
     //== Present ==
     
     public default boolean isPresent() {
-        return mapData(returnFalse(), helper.processIs(ResultStatus::isPresent));
+        return mapData(returnFalse(), Helper.processIs(ResultStatus::isPresent));
     }
     
     public default Result<DATA> ifPresent(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isPresent, runnable));
+        useData(Helper.processIf(ResultStatus::isPresent, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifPresent(Consumer<? super DATA> consumer) {
-        useData(helper.processIf(ResultStatus::isPresent, consumer));
+        useData(Helper.processIf(ResultStatus::isPresent, consumer));
         return asResult();
     }
     
     //== Absent ==
     
     public default boolean isAbsent() {
-        return mapData(returnFalse(), helper.processIs(ResultStatus::isAbsent));
+        return mapData(returnFalse(), Helper.processIs(ResultStatus::isAbsent));
     }
     
     public default Result<DATA> ifAbsent(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isAbsent, runnable));
+        useData(Helper.processIf(ResultStatus::isAbsent, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifAbsent(Consumer<? super DATA> consumer) {
-        useData(helper.processIf(ResultStatus::isAbsent, consumer));
+        useData(Helper.processIf(ResultStatus::isAbsent, consumer));
         return asResult();
     }
     
     public default Result<DATA> ifAbsent(BiConsumer<? super DATA, ? super Exception> consumer) {
-        useData(helper.processIf(ResultStatus::isAbsent, consumer));
+        useData(Helper.processIf(ResultStatus::isAbsent, consumer));
         return asResult();
     }
     
     public default Result<DATA> whenAbsentUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isAbsent, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isAbsent, asResult(), fallbackValue));
     }
     public default Result<DATA> whenAbsentGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isAbsent, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isAbsent, asResult(), fallbackSupplier));
     }
-    public default Result<DATA> whenAbsentApply(Func2<DATA, ? super Exception,? extends DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isAbsent, asResult(), recoverFunction));
+    public default Result<DATA> whenAbsentApply(BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(Helper.processWhenApply(ResultStatus::isAbsent, asResult(), recoverFunction));
     }
     
     //== Null ==
     
     public default boolean isNull() {
-        return mapData(returnTrue(), helper.processIs(ResultStatus::isNull));
+        return mapData(returnTrue(), Helper.processIs(ResultStatus::isNull));
     }
     
     public default Result<DATA> ifNull(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isNull, runnable));
+        useData(Helper.processIf(ResultStatus::isNull, runnable));
         return asResult();
     }
     
     public default Result<DATA> whenNullUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isNull, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isNull, asResult(), fallbackValue));
     }
     public default Result<DATA> whenNullGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isNull, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isNull, asResult(), fallbackSupplier));
     }
     
     //== Value ==
     
     public default boolean isValue() {
-        return mapData(returnFalse(), helper.processIs(ResultStatus::isValue));
+        return mapData(returnFalse(), Helper.processIs(ResultStatus::isValue));
     }
     
     public default Result<DATA> ifValue(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isValue, runnable));
+        useData(Helper.processIf(ResultStatus::isValue, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifValue(Consumer<? super DATA> consumer) {
-        useData(helper.processIf(ResultStatus::isValue, consumer));
+        useData(Helper.processIf(ResultStatus::isValue, consumer));
         return asResult();
     }
     
     //== NotValue ==
     
     public default boolean isNotValue() {
-        return mapData(returnFalse(), helper.processIs(ResultStatus::isNotValue));
+        return mapData(returnFalse(), Helper.processIs(ResultStatus::isNotValue));
     }
     
     public default Result<DATA> ifNotValue(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isNotValue, runnable));
+        useData(Helper.processIf(ResultStatus::isNotValue, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifNotValue(Consumer<? super DATA> consumer) {
-        useData(helper.processIf(ResultStatus::isNotValue, consumer));
+        useData(Helper.processIf(ResultStatus::isNotValue, consumer));
         return asResult();
     }
     
     public default Result<DATA> ifNotValue(BiConsumer<? super DATA, ? super Exception> consumer) {
-        useData(helper.processIf(ResultStatus::isNotValue, consumer));
+        useData(Helper.processIf(ResultStatus::isNotValue, consumer));
         return asResult();
     }
     
     public default Result<DATA> whenNotValueUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isNotValue, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isNotValue, asResult(), fallbackValue));
     }
     public default Result<DATA> whenNotValueGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isNotValue, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isNotValue, asResult(), fallbackSupplier));
     }
-    public default Result<DATA> whenNotValueApply(Func2<DATA, ? super Exception,? extends DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isNotValue, asResult(), recoverFunction));
+    public default Result<DATA> whenNotValueApply(BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(Helper.processWhenApply(ResultStatus::isNotValue, asResult(), recoverFunction));
     }
     
     //== Valid ==
@@ -188,92 +216,92 @@ public interface ResultStatusAddOn<DATA> {
     //== Invalid ==
     
     public default boolean isInvalid() {
-        return mapData(returnFalse(), helper.processIs(ResultStatus::isInvalid));
+        return mapData(returnFalse(), Helper.processIs(ResultStatus::isInvalid));
     }
     
     public default Result<DATA> ifInvalid(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isInvalid, runnable));
+        useData(Helper.processIf(ResultStatus::isInvalid, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifInvalid(Consumer<? super Exception> consumer) {
-        useData(helper.processIfException(ResultStatus::isInvalid, consumer));
+        useData(Helper.processIfException(ResultStatus::isInvalid, consumer));
         return asResult();
     }
     
     public default Result<DATA> whenInvalidUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isInvalid, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isInvalid, asResult(), fallbackValue));
     }
     public default Result<DATA> whenInvalidGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isInvalid, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isInvalid, asResult(), fallbackSupplier));
     }
     public default Result<DATA> whenInvalidApply(Func1<? super Exception,? extends DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isInvalid, asResult(), recoverFunction));
+        return mapValue(Helper.processWhenApply(ResultStatus::isInvalid, asResult(), recoverFunction));
     }
     
     //== NotExist ==
     
     public default boolean isNotExist() {
-        return mapData(returnTrue(), helper.processIs(ResultStatus::isNotExist));
+        return mapData(returnTrue(), Helper.processIs(ResultStatus::isNotExist));
     }
     
     public default Result<DATA> ifNotExist(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isNotExist, runnable));
+        useData(Helper.processIf(ResultStatus::isNotExist, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifNotExist(Consumer<? super Exception> consumer) {
-        useData(helper.processIfException(ResultStatus::isNotExist, consumer));
+        useData(Helper.processIfException(ResultStatus::isNotExist, consumer));
         return asResult();
     }
     
     public default Result<DATA> whenNotExistUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isNotExist, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isNotExist, asResult(), fallbackValue));
     }
     public default Result<DATA> whenNotExistGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isNotExist, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isNotExist, asResult(), fallbackSupplier));
     }
-    public default Result<DATA> whenNotExistApply(Func1<? super Exception,? extends DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isNotExist, asResult(), recoverFunction));
+    public default Result<DATA> whenNotExistApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(Helper.processWhenApply(ResultStatus::isNotExist, asResult(), recoverFunction));
     }
     
     //== Exception ==
     
     public default boolean isException() {
-        return mapData(returnFalse(), helper.processIs(ResultStatus::isException));
+        return mapData(returnFalse(), Helper.processIs(ResultStatus::isException));
     }
     
     public default Result<DATA> ifException(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isException, runnable));
+        useData(Helper.processIf(ResultStatus::isException, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifException(Consumer<? super Exception> consumer) {
-        useData(helper.processIfException(ResultStatus::isException, consumer));
+        useData(Helper.processIfException(ResultStatus::isException, consumer));
         return asResult();
     }
     
     public default Result<DATA> ifExceptionThenPrint() {
-        useData(helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace()));
+        useData(Helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace()));
         return asResult();
     }
     public default Result<DATA> ifExceptionThenPrint(PrintStream printStream) {
-        useData(helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace(printStream)));
+        useData(Helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace(printStream)));
         return asResult();
     }
     public default Result<DATA> ifExceptionThenPrint(PrintWriter printWriter) {
-        useData(helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace(printWriter)));
+        useData(Helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace(printWriter)));
         return asResult();
     }
     
     public default Result<DATA> whenExceptionUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isException, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isException, asResult(), fallbackValue));
     }
     public default Result<DATA> whenExceptionGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isException, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isException, asResult(), fallbackSupplier));
     }
-    public default Result<DATA> whenExceptionApply(Func1<? super Exception,? extends DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isException, asResult(), recoverFunction));
+    public default Result<DATA> whenExceptionApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(Helper.processWhenApply(ResultStatus::isException, asResult(), recoverFunction));
     }
     
     public default Result<DATA> recover(Class<? extends Throwable> problemClass, DATA fallbackValue) {
@@ -313,116 +341,105 @@ public interface ResultStatusAddOn<DATA> {
     //== Cancelled ==
     
     public default boolean isCancelled() {
-        return mapData(returnTrue(), helper.processIs(ResultStatus::isCancelled));
+        return mapData(returnTrue(), Helper.processIs(ResultStatus::isCancelled));
     }
     
     public default Result<DATA> ifCancelled(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isCancelled, runnable));
-        return asResult();
-    }
-    
-    public default Result<DATA> ResultStatus(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isCancelled, runnable));
-        return asResult();
-    }
-    
-    
-    public default Result<DATA> ResultStatus(Consumer<? super Exception> consumer) {
-        useData(helper.processIfException(ResultStatus::isCancelled, consumer));
+        useData(Helper.processIf(ResultStatus::isCancelled, runnable));
         return asResult();
     }
     
     public default Result<DATA> whenCancelledUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isCancelled, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isCancelled, asResult(), fallbackValue));
     }
     public default Result<DATA> whenCancelledGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isCancelled, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isCancelled, asResult(), fallbackSupplier));
     }
-    public default Result<DATA> whenCancelledApply(Func1<? super Exception,? extends DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isCancelled, asResult(), recoverFunction));
+    public default Result<DATA> whenCancelledApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(Helper.processWhenApply(ResultStatus::isCancelled, asResult(), recoverFunction));
     }
     
     //== Ready ==
     
     public default boolean isReady() {
-        return mapData(returnTrue(), helper.processIs(ResultStatus::isReady));
+        return mapData(returnTrue(), Helper.processIs(ResultStatus::isReady));
     }
     
     public default Result<DATA> ifReady(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isReady, runnable));
+        useData(Helper.processIf(ResultStatus::isReady, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifReady(Consumer<? super DATA> consumer) {
-        useData(helper.processIf(ResultStatus::isReady, consumer));
+        useData(Helper.processIf(ResultStatus::isReady, consumer));
         return asResult();
     }
     
     public default Result<DATA> ifReady(BiConsumer<? super DATA, ? super Exception> consumer) {
-        useData(helper.processIf(ResultStatus::isReady, consumer));
+        useData(Helper.processIf(ResultStatus::isReady, consumer));
         return asResult();
     }
     
     public default Result<DATA> whenReadyUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isReady, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isReady, asResult(), fallbackValue));
     }
     public default Result<DATA> whenReadyGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isReady, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isReady, asResult(), fallbackSupplier));
     }
-    public default Result<DATA> whenNotReadyApply(Func2<DATA, ? super Exception,? extends DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isReady, asResult(), recoverFunction));
+    public default Result<DATA> whenNotReadyApply(BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(Helper.processWhenApply(ResultStatus::isReady, asResult(), recoverFunction));
     }
     
     //== Not Ready ==
     
     public default boolean isNotReady() {
-        return mapData(returnTrue(), helper.processIs(ResultStatus::isNotReady));
+        return mapData(returnTrue(), Helper.processIs(ResultStatus::isNotReady));
     }
     
     public default Result<DATA> ifNotReady(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isNotReady, runnable));
+        useData(Helper.processIf(ResultStatus::isNotReady, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifNotReady(Consumer<? super Exception> consumer) {
-        useData(helper.processIfException(ResultStatus::isNotReady, consumer));
+        useData(Helper.processIfException(ResultStatus::isNotReady, consumer));
         return asResult();
     }
     
     public default Result<DATA> whenNotReadyUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isNotReady, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isNotReady, asResult(), fallbackValue));
     }
     public default Result<DATA> whenNotReadyGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isNotReady, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isNotReady, asResult(), fallbackSupplier));
     }
-    public default Result<DATA> whenNotReadyApply(Func1<? super Exception,? extends DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isNotReady, asResult(), recoverFunction));
+    public default Result<DATA> whenNotReadyApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(Helper.processWhenApply(ResultStatus::isNotReady, asResult(), recoverFunction));
     }
     
     //== No More Result ==
     
     public default boolean isNoMore() {
-        return mapData(returnTrue(), helper.processIs(ResultStatus::isNoMore));
+        return mapData(returnTrue(), Helper.processIs(ResultStatus::isNoMore));
     }
     
     public default Result<DATA> ifNoMore(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isNoMore, runnable));
+        useData(Helper.processIf(ResultStatus::isNoMore, runnable));
         return asResult();
     }
     
     public default Result<DATA> ifNoMore(Consumer<? super Exception> consumer) {
-        useData(helper.processIfException(ResultStatus::isNoMore, consumer));
+        useData(Helper.processIfException(ResultStatus::isNoMore, consumer));
         return asResult();
     }
     
     public default Result<DATA> whenNoMoreUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isNoMore, asResult(), fallbackValue));
+        return mapValue(Helper.processWhenUse(ResultStatus::isNoMore, asResult(), fallbackValue));
     }
     public default Result<DATA> whenNoMoreGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isNoMore, asResult(), fallbackSupplier));
+        return mapValue(Helper.processWhenGet(ResultStatus::isNoMore, asResult(), fallbackSupplier));
     }
-    public default Result<DATA> whenNoMoreApply(Func1<? super Exception,? extends DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isNoMore, asResult(), recoverFunction));
+    public default Result<DATA> whenNoMoreApply(Function<? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(Helper.processWhenApply(ResultStatus::isNoMore, asResult(), recoverFunction));
     }
     
 }

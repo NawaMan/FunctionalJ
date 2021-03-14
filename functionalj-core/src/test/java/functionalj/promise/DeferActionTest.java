@@ -409,11 +409,11 @@ public class DeferActionTest {
         })
         .chain(str->{
             Thread.sleep(50);
-            return Promise.of(str.length());
+            return Promise.ofValue(str.length());
         })
         .chain(length->{
             Thread.sleep(50);
-            return Promise.of(length + 42);
+            return Promise.ofValue(length + 42);
         })
         .map(value->{
             Thread.sleep(50);
@@ -450,11 +450,11 @@ public class DeferActionTest {
         })
         .chain(str->{
             Thread.sleep(50);
-            return Promise.of(str.length());
+            return Promise.ofValue(str.length());
         })
         .chain(length->{
             Thread.sleep(50);
-            return Promise.of(length + 42);
+            return Promise.ofValue(length + 42);
         })
         .map(value->{
             Thread.sleep(50);
@@ -886,6 +886,25 @@ public class DeferActionTest {
                 "Result: Result:{ Value: Aa },\n" +
                 "Result: Result:{ Value: Aa }",
                 logs.stream().collect(joining(",\n")));
+    }
+    
+    @Test
+    public void testValidate() throws InterruptedException {
+        val action1  = DeferAction.from(()-> { Thread.sleep(10); return 10; }).validateNotNull();
+        val action2  = DeferAction.from(()-> { Thread.sleep(10); return null; }).validateNotNull();
+        assertEquals("Result:{ Value: 10 }",                               "" + action1.getResult());
+        assertEquals("Result:{ Invalid: java.lang.NullPointerException }", "" + action2.getResult());
+    }
+    
+    @Test
+    public void testRecover() {
+        val action1  = DeferAction.from(()-> { Thread.sleep(10); return 10; }).validateNotNull();
+        val action2  = DeferAction.from(()-> { Thread.sleep(10); return null; }).validateNotNull();
+        assertEquals("Result:{ Value: 10 }",                               "" + action1.getResult());
+        assertEquals("Result:{ Invalid: java.lang.NullPointerException }", "" + action2.getResult());
+        
+        val action3  = action2.recover(42);
+        assertEquals("Result:{ Value: 42 }", "" + action3.getResult());
     }
     
 }

@@ -21,25 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.promise;
 
-import static functionalj.function.Func.f;
-import static org.junit.Assert.assertEquals;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-import org.junit.Test;
-
-import functionalj.promise.Promise;
 import functionalj.result.Result;
 
-public class Func2Test {
 
-    private Func2<String, String, String> concat = f(String::concat);
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public interface PromiseFilterAddOn<DATA> {
     
-    @Test
-    public void testApplyBare() {
-        assertEquals("Hello world!",                   "" + concat.apply  ("Hello",            " world!"));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Result .valueOf("Hello"), Result .valueOf(" world!")));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Promise.ofValue("Hello"), Promise.ofValue(" world!")).getResult());
+    
+    public <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper);
+    
+    
+    public default <T extends DATA> Promise<DATA> filter(Class<T> clzz) {
+        return (Promise)mapResult(result -> result.filter(clzz));
     }
-
+    
+    public default <T extends DATA> Promise<DATA> filter(Class<T> clzz, Predicate<? super T> theCondition) {
+        return (Promise)mapResult(result -> result.filter(clzz, theCondition));
+    }
+    
+    public default <T> Promise<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
+        return (Promise)mapResult(result -> result.filter((Function)mapper, (Predicate)theCondition));
+    }
+    
 }
