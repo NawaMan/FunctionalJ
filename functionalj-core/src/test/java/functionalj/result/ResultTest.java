@@ -32,7 +32,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import functionalj.function.Func;
