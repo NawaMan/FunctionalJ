@@ -428,6 +428,10 @@ public interface Func {
         return consumer;
     }
     
+    public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> f(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
+        return consumer;
+    }
+    
     //== f - with name ==
     
     /**

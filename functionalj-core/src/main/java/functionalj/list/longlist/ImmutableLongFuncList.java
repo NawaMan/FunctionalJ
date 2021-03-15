@@ -81,6 +81,11 @@ public class ImmutableLongFuncList implements LongFuncList {
         return new ImmutableLongFuncList(newArray, newArray.length, true);
     }
     
+    /** Create a FuncList from the given array. */
+    public static ImmutableLongFuncList from(long[] datas) {
+        return from(true, datas);
+    }
+    
     public static ImmutableLongFuncList from(boolean isLazy, long[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;

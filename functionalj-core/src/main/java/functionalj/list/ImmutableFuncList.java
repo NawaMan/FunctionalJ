@@ -80,6 +80,16 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         return new ImmutableFuncList<T>(list, list.size());
     }
     
+    /** Create a FuncList from the given array. */
+    public static <TARGET> ImmutableFuncList<TARGET> from(TARGET[] datas) {
+        return from(true, datas);
+    }
+    
+    /** Create a FuncList from the given array. */
+    public static <TARGET> ImmutableFuncList<TARGET> from(boolean isLazy, TARGET[] datas) {
+        return ImmutableFuncList.of(datas);
+    }
+    
     /** @return the list containing the given elements */
     public static <T> FuncList<T> from(boolean isLazy, AsFuncList<T> funcList) {
         if (funcList == null)

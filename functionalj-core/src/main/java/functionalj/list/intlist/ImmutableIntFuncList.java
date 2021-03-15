@@ -80,6 +80,10 @@ public class ImmutableIntFuncList implements IntFuncList {
         return new ImmutableIntFuncList(newArray, newArray.length, true);
     }
     
+    public static ImmutableIntFuncList from(int[] data) {
+        return from(true, data);
+    }
+    
     public static ImmutableIntFuncList from(boolean isLazy, int[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;

@@ -81,6 +81,10 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         return new ImmutableDoubleFuncList(newArray, newArray.length, true);
     }
     
+    public static ImmutableDoubleFuncList from(double[] data) {
+        return from(true, data);
+    }
+    
     public static ImmutableDoubleFuncList from(boolean isLazy, double[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;
