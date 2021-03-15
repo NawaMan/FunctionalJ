@@ -105,6 +105,15 @@ public interface FuncList<DATA>
             FuncListWithSort<DATA>,
             FuncListWithSplit<DATA> {
     
+    public enum Mode {
+        lazy,
+        eager,
+        cache;
+        
+        public boolean isLazy()  { return this == lazy; }
+        public boolean isEager() { return this == eager; }
+        public boolean isCache() { return this == cache; }
+    }
     
     /** Throw a no more element exception. This is used for generator. */
     public static <TARGET> TARGET noMoreElement() throws NoMoreResultException {
@@ -174,7 +183,7 @@ public interface FuncList<DATA>
     public static <TARGET> FuncList<TARGET> from(Collection<TARGET> collection) {
         if (collection instanceof FuncList) {
             val funcList = (FuncList<TARGET>)collection;
-            if (funcList.isEager()) {
+            if (funcList.mode().isEager()) {
                 return funcList.toImmutableList();
             }
             
@@ -542,39 +551,89 @@ public interface FuncList<DATA>
     public static <SOURCE, TARGET> FuncList<TARGET> deriveFrom(
             List<SOURCE>                                 list,
             Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
-        boolean isLazy 
+        Mode mode 
                 = (list instanceof FuncList)
-                ? ((FuncList)list).isLazy()
-                : true;
-        
-        if (!isLazy) {
-            val orgStreamPlus = (list instanceof FuncList)
-                    ? ((FuncList)list).streamPlus()
-                    : StreamPlus.from(list.stream());
-            val newStream     = action.apply(orgStreamPlus);
-            val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableFuncList.from(isLazy, newStreamPlus);
+                ? ((FuncList)list).mode()
+                : Mode.lazy;
+        switch (mode) {
+            case lazy: {
+                return FuncList.from(()->{
+                    val orgStreamPlus = (list instanceof FuncList)
+                            ? ((FuncList)list).streamPlus()
+                            : StreamPlus.from(list.stream());
+                    val newStream = action.apply(orgStreamPlus);
+                    return StreamPlus.from(newStream);
+                });
+            }
+            case eager: {
+                val orgStreamPlus = (list instanceof FuncList)
+                        ? ((FuncList)list).streamPlus()
+                        : StreamPlus.from(list.stream());
+                val newStream     = action.apply(orgStreamPlus);
+                val newStreamPlus = StreamPlus.from(newStream);
+                return ImmutableFuncList.from(mode, newStreamPlus);
+            }
+            case cache: {
+                val orgStreamPlus = (list instanceof FuncList)
+                        ? ((FuncList)list).streamPlus()
+                        : StreamPlus.from(list.stream());
+                val newStream = action.apply(orgStreamPlus);
+                return StreamPlus.from(newStream).toFuncList();
+            }
         }
-        
-        return FuncList.from(()->{
-            val orgStreamPlus = (list instanceof FuncList)
-                    ? ((FuncList)list).streamPlus()
-                    : StreamPlus.from(list.stream());
-            val newStream = action.apply(orgStreamPlus);
-            return StreamPlus.from(newStream);
-        });
+        throw new IllegalArgumentException("Unknown functional list mode: " + mode);
     }
     
     /** Create a FuncList from the given IntFuncList. */
     public static <TARGET> FuncList<TARGET> deriveFrom(
             AsIntFuncList                           asFuncList,
             Function<IntStreamPlus, Stream<TARGET>> action) {
+//        Mode mode 
+//                = (list instanceof FuncList)
+//                ? ((FuncList)list).mode()
+//                : Mode.lazy;
+//        switch (mode) {
+//            case lazy: {
+//                return FuncList.from(()->{
+//                    val orgStreamPlus = (list instanceof FuncList)
+//                            ? ((FuncList)list).streamPlus()
+//                            : StreamPlus.from(list.stream());
+//                    val newStream = action.apply(orgStreamPlus);
+//                    return StreamPlus.from(newStream);
+//                });
+//            }
+//            case eager: {
+//                val orgStreamPlus = (list instanceof FuncList)
+//                        ? ((FuncList)list).streamPlus()
+//                        : StreamPlus.from(list.stream());
+//                val newStream     = action.apply(orgStreamPlus);
+//                val newStreamPlus = StreamPlus.from(newStream);
+//                return ImmutableFuncList.from(mode, newStreamPlus);
+//            }
+//            case cache: {
+//                val orgStreamPlus = (list instanceof FuncList)
+//                        ? ((FuncList)list).streamPlus()
+//                        : StreamPlus.from(list.stream());
+//                val newStream = action.apply(orgStreamPlus);
+//                return StreamPlus.from(newStream).toFuncList();
+//            }
+//        }
+//        throw new IllegalArgumentException("Unknown functional list mode: " + mode);
+//        
+//        
+//        
+//        
+//        
+//        
+//        
+//        
+//        
         boolean isLazy = asFuncList.asIntFuncList().isLazy();
         if (!isLazy) {
             val orgStreamPlus = asFuncList.intStreamPlus();
             val newStream     = action.apply(orgStreamPlus);
             val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableFuncList.from(isLazy, newStreamPlus);
+            return ImmutableFuncList.from(Mode.eager, newStreamPlus);
         }
         
         return FuncList.from(() -> {
@@ -593,7 +652,7 @@ public interface FuncList<DATA>
             val orgStreamPlus = asFuncList.longStreamPlus();
             val newStream     = action.apply(orgStreamPlus);
             val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableFuncList.from(isLazy, newStreamPlus);
+            return ImmutableFuncList.from(Mode.eager, newStreamPlus);
         }
         
         return FuncList.from(() -> {
@@ -612,7 +671,7 @@ public interface FuncList<DATA>
             val orgStreamPlus = funcList.doubleStreamPlus();
             val newStream     = action.apply(orgStreamPlus);
             val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableFuncList.from(isLazy, newStreamPlus);
+            return ImmutableFuncList.from(Mode.eager, newStreamPlus);
         }
         
         return FuncList.from(() -> {
@@ -652,13 +711,8 @@ public interface FuncList<DATA>
     }
     
     /** Check if this list is a lazy list. */
-    public default boolean isLazy() {
-        return true;
-    }
-    
-    /** Check if this list is an eager list. */
-    public default boolean isEager() {
-        return false;
+    public default Mode mode() {
+        return Mode.lazy;
     }
     
     //-- Lazy + Eager --
@@ -668,6 +722,9 @@ public interface FuncList<DATA>
     
     /** Return a eager list with the data of this list. */
     public FuncList<DATA> eager();
+    
+    /** Return a cache list with the data of this list. */
+    public FuncList<DATA> cache();
     
     /** Freeze the data of this list as an immutable list. */
     public default ImmutableFuncList<DATA> freeze() {
@@ -1087,7 +1144,8 @@ public interface FuncList<DATA>
         Collections.reverse(temp);
         
         val list = FuncList.from(temp);
-        return isLazy() ? list.lazy() : list.eager();
+        // TODO - account for other mode.
+        return mode().isLazy() ? list.lazy() : list.eager();
     }
     
     /** Returns the new list with random order of this list. */
@@ -1097,7 +1155,8 @@ public interface FuncList<DATA>
         Collections.shuffle(temp);
         
         val list = FuncList.from(temp);
-        return isLazy() ? list.lazy() : list.eager();
+        // TODO - account for other mode.
+        return mode().isLazy() ? list.lazy() : list.eager();
     }
     
     //-- Query --

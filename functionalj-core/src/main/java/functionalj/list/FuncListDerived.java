@@ -100,7 +100,12 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
     @Override
     public FuncList<DATA> eager() {
         val list = this.toArrayList();
-        return new ImmutableFuncList<DATA>(list, list.size(), false);
+        return new ImmutableFuncList<DATA>(list, list.size(), Mode.eager);
+    }
+    
+    @Override
+    public FuncList<DATA> cache() {
+        return FuncList.from(stream());
     }
     
     @Override

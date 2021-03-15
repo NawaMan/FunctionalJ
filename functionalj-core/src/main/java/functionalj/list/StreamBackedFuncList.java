@@ -39,6 +39,15 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
     }
     
     @Override
+    public FuncList<DATA> cache() {
+        // Just materialize all value.
+//        int size = size();
+//        return new ImmutableFuncList<DATA>(cache, size);
+        // TODO - fix this
+        return null;
+    }
+    
+    @Override
     public StreamPlus<DATA> stream() {
         val indexRef       = new AtomicInteger(0);
         val valueConsumer  = (Consumer<DATA>)((DATA v) -> cache.add(v));

@@ -51,6 +51,7 @@ import java.util.stream.Stream;
 import functionalj.function.Func;
 import functionalj.function.IntComparator;
 import functionalj.list.FuncList;
+import functionalj.list.FuncList.Mode;
 import functionalj.list.ImmutableFuncList;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.doublelist.DoubleFuncList;
@@ -172,7 +173,8 @@ public interface IntFuncList
         if (!(data instanceof FuncList))
             return list;
         val funcList = (FuncList<Integer>)data;
-        return funcList.isLazy() ? list : (ImmutableIntFuncList)list.eager();
+//        return funcList.isLazy() ? list : (ImmutableIntFuncList)list.eager();
+        return funcList.mode().isLazy() ? list : (ImmutableIntFuncList)list.eager();
     }
     
     /** Create a FuncList from the given FuncList. */
@@ -478,21 +480,39 @@ public interface IntFuncList
     public static <SOURCE> IntFuncList deriveFrom(
             List<SOURCE>                            list,
             Function<StreamPlus<SOURCE>, IntStream> action) {
-        boolean isLazy = (list instanceof FuncList) ? ((FuncList) list).isLazy() : true;
-        
-        if (!isLazy) {
-            val orgStreamPlus = (list instanceof FuncList) ? ((FuncList) list).streamPlus() : StreamPlus.from(list.stream());
-            val newStream     = action.apply(orgStreamPlus);
-            val newStreamPlus = IntStreamPlus.from(newStream);
-            return ImmutableIntFuncList.from(isLazy, newStreamPlus);
+        Mode mode 
+                = (list instanceof FuncList)
+                ? ((FuncList)list).mode()
+                : Mode.lazy;
+        switch (mode) {
+            case lazy: {
+                return IntFuncList.from(() -> {
+                    val orgStreamPlus = (list instanceof FuncList)
+                            ? ((FuncList)list).streamPlus()
+                            : StreamPlus.from(list.stream());
+                    val newStream     = action.apply(orgStreamPlus);
+                    val newStreamPlus = IntStreamPlus.from(newStream);
+                    return newStreamPlus;
+                });
+            }
+            case eager: {
+                val orgStreamPlus = (list instanceof FuncList)
+                        ? ((FuncList)list).streamPlus()
+                        : StreamPlus.from(list.stream());
+                val newStream     = action.apply(orgStreamPlus);
+                val newStreamPlus = IntStreamPlus.from(newStream);
+//                return ImmutableDoubleFuncList.from(Mode.eager, newStreamPlus);
+                return ImmutableIntFuncList.from(false, newStreamPlus);
+            }
+            case cache: {
+                val orgStreamPlus = (list instanceof FuncList)
+                        ? ((FuncList)list).streamPlus()
+                        : StreamPlus.from(list.stream());
+                val newStream = action.apply(orgStreamPlus);
+                return IntStreamPlus.from(newStream).toFuncList();
+            }
         }
-        
-        return IntFuncList.from(() -> {
-            val orgStreamPlus = (list instanceof FuncList) ? ((FuncList) list).streamPlus() : StreamPlus.from(list.stream());
-            val newStream     = action.apply(orgStreamPlus);
-            val newStreamPlus = IntStreamPlus.from(newStream);
-            return newStreamPlus;
-        });
+        throw new IllegalArgumentException("Unknown functional list mode: " + mode);
     }
     
     /** Create a FuncList from the given IntFuncList. */

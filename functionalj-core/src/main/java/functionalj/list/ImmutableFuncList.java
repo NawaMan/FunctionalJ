@@ -82,21 +82,21 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     
     /** Create a FuncList from the given array. */
     public static <TARGET> ImmutableFuncList<TARGET> from(TARGET[] datas) {
-        return from(true, datas);
+        return from(Mode.lazy, datas);
     }
     
     /** Create a FuncList from the given array. */
-    public static <TARGET> ImmutableFuncList<TARGET> from(boolean isLazy, TARGET[] datas) {
+    public static <TARGET> ImmutableFuncList<TARGET> from(Mode mode, TARGET[] datas) {
         return ImmutableFuncList.of(datas);
     }
     
     /** @return the list containing the given elements */
-    public static <T> FuncList<T> from(boolean isLazy, AsFuncList<T> funcList) {
+    public static <T> FuncList<T> from(Mode mode, AsFuncList<T> funcList) {
         if (funcList == null)
             return ImmutableFuncList.empty();
         
         FuncList<T> list = funcList.asFuncList();
-        return new ImmutableFuncList<T>(list, list.size(), isLazy);
+        return new ImmutableFuncList<T>(list, list.size(), mode);
     }
     
     /** @return the list containing the element from the given stream */
@@ -106,9 +106,9 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     }
     
     /** @return the list containing the element from the given stream */
-    static <T> FuncList<T> from(boolean isLazy, Stream<T> stream) {
+    static <T> FuncList<T> from(Mode mode, Stream<T> stream) {
         val list = stream.collect(Collectors.toList());
-        return new ImmutableFuncList<T>(list, list.size(), isLazy);
+        return new ImmutableFuncList<T>(list, list.size(), mode);
     }
     
     /** @return the list containing the element from the given list. */
@@ -130,22 +130,22 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             return ImmutableFuncList.empty();
         if (collection instanceof FuncList) {
             val funcList = (FuncList<T>)collection;
-            return new ImmutableFuncList<T>(funcList.toJavaList(), funcList.size(), funcList.isLazy());
+            return new ImmutableFuncList<T>(funcList.toJavaList(), funcList.size(), funcList.mode());
         }
         if (collection instanceof List) {
             val list = (List<T>)collection;
-            return new ImmutableFuncList<T>(list, list.size(), true);
+            return new ImmutableFuncList<T>(list, list.size(), Mode.lazy);
         }
         
         val list = (List<T>)collection.stream().collect(Collectors.toList());
-        return new ImmutableFuncList<T>(list, list.size(), true);
+        return new ImmutableFuncList<T>(list, list.size(), Mode.lazy);
     }
     
     //-- Data --
     
-    private final List<DATA> data;
-    private final boolean    isLazy;
-    private final int        size;
+    private final List<DATA>    data;
+    private final FuncList.Mode mode;
+    private final int           size;
     
     private volatile String  toStringCache = null;
     private volatile Integer hashcodeCache = null;
@@ -153,12 +153,12 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     //-- Constructors --
     
     ImmutableFuncList(Collection<DATA> data, int size) {
-        this(data, size, true);
+        this(data, size, Mode.lazy);
     }
     
-    ImmutableFuncList(Collection<DATA> data, int size, boolean isLazy) {
-        this.size   = size;
-        this.isLazy = isLazy;
+    ImmutableFuncList(Collection<DATA> data, int size, Mode mode) {
+        this.size = size;
+        this.mode = mode;
         if (data == null) {
             this.data = Collections.emptyList();
         } else if (data instanceof ImmutableFuncList) {
@@ -176,29 +176,32 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     }
     
     @Override
-    public boolean isLazy() {
-        return isLazy;
-    }
-    
-    @Override
-    public boolean isEager() {
-        return !isLazy;
+    public Mode mode() {
+        return mode;
     }
     
     @Override
     public FuncList<DATA> lazy() {
-        if (isLazy)
+        if (mode().isLazy())
             return this;
         
-        return new ImmutableFuncList<DATA>(data, size, true);
+        return new ImmutableFuncList<DATA>(data, size, Mode.lazy);
     }
     
     @Override
     public FuncList<DATA> eager() {
-        if (!isLazy)
+        if (mode().isEager())
             return this;
         
-        return new ImmutableFuncList<DATA>(data, size, false);
+        return new ImmutableFuncList<DATA>(data, size, Mode.eager);
+    }
+    
+    @Override
+    public FuncList<DATA> cache() {
+        if (mode().isCache())
+            return this;
+        
+        return new ImmutableFuncList<DATA>(data, size, Mode.cache);
     }
     
     @Override
@@ -346,14 +349,14 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         if (this == EMPTY) {
             List<DATA> list = new ArrayList<DATA>();
             list.add(value);
-            return new ImmutableFuncList<DATA>(list, 1, isLazy);
+            return new ImmutableFuncList<DATA>(list, 1, mode());
         }
         
         return syncIf(
                 () ->(data instanceof ArrayList) && (size == data.size()), 
                 ()-> {
                     data.add(value);
-                    return new ImmutableFuncList<>(data, data.size(), isLazy);
+                    return new ImmutableFuncList<>(data, data.size(), mode());
                 },
                 () -> {
                     return FuncList.super.append(value);
@@ -377,7 +380,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
                     for (DATA value : values) {
                         data.add(value);
                     }
-                    return new ImmutableFuncList<>(data, data.size(), isLazy);
+                    return new ImmutableFuncList<>(data, data.size(), mode());
                 },
                 () -> {
                     return FuncList.super.appendAll(values);
@@ -396,7 +399,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
                 () ->(data instanceof ArrayList) && (size == data.size()), 
                 ()-> {
                     data.addAll(collection);
-                    return new ImmutableFuncList<>(data, data.size(), isLazy);
+                    return new ImmutableFuncList<>(data, data.size(), mode());
                 },
                 () -> {
                     return FuncList.super.appendAll(collection);

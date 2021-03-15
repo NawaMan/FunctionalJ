@@ -53,6 +53,7 @@ import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -82,6 +83,7 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.CollectorPlus;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 
@@ -218,12 +220,12 @@ public class FuncListTest {
         FuncList<String> lazyList = FuncList.of(One, Two, Three);
         run(FuncList.from(lazyList), list -> {
             assertStrings("[One, Two, Three]", list);
-            assertTrue   (list.isLazy());
+            assertStrings("lazy", list.mode());
         });
         FuncList<String> eagerList = FuncList.of(One, Two, Three).eager();
         run(FuncList.from(eagerList), list -> {
             assertStrings("[One, Two, Three]", list);
-            assertTrue   (list.isEager());
+            assertStrings("eager", list.mode());
         });
     }
     
@@ -245,11 +247,11 @@ public class FuncListTest {
         });
         run(FuncList.from(true, FuncList.of(One, Two, Three)), list -> {
             assertStrings("[One, Two, Three]", list);
-            assertTrue   (list.isLazy());
+            assertStrings("lazy", list.mode());
         });
         run(FuncList.from(false, FuncList.of(One, Two, Three)), list -> {
             assertStrings("[One, Two, Three]", list);
-            assertTrue   (list.isEager());
+            assertStrings("eager", list.mode());
         });
     }
     
@@ -642,10 +644,10 @@ public class FuncListTest {
     @Test
     public void testIsEagerIsLazy() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertTrue(list.lazy().isLazy());
-            assertTrue(list.eager().isEager());
+            assertTrue(list.lazy().mode().isLazy());
+            assertTrue(list.eager().mode().isEager());
             
-            assertTrue(list.lazy().freeze().isLazy());
+            assertTrue(list.lazy().freeze().mode().isLazy());
             
             val logs = new ArrayList<String>();
             FuncList<String> lazyList 
@@ -782,6 +784,17 @@ public class FuncListTest {
             assertStrings("[3, 3, 5, 4, 4, 3, 5, 5, 4, 3]", logs2);
             assertStrings("[5, 4, 4, 5, 5, 4]", logs3);
         }
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testCache() {
+        val random    = new Random();
+        val list      = FuncList.from((Supplier)(() -> IntStreamPlus.infiniteInt().limit(100).mapToObj(__ -> random.nextInt(1000))));
+        val cacheList = list.cache();
+        
+        assertNotEquals(list     .limit(5), list     .limit(5));
+        assertEquals   (cacheList.limit(5), cacheList.limit(5));
     }
     
     //-- List --
