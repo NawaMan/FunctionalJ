@@ -31,6 +31,7 @@ import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import functionalj.list.FuncList.Mode;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
@@ -80,25 +81,28 @@ public class IntFuncListDerived implements IntFuncList {
         return IntStreamPlus.from(newStream);
     }
     
-    public boolean isLazy() {
-        return true;
-    }
-    
-    public boolean isEager() {
-        return false;
+    /** Check if this list is a lazy list. */
+    public Mode mode() {
+        return Mode.lazy;
     }
     
     @Override
-    public IntFuncList lazy() {
+    public IntFuncList toLazy() {
         return this;
     }
     
     @Override
-    public IntFuncList eager() {
+    public IntFuncList toEager() {
         val data = this.toArray();
-        return new ImmutableIntFuncList(data, data.length, false);
+        return new ImmutableIntFuncList(data, data.length, Mode.eager);
     }
     
+    @Override
+    public IntFuncList toCache() {
+        return IntFuncList.from(intStream());
+    }
+    
+    /** Returns an immutable list containing the data of this list. Maintaining the mode. */
     @Override
     public ImmutableIntFuncList toImmutableList() {
         return ImmutableIntFuncList.from(this);

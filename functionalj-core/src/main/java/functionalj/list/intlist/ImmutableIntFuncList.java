@@ -32,6 +32,8 @@ import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import functionalj.list.FuncList;
+import functionalj.list.FuncList.Mode;
 import functionalj.stream.intstream.GrowOnlyIntArray;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Sequential;
@@ -50,7 +52,7 @@ public class ImmutableIntFuncList implements IntFuncList {
     
     private static final int[] EMPTY_INT_ARRAY = new int[0];
     
-    private static ImmutableIntFuncList emptyList = new ImmutableIntFuncList(EMPTY_INT_ARRAY, 0, true);
+    private static ImmutableIntFuncList emptyList = new ImmutableIntFuncList(EMPTY_INT_ARRAY, 0, Mode.lazy);
     
     /** @return an empty list */
     public static ImmutableIntFuncList empty() {
@@ -68,7 +70,7 @@ public class ImmutableIntFuncList implements IntFuncList {
             return emptyList;
        
         val newArray = source.clone();
-        return new ImmutableIntFuncList(newArray, newArray.length, true);
+        return new ImmutableIntFuncList(newArray, newArray.length, Mode.lazy);
     }
     
     /** @return the list containing the given elements */
@@ -77,32 +79,32 @@ public class ImmutableIntFuncList implements IntFuncList {
             return emptyList;
        
         val newArray = source.clone();
-        return new ImmutableIntFuncList(newArray, newArray.length, true);
+        return new ImmutableIntFuncList(newArray, newArray.length, Mode.lazy);
     }
     
     public static ImmutableIntFuncList from(int[] data) {
-        return from(true, data);
+        return from(Mode.lazy, data);
     }
     
-    public static ImmutableIntFuncList from(boolean isLazy, int[] data) {
+    public static ImmutableIntFuncList from(Mode mode, int[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;
         
         val array = data.clone();
-        return new ImmutableIntFuncList(array, array.length, isLazy);
+        return new ImmutableIntFuncList(array, array.length, mode);
     }
     
     /** @return the list containing the given elements */
-    public static ImmutableIntFuncList from(boolean isLazy, AsIntFuncList funcList) {
+    public static ImmutableIntFuncList from(Mode mode, AsIntFuncList funcList) {
         if (funcList == null)
             return emptyList;
         
         if (funcList instanceof ImmutableIntFuncList)
-            if (isLazy == funcList.asIntFuncList().isLazy())
+            if (funcList.asIntFuncList().isLazy())
                 return (ImmutableIntFuncList)funcList;
         
         int[] data = funcList.toArray();
-        return new ImmutableIntFuncList(data, data.length, isLazy);
+        return new ImmutableIntFuncList(data, data.length, mode);
     }
     
     /** @return the list containing the element from the given stream */
@@ -111,16 +113,16 @@ public class ImmutableIntFuncList implements IntFuncList {
             return emptyList;
         
         int[] array = source.toArray();
-        return new ImmutableIntFuncList(array, array.length, true);
+        return new ImmutableIntFuncList(array, array.length, Mode.lazy);
     }
     
     /** @return the list containing the element from the given stream */
-    public static ImmutableIntFuncList from(boolean isLazy, IntStream source) {
+    public static ImmutableIntFuncList from(Mode mode, IntStream source) {
         if ((source == null))
             return emptyList;
         
         int[] array = source.toArray();
-        return new ImmutableIntFuncList(array, array.length, isLazy);
+        return new ImmutableIntFuncList(array, array.length, mode);
     }
     
     /** @return the list containing the element from the given list. */
@@ -131,8 +133,8 @@ public class ImmutableIntFuncList implements IntFuncList {
         if (funcList instanceof ImmutableIntFuncList)
             return (ImmutableIntFuncList)funcList;
         
-        val isLazy = funcList.asIntFuncList().isLazy();
-        return ImmutableIntFuncList.from(isLazy, funcList);
+        val mode = funcList.asIntFuncList().mode();
+        return ImmutableIntFuncList.from(mode, funcList);
     }
     
     /** @return the list containing the element from the given collections. */
@@ -143,13 +145,13 @@ public class ImmutableIntFuncList implements IntFuncList {
             Integer integer = iterator.next();
             ints[i] = (integer != null) ? integer.intValue() : valueForNull;
         }
-        return new ImmutableIntFuncList(ints, ints.length, true);
+        return new ImmutableIntFuncList(ints, ints.length, Mode.lazy);
     }
     
     //-- Data --
     
     private final GrowOnlyIntArray data;
-    private final boolean          isLazy;
+    private final FuncList.Mode    mode;
     private final int              size;
     
     private volatile String  toStringCache = null;
@@ -158,52 +160,66 @@ public class ImmutableIntFuncList implements IntFuncList {
     //-- Constructors --
     
     ImmutableIntFuncList(int[] data, int size) {
-        this(data, size, true);
+        this(data, size, Mode.lazy);
     }
     
-    ImmutableIntFuncList(int[] data, int size, boolean isLazy) {
-        this.data   = new GrowOnlyIntArray((data == null) ? EMPTY_INT_ARRAY : data);
-        this.isLazy = isLazy;
-        this.size   = size;
+    ImmutableIntFuncList(int[] data, int size, Mode mode) {
+        this.data = new GrowOnlyIntArray((data == null) ? EMPTY_INT_ARRAY : data);
+        this.mode = mode;
+        this.size = size;
     }
     
-    private ImmutableIntFuncList(GrowOnlyIntArray data, int size, boolean isLazy) {
-        this.data   = data;
-        this.isLazy = isLazy;
-        this.size   = size;
+    ImmutableIntFuncList(GrowOnlyIntArray data, int size, Mode mode) {
+        this.data = data;
+        this.mode = mode;
+        this.size = size;
+    }
+    
+    ImmutableIntFuncList(IntFuncList list, int size, Mode mode) {
+        this.mode = mode;
+        this.size = size;
+        this.data = (list instanceof ImmutableIntFuncList) ? ((ImmutableIntFuncList)list).data : new GrowOnlyIntArray(list.toArray());
     }
     
     @Override
     public IntStreamPlus intStream() {
-        return IntStreamPlus.infinite().limit(size).map(i -> data.get(i));
+        if (size ==-1) {
+            return IntStreamPlus.from(data.stream());
+        } else {
+            return IntStreamPlus.infinite().limit(size).map(i -> data.get(i));
+        }
     }
     
     @Override
-    public boolean isLazy() {
-        return isLazy;
+    public Mode mode() {
+        return mode;
     }
     
     @Override
-    public boolean isEager() {
-        return !isLazy;
-    }
-    
-    @Override
-    public IntFuncList lazy() {
-        if (isLazy)
+    public IntFuncList toLazy() {
+        if (mode().isLazy())
             return this;
         
-        int[] array = this.data.toArray();
-        return new ImmutableIntFuncList(array, size, true);
+        // Do this to not duplicate the data
+        return new ImmutableIntFuncList(data, size, Mode.lazy);
     }
     
     @Override
-    public IntFuncList eager() {
-        if (!isLazy)
+    public IntFuncList toEager() {
+        if (mode().isEager())
             return this;
         
-        int[] array = this.data.toArray();
-        return new ImmutableIntFuncList(array, size, false);
+        // Do this to not duplicate the data
+        return new ImmutableIntFuncList(data, size, Mode.eager);
+    }
+    
+    @Override
+    public IntFuncList toCache() {
+        if (mode().isCache())
+            return this;
+        
+        // Do this to not duplicate the data
+        return new ImmutableIntFuncList(data, size, Mode.cache);
     }
     
     @Override
@@ -326,14 +342,14 @@ public class ImmutableIntFuncList implements IntFuncList {
         if (this == emptyList) {
             GrowOnlyIntArray list = new GrowOnlyIntArray();
             list.add(value);
-            return new ImmutableIntFuncList(list, 1, isLazy);
+            return new ImmutableIntFuncList(list, 1, mode);
         }
         
         return syncIf(
                 () ->(size == data.length()), 
                 ()-> {
                     data.add(value);
-                    return new ImmutableIntFuncList(data, data.length(), isLazy);
+                    return new ImmutableIntFuncList(data, data.length(), mode);
                 },
                 () -> {
                     return IntFuncList.super.append(value);
@@ -347,7 +363,7 @@ public class ImmutableIntFuncList implements IntFuncList {
             for (int value : values) {
                 list.add(value);
             }
-            return new ImmutableIntFuncList(list, list.length(), isLazy);
+            return new ImmutableIntFuncList(list, list.length(), mode);
         }
         
         return syncIf(
@@ -356,7 +372,7 @@ public class ImmutableIntFuncList implements IntFuncList {
                     for (int value : values) {
                         data.add(value);
                     }
-                    return new ImmutableIntFuncList(data, data.length(), isLazy);
+                    return new ImmutableIntFuncList(data, data.length(), mode);
                 },
                 () -> {
                     return IntFuncList.super.appendAll(values);
@@ -368,13 +384,13 @@ public class ImmutableIntFuncList implements IntFuncList {
         if (this == emptyList) {
             GrowOnlyIntArray list = new GrowOnlyIntArray();
             array.stream().forEach(data::add);
-            return new ImmutableIntFuncList(list, list.length(), isLazy);
+            return new ImmutableIntFuncList(list, list.length(), mode);
         }
         return syncIf(
                 () ->(size == data.length()), 
                 ()-> {
                     array.stream().forEach(data::add);
-                    return new ImmutableIntFuncList(data, data.length(), isLazy);
+                    return new ImmutableIntFuncList(data, data.length(), mode);
                 },
                 () -> {
                     return IntFuncList.super.appendAll(array.toArray());
@@ -388,7 +404,7 @@ public class ImmutableIntFuncList implements IntFuncList {
             ints.stream()
                 .mapToInt(i -> (i == null) ? fallbackValue : i.intValue())
                 .forEach(data::add);
-            return new ImmutableIntFuncList(list, list.length(), isLazy);
+            return new ImmutableIntFuncList(list, list.length(), mode);
         }
         return syncIf(
                 () ->(size == data.length()), 
@@ -396,14 +412,14 @@ public class ImmutableIntFuncList implements IntFuncList {
                     ints.stream()
                         .mapToInt(i -> (i == null) ? fallbackValue : i.intValue())
                         .forEach(data::add);
-                    return new ImmutableIntFuncList(data, data.length(), isLazy);
+                    return new ImmutableIntFuncList(data, data.length(), mode);
                 },
                 () -> {
                     GrowOnlyIntArray list = new GrowOnlyIntArray();
                     ints.stream()
                         .mapToInt(i -> (i == null) ? fallbackValue : i.intValue())
                         .forEach(data::add);
-                    IntFuncList funcList = new ImmutableIntFuncList(list, list.length(), isLazy);
+                    IntFuncList funcList = new ImmutableIntFuncList(list, list.length(), mode);
                     return IntFuncList.super.appendAll(funcList);
                 });
     }
@@ -413,13 +429,13 @@ public class ImmutableIntFuncList implements IntFuncList {
         if (this == emptyList) {
             GrowOnlyIntArray list = new GrowOnlyIntArray();
             ints.forEach(data::add);
-            return new ImmutableIntFuncList(list, list.length(), isLazy);
+            return new ImmutableIntFuncList(list, list.length(), mode);
         }
         return syncIf(
                 () ->(size == data.length()), 
                 ()-> {
                     ints.forEach(data::add);
-                    return new ImmutableIntFuncList(data, data.length(), isLazy);
+                    return new ImmutableIntFuncList(data, data.length(), mode);
                 },
                 () -> {
                     return IntFuncList.super.appendAll(ints);

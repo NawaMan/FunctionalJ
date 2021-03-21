@@ -164,23 +164,19 @@ public interface IntFuncList
     }
     
     /** Create a FuncList from the given collection. */
-    public static ImmutableIntFuncList from(Collection<Integer> data, int valueForNull) {
+    public static IntFuncList from(Collection<Integer> data, int valueForNull) {
         IntStream intStream 
                 = StreamPlus.from(data.stream())
                 .fillNull((Integer)valueForNull)
                 .mapToInt(theInteger);
-        ImmutableIntFuncList list = ImmutableIntFuncList.from(intStream);
-        if (!(data instanceof FuncList))
-            return list;
-        val funcList = (FuncList<Integer>)data;
-//        return funcList.isLazy() ? list : (ImmutableIntFuncList)list.eager();
-        return funcList.mode().isLazy() ? list : (ImmutableIntFuncList)list.eager();
+        Mode mode = (data instanceof FuncList) ? ((FuncList<Integer>)data).mode() : Mode.lazy;
+        return ImmutableIntFuncList.from(mode, intStream);
     }
     
     /** Create a FuncList from the given FuncList. */
-    public static IntFuncList from(boolean isLazy, AsIntFuncList asFuncList) {
+    public static IntFuncList from(Mode mode, AsIntFuncList asFuncList) {
         val funcList = asFuncList.asIntFuncList();
-        return isLazy ? funcList.lazy() : funcList.eager();
+        return funcList.toMode(mode);
     }
     
     /** Create a FuncList from the given stream. */
@@ -476,7 +472,7 @@ public interface IntFuncList
     //-- Derive --
     
     /** Create a FuncList from the given FuncList. */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <SOURCE> IntFuncList deriveFrom(
             List<SOURCE>                            list,
             Function<StreamPlus<SOURCE>, IntStream> action) {
@@ -486,7 +482,7 @@ public interface IntFuncList
                 : Mode.lazy;
         switch (mode) {
             case lazy: {
-                return IntFuncList.from(() -> {
+                return IntFuncList.from(()->{
                     val orgStreamPlus = (list instanceof FuncList)
                             ? ((FuncList)list).streamPlus()
                             : StreamPlus.from(list.stream());
@@ -501,8 +497,7 @@ public interface IntFuncList
                         : StreamPlus.from(list.stream());
                 val newStream     = action.apply(orgStreamPlus);
                 val newStreamPlus = IntStreamPlus.from(newStream);
-//                return ImmutableDoubleFuncList.from(Mode.eager, newStreamPlus);
-                return ImmutableIntFuncList.from(false, newStreamPlus);
+                return ImmutableIntFuncList.from(Mode.eager, newStreamPlus);
             }
             case cache: {
                 val orgStreamPlus = (list instanceof FuncList)
@@ -519,31 +514,54 @@ public interface IntFuncList
     public static <TARGET> IntFuncList deriveFrom(
             AsIntFuncList                      asFuncList, 
             Function<IntStreamPlus, IntStream> action) {
-        boolean isLazy = asFuncList.asIntFuncList().isLazy();
-        if (!isLazy) {
-            val orgStreamPlus = asFuncList.intStreamPlus();
-            val newStream     = action.apply(orgStreamPlus);
-            val newStreamPlus = IntStreamPlus.from(newStream);
-            return ImmutableIntFuncList.from(isLazy, newStreamPlus);
+        Mode mode = asFuncList.asIntFuncList().mode();
+        switch (mode) {
+            case lazy: {
+                return IntFuncList.from(() -> {
+                    val orgStreamPlus = asFuncList.intStreamPlus();
+                    val newStream     = action.apply(orgStreamPlus);
+                    return IntStreamPlus.from(newStream);
+                });
+            }
+            case eager:
+            case cache: {
+                val orgStreamPlus = asFuncList.intStreamPlus();
+                val newStream     = action.apply(orgStreamPlus);
+                val newStreamPlus = IntStreamPlus.from(newStream);
+                return ImmutableIntFuncList.from(mode, newStreamPlus);
+            }
+            default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
         }
-        
-        return IntFuncList.from(() -> {
-            val orgStreamPlus = asFuncList.intStreamPlus();
-            val newStream     = action.apply(orgStreamPlus);
-            return IntStreamPlus.from(newStream);
-        });
     }
     
     /** Create a FuncList from the given IntFuncList. */
     public static <TARGET> IntFuncList deriveFrom(
             AsLongFuncList                      asFuncList, 
             Function<LongStreamPlus, IntStream> action) {
+//        Mode mode = asFuncList.asLongFuncList().mode();
+//        switch (mode) {
+//            case lazy: {
+//                return IntFuncList.from(() -> {
+//                    val orgStreamPlus = asFuncList.longStreamPlus();
+//                    val newStream     = action.apply(orgStreamPlus);
+//                    return IntStreamPlus.from(newStream);
+//                });
+//            }
+//            case eager:
+//            case cache: {
+//                val orgStreamPlus = asFuncList.longStreamPlus();
+//                val newStream     = action.apply(orgStreamPlus);
+//                val newStreamPlus = IntStreamPlus.from(newStream);
+//                return ImmutableIntFuncList.from(mode, newStreamPlus);
+//            }
+//            default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
+//        }
         boolean isLazy = asFuncList.asLongFuncList().isLazy();
         if (!isLazy) {
             val orgStreamPlus = asFuncList.longStreamPlus();
             val newStream     = action.apply(orgStreamPlus);
             val newStreamPlus = IntStreamPlus.from(newStream);
-            return ImmutableIntFuncList.from(isLazy, newStreamPlus);
+            return ImmutableIntFuncList.from(Mode.eager, newStreamPlus);
         }
         
         return IntFuncList.from(() -> {
@@ -557,12 +575,30 @@ public interface IntFuncList
     public static <TARGET> IntFuncList deriveFrom(
             AsDoubleFuncList                      asFuncList, 
             Function<DoubleStreamPlus, IntStream> action) {
+//        Mode mode = asFuncList.asDoubleFuncList().mode();
+//        switch (mode) {
+//            case lazy: {
+//                return IntFuncList.from(() -> {
+//                    val orgStreamPlus = asFuncList.doubleStreamPlus();
+//                    val newStream     = action.apply(orgStreamPlus);
+//                    return IntStreamPlus.from(newStream);
+//                });
+//            }
+//            case eager:
+//            case cache: {
+//                val orgStreamPlus = asFuncList.doubleStreamPlus();
+//                val newStream     = action.apply(orgStreamPlus);
+//                val newStreamPlus = IntStreamPlus.from(newStream);
+//                return ImmutableIntFuncList.from(mode, newStreamPlus);
+//            }
+//            default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
+//        }
         boolean isLazy = asFuncList.asDoubleFuncList().isLazy();
         if (!isLazy) {
             val orgStreamPlus = asFuncList.doubleStreamPlus();
             val newStream     = action.apply(orgStreamPlus);
             val newStreamPlus = IntStreamPlus.from(newStream);
-            return ImmutableIntFuncList.from(isLazy, newStreamPlus);
+            return ImmutableIntFuncList.from(Mode.eager, newStreamPlus);
         }
         
         return IntFuncList.from(() -> {
@@ -608,27 +644,69 @@ public interface IntFuncList
         return contains(value);
     }
     
+    //-- Mode --
+    
     /** Check if this list is a lazy list. */
+    public default Mode mode() {
+        return Mode.lazy;
+    }
+    
+    /** Return a list with the specified mode. */
+    public default IntFuncList toMode(Mode mode) {
+        switch (mode) {
+        case lazy:  return toLazy();
+        case eager: return toEager();
+        case cache: return toCache();
+        }
+        throw new IllegalArgumentException("Unknown list mode: " + mode);
+    }
+    
     public default boolean isLazy() {
-        return true;
+        return mode().isLazy();
     }
     
-    /** Check if this list is an eager list. */
     public default boolean isEager() {
-        return false;
+        return mode().isEager();
     }
     
-    //-- Lazy + Eager --
+    public default boolean isCache() {
+        return mode().isCache();
+    }
     
     /** Return a lazy list with the data of this list. */
-    public IntFuncList lazy();
+    public default IntFuncList toLazy() {
+        if (mode().isLazy()) {
+            return this;
+        }
+        return new IntFuncListDerived(() -> intStreamPlus());
+    }
     
     /** Return a eager list with the data of this list. */
-    public IntFuncList eager();
+    public default IntFuncList toEager() {
+        if (mode().isEager()) {
+            return this;
+        }
+        // Just materialize all value.
+        int size = size();
+        return new ImmutableIntFuncList(this, size, Mode.eager);
+    }
     
-    /** Freeze the data of this list as an immutable list. */
+    /** Return a cache list with the data of this list. */
+    public default IntFuncList toCache() {
+        if (mode().isCache()) {
+            return this;
+        }
+        return new StreamBackedIntFuncList(intStreamPlus(), Mode.cache);
+    }
+    
+    /** Freeze the data of this list as an immutable list and maintain the mode afterward. */
     public default ImmutableIntFuncList freeze() {
-        return toImmutableList();
+        return new ImmutableIntFuncList(this, -1, mode());
+    }
+    
+    /** Create a cache list but maintain the mode afterward. */
+    public default IntFuncList cache() {
+        return new StreamBackedIntFuncList(intStreamPlus(), mode());
     }
     
     //-- Iterable --
@@ -1043,7 +1121,7 @@ public interface IntFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableIntFuncList(array, array.length, isLazy());
+        return new ImmutableIntFuncList(array, array.length, mode());
     }
     
     /** Returns the new list with random order of this list. */
@@ -1061,7 +1139,7 @@ public interface IntFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableIntFuncList(array, array.length, isLazy());
+        return new ImmutableIntFuncList(array, array.length, mode());
     }
     
     //-- Query --

@@ -140,13 +140,13 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     }
     
     @Override
-    public IntFuncList lazy() {
+    public IntFuncList toLazy() {
         return IntFuncList.from(() -> intStreamPlus());
     }
     
     /** Please don't call. This will blow up. */
     @Override
-    public IntFuncList eager() {
+    public IntFuncList toEager() {
         throw new UnsupportedOperationException(
                 "Infinite double step cannot be made an eager list: " 
                     + intStreamPlus().limit(5).join(", ") + "...");
