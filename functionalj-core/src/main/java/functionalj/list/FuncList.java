@@ -62,6 +62,7 @@ import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.list.longlist.AsLongFuncList;
+import functionalj.list.longlist.ImmutableLongFuncList;
 import functionalj.list.longlist.LongFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
@@ -171,7 +172,12 @@ public interface FuncList<DATA>
     
     /** Create a FuncList from the given array. */
     public static ImmutableIntFuncList from(int[] datas) {
-        return IntFuncList.of(datas);
+        return ImmutableIntFuncList.of(datas);
+    }
+    
+    /** Create a FuncList from the given array. */
+    public static ImmutableLongFuncList from(long[] datas) {
+        return ImmutableLongFuncList.of(datas);
     }
     
     /** Create a FuncList from the given array. */
@@ -194,9 +200,9 @@ public interface FuncList<DATA>
     }
     
     /** Create a FuncList from the given FuncList. */
-    public static <TARGET> FuncList<TARGET> from(boolean isLazy, AsFuncList<TARGET> asFuncList) {
+    public static <TARGET> FuncList<TARGET> from(Mode mode, AsFuncList<TARGET> asFuncList) {
         val funcList = asFuncList.asFuncList();
-        return isLazy ? funcList.lazy() :funcList.eager();
+        return funcList.toMode(mode);
     }
     
     /** Create a FuncList from the given stream. */
@@ -710,25 +716,69 @@ public interface FuncList<DATA>
         return contains(value);
     }
     
+    //-- Mode --
+    
     /** Check if this list is a lazy list. */
     public default Mode mode() {
         return Mode.lazy;
     }
     
-    //-- Lazy + Eager --
+    /** Return a list with the specified mode. */
+    public default FuncList<DATA> toMode(Mode mode) {
+        switch (mode) {
+        case lazy:  return toLazy();
+        case eager: return toEager();
+        case cache: return toCache();
+        }
+        throw new IllegalArgumentException("Unknown list mode: " + mode);
+    }
+    
+    public default boolean isLazy() {
+        return mode().isLazy();
+    }
+    
+    public default boolean isEager() {
+        return mode().isEager();
+    }
+    
+    public default boolean isCache() {
+        return mode().isCache();
+    }
     
     /** Return a lazy list with the data of this list. */
-    public FuncList<DATA> lazy();
+    public default FuncList<DATA> toLazy() {
+        if (mode().isLazy()) {
+            return this;
+        }
+        return new FuncListDerived<>(() -> streamPlus());
+    }
     
     /** Return a eager list with the data of this list. */
-    public FuncList<DATA> eager();
+    public default FuncList<DATA> toEager() {
+        if (mode().isEager()) {
+            return this;
+        }
+        // Just materialize all value.
+        int size = size();
+        return new ImmutableFuncList<DATA>(this, size, Mode.eager);
+    }
     
     /** Return a cache list with the data of this list. */
-    public FuncList<DATA> cache();
+    public default FuncList<DATA> toCache() {
+        if (mode().isCache()) {
+            return this;
+        }
+        return new StreamBackedFuncList<>(streamPlus(), Mode.cache);
+    }
     
-    /** Freeze the data of this list as an immutable list. */
+    /** Freeze the data of this list as an immutable list and maintain the mode afterward. */
     public default ImmutableFuncList<DATA> freeze() {
-        return toImmutableList();
+        return new ImmutableFuncList<>(this, -1, mode());
+    }
+    
+    /** Create a cache list but maintain the mode afterward. */
+    public default FuncList<DATA> cache() {
+        return new StreamBackedFuncList<>(streamPlus(), mode());
     }
     
     //-- Iterable --
@@ -1144,8 +1194,8 @@ public interface FuncList<DATA>
         Collections.reverse(temp);
         
         val list = FuncList.from(temp);
-        // TODO - account for other mode.
-        return mode().isLazy() ? list.lazy() : list.eager();
+        val mode = mode();
+        return list.toMode(mode);
     }
     
     /** Returns the new list with random order of this list. */
@@ -1155,8 +1205,8 @@ public interface FuncList<DATA>
         Collections.shuffle(temp);
         
         val list = FuncList.from(temp);
-        // TODO - account for other mode.
-        return mode().isLazy() ? list.lazy() : list.eager();
+        val mode = mode();
+        return list.toMode(mode);
     }
     
     //-- Query --

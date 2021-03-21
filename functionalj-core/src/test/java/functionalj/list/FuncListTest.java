@@ -76,6 +76,7 @@ import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.lens.LensTest.Car;
+import functionalj.list.FuncList.Mode;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
@@ -222,7 +223,7 @@ public class FuncListTest {
             assertStrings("[One, Two, Three]", list);
             assertStrings("lazy", list.mode());
         });
-        FuncList<String> eagerList = FuncList.of(One, Two, Three).eager();
+        FuncList<String> eagerList = FuncList.of(One, Two, Three).toEager();
         run(FuncList.from(eagerList), list -> {
             assertStrings("[One, Two, Three]", list);
             assertStrings("eager", list.mode());
@@ -245,13 +246,17 @@ public class FuncListTest {
         run(FuncList.from(FuncList.of(One, Two, Three)), list -> {
             assertStrings("[One, Two, Three]", list);
         });
-        run(FuncList.from(true, FuncList.of(One, Two, Three)), list -> {
+        run(FuncList.from(Mode.lazy, FuncList.of(One, Two, Three)), list -> {
             assertStrings("[One, Two, Three]", list);
             assertStrings("lazy", list.mode());
         });
-        run(FuncList.from(false, FuncList.of(One, Two, Three)), list -> {
+        run(FuncList.from(Mode.eager, FuncList.of(One, Two, Three)), list -> {
             assertStrings("[One, Two, Three]", list);
             assertStrings("eager", list.mode());
+        });
+        run(FuncList.from(Mode.cache, FuncList.of(One, Two, Three)), list -> {
+            assertStrings("[One, Two, Three]", list);
+            assertStrings("cache", list.mode());
         });
     }
     
@@ -644,10 +649,10 @@ public class FuncListTest {
     @Test
     public void testIsEagerIsLazy() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertTrue(list.lazy().mode().isLazy());
-            assertTrue(list.eager().mode().isEager());
+            assertTrue(list.toLazy().mode().isLazy());
+            assertTrue(list.toEager().mode().isEager());
             
-            assertTrue(list.lazy().freeze().mode().isLazy());
+            assertTrue(list.toLazy().freeze().mode().isLazy());
             
             val logs = new ArrayList<String>();
             FuncList<String> lazyList 
@@ -682,8 +687,8 @@ public class FuncListTest {
             logs.clear();
             FuncList<String> eagerList 
                     = list
-                    .eager()
-                    .peek(value -> logs.add("" + value));
+                    .toEager()
+                    .peek   (value -> logs.add("" + value));
             eagerList.forEach(value -> {});    // ForEach but do nothing
             assertEquals("[One, Two, Three]", logs.toString());
             
@@ -713,7 +718,7 @@ public class FuncListTest {
             val list = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten)
                     .peek(logs::add)
                     .toFuncList()
-                    .eager();
+                    .toEager();
             // The function has been materialized so all element goes through peek.
             assertStrings("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs);
             // Even we only get part of it, 
@@ -732,7 +737,7 @@ public class FuncListTest {
             val orgData = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
             // We want to confirm that the list is lazy
             val list = orgData
-                    .lazy()
+                    .toLazy ()
                     .peek   (logs1::add)
                     .map    (theString.length())
                     .peek   (v -> logs2.add("" + v))
@@ -766,7 +771,7 @@ public class FuncListTest {
             val orgData = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
             // We want to confirm that the list is lazy
             val list = orgData
-                    .eager()
+                    .toEager()
                     .peek   (logs1::add)
                     .map    (theString.length())
                     .peek   (v -> logs2.add("" + v))
@@ -791,7 +796,7 @@ public class FuncListTest {
     public void testCache() {
         val random    = new Random();
         val list      = FuncList.from((Supplier)(() -> IntStreamPlus.infiniteInt().limit(100).mapToObj(__ -> random.nextInt(1000))));
-        val cacheList = list.cache();
+        val cacheList = list.toCache();
         
         assertNotEquals(list     .limit(5), list     .limit(5));
         assertEquals   (cacheList.limit(5), cacheList.limit(5));

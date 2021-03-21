@@ -157,8 +157,6 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     }
     
     ImmutableFuncList(Collection<DATA> data, int size, Mode mode) {
-        this.size = size;
-        this.mode = mode;
         if (data == null) {
             this.data = Collections.emptyList();
         } else if (data instanceof ImmutableFuncList) {
@@ -168,11 +166,17 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             data.forEach(list::add);
             this.data = list;
         }
+        this.size = (size != -1) ? size : this.data.size();
+        this.mode = mode;
     }
     
     @Override
     public StreamPlus<DATA> stream() {
-        return StreamPlus.from(data.stream().limit(size));
+        if (size ==-1) {
+            return StreamPlus.from(data.stream());
+        } else {
+            return StreamPlus.from(data.stream().limit(size));
+        }
     }
     
     @Override
@@ -181,26 +185,29 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     }
     
     @Override
-    public FuncList<DATA> lazy() {
+    public FuncList<DATA> toLazy() {
         if (mode().isLazy())
             return this;
         
+        // Do this to not duplicate the data
         return new ImmutableFuncList<DATA>(data, size, Mode.lazy);
     }
     
     @Override
-    public FuncList<DATA> eager() {
+    public FuncList<DATA> toEager() {
         if (mode().isEager())
             return this;
         
+        // Do this to not duplicate the data
         return new ImmutableFuncList<DATA>(data, size, Mode.eager);
     }
     
     @Override
-    public FuncList<DATA> cache() {
+    public FuncList<DATA> toCache() {
         if (mode().isCache())
             return this;
         
+        // Do this to not duplicate the data
         return new ImmutableFuncList<DATA>(data, size, Mode.cache);
     }
     

@@ -192,7 +192,7 @@ public class IntFuncListTest {
             assertStrings("[1, 2, 3, -3]", list);
             assertTrue   (list.isLazy());
         });
-        FuncList<Integer> eagerList = FuncList.of(One, Two, Three, null).eager();
+        FuncList<Integer> eagerList = FuncList.of(One, Two, Three, null).toEager();
         run(IntFuncList.from(eagerList, -4), list -> {
             assertStrings("[1, 2, 3, -4]", list);
             assertTrue   (list.isEager());

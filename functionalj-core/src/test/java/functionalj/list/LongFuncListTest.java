@@ -192,7 +192,7 @@ public class LongFuncListTest {
             assertStrings("[1, 2, 3, -3]", list);
             assertTrue   (list.isLazy());
         });
-        FuncList<Long> eagerList = FuncList.of(One, Two, Three, null).eager();
+        FuncList<Long> eagerList = FuncList.of(One, Two, Three, null).toEager();
         run(LongFuncList.from(eagerList, -4), list -> {
             assertStrings("[1, 2, 3, -4]", list);
             assertTrue   (list.isEager());

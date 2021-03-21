@@ -84,33 +84,31 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
         return StreamPlus.from(newStream);
     }
     
-    public boolean isLazy() {
-        return true;
-    }
-    
-    public boolean isEager() {
-        return false;
+    /** Check if this list is a lazy list. */
+    public Mode mode() {
+        return Mode.lazy;
     }
     
     @Override
-    public FuncList<DATA> lazy() {
+    public FuncList<DATA> toLazy() {
         return this;
     }
     
     @Override
-    public FuncList<DATA> eager() {
+    public FuncList<DATA> toEager() {
         val list = this.toArrayList();
         return new ImmutableFuncList<DATA>(list, list.size(), Mode.eager);
     }
     
     @Override
-    public FuncList<DATA> cache() {
+    public FuncList<DATA> toCache() {
         return FuncList.from(stream());
     }
     
+    /** Returns an immutable list containing the data of this list. Maintaining the mode. */
     @Override
     public ImmutableFuncList<DATA> toImmutableList() {
-        return ImmutableFuncList.from(this);
+        return new ImmutableFuncList<>(this, -1, Mode.lazy);
     }
     
     @Override

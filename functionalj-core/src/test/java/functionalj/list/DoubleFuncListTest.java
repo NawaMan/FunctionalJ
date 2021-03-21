@@ -181,7 +181,7 @@ public class DoubleFuncListTest {
             assertStrings("[1.0, 2.0, 3.0, -3.0]", list);
             assertTrue   (list.isLazy());
         });
-        FuncList<Double> eagerList = FuncList.of(One, Two, Three, null).eager();
+        FuncList<Double> eagerList = FuncList.of(One, Two, Three, null).toEager();
         run(DoubleFuncList.from(eagerList, -4), list -> {
             assertStrings("[1.0, 2.0, 3.0, -4.0]", list);
             assertTrue   (list.isEager());

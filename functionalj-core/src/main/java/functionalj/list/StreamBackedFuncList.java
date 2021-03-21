@@ -15,36 +15,53 @@ import java.util.stream.StreamSupport;
 
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusUtils;
+import lombok.NonNull;
 import lombok.val;
 
 public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
-    
-    private final List<DATA> cache = new ArrayList<DATA>();
+
+    private final Mode              mode;
+    private final List<DATA>        cache = new ArrayList<DATA>();
     private final Spliterator<DATA> spliterator;
-    
-    public StreamBackedFuncList(Stream<DATA> stream) {
+
+    StreamBackedFuncList(@NonNull Stream<DATA> stream, @NonNull Mode mode) {
         this.spliterator = stream.spliterator();
+        this.mode = mode;
+        
+        if (mode.isEager()) {
+            size();
+        }
+    }
+    
+    public StreamBackedFuncList(@NonNull Stream<DATA> stream) {
+        this(stream, Mode.cache);
+    }
+    
+    public Mode mode() {
+        return mode;
     }
     
     @Override
-    public FuncList<DATA> lazy() {
-        return this;
+    public FuncList<DATA> toLazy() {
+        if (mode.isLazy()) {
+            return this;
+        }
+        return new StreamBackedFuncList<>(streamPlus(), Mode.lazy);
     }
     
     @Override
-    public FuncList<DATA> eager() {
+    public FuncList<DATA> toEager() {
         // Just materialize all value.
         int size = size();
         return new ImmutableFuncList<DATA>(cache, size);
     }
     
     @Override
-    public FuncList<DATA> cache() {
-        // Just materialize all value.
-//        int size = size();
-//        return new ImmutableFuncList<DATA>(cache, size);
-        // TODO - fix this
-        return null;
+    public FuncList<DATA> toCache() {
+        if (mode.isCache()) {
+            return this;
+        }
+        return new StreamBackedFuncList<>(streamPlus(), Mode.cache);
     }
     
     @Override
