@@ -594,46 +594,6 @@ public interface FuncList<DATA>
     public static <TARGET> FuncList<TARGET> deriveFrom(
             AsIntFuncList                           asFuncList,
             Function<IntStreamPlus, Stream<TARGET>> action) {
-//        Mode mode 
-//                = (list instanceof FuncList)
-//                ? ((FuncList)list).mode()
-//                : Mode.lazy;
-//        switch (mode) {
-//            case lazy: {
-//                return FuncList.from(()->{
-//                    val orgStreamPlus = (list instanceof FuncList)
-//                            ? ((FuncList)list).streamPlus()
-//                            : StreamPlus.from(list.stream());
-//                    val newStream = action.apply(orgStreamPlus);
-//                    return StreamPlus.from(newStream);
-//                });
-//            }
-//            case eager: {
-//                val orgStreamPlus = (list instanceof FuncList)
-//                        ? ((FuncList)list).streamPlus()
-//                        : StreamPlus.from(list.stream());
-//                val newStream     = action.apply(orgStreamPlus);
-//                val newStreamPlus = StreamPlus.from(newStream);
-//                return ImmutableFuncList.from(mode, newStreamPlus);
-//            }
-//            case cache: {
-//                val orgStreamPlus = (list instanceof FuncList)
-//                        ? ((FuncList)list).streamPlus()
-//                        : StreamPlus.from(list.stream());
-//                val newStream = action.apply(orgStreamPlus);
-//                return StreamPlus.from(newStream).toFuncList();
-//            }
-//        }
-//        throw new IllegalArgumentException("Unknown functional list mode: " + mode);
-//        
-//        
-//        
-//        
-//        
-//        
-//        
-//        
-//        
         boolean isLazy = asFuncList.asIntFuncList().isLazy();
         if (!isLazy) {
             val orgStreamPlus = asFuncList.intStreamPlus();
