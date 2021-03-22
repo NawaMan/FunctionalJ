@@ -48,6 +48,7 @@ import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.functions.TimeFuncs;
 import functionalj.lens.LensTest.Car;
+import functionalj.list.FuncList.Mode;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.list.longlist.ImmutableLongFuncList;
@@ -201,13 +202,17 @@ public class LongFuncListTest {
     
     @Test
     public void testFrom_funcList() {
-        run(LongFuncList.from(true, LongFuncList.of(One, Two, Three)), list -> {
+        run(LongFuncList.from(Mode.lazy, LongFuncList.of(One, Two, Three)), list -> {
             assertStrings("[1, 2, 3]", list);
             assertTrue   (list.isLazy());
         });
-        run(LongFuncList.from(false, LongFuncList.of(One, Two, Three)), list -> {
+        run(LongFuncList.from(Mode.eager, LongFuncList.of(One, Two, Three)), list -> {
             assertStrings("[1, 2, 3]", list);
             assertTrue   (list.isEager());
+        });
+        run(LongFuncList.from(Mode.cache, LongFuncList.of(One, Two, Three)), list -> {
+            assertStrings("[1, 2, 3]", list);
+            assertTrue   (list.isCache());
         });
     }
     
@@ -608,10 +613,10 @@ public class LongFuncListTest {
     @Test
     public void testIsEagerIsLazy() {
         run(LongFuncList.of(One, Two, Three), list -> {
-            assertTrue(list.lazy().isLazy());
-            assertTrue(list.eager().isEager());
+            assertTrue(list.toLazy().isLazy());
+            assertTrue(list.toEager().isEager());
             
-            assertTrue(list.lazy().freeze().isLazy());
+            assertTrue(list.toLazy().freeze().isLazy());
             
             val logs = new ArrayList<String>();
             LongFuncList lazyList 
@@ -646,7 +651,7 @@ public class LongFuncListTest {
             logs.clear();
             LongFuncList eagerList 
                     = list
-                    .eager()
+                    .toEager()
                     .peek(value -> logs.add("" + value));
             eagerList.forEach(value -> {});    // ForEach but do nothing
             assertEquals("[1, 2, 3]", logs.toString());
@@ -674,7 +679,7 @@ public class LongFuncListTest {
             val logs = new ArrayList<String>();
             
             // We want to confirm that the list is eager
-            val list = LongFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(value -> logs.add("" + value)).toFuncList().eager();
+            val list = LongFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(value -> logs.add("" + value)).toFuncList().toEager();
             // The function has been materialized so all element goes through peek.
             assertStrings("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", logs);
             // Even we only get part of it, 
@@ -692,7 +697,7 @@ public class LongFuncListTest {
             val orgData = LongFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
             // We want to confirm that the list is lazy
             val list = orgData
-                    .lazy()
+                    .toLazy ()
                     .peek   (v -> logs1.add("" + v))
                     .exclude(theLong.thatLessThanOrEqualsTo(3))
                     .peek   (v -> logs2.add("" + v))
@@ -720,7 +725,7 @@ public class LongFuncListTest {
             val orgData = LongFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
             // We want to confirm that the list is lazy
             val list = orgData
-                    .eager()
+                    .toEager()
                     .peek   (v -> logs1.add("" + v))
                     .exclude(theLong.thatLessThanOrEqualsTo(3))
                     .peek   (v -> logs2.add("" + v))

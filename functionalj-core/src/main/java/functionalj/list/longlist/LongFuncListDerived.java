@@ -31,6 +31,7 @@ import java.util.function.LongPredicate;
 import java.util.function.Supplier;
 import java.util.stream.LongStream;
 
+import functionalj.list.FuncList.Mode;
 import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
@@ -80,23 +81,25 @@ public class LongFuncListDerived implements LongFuncList {
         return LongStreamPlus.from(newStream);
     }
     
-    public boolean isLazy() {
-        return true;
-    }
-    
-    public boolean isEager() {
-        return false;
+    /** Check if this list is a lazy list. */
+    public Mode mode() {
+        return Mode.lazy;
     }
     
     @Override
-    public LongFuncList lazy() {
+    public LongFuncList toLazy() {
         return this;
     }
     
     @Override
-    public LongFuncList eager() {
+    public LongFuncList toEager() {
         val data = this.toArray();
-        return new ImmutableLongFuncList(data, data.length, false);
+        return new ImmutableLongFuncList(data, data.length, Mode.eager);
+    }
+    
+    @Override
+    public LongFuncList toCache() {
+        return LongFuncList.from(longStream());
     }
     
     @Override

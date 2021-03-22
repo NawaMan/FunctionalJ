@@ -82,6 +82,7 @@ public class ImmutableIntFuncList implements IntFuncList {
         return new ImmutableIntFuncList(newArray, newArray.length, Mode.lazy);
     }
     
+    /** Create a FuncList from the given array. */
     public static ImmutableIntFuncList from(int[] data) {
         return from(Mode.lazy, data);
     }

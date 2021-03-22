@@ -9,32 +9,59 @@ import java.util.function.LongPredicate;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
+import functionalj.list.FuncList.Mode;
 import functionalj.stream.longstream.GrowOnlyLongArray;
 import functionalj.stream.longstream.LongStreamPlus;
+import lombok.NonNull;
 import lombok.val;
 
 public class StreamBackedLongFuncList implements LongFuncList {
     
     private static final LongBinaryOperator zeroForEquals = (long i1, long i2) -> i1 == i2 ? 0 : 1;
     private static final LongPredicate      notZero       = (long i)           -> i  != 0;
-    
+
+    private final Mode               mode;
     private final GrowOnlyLongArray  cache = new GrowOnlyLongArray();
     private final Spliterator.OfLong spliterator;
-    
-    public StreamBackedLongFuncList(LongStream stream) {
+
+    StreamBackedLongFuncList(@NonNull LongStream stream, @NonNull Mode mode) {
         this.spliterator = stream.spliterator();
+        this.mode = mode;
+        
+        if (mode.isEager()) {
+            size();
+        }
+    }
+    
+    public StreamBackedLongFuncList(@NonNull LongStream stream) {
+        this(stream, Mode.cache);
+    }
+    
+    public Mode mode() {
+        return mode;
     }
     
     @Override
-    public LongFuncList lazy() {
-        return this;
+    public LongFuncList toLazy() {
+        if (mode.isLazy()) {
+            return this;
+        }
+        return new StreamBackedLongFuncList(longStreamPlus(), Mode.lazy);
     }
     
     @Override
-    public LongFuncList eager() {
+    public LongFuncList toEager() {
         // Just materialize all value.
         int size = size();
-        return new ImmutableLongFuncList(cache.toArray(), size);
+        return new ImmutableLongFuncList(cache, size, Mode.eager);
+    }
+    
+    @Override
+    public LongFuncList toCache() {
+        if (mode.isCache()) {
+            return this;
+        }
+        return new StreamBackedLongFuncList(longStreamPlus(), Mode.cache);
     }
     
     @Override

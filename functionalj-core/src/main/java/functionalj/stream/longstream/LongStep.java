@@ -140,15 +140,23 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
     }
     
     @Override
-    public LongFuncList lazy() {
+    public LongFuncList toLazy() {
         return LongFuncList.from(() -> longStreamPlus());
     }
     
     /** Please don't call. This will blow up. */
     @Override
-    public LongFuncList eager() {
+    public LongFuncList toEager() {
         throw new UnsupportedOperationException(
                 "Infinite double step cannot be made an eager list: " 
+                    + longStreamPlus().limit(5).join(", ") + "...");
+    }
+    
+    /** Please don't call. This will blow up. */
+    @Override
+    public LongFuncList toCache() {
+        throw new UnsupportedOperationException(
+                "Infinite double step cannot be made a cache list: " 
                     + longStreamPlus().limit(5).join(", ") + "...");
     }
     

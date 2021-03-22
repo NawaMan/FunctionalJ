@@ -32,7 +32,8 @@ import java.util.function.LongPredicate;
 import java.util.function.Supplier;
 import java.util.stream.LongStream;
 
-import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.list.FuncList;
+import functionalj.list.FuncList.Mode;
 import functionalj.stream.longstream.GrowOnlyLongArray;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Sequential;
@@ -51,7 +52,7 @@ public class ImmutableLongFuncList implements LongFuncList {
     
     private static final long[] EMPTY_LONG_ARRAY = new long[0];
     
-    private static ImmutableLongFuncList emptyList = new ImmutableLongFuncList(EMPTY_LONG_ARRAY, 0, true);
+    private static ImmutableLongFuncList emptyList = new ImmutableLongFuncList(EMPTY_LONG_ARRAY, 0, Mode.lazy);
     
     /** @return an empty list */
     public static ImmutableLongFuncList empty() {
@@ -69,7 +70,7 @@ public class ImmutableLongFuncList implements LongFuncList {
             return emptyList;
        
         val newArray = source.clone();
-        return new ImmutableLongFuncList(newArray, newArray.length, true);
+        return new ImmutableLongFuncList(newArray, newArray.length, Mode.lazy);
     }
     
     /** @return the list containing the given elements */
@@ -78,33 +79,33 @@ public class ImmutableLongFuncList implements LongFuncList {
             return emptyList;
         
         val newArray = source.clone();
-        return new ImmutableLongFuncList(newArray, newArray.length, true);
+        return new ImmutableLongFuncList(newArray, newArray.length, Mode.lazy);
     }
     
     /** Create a FuncList from the given array. */
     public static ImmutableLongFuncList from(long[] datas) {
-        return from(true, datas);
+        return from(Mode.lazy, datas);
     }
     
-    public static ImmutableLongFuncList from(boolean isLazy, long[] data) {
+    public static ImmutableLongFuncList from(Mode mode, long[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;
         
         val array = data.clone();
-        return new ImmutableLongFuncList(array, array.length, isLazy);
+        return new ImmutableLongFuncList(array, array.length, mode);
     }
     
     /** @return the list containing the given elements */
-    public static ImmutableLongFuncList from(boolean isLazy, AsLongFuncList asFuncList) {
+    public static ImmutableLongFuncList from(Mode mode, AsLongFuncList asFuncList) {
         if (asFuncList == null)
             return emptyList;
         
         if (asFuncList instanceof ImmutableLongFuncList)
-            if (isLazy == asFuncList.asLongFuncList().isLazy())
+            if (asFuncList.asLongFuncList().isLazy())
                 return (ImmutableLongFuncList)asFuncList;
         
         val data = asFuncList.asLongFuncList().toArray();
-        return new ImmutableLongFuncList(data, data.length, isLazy);
+        return new ImmutableLongFuncList(data, data.length, mode);
     }
     
     /** @return the list containing the element from the given stream */
@@ -113,16 +114,16 @@ public class ImmutableLongFuncList implements LongFuncList {
             return emptyList;
         
         long[] array = source.toArray();
-        return new ImmutableLongFuncList(array, array.length, true);
+        return new ImmutableLongFuncList(array, array.length, Mode.lazy);
     }
     
     /** @return the list containing the element from the given stream */
-    public static ImmutableLongFuncList from(boolean isLazy, LongStream source) {
+    public static ImmutableLongFuncList from(Mode mode, LongStream source) {
         if ((source == null))
             return emptyList;
         
         long[] array = source.toArray();
-        return new ImmutableLongFuncList(array, array.length, isLazy);
+        return new ImmutableLongFuncList(array, array.length, mode);
     }
     
     /** @return the list containing the element from the given list. */
@@ -133,8 +134,8 @@ public class ImmutableLongFuncList implements LongFuncList {
         if (funcList instanceof ImmutableLongFuncList)
             return (ImmutableLongFuncList)funcList;
         
-        val isLazy = funcList.asLongFuncList().isLazy();
-        return ImmutableLongFuncList.from(isLazy, funcList);
+        val mode = funcList.asLongFuncList().mode();
+        return ImmutableLongFuncList.from(mode, funcList);
     }
     
     /** @return the list containing the element from the given collections. */
@@ -145,13 +146,13 @@ public class ImmutableLongFuncList implements LongFuncList {
             Long next = iterator.next();
             longs[i] = (next != null) ? next.longValue() : valueForNull;
         }
-        return new ImmutableLongFuncList(longs, longs.length, true);
+        return new ImmutableLongFuncList(longs, longs.length, Mode.lazy);
     }
     
     //-- Data --
     
     private final GrowOnlyLongArray data;
-    private final boolean           isLazy;
+    private final FuncList.Mode     mode;
     private final int               size;
     
     private volatile String  toStringCache = null;
@@ -160,52 +161,66 @@ public class ImmutableLongFuncList implements LongFuncList {
     //-- Constructors --
     
     ImmutableLongFuncList(long[] data, int size) {
-        this(data, size, true);
+        this(data, size, Mode.lazy);
     }
     
-    ImmutableLongFuncList(long[] data, int size, boolean isLazy) {
-        this.data   = new GrowOnlyLongArray((data == null) ? EMPTY_LONG_ARRAY : data);
-        this.isLazy = isLazy;
-        this.size   = size;
+    ImmutableLongFuncList(long[] data, int size, Mode mode) {
+        this.data = new GrowOnlyLongArray((data == null) ? EMPTY_LONG_ARRAY : data);
+        this.mode = mode;
+        this.size = size;
     }
     
-    private ImmutableLongFuncList(GrowOnlyLongArray data, int size, boolean isLazy) {
-        this.data   = data;
-        this.isLazy = isLazy;
-        this.size   = size;
+    ImmutableLongFuncList(GrowOnlyLongArray data, int size, Mode mode) {
+        this.data = data;
+        this.mode = mode;
+        this.size = size;
+    }
+    
+    ImmutableLongFuncList(LongFuncList list, int size, Mode mode) {
+        this.mode = mode;
+        this.size = size;
+        this.data = (list instanceof ImmutableLongFuncList) ? ((ImmutableLongFuncList)list).data : new GrowOnlyLongArray(list.toArray());
     }
     
     @Override
     public LongStreamPlus longStream() {
-        return IntStreamPlus.infinite().limit(size).mapToLong(i -> data.get(i));
+        if (size ==-1) {
+            return LongStreamPlus.from(data.stream());
+        } else {
+            return LongStreamPlus.infinite().limit(size).map(i -> data.get((int)i));
+        }
     }
     
     @Override
-    public boolean isLazy() {
-        return isLazy;
+    public Mode mode() {
+        return mode;
     }
     
     @Override
-    public boolean isEager() {
-        return !isLazy;
-    }
-    
-    @Override
-    public LongFuncList lazy() {
-        if (isLazy)
+    public LongFuncList toLazy() {
+        if (mode().isLazy())
             return this;
         
-        long[] array = this.data.toArray();
-        return new ImmutableLongFuncList(array, size, true);
+        // Do this to not duplicate the data
+        return new ImmutableLongFuncList(data, size, Mode.lazy);
     }
     
     @Override
-    public LongFuncList eager() {
-        if (!isLazy)
+    public LongFuncList toEager() {
+        if (mode().isEager())
             return this;
         
-        long[] array = this.data.toArray();
-        return new ImmutableLongFuncList(array, size, false);
+        // Do this to not duplicate the data
+        return new ImmutableLongFuncList(data, size, Mode.eager);
+    }
+    
+    @Override
+    public LongFuncList toCache() {
+        if (mode().isCache())
+            return this;
+        
+        // Do this to not duplicate the data
+        return new ImmutableLongFuncList(data, size, Mode.cache);
     }
     
     @Override
@@ -328,14 +343,14 @@ public class ImmutableLongFuncList implements LongFuncList {
         if (this == emptyList) {
             GrowOnlyLongArray list = new GrowOnlyLongArray();
             list.add(value);
-            return new ImmutableLongFuncList(list, 1, isLazy);
+            return new ImmutableLongFuncList(list, 1, mode);
         }
         
         return syncIf(
                 () ->(size == data.length()), 
                 ()-> {
                     data.add(value);
-                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                    return new ImmutableLongFuncList(data, data.length(), mode);
                 },
                 () -> {
                     return LongFuncList.super.append(value);
@@ -349,7 +364,7 @@ public class ImmutableLongFuncList implements LongFuncList {
             for (long value : values) {
                 list.add(value);
             }
-            return new ImmutableLongFuncList(list, list.length(), isLazy);
+            return new ImmutableLongFuncList(list, list.length(), mode);
         }
         
         return syncIf(
@@ -358,7 +373,7 @@ public class ImmutableLongFuncList implements LongFuncList {
                     for (long value : values) {
                         data.add(value);
                     }
-                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                    return new ImmutableLongFuncList(data, data.length(), mode);
                 },
                 () -> {
                     return LongFuncList.super.appendAll(values);
@@ -370,13 +385,13 @@ public class ImmutableLongFuncList implements LongFuncList {
         if (this == emptyList) {
             GrowOnlyLongArray list = new GrowOnlyLongArray();
             array.stream().forEach(data::add);
-            return new ImmutableLongFuncList(list, list.length(), isLazy);
+            return new ImmutableLongFuncList(list, list.length(), mode);
         }
         return syncIf(
                 () ->(size == data.length()), 
                 ()-> {
                     array.stream().forEach(data::add);
-                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                    return new ImmutableLongFuncList(data, data.length(), mode);
                 },
                 () -> {
                     return LongFuncList.super.appendAll(array.toArray());
@@ -390,7 +405,7 @@ public class ImmutableLongFuncList implements LongFuncList {
             longs.stream()
                 .mapToLong(l -> (l == null) ? fallbackValue : l.longValue())
                 .forEach(data::add);
-            return new ImmutableLongFuncList(list, list.length(), isLazy);
+            return new ImmutableLongFuncList(list, list.length(), mode);
         }
         return syncIf(
                 () ->(size == data.length()), 
@@ -398,14 +413,14 @@ public class ImmutableLongFuncList implements LongFuncList {
                     longs.stream()
                         .mapToLong(l -> (l == null) ? fallbackValue : l.longValue())
                         .forEach(data::add);
-                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                    return new ImmutableLongFuncList(data, data.length(), mode);
                 },
                 () -> {
                     GrowOnlyLongArray list = new GrowOnlyLongArray();
                     longs.stream()
                         .mapToLong(l -> (l == null) ? fallbackValue : l.longValue())
                         .forEach(data::add);
-                    LongFuncList funcList = new ImmutableLongFuncList(list, list.length(), isLazy);
+                    LongFuncList funcList = new ImmutableLongFuncList(list, list.length(), mode);
                     return LongFuncList.super.appendAll(funcList);
                 });
     }
@@ -415,13 +430,13 @@ public class ImmutableLongFuncList implements LongFuncList {
         if (this == emptyList) {
             GrowOnlyLongArray list = new GrowOnlyLongArray();
             longs.forEach(data::add);
-            return new ImmutableLongFuncList(list, list.length(), isLazy);
+            return new ImmutableLongFuncList(list, list.length(), mode);
         }
         return syncIf(
                 () ->(size == data.length()), 
                 ()-> {
                     longs.forEach(data::add);
-                    return new ImmutableLongFuncList(data, data.length(), isLazy);
+                    return new ImmutableLongFuncList(data, data.length(), mode);
                 },
                 () -> {
                     return LongFuncList.super.appendAll(longs);
