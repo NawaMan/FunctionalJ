@@ -20,8 +20,8 @@ public class FuncListModeTest {
         assertEquals(Mode.lazy, orgList.toLazy().map(i -> i * 2).mode());
         assertEquals(Mode.lazy, orgList.toLazy().mapToInt(i -> i * 2).mode());
         assertEquals(Mode.lazy, orgList.toLazy().mapToInt(i -> i * 2).map(i -> i + 1).mode());
-//        assertEquals(Mode.lazy, orgList.toLazy().mapToLong(i -> i * 2).mode());
-//        assertEquals(Mode.lazy, orgList.toLazy().mapToLong(i -> i * 2).map(i -> i + 1).mode());
+        assertEquals(Mode.lazy, orgList.toLazy().mapToLong(i -> i * 2).mode());
+        assertEquals(Mode.lazy, orgList.toLazy().mapToLong(i -> i * 2).map(i -> i + 1).mode());
 //        assertEquals(Mode.lazy, orgList.toLazy().mapToDouble(i -> i * 2).mode());
 //        assertEquals(Mode.lazy, orgList.toLazy().mapToDouble(i -> i * 2).map(i -> i + 1).mode());
         
@@ -29,8 +29,8 @@ public class FuncListModeTest {
         assertEquals(Mode.eager, orgList.toEager().map(i -> i * 2).mode());
         assertEquals(Mode.eager, orgList.toEager().mapToInt(i -> i * 2).mode());
         assertEquals(Mode.eager, orgList.toEager().mapToInt(i -> i * 2).map(i -> i + 1).mode());
-//        assertEquals(Mode.eager, orgList.toEager().mapToLong(i -> i * 2).mode());
-//        assertEquals(Mode.eager, orgList.toEager().mapToLong(i -> i * 2).map(i -> i + 1).mode());
+        assertEquals(Mode.eager, orgList.toEager().mapToLong(i -> i * 2).mode());
+        assertEquals(Mode.eager, orgList.toEager().mapToLong(i -> i * 2).map(i -> i + 1).mode());
 //        assertEquals(Mode.eager, orgList.toEager().mapToDouble(i -> i * 2).mode());
 //        assertEquals(Mode.eager, orgList.toEager().mapToDouble(i -> i * 2).map(i -> i + 1).mode());
         
@@ -38,8 +38,8 @@ public class FuncListModeTest {
         assertEquals(Mode.cache, orgList.toCache().map(i -> i * 2).mode());
         assertEquals(Mode.cache, orgList.toCache().mapToInt(i -> i * 2).mode());
         assertEquals(Mode.cache, orgList.toCache().mapToInt(i -> i * 2).map(i -> i + 1).mode());
-//        assertEquals(Mode.cache, orgList.toCache().mapToLong(i -> i * 2).mode());
-//        assertEquals(Mode.cache, orgList.toCache().mapToLong(i -> i * 2).map(i -> i + 1).mode());
+        assertEquals(Mode.cache, orgList.toCache().mapToLong(i -> i * 2).mode());
+        assertEquals(Mode.cache, orgList.toCache().mapToLong(i -> i * 2).map(i -> i + 1).mode());
 //        assertEquals(Mode.cache, orgList.toCache().mapToDouble(i -> i * 2).mode());
 //        assertEquals(Mode.cache, orgList.toCache().mapToDouble(i -> i * 2).map(i -> i + 1).mode());
     }
@@ -53,36 +53,36 @@ public class FuncListModeTest {
         
         assertEquals(Mode.lazy, orgList.toLazy().map(i -> i * 2).freeze().mode());
         assertEquals(Mode.lazy, orgList.toLazy().mapToInt(i -> i * 2).freeze().mode());
-//        assertEquals(Mode.lazy, orgList.toLazy().mapToLong(i -> i * 2).freeze().mode());
+        assertEquals(Mode.lazy, orgList.toLazy().mapToLong(i -> i * 2).freeze().mode());
 //        assertEquals(Mode.lazy, orgList.toLazy().mapToDouble(i -> i * 2).freeze().mode());
         
         assertEquals(Mode.lazy, orgList.toLazy().map(i -> i * 2).cache().mode());
-      assertEquals(Mode.lazy, orgList.toLazy().mapToInt(i -> i * 2).cache().mode());
-//      assertEquals(Mode.lazy, orgList.toLazy().mapToLong(i -> i * 2).cache().mode());
+        assertEquals(Mode.lazy, orgList.toLazy().mapToInt(i -> i * 2).cache().mode());
+        assertEquals(Mode.lazy, orgList.toLazy().mapToLong(i -> i * 2).cache().mode());
 //      assertEquals(Mode.lazy, orgList.toLazy().mapToDouble(i -> i * 2).cache().mode());
         
         assertEquals(Mode.eager, orgList.toEager().mode());
         assertEquals(Mode.eager, orgList.toEager().map(i -> i * 2).freeze().mode());
         assertEquals(Mode.eager, orgList.toEager().mapToInt(i -> i * 2).freeze().mode());
-//        assertEquals(Mode.eager, orgList.toEager().mapToLong(i -> i * 2).freeze().mode());
+        assertEquals(Mode.eager, orgList.toEager().mapToLong(i -> i * 2).freeze().mode());
 //        assertEquals(Mode.eager, orgList.toEager().mapToDouble(i -> i * 2).freeze().mode());
         
         assertEquals(Mode.eager, orgList.toEager().mode());
         assertEquals(Mode.eager, orgList.toEager().map(i -> i * 2).cache().mode());
         assertEquals(Mode.eager, orgList.toEager().mapToInt(i -> i * 2).cache().mode());
-//        assertEquals(Mode.eager, orgList.toEager().mapToLong(i -> i * 2).cache().mode());
+        assertEquals(Mode.eager, orgList.toEager().mapToLong(i -> i * 2).cache().mode());
 //        assertEquals(Mode.eager, orgList.toEager().mapToDouble(i -> i * 2).cache().mode());
         
         assertEquals(Mode.cache, orgList.toCache().mode());
         assertEquals(Mode.cache, orgList.toCache().map(i -> i * 2).freeze().mode());
         assertEquals(Mode.cache, orgList.toCache().mapToInt(i -> i * 2).freeze().mode());
-//        assertEquals(Mode.cache, orgList.toCache().mapToLong(i -> i * 2).freeze().mode());
+        assertEquals(Mode.cache, orgList.toCache().mapToLong(i -> i * 2).freeze().mode());
 //        assertEquals(Mode.cache, orgList.toCache().mapToDouble(i -> i * 2).freeze().mode());
         
         assertEquals(Mode.cache, orgList.toCache().mode());
         assertEquals(Mode.cache, orgList.toCache().map(i -> i * 2).cache().mode());
         assertEquals(Mode.cache, orgList.toCache().mapToInt(i -> i * 2).cache().mode());
-//        assertEquals(Mode.cache, orgList.toCache().mapToLong(i -> i * 2).cache().mode());
+        assertEquals(Mode.cache, orgList.toCache().mapToLong(i -> i * 2).cache().mode());
 //        assertEquals(Mode.cache, orgList.toCache().mapToDouble(i -> i * 2).cache().mode());
     }
     
