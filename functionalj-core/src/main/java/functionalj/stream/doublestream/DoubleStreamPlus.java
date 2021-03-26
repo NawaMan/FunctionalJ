@@ -623,6 +623,10 @@ public interface DoubleStreamPlus
         return mapToObj(mapper).flatMapToInt(itself());
     }
     
+    public default LongStreamPlus flatMapToLong(DoubleFunction<? extends LongStream> mapper) {
+        return mapToObj(mapper).flatMapToLong(itself());
+    }
+    
     public default DoubleStreamPlus flatMapToDouble(DoubleFunction<? extends DoubleStream> mapper) {
         return flatMap(mapper);
     }

@@ -19,7 +19,7 @@ public class StreamBackedLongFuncList implements LongFuncList {
     
     private static final LongBinaryOperator zeroForEquals = (long i1, long i2) -> i1 == i2 ? 0 : 1;
     private static final LongPredicate      notZero       = (long i)           -> i  != 0;
-
+    
     private final Mode               mode;
     private final GrowOnlyLongArray  cache = new GrowOnlyLongArray();
     private final Spliterator.OfLong spliterator;

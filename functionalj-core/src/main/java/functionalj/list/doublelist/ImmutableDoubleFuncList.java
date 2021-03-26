@@ -32,6 +32,8 @@ import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 
 import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
+import functionalj.list.FuncList;
+import functionalj.list.FuncList.Mode;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.GrowOnlyDoubleArray;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -47,11 +49,11 @@ import lombok.val;
 public class ImmutableDoubleFuncList implements DoubleFuncList {
     
     private static final DoubleDoubleToDoubleFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
-    private static final DoublePredicate           toZero        = (double i)             -> i  == 0;
+    private static final DoublePredicate                       toZero        = (double i)             -> i  == 0;
     
     private static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
     
-    private static ImmutableDoubleFuncList emptyList = new ImmutableDoubleFuncList(new double[0], 0, true);
+    private static ImmutableDoubleFuncList emptyList = new ImmutableDoubleFuncList(new double[0], 0, Mode.lazy);
     
     /** @return an empty list */
     public static ImmutableDoubleFuncList empty() {
@@ -69,7 +71,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return emptyList;
        
         val newArray = source.clone();
-        return new ImmutableDoubleFuncList(newArray, newArray.length, true);
+        return new ImmutableDoubleFuncList(newArray, newArray.length, Mode.lazy);
     }
     
     /** @return the list containing the given elements */
@@ -78,32 +80,33 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return emptyList;
         
         val newArray = source.clone();
-        return new ImmutableDoubleFuncList(newArray, newArray.length, true);
+        return new ImmutableDoubleFuncList(newArray, newArray.length, Mode.lazy);
     }
     
+    /** Create a FuncList from the given array. */
     public static ImmutableDoubleFuncList from(double[] data) {
-        return from(true, data);
+        return from(Mode.lazy, data);
     }
     
-    public static ImmutableDoubleFuncList from(boolean isLazy, double[] data) {
+    public static ImmutableDoubleFuncList from(Mode mode, double[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;
         
         val array = data.clone();
-        return new ImmutableDoubleFuncList(data.clone(), array.length, isLazy);
+        return new ImmutableDoubleFuncList(array, array.length, mode);
     }
     
     /** @return the list containing the given elements */
-    public static ImmutableDoubleFuncList from(boolean isLazy, AsDoubleFuncList asFuncList) {
+    public static ImmutableDoubleFuncList from(Mode mode, AsDoubleFuncList asFuncList) {
         if (asFuncList == null)
             return emptyList;
         
         if (asFuncList instanceof ImmutableDoubleFuncList)
-            if (isLazy == asFuncList.asDoubleFuncList().isLazy())
+            if (asFuncList.asDoubleFuncList().isLazy())
                 return (ImmutableDoubleFuncList)asFuncList;
         
         val data = asFuncList.asDoubleFuncList().toArray();
-        return new ImmutableDoubleFuncList(data, data.length, isLazy);
+        return new ImmutableDoubleFuncList(data, data.length, mode);
     }
     
     /** @return the list containing the element from the given stream */
@@ -112,16 +115,16 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return emptyList;
         
         double[] array = source.toArray();
-        return new ImmutableDoubleFuncList(array, array.length, true);
+        return new ImmutableDoubleFuncList(array, array.length, Mode.lazy);
     }
     
     /** @return the list containing the element from the given stream */
-    public static ImmutableDoubleFuncList from(boolean isLazy, DoubleStream source) {
+    public static ImmutableDoubleFuncList from(Mode mode, DoubleStream source) {
         if ((source == null))
             return emptyList;
         
         double[] array = source.toArray();
-        return new ImmutableDoubleFuncList(array, array.length, isLazy);
+        return new ImmutableDoubleFuncList(array, array.length, mode);
     }
     
     /** @return the list containing the element from the given list. */
@@ -132,8 +135,8 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         if (funcList instanceof ImmutableDoubleFuncList)
             return (ImmutableDoubleFuncList)funcList;
         
-        val isLazy = funcList.asDoubleFuncList().isLazy();
-        return ImmutableDoubleFuncList.from(isLazy, funcList);
+        val mode = funcList.asDoubleFuncList().mode();
+        return ImmutableDoubleFuncList.from(mode, funcList);
     }
     
     /** @return the list containing the element from the given collections. */
@@ -144,13 +147,13 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             Double value = iterator.next();
             doubles[i] = (value != null) ? value.doubleValue() : valueForNull;
         }
-        return new ImmutableDoubleFuncList(doubles, doubles.length, true);
+        return new ImmutableDoubleFuncList(doubles, doubles.length, Mode.lazy);
     }
     
     //-- Data --
     
     private final GrowOnlyDoubleArray data;
-    private final boolean             isLazy;
+    private final FuncList.Mode       mode;
     private final int                 size;
     
     private volatile String  toStringCache = null;
@@ -159,52 +162,66 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
     //-- Constructors --
     
     ImmutableDoubleFuncList(double[] data, int size) {
-        this(data, size, true);
+        this(data, size, Mode.lazy);
     }
     
-    ImmutableDoubleFuncList(double[] data, int size, boolean isLazy) {
-        this.data   = new GrowOnlyDoubleArray((data == null) ? EMPTY_DOUBLE_ARRAY : data);
-        this.isLazy = isLazy;
-        this.size   = size;
+    ImmutableDoubleFuncList(double[] data, int size, Mode mode) {
+        this.data = new GrowOnlyDoubleArray((data == null) ? EMPTY_DOUBLE_ARRAY : data);
+        this.mode = mode;
+        this.size = size;
     }
     
-    private ImmutableDoubleFuncList(GrowOnlyDoubleArray data, int size, boolean isLazy) {
-        this.data   = data;
-        this.isLazy = isLazy;
-        this.size   = size;
+    ImmutableDoubleFuncList(GrowOnlyDoubleArray data, int size, Mode mode) {
+        this.data = data;
+        this.mode = mode;
+        this.size = size;
+    }
+    
+    ImmutableDoubleFuncList(DoubleFuncList list, int size, Mode mode) {
+        this.mode = mode;
+        this.size = size;
+        this.data = (list instanceof ImmutableDoubleFuncList) ? ((ImmutableDoubleFuncList)list).data : new GrowOnlyDoubleArray(list.toArray());
     }
     
     @Override
     public DoubleStreamPlus doubleStream() {
-        return IntStreamPlus.infinite().limit(size).mapToDouble(i -> data.get(i));
+        if (size ==-1) {
+            return DoubleStreamPlus.from(data.stream());
+        } else {
+            return IntStreamPlus.infinite().limit(size).mapToDouble(i -> data.get(i));
+        }
     }
     
     @Override
-    public boolean isLazy() {
-        return isLazy;
+    public Mode mode() {
+        return mode;
     }
     
     @Override
-    public boolean isEager() {
-        return !isLazy;
-    }
-    
-    @Override
-    public DoubleFuncList lazy() {
-        if (isLazy)
+    public DoubleFuncList toLazy() {
+        if (mode().isLazy())
             return this;
         
-        double[] array = this.data.toArray();
-        return new ImmutableDoubleFuncList(array, size, true);
+        // Do this to not duplicate the data
+        return new ImmutableDoubleFuncList(data, size, Mode.lazy);
     }
     
     @Override
-    public DoubleFuncList eager() {
-        if (!isLazy)
+    public DoubleFuncList toEager() {
+        if (mode().isEager())
             return this;
         
-        double[] array = this.data.toArray();
-        return new ImmutableDoubleFuncList(array, size, false);
+        // Do this to not duplicate the data
+        return new ImmutableDoubleFuncList(data, size, Mode.eager);
+    }
+    
+    @Override
+    public DoubleFuncList toCache() {
+        if (mode().isCache())
+            return this;
+        
+        // Do this to not duplicate the data
+        return new ImmutableDoubleFuncList(data, size, Mode.cache);
     }
     
     @Override
@@ -327,14 +344,14 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         if (this == emptyList) {
             GrowOnlyDoubleArray list = new GrowOnlyDoubleArray();
             list.add(value);
-            return new ImmutableDoubleFuncList(list, 1, isLazy);
+            return new ImmutableDoubleFuncList(list, 1, Mode.lazy);
         }
         
         return syncIf(
                 () ->(size == data.length()), 
                 ()-> {
                     data.add(value);
-                    return new ImmutableDoubleFuncList(data, data.length(), isLazy);
+                    return new ImmutableDoubleFuncList(data, data.length(), Mode.lazy);
                 },
                 () -> {
                     return DoubleFuncList.super.append(value);
@@ -348,7 +365,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             for (double value : values) {
                 list.add(value);
             }
-            return new ImmutableDoubleFuncList(list, list.length(), isLazy);
+            return new ImmutableDoubleFuncList(list, list.length(), Mode.lazy);
         }
         
         return syncIf(
@@ -357,7 +374,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
                     for (double value : values) {
                         data.add(value);
                     }
-                    return new ImmutableDoubleFuncList(data, data.length(), isLazy);
+                    return new ImmutableDoubleFuncList(data, data.length(), Mode.lazy);
                 },
                 () -> {
                     return DoubleFuncList.super.appendAll(values);
@@ -369,13 +386,13 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         if (this == emptyList) {
             GrowOnlyDoubleArray list = new GrowOnlyDoubleArray();
             array.stream().forEach(data::add);
-            return new ImmutableDoubleFuncList(list, list.length(), isLazy);
+            return new ImmutableDoubleFuncList(list, list.length(), Mode.lazy);
         }
         return syncIf(
                 () ->(size == data.length()), 
                 ()-> {
                     array.stream().forEach(data::add);
-                    return new ImmutableDoubleFuncList(data, data.length(), isLazy);
+                    return new ImmutableDoubleFuncList(data, data.length(), Mode.lazy);
                 },
                 () -> {
                     return DoubleFuncList.super.appendAll(array.toArray());
@@ -389,7 +406,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             doubles.stream()
                 .mapToDouble(d -> (d == null) ? fallbackValue : d.doubleValue())
                 .forEach(data::add);
-            return new ImmutableDoubleFuncList(list, list.length(), isLazy);
+            return new ImmutableDoubleFuncList(list, list.length(), Mode.lazy);
         }
         return syncIf(
                 () ->(size == data.length()), 
@@ -397,14 +414,14 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
                     doubles.stream()
                         .mapToDouble(d -> (d == null) ? fallbackValue : d.doubleValue())
                         .forEach(data::add);
-                    return new ImmutableDoubleFuncList(data, data.length(), isLazy);
+                    return new ImmutableDoubleFuncList(data, data.length(), Mode.lazy);
                 },
                 () -> {
                     GrowOnlyDoubleArray list = new GrowOnlyDoubleArray();
                     doubles.stream()
                         .mapToDouble(d -> (d == null) ? fallbackValue : d.doubleValue())
                         .forEach(data::add);
-                    DoubleFuncList funcList = new ImmutableDoubleFuncList(list, list.length(), isLazy);
+                    DoubleFuncList funcList = new ImmutableDoubleFuncList(list, list.length(), Mode.lazy);
                     return DoubleFuncList.super.appendAll(funcList);
                 });
     }
@@ -414,13 +431,13 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         if (this == emptyList) {
             GrowOnlyDoubleArray list = new GrowOnlyDoubleArray();
             doubles.forEach(data::add);
-            return new ImmutableDoubleFuncList(list, list.length(), isLazy);
+            return new ImmutableDoubleFuncList(list, list.length(), Mode.lazy);
         }
         return syncIf(
                 () ->(size == data.length()), 
                 ()-> {
                     doubles.forEach(data::add);
-                    return new ImmutableDoubleFuncList(data, data.length(), isLazy);
+                    return new ImmutableDoubleFuncList(data, data.length(), Mode.lazy);
                 },
                 () -> {
                     return DoubleFuncList.super.appendAll(doubles);

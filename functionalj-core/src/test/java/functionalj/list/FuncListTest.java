@@ -111,8 +111,14 @@ public class FuncListTest {
     static final String TwentyThree = "Twenty-three";
     
     
-    private void assertStrings(String str, Object obj) {
-        assertEquals(str, "" + obj);
+    private void assertStrings(String expected, Object obj) {
+        val expectedRegEx = "\\Q" + expected + "\\E";
+        val actualString  = Objects.toString(obj);
+        
+        if (actualString.matches(expectedRegEx))
+            return;
+        
+        assertEquals(actualString, "" + obj);
     }
     
     private <T> void run(FuncList<T> list, FuncUnit1<FuncList<T>> action) {

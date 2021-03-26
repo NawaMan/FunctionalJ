@@ -293,9 +293,9 @@ public interface LongFuncList
     
     /**
      * Concatenate all the given lists.
-     *
-     * This method is the alias of {@link FuncList#concat(FuncList...)} but allowing static import without colliding with
-     * {@link String#concat(String)}.
+     * 
+     * This method is the alias of {@link FuncList#concat(FuncList...)}
+     *   but allowing static import without colliding with {@link String#concat(String)}.
      **/
     public static LongFuncList combine(LongFuncList... lists) {
         ImmutableFuncList<LongFuncList> listOfList = FuncList.listOf(lists);
@@ -306,8 +306,8 @@ public interface LongFuncList
     //          we may want to do cache here.
     
     /**
-     * Create a FuncList from the supplier of suppliers. The supplier will be repeatedly asked for value until NoMoreResultException is
-     * thrown.
+     * Create a FuncList from the supplier of suppliers.
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static LongFuncList generate(Supplier<LongSupplier> suppliers) {
         return LongFuncList.from(() -> {
@@ -317,7 +317,8 @@ public interface LongFuncList
     }
     
     /**
-     * Create a list from the supplier of suppliers. The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
+     * Create a list from the supplier of suppliers.
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static LongFuncList generateWith(Supplier<LongSupplier> suppliers) {
         return generate(suppliers);
@@ -357,7 +358,9 @@ public interface LongFuncList
      *
      * Note: this is an alias of iterate()
      **/
-    public static LongFuncList compound(long seed, LongUnaryOperator compounder) {
+    public static LongFuncList compound(
+            long              seed, 
+            LongUnaryOperator compounder) {
         return LongFuncList.from(() -> LongStreamPlus.compound(seed, compounder));
     }
     
@@ -376,64 +379,93 @@ public interface LongFuncList
      *
      * Note: this is an alias of compound()
      **/
-    public static LongFuncList iterate(long seed1, long seed2, LongBinaryOperator compounder) {
+    public static LongFuncList iterate(
+            long               seed1,
+            long               seed2,
+            LongBinaryOperator compounder) {
         return LongFuncList.from(() -> LongStreamPlus.iterate(seed1, seed2, compounder));
     }
     
     /**
      * Create a list by apply the compounder to the seeds over and over.
      *
-     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b. The result stream will be: 1 <- seed1, 1 <- seed2, 2 <- (1+1), 3 <-
-     * (1+2), 5 <- (2+3), 8 <- (5+8) ...
+     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
+     * The result stream will be:
+     *      1 <- seed1,
+     *      1 <- seed2,
+     *      2 <- (1+1),
+     *      3 <- (1+2),
+     *      5 <- (2+3),
+     *      8 <- (5+8)
+     *      ...
      *
      * Note: this is an alias of iterate()
      **/
-    public static LongFuncList compound(long seed1, long seed2, LongBinaryOperator compounder) {
-        return LongFuncList.from(() -> LongStreamPlus.compound(seed1, seed2, compounder));
+    public static LongFuncList compound(
+            long               seed1,
+            long               seed2, 
+            LongBinaryOperator compounder) {
+        return iterate(seed1, seed2, compounder);
     }
     
     // == Zip ==
     
     /**
-     * Create a FuncList by combining elements together into a FuncList of tuples. Only elements with pair will be combined. If this is not
-     * desirable, use FuncList1.zip(FuncList2).
+     * Create a FuncList by combining elements together into a FuncList of tuples.
+     * Only elements with pair will be combined. If this is not desirable, use FuncList1.zip(FuncList2).
      *
-     * For example: list1 = [A, B, C, D, E] list2 = [1, 2, 3, 4]
+     * For example:
+     *     list1 = [A, B, C, D, E]
+     *     list2 = [1, 2, 3, 4]
      *
      * The result stream = [(A,1), (B,2), (C,3), (D,4)].
      **/
-    public static FuncList<LongLongTuple> zipOf(AsLongFuncList list1, AsLongFuncList list2) {
+    public static FuncList<LongLongTuple> zipOf(
+            LongFuncList list1, 
+            LongFuncList list2) {
         return FuncList.from(() -> {
-            return LongStreamPlus.zipOf(list1.longStream(), list2.longStream());
+            return LongStreamPlus.zipOf(
+                    list1.longStream(),
+                    list2.longStream());
         });
     }
     
-    public static FuncList<LongLongTuple> zipOf(AsLongFuncList list1, long defaultValue1, LongFuncList list2, long defaultValue2) {
+    public static FuncList<LongLongTuple> zipOf(
+            LongFuncList list1, long defaultValue1,
+            LongFuncList list2, long defaultValue2) {
         return FuncList.from(() -> {
-            return LongStreamPlus.zipOf(list1.longStream(), defaultValue1, list2.longStream(), defaultValue2);
+            return LongStreamPlus.zipOf(
+                    list1.longStream(), defaultValue1,
+                    list2.longStream(), defaultValue2);
         });
     }
     
     /** Zip integers from two LongFuncLists and combine it into another object. */
     public static LongFuncList zipOf(
-            AsLongFuncList list1, 
-            AsLongFuncList list2, 
+            LongFuncList       list1,
+            LongFuncList       list2,
             LongBinaryOperator merger) {
         return LongFuncList.from(() -> {
-            return LongStreamPlus.zipOf(list1.longStream(), list2.longStream(), merger);
+            return LongStreamPlus.zipOf(
+                    list1.longStream(),
+                    list2.longStream(),
+                    merger);
         });
     }
     
     /**
-     * Zip integers from an int stream and another object stream and combine it into another object. The result stream has the size of the
-     * shortest stream.
+     * Zip integers from an int stream and another object stream and combine it into another object.
+     * The result stream has the size of the shortest stream.
      */
     public static LongFuncList zipOf(
-            AsLongFuncList list1, long defaultValue1, 
-            AsLongFuncList list2, long defaultValue2,
+            LongFuncList       list1, long defaultValue1, 
+            LongFuncList       list2, long defaultValue2,
             LongBinaryOperator merger) {
         return LongFuncList.from(() -> {
-            return LongStreamPlus.zipOf(list1.longStream(), defaultValue1, list2.longStream(), defaultValue2, merger);
+            return LongStreamPlus.zipOf(
+                    list1.longStream(), defaultValue1,
+                    list2.longStream(), defaultValue2,
+                    merger);
         });
     }
     
@@ -483,7 +515,7 @@ public interface LongFuncList
                 : Mode.lazy;
         switch (mode) {
             case lazy: {
-                return LongFuncList.from(()->{
+                return LongFuncList.from(() -> {
                     val orgStreamPlus = (list instanceof FuncList)
                             ? ((FuncList)list).streamPlus()
                             : StreamPlus.from(list.stream());
@@ -563,37 +595,24 @@ public interface LongFuncList
     public static <TARGET> LongFuncList deriveFrom(
             AsDoubleFuncList                       asFuncList, 
             Function<DoubleStreamPlus, LongStream> action) {
-//      Mode mode = asFuncList.asDoubleFuncList().mode();
-//      switch (mode) {
-//          case lazy: {
-//              return DoubleFuncList.from(() -> {
-//                  val orgStreamPlus = asFuncList.doubleStreamPlus();
-//                  val newStream     = action.apply(orgStreamPlus);
-//                  return DoubleStreamPlus.from(newStream);
-//              });
-//          }
-//          case eager:
-//          case cache: {
-//              val orgStreamPlus = asFuncList.doubleStreamPlus();
-//              val newStream     = action.apply(orgStreamPlus);
-//              val newStreamPlus = DoubleStreamPlus.from(newStream);
-//              return ImmutableDoubleFuncList.from(mode, newStreamPlus);
-//          }
-//          default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
-//      }
-        boolean isLazy = asFuncList.asDoubleFuncList().isLazy();
-        if (!isLazy) {
-            val orgStreamPlus = asFuncList.doubleStreamPlus();
-            val newStream     = action.apply(orgStreamPlus);
-            val newStreamPlus = LongStreamPlus.from(newStream);
-            return ImmutableLongFuncList.from(Mode.eager, newStreamPlus);
-        }
-        
-        return LongFuncList.from(() -> {
-            val orgStreamPlus = asFuncList.doubleStreamPlus();
-            val newStream     = action.apply(orgStreamPlus);
-            return LongStreamPlus.from(newStream);
-        });
+      Mode mode = asFuncList.asDoubleFuncList().mode();
+      switch (mode) {
+          case lazy: {
+              return LongFuncList.from(() -> {
+                  val orgStreamPlus = asFuncList.doubleStreamPlus();
+                  val newStream     = action.apply(orgStreamPlus);
+                  return LongStreamPlus.from(newStream);
+              });
+          }
+          case eager:
+          case cache: {
+              val orgStreamPlus = asFuncList.doubleStreamPlus();
+              val newStream     = action.apply(orgStreamPlus);
+              val newStreamPlus = LongStreamPlus.from(newStream);
+              return ImmutableLongFuncList.from(mode, newStreamPlus);
+          }
+          default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
+      }
     }
     
     /** Create a FuncList from another FuncList. */
@@ -788,7 +807,9 @@ public interface LongFuncList
     }
     
     /** Select only the element that the mapped value passes the predicate */
-    public default LongFuncList filter(LongUnaryOperator mapper, LongPredicate predicate) {
+    public default LongFuncList filter(
+            LongUnaryOperator mapper, 
+            LongPredicate     predicate) {
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
     
@@ -1003,8 +1024,6 @@ public interface LongFuncList
             return LongStreamPlus.concat(longStream, thisStream);
         });
     }
-    
-    // TODO - add one for List and FuncList
     
     /** Returns a new functional list with the value replacing at the index. */
     public default LongFuncList with(int index, long value) {

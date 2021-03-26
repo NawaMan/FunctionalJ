@@ -48,6 +48,7 @@ import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.functions.TimeFuncs;
 import functionalj.lens.LensTest.Car;
+import functionalj.list.FuncList.Mode;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.doublelist.DoubleFuncListBuilder;
 import functionalj.list.doublelist.DoubleFuncListDerived;
@@ -190,13 +191,17 @@ public class DoubleFuncListTest {
     
     @Test
     public void testFrom_funcList() {
-        run(DoubleFuncList.from(true, DoubleFuncList.of(One, Two, Three)), list -> {
+        run(DoubleFuncList.from(Mode.lazy, DoubleFuncList.of(One, Two, Three)), list -> {
             assertStrings("[1.0, 2.0, 3.0]", list);
             assertTrue   (list.isLazy());
         });
-        run(DoubleFuncList.from(false, DoubleFuncList.of(One, Two, Three)), list -> {
+        run(DoubleFuncList.from(Mode.eager, DoubleFuncList.of(One, Two, Three)), list -> {
             assertStrings("[1.0, 2.0, 3.0]", list);
             assertTrue   (list.isEager());
+        });
+        run(DoubleFuncList.from(Mode.cache, DoubleFuncList.of(One, Two, Three)), list -> {
+            assertStrings("[1.0, 2.0, 3.0]", list);
+            assertTrue   (list.isCache());
         });
     }
     
@@ -619,10 +624,10 @@ public class DoubleFuncListTest {
     @Test
     public void testIsEagerIsLazy() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
-            assertTrue(list.lazy().isLazy());
-            assertTrue(list.eager().isEager());
+            assertTrue(list.toLazy().isLazy());
+            assertTrue(list.toEager().isEager());
             
-            assertTrue(list.lazy().freeze().isLazy());
+            assertTrue(list.toLazy().freeze().isLazy());
             
             val logs = new ArrayList<String>();
             DoubleFuncList lazyList 
@@ -657,7 +662,7 @@ public class DoubleFuncListTest {
             logs.clear();
             DoubleFuncList eagerList 
                     = list
-                    .eager()
+                    .toEager()
                     .peek(value -> logs.add("" + value));
             eagerList.forEach(value -> {});    // ForEach but do nothing
             assertEquals("[1.0, 2.0, 3.0]", logs.toString());
@@ -685,7 +690,7 @@ public class DoubleFuncListTest {
             val logs = new ArrayList<String>();
             
             // We want to confirm that the list is eager
-            val list = DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(value -> logs.add("" + value)).toFuncList().eager();
+            val list = DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(value -> logs.add("" + value)).toFuncList().toEager();
             // The function has been materialized so all element goes through peek.
             assertStrings("[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]", logs);
             // Even we only get part of it, 
@@ -703,7 +708,7 @@ public class DoubleFuncListTest {
             val orgData = DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
             // We want to confirm that the list is lazy
             val list = orgData
-                    .lazy()
+                    .toLazy()
                     .peek   (v -> logs1.add("" + v))
                     .exclude(theDouble.thatLessThanOrEqualsTo(3))
                     .peek   (v -> logs2.add("" + v))
@@ -731,7 +736,7 @@ public class DoubleFuncListTest {
             val orgData = DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).toFuncList();
             // We want to confirm that the list is lazy
             val list = orgData
-                    .eager()
+                    .toEager()
                     .peek   (v -> logs1.add("" + v))
                     .exclude(theDouble.thatLessThanOrEqualsTo(3))
                     .peek   (v -> logs2.add("" + v))

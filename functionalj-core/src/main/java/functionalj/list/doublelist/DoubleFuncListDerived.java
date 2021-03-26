@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 
 import functionalj.function.DoubleDoubleToDoubleFunctionPrimitive;
+import functionalj.list.FuncList.Mode;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import lombok.val;
@@ -80,23 +81,25 @@ public class DoubleFuncListDerived implements DoubleFuncList {
         return DoubleStreamPlus.from(newStream);
     }
     
-    public boolean isLazy() {
-        return true;
-    }
-    
-    public boolean isEager() {
-        return false;
+    /** Check if this list is a lazy list. */
+    public Mode mode() {
+        return Mode.lazy;
     }
     
     @Override
-    public DoubleFuncList lazy() {
+    public DoubleFuncList toLazy() {
         return this;
     }
     
     @Override
-    public DoubleFuncList eager() {
+    public DoubleFuncList toEager() {
         val data = this.toArray();
-        return new ImmutableDoubleFuncList(data, data.length, false);
+        return new ImmutableDoubleFuncList(data, data.length, Mode.eager);
+    }
+    
+    @Override
+    public DoubleFuncList toCache() {
+        return DoubleFuncList.from(doubleStream());
     }
     
     @Override

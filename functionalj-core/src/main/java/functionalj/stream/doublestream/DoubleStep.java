@@ -149,15 +149,23 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
     }
     
     @Override
-    public DoubleFuncList lazy() {
+    public DoubleFuncList toLazy() {
         return DoubleFuncList.from(() -> doubleStreamPlus());
     }
     
     /** Please don't call. This will blow up. */
     @Override
-    public DoubleFuncList eager() {
+    public DoubleFuncList toEager() {
         throw new UnsupportedOperationException(
                 "Infinite double step cannot be made an eager list: " 
+                    + doubleStreamPlus().limit(5).join(", ") + "...");
+    }
+    
+    /** Please don't call. This will blow up. */
+    @Override
+    public DoubleFuncList toCache() {
+        throw new UnsupportedOperationException(
+                "Infinite double step cannot be made a cache list: " 
                     + doubleStreamPlus().limit(5).join(", ") + "...");
     }
     

@@ -34,6 +34,7 @@ import java.util.stream.LongStream;
 
 import functionalj.list.FuncList;
 import functionalj.list.FuncList.Mode;
+import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.GrowOnlyLongArray;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Sequential;
@@ -187,7 +188,7 @@ public class ImmutableLongFuncList implements LongFuncList {
         if (size ==-1) {
             return LongStreamPlus.from(data.stream());
         } else {
-            return LongStreamPlus.infinite().limit(size).map(i -> data.get((int)i));
+            return IntStreamPlus.infinite().limit(size).mapToLong(i -> data.get(i));
         }
     }
     
