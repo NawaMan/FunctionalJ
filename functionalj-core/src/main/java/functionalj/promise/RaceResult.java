@@ -35,6 +35,7 @@ import functionalj.result.Result;
 import lombok.val;
 import lombok.experimental.Delegate;
 
+@SuppressWarnings({ "unchecked" })
 public class RaceResult<DATA> implements HasPromise<DATA> {
     
     @SafeVarargs

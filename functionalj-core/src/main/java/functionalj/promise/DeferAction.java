@@ -61,6 +61,7 @@ import functionalj.validator.Validator;
 import lombok.val;
 
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeable<HasPromise<DATA>> {
     
     public static <D> DeferAction<D> createNew() {
@@ -143,7 +144,6 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2> DeferAction<D> from(
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
@@ -160,7 +160,6 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3> DeferAction<D> from(
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
@@ -179,7 +178,6 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3, T4> DeferAction<D> from(
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
@@ -200,7 +198,6 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3, T4, T5> DeferAction<D> from(
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
@@ -223,7 +220,6 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3, T4, T5, T6> DeferAction<D> from(
             NamedExpression<HasPromise<T1>>  promise1,
             NamedExpression<HasPromise<T2>>  promise2,
@@ -248,7 +244,6 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T> DeferAction<D> from(
             Func1<FuncList<T>, D> merger,
             NamedExpression<HasPromise<T>> ... promises) {
@@ -381,14 +376,12 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return new DeferAction<DATA>(this, (Promise<DATA>)newPromise);
     }
     
-    @SuppressWarnings("unchecked")
     public final <TARGET> DeferAction<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         val newPromise = promise.map(mapper);
         val newAction  = new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
         return newAction;
     }
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public final <TARGET> DeferAction<TARGET> flatMap(Func1<? super DATA, ? extends HasPromise<? extends TARGET>> mapper) {
         return chain((Func1)mapper);
     }
@@ -397,8 +390,6 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         val newPromise = promise.chain(mapper);
         return new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
     }
-    
-    // TODO - Other F-M-FM methods.
     
     //== Status ==
     
@@ -455,7 +446,7 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return new DeferAction<DATA>(this, promise.validate(validator));
     }
     
-    public DeferAction<Tuple2<DATA, FuncList<ValidationException>>> validate(@SuppressWarnings("unchecked") Validator<? super DATA> ... validators) {
+    public DeferAction<Tuple2<DATA, FuncList<ValidationException>>> validate(Validator<? super DATA> ... validators) {
         return new DeferAction<Tuple2<DATA, FuncList<ValidationException>>>(this, promise.validate(validators));
     }
     
