@@ -3,6 +3,10 @@ package functionalj.types.struct;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -53,6 +57,25 @@ public class FromMapTest {
         bd1_map.put("date", 1336066800);
         val bd3 = Birthday.fromMap(bd1_map);
         assertEquals(bd1, bd3);
+    }
+    
+    @Test
+    public void testReadCsv() {
+        val csvString = "Mazda,2008,Black\nBMW,2010,Black\nToyota,2012,White";
+        assertEquals(
+                Stream.of(csvString.split("\n"))
+                .map(line -> Arrays.asList(line.split(",")))
+                .map(each -> {
+                    val map = new TreeMap<String, Object>();
+                    map.put("make",  each.get(0));
+                    map.put("year",  each.get(1));
+                    map.put("color", each.get(2));
+                    return map;
+                })
+                .map(each -> Car.fromMap(each))
+                .collect(Collectors.toList())
+                .toString(),
+                "[Car[make: Mazda, year: 2008, color: Black], Car[make: BMW, year: 2010, color: Black], Car[make: Toyota, year: 2012, color: White]]");
     }
     
 }
