@@ -25,11 +25,25 @@ package functionalj.types;
 
 import static java.util.stream.Collectors.toList;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.DateTimeException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import functionalj.types.choice.ChoiceTypes;
@@ -99,11 +113,150 @@ public interface IData {
             if ((obj instanceof Map) && IChoice.class.isAssignableFrom(clzz))
                 return (T)IChoice.fromMap((Map)obj, (Class)clzz);
             
-            if (obj != null)
+            if (obj != null) {
+                if (obj instanceof String) {
+                    return extractFromStringValue(obj, clzz);
+                }
+                // The value is sorted of a number so we try it as a timestamp.
+                if ((obj instanceof Byte) 
+                 || (obj instanceof Short) 
+                 || (obj instanceof Integer) 
+                 || (obj instanceof Long) 
+                 || (obj instanceof Float) 
+                 || (obj instanceof Double)) {
+                    val seconds = new BigDecimal(obj.toString()).longValue();
+                    val instant = Instant.ofEpochSecond(seconds);
+                    try {
+                        if (Instant.class.isAssignableFrom(clzz)) {
+                            return (T)instant;
+                        }
+                        if (LocalDate.class.isAssignableFrom(clzz)) {
+                            return (T)LocalDate.from(instant.atZone(ZoneId.systemDefault()));
+                        }
+                        if (LocalDateTime.class.isAssignableFrom(clzz)) {
+                            return (T)LocalDateTime.from(instant.atZone(ZoneId.systemDefault()));
+                        }
+                        if (LocalTime.class.isAssignableFrom(clzz)) {
+                            return (T)LocalTime.from(instant.atZone(ZoneId.systemDefault()));
+                        }
+                        if (ZonedDateTime.class.isAssignableFrom(clzz)) {
+                            return (T)instant.atZone(ZoneId.systemDefault());
+                        }
+                    } catch (DateTimeException exception) {
+                        // So the number is not a valid timestamp.
+                    }
+                }
                 return (T)obj;
+            }
             
             val value = defaultValueSupplier.get();
             return (T)value;
+        }
+        
+        // TODO - Find the better/more maintainable way to do this.
+        // TODO - It will also nice if we can specify pattern to parse date-time
+        @SuppressWarnings("unchecked")
+        private static <T> T extractFromStringValue(Object obj, Class<T> clzz) {
+            if (CharSequence.class.isAssignableFrom(clzz)) {
+                return (T)obj;
+            }
+            if (byte[].class.isAssignableFrom(clzz)) {
+                return (T)((String)obj).getBytes();
+            }
+            
+            // Byte, Short, Integer, Long, Float, Double.
+            if (byte.class.isAssignableFrom(clzz) || Byte.class.isAssignableFrom(clzz)) {
+                return (T)Byte.valueOf((String)obj);
+            }
+            if (short.class.isAssignableFrom(clzz) || Short.class.isAssignableFrom(clzz)) {
+                return (T)Short.valueOf((String)obj);
+            }
+            if (int.class.isAssignableFrom(clzz) || Integer.class.isAssignableFrom(clzz)) {
+                return (T)Integer.valueOf((String)obj);
+            }
+            if (long.class.isAssignableFrom(clzz) || Long.class.isAssignableFrom(clzz)) {
+                return (T)Long.valueOf((String)obj);
+            }
+            if (float.class.isAssignableFrom(clzz) || Float.class.isAssignableFrom(clzz)) {
+                return (T)Float.valueOf((String)obj);
+            }
+            if (double.class.isAssignableFrom(clzz) || Double.class.isAssignableFrom(clzz)) {
+                return (T)Double.valueOf((String)obj);
+            }
+            
+            // BigDecimal, BigInteger
+            if (BigDecimal.class.isAssignableFrom(clzz)) {
+                return (T)new BigDecimal((String)obj);
+            }
+            if (BigInteger.class.isAssignableFrom(clzz)) {
+                return (T)new BigInteger((String)obj);
+            }
+            
+            // UUID
+            if (UUID.class.isAssignableFrom(clzz)) {
+                return (T)UUID.fromString((String)obj);
+            }
+            
+            // Enum
+            if (clzz.isEnum()) {
+                for (val enumValue : clzz.getEnumConstants()) {
+                    if (enumValue.toString().equalsIgnoreCase((String)obj)) {
+                        return (T)enumValue;
+                    }
+                }
+            }
+            
+            String str = (String)obj;
+            if (str.matches("^[0-9]+$")) {
+                val seconds = Long.parseLong(str);
+                val instant = Instant.ofEpochSecond(seconds);
+                
+                if (Instant.class.isAssignableFrom(clzz)) {
+                    return (T)instant;
+                }
+                if (LocalDate.class.isAssignableFrom(clzz)) {
+                    return (T)LocalDate.from(instant.atZone(ZoneId.systemDefault()));
+                }
+                if (LocalDateTime.class.isAssignableFrom(clzz)) {
+                    return (T)LocalDateTime.from(instant.atZone(ZoneId.systemDefault()));
+                }
+                if (LocalTime.class.isAssignableFrom(clzz)) {
+                    return (T)LocalTime.from(instant.atZone(ZoneId.systemDefault()));
+                }
+                if (ZonedDateTime.class.isAssignableFrom(clzz)) {
+                    return (T)instant.atZone(ZoneId.systemDefault());
+                }
+            }
+            
+            // Date time
+            if (Duration.class.isAssignableFrom(clzz)) {
+                return (T)Duration.parse((String)obj);
+            }
+            if (Instant.class.isAssignableFrom(clzz)) {
+                return (T)Instant.parse((String)obj);
+            }
+            if (LocalDate.class.isAssignableFrom(clzz)) {
+                return (T)LocalDate.parse((String)obj);
+            }
+            if (LocalDateTime.class.isAssignableFrom(clzz)) {
+                return (T)LocalDateTime.parse((String)obj);
+            }
+            if (LocalTime.class.isAssignableFrom(clzz)) {
+                return (T)LocalTime.parse((String)obj);
+            }
+            if (OffsetDateTime.class.isAssignableFrom(clzz)) {
+                return (T)OffsetDateTime.parse((String)obj);
+            }
+            if (OffsetTime.class.isAssignableFrom(clzz)) {
+                return (T)OffsetTime.parse((String)obj);
+            }
+            if (Period.class.isAssignableFrom(clzz)) {
+                return (T)Period.parse((String)obj);
+            }
+            if (ZonedDateTime.class.isAssignableFrom(clzz)) {
+                return (T)ZonedDateTime.parse((String)obj);
+            }
+            return (T)obj;
         }
         
         public static <T> T fromMapValue(Object obj, Getter getter) {
