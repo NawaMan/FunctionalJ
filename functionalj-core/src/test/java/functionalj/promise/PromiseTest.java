@@ -24,6 +24,7 @@
 package functionalj.promise;
 
 import static functionalj.functions.TimeFuncs.Sleep;
+import static functionalj.TestHelper.assertAsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -41,41 +42,38 @@ import lombok.val;
 
 public class PromiseTest {
     
-    private void assertStrings(String str, Object obj) {
-        assertEquals(str, "" + obj);
-    }
     
     @Test
     public void testValue() {
         val promise = Promise.ofValue("Hello!");
         assertEquals (PromiseStatus.COMPLETED,    promise.getStatus());
-        assertStrings("Result:{ Value: Hello! }", promise.getCurrentResult());
+        assertAsString("Result:{ Value: Hello! }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
         promise.onComplete(r -> ref.set(r.get()));
-        assertStrings("Hello!", ref);
+        assertAsString("Hello!", ref);
     }
     
     @Test
     public void testException() {
         val promise = Promise.ofException(new IOException());
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
-        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
+        assertAsString("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
         promise.onComplete(r -> ref.set("" + r.get()));
-        assertStrings("null", ref.get());
+        assertAsString("null", ref.get());
     }
     
     @Test
     public void testCancel() {
         val promise = Promise.ofAborted();
         assertEquals (PromiseStatus.ABORTED,  promise.getStatus());
-        assertStrings("Result:{ Cancelled }", promise.getCurrentResult());
+        assertAsString("Result:{ Cancelled }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
         promise.onComplete(r -> ref.set("" + r.get()));
-        assertStrings("null", ref.get());
+        assertAsString("null", ref.get());
     }
     
     @Test
@@ -93,10 +91,10 @@ public class PromiseTest {
         
         pendingControl.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: Forty two }", promise.getCurrentResult());
+        assertAsString("Result:{ Value: Forty two }", promise.getCurrentResult());
         promise.onComplete(r -> list.add("2: " + r.toString()));
         
-        assertStrings(
+        assertAsString(
                 "["
                 + "1: Result:{ Value: Forty two }, "
                 + "2: Result:{ Value: Forty two }"
@@ -115,7 +113,7 @@ public class PromiseTest {
         
         pendingControl.fail(new IOException());
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
+        assertAsString("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
     }
     
     @Test
@@ -125,7 +123,7 @@ public class PromiseTest {
                 .onComplete(r -> ref.set("" + r))
                 .start();
         
-        assertStrings("Result:{ NotReady }", action.getCurrentResult());
+        assertAsString("Result:{ NotReady }", action.getCurrentResult());
         
         action.abort();
         assertEquals("Result:{ Cancelled }", ref.get());
@@ -143,10 +141,10 @@ public class PromiseTest {
         
         pendingAction.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: Forty two }", promise.getCurrentResult());
+        assertAsString("Result:{ Value: Forty two }", promise.getCurrentResult());
         promise.onComplete(r -> list.add("2: " + r.toString()));
         
-        assertStrings(
+        assertAsString(
                 "["
                 + "1: Result:{ Value: Forty two }, "
                 + "2: Result:{ Value: Forty two }"
@@ -162,7 +160,7 @@ public class PromiseTest {
         pendingAction.complete("Forty five");
         pendingAction.abort();
         
-        assertStrings(
+        assertAsString(
                 "["
                 + "1: Result:{ Value: Forty two }, "
                 + "2: Result:{ Value: Forty two }"
@@ -185,11 +183,11 @@ public class PromiseTest {
         
         pendingAction.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: Forty two }", promise.getCurrentResult());
+        assertAsString("Result:{ Value: Forty two }", promise.getCurrentResult());
         
         sub2.unsubscribe();
         
-        assertStrings("[2: Result:{ Value: Forty two }]", list);
+        assertAsString("[2: Result:{ Value: Forty two }]", list);
     }
     
     @Test
@@ -208,7 +206,7 @@ public class PromiseTest {
         pendingAction.complete("Forty two");
         
         assertEquals (PromiseStatus.ABORTED, promise.getStatus());
-        assertStrings(
+        assertAsString(
                 "Result:{ Cancelled: No more listener. }",
                 promise.getCurrentResult());
         
@@ -216,7 +214,7 @@ public class PromiseTest {
         val sub2 = promise.onComplete(r -> list.add("2: " + r.toString()));
         sub2.unsubscribe();
         
-        assertStrings(
+        assertAsString(
                 "[2: Result:{ Cancelled: No more listener. }]",
               list);
     }
@@ -240,11 +238,11 @@ public class PromiseTest {
         pendingAction.complete("Forty two");
         
         assertEquals (PromiseStatus.ABORTED, promise.getStatus());
-        assertStrings(
+        assertAsString(
                 "Result:{ Cancelled: No more listener. }",
                 promise.getCurrentResult());
         
-        assertStrings("[e: Result:{ Cancelled: No more listener. }]", list);
+        assertAsString("[e: Result:{ Cancelled: No more listener. }]", list);
     }
     
     @Test
@@ -276,7 +274,7 @@ public class PromiseTest {
         onExpireds.forEach(c -> c.accept(null, null));
         assertEquals (PromiseStatus.ABORTED, promise.getStatus());
         
-        assertStrings("[e: Result:{ Cancelled: No more listener. }]", list);
+        assertAsString("[e: Result:{ Cancelled: No more listener. }]", list);
     }
     
     @Test
@@ -323,7 +321,7 @@ public class PromiseTest {
         .start()
         .complete("Done!");
         
-        assertStrings("[Result:{ Value: 5 }]", list);
+        assertAsString("[Result:{ Value: 5 }]", list);
     }
     
     @Test
@@ -339,7 +337,7 @@ public class PromiseTest {
         .start()
         .complete("Done!");
         
-        assertStrings("[Result:{ Value: 5 }]", list);
+        assertAsString("[Result:{ Value: 5 }]", list);
     }
     
     @Test
@@ -355,7 +353,7 @@ public class PromiseTest {
         .start()
         .complete("Done!!");
         
-        assertStrings("[Result:{ Value: 6 }]", list);
+        assertAsString("[Result:{ Value: 6 }]", list);
     }
     
     @Test
@@ -405,7 +403,7 @@ public class PromiseTest {
             c.accept(null, null);
         });
         
-        assertStrings(
+        assertAsString(
                 "[Not done.]",
                 list);
     }
@@ -417,19 +415,19 @@ public class PromiseTest {
         
         val childPromise = parentPromise.map(String::length);
         
-        assertStrings("NOT_STARTED", parentPromise.getStatus());
-        assertStrings("NOT_STARTED", childPromise.getStatus());
+        assertAsString("NOT_STARTED", parentPromise.getStatus());
+        assertAsString("NOT_STARTED", childPromise.getStatus());
         
         childPromise.start();
-        assertStrings("PENDING", parentPromise.getStatus());
-        assertStrings("PENDING", childPromise.getStatus());
+        assertAsString("PENDING", parentPromise.getStatus());
+        assertAsString("PENDING", childPromise.getStatus());
         
         parentPromise.makeComplete("HELLO");
-        assertStrings("COMPLETED", parentPromise.getStatus());
-        assertStrings("COMPLETED", childPromise.getStatus());
+        assertAsString("COMPLETED", parentPromise.getStatus());
+        assertAsString("COMPLETED", childPromise.getStatus());
         
-        assertStrings("Result:{ Value: HELLO }", parentPromise.getCurrentResult());
-        assertStrings("Result:{ Value: 5 }",     childPromise.getCurrentResult());
+        assertAsString("Result:{ Value: HELLO }", parentPromise.getCurrentResult());
+        assertAsString("Result:{ Value: 5 }",     childPromise.getCurrentResult());
     }
     
     @Test
@@ -439,53 +437,53 @@ public class PromiseTest {
         
         val childPromise = parentPromise.map(String::length);
         
-        assertStrings("NOT_STARTED", parentPromise.getStatus());
-        assertStrings("NOT_STARTED", childPromise.getStatus());
+        assertAsString("NOT_STARTED", parentPromise.getStatus());
+        assertAsString("NOT_STARTED", childPromise.getStatus());
         
         childPromise.start();
-        assertStrings("PENDING", parentPromise.getStatus());
-        assertStrings("PENDING", childPromise.getStatus());
+        assertAsString("PENDING", parentPromise.getStatus());
+        assertAsString("PENDING", childPromise.getStatus());
         
         parentPromise.makeFail(new NullPointerException());
-        assertStrings("COMPLETED", parentPromise.getStatus());
-        assertStrings("COMPLETED", childPromise.getStatus());
+        assertAsString("COMPLETED", parentPromise.getStatus());
+        assertAsString("COMPLETED", childPromise.getStatus());
         
-        assertStrings("Result:{ Exception: java.lang.NullPointerException }", parentPromise.getCurrentResult());
-        assertStrings("Result:{ Exception: java.lang.NullPointerException }", childPromise.getCurrentResult());
+        assertAsString("Result:{ Exception: java.lang.NullPointerException }", parentPromise.getCurrentResult());
+        assertAsString("Result:{ Exception: java.lang.NullPointerException }", childPromise.getCurrentResult());
     }
     
     @Test
     public void testElseUse() {
         val promise = Promise.ofException(new IOException());
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
-        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
+        assertAsString("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
         val promise2 = promise.whenAbsentUse("Else");
-        assertStrings("Result:{ Value: Else }", promise2.getResult());
+        assertAsString("Result:{ Value: Else }", promise2.getResult());
     }
     
     @Test
     public void testElseGet() {
         val promise = Promise.ofException(new IOException());
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
-        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
+        assertAsString("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
         val promise2 = promise.whenAbsentGet(()->"Else");
-        assertStrings("Result:{ Value: Else }", promise2.getResult());
+        assertAsString("Result:{ Value: Else }", promise2.getResult());
     }
     
     @Test
     public void testMapResult() {
         val promise = Promise.ofException(new IOException());
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
-        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
+        assertAsString("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
         val promise2 = promise.mapResult(result -> result.whenExceptionApply(e -> e.getClass().getName()));
-        assertStrings("Result:{ Value: java.io.IOException }", promise2.getResult());
+        assertAsString("Result:{ Value: java.io.IOException }", promise2.getResult());
         
         val ref = new AtomicReference<String>();
         promise.mapResult(result -> result.ifException(e -> ref.set(e.getClass().getName())));
-        assertStrings("java.io.IOException", ref.get());
+        assertAsString("java.io.IOException", ref.get());
     }
     
     @Test
@@ -510,11 +508,11 @@ public class PromiseTest {
         val f5 = add.elevateWith(b).andThen(mul.elevateWith(c));
         val r5 = f5.apply(a);
         
-        assertStrings("Result:{ Value: 21 }", r1.getResult());
-        assertStrings("Result:{ Value: 42 }", r2.getResult());
-//        assertStrings("Result:{ Value: 42 }", r3.getResult());
-        assertStrings("Result:{ Value: 42 }", r4.getResult());
-        assertStrings("Result:{ Value: 42 }", r5.getResult());
+        assertAsString("Result:{ Value: 21 }", r1.getResult());
+        assertAsString("Result:{ Value: 42 }", r2.getResult());
+//        assertAsString("Result:{ Value: 42 }", r3.getResult());
+        assertAsString("Result:{ Value: 42 }", r4.getResult());
+        assertAsString("Result:{ Value: 42 }", r5.getResult());
     }
     
     @Test
@@ -531,7 +529,7 @@ public class PromiseTest {
                 .then(nul.elevateWith(c))
                 .thenReturn();
         val r6 = f6.apply(a);
-        assertStrings("Result:{ Value: 42 }", r6.getResult());
+        assertAsString("Result:{ Value: 42 }", r6.getResult());
     }
     
     @Test
@@ -542,7 +540,7 @@ public class PromiseTest {
         val normalPromise  = promiseControl.getPromise();
         val namedPromise   = normalPromise.named(name);
         assertTrue   (normalPromise.toString().matches("^Promise#[0-9]*$"));
-        assertStrings(namedPromise.toString(), name);
+        assertAsString(namedPromise.toString(), name);
         
         System.out.println(normalPromise.getStatus());
         System.out.println(namedPromise.getStatus());

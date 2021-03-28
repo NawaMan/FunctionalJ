@@ -24,6 +24,7 @@
 package functionalj.promise;
 
 import static functionalj.functions.TimeFuncs.Sleep;
+import static functionalj.TestHelper.assertAsString;
 import static functionalj.promise.DeferAction.run;
 import static functionalj.result.Result.valueOf;
 import static org.junit.Assert.assertEquals;
@@ -36,10 +37,6 @@ import lombok.val;
 
 
 public class PromisesTest {
-    
-    private void assertStrings(String str, Object obj) {
-        assertEquals(str, "" + obj);
-    }
     
     @Test
     public void testOf2_happy() {
@@ -60,7 +57,7 @@ public class PromisesTest {
         
         control2.complete(5);
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 8 }",   promise.getCurrentResult());
+        assertAsString("Result:{ Value: 8 }",   promise.getCurrentResult());
     }
     
     @Test
@@ -82,7 +79,7 @@ public class PromisesTest {
         
         control1.complete("One");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 8 }",   promise.getCurrentResult());
+        assertAsString("Result:{ Value: 8 }",   promise.getCurrentResult());
     }
     
     @Test
@@ -101,7 +98,7 @@ public class PromisesTest {
         
         control1.fail(new Exception());
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings(
+        assertAsString(
                 "Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }",
                 promise.getCurrentResult());
     }
@@ -122,7 +119,7 @@ public class PromisesTest {
         
         control2.fail(new Exception());
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings(
+        assertAsString(
                 "Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #1 out of 2 fail. }",
                 promise.getCurrentResult());
     }
@@ -146,7 +143,7 @@ public class PromisesTest {
         
         control1.fail(new Exception());
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings(
+        assertAsString(
                 "Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }",
                 promise.getCurrentResult());
     }
@@ -191,7 +188,7 @@ public class PromisesTest {
         
         control6.complete(6);
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 42 }",   promise.getCurrentResult());
+        assertAsString("Result:{ Value: 42 }",   promise.getCurrentResult());
     }
     
     @Test
@@ -210,7 +207,7 @@ public class PromisesTest {
         Thread.sleep(150);
         
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 21 }",   promise.getCurrentResult());
+        assertAsString("Result:{ Value: 21 }",   promise.getCurrentResult());
     }
     
     @Test
@@ -237,13 +234,13 @@ public class PromisesTest {
         val subscription = promise.onComplete();
         subscription.unsubscribe();
         
-        assertStrings("Result:{ Cancelled: No more listener. }", promise .getResult());
-        assertStrings("Result:{ Cancelled: No more listener. }", promise1.getResult());
-        assertStrings("Result:{ Cancelled: No more listener. }", promise2.getResult());
-        assertStrings("Result:{ Value: 5 }",                     promise3.getResult());
-        assertStrings("Result:{ Cancelled: No more listener. }", promise4.getResult());
-        assertStrings("Result:{ Cancelled: No more listener. }", promise5.getResult());
-        assertStrings("Result:{ Cancelled: No more listener. }", promise6.getResult());
+        assertAsString("Result:{ Cancelled: No more listener. }", promise .getResult());
+        assertAsString("Result:{ Cancelled: No more listener. }", promise1.getResult());
+        assertAsString("Result:{ Cancelled: No more listener. }", promise2.getResult());
+        assertAsString("Result:{ Value: 5 }",                     promise3.getResult());
+        assertAsString("Result:{ Cancelled: No more listener. }", promise4.getResult());
+        assertAsString("Result:{ Cancelled: No more listener. }", promise5.getResult());
+        assertAsString("Result:{ Cancelled: No more listener. }", promise6.getResult());
     }
     
 }

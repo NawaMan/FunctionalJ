@@ -80,37 +80,35 @@ import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
+import static functionalj.TestHelper.assertAsString;
 
 
 public class StreamPlusTest {
     
-    private void assertStrings(String str, Object obj) {
-        assertEquals(str, "" + obj);
-    }
     
     @Test
     public void testEmpty() {
-        assertStrings("[]", StreamPlus.empty().toList());
+        assertAsString("[]", StreamPlus.empty().toList());
     }
     
     @Test
     public void testEmptyStream() {
-        assertStrings("[]", StreamPlus.emptyStream().toList());
+        assertAsString("[]", StreamPlus.emptyStream().toList());
     }
     
     @Test
     public void testOf() {
-        assertStrings("[One, Two, Three]", StreamPlus.of      ("One", "Two", "Three").toList());
+        assertAsString("[One, Two, Three]", StreamPlus.of      ("One", "Two", "Three").toList());
     }
     
     @Test
     public void testStreamOf() {
-        assertStrings("[One, Two, Three]", StreamPlus.streamOf("One", "Two", "Three").toList());
+        assertAsString("[One, Two, Three]", StreamPlus.streamOf("One", "Two", "Three").toList());
     }
     
     @Test
     public void testFrom_range() {
-        assertStrings(
+        assertAsString(
                 "[Two, Three, Four]",
                 StreamPlus.from(new String[] {"One", "Two", "Three", "Four", "Five"}, 1, 3)
                 .toList());
@@ -125,31 +123,31 @@ public class StreamPlusTest {
     
     @Test
     public void testFromStream() {
-        assertStrings("[]",                StreamPlus.from((Stream<String>)null).toList());
-        assertStrings("[One, Two, Three]", StreamPlus.from(Stream.of("One", "Two", "Three")).toList());
+        assertAsString("[]",                StreamPlus.from((Stream<String>)null).toList());
+        assertAsString("[One, Two, Three]", StreamPlus.from(Stream.of("One", "Two", "Three")).toList());
     }
     
     @Test
     public void testFromIterator() {
         val iterator = asList("One", "Two", "Three").iterator();
         val stream   = StreamPlus.from(iterator);
-        assertStrings("[One, Two, Three]", stream.toList());
+        assertAsString("[One, Two, Three]", stream.toList());
     }
     
     @Test
     public void testFromEnumerator() {
         val elements = new Vector<>(asList("One", "Two", "Three")).elements();
         val stream   = StreamPlus.from(elements);
-        assertStrings("[One, Two, Three]", stream.toList());
+        assertAsString("[One, Two, Three]", stream.toList());
     }
     
     @Test
     public void testConcat() {
-        assertStrings("[One, Two, Three, Four]",
+        assertAsString("[One, Two, Three, Four]",
                 concat(streamOf("One", "Two"),
                        streamOf("Three", "Four"))
                 .toList());
-        assertStrings("[One, Two, Three, Four]",
+        assertAsString("[One, Two, Three, Four]",
                 concat(() -> streamOf("One", "Two"),
                        () -> streamOf("Three", "Four"))
                 .toList());
@@ -157,11 +155,11 @@ public class StreamPlusTest {
     
     @Test
     public void testCombine() {
-        assertStrings("[One, Two, Three, Four]",
+        assertAsString("[One, Two, Three, Four]",
                 combine(streamOf("One", "Two"),
                         streamOf("Three", "Four"))
                 .toList());
-        assertStrings("[One, Two, Three, Four]",
+        assertAsString("[One, Two, Three, Four]",
                 combine(() -> streamOf("One", "Two"),
                         () -> streamOf("Three", "Four"))
                 .toList());
@@ -178,38 +176,38 @@ public class StreamPlusTest {
                 return count;
             return StreamPlus.noMoreElement();
         });
-        assertStrings("[0, 1, 2, 3, 4]", stream.toListString());
+        assertAsString("[0, 1, 2, 3, 4]", stream.toListString());
         
         val stream2 = StreamPlus.generateWith(Func0.from(i -> i < 5 ? i : noMoreElement()));
-        assertStrings("[0, 1, 2, 3, 4]", stream2.toListString());
+        assertAsString("[0, 1, 2, 3, 4]", stream2.toListString());
     }
     
     //-- Iterate + Compound --
     
     @Test
     public void testIterate() {
-        assertStrings("[1, 2, 4, 8, 16]", iterate(1, i -> i*2).limit(5).toListString());
-        assertStrings("[1, 1, 2, 3, 5]",  iterate(1, 1, (a, b) -> a + b).limit(5).toListString());
+        assertAsString("[1, 2, 4, 8, 16]", iterate(1, i -> i*2).limit(5).toListString());
+        assertAsString("[1, 1, 2, 3, 5]",  iterate(1, 1, (a, b) -> a + b).limit(5).toListString());
     }
     
     @Test
     public void testCompound() {
-        assertStrings("[1, 2, 4, 8, 16]", compound(1, i -> i*2).limit(5).toListString());
-        assertStrings("[1, 1, 2, 3, 5]",  compound(1, 1, (a, b) -> a + b).limit(5).toListString());
+        assertAsString("[1, 2, 4, 8, 16]", compound(1, i -> i*2).limit(5).toListString());
+        assertAsString("[1, 1, 2, 3, 5]",  compound(1, 1, (a, b) -> a + b).limit(5).toListString());
     }
     
     //-- zipOf --
     
     @Test
     public void testZipOf_toTuple() {
-        assertStrings("[(A,1), (B,2), (C,3), (D,4)]",
+        assertAsString("[(A,1), (B,2), (C,3), (D,4)]",
                 zipOf(streamOf("A", "B", "C", "D", "E"),
                       streamOf(1, 2, 3, 4)).toListString());
     }
     
     @Test
     public void testZipOf_merge() {
-        assertStrings("[A+1, B+2, C+3, D+4]",
+        assertAsString("[A+1, B+2, C+3, D+4]",
                 zipOf(streamOf("A", "B", "C", "D", "E"),
                       streamOf(1, 2, 3, 4),
                       (a, b) -> a + "+" + b
@@ -218,7 +216,7 @@ public class StreamPlusTest {
     
     @Test
     public void testZipOf_merge_int() {
-        assertStrings("[5, 8, 9, 8, 5]",
+        assertAsString("[5, 8, 9, 8, 5]",
                 zipOf(IntStream.of(1, 2, 3, 4, 5),
                       IntStream.of(5, 4, 3, 2, 1),
                       (a, b) -> a*b)
@@ -236,7 +234,7 @@ public class StreamPlusTest {
         .onClose(()->isClosed.set(true));
         
         assertFalse(isClosed.get());
-        assertStrings(
+        assertAsString(
                 "[3, 3, 5]",
                 stream
                 .map(theString.length())
@@ -260,7 +258,7 @@ public class StreamPlusTest {
         .onClose(()->isClosed.set(true));
         
         assertFalse(isClosed.get());
-        assertStrings(
+        assertAsString(
                 "[3, 5, 7]",
                 stream
                 .mapToInt(Integer::parseInt)
@@ -304,7 +302,7 @@ public class StreamPlusTest {
         assertTrue(iterator.hasNext());
         assertTrue("Three".equals(iterator.next()));
         
-        assertStrings("[Four, Five]", stream.toList());
+        assertAsString("[Four, Five]", stream.toList());
     }
     
     @Test
@@ -316,7 +314,7 @@ public class StreamPlusTest {
         try(val iterator = stream.iterator()) {
             while (iterator.hasNext())
                 list.add(iterator.next());
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         }
         assertTrue(isClose.get());
     }
@@ -324,7 +322,7 @@ public class StreamPlusTest {
     @Test
     public void testMap() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[3, 3, 5]",
+        assertAsString("[3, 3, 5]",
                 stream
                 .map(s -> s.length())
                 .toList());
@@ -333,19 +331,19 @@ public class StreamPlusTest {
     @Test
     public void testMapToInt() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("11", stream.mapToInt(String::length).sum());
+        assertAsString("11", stream.mapToInt(String::length).sum());
     }
 //
 //    @Test
 //    public void testMapToLong() {
 //        val stream = StreamPlus.of("One", "Two", "Three");
-//        assertStrings("11", stream.mapToLong(String::length).sum());
+//        assertAsString("11", stream.mapToLong(String::length).sum());
 //    }
 //
 //    @Test
 //    public void testMapToDouble() {
 //        val stream = StreamPlus.of("One", "Two", "Three");
-//        assertStrings("11.0", stream.mapToDouble(s -> s.length()*1.0).sum());
+//        assertAsString("11.0", stream.mapToDouble(s -> s.length()*1.0).sum());
 //    }
     
     //-- FlatMap --
@@ -353,25 +351,25 @@ public class StreamPlusTest {
     @Test
     public void testFlatMap() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[3, 3, 5]", stream.flatMap(s -> Stream.of(s.length())).toList());
+        assertAsString("[3, 3, 5]", stream.flatMap(s -> Stream.of(s.length())).toList());
     }
     
     @Test
     public void testFlatMapToInt() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[3, 3, 5]", stream.flatMapToInt(s -> IntStreamPlus.of(s.length())).toList());
+        assertAsString("[3, 3, 5]", stream.flatMapToInt(s -> IntStreamPlus.of(s.length())).toList());
     }
     
 //    @Test
 //    public void testFlatMapToLong() {
 //        val stream = StreamPlus.of("One", "Two", "Three");
-//        assertStrings("[3, 3, 5]", stream.flatMapToLong(s -> LongStreamPlus.of((long)s.length())).toList()));
+//        assertAsString("[3, 3, 5]", stream.flatMapToLong(s -> LongStreamPlus.of((long)s.length())).toList()));
 //    }
     
 //    @Test
 //    public void testFlatMapToDouble() {
 //        val stream = StreamPlus.of("One", "Two", "Three");
-//        assertStrings("[3, 3, 5]", stream.flatMapToDouble(s -> DoubleStreamPlus.of((double)s.length())).toList());
+//        assertAsString("[3, 3, 5]", stream.flatMapToDouble(s -> DoubleStreamPlus.of((double)s.length())).toList());
 //    }
     
     //-- Filter --
@@ -379,42 +377,42 @@ public class StreamPlusTest {
     @Test
     public void testFilter() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[Three]", stream.filter(s -> s.length() > 4).toList());
+        assertAsString("[Three]", stream.filter(s -> s.length() > 4).toList());
     }
     
     @Test
     public void testPeek() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val logs   = new ArrayList<String>();
-        assertStrings("[One, Two, Three]", stream.peek(s -> logs.add(s)).toList());
-        assertStrings("[One, Two, Three]", logs);
+        assertAsString("[One, Two, Three]", stream.peek(s -> logs.add(s)).toList());
+        assertAsString("[One, Two, Three]", logs);
     }
     
     @Test
     public void testLimit() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("[One, Two, Three]", stream.limit(3).toList());
+        assertAsString("[One, Two, Three]", stream.limit(3).toList());
     }
     
     @Test
     public void testSkip() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("[Three, Four, Five]", stream.skip(2).toList());
+        assertAsString("[Three, Four, Five]", stream.skip(2).toList());
     }
     
     @Test
     public void testDistinct() {
         val stream = StreamPlus.of("One", "Two", "Two", "Three");
-        assertStrings("[One, Two, Three]", stream.distinct().toList());
+        assertAsString("[One, Two, Three]", stream.distinct().toList());
     }
     
     @Test
     public void testSorted() {
         val stream1 = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("[3, 3, 4, 4, 5]", stream1.map(theString.length()).sorted().toList());
+        assertAsString("[3, 3, 4, 4, 5]", stream1.map(theString.length()).sorted().toList());
         
         val stream2 = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("[5, 4, 4, 3, 3]", stream2.map(theString.length()).sorted((a, b) -> (b - a)).toList());
+        assertAsString("[5, 4, 4, 3, 3]", stream2.map(theString.length()).sorted((a, b) -> (b - a)).toList());
     }
     
     @Test
@@ -422,7 +420,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("One", "Two", "Three");
         val logs   = new ArrayList<String>();
         stream.forEach(s -> logs.add(s));
-        assertStrings("[One, Two, Three]", logs);
+        assertAsString("[One, Two, Three]", logs);
     }
     
     @Test
@@ -430,7 +428,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("One", "Two", "Three");
         val logs   = new ArrayList<String>();
         stream.forEachOrdered(s -> logs.add(s));
-        assertStrings("[One, Two, Three]", logs);
+        assertAsString("[One, Two, Three]", logs);
     }
     
     @Test
@@ -450,27 +448,27 @@ public class StreamPlusTest {
     
     @Test
     public void testCollect() {
-        assertStrings("[One, Two, Three]", StreamPlus.of("One", "Two", "Three").collect(toList()));
+        assertAsString("[One, Two, Three]", StreamPlus.of("One", "Two", "Three").collect(toList()));
         
         Supplier<StringBuffer> supplier = StringBuffer::new;
         BiConsumer<StringBuffer, String> accumulator = StringBuffer::append;
         BiConsumer<StringBuffer, StringBuffer> combiner = (a, b) -> a.append(b.toString());
-        assertStrings("OneTwoThree", StreamPlus.of("One", "Two", "Three").collect(supplier, accumulator, combiner));
+        assertAsString("OneTwoThree", StreamPlus.of("One", "Two", "Three").collect(supplier, accumulator, combiner));
     }
     
     @Test
     public void testMinMax() {
         val stream1 = StreamPlus.of("One", "Two", "Three", "Four");
-        assertStrings("Optional[One]",   stream1.min((a, b)-> a.length()-b.length()));
+        assertAsString("Optional[One]",   stream1.min((a, b)-> a.length()-b.length()));
         
         val stream2 = StreamPlus.of("One", "Two", "Three", "Four");
-        assertStrings("Optional[Three]", stream2.max((a, b)-> a.length()-b.length()));
+        assertAsString("Optional[Three]", stream2.max((a, b)-> a.length()-b.length()));
     }
     
     @Test
     public void testCount() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("3", stream.count());
+        assertAsString("3", stream.count());
     }
     
     @Test
@@ -494,22 +492,22 @@ public class StreamPlusTest {
     @Test
     public void testFindFirst() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("Optional[One]", stream.findFirst());
+        assertAsString("Optional[One]", stream.findFirst());
     }
     
     @Test
     public void testFindAny() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("Optional[One]", stream.findAny());
+        assertAsString("Optional[One]", stream.findAny());
     }
     
     @Test
     public void testToArray() {
         val stream1 = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Two, Three]", Arrays.toString(stream1.map(s -> s).toArray()));
+        assertAsString("[One, Two, Three]", Arrays.toString(stream1.map(s -> s).toArray()));
         
         val stream2 = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Two, Three]", Arrays.toString(stream2.map(s -> s).toArray(n -> new String[n])));
+        assertAsString("[One, Two, Three]", Arrays.toString(stream2.map(s -> s).toArray(n -> new String[n])));
     }
     
     //-- AsStreamPlus --
@@ -519,32 +517,32 @@ public class StreamPlusTest {
     @Test
     public void testToByteArray() {
         val stream = StreamPlus.of('A', 'B', 'C', 'D');
-        assertStrings("[65, 66, 67, 68]", Arrays.toString(stream.toByteArray(c -> (byte)(int)c)));
+        assertAsString("[65, 66, 67, 68]", Arrays.toString(stream.toByteArray(c -> (byte)(int)c)));
     }
     
     @Test
     public void testToIntArray() {
         val stream = StreamPlus.of('A', 'B', 'C', 'D');
-        assertStrings("[65, 66, 67, 68]", Arrays.toString(stream.toIntArray(c -> (int)c)));
+        assertAsString("[65, 66, 67, 68]", Arrays.toString(stream.toIntArray(c -> (int)c)));
     }
 //
 //    @Test
 //    public void testToLongArray() {
 //        val stream = StreamPlus.of('A', 'B', 'C', 'D');
-//        assertStrings("[65, 66, 67, 68]", Arrays.toString(stream.toLongArray(c -> (long)c)));
+//        assertAsString("[65, 66, 67, 68]", Arrays.toString(stream.toLongArray(c -> (long)c)));
 //    }
     
 //    @Test
 //    public void testToDoubleArray() {
 //        val stream = StreamPlus.of('A', 'B', 'C', 'D');
-//        assertStrings("[65.0, 66.0, 67.0, 68.0]", Arrays.toString(stream.toDoubleArray(c -> (double)(int)c)));
+//        assertAsString("[65.0, 66.0, 67.0, 68.0]", Arrays.toString(stream.toDoubleArray(c -> (double)(int)c)));
 //    }
     
     @Test
     public void testToArrayList() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val list   = stream.toArrayList();
-        assertStrings("[One, Two, Three]", list);
+        assertAsString("[One, Two, Three]", list);
         assertTrue(list instanceof ArrayList);
     }
     
@@ -552,7 +550,7 @@ public class StreamPlusTest {
     public void testToFuncList() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val list   = stream.toFuncList();
-        assertStrings("[One, Two, Three]", list.toString());
+        assertAsString("[One, Two, Three]", list.toString());
         assertTrue(list instanceof FuncList);
     }
     
@@ -560,7 +558,7 @@ public class StreamPlusTest {
     public void testToImmutableList() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val list   = stream.toImmutableList();
-        assertStrings("[One, Two, Three]", list.toString());
+        assertAsString("[One, Two, Three]", list.toString());
         assertTrue(list instanceof ImmutableFuncList);
     }
     
@@ -568,7 +566,7 @@ public class StreamPlusTest {
     public void testToJavaList() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val list   = stream.toJavaList();
-        assertStrings("[One, Two, Three]", list.toString());
+        assertAsString("[One, Two, Three]", list.toString());
         assertTrue(list instanceof List);
     }
     
@@ -576,7 +574,7 @@ public class StreamPlusTest {
     public void testToList() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val list   = stream.toJavaList();
-        assertStrings("[One, Two, Three]", list.toString());
+        assertAsString("[One, Two, Three]", list.toString());
         assertTrue(list instanceof List);
     }
     
@@ -584,7 +582,7 @@ public class StreamPlusTest {
     public void testToMutableList() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val list   = stream.toMutableList();
-        assertStrings("[One, Two, Three]", list);
+        assertAsString("[One, Two, Three]", list);
         // This is because we use ArrayList as mutable list ... not it should not always be.
         assertTrue(list instanceof ArrayList);
     }
@@ -594,19 +592,19 @@ public class StreamPlusTest {
     @Test
     public void testJoin() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("OneTwoThree", stream.join());
+        assertAsString("OneTwoThree", stream.join());
     }
     
     @Test
     public void testJoin_withDelimiter() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("One, Two, Three", stream.join(", "));
+        assertAsString("One, Two, Three", stream.join(", "));
     }
     
     @Test
     public void testToListString() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Two, Three]", stream.toListString());
+        assertAsString("[One, Two, Three]", stream.toListString());
     }
     
     //-- toMap --
@@ -614,33 +612,33 @@ public class StreamPlusTest {
     @Test
     public void testToMap() {
         val stream = StreamPlus.of("One", "Three", "Five");
-        assertStrings("{3:One, 4:Five, 5:Three}", stream.toMap(theString.length()).toString());
+        assertAsString("{3:One, 4:Five, 5:Three}", stream.toMap(theString.length()).toString());
     }
     
     @Test
     public void testToMap_withValue() {
         val stream = StreamPlus.of("One", "Three", "Five");
-        assertStrings("{3:-->One, 4:-->Five, 5:-->Three}", stream.toMap(theString.length(), theString.withPrefix("-->")).toString());
+        assertAsString("{3:-->One, 4:-->Five, 5:-->Three}", stream.toMap(theString.length(), theString.withPrefix("-->")).toString());
     }
     
     @Test
     public void testToMap_withMappedMergedValue() {
         val stream = StreamPlus.of("One", "Two", "Three", "Five");
-        assertStrings("{3:One+Two, 4:Five, 5:Three}", stream.toMap(theString.length(), theString, (a, b) -> a + "+" + b).toString());
+        assertAsString("{3:One+Two, 4:Five, 5:Three}", stream.toMap(theString.length(), theString, (a, b) -> a + "+" + b).toString());
     }
     
     
     @Test
     public void testToMap_withMergedValue() {
         val stream = StreamPlus.of("One", "Two", "Three", "Five");
-        assertStrings("{3:One+Two, 4:Five, 5:Three}", stream.toMap(theString.length(), (a, b) -> a + "+" + b).toString());
+        assertAsString("{3:One+Two, 4:Five, 5:Three}", stream.toMap(theString.length(), (a, b) -> a + "+" + b).toString());
     }
     
     @Test
     public void testToSet() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val set    = stream.toSet();
-        assertStrings("[One, Two, Three]", set);
+        assertAsString("[One, Two, Three]", set);
         assertTrue(set instanceof Set);
     }
     
@@ -649,7 +647,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("One", "Two", "Three");
         val logs   = new ArrayList<String>();
         stream.forEachWithIndex((i, s) -> logs.add(i + ":" + s));
-        assertStrings("[0:One, 1:Two, 2:Three]", logs);
+        assertAsString("[0:One, 1:Two, 2:Three]", logs);
     }
     
     @Test
@@ -657,7 +655,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
         val array  = new String[5];
         stream.populateArray(array);
-        assertStrings("[One, Two, Three, Four, Five]", Arrays.toString(array));
+        assertAsString("[One, Two, Three, Four, Five]", Arrays.toString(array));
     }
     
     @Test
@@ -665,7 +663,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
         val array  = new String[3];
         stream.populateArray(array, 2);
-        assertStrings("[null, null, One]", Arrays.toString(array));
+        assertAsString("[null, null, One]", Arrays.toString(array));
     }
     
     @Test
@@ -673,7 +671,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
         val array  = new String[5];
         stream.populateArray(array, 1, 3);
-        assertStrings("[null, One, Two, Three, null]", Arrays.toString(array));
+        assertAsString("[null, One, Two, Three, null]", Arrays.toString(array));
     }
     
     //-- AsStreamPlusWithMatch --
@@ -681,25 +679,25 @@ public class StreamPlusTest {
     @Test
     public void testFindFirst_withPredicate() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("Optional[Three]", stream.findFirst(theString.thatContains("ee")));
+        assertAsString("Optional[Three]", stream.findFirst(theString.thatContains("ee")));
     }
     
     @Test
     public void testFindAny_withPredicate() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("Optional[Three]", stream.findAny(theString.thatContains("ee")));
+        assertAsString("Optional[Three]", stream.findAny(theString.thatContains("ee")));
     }
     
     @Test
     public void testFindFirst_withMapper_withPredicate() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("Optional[Three]", stream.findFirst(theString.length(), l ->  l == 5));
+        assertAsString("Optional[Three]", stream.findFirst(theString.length(), l ->  l == 5));
     }
     
     @Test
     public void testFindAny_withMapper_withPredicate() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("Optional[Three]", stream.findAny(theString.length(), l -> l == 5));
+        assertAsString("Optional[Three]", stream.findAny(theString.length(), l -> l == 5));
     }
     
     //-- AsStreamPlusWithStatistic --
@@ -707,49 +705,49 @@ public class StreamPlusTest {
     @Test
     public void testSize() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("3", stream.size());
+        assertAsString("3", stream.size());
     }
     
     @Test
     public void testMinBy() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("Optional[One]", stream.minBy(theString.length()));
+        assertAsString("Optional[One]", stream.minBy(theString.length()));
     }
     
     @Test
     public void testMaxBy() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("Optional[Three]", stream.maxBy(theString.length()));
+        assertAsString("Optional[Three]", stream.maxBy(theString.length()));
     }
     
     @Test
     public void testMinBy_withMapper() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("Optional[Three]", stream.minBy(theString.length(), (a, b)->b-a));
+        assertAsString("Optional[Three]", stream.minBy(theString.length(), (a, b)->b-a));
     }
     
     @Test
     public void testMaxBy_withMapper() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("Optional[One]", stream.maxBy(theString.length(), (a, b)->b-a));
+        assertAsString("Optional[One]", stream.maxBy(theString.length(), (a, b)->b-a));
     }
     
     @Test
     public void testMinMaxBy() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings("(Optional[Five],Optional[Two])", stream.minMax(String.CASE_INSENSITIVE_ORDER));
+        assertAsString("(Optional[Five],Optional[Two])", stream.minMax(String.CASE_INSENSITIVE_ORDER));
     }
     
     @Test
     public void testMinMaxBy_withMapper() {
         val stream3 = StreamPlus.of("One", "Two", "Three", "Four");
-        assertStrings("(Optional[One],Optional[Three])", stream3.minMaxBy(theString.length()));
+        assertAsString("(Optional[One],Optional[Three])", stream3.minMaxBy(theString.length()));
     }
     
     @Test
     public void testMinMaxBy_withMapper_withComparator() {
         val stream3 = StreamPlus.of("One", "Two", "Three", "Four");
-        assertStrings("(Optional[Three],Optional[Two])", stream3.minMaxBy(theString.length(), (a, b) -> b-a));
+        assertAsString("(Optional[Three],Optional[Two])", stream3.minMaxBy(theString.length(), (a, b) -> b-a));
     }
     
     //-- StreamPlusWithCalculate --
@@ -928,7 +926,7 @@ public class StreamPlusTest {
     
     @Test
     public void testPrependWith() {
-        assertStrings("[One, Two, Three, Four]",
+        assertAsString("[One, Two, Three, Four]",
                 streamOf("Three", "Four")
                 .prependWith(streamOf("One", "Two"))
                 .toList());
@@ -936,7 +934,7 @@ public class StreamPlusTest {
     
     @Test
     public void testAppendWith() {
-        assertStrings("[One, Two, Three, Four]",
+        assertAsString("[One, Two, Three, Four]",
                 streamOf("One", "Two")
                 .appendWith(streamOf("Three", "Four"))
                 .toList());
@@ -1074,13 +1072,13 @@ public class StreamPlusTest {
     @Test
     public void testFilterClass() {
         StreamPlus<Object> stream = StreamPlus.of(0, "One", 2, "Three", 4, "Five");
-        assertStrings("[One, Three, Five]", stream.filter(String.class).toListString());
+        assertAsString("[One, Three, Five]", stream.filter(String.class).toListString());
     }
     
     @Test
     public void testFilterClass_withPredicate() {
         StreamPlus<Object> stream = StreamPlus.of(0, "One", 2, "Three", 4, "Five");
-        assertStrings("[One, Five]", stream.filter(String.class, theString.length().thatLessThan(5)).toListString());
+        assertAsString("[One, Five]", stream.filter(String.class, theString.length().thatLessThan(5)).toListString());
     }
     
     @Test
@@ -1190,13 +1188,13 @@ public class StreamPlusTest {
     @Test
     public void testFlatMapOnly() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, 3, 5]", stream.flatMapOnly(str -> str.toLowerCase().startsWith("t"), s -> Stream.of("" + s.length())).toList());
+        assertAsString("[One, 3, 5]", stream.flatMapOnly(str -> str.toLowerCase().startsWith("t"), s -> Stream.of("" + s.length())).toList());
     }
     
     @Test
     public void testFlatMapIf() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[(One), [3], [5]]", stream.flatMapIf(str -> str.toLowerCase().startsWith("t"), s -> Stream.of("[" + s.length() + "]"), s -> Stream.of("(" + s + ")")).toList());
+        assertAsString("[(One), [3], [5]]", stream.flatMapIf(str -> str.toLowerCase().startsWith("t"), s -> Stream.of("[" + s.length() + "]"), s -> Stream.of("(" + s + ")")).toList());
     }
     
     //-- StreamPlusWithGroupBy --
@@ -1204,7 +1202,7 @@ public class StreamPlusTest {
     @Test
     public void testGroupByKey() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
-        assertStrings(
+        assertAsString(
                 "{3:[One, Two, Six], 4:[Four, Five], 5:[Three]}",
                 stream.groupingBy(str -> str.length()).sorted().mapValue(s -> s.toListString()));
     }
@@ -1212,7 +1210,7 @@ public class StreamPlusTest {
     @Test
     public void testGroupByKey_aggregate() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
-        assertStrings(
+        assertAsString(
                 "{3:[One, Two, Six], 4:[Four, Five], 5:[Three]}",
                 stream.groupingBy(str -> str.length(), s -> s.toListString()).sorted());
     }
@@ -1220,7 +1218,7 @@ public class StreamPlusTest {
     @Test
     public void testGroupByKey_collector() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
-        assertStrings(
+        assertAsString(
                 "{3:[One, Two, Six], 4:[Four, Five], 5:[Three]}",
                 stream.groupingBy(str -> str.length()).sorted().mapValue(s -> s.collect(toList())));
     }
@@ -1230,64 +1228,64 @@ public class StreamPlusTest {
     @Test
     public void testSkipLimitLong() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[Two]", stream.skip((Long)1L).limit((Long)1L).toList());
+        assertAsString("[Two]", stream.skip((Long)1L).limit((Long)1L).toList());
     }
     
     @Test
     public void testSkipLimitLongNull() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Two, Three]", stream.skip(null).limit(null).toList());
+        assertAsString("[One, Two, Three]", stream.skip(null).limit(null).toList());
     }
     
     @Test
     public void testSkipLimitLongMinus() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Two, Three]", stream.skip(Long.valueOf(-1)).limit(Long.valueOf(-1)).toList());
+        assertAsString("[One, Two, Three]", stream.skip(Long.valueOf(-1)).limit(Long.valueOf(-1)).toList());
     }
     
     @Test
     public void testSkipWhile() {
-        assertStrings("[3, 4, 5, 4, 3, 2, 1]",       StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i < 3).toList());
-        assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i > 3).toList());
+        assertAsString("[3, 4, 5, 4, 3, 2, 1]",       StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i < 3).toList());
+        assertAsString("[1, 2, 3, 4, 5, 4, 3, 2, 1]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i > 3).toList());
     }
     
     @Test
     public void testSkipUntil() {
-        assertStrings("[4, 5, 4, 3, 2, 1]",          StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipUntil(i -> i > 3).toList());
-        assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipUntil(i -> i < 3).toList());
+        assertAsString("[4, 5, 4, 3, 2, 1]",          StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipUntil(i -> i > 3).toList());
+        assertAsString("[1, 2, 3, 4, 5, 4, 3, 2, 1]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipUntil(i -> i < 3).toList());
     }
     
     @Test
     public void testTakeWhile() {
         val list = new ArrayList<Integer>();
-        assertStrings("[1, 2, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeWhile(i -> i < 4).toList());
-        assertStrings("[1, 2, 3, 4]", list);
+        assertAsString("[1, 2, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeWhile(i -> i < 4).toList());
+        assertAsString("[1, 2, 3, 4]", list);
         //                       ^--- Because it needs 4 to do the check in `takeWhile`
         
         list.clear();
-        assertStrings("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeWhile(i -> i > 4).toList());
-        assertStrings("[1]", list);
+        assertAsString("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeWhile(i -> i > 4).toList());
+        assertAsString("[1]", list);
         //              ^--- Because it needs 1 to do the check in `takeWhile`
     }
     
     @Test
     public void testTakeUtil() {
         val list = new ArrayList<Integer>();
-        assertStrings("[1, 2, 3, 4]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeUntil(i -> i > 4).toList());
-        assertStrings("[1, 2, 3, 4, 5]", list);
+        assertAsString("[1, 2, 3, 4]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeUntil(i -> i > 4).toList());
+        assertAsString("[1, 2, 3, 4, 5]", list);
         //                          ^--- Because it needs 5 to do the check in `takeUntil`
         
         list.clear();
-        assertStrings("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeUntil(i -> i < 4).toList());
-        assertStrings("[1]", list);
+        assertAsString("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeUntil(i -> i < 4).toList());
+        assertAsString("[1]", list);
         //              ^--- Because it needs 1 to do the check in `takeUntil`
     }
     
     @Test
     public void testSkipTake() {
         val list = new ArrayList<Integer>();
-        assertStrings("[3, 4, 5, 4, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).skipWhile(i -> i < 3).takeUntil(i -> i < 3).toList());
-        assertStrings("[1, 2, 3, 4, 5, 4, 3, 2]", list);
+        assertAsString("[3, 4, 5, 4, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).skipWhile(i -> i < 3).takeUntil(i -> i < 3).toList());
+        assertAsString("[1, 2, 3, 4, 5, 4, 3, 2]", list);
         //              ^--^-----------------^--- Because it needs these number to do the check in `skipWhile` and `takeWhile`
     }
     
@@ -1296,7 +1294,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToObj() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[=3=, =3=, =5=]",
+        assertAsString("[=3=, =3=, =5=]",
                 stream
                 .mapToObj(s -> "=" + s.length() + "=")
                 .toList());
@@ -1305,7 +1303,7 @@ public class StreamPlusTest {
     @Test
     public void testMapOnly() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[ONE, TWO, Three]",
+        assertAsString("[ONE, TWO, Three]",
                 stream
                 .mapOnly(
                         $S.length().thatLessThan(4),
@@ -1316,7 +1314,7 @@ public class StreamPlusTest {
     @Test
     public void testMapIf() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[ONE, TWO, three]",
+        assertAsString("[ONE, TWO, three]",
                 stream
                 .mapIf(
                         $S.length().thatLessThan(4), $S.toUpperCase(),
@@ -1327,7 +1325,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToObjIf() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[ONE, TWO, three]",
+        assertAsString("[ONE, TWO, three]",
                 stream
                 .mapToObjIf(
                         $S.length().thatLessThan(4), $S.toUpperCase(),
@@ -1338,7 +1336,7 @@ public class StreamPlusTest {
     @Test
     public void testMapFirst_2() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
-        assertStrings("[ONE, TWO, three, four, five, SIX, seven, eight, nine, TEN, eleven, twelve]",
+        assertAsString("[ONE, TWO, three, four, five, SIX, seven, eight, nine, TEN, eleven, twelve]",
                 stream.mapFirst(
                         str -> str.length() == 3 ? str.toUpperCase() : null,
                         str -> str.toLowerCase()).toListString());
@@ -1347,7 +1345,7 @@ public class StreamPlusTest {
     @Test
     public void testMapFirst_3() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
-        assertStrings("[ONE, TWO, Three, four, five, SIX, Seven, Eight, nine, TEN, Eleven, Twelve]",
+        assertAsString("[ONE, TWO, Three, four, five, SIX, Seven, Eight, nine, TEN, Eleven, Twelve]",
                 stream.mapFirst(
                         str -> str.length() == 3 ? str.toUpperCase() : null,
                         str -> str.length() == 4 ? str.toLowerCase() : null,
@@ -1357,7 +1355,7 @@ public class StreamPlusTest {
     @Test
     public void testMapFirst_4() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
-        assertStrings("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, Eleven, Twelve]",
+        assertAsString("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, Eleven, Twelve]",
                 stream.mapFirst(
                         str -> str.length() == 3 ? str.toUpperCase() : null,
                         str -> str.length() == 4 ? str.toLowerCase() : null,
@@ -1368,7 +1366,7 @@ public class StreamPlusTest {
     @Test
     public void testMapFirst_5() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
-        assertStrings("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, [Eleven], Twelve]",
+        assertAsString("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, [Eleven], Twelve]",
                 stream.mapFirst(
                         str -> str.length() == 3 ? str.toUpperCase() : null,
                         str -> str.length() == 4 ? str.toLowerCase() : null,
@@ -1380,7 +1378,7 @@ public class StreamPlusTest {
     @Test
     public void testMapFirst_6() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
-        assertStrings("[ONE, TWO, (Three), four, -- Five --, -- Six --, (Seven), -- Eight --, -- Nine --, TEN, [Eleven], Twelve]",
+        assertAsString("[ONE, TWO, (Three), four, -- Five --, -- Six --, (Seven), -- Eight --, -- Nine --, TEN, [Eleven], Twelve]",
                 stream.mapFirst(
                         str -> str.contains("i") ? "-- " + str + " --" : null,
                         str -> str.length() == 3 ? str.toUpperCase() : null,
@@ -1393,7 +1391,7 @@ public class StreamPlusTest {
     @Test
     public void testMapThen_2() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings(
+        assertAsString(
                 "[O-n, T-w, T-h, F-o, F-i]",
                 stream.mapThen(
                         $S.charAt(0),
@@ -1404,7 +1402,7 @@ public class StreamPlusTest {
     @Test
     public void testMapThen_3() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertStrings(
+        assertAsString(
                 "[O-n-e, T-w-o, T-h-r, F-o-u, F-i-v]",
                 stream.mapThen(
                         $S.charAt(0),
@@ -1416,7 +1414,7 @@ public class StreamPlusTest {
     @Test
     public void testMapThen_4() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
-        assertStrings(
+        assertAsString(
                 "[T-h-r-e, F-o-u-r, F-i-v-e, S-e-v-e, E-i-g-h, N-i-n-e, E-l-e-v, T-w-e-l]",
                 stream
                     .filter($S.length().thatGreaterThanOrEqualsTo(4))
@@ -1431,7 +1429,7 @@ public class StreamPlusTest {
     @Test
     public void testMapThen_5() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
-        assertStrings(
+        assertAsString(
                 "[T-h-r-e-e, S-e-v-e-n, E-i-g-h-t, E-l-e-v-e, T-w-e-l-v]",
                 stream
                     .filter($S.length().thatGreaterThanOrEqualsTo(5))
@@ -1447,7 +1445,7 @@ public class StreamPlusTest {
     @Test
     public void testMapThen_6() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
-        assertStrings(
+        assertAsString(
                 "[E-l-e-v-e-n, T-w-e-l-v-e]",
                 stream
                     .filter($S.length().thatGreaterThanOrEqualsTo(6))
@@ -1466,7 +1464,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_1() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen");
-        assertStrings(
+        assertAsString(
                 "[{<1>:O}, "
                 + "{<1>:T}, "
                 + "{<1>:F}, "
@@ -1485,7 +1483,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_2() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen");
-        assertStrings(
+        assertAsString(
                 "[{<1>:O, <2>:n}, "
                 + "{<1>:T, <2>:h}, "
                 + "{<1>:F, <2>:i}, "
@@ -1505,7 +1503,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_3() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen");
-        assertStrings(
+        assertAsString(
                 "[{<1>:O, <2>:n, <3>:e}, "
                 + "{<1>:T, <2>:h, <3>:r}, "
                 + "{<1>:F, <2>:i, <3>:v}, "
@@ -1526,7 +1524,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_4() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen");
-        assertStrings(
+        assertAsString(
                 "[{<1>:T, <2>:h, <3>:r, <4>:e}, "
                 + "{<1>:F, <2>:i, <3>:v, <4>:e}, "
                 + "{<1>:S, <2>:e, <3>:v, <4>:e}, "
@@ -1547,7 +1545,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_5() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen");
-        assertStrings(
+        assertAsString(
                 "[{<1>:T, <2>:h, <3>:r, <4>:e, <5>:e}, "
                 + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n}, "
                 + "{<1>:E, <2>:l, <3>:e, <4>:v, <5>:e}, "
@@ -1568,7 +1566,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_6() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen");
-        assertStrings(
+        assertAsString(
                 "[{<1>:E, <2>:l, <3>:e, <4>:v, <5>:e, <6>:n}, "
                 + "{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t, <6>:e}, "
                 + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t}]",
@@ -1588,7 +1586,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_7() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen");
-        assertStrings(
+        assertAsString(
                 "[{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t, <6>:e, <7>:e}, "
                 + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t, <7>:e}]",
                 stream
@@ -1608,7 +1606,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_8() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen");
-        assertStrings(
+        assertAsString(
                 "[{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t, <6>:e, <7>:e, <8>:n}, "
                 + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t, <7>:e, <8>:e}]",
                 stream
@@ -1629,7 +1627,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_9() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen");
-        assertStrings(
+        assertAsString(
                 "[{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t, <7>:e, <8>:e, <9>:n}]",
                 stream
                 .filter($S.length().thatGreaterThanOrEqualsTo(9))
@@ -1650,7 +1648,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_10() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen", "Nineteen", "Twenty-three");
-        assertStrings(
+        assertAsString(
                 "[{<10>:r, <1>:T, <2>:w, <3>:e, <4>:n, <5>:t, <6>:y, <7>:-, <8>:t, <9>:h}]",
                 stream
                 .filter($S.length().thatGreaterThanOrEqualsTo(10))
@@ -1672,7 +1670,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToMap_11() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen", "Nineteen", "Twenty-three");
-        assertStrings(
+        assertAsString(
                 "[{<10>:r, <11>:e, <1>:T, <2>:w, <3>:e, <4>:n, <5>:t, <6>:y, <7>:-, <8>:t, <9>:h}]",
                 stream
                 .filter($S.length().thatGreaterThanOrEqualsTo(11))
@@ -1697,7 +1695,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToTuple_2() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
+        assertAsString(
                 "[(O,n), (T,h), (F,i), (S,e), (E,l)]",
                 stream
                     .filter($S.length().thatGreaterThanOrEqualsTo(2))
@@ -1708,7 +1706,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToTuple_3() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
+        assertAsString(
                 "[(O,n,e), (T,h,r), (F,i,v), (S,e,v), (E,l,e)]",
                 stream
                 .filter($S.length().thatGreaterThanOrEqualsTo(3))
@@ -1719,7 +1717,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToTuple_4() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
+        assertAsString(
                 "[(T,h,r,e), (F,i,v,e), (S,e,v,e), (E,l,e,v)]",
                 stream
                 .filter($S.length().thatGreaterThanOrEqualsTo(4))
@@ -1730,7 +1728,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToTuple_5() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
+        assertAsString(
                 "[(T,h,r,e,e), (S,e,v,e,n), (E,l,e,v,e)]",
                 stream
                 .filter($S.length().thatGreaterThanOrEqualsTo(5))
@@ -1741,7 +1739,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToTuple_6() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
+        assertAsString(
                 "[(E,l,e,v,e,n)]",
                 stream
                 .filter($S.length().thatGreaterThanOrEqualsTo(6))
@@ -1754,7 +1752,7 @@ public class StreamPlusTest {
     @Test
     public void testMapWithIndex() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
+        assertAsString(
                 "[(0,One), (1,Three), (2,Five), (3,Seven), (4,Eleven)]",
                 stream
                 .mapWithIndex()
@@ -1764,7 +1762,7 @@ public class StreamPlusTest {
     @Test
     public void testMapWithIndex_combine() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
+        assertAsString(
                 "[0: One, 1: Three, 2: Five, 3: Seven, 4: Eleven]",
                 stream
                 .mapWithIndex((i, each) -> i + ": " + each)
@@ -1774,7 +1772,7 @@ public class StreamPlusTest {
     @Test
     public void testMapToObjWithIndex_combine() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings(
+        assertAsString(
                 "[0: One, 1: Three, 2: Five, 3: Seven, 4: Eleven]",
                 stream
                 .mapToObjWithIndex((i, each) -> i + ": " + each)
@@ -1786,7 +1784,7 @@ public class StreamPlusTest {
     @Test
     public void testMapWithPrev() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings(
+        assertAsString(
                   "(One,Two), "
                 + "(Two,Three)",
                 stream.mapTwo().join(", "));
@@ -1795,13 +1793,13 @@ public class StreamPlusTest {
     @Test
     public void testMapGroup_combine() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("6, 8", stream.mapGroup((prev, element) -> prev.length() + element.length()).join(", "));
+        assertAsString("6, 8", stream.mapGroup((prev, element) -> prev.length() + element.length()).join(", "));
     }
     
     @Test
     public void testMapWithPrevCount() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten");
-        assertStrings(
+        assertAsString(
                   "[One, Two, Three], "
                 + "[Two, Three, Four], "
                 + "[Three, Four, Five], "
@@ -1818,7 +1816,7 @@ public class StreamPlusTest {
     @Test
     public void testMapWithPrevCombiner() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten");
-        assertStrings(
+        assertAsString(
                   "[One, Two, Three], "
                 + "[Two, Three, Four], "
                 + "[Three, Four, Five], "
@@ -1834,7 +1832,7 @@ public class StreamPlusTest {
     @Test
     public void testMapGroupCount_notEnough() {
         val stream = StreamPlus.of("One", "Two");
-        assertStrings(
+        assertAsString(
                   "[One, Two]",
                 stream.mapGroup(3).map(s -> s.toListString()).join(", "));
     }
@@ -1844,7 +1842,7 @@ public class StreamPlusTest {
     @Test
     public void testAccumulate1() {
         val stream = StreamPlus.of(1, 2, 3, 4, 5);
-        assertStrings(
+        assertAsString(
                 "1, 3, 6, 10, 15",
                 stream
                     .accumulate((a, b)->a+b)
@@ -1854,7 +1852,7 @@ public class StreamPlusTest {
     @Test
     public void testAccumulate2() {
         val stream = StreamPlus.of(1, 2, 3, 4, 5);
-        assertStrings(
+        assertAsString(
                 "1, 12, 123, 1234, 12345",
                 stream
                     .accumulate((prev, current)->prev*10 + current)
@@ -1864,7 +1862,7 @@ public class StreamPlusTest {
     @Test
     public void testRestate1() {
         val stream = IntFuncList.infiniteInt().map(i -> i % 5).limit(20).boxed().stream();
-        assertStrings(
+        assertAsString(
                 "0, 1, 2, 3, 4",
               stream
                   .restate((a, s)->s.filter(x -> x != a))
@@ -1875,7 +1873,7 @@ public class StreamPlusTest {
     @Test
     public void testRestate2() {
         val stream = IntFuncList.infiniteInt().skip(2).boxed().stream();
-        assertStrings(
+        assertAsString(
                 "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, "
               + "31, 37, 41, 43, 47, 53, 59, 61, 67, 71, "
               + "73, 79, 83, 89, 97, 101, 103, 107, 109, 113, "
@@ -1947,7 +1945,7 @@ public class StreamPlusTest {
     @Ignore("Tested wiht FuncListTest")
     @Test
     public void testSegmentSize() {
-        assertStrings(
+        assertAsString(
                 "["
                 + "[0, 1, 2, 3, 4, 5], "
                 + "[6, 7, 8, 9, 10, 11], "
@@ -1987,7 +1985,7 @@ public class StreamPlusTest {
     @Ignore("Tested wiht FuncListTest")
     @Test
     public void testSegmentStartCondition() {
-        assertStrings(
+        assertAsString(
                 "[0, 1, 2], "
                 + "[3, 4, 5], "
                 + "[6, 7, 8], "
@@ -2013,8 +2011,8 @@ public class StreamPlusTest {
         val elementStrings = new ArrayList<String>();
         val elementIntegers = new ArrayList<Integer>();
         stream.peek(String.class, elementStrings::add).peek(Integer.class, elementIntegers::add).toList();
-        assertStrings("[One, Three, Five]", elementStrings);
-        assertStrings("[0, 2, 4]", elementIntegers);
+        assertAsString("[One, Three, Five]", elementStrings);
+        assertAsString("[0, 2, 4]", elementIntegers);
     }
     
     @Test
@@ -2026,8 +2024,8 @@ public class StreamPlusTest {
             .peekBy(String.class::isInstance, e -> elementStrings.add((String)e))
             .peekBy(Integer.class::isInstance, e -> elementIntegers.add((Integer)e))
             .toList();
-        assertStrings("[One, Three, Five]", elementStrings);
-        assertStrings("[0, 2, 4]", elementIntegers);
+        assertAsString("[One, Three, Five]", elementStrings);
+        assertAsString("[0, 2, 4]", elementIntegers);
     }
     
     @Test
@@ -2037,7 +2035,7 @@ public class StreamPlusTest {
         stream
             .peekAs(e -> "<" + e + ">", e -> elementStrings.add((String)e))
             .toList();
-        assertStrings("[<0>, <One>, <2>, <Three>, <4>, <Five>]", elementStrings);
+        assertAsString("[<0>, <One>, <2>, <Three>, <4>, <Five>]", elementStrings);
     }
     
     @Test
@@ -2047,7 +2045,7 @@ public class StreamPlusTest {
         stream
             .peekBy(e -> "<" + e + ">", s -> !s.contains("v"), e -> elementStrings.add("" + e))
             .toList();
-        assertStrings("[0, One, 2, Three, 4]", elementStrings);
+        assertAsString("[0, One, 2, Three, 4]", elementStrings);
     }
     
     @Test
@@ -2057,7 +2055,7 @@ public class StreamPlusTest {
         stream
             .peekAs(e -> "<" + e + ">", s -> !s.contains("v"), e -> elementStrings.add((String)e))
             .toList();
-        assertStrings("[<0>, <One>, <2>, <Three>, <4>]", elementStrings);
+        assertAsString("[<0>, <One>, <2>, <Three>, <4>]", elementStrings);
     }
     
     //-- StreamPlusWithPipe --
@@ -2065,13 +2063,13 @@ public class StreamPlusTest {
     @Test
     public void testPipeable() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings("[One, Three, Five, Seven, Eleven]", stream.pipable().pipeTo(StreamPlus::toListString));
+        assertAsString("[One, Three, Five, Seven, Eleven]", stream.pipable().pipeTo(StreamPlus::toListString));
     }
     
     @Test
     public void testPipe() {
         val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven");
-        assertStrings("[One, Three, Five, Seven, Eleven]", stream.pipeTo(StreamPlus::toListString));
+        assertAsString("[One, Three, Five, Seven, Eleven]", stream.pipeTo(StreamPlus::toListString));
     }
     
     //-- StreamPlusWithSort --
@@ -2079,13 +2077,13 @@ public class StreamPlusTest {
     @Test
     public void testSortedBy() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four");
-        assertStrings("[One, Two, Four, Three]", stream.sortedBy(String::length).toList());
+        assertAsString("[One, Two, Four, Three]", stream.sortedBy(String::length).toList());
     }
     
     @Test
     public void testSortedByComparator() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four");
-        assertStrings("[Three, Four, One, Two]", stream.sortedBy(String::length, (a,b)->b-a).toList());
+        assertAsString("[Three, Four, One, Two]", stream.sortedBy(String::length, (a,b)->b-a).toList());
     }
     
     //-- StreamPlusWithSplit --
@@ -2094,7 +2092,7 @@ public class StreamPlusTest {
     public void testSplit_1() {
         Function<StreamPlus<String>, FuncList<String>> streamPlusToList = s -> s.toImmutableList();
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
-        assertStrings("([One, Two, Six],"
+        assertAsString("([One, Two, Six],"
                 + "[Three, Four, Five])",
                 stream
                 .split(theString.length().thatEquals(3))
@@ -2108,7 +2106,7 @@ public class StreamPlusTest {
     public void testSplit_map_2() {
         Function<StreamPlus<String>, FuncList<String>> streamPlusToList = s -> s.toImmutableList();
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
-        assertStrings("{"
+        assertAsString("{"
                 + "Others:[Three, Four, Five], "
                 + "Three:[One, Two, Six]"
                 + "}",
@@ -2125,7 +2123,7 @@ public class StreamPlusTest {
     public void testSplit_map_3() {
         Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
         val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        assertStrings("{"
+        assertAsString("{"
                 + "Others:[1, 5, 7, 11, 13], "
                 + "Three:[3, 9, 15], "
                 + "Two:[0, 2, 4, 6, 8, 10, 12, 14]"
@@ -2144,7 +2142,7 @@ public class StreamPlusTest {
     public void testSplit_map_4() {
         Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
         val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        assertStrings("{"
+        assertAsString("{"
                 + "Five:[5], "
                 + "Others:[1, 7, 11, 13], "
                 + "Three:[3, 9, 15], "
@@ -2165,7 +2163,7 @@ public class StreamPlusTest {
     public void testSplit_map_5() {
         Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
         val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        assertStrings("{"
+        assertAsString("{"
                 + "Five:[5], "
                 + "Others:[1, 11, 13], "
                 + "Seven:[7], "
@@ -2188,7 +2186,7 @@ public class StreamPlusTest {
     public void testSplit_map_6() {
         Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
         val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        assertStrings("{"
+        assertAsString("{"
                 + "Eleven:[11], "
                 + "Five:[5], "
                 + "Others:[1, 13], "

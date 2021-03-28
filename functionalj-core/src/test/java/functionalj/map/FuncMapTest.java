@@ -24,6 +24,7 @@
 package functionalj.map;
 
 import static functionalj.function.Func.f;
+import static functionalj.TestHelper.assertAsString;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -38,9 +39,6 @@ import lombok.val;
 
 public class FuncMapTest {
     
-    private void assertStrings(String str, Object obj) {
-        assertEquals(str, "" + obj);
-    }
     
     @Test
     public void testMap() {
@@ -91,8 +89,8 @@ public class FuncMapTest {
                 .entries()
                 .limit  (4)
                 .join   (", ");
-        assertStrings("1=0, 2=1, 3=2, 4=3", value);
-        assertStrings("4",                  counter.get());
+        assertAsString("1=0, 2=1, 3=2, 4=3", value);
+        assertAsString("4",                  counter.get());
     }
     
     @Test
@@ -112,8 +110,8 @@ public class FuncMapTest {
                 .entries()
                 .limit  (4)
                 .join   (", ");
-        assertStrings("1=0, 2=1, 3=2, 4=3", value);
-        assertStrings("7",                  counter.get());
+        assertAsString("1=0, 2=1, 3=2, 4=3", value);
+        assertAsString("7",                  counter.get());
     }
     
 }

@@ -23,7 +23,8 @@
 // ============================================================================
 package functionalj.result;
 
-import static functionalj.function.Func.f;
+import static functionalj.function.Func.f;import static functionalj.TestHelper.assertAsString;
+
 import static functionalj.result.Result.Do;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -44,21 +45,18 @@ public class ResultTest {
     
     private static final Result<String> result = Result.valueOf("Test");
     
-    private void assertStrings(String str, Object obj) {
-        assertEquals(str, "" + obj);
-    }
     
     @Test
     public void testMap() {
-        assertStrings("Result:{ Value: Test }", result);
-        assertStrings("Result:{ Value: 4 }",    result.map(str -> str.length()));
+        assertAsString("Result:{ Value: Test }", result);
+        assertAsString("Result:{ Value: 4 }",    result.map(str -> str.length()));
     }
     
     @Test
     public void testMapWith() {
         result.mapWith(Func.f((a, b) -> a + b), Result.valueOf("-Value")).ifException(e -> {e.printStackTrace(); });
-        assertStrings("Result:{ Value: Test-Value }", result.mapWith(f((a, b) -> a + b), Result.valueOf("-Value")));
-        assertStrings("Result:{ Exception: java.lang.IllegalAccessException }", 
+        assertAsString("Result:{ Value: Test-Value }", result.mapWith(f((a, b) -> a + b), Result.valueOf("-Value")));
+        assertAsString("Result:{ Exception: java.lang.IllegalAccessException }", 
                 result.mapWith(f((a, b) -> a + b), Result.ofException(new IllegalAccessException())));
     }
     
@@ -161,27 +159,27 @@ public class ResultTest {
     
     @Test
     public void testResultOf() {
-        assertStrings("Result:{ Value: One }", Result.valueOf("One"));
+        assertAsString("Result:{ Value: One }", Result.valueOf("One"));
         
-        assertStrings("Result:{ Value: One,Two }",
+        assertAsString("Result:{ Value: One,Two }",
                 Result.of("One", "Two", (a, b)-> a + "," + b));
         
-        assertStrings("Result:{ Value: One,Two,Three }",
+        assertAsString("Result:{ Value: One,Two,Three }",
                 Result.of("One", "Two", "Three", (a, b, c)-> a + "," + b + "," + c));
     }
     
     @Test
     public void testResultResult() {
-        assertStrings(
+        assertAsString(
                 "Result:{ Value: One }",
                 Result.ofResult(Result.valueOf("One")));
-        assertStrings("Result:{ Value: One,Two }",
+        assertAsString("Result:{ Value: One,Two }",
                 Result.ofResults(
                         Result.valueOf("One"),
                         Result.valueOf("Two"),
                         (a, b)-> a + "," + b));
         
-        assertStrings("Result:{ Value: One,Two,Three }",
+        assertAsString("Result:{ Value: One,Two,Three }",
                 Result.ofResults(
                         Result.valueOf("One"),
                         Result.valueOf("Two"),
@@ -191,7 +189,7 @@ public class ResultTest {
     
     @Test
     public void testResultResult_withException() {
-        assertStrings("Result:{ Exception: functionalj.function.FunctionInvocationException: Test fail }",
+        assertAsString("Result:{ Exception: functionalj.function.FunctionInvocationException: Test fail }",
                 Result.ofResults(
                         Result.valueOf("One"),
                         Result.ofException("Test fail"),
@@ -201,7 +199,7 @@ public class ResultTest {
     
     @Test
     public void testResultPeek() {
-        assertStrings("Result:{ Value: 3 }", 
+        assertAsString("Result:{ Value: 3 }", 
                 Result.valueOf("One")
                 .pipeTo(
                     r -> r.map(String::length),
@@ -211,11 +209,11 @@ public class ResultTest {
     
     @Test
     public void testResultDo() {
-        assertStrings(
+        assertAsString(
                 "Result:{ Value: One }",
                 Result.ofResult(Result.valueOf("One")));
         
-        assertStrings("Result:{ Value: One,Two }",
+        assertAsString("Result:{ Value: One,Two }",
                 Do(
                   ()->"One",
                   ()->"Two",
@@ -224,11 +222,11 @@ public class ResultTest {
     
     @Test
     public void testResultDo_withException() {
-        assertStrings(
+        assertAsString(
                 "Result:{ Exception: java.lang.RuntimeException: Test exception }",
                 Result.ofResult(Result.ofException(new RuntimeException("Test exception"))));
         
-        assertStrings("Result:{ Exception: java.lang.RuntimeException: Test exception }",
+        assertAsString("Result:{ Exception: java.lang.RuntimeException: Test exception }",
                 Do(
                   ()->"One",
                   ()->{ throw new RuntimeException("Test exception"); },

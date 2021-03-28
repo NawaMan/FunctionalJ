@@ -1,6 +1,7 @@
 package functionalj.stream;
 
-import static org.junit.Assert.*;
+import static functionalj.TestHelper.assertAsString;
+import static org.junit.Assert.fail;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -8,13 +9,9 @@ import org.junit.Test;
 public class AsStreamPlusTest {
     
     
-    private void assertStrings(String str, Object obj) {
-        assertEquals(str, "" + obj);
-    }
-    
     @Test
     public void testToFuncList_finiteStream() {
-        assertStrings("[0, 0, 0, 0, 0]", StreamPlus.generate(() -> 0).limit(5).toFuncList());
+        assertAsString("[0, 0, 0, 0, 0]", StreamPlus.generate(() -> 0).limit(5).toFuncList());
     }
     
     @Ignore("Too long - run manually.")

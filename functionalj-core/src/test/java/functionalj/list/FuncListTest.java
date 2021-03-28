@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.TestHelper.assertAsString;
 import static functionalj.function.Func.F;
 import static functionalj.functions.StrFuncs.join;
 import static functionalj.functions.TimeFuncs.Sleep;
@@ -111,16 +112,6 @@ public class FuncListTest {
     static final String TwentyThree = "Twenty-three";
     
     
-    private void assertStrings(String expected, Object obj) {
-        val expectedRegEx = "\\Q" + expected + "\\E";
-        val actualString  = Objects.toString(obj);
-        
-        if (actualString.matches(expectedRegEx))
-            return;
-        
-        assertEquals(actualString, "" + obj);
-    }
-    
     private <T> void run(FuncList<T> list, FuncUnit1<FuncList<T>> action) {
         action.accept(list);
         action.accept(list);
@@ -152,65 +143,65 @@ public class FuncListTest {
     @Test
     public void testEmpty() {
         run(FuncList.empty(), list -> {
-            assertStrings("[]", list);
+            assertAsString("[]", list);
         });
     }
     
     @Test
     public void testEmptyFuncList() {
         run(FuncList.emptyList(), list -> {
-            assertStrings("[]", list);
+            assertAsString("[]", list);
         });
     }
     
     @Test
     public void testEmpty_withClass() {
         run(FuncList.empty(String.class), list -> {
-            assertStrings("[]", list);
+            assertAsString("[]", list);
         });
     }
     
     @Test
     public void testEmptyFuncList_withClass() {
         run(FuncList.emptyList(String.class), list -> {
-            assertStrings("[]", list);
+            assertAsString("[]", list);
         });
     }
     
     @Test
     public void testOf() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
     }
     
     @Test
     public void testAllOf() {
         run(FuncList.AllOf(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
     }
     
     @Test
     public void testListOf() {
         run(FuncList.ListOf(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         run(FuncList.listOf(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
     }
     
     @Test
     public void testFrom_array() {
         run(FuncList.from(new String[] {One, Two, Three}), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         run(FuncList.from(new int[] {1, 2, 3}), list -> {
-            assertStrings("[1, 2, 3]", list);
+            assertAsString("[1, 2, 3]", list);
         });
         run(FuncList.from(new double[] {1.0, 2.0, 3.0}), list -> {
-            assertStrings("[1.0, 2.0, 3.0]", list);
+            assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
     
@@ -218,21 +209,21 @@ public class FuncListTest {
     public void testFrom_collection() {
         Collection<String> collection = Arrays.asList(One, Two, Three);
         run(FuncList.from(collection), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         Set<String> set = new LinkedHashSet<>(collection);
         run(FuncList.from(set), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         FuncList<String> lazyList = FuncList.of(One, Two, Three);
         run(FuncList.from(lazyList), list -> {
-            assertStrings("[One, Two, Three]", list);
-            assertStrings("lazy", list.mode());
+            assertAsString("[One, Two, Three]", list);
+            assertAsString("lazy", list.mode());
         });
         FuncList<String> eagerList = FuncList.of(One, Two, Three).toEager();
         run(FuncList.from(eagerList), list -> {
-            assertStrings("[One, Two, Three]", list);
-            assertStrings("eager", list.mode());
+            assertAsString("[One, Two, Three]", list);
+            assertAsString("eager", list.mode());
         });
     }
     
@@ -240,39 +231,39 @@ public class FuncListTest {
     public void testFrom_javaList() {
         List<String> javaList = Arrays.asList(One, Two, Three);
         run(FuncList.from(javaList), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
     }
     
     @Test
     public void testFrom_funcList() {
         run(FuncList.from(FuncList.of(One, Two, Three)), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         run(FuncList.from(FuncList.of(One, Two, Three)), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         run(FuncList.from(Mode.lazy, FuncList.of(One, Two, Three)), list -> {
-            assertStrings("[One, Two, Three]", list);
-            assertStrings("lazy", list.mode());
+            assertAsString("[One, Two, Three]", list);
+            assertAsString("lazy", list.mode());
         });
         run(FuncList.from(Mode.eager, FuncList.of(One, Two, Three)), list -> {
-            assertStrings("[One, Two, Three]", list);
-            assertStrings("eager", list.mode());
+            assertAsString("[One, Two, Three]", list);
+            assertAsString("eager", list.mode());
         });
         run(FuncList.from(Mode.cache, FuncList.of(One, Two, Three)), list -> {
-            assertStrings("[One, Two, Three]", list);
-            assertStrings("cache", list.mode());
+            assertAsString("[One, Two, Three]", list);
+            assertAsString("cache", list.mode());
         });
     }
     
     @Test
     public void testFrom_FuncList_infinite() {
         run(FuncList.from(FuncList.loop()), list -> {
-            assertStrings("[null, null, null, null, null]", list.skip(100000).limit(5));
+            assertAsString("[null, null, null, null, null]", list.skip(100000).limit(5));
         });
         run(FuncList.from(IntFuncList.wholeNumbers().boxed()), list -> {
-            assertStrings("[100000, 100001, 100002, 100003, 100004]", list.skip(100000).limit(5));
+            assertAsString("[100000, 100001, 100002, 100003, 100004]", list.skip(100000).limit(5));
         });
     }
     
@@ -291,61 +282,61 @@ public class FuncListTest {
     @Test
     public void testFrom_stream() {
         run(FuncList.from(FuncList.of(One, Two, Three).streamPlus().stream()), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
     }
     
     @Test
     public void testFrom_list() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
     }
     
     @Test
     public void testNulls() {
         run(FuncList.nulls().limit(5), list -> {
-            assertStrings("[null, null, null, null, null]", list);
-            assertStrings("[null, 5, null, null, null]", list.with(1, 5));
-            assertStrings("[null, 5, Five, null, null]", list.with(1, 5).with(2, "Five"));
+            assertAsString("[null, null, null, null, null]", list);
+            assertAsString("[null, 5, null, null, null]", list.with(1, 5));
+            assertAsString("[null, 5, Five, null, null]", list.with(1, 5).with(2, "Five"));
         });
         run(FuncList.nulls(Integer.class).limit(5), list -> {
-            assertStrings("[null, null, null, null, null]", list);
-            assertStrings("[null, 5, null, null, null]", list.with(1, 5));
+            assertAsString("[null, null, null, null, null]", list);
+            assertAsString("[null, 5, null, null, null]", list.with(1, 5));
             // This line will hit compilation error because the class is specified as Integer
-//            assertStrings("[null, null, null, null, null]", list.with(1, 5).with(2, "Five"));
+//            assertAsString("[null, null, null, null, null]", list.with(1, 5).with(2, "Five"));
         });
     }
     
     @Test
     public void testRepeat() {
         run(FuncList.repeat(0, 42), list -> {
-            assertStrings("[0, 42, 0, 42, 0]",         list.limit(5));
-            assertStrings("[0, 42, 0, 42, 0, 42, 0]", list.limit(7));
+            assertAsString("[0, 42, 0, 42, 0]",         list.limit(5));
+            assertAsString("[0, 42, 0, 42, 0, 42, 0]", list.limit(7));
         });
         run(FuncList.repeat(FuncList.cycle(0, 1, 2, 42).limit(5)), list -> {
-            assertStrings("[0, 1, 2, 42, 0, 0, 1]",           list.limit(7));
-            assertStrings("[0, 1, 2, 42, 0, 0, 1, 2, 42, 0]", list.limit(10));
+            assertAsString("[0, 1, 2, 42, 0, 0, 1]",           list.limit(7));
+            assertAsString("[0, 1, 2, 42, 0, 0, 1, 2, 42, 0]", list.limit(10));
         });
     }
     
     @Test
     public void testCycle() {
         run(FuncList.cycle(0, 1, 42), list -> {
-            assertStrings("[0, 1, 42, 0, 1]",        list.limit(5));
-            assertStrings("[0, 1, 42, 0, 1, 42, 0]", list.limit(7));
+            assertAsString("[0, 1, 42, 0, 1]",        list.limit(5));
+            assertAsString("[0, 1, 42, 0, 1, 42, 0]", list.limit(7));
         });
         run(FuncList.cycle(FuncList.cycle(0, 1, 2, 42).limit(5)), list -> {
-            assertStrings("[0, 1, 2, 42, 0, 0, 1]",           list.limit(7));
-            assertStrings("[0, 1, 2, 42, 0, 0, 1, 2, 42, 0]", list.limit(10));
+            assertAsString("[0, 1, 2, 42, 0, 0, 1]",           list.limit(7));
+            assertAsString("[0, 1, 2, 42, 0, 0, 1, 2, 42, 0]", list.limit(10));
         });
     }
     
     @Test
     public void testLoop() {
-        run(FuncList.loop(),        list -> assertStrings("[null, null, null, null, null]", list.limit(5)));
-        run(FuncList.loop(5),       list -> assertStrings("[null, null, null, null, null]", list));
-        run(FuncList.infiniteInt(), list -> assertStrings("[0, 1, 2, 3, 4]",                list.limit(5)));
+        run(FuncList.loop(),        list -> assertAsString("[null, null, null, null, null]", list.limit(5)));
+        run(FuncList.loop(5),       list -> assertAsString("[null, null, null, null, null]", list));
+        run(FuncList.infiniteInt(), list -> assertAsString("[0, 1, 2, 3, 4]",                list.limit(5)));
     }
     
     @Test
@@ -456,7 +447,7 @@ public class FuncListTest {
     public void testConcat() {
         run(FuncList.concat(FuncList.of(One, Two), FuncList.of(Three, Four)),
             list -> {
-                assertStrings("[One, Two, Three, Four]", list);
+                assertAsString("[One, Two, Three, Four]", list);
             }
         );
     }
@@ -465,7 +456,7 @@ public class FuncListTest {
     public void testCombine() {
         run(FuncList.combine(FuncList.of(One, Two), FuncList.of(Three, Four)),
             list -> {
-                assertStrings("[One, Two, Three, Four]", list);
+                assertAsString("[One, Two, Three, Four]", list);
             }
         );
     }
@@ -480,7 +471,7 @@ public class FuncListTest {
                 return supplier;
             }),
             list -> {
-                assertStrings("[0, 1, 2, 3, 4]", list.limit(5));
+                assertAsString("[0, 1, 2, 3, 4]", list.limit(5));
             }
         );
         
@@ -496,7 +487,7 @@ public class FuncListTest {
                 return supplier;
             }),
             list -> {
-                assertStrings("[0, 1, 2, 3, 4]", list);
+                assertAsString("[0, 1, 2, 3, 4]", list);
             }
         );
     }
@@ -505,16 +496,16 @@ public class FuncListTest {
     
     @Test
     public void testIterate() {
-        run(FuncList.iterate(1,    (i)    -> 2*(i + 1)), list -> assertStrings("[1, 4, 10, 22, 46, 94, 190, 382, 766, 1534]", list.limit(10)));
-        run(FuncList.iterate(1, 2, (a, b) -> a + b),     list -> assertStrings("[1, 2, 3, 5, 8, 13, 21, 34, 55, 89]",         list.limit(10)));
+        run(FuncList.iterate(1,    (i)    -> 2*(i + 1)), list -> assertAsString("[1, 4, 10, 22, 46, 94, 190, 382, 766, 1534]", list.limit(10)));
+        run(FuncList.iterate(1, 2, (a, b) -> a + b),     list -> assertAsString("[1, 2, 3, 5, 8, 13, 21, 34, 55, 89]",         list.limit(10)));
     }
     
     //-- Compound --
     
     @Test
     public void testCompound() {
-        run(FuncList.compound(1,    (i)    -> 2*(i + 1)), list -> assertStrings("[1, 4, 10, 22, 46, 94, 190, 382, 766, 1534]", list.limit(10)));
-        run(FuncList.compound(1, 2, (a, b) -> a + b),     list -> assertStrings("[1, 2, 3, 5, 8, 13, 21, 34, 55, 89]",         list.limit(10)));
+        run(FuncList.compound(1,    (i)    -> 2*(i + 1)), list -> assertAsString("[1, 4, 10, 22, 46, 94, 190, 382, 766, 1534]", list.limit(10)));
+        run(FuncList.compound(1, 2, (a, b) -> a + b),     list -> assertAsString("[1, 2, 3, 5, 8, 13, 21, 34, 55, 89]",         list.limit(10)));
     }
     
     //-- zipOf --
@@ -524,7 +515,7 @@ public class FuncListTest {
         run(FuncList.of("A", "B", "C", "D", "E"),
             FuncList.of(1, 2, 3, 4),
             (list1, list2) -> {
-                assertStrings(
+                assertAsString(
                         "[(A,1), (B,2), (C,3), (D,4)]", 
                         FuncList.zipOf(list1, list2));
         });
@@ -535,7 +526,7 @@ public class FuncListTest {
         run(FuncList.of("A", "B", "C", "D", "E"),
             FuncList.of(1, 2, 3, 4),
             (list1, list2) -> {
-                assertStrings(
+                assertAsString(
                         "[A+1, B+2, C+3, D+4]", 
                         FuncList.zipOf(
                                 list1, list2, 
@@ -549,7 +540,7 @@ public class FuncListTest {
                 IntFuncList.of(1, 2, 3, 4, 5),
                 IntFuncList.of(5, 4, 3, 2, 1),
                 (a, b) -> a*b), list -> {
-                    assertStrings("[5, 8, 9, 8, 5]", list);
+                    assertAsString("[5, 8, 9, 8, 5]", list);
                 });
     }
     
@@ -559,7 +550,7 @@ public class FuncListTest {
                 IntFuncList.of(1, 2, 3, 4),
                 FuncList   .of(Five, Four, Three, Two, One),
                 (a, b) -> "" + a + "*" + b), list -> {
-                    assertStrings("[1*Five, 2*Four, 3*Three, 4*Two]", list);
+                    assertAsString("[1*Five, 2*Four, 3*Three, 4*Two]", list);
                 });
     }
     
@@ -569,7 +560,7 @@ public class FuncListTest {
                 DoubleFuncList.of(1.0, 2.0, 3.0, 4.0, 5.0),
                 DoubleFuncList.of(5.0, 4.0, 3.0, 2, 1.0),
                 (a, b) -> a*b), list -> {
-                    assertStrings("[5.0, 8.0, 9.0, 8.0, 5.0]", list);
+                    assertAsString("[5.0, 8.0, 9.0, 8.0, 5.0]", list);
                 });
     }
     
@@ -579,7 +570,7 @@ public class FuncListTest {
                 DoubleFuncList.of(1, 2, 3, 4),
                 FuncList      .of(Five, Four, Three, Two, One),
                 (a, b) -> "" + a + "*" + b), list -> {
-                    assertStrings("[1.0*Five, 2.0*Four, 3.0*Three, 4.0*Two]", list);
+                    assertAsString("[1.0*Five, 2.0*Four, 3.0*Three, 4.0*Two]", list);
                 });
     }
     
@@ -588,22 +579,22 @@ public class FuncListTest {
         FuncListBuilder<String> funcList1 = FuncList.newListBuilder();
         FuncListBuilder<String> funcList2 = FuncList.newBuilder();
         run(funcList1.add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         run(funcList2.add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         run(newListBuilder().add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         run(newBuilder().add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         run(FuncList.newListBuilder(String.class).add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
         run(FuncList.newBuilder(String.class).add(One).add(Two).add(Three).build(), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
     }
     
@@ -612,13 +603,13 @@ public class FuncListTest {
     @Test
     public void testDeriveFrom() {
         run(FuncList.deriveFrom(FuncList.of(One, Two, Three), s -> s.map(v -> "-" + v + "-")), list -> {
-            assertStrings("[-One-, -Two-, -Three-]", list);
+            assertAsString("[-One-, -Two-, -Three-]", list);
         });
         run(FuncList.deriveFrom(IntFuncList.of(1, 2, 3), s -> s.mapToObj(v -> "-" + v + "-")), list -> {
-            assertStrings("[-1-, -2-, -3-]", list);
+            assertAsString("[-1-, -2-, -3-]", list);
         });
         run(FuncList.deriveFrom(DoubleFuncList.of(1.0, 2.0, 3.0), s -> s.mapToObj(v -> "-" + v + "-")), list -> {
-            assertStrings("[-1.0-, -2.0-, -3.0-]", list);
+            assertAsString("[-1.0-, -2.0-, -3.0-]", list);
         });
     }
     
@@ -626,13 +617,13 @@ public class FuncListTest {
     public void testDeriveTo() {
         run(FuncList.deriveToObj(FuncList.of(One, Two, Three), s -> s.map(v -> "-" + v + "-")), list -> {
             assertTrue   (list instanceof FuncList);
-            assertStrings("[-One-, -Two-, -Three-]", list);
+            assertAsString("[-One-, -Two-, -Three-]", list);
         });
         run(FuncList.deriveToInt(FuncList.of(1, 2, 3), s -> s.mapToInt(v -> v + 5)), list -> {
-            assertStrings("[6, 7, 8]", list);
+            assertAsString("[6, 7, 8]", list);
         });
         run(FuncList.deriveToDouble(FuncList.of(1.0, 2.0, 3.0), s -> s.mapToDouble(v -> 3.0*v)), list -> {
-            assertStrings("[3.0, 6.0, 9.0]", list);
+            assertAsString("[3.0, 6.0, 9.0]", list);
         });
     }
     
@@ -712,10 +703,10 @@ public class FuncListTest {
             // We want to confirm that the list is lazy
             val list = FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten).peek(logs::add).toFuncList();
             // The function has not been materialized so nothing goes through peek.
-            assertStrings("[]", logs);
+            assertAsString("[]", logs);
             // Get part of them so those peek will goes through the peek
-            assertStrings("[One, Two, Three, Four, Five]", list.limit(5));
-            assertStrings("[One, Two, Three, Four, Five]", logs);
+            assertAsString("[One, Two, Three, Four, Five]", list.limit(5));
+            assertAsString("[One, Two, Three, Four, Five]", logs);
         }
         {
             val logs = new ArrayList<String>();
@@ -726,10 +717,10 @@ public class FuncListTest {
                     .toFuncList()
                     .toEager();
             // The function has been materialized so all element goes through peek.
-            assertStrings("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs);
+            assertAsString("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs);
             // Even we only get part of it, 
-            assertStrings("[One, Two, Three, Four, Five]", list.limit(5));
-            assertStrings("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs);
+            assertAsString("[One, Two, Three, Four, Five]", list.limit(5));
+            assertAsString("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs);
         }
     }
     
@@ -751,23 +742,23 @@ public class FuncListTest {
                     .peek   (v -> logs3.add("" + v))
                     ;
             // The list has not been materialized so nothing goes through peek.
-            assertStrings("[]", logs1);
-            assertStrings("[]", logs2);
-            assertStrings("[]", logs3);
+            assertAsString("[]", logs1);
+            assertAsString("[]", logs2);
+            assertAsString("[]", logs3);
             
             // Get part of them so those peek will goes through the peek
-            assertStrings("[5, 4, 4, 5, 5]", list.limit(5));
+            assertAsString("[5, 4, 4, 5, 5]", list.limit(5));
             
             // Now that the list has been materialize all the element has been through the logs
             
             // The first log has all the original word until there are 5 elements that are longer than 3 characters.
-            assertStrings("[One, Two, Three, Four, Five, Six, Seven, Eight]", logs1);
+            assertAsString("[One, Two, Three, Four, Five, Six, Seven, Eight]", logs1);
             //                         1      2     3          4      5
             
             // The second log captures all the length until 5 of them that are longer than 3 characters.
-            assertStrings("[3, 3, 5, 4, 4, 3, 5, 5]", logs2);
+            assertAsString("[3, 3, 5, 4, 4, 3, 5, 5]", logs2);
             // The third log captures only the length that is longer than 3.
-            assertStrings("[5, 4, 4, 5, 5]", logs3);
+            assertAsString("[5, 4, 4, 5, 5]", logs3);
         }
         {
             val logs1 = new ArrayList<String>();
@@ -785,15 +776,15 @@ public class FuncListTest {
                     .peek   (v -> logs3.add("" + v))
                     ;
             // Since the list is eager, all the value pass through all peek all the time
-            assertStrings("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs1);
-            assertStrings("[3, 3, 5, 4, 4, 3, 5, 5, 4, 3]", logs2);
-            assertStrings("[5, 4, 4, 5, 5, 4]", logs3);
+            assertAsString("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs1);
+            assertAsString("[3, 3, 5, 4, 4, 3, 5, 5, 4, 3]", logs2);
+            assertAsString("[5, 4, 4, 5, 5, 4]", logs3);
             // Get part of them so those peek will goes through the peek
-            assertStrings("[5, 4, 4, 5, 5]", list.limit(5));
+            assertAsString("[5, 4, 4, 5, 5]", list.limit(5));
             // No more passing through the log stay still
-            assertStrings("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs1);
-            assertStrings("[3, 3, 5, 4, 4, 3, 5, 5, 4, 3]", logs2);
-            assertStrings("[5, 4, 4, 5, 5, 4]", logs3);
+            assertAsString("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", logs1);
+            assertAsString("[3, 3, 5, 4, 4, 3, 5, 5, 4, 3]", logs2);
+            assertAsString("[5, 4, 4, 5, 5, 4]", logs3);
         }
     }
     
@@ -814,7 +805,7 @@ public class FuncListTest {
     public void testToFuncList() {
         run(FuncList.of(One, Two, Three), list -> {
             val funcList = list.toFuncList();
-            assertStrings("[One, Two, Three]", funcList.toString());
+            assertAsString("[One, Two, Three]", funcList.toString());
             assertTrue(funcList instanceof FuncList);
         });
     }
@@ -823,7 +814,7 @@ public class FuncListTest {
     public void testToJavaList() {
         run(FuncList.of(One, Two, Three), list -> {
             val funcList = list.toJavaList();
-            assertStrings("[One, Two, Three]", funcList);
+            assertAsString("[One, Two, Three]", funcList);
             assertFalse(funcList instanceof FuncList);
         });
     }
@@ -832,10 +823,10 @@ public class FuncListTest {
     public void testToImmutableList() {
         run(FuncList.of(One, Two, Three), list -> {
             val funcList = list.toImmutableList();
-            assertStrings("[One, Two, Three]", funcList);
+            assertAsString("[One, Two, Three]", funcList);
             assertTrue(funcList instanceof ImmutableFuncList);
             
-            assertStrings("[One, Two, Three]", funcList.map(value -> value).toImmutableList());
+            assertAsString("[One, Two, Three]", funcList.map(value -> value).toImmutableList());
             assertTrue(funcList instanceof ImmutableFuncList);
         });
     }
@@ -882,7 +873,7 @@ public class FuncListTest {
             Spliterator<String> spliterator = list.spliterator();
             Stream<String>      stream      = StreamSupport.stream(spliterator, false);
             StreamPlus<String>  streamPlus  = StreamPlus.from(stream);
-            assertStrings("[One, Two, Three]", streamPlus.toListString());
+            assertAsString("[One, Two, Three]", streamPlus.toListString());
         });
     }
     
@@ -917,7 +908,7 @@ public class FuncListTest {
             for(val value : list) {
                 logs.add(value);
             }
-            assertStrings("[One, Two, Three]", logs);
+            assertAsString("[One, Two, Three]", logs);
         });
     }
     
@@ -954,7 +945,7 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three), list -> {
             val logs   = new ArrayList<String>();
             list.forEach(s -> logs.add(s));
-            assertStrings("[One, Two, Three]", logs);
+            assertAsString("[One, Two, Three]", logs);
         });
     }
     
@@ -963,7 +954,7 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three), list -> {
             val logs   = new ArrayList<String>();
             list.forEachOrdered(s -> logs.add(s));
-            assertStrings("[One, Two, Three]", logs);
+            assertAsString("[One, Two, Three]", logs);
         });
     }
     
@@ -983,27 +974,27 @@ public class FuncListTest {
     @Test
     public void testCollect() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list.collect(Collectors.toList()));
+            assertAsString("[One, Two, Three]", list.collect(Collectors.toList()));
             
             Supplier<StringBuffer> supplier = StringBuffer::new;
             BiConsumer<StringBuffer, String> accumulator = StringBuffer::append;
             BiConsumer<StringBuffer, StringBuffer> combiner = (a, b) -> a.append(b.toString());
-            assertStrings("OneTwoThree", list.collect(supplier, accumulator, combiner));
+            assertAsString("OneTwoThree", list.collect(supplier, accumulator, combiner));
         });
     }
     
     @Test
     public void testMinMax() {
         run(FuncList.of(One, Two, Three, Four), list -> {
-            assertStrings("Optional[One]",   list.min((a, b)-> a.length()-b.length()));
-            assertStrings("Optional[Three]", list.max((a, b)-> a.length()-b.length()));
+            assertAsString("Optional[One]",   list.min((a, b)-> a.length()-b.length()));
+            assertAsString("Optional[Three]", list.max((a, b)-> a.length()-b.length()));
         });
     }
     
     @Test
     public void testCount() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("3", list.count());
+            assertAsString("3", list.count());
         });
     }
     
@@ -1031,35 +1022,35 @@ public class FuncListTest {
     @Test
     public void testFindFirst() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("Optional[One]", list.findFirst());
+            assertAsString("Optional[One]", list.findFirst());
         });
     }
     
     @Test
     public void testFindAny() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("Optional[One]", list.findAny());
+            assertAsString("Optional[One]", list.findAny());
         });
     }
     
     @Test
     public void testFindLast() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("Optional[Three]", list.findLast());
+            assertAsString("Optional[Three]", list.findLast());
         });
     }
     
     @Test
     public void testFirstResult() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("Result:{ Value: One }", list.firstResult());
+            assertAsString("Result:{ Value: One }", list.firstResult());
         });
     }
     
     @Test
     public void testLastResult() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("Result:{ Value: Three }", list.lastResult());
+            assertAsString("Result:{ Value: Three }", list.lastResult());
         });
     }
     
@@ -1091,8 +1082,8 @@ public class FuncListTest {
     @Test
     public void testJavaList_subList() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[Two, Three]",             list.subList(1, 3));
-            assertStrings("[Two, Three, Four, Five]", list.subList(1, 10));
+            assertAsString("[Two, Three]",             list.subList(1, 3));
+            assertAsString("[Two, Three, Four, Five]", list.subList(1, 10));
         });
     }
     
@@ -1120,7 +1111,7 @@ public class FuncListTest {
     @Test
     public void testGroupingBy() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings(
+            assertAsString(
                     "{3:[One, Two], 4:[Four, Five], 5:[Three]}",
                     list
                     .groupingBy(theString.length())
@@ -1131,7 +1122,7 @@ public class FuncListTest {
     @Test
     public void testGroupingBy_aggregate() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings(
+            assertAsString(
                     "{3:One-Two, 4:Four-Five, 5:Three}",
                     list
                     .groupingBy(theString.length(), join("-"))
@@ -1143,7 +1134,7 @@ public class FuncListTest {
     public void testGroupingBy_process() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
             val sumLength = new SumLength();
-            assertStrings(
+            assertAsString(
                     "{3:6, 4:8, 5:5}",
                     list
                     .groupingBy(theString.length(), sumLength)
@@ -1154,7 +1145,7 @@ public class FuncListTest {
     @Test
     public void testGroupingBy_collect() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings(
+            assertAsString(
                     "{3:One:Two, 4:Four:Five, 5:Three}",
                     list
                     .groupingBy(theString.length(), () -> Collectors.joining(":"))
@@ -1167,21 +1158,21 @@ public class FuncListTest {
     @Test
     public void testMapToString() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[Nullable.of(One), Nullable.of(Two), Nullable.of(Three), Nullable.of(Four), Nullable.of(Five)]",
+            assertAsString("[Nullable.of(One), Nullable.of(Two), Nullable.of(Three), Nullable.of(Four), Nullable.of(Five)]",
                     list
                     .map(theString.toNullable())
                     .mapToString()
                     );
         });
         run(FuncList.of(One, null, Three, Four, Five), list -> {
-            assertStrings("[Nullable.of(One), Nullable.EMPTY, Nullable.of(Three), Nullable.of(Four), Nullable.of(Five)]",
+            assertAsString("[Nullable.of(One), Nullable.EMPTY, Nullable.of(Three), Nullable.of(Four), Nullable.of(Five)]",
                     list
                     .map(theString.toNullable())
                     .mapToString()
                     );
         });
         run(FuncList.of(One, null, Three, Four, Five), list -> {
-            assertStrings("[Optional[One], Optional.empty, Optional[Three], Optional[Four], Optional[Five]]",
+            assertAsString("[Optional[One], Optional.empty, Optional[Three], Optional[Four], Optional[Five]]",
                     list
                     .map(theString.toOptional())
                     .mapToString()
@@ -1189,7 +1180,7 @@ public class FuncListTest {
         });
         // Null string length is zero
         run(FuncList.of(One, null, Three, Four, Five), list -> {
-            assertStrings("[3, 0, 5, 4, 4]",
+            assertAsString("[3, 0, 5, 4, 4]",
                     list
                     .map(theString.length())
                     .mapToString()
@@ -1200,7 +1191,7 @@ public class FuncListTest {
     @Test
     public void testMap() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[-3-, -3-, -5-, -4-, -4-]",
+            assertAsString("[-3-, -3-, -5-, -4-, -4-]",
                     list
                     .map(s -> "-" + s.length() + "-")
                     );
@@ -1210,21 +1201,21 @@ public class FuncListTest {
     @Test
     public void testMapToInt() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("11", list.mapToInt(String::length).sum());
+            assertAsString("11", list.mapToInt(String::length).sum());
         });
     }
     
     @Test
     public void testMapToDouble() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("11.0", list.map(s -> "" + s.length()).mapToDouble(Double::parseDouble).sum());
+            assertAsString("11.0", list.map(s -> "" + s.length()).mapToDouble(Double::parseDouble).sum());
         });
     }
     
     @Test
     public void testMapToObj() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[-3-, -3-, -5-, -4-, -4-]",
+            assertAsString("[-3-, -3-, -5-, -4-, -4-]",
                     list
                     .mapToObj(s -> "-" + s.length() + "-")
                     );
@@ -1236,7 +1227,7 @@ public class FuncListTest {
     @Test
     public void testFlatMap() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings(
+            assertAsString(
                     "[3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5]",
                     list.flatMap(s -> FuncList.cycle(s.length()).limit(s.length())));
         });
@@ -1245,7 +1236,7 @@ public class FuncListTest {
     @Test
     public void testFlatMapToInt() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings(
+            assertAsString(
                     "[3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5]",
                     list.flatMapToInt(s -> IntFuncList.cycle(s.length()).limit(s.length())));
         });
@@ -1254,7 +1245,7 @@ public class FuncListTest {
     @Test
     public void testFlatMapToDouble() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings(
+            assertAsString(
                     "[3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 5.0, 5.0, 5.0, 5.0, 5.0]",
                     list
                     .flatMapToDouble(s -> DoubleFuncList.cycle(s.length()).limit(s.length())));
@@ -1266,7 +1257,7 @@ public class FuncListTest {
     @Test
     public void testFilter() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings(
+            assertAsString(
                     "[Three]",
                     list.filter(theString.length().thatGreaterThan(4)));
         });
@@ -1275,7 +1266,7 @@ public class FuncListTest {
     @Test
     public void testFilter_mapper() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings(
+            assertAsString(
                     "[Three]",
                     list.filter(theString.length(), theInteger.thatGreaterThan(4)));
         });
@@ -1285,67 +1276,67 @@ public class FuncListTest {
     public void testPeek() {
         run(FuncList.of(One, Two, Three), list -> {
             val logs   = new ArrayList<String>();
-            assertStrings("[One, Two, Three]", list.peek(s -> logs.add(s)));
-            assertStrings("[One, Two, Three]", logs);
+            assertAsString("[One, Two, Three]", list.peek(s -> logs.add(s)));
+            assertAsString("[One, Two, Three]", logs);
         });
     }
     
     @Test
     public void testLimit() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[One, Two, Three]", list.limit(3));
+            assertAsString("[One, Two, Three]", list.limit(3));
         });
     }
     
     @Test
     public void testSkip() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[Three, Four, Five]", list.skip(2));
+            assertAsString("[Three, Four, Five]", list.skip(2));
         });
     }
     
     @Test
     public void testDistinct() {
         run(FuncList.of(One, Two, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list.distinct());
+            assertAsString("[One, Two, Three]", list.distinct());
         });
     }
     
     @Test
     public void testSorted() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[3, 3, 4, 4, 5]", list.map(theString.length()).sorted());
-            assertStrings("[5, 4, 4, 3, 3]", list.map(theString.length()).sorted((a, b) -> (b - a)));
+            assertAsString("[3, 3, 4, 4, 5]", list.map(theString.length()).sorted());
+            assertAsString("[5, 4, 4, 3, 3]", list.map(theString.length()).sorted((a, b) -> (b - a)));
         });
     }
     
     @Test
     public void testToArray() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", Arrays.toString(list.toArray()));
-            assertStrings("[One, Two, Three]", Arrays.toString(list.toArray(n -> new String[n])));
-            assertStrings("[One, Two, Three]", Arrays.toString(list.toArray(String[]::new)));
+            assertAsString("[One, Two, Three]", Arrays.toString(list.toArray()));
+            assertAsString("[One, Two, Three]", Arrays.toString(list.toArray(n -> new String[n])));
+            assertAsString("[One, Two, Three]", Arrays.toString(list.toArray(String[]::new)));
             
             // exact sizes array will be used.
             val arraySameSize = new String[list.size()];
-            assertStrings("[One, Two, Three]", Arrays.toString(list.toArray(arraySameSize)));
+            assertAsString("[One, Two, Three]", Arrays.toString(list.toArray(arraySameSize)));
             
             // too small array will be ignored and a new one created
             val arrayTooSmall = new String[list.size() - 1];
-            assertStrings("[One, Two, Three]", Arrays.toString(list.toArray(arrayTooSmall)));
+            assertAsString("[One, Two, Three]", Arrays.toString(list.toArray(arrayTooSmall)));
             
             // too large array will be ignored and a new one created
             val arrayTooLarge = new String[list.size() + 1];
-            assertStrings("[One, Two, Three]", Arrays.toString(list.toArray(arrayTooLarge)));
+            assertAsString("[One, Two, Three]", Arrays.toString(list.toArray(arrayTooLarge)));
         });
     }
     
     @Test
     public void testNullableOptionalResult() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("Nullable.of([One, Two, Three])",      list.__nullable());
-            assertStrings("Optional[[One, Two, Three]]",         list.__optional());
-            assertStrings("Result:{ Value: [One, Two, Three] }", list.__result());
+            assertAsString("Nullable.of([One, Two, Three])",      list.__nullable());
+            assertAsString("Optional[[One, Two, Three]]",         list.__optional());
+            assertAsString("Result:{ Value: [One, Two, Three] }", list.__result());
         });
     }
     
@@ -1359,169 +1350,169 @@ public class FuncListTest {
     @Test
     public void testIndexesOf() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[0, 2]", list.indexesOf(value -> value.equals(One) || value.equals(Three)));
+            assertAsString("[0, 2]", list.indexesOf(value -> value.equals(One) || value.equals(Three)));
         });
     }
     
     @Test
     public void testFirst() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[One]",     list.first());
-            assertStrings("[One, Two, Three]", list.first(3));
+            assertAsString("Optional[One]",     list.first());
+            assertAsString("[One, Two, Three]", list.first(3));
         });
     }
     
     @Test
     public void testLast() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[Five]",      list.last());
-            assertStrings("[Three, Four, Five]", list.last(3));
+            assertAsString("Optional[Five]",      list.last());
+            assertAsString("[Three, Four, Five]", list.last(3));
         });
     }
     
     @Test
     public void testAt() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[Three]", list.at(2));
-            assertStrings("Optional.empty",  list.at(10));
+            assertAsString("Optional[Three]", list.at(2));
+            assertAsString("Optional.empty",  list.at(10));
         });
     }
     
     @Test
     public void testTail() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[Two, Three, Four, Five]", list.tail());
+            assertAsString("[Two, Three, Four, Five]", list.tail());
         });
     }
     
     @Test
     public void testToBuilder() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three, Four, Five]", list.toBuilder().add(Four).add(Five).build());
+            assertAsString("[One, Two, Three, Four, Five]", list.toBuilder().add(Four).add(Five).build());
         });
     }
     
     @Test
     public void testAppend() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]",       list);
-            assertStrings("[One, Two, Three, Four]", list.append(Four));
-            assertStrings("[One, Two, Three]",       list);
+            assertAsString("[One, Two, Three]",       list);
+            assertAsString("[One, Two, Three, Four]", list.append(Four));
+            assertAsString("[One, Two, Three]",       list);
         });
     }
     
     @Test
     public void testAppendAll() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]",             list);
-            assertStrings("[One, Two, Three, Four, Five]", list.appendAll(Four, Five));
-            assertStrings("[One, Two, Three, Four, Five]", list.appendAll(FuncList.listOf(Four, Five)));
-            assertStrings("[One, Two, Three, Four, Five]", list.appendAll(FuncList.of(Four, Five)));
-            assertStrings("[One, Two, Three]",             list);
+            assertAsString("[One, Two, Three]",             list);
+            assertAsString("[One, Two, Three, Four, Five]", list.appendAll(Four, Five));
+            assertAsString("[One, Two, Three, Four, Five]", list.appendAll(FuncList.listOf(Four, Five)));
+            assertAsString("[One, Two, Three, Four, Five]", list.appendAll(FuncList.of(Four, Five)));
+            assertAsString("[One, Two, Three]",             list);
         });
     }
     
     @Test
     public void testPrepend() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]",       list);
-            assertStrings("[Zero, One, Two, Three]", list.prepend(Zero));
-            assertStrings("[One, Two, Three]",       list);
+            assertAsString("[One, Two, Three]",       list);
+            assertAsString("[Zero, One, Two, Three]", list.prepend(Zero));
+            assertAsString("[One, Two, Three]",       list);
         });
     }
     
     @Test
     public void testPrependAll() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]",                 list);
-            assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(MinusOne, Zero));
-            assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(FuncList.listOf(MinusOne, Zero)));
-            assertStrings("[MinusOne, Zero, One, Two, Three]", list.prependAll(FuncList.of(MinusOne, Zero)));
-            assertStrings("[One, Two, Three]",                 list);
+            assertAsString("[One, Two, Three]",                 list);
+            assertAsString("[MinusOne, Zero, One, Two, Three]", list.prependAll(MinusOne, Zero));
+            assertAsString("[MinusOne, Zero, One, Two, Three]", list.prependAll(FuncList.listOf(MinusOne, Zero)));
+            assertAsString("[MinusOne, Zero, One, Two, Three]", list.prependAll(FuncList.of(MinusOne, Zero)));
+            assertAsString("[One, Two, Three]",                 list);
         });
     }
     
     @Test
     public void testWith() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]",       list);
-            assertStrings("[One, Zero, Three]",      list.with(1, Zero));
-            assertStrings("[One, Two=>Zero, Three]", list.with(1, value -> value + "=>" + Zero));
-            assertStrings("[One, Two, Three]",       list);
+            assertAsString("[One, Two, Three]",       list);
+            assertAsString("[One, Zero, Three]",      list.with(1, Zero));
+            assertAsString("[One, Two=>Zero, Three]", list.with(1, value -> value + "=>" + Zero));
+            assertAsString("[One, Two, Three]",       list);
         });
     }
     
     @Test
     public void testInsertAt() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]",       list);
-            assertStrings("[One, Zero, Two, Three]", list.insertAt(1, Zero));
-            assertStrings("[One, Two, Three]",       list);
+            assertAsString("[One, Two, Three]",       list);
+            assertAsString("[One, Zero, Two, Three]", list.insertAt(1, Zero));
+            assertAsString("[One, Two, Three]",       list);
         });
     }
     
     @Test
     public void testInsertAllAt() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]",             list);
-            assertStrings("[One, Two, Zero, Zero, Three]", list.insertAt(2, Zero, Zero));
-            assertStrings("[One, Two, Zero, Zero, Three]", list.insertAllAt(2, listOf(Zero, Zero)));
-            assertStrings("[One, Two, Zero, Zero, Three]", list.insertAllAt(2, FuncList.of(Zero, Zero)));
-            assertStrings("[One, Two, Three]",             list);
+            assertAsString("[One, Two, Three]",             list);
+            assertAsString("[One, Two, Zero, Zero, Three]", list.insertAt(2, Zero, Zero));
+            assertAsString("[One, Two, Zero, Zero, Three]", list.insertAllAt(2, listOf(Zero, Zero)));
+            assertAsString("[One, Two, Zero, Zero, Three]", list.insertAllAt(2, FuncList.of(Zero, Zero)));
+            assertAsString("[One, Two, Three]",             list);
         });
     }
     
     @Test
     public void testExclude() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[One, Two, Three, Four, Five]", list);
-            assertStrings("[One, Three, Four, Five]",      list.exclude(Two));
-            assertStrings("[One, Three, Four, Five]",      list.exclude(Two::equals));
-            assertStrings("[One, Three, Four, Five]",      list.excludeAt(1));
-            assertStrings("[One, Five]",                   list.excludeFrom(1, 3));
-            assertStrings("[One, Three, Four, Five]",      list.excludeBetween(1, 2));
-            assertStrings("[One, Two, Three, Four, Five]", list);
+            assertAsString("[One, Two, Three, Four, Five]", list);
+            assertAsString("[One, Three, Four, Five]",      list.exclude(Two));
+            assertAsString("[One, Three, Four, Five]",      list.exclude(Two::equals));
+            assertAsString("[One, Three, Four, Five]",      list.excludeAt(1));
+            assertAsString("[One, Five]",                   list.excludeFrom(1, 3));
+            assertAsString("[One, Three, Four, Five]",      list.excludeBetween(1, 2));
+            assertAsString("[One, Two, Three, Four, Five]", list);
         });
     }
     
     @Test
     public void testReverse() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[One, Two, Three, Four, Five]", list);
-            assertStrings("[Five, Four, Three, Two, One]", list.reverse());
-            assertStrings("[One, Two, Three, Four, Five]", list);
+            assertAsString("[One, Two, Three, Four, Five]", list);
+            assertAsString("[Five, Four, Three, Two, One]", list.reverse());
+            assertAsString("[One, Two, Three, Four, Five]", list);
         });
     }
     
     @Test
     public void testShuffle() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten), list -> {
-            assertStrings  ("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
+            assertAsString  ("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
             assertNotEquals("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list.shuffle().toString());
-            assertStrings  ("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
+            assertAsString  ("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
         });
     }
     
     @Test
     public void testQuery() {
         run(FuncList.of(One, Two, Three, Four, Five, Six), list -> {
-            assertStrings("[One, Two, Three, Four, Five, Six]", list);
-            assertStrings("[(0,One), (1,Two), (5,Six)]",        list.query(value -> value.length() == 3));
-            assertStrings("[One, Two, Three, Four, Five, Six]", list);
+            assertAsString("[One, Two, Three, Four, Five, Six]", list);
+            assertAsString("[(0,One), (1,Two), (5,Six)]",        list.query(value -> value.length() == 3));
+            assertAsString("[One, Two, Three, Four, Five, Six]", list);
         });
     }
     
     @Test
     public void testMinIndexBy() {
         run(FuncList.of(One, Two, Three, Four, Five, Six), list -> {
-            assertStrings("Optional[0]", list.minIndexBy(value -> value.length()));
+            assertAsString("Optional[0]", list.minIndexBy(value -> value.length()));
         });
     }
     
     @Test
     public void testMaxIndexBy() {
         run(FuncList.of(One, Two, Three, Four, Five, Six), list -> {
-            assertStrings("Optional[2]", list.maxIndexBy(value -> value.length()));
+            assertAsString("Optional[2]", list.maxIndexBy(value -> value.length()));
         });
     }
     
@@ -1531,21 +1522,21 @@ public class FuncListTest {
     @Test
     public void testToByteArray() {
         run(FuncList.of('A', 'B', 'C', 'D'), list -> {
-            assertStrings("[65, 66, 67, 68]", Arrays.toString(list.toByteArray(c -> (byte)(int)c)));
+            assertAsString("[65, 66, 67, 68]", Arrays.toString(list.toByteArray(c -> (byte)(int)c)));
         });
     }
     
     @Test
     public void testToIntArray() {
         run(FuncList.of('A', 'B', 'C', 'D'), list -> {
-            assertStrings("[65, 66, 67, 68]", Arrays.toString(list.toIntArray(c -> (int)c)));
+            assertAsString("[65, 66, 67, 68]", Arrays.toString(list.toIntArray(c -> (int)c)));
         });
     }
     
     @Test
     public void testToDoubleArray() {
         run(FuncList.of('A', 'B', 'C', 'D'), list -> {
-            assertStrings("[65.0, 66.0, 67.0, 68.0]", Arrays.toString(list.toDoubleArray(c -> (double)(int)c)));
+            assertAsString("[65.0, 66.0, 67.0, 68.0]", Arrays.toString(list.toDoubleArray(c -> (double)(int)c)));
         });
     }
     
@@ -1553,7 +1544,7 @@ public class FuncListTest {
     public void testToArrayList() {
         run(FuncList.of(One, Two, Three), list -> {
             val newList = list.toArrayList();
-            assertStrings("[One, Two, Three]", newList);
+            assertAsString("[One, Two, Three]", newList);
             assertTrue(newList instanceof ArrayList);
         });
     }
@@ -1562,7 +1553,7 @@ public class FuncListTest {
     public void testToList() {
         run(FuncList.of(One, Two, Three), list -> {
             val newList = list.toJavaList();
-            assertStrings("[One, Two, Three]", newList);
+            assertAsString("[One, Two, Three]", newList);
             assertTrue(newList instanceof List);
         });
     }
@@ -1571,7 +1562,7 @@ public class FuncListTest {
     public void testToMutableList() {
         run(FuncList.of(One, Two, Three), list -> {
             val newList = list.toMutableList();
-            assertStrings("[One, Two, Three]", newList);
+            assertAsString("[One, Two, Three]", newList);
             // This is because we use ArrayList as mutable list ... not it should not always be.
             assertTrue(newList instanceof ArrayList);
         });
@@ -1582,21 +1573,21 @@ public class FuncListTest {
     @Test
     public void testJoin() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("OneTwoThree", list.join());
+            assertAsString("OneTwoThree", list.join());
         });
     }
     
     @Test
     public void testJoin_withDelimiter() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("One, Two, Three", list.join(", "));
+            assertAsString("One, Two, Three", list.join(", "));
         });
     }
     
     @Test
     public void testToListString() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list);
+            assertAsString("[One, Two, Three]", list);
         });
     }
     
@@ -1605,28 +1596,28 @@ public class FuncListTest {
     @Test
     public void testToMap() {
         run(FuncList.of(One, Three, Five), list -> {
-            assertStrings("{3:One, 4:Five, 5:Three}", list.toMap(theString.length()).toString());
+            assertAsString("{3:One, 4:Five, 5:Three}", list.toMap(theString.length()).toString());
         });
     }
     
     @Test
     public void testToMap_withValue() {
         run(FuncList.of(One, Three, Five), list -> {
-            assertStrings("{3:-->One, 4:-->Five, 5:-->Three}", list.toMap(theString.length(), theString.withPrefix("-->")).toString());
+            assertAsString("{3:-->One, 4:-->Five, 5:-->Three}", list.toMap(theString.length(), theString.withPrefix("-->")).toString());
         });
     }
     
     @Test
     public void testToMap_withMappedMergedValue() {
         run(FuncList.of(One, Two, Three, Five), list -> {
-            assertStrings("{3:One+Two, 4:Five, 5:Three}", list.toMap(theString.length(), theString, (a, b) -> a + "+" + b).toString());
+            assertAsString("{3:One+Two, 4:Five, 5:Three}", list.toMap(theString.length(), theString, (a, b) -> a + "+" + b).toString());
         });
     }
     
     @Test
     public void testToMap_withMergedValue() {
         run(FuncList.of(One, Two, Three, Five), list -> {
-            assertStrings("{3:One+Two, 4:Five, 5:Three}", list.toMap(theString.length(), (a, b) -> a + "+" + b).toString());
+            assertAsString("{3:One+Two, 4:Five, 5:Three}", list.toMap(theString.length(), (a, b) -> a + "+" + b).toString());
         });
     }
     
@@ -1634,7 +1625,7 @@ public class FuncListTest {
     public void testToSet() {
         run(FuncList.of(One, Two, Three), list -> {
             val set    = list.toSet();
-            assertStrings("[One, Two, Three]", set);
+            assertAsString("[One, Two, Three]", set);
             assertTrue(set instanceof Set);
         });
     }
@@ -1644,7 +1635,7 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three), list -> {
             val logs   = new ArrayList<String>();
             list.forEachWithIndex((i, s) -> logs.add(i + ":" + s));
-            assertStrings("[0:One, 1:Two, 2:Three]", logs);
+            assertAsString("[0:One, 1:Two, 2:Three]", logs);
         });
     }
     
@@ -1653,7 +1644,7 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
             val array  = new String[5];
             list.populateArray(array);
-            assertStrings("[One, Two, Three, Four, Five]", Arrays.toString(array));
+            assertAsString("[One, Two, Three, Four, Five]", Arrays.toString(array));
         });
     }
     
@@ -1662,7 +1653,7 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
             val array  = new String[3];
             list.populateArray(array, 2);
-            assertStrings("[null, null, One]", Arrays.toString(array));
+            assertAsString("[null, null, One]", Arrays.toString(array));
         });
     }
     
@@ -1671,7 +1662,7 @@ public class FuncListTest {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
             val array  = new String[5];
             list.populateArray(array, 1, 3);
-            assertStrings("[null, One, Two, Three, null]", Arrays.toString(array));
+            assertAsString("[null, One, Two, Three, null]", Arrays.toString(array));
         });
     }
     
@@ -1680,28 +1671,28 @@ public class FuncListTest {
     @Test
     public void testFindFirst_withPredicate() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[Three]", list.findFirst(theString.thatContains("ee")));
+            assertAsString("Optional[Three]", list.findFirst(theString.thatContains("ee")));
         });
     }
     
     @Test
     public void testFindAny_withPredicate() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[Three]", list.findAny(theString.thatContains("ee")));
+            assertAsString("Optional[Three]", list.findAny(theString.thatContains("ee")));
         });
     }
     
     @Test
     public void testFindFirst_withMapper_withPredicate() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[Three]", list.findFirst(theString.length(), l ->  l == 5));
+            assertAsString("Optional[Three]", list.findFirst(theString.length(), l ->  l == 5));
         });
     }
     
     @Test
     public void testFindAny_withMapper_withPredicate() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[Three]", list.findAny(theString.length(), l -> l == 5));
+            assertAsString("Optional[Three]", list.findAny(theString.length(), l -> l == 5));
         });
     }
     
@@ -1710,56 +1701,56 @@ public class FuncListTest {
     @Test
     public void testSize() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("3", list.size());
+            assertAsString("3", list.size());
         });
     }
     
     @Test
     public void testMinBy() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[One]", list.minBy(theString.length()));
+            assertAsString("Optional[One]", list.minBy(theString.length()));
         });
     }
     
     @Test
     public void testMaxBy() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[Three]", list.maxBy(theString.length()));
+            assertAsString("Optional[Three]", list.maxBy(theString.length()));
         });
     }
     
     @Test
     public void testMinBy_withMapper() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[Three]", list.minBy(theString.length(), (a, b)->b-a));
+            assertAsString("Optional[Three]", list.minBy(theString.length(), (a, b)->b-a));
         });
     }
     
     @Test
     public void testMaxBy_withMapper() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("Optional[One]", list.maxBy(theString.length(), (a, b)->b-a));
+            assertAsString("Optional[One]", list.maxBy(theString.length(), (a, b)->b-a));
         });
     }
     
     @Test
     public void testMinMaxBy() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("(Optional[Five],Optional[Two])", list.minMax(String.CASE_INSENSITIVE_ORDER));
+            assertAsString("(Optional[Five],Optional[Two])", list.minMax(String.CASE_INSENSITIVE_ORDER));
         });
     }
     
     @Test
     public void testMinMaxBy_withMapper() {
         run(FuncList.of(One, Two, Three, Four), list -> {
-            assertStrings("(Optional[One],Optional[Three])", list.minMaxBy(theString.length()));
+            assertAsString("(Optional[One],Optional[Three])", list.minMaxBy(theString.length()));
         });
     }
     
     @Test
     public void testMinMaxBy_withMapper_withComparator() {
         run(FuncList.of(One, Two, Three, Four), list -> {
-            assertStrings("(Optional[Three],Optional[Two])", list.minMaxBy(theString.length(), (a, b) -> b-a));
+            assertAsString("(Optional[Three],Optional[Two])", list.minMaxBy(theString.length(), (a, b) -> b-a));
         });
     }
     
@@ -1824,7 +1815,7 @@ public class FuncListTest {
         run(FuncList.of(Two, Three, Four, Eleven), list -> {
             val sumLength = new SumLength();
             val avgLength = new AvgLength();
-            assertStrings("(18,4)", list.calculate(sumLength, avgLength));
+            assertAsString("(18,4)", list.calculate(sumLength, avgLength));
         });
     }
     
@@ -1844,7 +1835,7 @@ public class FuncListTest {
             val sumLength = new SumLength();
             val avgLength = new AvgLength();
             val minLength = new MinLength();
-            assertStrings("(18,4,3)", list.calculate(sumLength, avgLength, minLength));
+            assertAsString("(18,4,3)", list.calculate(sumLength, avgLength, minLength));
         });
     }
     
@@ -1857,7 +1848,7 @@ public class FuncListTest {
             val value     = list
                             .calculate(sumLength, avgLength, minLength)
                             .mapTo((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
-            assertStrings("sum: 18, avg: 4, min: 3", value);
+            assertAsString("sum: 18, avg: 4, min: 3", value);
         });
     }
     
@@ -1868,7 +1859,7 @@ public class FuncListTest {
             val avgLength = new AvgLength();
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            assertStrings("(18,4,3,6)", list.calculate(sumLength, avgLength, minLength, maxLength));
+            assertAsString("(18,4,3,6)", list.calculate(sumLength, avgLength, minLength, maxLength));
         });
     }
     
@@ -1882,7 +1873,7 @@ public class FuncListTest {
             val value     = list
                             .calculate(sumLength, avgLength, minLength, maxLength)
                             .mapTo((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
-            assertStrings("sum: 18, avg: 4, min: 3, max: 6", value);
+            assertAsString("sum: 18, avg: 4, min: 3, max: 6", value);
         });
     }
     
@@ -1893,7 +1884,7 @@ public class FuncListTest {
             val avgLength = new AvgLength();
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            assertStrings("(18,4,3,6,18)", list.calculate(sumLength, avgLength, minLength, maxLength, sumLength));
+            assertAsString("(18,4,3,6,18)", list.calculate(sumLength, avgLength, minLength, maxLength, sumLength));
         });
     }
     
@@ -1909,7 +1900,7 @@ public class FuncListTest {
                             .mapTo((sum, avg, min, max, sum2) -> {
                                 return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2;
                             });
-            assertStrings("sum: 18, avg: 4, min: 3, max: 6, sum2: 18", value);
+            assertAsString("sum: 18, avg: 4, min: 3, max: 6, sum2: 18", value);
         });
     }
     
@@ -1920,7 +1911,7 @@ public class FuncListTest {
             val avgLength = new AvgLength();
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            assertStrings("(18,4,3,6,18,4)", list.calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength));
+            assertAsString("(18,4,3,6,18,4)", list.calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength));
         });
     }
     
@@ -1936,7 +1927,7 @@ public class FuncListTest {
                             .mapTo((sum, avg, min, max, sum2, avg2) -> {
                                 return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2 + ", avg2: " + avg2;
                             });
-            assertStrings("sum: 18, avg: 4, min: 3, max: 6, sum2: 18, avg2: 4", value);
+            assertAsString("sum: 18, avg: 4, min: 3, max: 6, sum2: 18, avg2: 4", value);
         });
     }
     
@@ -1953,7 +1944,7 @@ public class FuncListTest {
     @Test
     public void testAppendWith() {
         run(FuncList.of(One, Two), FuncList.of(Three, Four), (list1, list2) -> {
-            assertStrings(
+            assertAsString(
                         "[One, Two, Three, Four]",
                         list1.appendWith(list2)
                     );
@@ -1963,7 +1954,7 @@ public class FuncListTest {
     @Test
     public void testParependWith() {
         run(FuncList.of(One, Two), FuncList.of(Three, Four), (list1, list2) -> {
-            assertStrings(
+            assertAsString(
                         "[One, Two, Three, Four]",
                         list2.prependWith(list1)
                     );
@@ -1975,7 +1966,7 @@ public class FuncListTest {
         run(FuncList.of("A", "B", "C"),
             IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (list1, streamabl2) -> {
-            assertStrings(
+            assertAsString(
                 "A, 0, B, 1, C, 2, 3, 4, 5, 6",
                 list1
                     .mergeWith(streamabl2)
@@ -1989,42 +1980,42 @@ public class FuncListTest {
         run(FuncList.of("A", "B", "C"),
             IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
-                assertStrings(
+                assertAsString(
                         "(A,0), (B,1), (C,2)",
                         listA.zipWith(listB).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
             IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
-                assertStrings(
+                assertAsString(
                         "(A,0), (B,1), (C,2)",
                         listA.zipWith(listB, RequireBoth).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
             IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
-                assertStrings(
+                assertAsString(
                         "(A,0), (B,1), (C,2), (null,3), (null,4)",
                         listA.zipWith(listB, AllowUnpaired).limit(5).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
             IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
-                assertStrings(
+                assertAsString(
                         "A:0, B:1, C:2",
                         listA.zipWith(listB, (c, i) -> c + ":" + i).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
             IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
-                assertStrings(
+                assertAsString(
                         "A:0, B:1, C:2",
                         listA.zipWith(listB, RequireBoth, (c, i) -> c + ":" + i).join(", "));
             });
         run(FuncList.of("A", "B", "C"),
             IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
-                assertStrings(
+                assertAsString(
                         "A:0, B:1, C:2, null:3, null:4",
                         listA.zipWith(listB, AllowUnpaired, (c, i) -> c + ":" + i).limit(5).join(", "));
             });
@@ -2036,7 +2027,7 @@ public class FuncListTest {
             IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 val bool = new AtomicBoolean(true);
-                assertStrings("A, 1, C, 3, 4", listA.choose(listB, (a, b) -> {
+                assertAsString("A, 1, C, 3, 4", listA.choose(listB, (a, b) -> {
                     boolean curValue = bool.get();
                     return bool.getAndSet(!curValue);
                 }).limit(5).join(", "));
@@ -2049,7 +2040,7 @@ public class FuncListTest {
             IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(),
             (listA, listB) -> {
                 val bool    = new AtomicBoolean(true);
-                assertStrings("A, 1, C, 3, 4, 5, 6", listA.choose(listB, AllowUnpaired, (a, b) -> {
+                assertAsString("A, 1, C, 3, 4, 5, 6", listA.choose(listB, AllowUnpaired, (a, b) -> {
                     boolean curValue = bool.get();
                     return bool.getAndSet(!curValue);
                 }).limit(7).join(", "));
@@ -2061,14 +2052,14 @@ public class FuncListTest {
     @Test
     public void testFillNull() {
         run(FuncList.of("A", "B",  null, "C"), list -> {
-            assertStrings("[A, B, Z, C]", list.fillNull("Z"));
+            assertAsString("[A, B, Z, C]", list.fillNull("Z"));
         });
     }
     
     @Test
     public void testFillNull_lens() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
                     list.fillNull(Car.theCar.color, "Black"));
         });
@@ -2077,7 +2068,7 @@ public class FuncListTest {
     @Test
     public void testFillNull_getter_setter() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
                     list.fillNull(
                             (Car car)               -> car.color(),
@@ -2089,7 +2080,7 @@ public class FuncListTest {
     @Test
     public void testFillNull_lens_supplier() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
                     list.fillNullWith(Car.theCar.color, () -> "Black"));
         });
@@ -2098,7 +2089,7 @@ public class FuncListTest {
     @Test
     public void testFillNull_getter_setter_supplier() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
                     list.fillNullWith(
                             (Car car)               -> car.color(),
@@ -2110,7 +2101,7 @@ public class FuncListTest {
     @Test
     public void testFillNull_lens_function() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
                     list.fillNullBy(Car.theCar.color, (Car car) -> "Black"));
         });
@@ -2119,7 +2110,7 @@ public class FuncListTest {
     @Test
     public void testFillNull_getter_setter_function() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
                     list.fillNullBy(
                             (Car car)               -> car.color(),
@@ -2133,21 +2124,21 @@ public class FuncListTest {
     @Test
     public void testFilterClass() {
         run(FuncList.of(0, One, 2, Three, 4, Five), list -> {
-            assertStrings("[One, Three, Five]", list.filter(String.class));
+            assertAsString("[One, Three, Five]", list.filter(String.class));
         });
     }
     
     @Test
     public void testFilterClass_withPredicate() {
         run(FuncList.of(0, One, 2, Three, 4, Five), list -> {
-            assertStrings("[One, Five]", list.filter(String.class, theString.length().thatLessThan(5)));
+            assertAsString("[One, Five]", list.filter(String.class, theString.length().thatLessThan(5)));
         });
     }
     
     @Test
     public void testFilter_withMappter() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings(
+            assertAsString(
                     "[Three, Four, Five]", 
                     list.filter(
                             str -> BigInteger.valueOf(str.length()),
@@ -2158,42 +2149,42 @@ public class FuncListTest {
     @Test
     public void testFilterAsInt() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[Three, Four, Five]", list.filterAsInt(str -> str.length(), i -> i >= 4));
+            assertAsString("[Three, Four, Five]", list.filterAsInt(str -> str.length(), i -> i >= 4));
         });
     }
     
     @Test
     public void testFilterAsLong() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[Three, Four, Five]", list.filterAsLong(str -> (long)str.length(), i -> i >= 4));
+            assertAsString("[Three, Four, Five]", list.filterAsLong(str -> (long)str.length(), i -> i >= 4));
         });
     }
     
     @Test
     public void testFilterAsDouble() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[Three, Four, Five]", list.filterAsDouble(str -> (double)str.length(), i -> i >= 4));
+            assertAsString("[Three, Four, Five]", list.filterAsDouble(str -> (double)str.length(), i -> i >= 4));
         });
     }
     
     @Test
     public void testFilterAsObject() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[Three, Four, Five]", list.filterAsObject(str -> BigInteger.valueOf(str.length()), b -> b.intValue() >= 4));
+            assertAsString("[Three, Four, Five]", list.filterAsObject(str -> BigInteger.valueOf(str.length()), b -> b.intValue() >= 4));
         });
     }
     
     @Test
     public void testFilterWithIndex() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertStrings("[Four, Five]", list.filterWithIndex((index, str) -> index > 2 && !str.startsWith("T")));
+            assertAsString("[Four, Five]", list.filterWithIndex((index, str) -> index > 2 && !str.startsWith("T")));
         });
     }
     
     @Test
     public void testFilterNonNull() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Blue, Green, Red]",
                     list.map(theCar.color).filterNonNull());
         });
@@ -2202,7 +2193,7 @@ public class FuncListTest {
     @Test
     public void testFilterNonNull_withMapper() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Car(color=Blue), Car(color=Green), Car(color=Red)]",
                     list.filterNonNull(theCar.color));
         });
@@ -2211,7 +2202,7 @@ public class FuncListTest {
     @Test
     public void testExcludeNull() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Blue, Green, Red]",
                     list.map(theCar.color).excludeNull());
         });
@@ -2220,7 +2211,7 @@ public class FuncListTest {
     @Test
     public void testExcludeNull_withMapper() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Car(color=Blue), Car(color=Green), Car(color=Red)]",
                     list.excludeNull(theCar.color));
         });
@@ -2229,7 +2220,7 @@ public class FuncListTest {
     @Test
     public void testFilterMapper() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Car(color=Blue), Car(color=Red)]",
                     list.filter(theCar.color, color -> Arrays.asList("Blue", "Red").contains(color)));
         });
@@ -2238,7 +2229,7 @@ public class FuncListTest {
     @Test
     public void testFilterOnly() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Blue, Red]",
                     list.map(theCar.color).filterOnly("Blue", "Red"));
         });
@@ -2247,7 +2238,7 @@ public class FuncListTest {
     @Test
     public void testFilterIn_collection() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Blue, Red]",
                     list.map(theCar.color).filterIn(asList("Blue", "Red")));
         });
@@ -2256,7 +2247,7 @@ public class FuncListTest {
     @Test
     public void testExcludeAny() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Green, null]",
                     list.map(theCar.color).excludeAny("Blue", "Red"));
         });
@@ -2265,7 +2256,7 @@ public class FuncListTest {
     @Test
     public void testExcludeIn_collection() {
         run(FuncList.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red")), list -> {
-            assertStrings(
+            assertAsString(
                     "[Green, null]",
                     list.map(theCar.color).excludeIn(asList("Blue", "Red")));
         });
@@ -2276,14 +2267,14 @@ public class FuncListTest {
     @Test
     public void testFlatMapOnly() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, 3, 5]", list.flatMapOnly(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("" + s.length())));
+            assertAsString("[One, 3, 5]", list.flatMapOnly(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("" + s.length())));
         });
     }
     
     @Test
     public void testFlatMapIf() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[(One), [3], [5]]", list.flatMapIf(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("[" + s.length() + "]"), s -> FuncList.of("(" + s + ")")));
+            assertAsString("[(One), [3], [5]]", list.flatMapIf(str -> str.toLowerCase().startsWith("t"), s -> FuncList.of("[" + s.length() + "]"), s -> FuncList.of("(" + s + ")")));
         });
     }
     
@@ -2292,37 +2283,37 @@ public class FuncListTest {
     @Test
     public void testSkipLimitLong() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[Two]", list.skip((Long)1L).limit((Long)1L));
+            assertAsString("[Two]", list.skip((Long)1L).limit((Long)1L));
         });
     }
     
     @Test
     public void testSkipLimitLongNull() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list.skip(null).limit(null));
+            assertAsString("[One, Two, Three]", list.skip(null).limit(null));
         });
     }
     
     @Test
     public void testSkipLimitLongMinus() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[One, Two, Three]", list.skip(Long.valueOf(-1)).limit(Long.valueOf(-1)));
+            assertAsString("[One, Two, Three]", list.skip(Long.valueOf(-1)).limit(Long.valueOf(-1)));
         });
     }
     
     @Test
     public void testSkipWhile() {
         run(FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
-            assertStrings("[3, 4, 5, 4, 3, 2, 1]",       list.skipWhile(i -> i < 3));
-            assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipWhile(i -> i > 3));
+            assertAsString("[3, 4, 5, 4, 3, 2, 1]",       list.skipWhile(i -> i < 3));
+            assertAsString("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipWhile(i -> i > 3));
         });
     }
     
     @Test
     public void testSkipUntil() {
         run(FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
-            assertStrings("[4, 5, 4, 3, 2, 1]",          list.skipUntil(i -> i > 3));
-            assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipUntil(i -> i < 3));
+            assertAsString("[4, 5, 4, 3, 2, 1]",          list.skipUntil(i -> i > 3));
+            assertAsString("[1, 2, 3, 4, 5, 4, 3, 2, 1]", list.skipUntil(i -> i < 3));
         });
     }
     
@@ -2330,13 +2321,13 @@ public class FuncListTest {
     public void testTakeWhile() {
         run(FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
             val logs = new ArrayList<Integer>();
-            assertStrings("[1, 2, 3]",    list.peek(logs::add).takeWhile(i -> i < 4));
-            assertStrings("[1, 2, 3, 4]", logs);
+            assertAsString("[1, 2, 3]",    list.peek(logs::add).takeWhile(i -> i < 4));
+            assertAsString("[1, 2, 3, 4]", logs);
             //                       ^--- Because it needs 4 to do the check in `takeWhile`
             
             logs.clear();
-            assertStrings("[]", list.peek(logs::add).takeWhile(i -> i > 4));
-            assertStrings("[1]", logs);
+            assertAsString("[]", list.peek(logs::add).takeWhile(i -> i > 4));
+            assertAsString("[1]", logs);
             //              ^--- Because it needs 1 to do the check in `takeWhile`
         });
     }
@@ -2344,7 +2335,7 @@ public class FuncListTest {
     @Test
     public void testTakeWhile_previous() {
         run(FuncList.of(1, 2, 3, 4, 6, 4, 3, 2, 1), list -> {
-            assertStrings("[1, 2, 3, 4]", list.takeWhile((a, b) -> b == a + 1));
+            assertAsString("[1, 2, 3, 4]", list.takeWhile((a, b) -> b == a + 1));
         });
     }
     
@@ -2352,13 +2343,13 @@ public class FuncListTest {
     public void testTakeUtil() {
         run(FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
             val logs = new ArrayList<Integer>();
-            assertStrings("[1, 2, 3, 4]", list.peek(logs::add).takeUntil(i -> i > 4));
-            assertStrings("[1, 2, 3, 4, 5]", logs);
+            assertAsString("[1, 2, 3, 4]", list.peek(logs::add).takeUntil(i -> i > 4));
+            assertAsString("[1, 2, 3, 4, 5]", logs);
             //                          ^--- Because it needs 5 to do the check in `takeUntil`
             
             logs.clear();
-            assertStrings("[]",  list.peek(logs::add).takeUntil(i -> i < 4));
-            assertStrings("[1]", logs);
+            assertAsString("[]",  list.peek(logs::add).takeUntil(i -> i < 4));
+            assertAsString("[1]", logs);
             //              ^--- Because it needs 1 to do the check in `takeUntil`
         });
     }
@@ -2366,14 +2357,14 @@ public class FuncListTest {
     @Test
     public void testTakeUntil_previous() {
         run(FuncList.of(1, 2, 3, 4, 6, 4, 3, 2, 1), list -> {
-            assertStrings("[1, 2, 3, 4]", list.takeUntil((a, b) -> b > a + 1));
+            assertAsString("[1, 2, 3, 4]", list.takeUntil((a, b) -> b > a + 1));
         });
     }
     
     @Test
     public void testDropAfter() {
         run(FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
-            assertStrings("[1, 2, 3, 4]", list.dropAfter(i -> i == 4));
+            assertAsString("[1, 2, 3, 4]", list.dropAfter(i -> i == 4));
             //                       ^--- Include 4
         });
     }
@@ -2381,7 +2372,7 @@ public class FuncListTest {
     @Test
     public void testDropAfter_previous() {
         run(FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
-            assertStrings("[1, 2, 3, 4, 5, 4]", list.dropAfter((a, b) -> b < a));
+            assertAsString("[1, 2, 3, 4, 5, 4]", list.dropAfter((a, b) -> b < a));
             //                             ^--- Include 4
         });
     }
@@ -2390,8 +2381,8 @@ public class FuncListTest {
     public void testSkipTake() {
         run(FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
             val logs = new ArrayList<Integer>();
-            assertStrings("[3, 4, 5, 4, 3]", list.peek(logs::add).skipWhile(i -> i < 3).takeUntil(i -> i < 3));
-            assertStrings("[1, 2, 3, 4, 5, 4, 3, 2]", logs);
+            assertAsString("[3, 4, 5, 4, 3]", list.peek(logs::add).skipWhile(i -> i < 3).takeUntil(i -> i < 3));
+            assertAsString("[1, 2, 3, 4, 5, 4, 3, 2]", logs);
             //              ^--^-----------------^--- Because it needs these number to do the check in `skipWhile` and `takeWhile`
         });
     }
@@ -2401,7 +2392,7 @@ public class FuncListTest {
     @Test
     public void testMapOnly() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[ONE, TWO, Three]",
+            assertAsString("[ONE, TWO, Three]",
                     list
                     .mapOnly(
                             $S.length().thatLessThan(4),
@@ -2413,7 +2404,7 @@ public class FuncListTest {
     @Test
     public void testMapIf() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[ONE, TWO, three]",
+            assertAsString("[ONE, TWO, three]",
                     list
                     .mapIf(
                             $S.length().thatLessThan(4), $S.toUpperCase(),
@@ -2425,7 +2416,7 @@ public class FuncListTest {
     @Test
     public void testMapToObjIf() {
         run(FuncList.of(One, Two, Three), list -> {
-            assertStrings("[ONE, TWO, three]",
+            assertAsString("[ONE, TWO, three]",
                     list
                     .mapToObjIf(
                             $S.length().thatLessThan(4), $S.toUpperCase(),
@@ -2439,7 +2430,7 @@ public class FuncListTest {
     @Test
     public void testMapFirst_2() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
-            assertStrings("[ONE, TWO, three, four, five, SIX, seven, eight, nine, TEN, eleven, twelve]",
+            assertAsString("[ONE, TWO, three, four, five, SIX, seven, eight, nine, TEN, eleven, twelve]",
                     list
                     .mapFirst(
                             str -> str.length() == 3 ? str.toUpperCase() : null,
@@ -2451,7 +2442,7 @@ public class FuncListTest {
     @Test
     public void testMapFirst_3() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
-            assertStrings("[ONE, TWO, Three, four, five, SIX, Seven, Eight, nine, TEN, Eleven, Twelve]",
+            assertAsString("[ONE, TWO, Three, four, five, SIX, Seven, Eight, nine, TEN, Eleven, Twelve]",
                     list
                     .mapFirst(
                             str -> str.length() == 3 ? str.toUpperCase() : null,
@@ -2464,7 +2455,7 @@ public class FuncListTest {
     @Test
     public void testMapFirst_4() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
-            assertStrings("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, Eleven, Twelve]",
+            assertAsString("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, Eleven, Twelve]",
                     list
                     .mapFirst(
                             str -> str.length() == 3 ? str.toUpperCase() : null,
@@ -2478,7 +2469,7 @@ public class FuncListTest {
     @Test
     public void testMapFirst_5() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
-            assertStrings("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, [Eleven], Twelve]",
+            assertAsString("[ONE, TWO, (Three), four, five, SIX, (Seven), (Eight), nine, TEN, [Eleven], Twelve]",
                     list
                     .mapFirst(
                             str -> str.length() == 3 ? str.toUpperCase() : null,
@@ -2493,7 +2484,7 @@ public class FuncListTest {
     @Test
     public void testMapFirst_6() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
-            assertStrings("[ONE, TWO, (Three), four, -- Five --, -- Six --, (Seven), -- Eight --, -- Nine --, TEN, [Eleven], Twelve]",
+            assertAsString("[ONE, TWO, (Three), four, -- Five --, -- Six --, (Seven), -- Eight --, -- Nine --, TEN, [Eleven], Twelve]",
                     list
                     .mapFirst(
                             str -> str.contains("i") ? "-- " + str + " --" : null,
@@ -2511,7 +2502,7 @@ public class FuncListTest {
     @Test
     public void testMapThen_2() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-        assertStrings(
+        assertAsString(
                 "[O-n, T-w, T-h, F-o, F-i]",
                 list
                 .mapThen(
@@ -2525,7 +2516,7 @@ public class FuncListTest {
     @Test
     public void testMapThen_3() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-        assertStrings(
+        assertAsString(
                 "[O-n-e, T-w-o, T-h-r, F-o-u, F-i-v]",
                 list
                 .mapThen(
@@ -2540,7 +2531,7 @@ public class FuncListTest {
     @Test
     public void testMapThen_4() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
-            assertStrings(
+            assertAsString(
                     "[T-h-r-e, F-o-u-r, F-i-v-e, S-e-v-e, E-i-g-h, N-i-n-e, E-l-e-v, T-w-e-l]",
                     list
                         .filter($S.length().thatGreaterThanOrEqualsTo(4))
@@ -2557,7 +2548,7 @@ public class FuncListTest {
     @Test
     public void testMapThen_5() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
-            assertStrings(
+            assertAsString(
                     "[T-h-r-e-e, S-e-v-e-n, E-i-g-h-t, E-l-e-v-e, T-w-e-l-v]",
                     list
                         .filter($S.length().thatGreaterThanOrEqualsTo(5))
@@ -2575,7 +2566,7 @@ public class FuncListTest {
     @Test
     public void testMapThen_6() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
-            assertStrings(
+            assertAsString(
                     "[E-l-e-v-e-n, T-w-e-l-v-e]",
                     list
                         .filter($S.length().thatGreaterThanOrEqualsTo(6))
@@ -2596,19 +2587,19 @@ public class FuncListTest {
     @Test
     public void testMapTwoToSix() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
-            assertStrings(
+            assertAsString(
                     "[(One,Two), (Two,Three), (Three,Four), (Four,Five), (Five,Six), (Six,Seven), (Seven,Eight)]",
                     list.mapTwo());
-            assertStrings(
+            assertAsString(
                     "[(One,Two,Three), (Two,Three,Four), (Three,Four,Five), (Four,Five,Six), (Five,Six,Seven), (Six,Seven,Eight)]",
                     list.mapThree());
-            assertStrings(
+            assertAsString(
                     "[(One,Two,Three,Four), (Two,Three,Four,Five), (Three,Four,Five,Six), (Four,Five,Six,Seven), (Five,Six,Seven,Eight)]",
                     list.mapFour());
-            assertStrings(
+            assertAsString(
                     "[(One,Two,Three,Four,Five), (Two,Three,Four,Five,Six), (Three,Four,Five,Six,Seven), (Four,Five,Six,Seven,Eight)]",
                     list.mapFive());
-            assertStrings(
+            assertAsString(
                     "[(One,Two,Three,Four,Five,Six), (Two,Three,Four,Five,Six,Seven), (Three,Four,Five,Six,Seven,Eight)]",
                     list.mapSix());
         });
@@ -2617,19 +2608,19 @@ public class FuncListTest {
     @Test
     public void testMapGroup_specific() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
-            assertStrings(
+            assertAsString(
                     "[One:Two, Two:Three, Three:Four, Four:Five, Five:Six, Six:Seven, Seven:Eight]",
                     list.mapGroup((a,b) -> a+":"+b));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three, Two:Three:Four, Three:Four:Five, Four:Five:Six, Five:Six:Seven, Six:Seven:Eight]",
                     list.mapGroup((a,b,c) -> a+":"+b+":"+c));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three:Four, Two:Three:Four:Five, Three:Four:Five:Six, Four:Five:Six:Seven, Five:Six:Seven:Eight]",
                     list.mapGroup((a,b,c,d) -> a+":"+b+":"+c+":"+d));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three:Four:Five, Two:Three:Four:Five:Six, Three:Four:Five:Six:Seven, Four:Five:Six:Seven:Eight]",
                     list.mapGroup((a,b,c,d,e) -> a+":"+b+":"+c+":"+d+":"+e));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three:Four:Five:Six, Two:Three:Four:Five:Six:Seven, Three:Four:Five:Six:Seven:Eight]",
                     list.mapGroup((a,b,c,d,e,f) -> a+":"+b+":"+c+":"+d+":"+e+":"+f));
         });
@@ -2639,35 +2630,35 @@ public class FuncListTest {
     public void testMapGroup_count() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
             Func1<StreamPlus<? extends String>, String> joiner = stream -> stream.join(":");
-            assertStrings(
+            assertAsString(
                     "[One:Two, Two:Three, Three:Four, Four:Five, Five:Six, Six:Seven, Seven:Eight]",
                     list.mapGroup(2, joiner));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three, Two:Three:Four, Three:Four:Five, Four:Five:Six, Five:Six:Seven, Six:Seven:Eight]",
                     list.mapGroup(3, joiner));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three:Four, Two:Three:Four:Five, Three:Four:Five:Six, Four:Five:Six:Seven, Five:Six:Seven:Eight]",
                     list.mapGroup(4, joiner));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three:Four:Five, Two:Three:Four:Five:Six, Three:Four:Five:Six:Seven, Four:Five:Six:Seven:Eight]",
                     list.mapGroup(5, joiner));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three:Four:Five:Six, Two:Three:Four:Five:Six:Seven, Three:Four:Five:Six:Seven:Eight]",
                     list.mapGroup(6, joiner));
             
-            assertStrings(
+            assertAsString(
                     "[One:Two, Two:Three, Three:Four, Four:Five, Five:Six, Six:Seven, Seven:Eight]",
                     list.mapGroup(2).map(joiner));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three, Two:Three:Four, Three:Four:Five, Four:Five:Six, Five:Six:Seven, Six:Seven:Eight]",
                     list.mapGroup(3).map(joiner));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three:Four, Two:Three:Four:Five, Three:Four:Five:Six, Four:Five:Six:Seven, Five:Six:Seven:Eight]",
                     list.mapGroup(4).map(joiner));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three:Four:Five, Two:Three:Four:Five:Six, Three:Four:Five:Six:Seven, Four:Five:Six:Seven:Eight]",
                     list.mapGroup(5).map(joiner));
-            assertStrings(
+            assertAsString(
                     "[One:Two:Three:Four:Five:Six, Two:Three:Four:Five:Six:Seven, Three:Four:Five:Six:Seven:Eight]",
                     list.mapGroup(6).map(joiner));
         });
@@ -2676,10 +2667,10 @@ public class FuncListTest {
     @Test
     public void testMapGroupToInt() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
-            assertStrings(
+            assertAsString(
                     "[6, 8, 9, 8, 7, 8, 10]",
                     list.mapTwoToInt((a, b) -> a.length() + b.length()));
-            assertStrings(
+            assertAsString(
                     "[6, 8, 9, 8, 7, 8, 10]",
                     list.mapGroupToInt(2, stream -> stream.mapToInt(theString.length()).sum()));
         });
@@ -2688,10 +2679,10 @@ public class FuncListTest {
     @Test
     public void testMapGroupToDouble() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
-            assertStrings(
+            assertAsString(
                     "[9.0, 15.0, 20.0, 16.0, 12.0, 15.0, 25.0]",
                     list.mapTwoToDouble((a, b) -> a.length() * b.length()));
-            assertStrings(
+            assertAsString(
                     "[9.0, 15.0, 20.0, 16.0, 12.0, 15.0, 25.0]",
                     list.mapGroupToDouble(2, stream -> stream.mapToDouble(theString.length().asDouble()).product().getAsDouble()));
         });
@@ -2702,7 +2693,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_1() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<1>:O}, "
                     + "{<1>:T}, "
                     + "{<1>:F}, "
@@ -2722,7 +2713,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_2() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<1>:O, <2>:n}, "
                     + "{<1>:T, <2>:h}, "
                     + "{<1>:F, <2>:i}, "
@@ -2743,7 +2734,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_3() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<1>:O, <2>:n, <3>:e}, "
                     + "{<1>:T, <2>:h, <3>:r}, "
                     + "{<1>:F, <2>:i, <3>:v}, "
@@ -2765,7 +2756,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_4() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<1>:T, <2>:h, <3>:r, <4>:e}, "
                     + "{<1>:F, <2>:i, <3>:v, <4>:e}, "
                     + "{<1>:S, <2>:e, <3>:v, <4>:e}, "
@@ -2787,7 +2778,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_5() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<1>:T, <2>:h, <3>:r, <4>:e, <5>:e}, "
                     + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n}, "
                     + "{<1>:E, <2>:l, <3>:e, <4>:v, <5>:e}, "
@@ -2809,7 +2800,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_6() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<1>:E, <2>:l, <3>:e, <4>:v, <5>:e, <6>:n}, "
                     + "{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t, <6>:e}, "
                     + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t}]",
@@ -2830,7 +2821,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_7() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t, <6>:e, <7>:e}, "
                     + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t, <7>:e}]",
                     list
@@ -2851,7 +2842,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_8() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<1>:T, <2>:h, <3>:i, <4>:r, <5>:t, <6>:e, <7>:e, <8>:n}, "
                     + "{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t, <7>:e, <8>:e}]",
                     list
@@ -2873,7 +2864,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_9() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<1>:S, <2>:e, <3>:v, <4>:e, <5>:n, <6>:t, <7>:e, <8>:e, <9>:n}]",
                     list
                     .filter($S.length().thatGreaterThanOrEqualsTo(9))
@@ -2895,7 +2886,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_10() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen, Nineteen, TwentyThree), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<10>:r, <1>:T, <2>:w, <3>:e, <4>:n, <5>:t, <6>:y, <7>:-, <8>:t, <9>:h}]",
                     list
                     .filter($S.length().thatGreaterThanOrEqualsTo(10))
@@ -2918,7 +2909,7 @@ public class FuncListTest {
     @Test
     public void testMapToMap_11() {
         run(FuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen, Nineteen, TwentyThree), list -> {
-            assertStrings(
+            assertAsString(
                     "[{<10>:r, <11>:e, <1>:T, <2>:w, <3>:e, <4>:n, <5>:t, <6>:y, <7>:-, <8>:t, <9>:h}]",
                     list
                     .filter($S.length().thatGreaterThanOrEqualsTo(11))
@@ -2944,7 +2935,7 @@ public class FuncListTest {
     @Test
     public void testMapToTuple_2() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-            assertStrings(
+            assertAsString(
                     "[(O,n), (T,h), (F,i), (S,e), (E,l)]",
                     list
                         .filter($S.length().thatGreaterThanOrEqualsTo(2))
@@ -2956,7 +2947,7 @@ public class FuncListTest {
     @Test
     public void testMapToTuple_3() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-            assertStrings(
+            assertAsString(
                     "[(O,n,e), (T,h,r), (F,i,v), (S,e,v), (E,l,e)]",
                     list
                     .filter($S.length().thatGreaterThanOrEqualsTo(3))
@@ -2968,7 +2959,7 @@ public class FuncListTest {
     @Test
     public void testMapToTuple_4() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-            assertStrings(
+            assertAsString(
                     "[(T,h,r,e), (F,i,v,e), (S,e,v,e), (E,l,e,v)]",
                     list
                     .filter($S.length().thatGreaterThanOrEqualsTo(4))
@@ -2980,7 +2971,7 @@ public class FuncListTest {
     @Test
     public void testMapToTuple_5() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-            assertStrings(
+            assertAsString(
                     "[(T,h,r,e,e), (S,e,v,e,n), (E,l,e,v,e)]",
                     list
                     .filter($S.length().thatGreaterThanOrEqualsTo(5))
@@ -2992,7 +2983,7 @@ public class FuncListTest {
     @Test
     public void testMapToTuple_6() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-            assertStrings(
+            assertAsString(
                     "[(E,l,e,v,e,n)]",
                     list
                     .filter($S.length().thatGreaterThanOrEqualsTo(6))
@@ -3006,7 +2997,7 @@ public class FuncListTest {
     @Test
     public void testMapWithIndex() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-            assertStrings(
+            assertAsString(
                     "[(0,One), (1,Three), (2,Five), (3,Seven), (4,Eleven)]",
                     list
                     .mapWithIndex()
@@ -3017,7 +3008,7 @@ public class FuncListTest {
     @Test
     public void testMapWithIndex_combine() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-            assertStrings(
+            assertAsString(
                     "[0: One, 1: Three, 2: Five, 3: Seven, 4: Eleven]",
                     list
                     .mapWithIndex((i, each) -> i + ": " + each)
@@ -3028,7 +3019,7 @@ public class FuncListTest {
     @Test
     public void testMapToObjWithIndex_combine() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-        assertStrings(
+        assertAsString(
                 "[0: One, 1: Three, 2: Five, 3: Seven, 4: Eleven]",
                 list
                 .mapToObjWithIndex((i, each) -> i + ": " + each)
@@ -3039,7 +3030,7 @@ public class FuncListTest {
     @Test
     public void testMapToIntWithIndex_combine() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-        assertStrings(
+        assertAsString(
                 "[3, 6, 6, 8, 10]",
                 //  3 = 0 + 3 (One)
                 //  6 = 1 + 5 (Three)
@@ -3054,7 +3045,7 @@ public class FuncListTest {
     @Test
     public void testMapToDoubleWithIndex_combine() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-        assertStrings(
+        assertAsString(
                 "[3.0, 6.0, 6.0, 8.0, 10.0]",
                 //  3 = 0 + 3 (One)
                 //  6 = 1 + 5 (Three)
@@ -3071,11 +3062,11 @@ public class FuncListTest {
     @Test
     public void testAccumulate() {
         run(FuncList.of(1, 2, 3, 4, 5), list -> {
-            assertStrings(
+            assertAsString(
                     "[1, 3, 6, 10, 15]",
                     list.accumulate((prev, current) -> prev + current));
             
-            assertStrings(
+            assertAsString(
                     "[1, 12, 123, 1234, 12345]",
                     list.accumulate((prev, current)->prev*10 + current));
         });
@@ -3084,14 +3075,14 @@ public class FuncListTest {
     @Test
     public void testRestate() {
         run(IntFuncList.wholeNumbers(20).map(i -> i % 5).toFuncList(), list -> {
-            assertStrings("[0, 1, 2, 3, 4]", list.restate((head, tail) -> tail.filter(x -> x != head)));
+            assertAsString("[0, 1, 2, 3, 4]", list.restate((head, tail) -> tail.filter(x -> x != head)));
         });
     }
     
     @Test
     public void testRestate_sieveOfEratosthenes() {
         run(IntFuncList.naturalNumbers(300).filter(theInteger.thatIsNotOne()).boxed().toFuncList(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, "
                     + "101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, "
@@ -3192,8 +3183,8 @@ public class FuncListTest {
                 .peek(Integer.class, elementIntegers::add)
                 .join() // To terminate the stream
                 ;
-            assertStrings("[One, Three, Five]", elementStrings);
-            assertStrings("[0, 2, 4]", elementIntegers);
+            assertAsString("[One, Three, Five]", elementStrings);
+            assertAsString("[0, 2, 4]", elementIntegers);
         });
     }
     
@@ -3207,8 +3198,8 @@ public class FuncListTest {
                 .peekBy(Integer.class::isInstance, e -> elementIntegers.add((Integer)e))
                 .join() // To terminate the stream
                 ;
-            assertStrings("[One, Three, Five]", elementStrings);
-            assertStrings("[0, 2, 4]", elementIntegers);
+            assertAsString("[One, Three, Five]", elementStrings);
+            assertAsString("[0, 2, 4]", elementIntegers);
         });
     }
     
@@ -3220,7 +3211,7 @@ public class FuncListTest {
                 .peekAs(e -> "<" + e + ">", e -> elementStrings.add((String)e))
                 .join() // To terminate the stream
                 ;
-            assertStrings("[<0>, <One>, <2>, <Three>, <4>, <Five>]", elementStrings);
+            assertAsString("[<0>, <One>, <2>, <Three>, <4>, <Five>]", elementStrings);
         });
     }
     
@@ -3232,7 +3223,7 @@ public class FuncListTest {
                 .peekBy(e -> "<" + e + ">", s -> !s.contains("v"), e -> elementStrings.add("" + e))
                 .join() // To terminate the stream
                 ;
-            assertStrings("[0, One, 2, Three, 4]", elementStrings);
+            assertAsString("[0, One, 2, Three, 4]", elementStrings);
         });
     }
     
@@ -3244,7 +3235,7 @@ public class FuncListTest {
                 .peekAs(e -> "<" + e + ">", s -> !s.contains("v"), e -> elementStrings.add((String)e))
                 .join() // To terminate the stream
                 ;
-            assertStrings("[<0>, <One>, <2>, <Three>, <4>]", elementStrings);
+            assertAsString("[<0>, <One>, <2>, <Three>, <4>]", elementStrings);
         });
     }
     
@@ -3253,7 +3244,7 @@ public class FuncListTest {
     @Test
     public void testPipeable() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-            assertStrings(
+            assertAsString(
                     "[One, Three, Five, Seven, Eleven]",
                     list
                         .pipable()
@@ -3264,7 +3255,7 @@ public class FuncListTest {
     @Test
     public void testPipe() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
-            assertStrings(
+            assertAsString(
                     "[One, Three, Five, Seven, Eleven]",
                     list.pipe(FuncList::toListString));
         });
@@ -3276,7 +3267,7 @@ public class FuncListTest {
     @Test
     public void testSegment() {
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[0, 1, 2, 3, 4, 5], "
                     + "[6, 7, 8, 9, 10, 11], "
@@ -3293,7 +3284,7 @@ public class FuncListTest {
     @Test
     public void testSegment_sizeFunction() {
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                       "[" 
                     + "[1], "
                     + "[2, 3], "
@@ -3306,14 +3297,14 @@ public class FuncListTest {
         });
         // Empty
         run(IntFuncList.wholeNumbers(0).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                       "[]",
                     list
                     .segment(i -> i));
         });
         // End at exact boundary
         run(IntFuncList.wholeNumbers(8).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                       "[" 
                     + "[1], "
                     + "[2, 3], "
@@ -3327,7 +3318,7 @@ public class FuncListTest {
     @Test
     public void testSegmentWhen() {
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[0, 1, 2], "
                     + "[3, 4, 5], "
@@ -3347,7 +3338,7 @@ public class FuncListTest {
     @Test
     public void testSegmentAfter() {
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[0], "
                     + "[1, 2, 3], "
@@ -3371,7 +3362,7 @@ public class FuncListTest {
         Predicate<Integer> endCondition   = i ->(i % 10) == 6;
         
         run(IntFuncList.wholeNumbers(75).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[53, 54, 55, 56], "
                     + "[63, 64, 65, 66]"
@@ -3381,7 +3372,7 @@ public class FuncListTest {
                     .skip          (5)
                     .limit         (3));
             
-            assertStrings(
+            assertAsString(
                     "["
                     + "[53, 54, 55, 56], "
                     + "[63, 64, 65, 66], "
@@ -3392,7 +3383,7 @@ public class FuncListTest {
                     .skip   (5)
                     .limit  (3));
             
-            assertStrings(
+            assertAsString(
                     "["
                     + "[53, 54, 55, 56], "
                     + "[63, 64, 65, 66]"
@@ -3402,7 +3393,7 @@ public class FuncListTest {
                     .skip          (5)
                     .limit         (3));
             
-            assertStrings(
+            assertAsString(
                     "["
                     + "[53, 54, 55, 56], "
                     + "[63, 64, 65, 66], "
@@ -3413,7 +3404,7 @@ public class FuncListTest {
                     .skip          (5)
                     .limit         (3));
             
-            assertStrings(
+            assertAsString(
                     "["
                     + "[53, 54, 55, 56], "
                     + "[63, 64, 65, 66]"
@@ -3429,7 +3420,7 @@ public class FuncListTest {
         
         // Empty
         run(IntFuncList.wholeNumbers(0).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "[]",
                     list
                     .segmentBetween(startCondition, endCondition, false)
@@ -3438,7 +3429,7 @@ public class FuncListTest {
         });
         // Not enough
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "[]",
                     list
                     .segmentBetween(startCondition, endCondition, false)
@@ -3447,7 +3438,7 @@ public class FuncListTest {
         });
         // Exact
         run(IntFuncList.wholeNumbers(67).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[53, 54, 55, 56], "
                     + "[63, 64, 65, 66]"
@@ -3459,7 +3450,7 @@ public class FuncListTest {
         });
         // Exact - 1
         run(IntFuncList.wholeNumbers(66).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[53, 54, 55, 56]"
                     + "]",
@@ -3470,7 +3461,7 @@ public class FuncListTest {
         });
         // Exact + 1
         run(IntFuncList.wholeNumbers(68).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[53, 54, 55, 56], "
                     + "[63, 64, 65, 66]"
@@ -3483,7 +3474,7 @@ public class FuncListTest {
         
         // From start
         run(IntFuncList.wholeNumbers(30).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[3, 4, 5, 6], "
                     + "[13, 14, 15, 16], "
@@ -3495,7 +3486,7 @@ public class FuncListTest {
         
         // Incomplete start
         run(IntFuncList.wholeNumbers(30).skip(5).boxed(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[13, 14, 15, 16], "
                     + "[23, 24, 25, 26]"
@@ -3508,25 +3499,25 @@ public class FuncListTest {
     @Test
     public void testSegmentByPercentiles() {
         run(IntFuncList.wholeNumbers(50).boxed().toFuncList(), list -> {
-            assertStrings(
+            assertAsString(
                     "[" +
                         "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], " +
                         "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], " +
                         "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]" +
                     "]", list.segmentByPercentiles(30,   80));
-            assertStrings(
+            assertAsString(
                     "[" +
                         "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], " +
                         "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], " +
                         "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]" +
                     "]", list.segmentByPercentiles(30.0, 80.0));
-            assertStrings(
+            assertAsString(
                     "[" +
                         "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], " +
                         "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], " +
                         "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]" +
                     "]", list.segmentByPercentiles(IntFuncList   .of(30,   80)));
-            assertStrings(
+            assertAsString(
                     "[" +
                         "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], " +
                         "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], " +
@@ -3538,28 +3529,28 @@ public class FuncListTest {
     @Test
     public void testSegmentByPercentiles_mapper() {
         run(IntFuncList.wholeNumbers(50).boxed().toFuncList(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35], "
                     + "[34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10], "
                     + "[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]"
                     + "]",
                     list.segmentByPercentiles(x -> 100 - x, 30, 80));
-            assertStrings(
+            assertAsString(
                     "["
                     + "[49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35], "
                     + "[34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10], "
                     + "[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]"
                     + "]",
                     list.segmentByPercentiles(x -> 100 - x, 30.0, 80.0));
-            assertStrings(
+            assertAsString(
                     "["
                     + "[49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35], "
                     + "[34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10], "
                     + "[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]"
                     + "]",
                     list.segmentByPercentiles(x -> 100 - x, IntFuncList   .of(30,   80)));
-            assertStrings(
+            assertAsString(
                     "["
                     + "[49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35], "
                     + "[34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10], "
@@ -3572,28 +3563,28 @@ public class FuncListTest {
     @Test
     public void testSegmentByPercentiles_mapper_comparator() {
         run(IntFuncList.wholeNumbers(50).boxed().toFuncList(), list -> {
-            assertStrings(
+            assertAsString(
                     "["
                     + "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
                     + "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], "
                     + "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]"
                     + "]",
                     list.segmentByPercentiles(x -> 100 - x, (a, b) -> b - a, 30, 80));
-            assertStrings(
+            assertAsString(
                     "["
                     + "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
                     + "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], "
                     + "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]"
                     + "]",
                     list.segmentByPercentiles(x -> 100 - x, (a, b) -> b - a, 30.0, 80.0));
-            assertStrings(
+            assertAsString(
                     "["
                     + "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
                     + "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], "
                     + "[40, 41, 42, 43, 44, 45, 46, 47, 48, 49]"
                     + "]",
                     list.segmentByPercentiles(x -> 100 - x, (a, b) -> b - a, IntFuncList   .of(30,   80)));
-            assertStrings(
+            assertAsString(
                     "["
                     + "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
                     + "[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], "
@@ -3608,20 +3599,20 @@ public class FuncListTest {
     @Test
     public void testSortedBy() {
         run(FuncList.of(One, Two, Three, Four), list -> {
-            assertStrings("[One, Two, Four, Three]", list.sortedBy(String::length));
+            assertAsString("[One, Two, Four, Three]", list.sortedBy(String::length));
             // Using comparable access.
-            assertStrings("[One, Two, Four, Three]", list.sortedBy(theString.length()));
+            assertAsString("[One, Two, Four, Three]", list.sortedBy(theString.length()));
         });
     }
     
     @Test
     public void testSortedByComparator() {
         run(FuncList.of(One, Two, Three, Four), list -> {
-            assertStrings(
+            assertAsString(
                     "[Three, Four, One, Two]",
                     list.sortedBy(String::length, (a,b)->b-a));
             // Using comparable access.
-            assertStrings(
+            assertAsString(
                     "[Three, Four, One, Two]",
                     list.sortedBy(theString.length(), (a,b)->b-a));
         });
@@ -3632,7 +3623,7 @@ public class FuncListTest {
     @Test
     public void testSplitTuple() {
         run(IntFuncList.wholeNumbers(20).boxed().toFuncList(), list -> {
-            assertStrings(
+            assertAsString(
                     "("
                     + "[0, 2, 4, 6, 8, 10, 12, 14, 16, 18],"
                     + "[1, 3, 5, 7, 9, 11, 13, 15, 17, 19]"
@@ -3647,7 +3638,7 @@ public class FuncListTest {
     public void testSplit() {
         run(IntFuncList.wholeNumbers(20).boxed().toFuncList(), list -> {
             String Other = "Other";
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Other:[1, 3, 5, 7, 9, 11, 13, 15, 17, 19], "
                     + "Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
@@ -3657,7 +3648,7 @@ public class FuncListTest {
                            Other)
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Other:[1, 5, 7, 11, 13, 17, 19], "
                     + "Three:[3, 9, 15], "
@@ -3669,7 +3660,7 @@ public class FuncListTest {
                            Other)
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Five:[5], "
                     + "Other:[1, 7, 11, 13, 17, 19], "
@@ -3683,7 +3674,7 @@ public class FuncListTest {
                            Other)
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Five:[5], "
                     + "Seven:[7], "
@@ -3698,7 +3689,7 @@ public class FuncListTest {
                            Seven,  theInteger.thatIsDivisibleBy(7),
                            Other)
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Eleven:[11], "
                     + "Five:[5], "
@@ -3719,7 +3710,7 @@ public class FuncListTest {
             
             // Ignore some values
             
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Eleven:[11], "
                     + "Five:[5], "
@@ -3738,7 +3729,7 @@ public class FuncListTest {
             
             // Ignore others
             
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Three:[3, 9, 15], "
                     + "Two:[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
@@ -3749,7 +3740,7 @@ public class FuncListTest {
                     .sorted()
                     .toString());
             
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Five:[5], "
                     + "Three:[3, 9, 15], "
@@ -3761,7 +3752,7 @@ public class FuncListTest {
                     .sorted()
                     .toString());
             
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Five:[5], "
                     + "Seven:[7], "
@@ -3775,7 +3766,7 @@ public class FuncListTest {
                     .sorted()
                     .toString());
             
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Eleven:[11], "
                     + "Five:[5], "
@@ -3790,7 +3781,7 @@ public class FuncListTest {
                     .sorted()
                     .toString());
             
-            assertStrings(
+            assertAsString(
                     "{"
                     + "Eleven:[11], "
                     + "Five:[5], "
@@ -3814,14 +3805,14 @@ public class FuncListTest {
     @Test
     public void testSplit_ignore() {
         run(IntFuncList.wholeNumbers(20).boxed().toFuncList(), list -> {
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
                            (String)null)
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
@@ -3829,7 +3820,7 @@ public class FuncListTest {
                            (String)null)
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
@@ -3838,7 +3829,7 @@ public class FuncListTest {
                            (String)null)
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
@@ -3847,7 +3838,7 @@ public class FuncListTest {
                            (String)null, theInteger.thatIsDivisibleBy(7),
                            (String)null)
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
@@ -3861,20 +3852,20 @@ public class FuncListTest {
             
             // No other
             
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2))
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
                            (String)null, theInteger.thatIsDivisibleBy(3))
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
@@ -3882,7 +3873,7 @@ public class FuncListTest {
                            (String)null, theInteger.thatIsDivisibleBy(5))
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
@@ -3890,7 +3881,7 @@ public class FuncListTest {
                            (String)null, theInteger.thatIsDivisibleBy(5),
                            (String)null, theInteger.thatIsDivisibleBy(7))
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
@@ -3900,7 +3891,7 @@ public class FuncListTest {
                            (String)null, theInteger.thatIsDivisibleBy(11))
                     .sorted()
                     .toString());
-            assertStrings(
+            assertAsString(
                     "{}",
                      list
                     .split((String)null, theInteger.thatIsDivisibleBy(2),
