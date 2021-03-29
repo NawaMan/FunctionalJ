@@ -90,7 +90,7 @@ public class ComplexChoiceTypeTest {
             "    public LoginStatus __data() throws Exception { return this; }\n" + 
             "    public Result<LoginStatus> toResult() { return Result.valueOf(this); }\n" + 
             "    \n" + 
-            "    public static <T extends LoginStatus> T fromMap(java.util.Map<String, Object> map) {\n" + 
+            "    public static <T extends LoginStatus> T fromMap(java.util.Map<String, ? extends Object> map) {\n" + 
             "        String __tagged = (String)map.get(\"__tagged\");\n" + 
             "        if (\"Loggined\".equals(__tagged))\n" + 
             "            return (T)Loggined.caseFromMap(map);\n" + 
@@ -158,7 +158,7 @@ public class ComplexChoiceTypeTest {
             "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
             "            return __schema__;\n" + 
             "        }\n" + 
-            "        public static Loggined caseFromMap(java.util.Map<String, Object> map) {\n" + 
+            "        public static Loggined caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
             "            return Loggined(\n" + 
             "                $utils.propertyFromMap(map, __schema__, \"name\"),\n" + 
             "                $utils.propertyFromMap(map, __schema__, \"age\"),\n" + 
@@ -186,7 +186,7 @@ public class ComplexChoiceTypeTest {
             "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
             "            return __schema__;\n" + 
             "        }\n" + 
-            "        public static LoggedOut caseFromMap(java.util.Map<String, Object> map) {\n" + 
+            "        public static LoggedOut caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
             "            return LoggedOut(\n" + 
             "            );\n" + 
             "        }\n" + 

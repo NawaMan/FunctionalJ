@@ -153,7 +153,7 @@ public class RequiredConstructorTest {
             "    public Person withLastName(BiFunction<Person, String, String> lastName) {\n" + 
             "        return new Person(firstName, midName, lastName.apply(this, this.lastName));\n" + 
             "    }\n" + 
-            "    public static Person fromMap(Map<String, Object> map) {\n" + 
+            "    public static Person fromMap(Map<String, ? extends Object> map) {\n" + 
             "        Map<String, Getter> $schema = getStructSchema();\n" + 
             "        \n" + 
             "        Person obj = new Person(\n" + 

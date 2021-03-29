@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import functionalj.types.struct.Core;
@@ -678,10 +679,15 @@ public class Type implements IRequireTypes {
             return "";
         if (generics.isEmpty())
             return "";
-        return "<" + generics.stream()
-                .map(generic->generic.toType().simpleNameWithGeneric())
-                .collect(joining(", "))
-             + ">";
+        Function<? super Generic, ? extends String> genericToString = generic -> {
+            if (generic.withBound != null) {
+                return generic.withBound;
+            }
+            return generic
+                    .toType()
+                    .simpleNameWithGeneric();
+        };
+        return "<" + generics.stream().map(genericToString).collect(joining(", ")) + ">";
     }
     public Type withGenerics(Generic... generics) {
         return withGenerics(Arrays.asList(generics));

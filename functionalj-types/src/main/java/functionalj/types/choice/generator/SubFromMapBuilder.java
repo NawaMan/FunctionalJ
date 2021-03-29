@@ -35,7 +35,7 @@ public class SubFromMapBuilder implements Lines {
     @Override
     public List<String> lines() {
         return Stream.of(
-                Stream.of("public static " + choice.name + " caseFromMap(java.util.Map<String, Object> map) {"),
+                Stream.of("public static " + choice.name + " caseFromMap(java.util.Map<String, ? extends Object> map) {"),
                 body(),
                 Stream.of("}")
             )

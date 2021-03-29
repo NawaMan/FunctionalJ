@@ -279,7 +279,7 @@ public interface IData {
             return (T)IData.$utils.fromMapValue(obj, clzz, defaultValue, ()->caseParam.defaultValue());
         }
         
-        public static <T> T propertyFromMap(Map<String, Object> map, Map<String, CaseParam> schema, String name) {
+        public static <T> T propertyFromMap(Map<String, ? extends Object> map, Map<String, CaseParam> schema, String name) {
             val caseParam = schema.get(name);
             if (caseParam == null)
                 throw new IllegalArgumentException("Unknown property: " + name);

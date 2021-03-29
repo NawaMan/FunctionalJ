@@ -123,7 +123,7 @@ public class GenerateParentMapChildTest {
                 "    public Parent withChildren(BiFunction<Parent, Map<String, Child>, Map<String, Child>> children) {\n" + 
                 "        return new Parent(children.apply(this, this.children));\n" + 
                 "    }\n" + 
-                "    public static Parent fromMap(Map<String, Object> map) {\n" + 
+                "    public static Parent fromMap(Map<String, ? extends Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        @SuppressWarnings(\"unchecked\")\n" + 
                 "        Parent obj = new Parent(\n" + 
@@ -141,7 +141,7 @@ public class GenerateParentMapChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"children\", new functionalj.types.struct.generator.Getter(\"children\", new functionalj.types.Type(\"java.util\", null, \"Map\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.String\", \"java.lang.String\", java.util.Arrays.asList(new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()))), new functionalj.types.Generic(\"me.test.Child\", \"me.test.Child\", java.util.Arrays.asList(new functionalj.types.Type(\"me.test\", null, \"Child\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"children\", new functionalj.types.struct.generator.Getter(\"children\", new functionalj.types.Type(\"java.util\", null, \"Map\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.String\", null, java.util.Arrays.asList(new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()))), new functionalj.types.Generic(\"me.test.Child\", null, java.util.Arrays.asList(new functionalj.types.Type(\"me.test\", null, \"Child\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

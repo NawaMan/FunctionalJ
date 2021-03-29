@@ -106,7 +106,7 @@ public class GenericSupportTest {
             "    public Option<T> __data() throws Exception { return this; }\n" + 
             "    public Result<Option<T>> toResult() { return Result.valueOf(this); }\n" + 
             "    \n" + 
-            "    public static <T extends Option> T fromMap(java.util.Map<String, Object> map) {\n" + 
+            "    public static <T extends Option> T fromMap(java.util.Map<String, ? extends Object> map) {\n" + 
             "        String __tagged = (String)map.get(\"__tagged\");\n" + 
             "        if (\"None\".equals(__tagged))\n" + 
             "            return (T)None.caseFromMap(map);\n" + 
@@ -142,7 +142,7 @@ public class GenericSupportTest {
             "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
             "            return __schema__;\n" + 
             "        }\n" + 
-            "        public static None caseFromMap(java.util.Map<String, Object> map) {\n" + 
+            "        public static None caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
             "            return None(\n" + 
             "            );\n" + 
             "        }\n" + 
@@ -177,7 +177,7 @@ public class GenericSupportTest {
             "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
             "            return __schema__;\n" + 
             "        }\n" + 
-            "        public static Some caseFromMap(java.util.Map<String, Object> map) {\n" + 
+            "        public static Some caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
             "            return Some(\n" + 
             "                $utils.propertyFromMap(map, __schema__, \"value\")\n" + 
             "            );\n" + 

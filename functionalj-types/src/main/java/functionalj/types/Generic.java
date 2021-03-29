@@ -21,11 +21,11 @@ public class Generic {
         this(name, name, asList(new Type(name)));
     }
     public Generic(Type type) {
-        this(type.fullName(), type.fullName(), asList(type));
+        this(type.fullName(), null, asList(type));
     }
     public Generic(String name, String withBound, List<? extends Type> boundTypes) {
         this.name = name;
-        this.withBound = (withBound == null) ? name : withBound;
+        this.withBound = withBound;//(withBound == null) ? name : withBound;
         this.boundTypes = (boundTypes == null) ? emptyList() : boundTypes;
     }
     

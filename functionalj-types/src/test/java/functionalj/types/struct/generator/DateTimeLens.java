@@ -92,7 +92,7 @@ public class DateTimeLens {
                 "    public Person withChild(BiFunction<Person, LocalDate, LocalDate> child) {\n" + 
                 "        return new Person(child.apply(this, this.child));\n" + 
                 "    }\n" + 
-                "    public static Person fromMap(Map<String, Object> map) {\n" + 
+                "    public static Person fromMap(Map<String, ? extends Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Person obj = new Person(\n" + 

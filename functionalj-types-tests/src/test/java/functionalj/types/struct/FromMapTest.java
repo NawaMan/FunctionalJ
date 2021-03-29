@@ -15,8 +15,8 @@ import lombok.val;
 
 public class FromMapTest {
     
-    @Struct
-    static void Birthday(String name, LocalDate date) {}
+    @Struct(specField = "spec")
+    void Birthday(String name, LocalDate date) {}
     
     @Test
     public void testToMap() {
@@ -66,7 +66,7 @@ public class FromMapTest {
                 Stream.of(csvString.split("\n"))
                 .map(line -> Arrays.asList(line.split(",")))
                 .map(each -> {
-                    val map = new TreeMap<String, Object>();
+                    val map = new TreeMap<String, String>();
                     map.put("make",  each.get(0));
                     map.put("year",  each.get(1));
                     map.put("color", each.get(2));

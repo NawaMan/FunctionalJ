@@ -41,7 +41,7 @@ public class StructMapGeneratorHelper {
                 Modifiability.MODIFIABLE,
                 sourceSpec.getTargetType(),
                 "fromMap",
-                asList(new GenParam("map", Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.OBJECT))))),
+                asList(new GenParam("map", Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic("? extends Object", "? extends Object", null))))),
                 ILines.linesOf(
                     line("Map<String, Getter> $schema = getStructSchema();"),
                     getterHasGeneric ? line("@SuppressWarnings(\"unchecked\")") : line(""),

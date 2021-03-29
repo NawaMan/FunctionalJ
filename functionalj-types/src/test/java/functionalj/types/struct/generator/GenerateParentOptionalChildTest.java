@@ -144,7 +144,7 @@ public class GenerateParentOptionalChildTest {
                 "    public Parent withOptionalChild(BiFunction<Parent, Optional<Child>, Optional<Child>> optionalChild) {\n" + 
                 "        return new Parent(optionalName, optionalChild.apply(this, this.optionalChild));\n" + 
                 "    }\n" + 
-                "    public static Parent fromMap(Map<String, Object> map) {\n" + 
+                "    public static Parent fromMap(Map<String, ? extends Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        @SuppressWarnings(\"unchecked\")\n" + 
                 "        Parent obj = new Parent(\n" + 
@@ -164,8 +164,8 @@ public class GenerateParentOptionalChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"optionalName\", new functionalj.types.struct.generator.Getter(\"optionalName\", new functionalj.types.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.String\", \"java.lang.String\", java.util.Arrays.asList(new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"optionalChild\", new functionalj.types.struct.generator.Getter(\"optionalChild\", new functionalj.types.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.Generic(\"me.test.Child\", \"me.test.Child\", java.util.Arrays.asList(new functionalj.types.Type(\"me.test\", null, \"Child\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"optionalName\", new functionalj.types.struct.generator.Getter(\"optionalName\", new functionalj.types.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.String\", null, java.util.Arrays.asList(new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"optionalChild\", new functionalj.types.struct.generator.Getter(\"optionalChild\", new functionalj.types.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.Generic(\"me.test.Child\", null, java.util.Arrays.asList(new functionalj.types.Type(\"me.test\", null, \"Child\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

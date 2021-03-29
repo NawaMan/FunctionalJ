@@ -116,7 +116,7 @@ public class GenerateParentChildTest {
                 "    public Parent withChild(BiFunction<Parent, Child, Child> child) {\n" + 
                 "        return new Parent(child.apply(this, this.child));\n" + 
                 "    }\n" + 
-                "    public static Parent fromMap(Map<String, Object> map) {\n" + 
+                "    public static Parent fromMap(Map<String, ? extends Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Parent obj = new Parent(\n" + 

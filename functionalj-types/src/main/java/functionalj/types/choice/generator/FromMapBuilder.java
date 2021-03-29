@@ -30,7 +30,7 @@ public class FromMapBuilder implements Lines {
     @Override
     public List<String> lines() {
         return Stream.of(
-                Stream.of("public static <T extends " + targetClass.type.simpleName() + "> T fromMap(java.util.Map<String, Object> map) {"),
+                Stream.of("public static <T extends " + targetClass.type.simpleName() + "> T fromMap(java.util.Map<String, ? extends Object> map) {"),
                 body(),
                 Stream.of("}")
             )

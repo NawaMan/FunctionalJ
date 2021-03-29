@@ -165,7 +165,7 @@ public class BugThreeNullableBuilder {
                 "    public Brand withDescription(BiFunction<Brand, String, String> description) {\n" + 
                 "        return new Brand(id, name, owner, website, country, description.apply(this, this.description));\n" + 
                 "    }\n" + 
-                "    public static Brand fromMap(Map<String, Object> map) {\n" + 
+                "    public static Brand fromMap(Map<String, ? extends Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Brand obj = new Brand(\n" + 

@@ -195,7 +195,7 @@ public class NonRequireFieldTest {
                 "    public Data withE(BiFunction<Data, String, String> e) {\n" + 
                 "        return new Data(a, b, c, d, e.apply(this, this.e));\n" + 
                 "    }\n" + 
-                "    public static Data fromMap(Map<String, Object> map) {\n" + 
+                "    public static Data fromMap(Map<String, ? extends Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Data obj = new Data(\n" + 

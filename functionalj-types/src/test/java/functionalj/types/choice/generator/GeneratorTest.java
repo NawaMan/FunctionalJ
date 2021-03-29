@@ -159,7 +159,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static Next caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return Next(\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
                 "        );\n" + 
@@ -194,7 +194,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static White caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static White caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return White(\n" + 
                 "        );\n" + 
                 "    }\n" + 
@@ -256,7 +256,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static RGB caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static RGB caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return RGB(\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"r\"),\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"g\"),\n" + 
@@ -306,7 +306,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static Next caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return Next(\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
                 "        );\n" + 
@@ -649,7 +649,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static Next caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return Next(\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
                 "        );\n" + 

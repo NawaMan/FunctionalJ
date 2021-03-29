@@ -104,7 +104,7 @@ public class GenericChoiceTest {
                 "    public MayBe __data() throws Exception { return this; }\n" + 
                 "    public Result<MayBe> toResult() { return Result.valueOf(this); }\n" + 
                 "    \n" + 
-                "    public static <T extends MayBe> T fromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static <T extends MayBe> T fromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        String __tagged = (String)map.get(\"__tagged\");\n" + 
                 "        if (\"Nill\".equals(__tagged))\n" + 
                 "            return (T)Nill.caseFromMap(map);\n" + 
@@ -140,7 +140,7 @@ public class GenericChoiceTest {
                 "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "            return __schema__;\n" + 
                 "        }\n" + 
-                "        public static Nill caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "        public static Nill caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "            return Nill(\n" + 
                 "            );\n" + 
                 "        }\n" + 
@@ -175,7 +175,7 @@ public class GenericChoiceTest {
                 "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "            return __schema__;\n" + 
                 "        }\n" + 
-                "        public static Just caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "        public static Just caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "            return Just(\n" + 
                 "                $utils.propertyFromMap(map, __schema__, \"data\")\n" + 
                 "            );\n" + 

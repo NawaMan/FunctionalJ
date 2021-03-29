@@ -153,7 +153,7 @@ public class GeneratorTest {
                 "    public Car withAnstring(BiFunction<Car, String, String> anstring) {\n" + 
                 "        return new Car(anint, anbool, anstring.apply(this, this.anstring));\n" + 
                 "    }\n" + 
-                "    public static Car fromMap(Map<String, Object> map) {\n" + 
+                "    public static Car fromMap(Map<String, ? extends Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Car obj = new Car(\n" + 
