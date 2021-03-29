@@ -73,8 +73,7 @@ public class GeneratorTest {
                 "import functionalj.lens.lenses.StringLens;\n" + 
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.IPostConstruct;\n" + 
-                "import functionalj.types.IStruct;\n" + 
-                "import functionalj.types.Type;\n" + 
+                "import functionalj.types.IStruct;\n" +
                 "import functionalj.types.struct.generator.Getter;\n" + 
                 "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 

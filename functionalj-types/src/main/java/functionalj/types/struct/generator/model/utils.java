@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 import lombok.val;
 
 
-class utils {
+public class utils {
     
     static <IN extends List<? extends OUT>, OUT> Function<? super IN, Stream<? extends OUT>> allLists() {
         return it -> it.stream();
@@ -68,6 +68,24 @@ class utils {
     
     static <I> Function<I, String> wrapWith(String prefix, String suffix) {
         return in -> prefix + in + suffix;
+    }
+    
+    public static boolean samePackage(String pckgName, String importName) {
+        if (!importName.startsWith(pckgName)) 
+            return false;
+        
+        val tail = importName.substring(pckgName.length() + 1);
+        if (tail.matches("^[^.]+$")) 
+            return true;
+        
+        val parts = tail.split("\\.");
+        if (parts.length != 2)
+            return false;
+        
+        if (parts[1].endsWith(parts[0] + "Lens"))
+            return true;
+        
+        return false;
     }
     
 }

@@ -23,11 +23,13 @@
 // ============================================================================
 package functionalj.types.choice.generator;
 
+import static functionalj.types.struct.generator.model.utils.samePackage;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
@@ -39,6 +41,7 @@ import functionalj.types.choice.Self;
 import functionalj.types.choice.generator.model.Method;
 //import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.SourceSpec;
+import functionalj.types.struct.Core;
 import lombok.Value;
 import lombok.val;
 
@@ -61,22 +64,16 @@ public class TargetClass implements Lines {
         imports.add(IChoice.class.getCanonicalName());
         imports.add("java.util.function.Function");
         imports.add("java.util.function.Consumer");
-        imports.add("java.util.function.Predicate");
         imports.add("java.util.function.Supplier");
         imports.add("functionalj.result.Result");
         imports.add("functionalj.pipeable.Pipeable");
         imports.add("functionalj.lens.core.LensSpec");
         imports.add("functionalj.lens.lenses.*");
-        
-        val hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
-        if (hasChoiceWuthMoreThanOneParam) {
-            imports.add("functionalj.types.Absent");
-        }
+        imports.add(Core.Generated.type().fullName());
         
         String selfDef = "";
         List<String> specObj = null;
         if (spec.methods.stream().anyMatch(m -> Method.Kind.DEFAULT.equals(m.kind))) {
-            // TODO - move this to $utils ?
             imports.add("nullablej.utils.reflection.UProxy");
             specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);",
                     spec.sourceType.fullName() + spec.sourceType.genericsString(),
@@ -163,18 +160,27 @@ public class TargetClass implements Lines {
         
         val choiceLens = new ChoiceLensBuilder(spec).build();
         
-        val typeName     = type.typeWithGenerics();
-        val pckgName     = spec.sourceType.packageName();
-        val importLines  = imports.stream().map(i -> "import " + i + ";").collect(toList());
+        val sourceSpec = spec.sourceType.fullName();
+        val genTime    = LocalDateTime.now();
+        val generated  = "@Generated(value = \"FunctionalJ\",date = \"" + genTime + "\", comments = \"" + sourceSpec + "\")";
+        
+        val typeName = type.typeWithGenerics();
+        val pckgName = spec.sourceType.packageName();
+        
+        val importLines 
+                = imports.stream()
+                .filter (importName -> !samePackage(pckgName, importName))
+                .map    (importName -> "import " + importName + ";")
+                .collect(toList());
+        
         val specConstant = (spec.specObjName == null) ? "    " : "    public static final " + SourceSpec.class.getCanonicalName() + " " + spec.specObjName + " = " + spec.toCode() + ";";
         return asList(
                 asList(format("package %s;", pckgName)),
                 asList(format("")),
                 importLines,
                 asList(format("")),
-                asList("// " + spec.sourceType.fullName()),
-                asList(format("")),
-                asList(format("@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})")),
+                asList(generated),
+                asList(format("@SuppressWarnings({\"unchecked\"})")),
                 asList(format("public abstract class %1$s implements %6$s<%2$s.%2$sFirstSwitch%3$s>, Pipeable<%4$s>%5$s {", type.typeWithGenericDef(), type.simpleName(), type.genericsString(), type.typeWithGenerics(), selfDef, IChoice.class.getSimpleName())),
                 asList(format("    ")),
                 subClassConstructors,

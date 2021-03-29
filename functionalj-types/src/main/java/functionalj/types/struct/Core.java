@@ -65,6 +65,7 @@ public enum Core {
     OptionalLens  ("OptionalLens"),
     StringLens    ("StringLens"),
     
+    Generated("Generated", "javax.annotation"),
     
     LensSpec ("LensSpec", "functionalj.lens.core"),
     

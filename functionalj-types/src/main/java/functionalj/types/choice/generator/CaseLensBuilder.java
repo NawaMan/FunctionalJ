@@ -206,7 +206,7 @@ public class CaseLensBuilder {
         }
         
         val spec         = isCustomLens ? lensTypeDef.simpleName() + "::new" : lensTypeDef.simpleName() + "::of";
-        val value        = format("(" + lensType.simpleName() + ")createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        val value        = format("(" + lensType.simpleName() + "<HOST>)createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
         return value;
     }
     
@@ -223,7 +223,7 @@ public class CaseLensBuilder {
         val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST"), new Generic(Type.OBJECT)));
         val isCustomLens = type.lensType(packageName, encloseName, withLens).isCustomLens();
         val spec         = isCustomLens ? lensType.simpleName() + "::new" : lensType.simpleName() + "::of";
-        val value        = format("(" + lensType.simpleName() + ")createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        val value        = format("(" + lensType.simpleName() + "<HOST>)createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
         val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }

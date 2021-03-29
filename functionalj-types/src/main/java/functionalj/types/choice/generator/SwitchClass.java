@@ -162,7 +162,7 @@ public class SwitchClass implements Lines {
                 ? new ArrayList<String>()
                 : asList(
                     format(""),
-                    format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, Function<? super %4$s, ? extends %6$s> theAction) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()), mapTargetType),
+                    format("public %1$s%2$s<%5$s> %3$s(java.util.function.Predicate<%4$s> check, Function<? super %4$s, ? extends %6$s> theAction) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()), mapTargetType),
                     lineBF,
                     format("    Function<%1$s, %2$s> oldAction = (Function<%1$s, %2$s>)$action;", targetName + targetClass.getType().genericsString(), mapTargetType),
                     format("    Function<%1$s, %2$s> newAction =",                               targetName + targetClass.getType().genericsString(), mapTargetType),
@@ -174,10 +174,10 @@ public class SwitchClass implements Lines {
                     format("    "),
                     format("    return new %1$s<%2$s>($value, newAction);", switchClassName, mapTargetType + (targetClass.getType().genericParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams())),
                     format("}"),
-                    format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, Supplier<? extends %6$s> theSupplier) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()), mapTargetType),
+                    format("public %1$s%2$s<%5$s> %3$s(java.util.function.Predicate<%4$s> check, Supplier<? extends %6$s> theSupplier) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()), mapTargetType),
                     format("    return %1$s(check, d->theSupplier.get());",                                   camelName),
                     format("}"),
-                    format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, %6$s theValue) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()), mapTargetType),
+                    format("public %1$s%2$s<%5$s> %3$s(java.util.function.Predicate<%4$s> check, %6$s theValue) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()), mapTargetType),
                     format("    return %1$s(check, d->theValue);",                                   camelName),
                     format("}")
                 ).stream()

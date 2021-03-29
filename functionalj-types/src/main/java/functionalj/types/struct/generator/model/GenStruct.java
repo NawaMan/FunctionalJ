@@ -25,11 +25,12 @@ package functionalj.types.struct.generator.model;
 
 import static functionalj.types.struct.generator.ILines.line;
 import static functionalj.types.struct.generator.ILines.linesOf;
+import static functionalj.types.struct.generator.model.utils.samePackage;
 import static functionalj.types.struct.generator.model.utils.themAll;
-import static functionalj.types.struct.generator.model.utils.wrapWith;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -63,7 +64,6 @@ public class GenStruct implements ILines {
     private static final List<Type> alwaysImports = asList(
             Type.of(IPostConstruct.class),
             Core.ObjectLensImpl.type(),
-//            Core.ObjectLens.type(),
             Core.LensSpec.type()
     );
     
@@ -81,16 +81,28 @@ public class GenStruct implements ILines {
     }
     
     public Stream<String> lines() {
-        val importList  = importListLines();
-        val imports     = importList.map(wrapWith("import ", ";")).collect(toList());
         val packageName = dataClass.type().packageName();
+        
+        val importList  = importListLines();
+        val importLines 
+                = importList
+                .filter (importName -> !samePackage(packageName, importName))
+                .map    (importName -> "import " + importName + ";")
+                .collect(toList());
+        
+        
         val packageDef  = "package " + packageName + ";";
         val dataObjDef  = dataClass.getClassSpec().toDefinition(packageName);
+        
+        val specName  = (sourceSpec.getSpecName() == null) ? "" : "." + sourceSpec.getSpecName();
+        val source    = sourceSpec.getPackageName() + "." + sourceSpec.getEncloseName() + specName;
+        val genTime   = LocalDateTime.now();
+        val generated = "@Generated(value = \"FunctionalJ\",date = \"" + genTime + "\", comments = \"" + source + "\")";
         val lines
                 = linesOf(Stream.of(
                     line(packageDef),
-                    line(imports),
-                    line("// " + sourceSpec.getPackageName() + "." + sourceSpec.getEncloseName() + "." + sourceSpec.getSpecName()),
+                    line(importLines),
+                    line(generated),
                     dataObjDef
                 )
                 .filter (Objects::nonNull)
@@ -100,6 +112,9 @@ public class GenStruct implements ILines {
     
     private Stream<String> importListLines() {
         val types = new HashSet<Type>();
+        
+        types.add(Core.Generated.type());
+        
         dataClass.fields()      .stream().flatMap(GenField      ::requiredTypes).forEach(types::add);
         dataClass.methods()     .stream().flatMap(GenMethod     ::requiredTypes).forEach(types::add);
         dataClass.constructors().stream().flatMap(GenConstructor::requiredTypes).forEach(types::add);

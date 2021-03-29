@@ -108,11 +108,11 @@ public class StructGeneratorHelper {
                "getStructSchema",
                emptyList(),
                ILines.linesOf(
-                   line("Map<String, Getter> map = new HashMap<>();"),
+                   line("java.util.Map<String, functionalj.types.struct.generator.Getter> map = new java.util.HashMap<>();"),
                    getStructSchemaBody,
                    line("return map;")
                ),
-               asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Type.class), Type.of(Getter.class)),
+               emptyList(),
                emptyList(),
                false);
         return getStructSchema;
@@ -127,7 +127,7 @@ public class StructGeneratorHelper {
                 "__getSchema",
                 emptyList(),
                 ILines.linesOf(line("return getStructSchema();")),
-                asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Type.class), Type.of(Getter.class)),
+                asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Getter.class)),
                 emptyList(),
                 false);
         return getSchema;
@@ -236,13 +236,13 @@ public class StructGeneratorHelper {
         val    getterType = getter.getType();
         String initValue  = null;
         if (getterType.isList()) {
-            initValue = String.format("ImmutableFuncList.from(%1$s)", getterName);
+            initValue = String.format("functionalj.list.ImmutableFuncList.from(%1$s)", getterName);
         } else if (getterType.isMap()) {
-            initValue = String.format("ImmutableFuncMap.from(%1$s)", getterName);
+            initValue = String.format("functionalj.map.ImmutableFuncMap.from(%1$s)", getterName);
         } else if (getterType.isFuncList()) {
-            initValue = String.format("ImmutableFuncList.from(%1$s)", getterName);
+            initValue = String.format("functionalj.list.ImmutableFuncList.from(%1$s)", getterName);
         } else if (getterType.isFuncMap()) {
-            initValue = String.format("ImmutableFuncMap.from(%1$s)", getterName);
+            initValue = String.format("functionalj.map.ImmutableFuncMap.from(%1$s)", getterName);
         } else if (getterType.isNullable()) {
             initValue = String.format("Nullable.of((%1$s == null) ? null : %1$s.get())", getterName);
         } else if (!getter.isNullable() && !getterType.isPrimitive()){
@@ -312,7 +312,8 @@ public class StructGeneratorHelper {
                         ? newArray + "(" + g.getName() + ")"
                         : g.getName())
                 .collect(joining(", "));
-        val usedTypes = isFList ? asList(Type.FUNC_LIST) : Collections.<Type>emptyList();
+//        val usedTypes = isFList ? asList(Type.FUNC_LIST) : Collections.<Type>emptyList();
+        val usedTypes = Collections.<Type>emptyList();
         val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine), usedTypes, emptyList(),true);
     }
