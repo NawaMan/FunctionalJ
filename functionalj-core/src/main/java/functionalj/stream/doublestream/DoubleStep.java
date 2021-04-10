@@ -26,6 +26,7 @@ package functionalj.stream.doublestream;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.stream.DoubleStream;
 
 import functionalj.function.Func1;
 import functionalj.list.doublelist.DoubleFuncList;
@@ -34,9 +35,6 @@ import lombok.val;
 
 
 public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, Function<Double, Double>, DoubleFuncList {
-    
-    private final double size;
-    private final double start;
     
     public static class Size {
         public final double size;
@@ -65,6 +63,36 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
         
         public DoubleStep step(double size) {
             return new DoubleStep(size, from);
+        }
+    }
+    
+    public static class DoubleStepToStream implements DoubleStreamPlus {
+        
+        private final boolean          distancePositive;
+        private final double           end;
+        private final DoubleStreamPlus doubleStreamPlus;
+        
+        DoubleStepToStream(DoubleStreamPlus doubleStreamPlus, double end, boolean distancePositive) {
+            this.distancePositive = distancePositive;
+            this.end              = end;
+            this.doubleStreamPlus = doubleStreamPlus;
+        }
+        
+        public DoubleStreamPlus inclusive() {
+            if (distancePositive) {
+                return doubleStreamPlus.takeUntil(i -> i > end);
+            } else {
+                return doubleStreamPlus.takeUntil(i -> i < end);
+            }
+        }
+        
+        @Override
+        public DoubleStream doubleStream() {
+            if (distancePositive) {
+                return doubleStreamPlus.takeUntil(i -> i >= end);
+            } else {
+                return doubleStreamPlus.takeUntil(i -> i <= end);
+            }
         }
     }
     
@@ -112,6 +140,10 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
         return new From(start);
     }
     
+    private final double size;
+    private final double start;
+    
+    
     private DoubleStep(double size, double start) {
         if (size <= 0) {
             throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
@@ -125,7 +157,7 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
         return new DoubleStep(size, start);
     }
     
-    public DoubleStreamPlus to(double end) {
+    public DoubleStepToStream to(double end) {
         val sizePositive     = size > 0;
         val distancePositive = (end - start) > 0;
         val sameDirection    = sizePositive == distancePositive;
@@ -133,11 +165,7 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
                 = sameDirection 
                 ? DoubleStreamPlus.wholeNumbers().map(i ->  i * size + start)
                 : DoubleStreamPlus.wholeNumbers().map(i -> -i * size + start);
-        if (distancePositive) {
-            return doubleStreamPlus.takeUntil(i -> i > end);
-        } else {
-            return doubleStreamPlus.takeUntil(i -> i < end);
-        }
+        return new DoubleStepToStream(doubleStreamPlus, end, distancePositive);
     }
     
     

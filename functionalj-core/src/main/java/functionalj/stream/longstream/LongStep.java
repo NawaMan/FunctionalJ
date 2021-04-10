@@ -34,9 +34,6 @@ import lombok.val;
 
 public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function<Long, Long>, LongFuncList {
     
-    private final long size;
-    private final long start;
-    
     public static class Size {
         public final long size;
         Size(long size) {
@@ -56,6 +53,36 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
         
         public LongStep step(int size) {
             return new LongStep(size, from);
+        }
+    }
+    
+    public static class LongStepToStream implements LongStreamPlus {
+        
+        private final boolean        distancePositive;
+        private final long           end;
+        private final LongStreamPlus longStreamPlus;
+        
+        LongStepToStream(LongStreamPlus longStreamPlus, long end, boolean distancePositive) {
+            this.distancePositive = distancePositive;
+            this.end              = end;
+            this.longStreamPlus   = longStreamPlus;
+        }
+        
+        public LongStreamPlus inclusive() {
+            if (distancePositive) {
+                return longStreamPlus.takeUntil(i -> i > end);
+            } else {
+                return longStreamPlus.takeUntil(i -> i < end);
+            }
+        }
+        
+        @Override
+        public LongStreamPlus longStream() {
+            if (distancePositive) {
+                return longStreamPlus.takeUntil(i -> i >= end);
+            } else {
+                return longStreamPlus.takeUntil(i -> i <= end);
+            }
         }
     }
     
@@ -107,6 +134,10 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
         return new From(start);
     }
     
+    private final long size;
+    private final long start;
+    
+    
     private LongStep(long size, long start) {
         if (size <= 0) {
             throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
@@ -120,7 +151,7 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
         return new LongStep(size, start);
     }
     
-    public LongStreamPlus to(long end) {
+    public LongStepToStream to(long end) {
         val sizePositive     = size > 0;
         val distancePositive = (end - start) > 0;
         val sameDirection    = sizePositive == distancePositive;
@@ -128,11 +159,7 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
                 = sameDirection 
                 ? LongStreamPlus.wholeNumbers().map(i ->  i * size + start)
                 : LongStreamPlus.wholeNumbers().map(i -> -i * size + start);
-        if (distancePositive) {
-            return longStreamPlus.takeUntil(i -> i > end);
-        } else {
-            return longStreamPlus.takeUntil(i -> i < end);
-        }
+        return new LongStepToStream(longStreamPlus, end, distancePositive);
     }
     
     public LongStreamPlus longStream() {

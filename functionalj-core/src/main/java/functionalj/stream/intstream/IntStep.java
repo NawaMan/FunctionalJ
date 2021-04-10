@@ -26,6 +26,7 @@ package functionalj.stream.intstream;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
+import java.util.stream.IntStream;
 
 import functionalj.function.Func1;
 import functionalj.list.intlist.IntFuncList;
@@ -33,9 +34,6 @@ import lombok.val;
 
 
 public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntFuncList {
-    
-    private final int size;
-    private final int start;
     
     public static class Size {
         public final int size;
@@ -56,6 +54,36 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         
         public IntStep step(int size) {
             return new IntStep(size, from);
+        }
+    }
+    
+    public static class IntStepToStream implements IntStreamPlus {
+        
+        private final boolean       distancePositive;
+        private final int           end;
+        private final IntStreamPlus intStreamPlus;
+        
+        IntStepToStream(IntStreamPlus intStreamPlus, int end, boolean distancePositive) {
+            this.distancePositive = distancePositive;
+            this.end              = end;
+            this.intStreamPlus    = intStreamPlus;
+        }
+        
+        public IntStreamPlus inclusive() {
+            if (distancePositive) {
+                return intStreamPlus.takeUntil(i -> i > end);
+            } else {
+                return intStreamPlus.takeUntil(i -> i < end);
+            }
+        }
+        
+        @Override
+        public IntStream intStream() {
+            if (distancePositive) {
+                return intStreamPlus.takeUntil(i -> i >= end);
+            } else {
+                return intStreamPlus.takeUntil(i -> i <= end);
+            }
         }
     }
     
@@ -107,6 +135,9 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         return new From(start);
     }
     
+    private final int size;
+    private final int start;
+    
     private IntStep(int size, int start) {
         if (size <= 0) {
             throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
@@ -120,7 +151,7 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         return new IntStep(size, start);
     }
     
-    public IntStreamPlus to(int end) {
+    public IntStepToStream to(int end) {
         val sizePositive     = size > 0;
         val distancePositive = (end - start) > 0;
         val sameDirection    = sizePositive == distancePositive;
@@ -128,11 +159,7 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
                 = sameDirection 
                 ? IntStreamPlus.wholeNumbers().map(i ->  i * size + start)
                 : IntStreamPlus.wholeNumbers().map(i -> -i * size + start);
-        if (distancePositive) {
-            return intStreamPlus.takeUntil(i -> i > end);
-        } else {
-            return intStreamPlus.takeUntil(i -> i < end);
-        }
+        return new IntStepToStream(intStreamPlus, end, distancePositive);
     }
     
     public IntStreamPlus intStream() {
