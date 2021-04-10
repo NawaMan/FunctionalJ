@@ -130,6 +130,10 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
         return new From(start);
     }
     
+    public static From LongFrom(long start) {
+        return new From(start);
+    }
+    
     public static From from(long start) {
         return new From(start);
     }

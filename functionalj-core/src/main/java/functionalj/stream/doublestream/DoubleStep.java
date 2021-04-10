@@ -100,6 +100,10 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
         return new DoubleStep(size, 0);
     }
     
+    public static DoubleStep ofSize(double size) {
+        return new DoubleStep(size, 0);
+    }
+    
     public static DoubleStep step(Size size) {
         return new DoubleStep(size.size, 0);
     }
@@ -133,6 +137,10 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
     }
     
     public static From StartFrom(double start) {
+        return new From(start);
+    }
+    
+    public static From DoubleFrom(double start) {
         return new From(start);
     }
     

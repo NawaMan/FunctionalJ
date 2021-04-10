@@ -91,6 +91,10 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         return new IntStep(size, 0);
     }
     
+    public static IntStep ofSize(int size) {
+        return new IntStep(size, 0);
+    }
+    
     public static IntStep step(Size size) {
         return new IntStep(size.size, 0);
     }
@@ -104,10 +108,6 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     }
     
     public static IntStep of(int size) {
-        return new IntStep(size, 0);
-    }
-    
-    public static IntStep ofSize(int size) {
         return new IntStep(size, 0);
     }
     
@@ -128,6 +128,10 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     }
     
     public static From StartFrom(int start) {
+        return new From(start);
+    }
+    
+    public static From IntFrom(int start) {
         return new From(start);
     }
     
