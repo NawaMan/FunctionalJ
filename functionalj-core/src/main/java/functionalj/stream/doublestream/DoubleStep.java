@@ -30,6 +30,7 @@ import java.util.function.Function;
 import functionalj.function.Func1;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.intstream.IntStreamPlus;
+import lombok.val;
 
 
 public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, Function<Double, Double>, DoubleFuncList {
@@ -103,7 +104,7 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
         return new Size(size);
     }
     
-    public static From startAt(double start) {
+    public static From StartFrom(double start) {
         return new From(start);
     }
     
@@ -119,6 +120,26 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
         this.size = size;
         this.start = start;
     }
+    
+    public DoubleStep startFrom(double start) {
+        return new DoubleStep(size, start);
+    }
+    
+    public DoubleStreamPlus to(double end) {
+        val sizePositive     = size > 0;
+        val distancePositive = (end - start) > 0;
+        val sameDirection    = sizePositive == distancePositive;
+        val doubleStreamPlus
+                = sameDirection 
+                ? DoubleStreamPlus.wholeNumbers().map(i ->  i * size + start)
+                : DoubleStreamPlus.wholeNumbers().map(i -> -i * size + start);
+        if (distancePositive) {
+            return doubleStreamPlus.takeUntil(i -> i > end);
+        } else {
+            return doubleStreamPlus.takeUntil(i -> i < end);
+        }
+    }
+    
     
     public DoubleStreamPlus doubleStream() {
         return doubleStreamPlus();

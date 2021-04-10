@@ -29,6 +29,7 @@ import java.util.function.LongUnaryOperator;
 
 import functionalj.function.Func1;
 import functionalj.list.longlist.LongFuncList;
+import lombok.val;
 
 
 public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function<Long, Long>, LongFuncList {
@@ -78,6 +79,10 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
         return new LongStep(size, 0);
     }
     
+    public static LongStep ofSize(long size) {
+        return new LongStep(size, 0);
+    }
+    
     public static LongStep of(Size size) {
         return new LongStep(size.size, 0);
     }
@@ -94,7 +99,7 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
         return new Size(size);
     }
     
-    public static From startAt(long start) {
+    public static From StartFrom(long start) {
         return new From(start);
     }
     
@@ -109,6 +114,25 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
         
         this.size = size;
         this.start = start;
+    }
+    
+    public LongStep startFrom(long start) {
+        return new LongStep(size, start);
+    }
+    
+    public LongStreamPlus to(long end) {
+        val sizePositive     = size > 0;
+        val distancePositive = (end - start) > 0;
+        val sameDirection    = sizePositive == distancePositive;
+        val longStreamPlus
+                = sameDirection 
+                ? LongStreamPlus.wholeNumbers().map(i ->  i * size + start)
+                : LongStreamPlus.wholeNumbers().map(i -> -i * size + start);
+        if (distancePositive) {
+            return longStreamPlus.takeUntil(i -> i > end);
+        } else {
+            return longStreamPlus.takeUntil(i -> i < end);
+        }
     }
     
     public LongStreamPlus longStream() {

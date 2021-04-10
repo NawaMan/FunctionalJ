@@ -29,6 +29,7 @@ import java.util.function.IntUnaryOperator;
 
 import functionalj.function.Func1;
 import functionalj.list.intlist.IntFuncList;
+import lombok.val;
 
 
 public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntFuncList {
@@ -78,6 +79,10 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         return new IntStep(size, 0);
     }
     
+    public static IntStep ofSize(int size) {
+        return new IntStep(size, 0);
+    }
+    
     public static IntStep of(Size size) {
         return new IntStep(size.size, 0);
     }
@@ -94,7 +99,7 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         return new Size(size);
     }
     
-    public static From startAt(int start) {
+    public static From StartFrom(int start) {
         return new From(start);
     }
     
@@ -111,13 +116,32 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         this.start = start;
     }
     
+    public IntStep startFrom(int start) {
+        return new IntStep(size, start);
+    }
+    
+    public IntStreamPlus to(int end) {
+        val sizePositive     = size > 0;
+        val distancePositive = (end - start) > 0;
+        val sameDirection    = sizePositive == distancePositive;
+        val intStreamPlus
+                = sameDirection 
+                ? IntStreamPlus.wholeNumbers().map(i ->  i * size + start)
+                : IntStreamPlus.wholeNumbers().map(i -> -i * size + start);
+        if (distancePositive) {
+            return intStreamPlus.takeUntil(i -> i > end);
+        } else {
+            return intStreamPlus.takeUntil(i -> i < end);
+        }
+    }
+    
     public IntStreamPlus intStream() {
         return intStreamPlus();
     }
     
     @Override
     public IntStreamPlus intStreamPlus() {
-        return IntStreamPlus.wholeNumbers().map(i -> i *size + start);
+        return IntStreamPlus.wholeNumbers().map(i -> i * size + start);
     }
     
     @Override
