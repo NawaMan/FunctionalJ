@@ -26,7 +26,7 @@ package functionalj.stream;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import functionalj.function.IntegerObjectBiConsumer;
+import functionalj.function.IntObjBiConsumer;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
@@ -47,7 +47,7 @@ public interface AsStreamPlusWithForEach<DATA> {
     /** For each with the index. */
     @Eager
     @Terminal
-    public default void forEachWithIndex(IntegerObjectBiConsumer<? super DATA> action) {
+    public default void forEachWithIndex(IntObjBiConsumer<? super DATA> action) {
         val streamPlus = streamPlus();
         val index      = new AtomicInteger();
         streamPlus

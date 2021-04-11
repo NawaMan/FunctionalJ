@@ -26,26 +26,20 @@ package functionalj.function;
 import java.util.function.BiConsumer;
 
 @FunctionalInterface
-public interface LongBiConsumer extends LongObjBiConsumer<Long> {
+public interface DoubleObjBiConsumer<DATA> extends FuncUnit2<Double, DATA> {
     
-    public void acceptAsLongLong(long input1, long input2);
+    public void acceptAsDouble(double input1, DATA input2);
     
-    public default void acceptAsLong(long input1, Long input2) {
-        acceptAsLongLong(input1, input2);
+    public default void acceptUnsafe(Double input1, DATA input2) throws Exception {
+        acceptAsDouble(input1, input2);
     }
     
-    public default void acceptUnsafe(Long input1, Long input2) throws Exception {
-        acceptAsLongLong(input1, input2);
-    }
     
-    @SuppressWarnings("unchecked")
-    public static void accept(BiConsumer<? super Long, ? super Long> consumer, long input1, long input2) {
-        if (consumer instanceof LongBiConsumer) {
-            ((LongBiConsumer)consumer).acceptAsLongLong(input1, input2);
-        } else if (consumer instanceof IntObjBiConsumer) {
-            ((LongObjBiConsumer<Long>)consumer).acceptAsLong(input1, input2);
+    public static <D> void accept(BiConsumer<Double, D> function, double input1, D input2) {
+        if (function instanceof DoubleObjBiConsumer) {
+            ((DoubleObjBiConsumer<D>)function).acceptAsDouble(input1, input2);
         } else {
-            consumer.accept(input1, input2);
+            function.accept(input1, input2);
         }
     }
     

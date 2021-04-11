@@ -77,6 +77,7 @@ public interface DoubleStreamPlus
             DoubleStreamPlusWithMap,
             DoubleStreamPlusWithMapFirst,
             DoubleStreamPlusWithMapGroup,
+            DoubleStreamPlusWithMapMulti,
             DoubleStreamPlusWithMapThen,
             DoubleStreamPlusWithMapToMap,
             DoubleStreamPlusWithMapToTuple,

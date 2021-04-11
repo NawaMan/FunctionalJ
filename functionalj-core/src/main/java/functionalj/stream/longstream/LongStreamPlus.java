@@ -82,6 +82,7 @@ public interface LongStreamPlus
             LongStreamPlusWithMap,
             LongStreamPlusWithMapFirst,
             LongStreamPlusWithMapGroup,
+            LongStreamPlusWithMapMulti,
             LongStreamPlusWithMapThen,
             LongStreamPlusWithMapToMap,
             LongStreamPlusWithMapToTuple,

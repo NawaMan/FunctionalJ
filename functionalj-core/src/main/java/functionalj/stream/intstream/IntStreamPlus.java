@@ -82,6 +82,7 @@ public interface IntStreamPlus
             IntStreamPlusWithMap,
             IntStreamPlusWithMapFirst,
             IntStreamPlusWithMapGroup,
+            IntStreamPlusWithMapMulti,
             IntStreamPlusWithMapThen,
             IntStreamPlusWithMapToMap,
             IntStreamPlusWithMapToTuple,

@@ -115,6 +115,7 @@ public interface StreamPlus<DATA>
             StreamPlusWithMap<DATA>,
             StreamPlusWithMapFirst<DATA>,
             StreamPlusWithMapGroup<DATA>,
+            StreamPlusWithMapMulti<DATA>,
             StreamPlusWithMapThen<DATA>,
             StreamPlusWithMapToMap<DATA>,
             StreamPlusWithMapToTuple<DATA>,

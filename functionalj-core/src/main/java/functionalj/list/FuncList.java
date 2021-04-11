@@ -95,6 +95,7 @@ public interface FuncList<DATA>
             FuncListWithMap<DATA>,
             FuncListWithMapFirst<DATA>,
             FuncListWithMapGroup<DATA>,
+            FuncListWithMapMulti<DATA>,
             FuncListWithMapThen<DATA>,
             FuncListWithMapToMap<DATA>,
             FuncListWithMapToTuple<DATA>,

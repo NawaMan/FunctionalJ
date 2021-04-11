@@ -26,7 +26,7 @@ package functionalj.function;
 import java.util.function.BiConsumer;
 
 @FunctionalInterface
-public interface IntegerObjectBiConsumer<DATA> extends FuncUnit2<Integer, DATA> {
+public interface IntObjBiConsumer<DATA> extends FuncUnit2<Integer, DATA> {
     
     public void acceptAsInt(int input1, DATA input2);
     
@@ -37,8 +37,8 @@ public interface IntegerObjectBiConsumer<DATA> extends FuncUnit2<Integer, DATA> 
     
     
     public static <D> void accept(BiConsumer<Integer, D> function, int input1, D input2) {
-        if (function instanceof IntegerObjectBiConsumer) {
-            ((IntegerObjectBiConsumer<D>)function).acceptAsInt(input1, input2);
+        if (function instanceof IntObjBiConsumer) {
+            ((IntObjBiConsumer<D>)function).acceptAsInt(input1, input2);
         } else {
             function.accept(input1, input2);
         }

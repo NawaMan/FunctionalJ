@@ -23,14 +23,12 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.TestHelper.assertAsString;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
 import static functionalj.lens.LensTest.Car.theCar;
-import static functionalj.list.intlist.IntFuncList.infiniteInt;
-import static functionalj.map.FuncMap.UnderlineMap.LinkedHashMap;
-import static functionalj.ref.Run.With;
 import static functionalj.stream.StreamPlus.combine;
 import static functionalj.stream.StreamPlus.compound;
 import static functionalj.stream.StreamPlus.concat;
@@ -76,11 +74,9 @@ import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
 import functionalj.list.intlist.IntFuncList;
-import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
-import static functionalj.TestHelper.assertAsString;
 
 
 public class StreamPlusTest {
@@ -2207,31 +2203,24 @@ public class StreamPlusTest {
                 .toString());
     }
     
-    @Ignore("Tested wiht FuncListTest")
     @Test
-    public void testFizzBuzz() {
-        Function<StreamPlus<Integer>, FuncList<Integer>> streamPlusToList = s -> s.toImmutableList();
-        val stream  = infiniteInt().limit(20).boxed().streamPlus();
-        val toString =
-                With(FuncMap.underlineMap.butWith(LinkedHashMap))
-                .run(()->{
-                    val splited
-                            = stream
-                            .split(
-                                "FizzBuzz", i -> i % (3*5) == 0,
-                                "Buzz",     i -> i % 5     == 0,
-                                "Fizz",     i -> i % 3     == 0,
-                                null);
-                    return splited
-                            .mapValue(streamPlusToList)
-                            .toString();
-                });
-        assertEquals("{"
-                + "FizzBuzz:[0, 15], "
-                + "Buzz:[5, 10], "
-                + "Fizz:[3, 6, 9, 12, 18], "
-                + "null:[]}",
-                toString);
+    public void testMapMulti() {
+        assertAsString(
+                "[1, 2, 2, 3, 3, 3, 4, 4, 4, 4]", 
+                StreamPlus.of(0, 1, 2, 3, 4)
+                .mapMulti((number, consumer)->{
+                    for (int i = 0; i < number; i++)
+                        consumer.accept(number);
+                })
+                .toListString());
+        assertAsString(
+                "[1, 2, 2, 3, 3, 3, 4, 4, 4, 4]", 
+                StreamPlus.of(0, 1, 2, 3, 4)
+                .mapMultiToInt((number, consumer)->{
+                    for (int i = 0; i < number; i++)
+                        consumer.accept(number);
+                })
+                .toListString());
     }
     
 }

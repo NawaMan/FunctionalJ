@@ -9,10 +9,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,6 +26,8 @@ package functionalj.stream.doublestream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
@@ -48,6 +50,21 @@ import lombok.val;
 public interface AsDoubleStreamPlusWithConversion {
     
     public DoubleStreamPlus doubleStreamPlus();
+    
+    /** @return a iterator of this FuncList. */
+    public default DoubleIteratorPlus iterator() {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .iterator();
+    }
+    
+    /** @return a spliterator of this FuncList. */
+    public default Spliterator.OfDouble spliterator() {
+        val iterator = iterator();
+        return Spliterators
+                .spliteratorUnknownSize(iterator, 0);
+    }
+    
     
     /** Map the data to double and return the byte array of all the results. */
     @Eager
