@@ -41,6 +41,7 @@ import functionalj.function.IntObjBiFunction;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
+import functionalj.stream.Collected;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.markers.Sequential;
 import functionalj.tuple.IntTuple2;
@@ -85,6 +86,38 @@ public interface IntStreamPlusWithModify {
                     
                     used = true;
                     consumer.accept(acc);
+                };
+                return splitr.tryAdvance(action);
+            }
+        };
+        return IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
+    }
+    
+    /**
+     * Given a collector, create a stream that each element is an accumulation from the previous.
+     * 
+     * @param collector  the collector.
+     * @return           the accumulated stream.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
+    public default <ACCUMULATOR> IntStreamPlus accumulate(IntCollectorPlus<ACCUMULATOR, Integer> collector) {
+        val splitr      = intStreamPlus().spliterator();
+        val collected   = (collector instanceof IntCollectorToIntPlus)
+                        ? new Collected.ByCollectedIntToInt<ACCUMULATOR>((IntCollectorToIntPlus)collector)
+                        : new Collected.ByCollectedInt<ACCUMULATOR, Integer>(collector);;
+        val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+            @Override
+            public boolean tryAdvance(IntConsumer consumer) {
+                IntConsumer action = elem -> {
+                    collected.accumulate(elem);
+                    if (collector instanceof IntCollectorToIntPlus) {
+                        val acc = ((Collected.ByCollectedIntToInt)collected).finishAsInt();
+                        consumer.accept(acc);
+                    } else {
+                        val acc = collected.finish();
+                        consumer.accept(acc);
+                    }
                 };
                 return splitr.tryAdvance(action);
             }

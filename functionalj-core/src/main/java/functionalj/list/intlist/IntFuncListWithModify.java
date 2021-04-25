@@ -33,6 +33,7 @@ import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
+import functionalj.stream.intstream.IntCollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 
 public interface IntFuncListWithModify extends AsIntFuncList {
@@ -56,6 +57,16 @@ public interface IntFuncListWithModify extends AsIntFuncList {
      */
     public default IntFuncList accumulate(IntBinaryOperator accumulator) {
         return deriveFrom(this, stream -> stream.accumulate(accumulator));
+    }
+    
+    /**
+     * Given a collector, create a list that each element is an accumulation from the previous.
+     * 
+     * @param collector  the collector.
+     * @return           the accumulated stream.
+     */
+    public default IntFuncList accumulate(IntCollectorToIntPlus<int[]> collector) {
+        return deriveFrom(this, stream -> stream.accumulate(collector));
     }
     
     //== restate ==

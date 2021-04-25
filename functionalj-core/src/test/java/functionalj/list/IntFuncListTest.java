@@ -1,14 +1,12 @@
 package functionalj.list;
 
-import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.TestHelper.assertAsString;
+import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.theDouble;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theLong;
 import static functionalj.ref.Run.With;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
-import static java.util.stream.Collector.Characteristics.CONCURRENT;
-import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -21,8 +19,6 @@ import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -46,6 +42,7 @@ import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
+import functionalj.function.Accumulator;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.functions.TimeFuncs;
@@ -61,6 +58,7 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.intstream.IntAccumulator;
 import functionalj.stream.intstream.IntCollectorPlus;
+import functionalj.stream.intstream.IntCollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
@@ -1809,64 +1807,67 @@ public class IntFuncListTest {
     //-- IntFuncListWithCalculate --
     
     static class SumHalf implements IntCollectorPlus<int[], Integer> {
-        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<int[]>                    supplier()                    { return ()       -> new int[] { 0 }; }
-        @Override public IntAccumulator<int[]>              intAccumulator()              { return (a, i)   -> { a[0] += i; }; }
-        @Override public BinaryOperator<int[]>              combiner()                    { return (a1, a2) -> new int[] { a1[0] + a2[0] }; }
-        @Override public Function<int[], Integer>           finisher()                    { return (a)      -> a[0] / 2; }
-        @Override public Set<Characteristics>               characteristics()             { return characteristics; }
-        @Override public Collector<Integer, int[], Integer> collector()                   { return this; }
-        @Override public Integer                            process(IntStreamPlus stream) { return stream.map(i -> i/2).sum(); }
+        @Override public Supplier<int[]>          supplier()       { return ()       -> new int[] { 0 }; }
+        @Override public IntAccumulator<int[]>    intAccumulator() { return (a, i)   -> { a[0] += i; }; }
+        @Override public BinaryOperator<int[]>    combiner()       { return (a1, a2) -> new int[] { a1[0] + a2[0] }; }
+        @Override public Function<int[], Integer> finisher()       { return (a)      -> a[0] / 2; }
+        
+        @Override public Integer process(IntStreamPlus stream) {
+            return stream.map(i -> i/2).sum();
+        }
     }
-    static class Average implements IntCollectorPlus<int[], OptionalDouble> {
-        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<int[]>                           supplier()                    { return ()       -> new int[] { 0, 0 }; }
-        @Override public IntAccumulator<int[]>                     intAccumulator()              { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
-        @Override public BinaryOperator<int[]>                     combiner()                    { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
-        @Override public Function<int[], OptionalDouble>           finisher()                    { return (a)      -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]); }
-        @Override public Set<Characteristics>                      characteristics()             { return characteristics; }
-        @Override public Collector<Integer, int[], OptionalDouble> collector()                   { return this; }
-        @Override public OptionalDouble                            process(IntStreamPlus stream) { return stream.average(); }
+    static class Average implements IntCollectorPlus<int[], Double> {
+        @Override public Supplier<int[]>         supplier()       { return ()       -> new int[] { 0, 0 }; }
+        @Override public IntAccumulator<int[]>   intAccumulator() { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
+        @Override public BinaryOperator<int[]>   combiner()       { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
+        @Override public Function<int[], Double> finisher()       { return (a)      -> (a[1] == 0) ? null : (1.0*a[0]/a[1]); }
+        
+        @Override public Double process(IntStreamPlus stream) {
+            val average = stream.average();
+            return average.isPresent() ? ((double)Math.round(average.getAsDouble())) : null;
+        }
     }
-    static class MinInt implements IntCollectorPlus<int[], OptionalInt> {
-        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<int[]>                        supplier()                    { return ()       -> new int[] { 0, 0 }; }
-        @Override public IntAccumulator<int[]>                  intAccumulator()              { return (a, i)   -> { a[0] = Math.min(i, a[0]); a[1] = 1; }; }
-        @Override public BinaryOperator<int[]>                  combiner()                    { return (a1, a2) -> new int[] { Math.min(a1[0], a2[0]), a1[1] + a2[1] }; }
-        @Override public Function<int[], OptionalInt>           finisher()                    { return (a)      -> (a[1] == 0) ? OptionalInt.empty() : OptionalInt.of(a[0]); }
-        @Override public Set<Characteristics>                   characteristics()             { return characteristics; }
-        @Override public Collector<Integer, int[], OptionalInt> collector()                   { return this; }
-        @Override public OptionalInt                            process(IntStreamPlus stream) { return stream.min(); }
+    static class MinInt implements IntCollectorPlus<int[], Integer> {
+        @Override public Supplier<int[]>          supplier()       { return ()       -> new int[] { 0, 0 }; }
+        @Override public IntAccumulator<int[]>    intAccumulator() { return (a, i)   -> { a[0] = Math.min(i, a[0]); a[1] = 1; }; }
+        @Override public BinaryOperator<int[]>    combiner()       { return (a1, a2) -> new int[] { Math.min(a1[0], a2[0]), a1[1] + a2[1] }; }
+        @Override public Function<int[], Integer> finisher()       { return (a)      -> (a[1] == 0) ? null : (a[0]); }
+        
+        @Override public Integer process(IntStreamPlus stream) {
+            val min = stream.min();
+            return min.isPresent() ? ((int)Math.round(min.getAsInt())) : null;
+        }
     }
-    static class MaxInt implements IntCollectorPlus<int[], OptionalInt> {
-        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<int[]>                        supplier()                    { return ()       -> new int[] { 0, 0 }; }
-        @Override public IntAccumulator<int[]>                  intAccumulator()              { return (a, i)   -> { a[0] = Math.max(i, a[0]); a[1] = 1; }; }
-        @Override public BinaryOperator<int[]>                  combiner()                    { return (a1, a2) -> new int[] { Math.max(a1[0], a2[0]), a1[1] + a2[1] }; }
-        @Override public Function<int[], OptionalInt>           finisher()                    { return (a)      -> (a[1] == 0) ? OptionalInt.empty() : OptionalInt.of(a[0]); }
-        @Override public Set<Characteristics>                   characteristics()             { return characteristics; }
-        @Override public Collector<Integer, int[], OptionalInt> collector()                   { return this; }
-        @Override public OptionalInt                            process(IntStreamPlus stream) { return stream.max(); }
+    static class MaxInt implements IntCollectorPlus<int[], Integer> {
+        @Override public Supplier<int[]>          supplier()       { return ()       -> new int[] { 0, 0 }; }
+        @Override public IntAccumulator<int[]>    intAccumulator() { return (a, i)   -> { a[0] = Math.max(i, a[0]); a[1] = 1; }; }
+        @Override public BinaryOperator<int[]>    combiner()       { return (a1, a2) -> new int[] { Math.max(a1[0], a2[0]), a1[1] + a2[1] }; }
+        @Override public Function<int[], Integer> finisher()       { return (a)      -> (a[1] == 0) ? null : (a[0]); }
+        
+        @Override public Integer process(IntStreamPlus stream) {
+            val max = stream.max();
+            return max.isPresent() ? ((int)Math.round(max.getAsInt())) : null;
+        }
     }
-    static class SumInt implements IntCollectorPlus<int[], Integer> {
-        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<int[]>                    supplier()                    { return ()       -> new int[] { 0 }; }
-        @Override public IntAccumulator<int[]>              intAccumulator()              { return (a, i)   -> { a[0] += i; }; }
-        @Override public BinaryOperator<int[]>              combiner()                    { return (a1, a2) -> new int[] { a1[0] + a2[0] }; }
-        @Override public Function<int[], Integer>           finisher()                    { return (a)      -> a[0]; }
-        @Override public Set<Characteristics>               characteristics()             { return characteristics; }
-        @Override public Collector<Integer, int[], Integer> collector()                   { return this; }
-        @Override public Integer                            process(IntStreamPlus stream) { return stream.sum(); }
+    static class SumInt implements IntCollectorToIntPlus<int[]> {
+        @Override public Supplier<int[]>       supplier()       { return ()       -> new int[] { 0 }; }
+        @Override public IntAccumulator<int[]> intAccumulator() { return (a, i)   -> { a[0] += i; }; }
+        @Override public BinaryOperator<int[]> combiner()       { return (a1, a2) -> new int[] { a1[0] + a2[0] }; }
+        @Override public ToIntFunction<int[]>  finisherAsInt()  { return (a)      -> a[0]; }
+        @Override public Integer process(IntStreamPlus stream) {
+            return stream.sum();
+        }
     }
-    static class AvgInt implements IntCollectorPlus<int[], OptionalInt> {
-        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<int[]>                        supplier()                    { return ()       -> new int[] { 0, 0 }; }
-        @Override public IntAccumulator<int[]>                  intAccumulator()              { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
-        @Override public BinaryOperator<int[]>                  combiner()                    { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
-        @Override public Function<int[], OptionalInt>           finisher()                    { return (a)      -> (a[1] == 0) ? OptionalInt.empty() : OptionalInt.of(a[0]/a[1]); }
-        @Override public Set<Characteristics>                   characteristics()             { return characteristics; }
-        @Override public Collector<Integer, int[], OptionalInt> collector()                   { return this; }
-        @Override public OptionalInt                            process(IntStreamPlus stream) { val avg = stream.average(); return avg.isPresent() ? OptionalInt.of((int)Math.round(avg.getAsDouble())) : OptionalInt.empty(); }
+    static class AvgInt implements IntCollectorPlus<int[], Integer> {
+        @Override public Supplier<int[]>          supplier()       { return ()       -> new int[] { 0, 0 }; }
+        @Override public IntAccumulator<int[]>    intAccumulator() { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
+        @Override public BinaryOperator<int[]>    combiner()       { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
+        @Override public Function<int[], Integer> finisher()       { return (a)      -> (a[1] == 0) ? null : (a[0]/a[1]); }
+        
+        @Override public Integer process(IntStreamPlus stream) {
+            val avg = stream.average();
+            return avg.isPresent() ? ((int)Math.round(avg.getAsDouble())) : null;
+        }
     }
     
     @Test
@@ -1883,8 +1884,7 @@ public class IntFuncListTest {
             val sumHalf = new SumHalf();
             val average = new Average();
             assertAsString(
-                    "(10,"
-                    + "OptionalDouble[20.0])", 
+                    "(10,5.0)", 
                     list.calculate(sumHalf, average));
         });
     }
@@ -1894,7 +1894,7 @@ public class IntFuncListTest {
         run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
             val minInt = new MinInt();
             val maxInt = new MaxInt();
-            val range = list.calculate(minInt, maxInt).mapTo((max, min) -> max.getAsInt() + min.getAsInt());
+            val range = list.calculate(minInt, maxInt).mapTo((max, min) -> max + min);
             assertAsString("11", range);
         });
     }
@@ -1906,9 +1906,7 @@ public class IntFuncListTest {
             val average = new Average();
             val minInt  = new MinInt();
             assertAsString(
-                    "(10,"
-                    + "OptionalDouble[20.0],"
-                    + "OptionalInt[0])", 
+                    "(10,5.0,0)", 
                     list.calculate(sumHalf, average, minInt));
         });
     }
@@ -1923,9 +1921,8 @@ public class IntFuncListTest {
                             .calculate(sumHalf, average, minInt)
                             .mapTo((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
             assertAsString(
-                    "sumH: 10, "
-                    + "avg: OptionalDouble[20.0], "
-                    + "min: OptionalInt[0]", value);
+                    "sumH: 10, avg: 5.0, min: 0", 
+                    value);
         });
     }
     
@@ -1937,10 +1934,7 @@ public class IntFuncListTest {
             val minInt  = new MinInt();
             val maxInt  = new MaxInt();
             assertAsString(
-                    "(10,"
-                    + "OptionalDouble[20.0],"
-                    + "OptionalInt[0],"
-                    + "OptionalInt[11])", 
+                    "(10,5.0,0,11)", 
                     list.calculate(sumHalf, average, minInt, maxInt));
         });
     }
@@ -1957,9 +1951,9 @@ public class IntFuncListTest {
                             .mapTo((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
             assertAsString(
                     "sumH: 10, "
-                    + "avg: OptionalDouble[20.0], "
-                    + "min: OptionalInt[0], "
-                    + "max: OptionalInt[11]", 
+                    + "avg: 5.0, "
+                    + "min: 0, "
+                    + "max: 11", 
                     value);
         });
     }
@@ -1973,10 +1967,7 @@ public class IntFuncListTest {
             val maxInt  = new MaxInt();
             val sumInt  = new SumInt();
             assertAsString(
-                    "(10,"
-                    + "OptionalDouble[20.0],"
-                    + "OptionalInt[0],"
-                    + "OptionalInt[11],20)",
+                    "(10,5.0,0,11,20)",
                     list.calculate(sumHalf, average, minInt, maxInt, sumInt));
         });
     }
@@ -1995,12 +1986,7 @@ public class IntFuncListTest {
                                 return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI;
                             });
             assertAsString(
-                    "sumH: 10, "
-                    + "avg: OptionalDouble[20.0], "
-                    + "min: OptionalInt[0], "
-                    + "max: OptionalInt[11], "
-                    + "max: OptionalInt[11], "
-                    + "sumI: 20", 
+                    "sumH: 10, avg: 5.0, min: 0, max: 11, max: 11, sumI: 20", 
                     value);
         });
     }
@@ -2015,12 +2001,7 @@ public class IntFuncListTest {
             val sumInt  = new SumInt();
             val avgInt  = new AvgInt();
             assertAsString(
-                    "(10,"
-                    + "OptionalDouble[20.0],"
-                    + "OptionalInt[0],"
-                    + "OptionalInt[11],"
-                    + "20,"
-                    + "OptionalInt[5])", 
+                    "(10,5.0,0,11,20,5)", 
                     list.calculate(sumHalf, average, minInt, maxInt, sumInt, avgInt));
         });
     }
@@ -2041,12 +2022,13 @@ public class IntFuncListTest {
                             });
             assertAsString(
                     "sumH: 10, "
-                    + "avg: OptionalDouble[20.0], "
-                    + "min: OptionalInt[0], "
-                    + "max: OptionalInt[11], "
-                    + "max: OptionalInt[11], "
+                    + "avg: 5.0, "
+                    + "min: 0, "
+                    + "max: 11, "
+                    + "max: 11, "
                     + "sumI: 20, "
-                    + "avgI: OptionalInt[5]", value);
+                    + "avgI: 5", 
+                    value);
         });
     }
     
@@ -4108,6 +4090,32 @@ public class IntFuncListTest {
                     + "}",
                     toString);
         });
+    }
+    
+    @Test
+    public void testAggregate() {
+        assertEquals(
+                "[0, 1, 3, 6, 10, 15, 21, 28, 36, 45]",
+                IntFuncList
+                    .range  (0, 10)
+                    .map    (Accumulator.ofInt(new SumInt()).orElse(-1))
+                    .toList()
+                    .toString());
+        
+        val list = IntFuncList
+            .range    (0, 100)
+            .takeUntil(Accumulator.ofInt(new SumInt()).orElse(-1).thatGreaterThan(100));
+        assertEquals(
+                "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]",
+                list.toString());
+        System.out.println(list.sum());
+    }
+    
+    @Test
+    public void test() {
+        val list = IntFuncList.range(0, 10).accumulate(new SumInt());
+        System.out.println(list.toString());
+        System.out.println(list.toString());
     }
     
 }

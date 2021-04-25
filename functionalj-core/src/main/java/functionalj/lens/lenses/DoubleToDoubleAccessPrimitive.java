@@ -88,7 +88,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     //-- conversion --
     
     @Override
-    public default DoubleAccessBoxed<Double> boxed() {
+    public default DoubleToDoubleAccessBoxed boxed() {
         return host -> apply(host);
     }
     

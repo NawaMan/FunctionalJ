@@ -46,7 +46,8 @@ public interface LongToIntegerAccessPrimitive
                     extends 
                         IntegerAccessPrimitive<Long>, 
                         LongToIntFunction, 
-                        LongFunction<Integer> {
+                        LongFunction<Integer>,
+                        LongToIntegerAccessBoxed {
     
     //== Constructor ==
     
@@ -64,6 +65,10 @@ public interface LongToIntegerAccessPrimitive
     
     public int applyLongToInt(long host);
     
+    @Override
+    public default Integer applyUnsafe(Long host) throws Exception {
+        return LongToIntegerAccessBoxed.super.applyUnsafe(host);
+    }
     
     public default int applyAsInt(long operand) {
         return applyLongToInt(operand);

@@ -23,32 +23,31 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-import java.util.function.IntFunction;
-import java.util.function.IntSupplier;
+import java.util.function.DoubleFunction;
+import java.util.function.DoubleSupplier;
 
 import lombok.val;
 
-
 @FunctionalInterface
-public interface IntegerToIntegerAccessBoxed extends IntegerAccessBoxed<Integer>, IntFunction<Integer> {
+public interface DoubleToDoubleAccessBoxed extends DoubleAccessBoxed<Double>, DoubleFunction<Double> {
     
-    public Integer apply(int value);
+    public Double apply(double value);
     
-    public default Integer applyUnsafe(Integer host) throws Exception {
+    public default Double applyUnsafe(Double host) throws Exception {
         return apply(host);
     }
     
-    public default IntegerToIntegerAccessPrimitive orElse(int fallback) {
+    public default DoubleToDoubleAccessPrimitive orElse(double fallback) {
         return value -> {
             val result = apply(value);
             return (result != null) ? result : fallback;
         };
     }
     
-    public default IntegerToIntegerAccessPrimitive orGet(IntSupplier fallback) {
+    public default DoubleToDoubleAccessPrimitive orGet(DoubleSupplier fallback) {
         return value -> {
             val result = apply(value);
-            return (result != null) ? result : fallback.getAsInt();
+            return (result != null) ? result : fallback.getAsDouble();
         };
     }
     

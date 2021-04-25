@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.IntSupplier;
+
 import functionalj.functions.ThrowFuncs;
 import lombok.val;
 
@@ -39,6 +41,20 @@ public interface IntegerAccessBoxed<HOST> extends IntegerAccess<HOST> {
         } catch (Exception e) {
             throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
+    }
+    
+    public default IntegerAccessPrimitive<HOST> orElse(int fallback) {
+        return value -> {
+            val result = apply(value);
+            return (result != null) ? result : fallback;
+        };
+    }
+    
+    public default IntegerAccessPrimitive<HOST> orGet(IntSupplier fallback) {
+        return value -> {
+            val result = apply(value);
+            return (result != null) ? result : fallback.getAsInt();
+        };
     }
     
 }

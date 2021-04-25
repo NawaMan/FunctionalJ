@@ -563,24 +563,6 @@ public interface IntFuncList
     public static <TARGET> IntFuncList deriveFrom(
             AsDoubleFuncList                      asFuncList, 
             Function<DoubleStreamPlus, IntStream> action) {
-//        Mode mode = asFuncList.asDoubleFuncList().mode();
-//        switch (mode) {
-//            case lazy: {
-//                return IntFuncList.from(() -> {
-//                    val orgStreamPlus = asFuncList.doubleStreamPlus();
-//                    val newStream     = action.apply(orgStreamPlus);
-//                    return IntStreamPlus.from(newStream);
-//                });
-//            }
-//            case eager:
-//            case cache: {
-//                val orgStreamPlus = asFuncList.doubleStreamPlus();
-//                val newStream     = action.apply(orgStreamPlus);
-//                val newStreamPlus = IntStreamPlus.from(newStream);
-//                return ImmutableIntFuncList.from(mode, newStreamPlus);
-//            }
-//            default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
-//        }
         boolean isLazy = asFuncList.asDoubleFuncList().isLazy();
         if (!isLazy) {
             val orgStreamPlus = asFuncList.doubleStreamPlus();

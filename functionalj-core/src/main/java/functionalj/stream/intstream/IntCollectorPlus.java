@@ -47,7 +47,14 @@ public interface IntCollectorPlus<ACCUMULATED, RESULT>
     IntAccumulator<ACCUMULATED>   intAccumulator();
     BinaryOperator<ACCUMULATED>   combiner();
     Function<ACCUMULATED, RESULT> finisher();
-    Set<Characteristics>          characteristics();
+    
+    default Set<Characteristics> characteristics() {
+        return CollectorPlusHelper.characteristics();
+    }
+    
+    default Collector<Integer, ACCUMULATED, RESULT> collector() {
+        return this;
+    }
     
     
     default BiConsumer<ACCUMULATED, Integer> accumulator() {

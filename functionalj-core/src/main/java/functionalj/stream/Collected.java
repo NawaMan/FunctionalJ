@@ -38,6 +38,7 @@ import functionalj.stream.doublestream.DoubleCollectorPlus;
 import functionalj.stream.doublestream.DoubleStreamProcessor;
 import functionalj.stream.intstream.IntAccumulator;
 import functionalj.stream.intstream.IntCollectorPlus;
+import functionalj.stream.intstream.IntCollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamProcessor;
 import functionalj.stream.longstream.LongAccumulator;
 import functionalj.stream.longstream.LongCollectorPlus;
@@ -116,7 +117,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         private final BiConsumer<ACCUMULATED, DATA>        accumulator;
         private final ACCUMULATED                          accumulated;
         
-        ByCollector(Collector<DATA, ACCUMULATED, RESULT> collector) {
+        public ByCollector(Collector<DATA, ACCUMULATED, RESULT> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.accumulator();
@@ -175,9 +176,9 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     public static class ByCollectedInt<ACCUMULATED, RESULT>
                     implements CollectedInt<ACCUMULATED, RESULT> {
         
-        private final IntCollectorPlus<ACCUMULATED, RESULT> collector;
-        private final IntAccumulator<ACCUMULATED>           accumulator;
-        private final ACCUMULATED                           accumulated;
+        final IntCollectorPlus<ACCUMULATED, RESULT> collector;
+        final IntAccumulator<ACCUMULATED>           accumulator;
+        final ACCUMULATED                           accumulated;
         
         public ByCollectedInt(IntCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector   = collector;
@@ -197,6 +198,30 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         public RESULT finish() {
             val finisher = collector.finisher();
             return finisher.apply(accumulated);
+        }
+        
+    }
+    
+    public static class ByCollectedIntToInt<ACCUMULATED> extends ByCollectedInt<ACCUMULATED, Integer> {
+        
+        public ByCollectedIntToInt(IntCollectorToIntPlus<ACCUMULATED> collector) {
+            super(collector);
+        }
+        
+        public void accumulate(int each) {
+            accumulator.accept(accumulated, each);
+        }
+        
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        public int finishAsInt() {
+            val finisher = ((IntCollectorToIntPlus)collector).finisherAsInt();
+            return finisher.applyAsInt(accumulated);
+        }
+        
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        public Integer finish() {
+            val finisher = ((IntCollectorToIntPlus)collector).finisherAsInt();
+            return finisher.applyAsInt(accumulated);
         }
         
     }

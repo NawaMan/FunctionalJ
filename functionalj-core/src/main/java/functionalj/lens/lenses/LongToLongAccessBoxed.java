@@ -24,6 +24,9 @@
 package functionalj.lens.lenses;
 
 import java.util.function.LongFunction;
+import java.util.function.LongSupplier;
+
+import lombok.val;
 
 @FunctionalInterface
 public interface LongToLongAccessBoxed extends LongAccessBoxed<Long>, LongFunction<Long> {
@@ -33,4 +36,19 @@ public interface LongToLongAccessBoxed extends LongAccessBoxed<Long>, LongFuncti
     public default Long applyUnsafe(Long host) throws Exception {
         return apply(host);
     }
+    
+    public default LongToLongAccessPrimitive orElse(long fallback) {
+        return value -> {
+            val result = apply(value);
+            return (result != null) ? result : fallback;
+        };
+    }
+    
+    public default LongToLongAccessPrimitive orGet(LongSupplier fallback) {
+        return value -> {
+            val result = apply(value);
+            return (result != null) ? result : fallback.getAsLong();
+        };
+    }
+    
 }
