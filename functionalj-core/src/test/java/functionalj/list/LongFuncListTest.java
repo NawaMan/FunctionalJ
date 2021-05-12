@@ -59,9 +59,9 @@ import functionalj.list.longlist.LongFuncListDerived;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
-import functionalj.stream.longstream.LongAccumulator;
-import functionalj.stream.longstream.LongCollectorPlus;
 import functionalj.stream.longstream.LongStreamPlus;
+import functionalj.stream.longstream.collect.LongAccumulator;
+import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
 
 public class LongFuncListTest {

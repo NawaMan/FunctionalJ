@@ -25,7 +25,8 @@ package functionalj.stream.doublestream;
 
 import java.util.function.DoubleConsumer;
 
-import functionalj.stream.Collected;
+import functionalj.stream.collect.Collected;
+import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;

@@ -58,9 +58,9 @@ import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
-import functionalj.stream.doublestream.DoubleAccumulator;
-import functionalj.stream.doublestream.DoubleCollectorPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.doublestream.collect.DoubleAccumulator;
+import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import lombok.val;
 
 public class DoubleFuncListTest {

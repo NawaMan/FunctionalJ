@@ -6,6 +6,7 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 
 import functionalj.function.Func;
+import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;

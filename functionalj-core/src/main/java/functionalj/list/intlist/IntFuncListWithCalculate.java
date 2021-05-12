@@ -24,7 +24,7 @@
 package functionalj.list.intlist;
 
 import static functionalj.list.intlist.AsIntFuncListHelper.funcListOf;
-import static functionalj.stream.Collected.CollectedInt.collectedOf;
+import static functionalj.stream.collect.Collected.CollectedInt.collectedOf;
 
 import functionalj.stream.intstream.IntStreamProcessor;
 import functionalj.tuple.Tuple;

@@ -42,7 +42,6 @@ import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
-import functionalj.function.Accumulator;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.functions.TimeFuncs;
@@ -56,10 +55,10 @@ import functionalj.list.intlist.IntFuncListDerived;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
-import functionalj.stream.intstream.IntAccumulator;
-import functionalj.stream.intstream.IntCollectorPlus;
-import functionalj.stream.intstream.IntCollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.collect.IntAccumulator;
+import functionalj.stream.intstream.collect.IntCollectorPlus;
+import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import lombok.val;
 
 public class IntFuncListTest {
@@ -4090,25 +4089,6 @@ public class IntFuncListTest {
                     + "}",
                     toString);
         });
-    }
-    
-    @Test
-    public void testAggregate() {
-        assertEquals(
-                "[0, 1, 3, 6, 10, 15, 21, 28, 36, 45]",
-                IntFuncList
-                    .range  (0, 10)
-                    .map    (Accumulator.ofInt(new SumInt()).orElse(-1))
-                    .toList()
-                    .toString());
-        
-        val list = IntFuncList
-            .range    (0, 100)
-            .takeUntil(Accumulator.ofInt(new SumInt()).orElse(-1).thatGreaterThan(100));
-        assertEquals(
-                "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]",
-                list.toString());
-        System.out.println(list.sum());
     }
     
     @Test

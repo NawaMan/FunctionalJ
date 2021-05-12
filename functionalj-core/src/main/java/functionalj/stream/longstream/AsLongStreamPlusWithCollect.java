@@ -29,6 +29,7 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 
 import functionalj.function.Func;
+import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;

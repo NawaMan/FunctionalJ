@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
-import static functionalj.stream.Collected.collectedOf;
+import static functionalj.stream.collect.Collected.collectedOf;
 
 import functionalj.stream.StreamProcessor;
 import functionalj.tuple.Tuple;

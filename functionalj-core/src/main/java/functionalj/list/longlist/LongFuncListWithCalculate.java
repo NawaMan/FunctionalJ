@@ -24,7 +24,7 @@
 package functionalj.list.longlist;
 
 import static functionalj.list.longlist.AsLongFuncListHelper.funcListOf;
-import static functionalj.stream.Collected.CollectedLong.collectedOf;
+import static functionalj.stream.collect.Collected.CollectedLong.collectedOf;
 
 import functionalj.stream.longstream.LongStreamProcessor;
 import functionalj.tuple.Tuple;

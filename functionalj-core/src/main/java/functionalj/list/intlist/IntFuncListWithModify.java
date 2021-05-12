@@ -33,8 +33,8 @@ import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.intstream.IntCollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 
 public interface IntFuncListWithModify extends AsIntFuncList {
     

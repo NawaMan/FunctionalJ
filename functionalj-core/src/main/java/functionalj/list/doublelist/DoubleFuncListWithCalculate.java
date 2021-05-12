@@ -24,7 +24,7 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.AsDoubleFuncListHelper.funcListOf;
-import static functionalj.stream.Collected.CollectedDouble.collectedOf;
+import static functionalj.stream.collect.Collected.CollectedDouble.collectedOf;
 
 import functionalj.stream.doublestream.DoubleStreamProcessor;
 import functionalj.tuple.Tuple;

@@ -21,17 +21,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.doublestream;
+package functionalj.stream.doublestream.collect;
 
-import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
 
-@FunctionalInterface
-public interface DoubleAccumulator<ACCUMULATED> extends BiConsumer<ACCUMULATED, Double> {
+public interface DoubleCollectorToDoublePlus<ACCUMULATED>
+                    extends DoubleCollectorPlus<ACCUMULATED, Double> {
     
-    void acceptDouble(ACCUMULATED accumulator, double element);
+    public Supplier<ACCUMULATED>          supplier();
+    public DoubleAccumulator<ACCUMULATED> doubleAccumulator();
+    public BinaryOperator<ACCUMULATED>    combiner();
     
-    default void accept(ACCUMULATED accumulator, Double element) {
-        acceptDouble(accumulator, element.doubleValue());
+    public ToDoubleFunction<ACCUMULATED> finisherAsDouble();
+    
+    public default Function<ACCUMULATED, Double> finisher() {
+        return acc -> finisherAsDouble().applyAsDouble(acc);
     }
     
 }

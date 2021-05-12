@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableFuncMap;
+import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import lombok.val;
 
 public interface AsDoubleStreamPlusWithGroupingBy {

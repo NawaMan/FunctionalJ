@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.collect;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -33,18 +33,19 @@ import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.list.longlist.AsLongFuncList;
 import functionalj.list.longlist.LongFuncList;
-import functionalj.stream.doublestream.DoubleAccumulator;
-import functionalj.stream.doublestream.DoubleCollectorPlus;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamProcessor;
 import functionalj.stream.doublestream.DoubleStreamProcessor;
-import functionalj.stream.intstream.IntAccumulator;
-import functionalj.stream.intstream.IntCollectorPlus;
-import functionalj.stream.intstream.IntCollectorToIntPlus;
+import functionalj.stream.doublestream.collect.DoubleAccumulator;
+import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.intstream.IntStreamProcessor;
-import functionalj.stream.longstream.LongAccumulator;
-import functionalj.stream.longstream.LongCollectorPlus;
+import functionalj.stream.intstream.collect.IntAccumulator;
+import functionalj.stream.intstream.collect.IntCollectorPlus;
+import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import functionalj.stream.longstream.LongStreamProcessor;
+import functionalj.stream.longstream.collect.LongAccumulator;
+import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
-
 
 
 public interface Collected<DATA, ACCUMULATED, RESULT> {
@@ -70,8 +71,6 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     public void   accumulate(DATA each);
     public RESULT finish();
     
-    
-    // TODO - Add ofIntInt, ofIntIntToInt, ...
     
     @SuppressWarnings("unchecked")
     public static <A, R> CollectedInt<A, R> ofInt(
@@ -111,7 +110,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     public static class ByCollector<DATA, ACCUMULATED, RESULT>
             implements
                 StreamProcessor<DATA, RESULT>,
-                Collected<DATA, ACCUMULATED, RESULT>{
+                Collected<DATA, ACCUMULATED, RESULT> {
         
         private final Collector<DATA, ACCUMULATED, RESULT> collector;
         private final BiConsumer<ACCUMULATED, DATA>        accumulator;

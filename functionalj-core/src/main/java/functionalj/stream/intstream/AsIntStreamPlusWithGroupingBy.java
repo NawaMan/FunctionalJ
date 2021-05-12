@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableFuncMap;
+import functionalj.stream.intstream.collect.IntCollectorPlus;
 import lombok.val;
 
 public interface AsIntStreamPlusWithGroupingBy {

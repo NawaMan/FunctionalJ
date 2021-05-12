@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,84 +21,69 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.longstream.collect;
 
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.LongUnaryOperator;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 
-import functionalj.function.Func1;
+import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
-
-
-public interface CollectorPlus<DATA, ACCUMULATED, TARGET> 
-            extends
-                CollectorExtensible<DATA, ACCUMULATED, TARGET>,
-                StreamProcessor<DATA, TARGET> {
+public class LongCollectorFromLong<ACCUMULATED, RESULT> 
+        implements LongCollectorPlus<ACCUMULATED, RESULT> {
     
-    public static <D, A, R> CollectorPlus<D, A, R> from(Collector<D, A, R> collector) {
-        return (collector instanceof CollectorPlus)
-                ? (CollectorPlus<D,A,R>)collector
-                : ()->collector;
-    }
+    private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
+    private final LongUnaryOperator                      mapper;
     
-    // TODO - make it easy to create reducer
-    // (DATA, DATA)->DATA
-    // or
-    // (DATA)->TARGET , (TARGET, TARGET) -> TARGET
-    // or
-    // (DATA)->ACCUMULATED , (ACCUMULATED, ACCUMULATED) -> ACCUMULATED, (ACCUMULATED) -> TARGET
-    
-    
-    public default TARGET process(StreamPlus<? extends DATA> stream) {
-        return stream.calculate(this);
-    }
-    
-    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {
-        val collector = new DerivedCollectorPlus<>(this, mapper);
-        return CollectorPlus.from(collector);
-    }
-}
-
-class DerivedCollectorPlus<SOURCE, DATA, ACCUMULATED, RESULT>
-        implements Collector<SOURCE, ACCUMULATED, RESULT> {
-    
-    private final CollectorPlus<DATA, ACCUMULATED, RESULT> collector;
-    private final Func1<SOURCE, DATA>                      mapper;
-    
-    public DerivedCollectorPlus(
-            CollectorPlus<DATA, ACCUMULATED, RESULT> collector, 
-            Func1<SOURCE, DATA>                      mapper) {
+    public LongCollectorFromLong(LongCollectorPlus<ACCUMULATED, RESULT> collector, LongUnaryOperator mapper) {
         this.collector = collector;
-        this.mapper = mapper;
+        this.mapper    = mapper;
     }
+    
     @Override
     public Supplier<ACCUMULATED> supplier() {
         return collector.supplier();
     }
+    
     @Override
-    public BiConsumer<ACCUMULATED, SOURCE> accumulator() {
+    public LongAccumulator<ACCUMULATED> longAccumulator() {
         val accumulator = collector.accumulator();
-        return (a, s)->{
-            val d = mapper.apply(s);
+        return (a, s) -> {
+            val d = mapper.applyAsLong(s);
             accumulator.accept(a, d);
         };
     }
+    
+    @Override
+    public BiConsumer<ACCUMULATED, Long> accumulator() {
+        val accumulator = collector.accumulator();
+        return (a, s) -> {
+            val d = mapper.applyAsLong(s);
+            accumulator.accept(a, d);
+        };
+    }
+    
     @Override
     public BinaryOperator<ACCUMULATED> combiner() {
         return collector.combiner();
     }
+    
     @Override
     public Function<ACCUMULATED, RESULT> finisher() {
         return collector.finisher();
     }
+    
     @Override
     public Set<Characteristics> characteristics() {
         return collector.characteristics();
     }
+    
+    @Override
+    public RESULT process(LongStreamPlus stream) {
+        return collector.process(stream);
+    }
 }
-

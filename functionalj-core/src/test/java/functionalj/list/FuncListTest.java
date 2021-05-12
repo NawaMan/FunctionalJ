@@ -82,9 +82,9 @@ import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
-import functionalj.stream.CollectorPlus;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 

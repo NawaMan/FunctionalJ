@@ -21,24 +21,49 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.longstream.collect;
 
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.LongUnaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-@FunctionalInterface
-public interface CollectorExtensible<DATA, ACCUMULATED, RESULT> extends Collector<DATA, ACCUMULATED, RESULT> {
+import functionalj.stream.collect.CollectorPlus;
+import functionalj.stream.intstream.CollectorPlusHelper;
+import functionalj.stream.longstream.LongStreamProcessor;
 
-    Collector<DATA, ACCUMULATED, RESULT> collector();
+
+public interface LongCollectorPlus<ACCUMULATED, RESULT>
+        extends
+            CollectorPlus<Long, ACCUMULATED, RESULT>,
+            LongStreamProcessor<RESULT> {
     
-    default Supplier<ACCUMULATED>         supplier()        { return collector().supplier();        }
-    default BiConsumer<ACCUMULATED, DATA> accumulator()     { return collector().accumulator();     }
-    default BinaryOperator<ACCUMULATED>   combiner()        { return collector().combiner();        }
-    default Function<ACCUMULATED, RESULT> finisher()        { return collector().finisher();        }
-    default Set<Characteristics>          characteristics() { return collector().characteristics(); }
+    Supplier<ACCUMULATED>         supplier();
+    LongAccumulator<ACCUMULATED>  longAccumulator();
+    BinaryOperator<ACCUMULATED>   combiner();
+    Function<ACCUMULATED, RESULT> finisher();
     
+    public default Set<Characteristics> characteristics() {
+        return CollectorPlusHelper.characteristics();
+    }
+    
+    public default Collector<Long, ACCUMULATED, RESULT> collector() {
+        return this;
+    }
+    
+    public default BiConsumer<ACCUMULATED, Long> accumulator() {
+        return longAccumulator();
+    }
+//    
+//    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToIntFunction<SOURCE> mapper) {
+//        val collector = new CollectorFromInt<>(this, mapper);
+//        return CollectorPlus.from(collector);
+//    }
+    
+    public default LongCollectorPlus<ACCUMULATED, RESULT> ofLong(LongUnaryOperator mapper) {
+        return new LongCollectorFromLong<>(this, mapper);
+    }
 }
