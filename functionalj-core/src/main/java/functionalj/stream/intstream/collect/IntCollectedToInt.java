@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream.intstream.collect;
 
+import java.util.function.ObjIntConsumer;
+
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -33,7 +35,7 @@ import lombok.val;
 public interface IntCollectedToInt<ACCUMULATED> 
                     extends Collected<Integer, ACCUMULATED, Integer> {
     
-    public void accumulate(int each);
+    public void accumulateAsInt(int each);
     public int  finishAsInt();
     
     public default Integer finish() {
@@ -41,7 +43,7 @@ public interface IntCollectedToInt<ACCUMULATED>
     }
     
     public default void accumulate(Integer each) {
-        accumulate(each);
+        accumulateAsInt(each);
     }
     
     //== Implementation ==
@@ -52,7 +54,7 @@ public interface IntCollectedToInt<ACCUMULATED>
                 IntCollectedToInt<ACCUMULATED> {
         
         private final IntCollectorToIntPlus<ACCUMULATED> collector;
-        private final IntAccumulator<ACCUMULATED>        accumulator;
+        private final ObjIntConsumer<ACCUMULATED>        accumulator;
         private final ACCUMULATED                        accumulated;
         
         public ByCollector(IntCollectorToIntPlus<ACCUMULATED> collector) {
@@ -61,7 +63,7 @@ public interface IntCollectedToInt<ACCUMULATED>
             this.accumulator = collector.intAccumulator();
         }
         
-        public void accumulate(int each) {
+        public void accumulateAsInt(int each) {
             accumulator.accept(accumulated, each);
         }
         
@@ -91,7 +93,7 @@ public interface IntCollectedToInt<ACCUMULATED>
             this.funcList  = funcList;
         }
         
-        public void accumulate(int each) {
+        public void accumulateAsInt(int each) {
         }
         
         @Override

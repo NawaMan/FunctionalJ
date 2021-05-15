@@ -23,17 +23,10 @@
 // ============================================================================
 package functionalj.stream.collect;
 
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-import functionalj.function.Func1;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
-import lombok.val;
 
 
 public interface CollectorPlus<DATA, ACCUMULATED, TARGET> 
@@ -58,48 +51,9 @@ public interface CollectorPlus<DATA, ACCUMULATED, TARGET>
     public default TARGET process(StreamPlus<? extends DATA> stream) {
         return stream.calculate(this);
     }
-    
-    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {
-        val collector = new DerivedCollectorPlus<>(this, mapper);
-        return CollectorPlus.from(collector);
-    }
+//    
+//    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {
+//        val collector = new DerivedCollectorPlus<>(this, mapper);
+//        return CollectorPlus.from(collector);
+//    }
 }
-
-class DerivedCollectorPlus<SOURCE, DATA, ACCUMULATED, RESULT>
-        implements Collector<SOURCE, ACCUMULATED, RESULT> {
-    
-    private final CollectorPlus<DATA, ACCUMULATED, RESULT> collector;
-    private final Func1<SOURCE, DATA>                      mapper;
-    
-    public DerivedCollectorPlus(
-            CollectorPlus<DATA, ACCUMULATED, RESULT> collector, 
-            Func1<SOURCE, DATA>                      mapper) {
-        this.collector = collector;
-        this.mapper = mapper;
-    }
-    @Override
-    public Supplier<ACCUMULATED> supplier() {
-        return collector.supplier();
-    }
-    @Override
-    public BiConsumer<ACCUMULATED, SOURCE> accumulator() {
-        val accumulator = collector.accumulator();
-        return (a, s)->{
-            val d = mapper.apply(s);
-            accumulator.accept(a, d);
-        };
-    }
-    @Override
-    public BinaryOperator<ACCUMULATED> combiner() {
-        return collector.combiner();
-    }
-    @Override
-    public Function<ACCUMULATED, RESULT> finisher() {
-        return collector.finisher();
-    }
-    @Override
-    public Set<Characteristics> characteristics() {
-        return collector.characteristics();
-    }
-}
-

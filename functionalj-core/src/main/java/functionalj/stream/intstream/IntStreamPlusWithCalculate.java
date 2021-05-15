@@ -25,7 +25,7 @@ package functionalj.stream.intstream;
 
 import java.util.function.IntConsumer;
 
-import functionalj.stream.collect.Collected;
+import functionalj.stream.intstream.collect.IntCollected;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -47,7 +47,7 @@ public interface IntStreamPlusWithCalculate {
      /** Perform the calculation using the data of this stream */
     public default <RESULT, ACCUMULATED> RESULT calculate(
             IntCollectorPlus<ACCUMULATED, RESULT> collector) {
-        val collected = new Collected.ByCollectedInt<>(collector);
+        val collected = IntCollected.of(collector);
         forEach(each -> {
             collected.accumulate(each);
         });
@@ -62,8 +62,8 @@ public interface IntStreamPlusWithCalculate {
                         calculate(
                             IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
                             IntCollectorPlus<ACCUMULATED2, RESULT2> collector2) {
-        val collected1 = new Collected.ByCollectedInt<>(collector1);
-        val collected2 = new Collected.ByCollectedInt<>(collector2);
+        val collected1 = IntCollected.of(collector1);
+        val collected2 = IntCollected.of(collector2);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -83,9 +83,9 @@ public interface IntStreamPlusWithCalculate {
                             IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
                             IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
                             IntCollectorPlus<ACCUMULATED3, RESULT3> collector3) {
-        val collected1 = new Collected.ByCollectedInt<>(collector1);
-        val collected2 = new Collected.ByCollectedInt<>(collector2);
-        val collected3 = new Collected.ByCollectedInt<>(collector3);
+        val collected1 = IntCollected.of(collector1);
+        val collected2 = IntCollected.of(collector2);
+        val collected3 = IntCollected.of(collector3);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -109,10 +109,10 @@ public interface IntStreamPlusWithCalculate {
                             IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
                             IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
                             IntCollectorPlus<ACCUMULATED4, RESULT4> collector4) {
-        val collected1 = new Collected.ByCollectedInt<>(collector1);
-        val collected2 = new Collected.ByCollectedInt<>(collector2);
-        val collected3 = new Collected.ByCollectedInt<>(collector3);
-        val collected4 = new Collected.ByCollectedInt<>(collector4);
+        val collected1 = IntCollected.of(collector1);
+        val collected2 = IntCollected.of(collector2);
+        val collected3 = IntCollected.of(collector3);
+        val collected4 = IntCollected.of(collector4);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -140,11 +140,11 @@ public interface IntStreamPlusWithCalculate {
                             IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
                             IntCollectorPlus<ACCUMULATED4, RESULT4> collector4,
                             IntCollectorPlus<ACCUMULATED5, RESULT5> collector5) {
-        val collected1 = new Collected.ByCollectedInt<>(collector1);
-        val collected2 = new Collected.ByCollectedInt<>(collector2);
-        val collected3 = new Collected.ByCollectedInt<>(collector3);
-        val collected4 = new Collected.ByCollectedInt<>(collector4);
-        val collected5 = new Collected.ByCollectedInt<>(collector5);
+        val collected1 = IntCollected.of(collector1);
+        val collected2 = IntCollected.of(collector2);
+        val collected3 = IntCollected.of(collector3);
+        val collected4 = IntCollected.of(collector4);
+        val collected5 = IntCollected.of(collector5);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -176,12 +176,12 @@ public interface IntStreamPlusWithCalculate {
                             IntCollectorPlus<ACCUMULATED4, RESULT4> collector4,
                             IntCollectorPlus<ACCUMULATED5, RESULT5> collector5,
                             IntCollectorPlus<ACCUMULATED6, RESULT6> collector6) {
-        val collected1 = new Collected.ByCollectedInt<>(collector1);
-        val collected2 = new Collected.ByCollectedInt<>(collector2);
-        val collected3 = new Collected.ByCollectedInt<>(collector3);
-        val collected4 = new Collected.ByCollectedInt<>(collector4);
-        val collected5 = new Collected.ByCollectedInt<>(collector5);
-        val collected6 = new Collected.ByCollectedInt<>(collector6);
+        val collected1 = IntCollected.of(collector1);
+        val collected2 = IntCollected.of(collector2);
+        val collected3 = IntCollected.of(collector3);
+        val collected4 = IntCollected.of(collector4);
+        val collected5 = IntCollected.of(collector5);
+        val collected6 = IntCollected.of(collector6);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);

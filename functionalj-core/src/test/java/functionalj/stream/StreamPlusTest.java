@@ -915,14 +915,6 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testCalculate_of() {
-        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sum = new Sum();
-        CollectorPlus<String, int[], Integer> of = sum.of(theString.length());
-        assertEquals(18, stream.calculate(of).intValue());
-    }
-    
-    @Test
     public void testPrependWith() {
         assertAsString("[One, Two, Three, Four]",
                 streamOf("Three", "Four")

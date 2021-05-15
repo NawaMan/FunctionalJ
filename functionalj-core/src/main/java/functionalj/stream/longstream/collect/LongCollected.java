@@ -23,6 +23,11 @@
 // ============================================================================
 package functionalj.stream.longstream.collect;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.Objects;
+import java.util.stream.Collector;
+
 import functionalj.list.longlist.AsLongFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.longstream.LongStreamPlus;
@@ -32,6 +37,43 @@ import lombok.val;
 
 public interface LongCollected<ACCUMULATED, RESULT> 
                     extends Collected<Long, ACCUMULATED, RESULT> {
+    
+    @SuppressWarnings("unchecked")
+    public static <A, R> LongCollected<A, R> of(
+            AsLongFuncList         funcList,
+            LongStreamProcessor<R> processor) {
+        Objects.requireNonNull(processor);
+        if (processor instanceof Collector)
+            return new LongCollected.ByCollector<>(((LongCollectorPlus<A, R>)processor));
+        
+        Objects.requireNonNull(funcList);
+        return new LongCollected.ByStreamProcessor<A, R>(funcList, processor);
+    }
+    
+    public static <A, R> LongCollected<A, R> of(
+            LongCollectorPlus<A, R> collector) {
+        requireNonNull(collector);
+        return new LongCollected.ByCollector<>(collector);
+    }
+    
+    public static <A> LongCollectedToInt<A> of(
+            LongCollectorToIntPlus<A> collector) {
+        requireNonNull(collector);
+        return new LongCollectedToInt.ByCollector<>(collector);
+    }
+    
+    public static <A> LongCollectedToLong<A> of(
+            LongCollectorToLongPlus<A> collector) {
+        requireNonNull(collector);
+        return new LongCollectedToLong.ByCollector<>(collector);
+    }
+    
+    public static <A> LongCollectedToDouble<A> of(
+            LongCollectorToDoublePlus<A> collector) {
+        requireNonNull(collector);
+        return new LongCollectedToDouble.ByCollector<>(collector);
+    }
+    
     
     public void   accumulate(long each);
     public RESULT finish();

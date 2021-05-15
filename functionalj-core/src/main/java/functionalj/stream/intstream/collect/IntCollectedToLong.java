@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream.intstream.collect;
 
+import java.util.function.ObjIntConsumer;
+
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -52,7 +54,7 @@ public interface IntCollectedToLong<ACCUMULATED>
                 IntCollectedToLong<ACCUMULATED> {
         
         private final IntCollectorToLongPlus<ACCUMULATED> collector;
-        private final IntAccumulator<ACCUMULATED>         accumulator;
+        private final ObjIntConsumer<ACCUMULATED>         accumulator;
         private final ACCUMULATED                         accumulated;
         
         public ByCollector(IntCollectorToLongPlus<ACCUMULATED> collector) {

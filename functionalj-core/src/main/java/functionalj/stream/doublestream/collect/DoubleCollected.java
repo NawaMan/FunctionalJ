@@ -23,6 +23,10 @@
 // ============================================================================
 package functionalj.stream.doublestream.collect;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.stream.Collector;
+
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.doublestream.DoubleStreamPlus;
@@ -32,6 +36,43 @@ import lombok.val;
 
 public interface DoubleCollected<ACCUMULATED, RESULT> 
                     extends Collected<Double, ACCUMULATED, RESULT> {
+    
+    @SuppressWarnings("unchecked")
+    public static <A, R> DoubleCollected<A, R> of(
+            AsDoubleFuncList         funcList,
+            DoubleStreamProcessor<R> processor) {
+        requireNonNull(processor);
+        if (processor instanceof Collector)
+            return new DoubleCollected.ByCollector<>(((DoubleCollectorPlus<A, R>)processor));
+        
+        requireNonNull(funcList);
+        return new DoubleCollected.ByStreamProcessor<A, R>(funcList, processor);
+    }
+    
+    public static <A, R> DoubleCollected<A, R> of(
+            DoubleCollectorPlus<A, R> collector) {
+        requireNonNull(collector);
+        return new DoubleCollected.ByCollector<>(collector);
+    }
+    
+    public static <A> DoubleCollectedToInt<A> of(
+            DoubleCollectorToIntPlus<A> collector) {
+        requireNonNull(collector);
+        return new DoubleCollectedToInt.ByCollector<>(collector);
+    }
+    
+    public static <A> DoubleCollectedToLong<A> of(
+            DoubleCollectorToLongPlus<A> collector) {
+        requireNonNull(collector);
+        return new DoubleCollectedToLong.ByCollector<>(collector);
+    }
+    
+    public static <A> DoubleCollectedToDouble<A> of(
+            DoubleCollectorToDoublePlus<A> collector) {
+        requireNonNull(collector);
+        return new DoubleCollectedToDouble.ByCollector<>(collector);
+    }
+    
     
     public void   accumulate(double each);
     public RESULT finish();

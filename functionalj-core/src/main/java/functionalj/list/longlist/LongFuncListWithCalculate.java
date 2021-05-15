@@ -24,8 +24,8 @@
 package functionalj.list.longlist;
 
 import static functionalj.list.longlist.AsLongFuncListHelper.funcListOf;
-import static functionalj.stream.collect.Collected.CollectedLong.collectedOf;
 
+import functionalj.stream.collect.Collected;
 import functionalj.stream.longstream.LongStreamProcessor;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -41,7 +41,7 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
     public default <A, T> T calculate(
             LongStreamProcessor<T> processor) {
         val funcList  = funcListOf(this);
-        val collected = collectedOf(funcList, processor);
+        val collected = Collected.of(funcList, processor);
         funcList
         .forEach(each -> {
             collected.accumulate(each);
@@ -55,8 +55,8 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
             LongStreamProcessor<T1> processor1,
             LongStreamProcessor<T2> processor2) {
         val funcList   = funcListOf(this);
-        val collected1 = collectedOf(funcList, processor1);
-        val collected2 = collectedOf(funcList, processor2);
+        val collected1 = Collected.of(funcList, processor1);
+        val collected2 = Collected.of(funcList, processor2);
         funcList
         .forEach(each -> {
             collected1.accumulate(each);
@@ -73,9 +73,9 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
             LongStreamProcessor<T2> processor2,
             LongStreamProcessor<T3> processor3) {
         val funcList   = funcListOf(this);
-        val collected1 = collectedOf(funcList, processor1);
-        val collected2 = collectedOf(funcList, processor2);
-        val collected3 = collectedOf(funcList, processor3);
+        val collected1 = Collected.of(funcList, processor1);
+        val collected2 = Collected.of(funcList, processor2);
+        val collected3 = Collected.of(funcList, processor3);
         funcList
         .forEach(each -> {
             collected1.accumulate(each);
@@ -95,10 +95,10 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
             LongStreamProcessor<T3> processor3,
             LongStreamProcessor<T4> processor4) {
         val funcList   = funcListOf(this);
-        val collected1 = collectedOf(funcList, processor1);
-        val collected2 = collectedOf(funcList, processor2);
-        val collected3 = collectedOf(funcList, processor3);
-        val collected4 = collectedOf(funcList, processor4);
+        val collected1 = Collected.of(funcList, processor1);
+        val collected2 = Collected.of(funcList, processor2);
+        val collected3 = Collected.of(funcList, processor3);
+        val collected4 = Collected.of(funcList, processor4);
         funcList
         .forEach(each -> {
             collected1.accumulate(each);
@@ -121,11 +121,11 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
             LongStreamProcessor<T4> processor4,
             LongStreamProcessor<T5> processor5) {
         val funcList   = funcListOf(this);
-        val collected1 = collectedOf(funcList, processor1);
-        val collected2 = collectedOf(funcList, processor2);
-        val collected3 = collectedOf(funcList, processor3);
-        val collected4 = collectedOf(funcList, processor4);
-        val collected5 = collectedOf(funcList, processor5);
+        val collected1 = Collected.of(funcList, processor1);
+        val collected2 = Collected.of(funcList, processor2);
+        val collected3 = Collected.of(funcList, processor3);
+        val collected4 = Collected.of(funcList, processor4);
+        val collected5 = Collected.of(funcList, processor5);
         funcList
         .forEach(each -> {
             collected1.accumulate(each);
@@ -151,12 +151,12 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
             LongStreamProcessor<T5> processor5,
             LongStreamProcessor<T6> processor6) {
         val funcList   = funcListOf(this);
-        val collected1 = collectedOf(funcList, processor1);
-        val collected2 = collectedOf(funcList, processor2);
-        val collected3 = collectedOf(funcList, processor3);
-        val collected4 = collectedOf(funcList, processor4);
-        val collected5 = collectedOf(funcList, processor5);
-        val collected6 = collectedOf(funcList, processor6);
+        val collected1 = Collected.of(funcList, processor1);
+        val collected2 = Collected.of(funcList, processor2);
+        val collected3 = Collected.of(funcList, processor3);
+        val collected4 = Collected.of(funcList, processor4);
+        val collected5 = Collected.of(funcList, processor5);
+        val collected6 = Collected.of(funcList, processor6);
         funcList
         .forEach(each -> {
             collected1.accumulate(each);

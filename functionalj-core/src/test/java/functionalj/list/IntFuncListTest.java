@@ -56,7 +56,6 @@ import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.collect.IntAccumulator;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import lombok.val;
@@ -948,7 +947,7 @@ public class IntFuncListTest {
             return () -> new AtomicInteger();
         }
         @Override
-        public IntAccumulator<AtomicInteger> intAccumulator() {
+        public ObjIntConsumer<AtomicInteger> intAccumulator() {
             return (atomicInt, i) -> {
                 atomicInt.set(atomicInt.get() + i);
             };
@@ -1807,7 +1806,7 @@ public class IntFuncListTest {
     
     static class SumHalf implements IntCollectorPlus<int[], Integer> {
         @Override public Supplier<int[]>          supplier()       { return ()       -> new int[] { 0 }; }
-        @Override public IntAccumulator<int[]>    intAccumulator() { return (a, i)   -> { a[0] += i; }; }
+        @Override public ObjIntConsumer<int[]>    intAccumulator() { return (a, i)   -> { a[0] += i; }; }
         @Override public BinaryOperator<int[]>    combiner()       { return (a1, a2) -> new int[] { a1[0] + a2[0] }; }
         @Override public Function<int[], Integer> finisher()       { return (a)      -> a[0] / 2; }
         
@@ -1817,7 +1816,7 @@ public class IntFuncListTest {
     }
     static class Average implements IntCollectorPlus<int[], Double> {
         @Override public Supplier<int[]>         supplier()       { return ()       -> new int[] { 0, 0 }; }
-        @Override public IntAccumulator<int[]>   intAccumulator() { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
+        @Override public ObjIntConsumer<int[]>   intAccumulator() { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
         @Override public BinaryOperator<int[]>   combiner()       { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
         @Override public Function<int[], Double> finisher()       { return (a)      -> (a[1] == 0) ? null : (1.0*a[0]/a[1]); }
         
@@ -1828,7 +1827,7 @@ public class IntFuncListTest {
     }
     static class MinInt implements IntCollectorPlus<int[], Integer> {
         @Override public Supplier<int[]>          supplier()       { return ()       -> new int[] { 0, 0 }; }
-        @Override public IntAccumulator<int[]>    intAccumulator() { return (a, i)   -> { a[0] = Math.min(i, a[0]); a[1] = 1; }; }
+        @Override public ObjIntConsumer<int[]>    intAccumulator() { return (a, i)   -> { a[0] = Math.min(i, a[0]); a[1] = 1; }; }
         @Override public BinaryOperator<int[]>    combiner()       { return (a1, a2) -> new int[] { Math.min(a1[0], a2[0]), a1[1] + a2[1] }; }
         @Override public Function<int[], Integer> finisher()       { return (a)      -> (a[1] == 0) ? null : (a[0]); }
         
@@ -1839,7 +1838,7 @@ public class IntFuncListTest {
     }
     static class MaxInt implements IntCollectorPlus<int[], Integer> {
         @Override public Supplier<int[]>          supplier()       { return ()       -> new int[] { 0, 0 }; }
-        @Override public IntAccumulator<int[]>    intAccumulator() { return (a, i)   -> { a[0] = Math.max(i, a[0]); a[1] = 1; }; }
+        @Override public ObjIntConsumer<int[]>    intAccumulator() { return (a, i)   -> { a[0] = Math.max(i, a[0]); a[1] = 1; }; }
         @Override public BinaryOperator<int[]>    combiner()       { return (a1, a2) -> new int[] { Math.max(a1[0], a2[0]), a1[1] + a2[1] }; }
         @Override public Function<int[], Integer> finisher()       { return (a)      -> (a[1] == 0) ? null : (a[0]); }
         
@@ -1850,7 +1849,7 @@ public class IntFuncListTest {
     }
     static class SumInt implements IntCollectorToIntPlus<int[]> {
         @Override public Supplier<int[]>       supplier()       { return ()       -> new int[] { 0 }; }
-        @Override public IntAccumulator<int[]> intAccumulator() { return (a, i)   -> { a[0] += i; }; }
+        @Override public ObjIntConsumer<int[]> intAccumulator() { return (a, i)   -> { a[0] += i; }; }
         @Override public BinaryOperator<int[]> combiner()       { return (a1, a2) -> new int[] { a1[0] + a2[0] }; }
         @Override public ToIntFunction<int[]>  finisherAsInt()  { return (a)      -> a[0]; }
         @Override public Integer process(IntStreamPlus stream) {
@@ -1859,7 +1858,7 @@ public class IntFuncListTest {
     }
     static class AvgInt implements IntCollectorPlus<int[], Integer> {
         @Override public Supplier<int[]>          supplier()       { return ()       -> new int[] { 0, 0 }; }
-        @Override public IntAccumulator<int[]>    intAccumulator() { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
+        @Override public ObjIntConsumer<int[]>    intAccumulator() { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
         @Override public BinaryOperator<int[]>    combiner()       { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
         @Override public Function<int[], Integer> finisher()       { return (a)      -> (a[1] == 0) ? null : (a[0]/a[1]); }
         

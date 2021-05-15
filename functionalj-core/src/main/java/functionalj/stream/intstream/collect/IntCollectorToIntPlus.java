@@ -25,6 +25,7 @@ package functionalj.stream.intstream.collect;
 
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
@@ -32,7 +33,7 @@ public interface IntCollectorToIntPlus<ACCUMULATED>
                     extends IntCollectorPlus<ACCUMULATED, Integer> {
     
     public Supplier<ACCUMULATED>       supplier();
-    public IntAccumulator<ACCUMULATED> intAccumulator();
+    public ObjIntConsumer<ACCUMULATED> intAccumulator();
     public BinaryOperator<ACCUMULATED> combiner();
     
     public ToIntFunction<ACCUMULATED> finisherAsInt();

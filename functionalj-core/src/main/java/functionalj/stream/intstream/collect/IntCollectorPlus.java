@@ -28,12 +28,15 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
+import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.intstream.CollectorPlusHelper;
+import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamProcessor;
+import lombok.val;
 
 
 public interface IntCollectorPlus<ACCUMULATED, RESULT>
@@ -42,7 +45,7 @@ public interface IntCollectorPlus<ACCUMULATED, RESULT>
             IntStreamProcessor<RESULT> {
     
     Supplier<ACCUMULATED>         supplier();
-    IntAccumulator<ACCUMULATED>   intAccumulator();
+    ObjIntConsumer<ACCUMULATED>   intAccumulator();
     BinaryOperator<ACCUMULATED>   combiner();
     Function<ACCUMULATED, RESULT> finisher();
     
@@ -55,16 +58,91 @@ public interface IntCollectorPlus<ACCUMULATED, RESULT>
     }
     
     public default BiConsumer<ACCUMULATED, Integer> accumulator() {
-        return intAccumulator();
+        return intAccumulator()::accept;
     }
-//    
-//    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToIntFunction<SOURCE> mapper) {
-//        val collector = new CollectorFromInt<>(this, mapper);
-//        return CollectorPlus.from(collector);
-//    }
+//  
+//  public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToIntFunction<SOURCE> mapper) {
+//      val collector = new CollectorFromInt<>(this, mapper);
+//      return CollectorPlus.from(collector);
+//  }
     
     public default IntCollectorPlus<ACCUMULATED, RESULT> ofInt(IntUnaryOperator mapper) {
-        return new IntCollectorFromInt<>(this, mapper);
+        return new IntCollectorPlus.FromInt<>(this, mapper);
     }
+    
+    // == Implementation ==
+    
+    public static class Impl<ACCUMULATED, RESULT> implements IntCollectorPlus<ACCUMULATED, RESULT> {
+        
+        protected final IntCollectorPlus<ACCUMULATED, RESULT> collector;
+        
+        public Impl(IntCollectorPlus<ACCUMULATED, RESULT> collector) {
+            this.collector = collector;
+        }
+        
+        @Override
+        public RESULT process(IntStreamPlus stream) {
+            return collector.process(stream);
+        }
+        
+        @Override
+        public Supplier<ACCUMULATED> supplier() {
+            return collector.supplier();
+        }
+        
+        @Override
+        public ObjIntConsumer<ACCUMULATED> intAccumulator() {
+            return collector.intAccumulator();
+        }
+        
+        @Override
+        public BinaryOperator<ACCUMULATED> combiner() {
+            return collector.combiner();
+        }
+        
+        @Override
+        public Function<ACCUMULATED, RESULT> finisher() {
+            return collector.finisher();
+        }
+        
+        @Override
+        public Set<Characteristics> characteristics() {
+            return collector.characteristics();
+        }
+        
+    }
+    
+    public static class FromInt<ACCUMULATED, RESULT> 
+            extends IntCollectorPlus.Impl<ACCUMULATED, RESULT> {
+        
+        private final IntUnaryOperator mapper;
+        
+        public FromInt(
+                IntCollectorPlus<ACCUMULATED, RESULT> collector, 
+                IntUnaryOperator                      mapper) {
+            super(collector);
+            this.mapper = mapper;
+        }
+        
+        @Override
+        public ObjIntConsumer<ACCUMULATED> intAccumulator() {
+            val accumulator = collector.accumulator();
+            return (a, s) -> {
+                val d = mapper.applyAsInt(s);
+                accumulator.accept(a, d);
+            };
+        }
+        
+        @Override
+        public BiConsumer<ACCUMULATED, Integer> accumulator() {
+            val accumulator = collector.accumulator();
+            return (a, s) -> {
+                val d = mapper.applyAsInt(s);
+                accumulator.accept(a, d);
+            };
+        }
+        
+    }
+    
 }
 

@@ -24,6 +24,7 @@
 package functionalj.stream.intstream;
 
 import static functionalj.stream.intstream.IntStreamPlusHelper.sequentialToObj;
+import static java.util.stream.StreamSupport.intStream;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,8 @@ import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.collect.Collected;
+import functionalj.stream.intstream.collect.IntCollected;
+import functionalj.stream.intstream.collect.IntCollectedToInt;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import functionalj.stream.markers.Sequential;
@@ -105,26 +107,27 @@ public interface IntStreamPlusWithModify {
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default <ACCUMULATOR> IntStreamPlus accumulate(IntCollectorPlus<ACCUMULATOR, Integer> collector) {
         val splitr      = intStreamPlus().spliterator();
-        val collected   = (collector instanceof IntCollectorToIntPlus)
-                        ? new Collected.ByCollectedIntToInt<ACCUMULATOR>((IntCollectorToIntPlus)collector)
-                        : new Collected.ByCollectedInt<ACCUMULATOR, Integer>(collector);;
+        val isPrimitive = (collector instanceof IntCollectorToIntPlus);
+        val collected   = isPrimitive
+                        ? IntCollected.of((IntCollectorToIntPlus)collector)
+                        : IntCollected.of(collector);
         val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 IntConsumer action = elem -> {
                     collected.accumulate(elem);
-                    if (collector instanceof IntCollectorToIntPlus) {
-                        val acc = ((Collected.ByCollectedIntToInt)collected).finishAsInt();
+                    if (isPrimitive) {
+                        int acc = ((IntCollectedToInt)collected).finishAsInt();
                         consumer.accept(acc);
                     } else {
-                        val acc = collected.finish();
+                        val acc = (Integer)collected.finish();
                         consumer.accept(acc);
                     }
                 };
                 return splitr.tryAdvance(action);
             }
         };
-        return IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
+        return IntStreamPlus.from(intStream(spliterator, false));
     }
     
     /**

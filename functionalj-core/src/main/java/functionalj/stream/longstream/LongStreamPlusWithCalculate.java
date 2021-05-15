@@ -25,7 +25,7 @@ package functionalj.stream.longstream;
 
 import java.util.function.LongConsumer;
 
-import functionalj.stream.collect.Collected;
+import functionalj.stream.longstream.collect.LongCollected;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -37,17 +37,17 @@ import lombok.val;
 
 
 public interface LongStreamPlusWithCalculate {
-
-     public void forEach(LongConsumer action);
-     
-     
-     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
-     //        Still not sure how to do that.
-     
-     /** Perform the calculation using the data of this stream */
+    
+    public void forEach(LongConsumer action);
+    
+    
+    // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
+    //        Still not sure how to do that.
+    
+    /** Perform the calculation using the data of this stream */
     public default <RESULT, ACCUMULATED> RESULT calculate(
             LongCollectorPlus<ACCUMULATED, RESULT> collector) {
-        val collected = new Collected.ByCollectedLong<>(collector);
+        val collected = LongCollected.of(collector);
         forEach(each -> {
             collected.accumulate(each);
         });
@@ -62,8 +62,8 @@ public interface LongStreamPlusWithCalculate {
                         calculate(
                             LongCollectorPlus<ACCUMULATED1, RESULT1> collector1,
                             LongCollectorPlus<ACCUMULATED2, RESULT2> collector2) {
-        val collected1 = new Collected.ByCollectedLong<>(collector1);
-        val collected2 = new Collected.ByCollectedLong<>(collector2);
+        val collected1 = LongCollected.of(collector1);
+        val collected2 = LongCollected.of(collector2);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -83,9 +83,9 @@ public interface LongStreamPlusWithCalculate {
                             LongCollectorPlus<ACCUMULATED1, RESULT1> collector1,
                             LongCollectorPlus<ACCUMULATED2, RESULT2> collector2,
                             LongCollectorPlus<ACCUMULATED3, RESULT3> collector3) {
-        val collected1 = new Collected.ByCollectedLong<>(collector1);
-        val collected2 = new Collected.ByCollectedLong<>(collector2);
-        val collected3 = new Collected.ByCollectedLong<>(collector3);
+        val collected1 = LongCollected.of(collector1);
+        val collected2 = LongCollected.of(collector2);
+        val collected3 = LongCollected.of(collector3);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -109,10 +109,10 @@ public interface LongStreamPlusWithCalculate {
                             LongCollectorPlus<ACCUMULATED2, RESULT2> collector2,
                             LongCollectorPlus<ACCUMULATED3, RESULT3> collector3,
                             LongCollectorPlus<ACCUMULATED4, RESULT4> collector4) {
-        val collected1 = new Collected.ByCollectedLong<>(collector1);
-        val collected2 = new Collected.ByCollectedLong<>(collector2);
-        val collected3 = new Collected.ByCollectedLong<>(collector3);
-        val collected4 = new Collected.ByCollectedLong<>(collector4);
+        val collected1 = LongCollected.of(collector1);
+        val collected2 = LongCollected.of(collector2);
+        val collected3 = LongCollected.of(collector3);
+        val collected4 = LongCollected.of(collector4);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -140,11 +140,11 @@ public interface LongStreamPlusWithCalculate {
                             LongCollectorPlus<ACCUMULATED3, RESULT3> collector3,
                             LongCollectorPlus<ACCUMULATED4, RESULT4> collector4,
                             LongCollectorPlus<ACCUMULATED5, RESULT5> collector5) {
-        val collected1 = new Collected.ByCollectedLong<>(collector1);
-        val collected2 = new Collected.ByCollectedLong<>(collector2);
-        val collected3 = new Collected.ByCollectedLong<>(collector3);
-        val collected4 = new Collected.ByCollectedLong<>(collector4);
-        val collected5 = new Collected.ByCollectedLong<>(collector5);
+        val collected1 = LongCollected.of(collector1);
+        val collected2 = LongCollected.of(collector2);
+        val collected3 = LongCollected.of(collector3);
+        val collected4 = LongCollected.of(collector4);
+        val collected5 = LongCollected.of(collector5);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -176,12 +176,12 @@ public interface LongStreamPlusWithCalculate {
                             LongCollectorPlus<ACCUMULATED4, RESULT4> collector4,
                             LongCollectorPlus<ACCUMULATED5, RESULT5> collector5,
                             LongCollectorPlus<ACCUMULATED6, RESULT6> collector6) {
-        val collected1 = new Collected.ByCollectedLong<>(collector1);
-        val collected2 = new Collected.ByCollectedLong<>(collector2);
-        val collected3 = new Collected.ByCollectedLong<>(collector3);
-        val collected4 = new Collected.ByCollectedLong<>(collector4);
-        val collected5 = new Collected.ByCollectedLong<>(collector5);
-        val collected6 = new Collected.ByCollectedLong<>(collector6);
+        val collected1 = LongCollected.of(collector1);
+        val collected2 = LongCollected.of(collector2);
+        val collected3 = LongCollected.of(collector3);
+        val collected4 = LongCollected.of(collector4);
+        val collected5 = LongCollected.of(collector5);
+        val collected6 = LongCollected.of(collector6);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);

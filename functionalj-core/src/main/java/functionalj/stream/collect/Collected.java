@@ -30,81 +30,22 @@ import java.util.stream.Collector;
 import functionalj.list.AsFuncList;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.intlist.AsIntFuncList;
-import functionalj.list.intlist.IntFuncList;
 import functionalj.list.longlist.AsLongFuncList;
-import functionalj.list.longlist.LongFuncList;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
 import functionalj.stream.doublestream.DoubleStreamProcessor;
-import functionalj.stream.doublestream.collect.DoubleAccumulator;
-import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
+import functionalj.stream.doublestream.collect.DoubleCollected;
 import functionalj.stream.intstream.IntStreamProcessor;
-import functionalj.stream.intstream.collect.IntAccumulator;
-import functionalj.stream.intstream.collect.IntCollectorPlus;
-import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
+import functionalj.stream.intstream.collect.IntCollected;
 import functionalj.stream.longstream.LongStreamProcessor;
-import functionalj.stream.longstream.collect.LongAccumulator;
-import functionalj.stream.longstream.collect.LongCollectorPlus;
+import functionalj.stream.longstream.collect.LongCollected;
 import lombok.val;
 
 
 public interface Collected<DATA, ACCUMULATED, RESULT> {
     
-    public static <D, A, R> Collected<D, A, R> collectedOf(
-            AsFuncList<D>                   funcList,
-            StreamProcessor<? extends D, R> processor) {
-        return of(funcList, processor);
-    }
-    
-    @SuppressWarnings("unchecked")
-    public static <D, A, R> Collected<D, A, R> of(
-            AsFuncList<D>                   funcList,
-            StreamProcessor<? extends D, R> processor) {
-        Objects.requireNonNull(processor);
-        if (processor instanceof Collector)
-            return new ByCollector<D, A, R>(((Collector<D, A, R>)processor));
-        
-        Objects.requireNonNull(funcList);
-        return new ByStreamProcessor<>(funcList, processor);
-    }
-    
     public void   accumulate(DATA each);
     public RESULT finish();
-    
-    
-    @SuppressWarnings("unchecked")
-    public static <A, R> CollectedInt<A, R> ofInt(
-            AsIntFuncList         funcList,
-            IntStreamProcessor<R> processor) {
-        Objects.requireNonNull(processor);
-        if (processor instanceof Collector)
-            return new ByCollectedInt<>(((IntCollectorPlus<A, R>)processor));
-        
-        Objects.requireNonNull(funcList);
-        return new ByIntStreamProcessor<>(funcList, processor);
-    }
-    @SuppressWarnings("unchecked")
-    public static <A, R> CollectedLong<A, R> ofLong(
-            AsLongFuncList         funcList,
-            LongStreamProcessor<R> processor) {
-        Objects.requireNonNull(processor);
-        if (processor instanceof Collector)
-            return new ByCollectedLong<>(((LongCollectorPlus<A, R>)processor));
-        
-        Objects.requireNonNull(funcList);
-        return new ByLongStreamProcessor<>(funcList, processor);
-    }
-    @SuppressWarnings("unchecked")
-    public static <A, R> CollectedDouble<A, R> ofDouble(
-            AsDoubleFuncList         funcList,
-            DoubleStreamProcessor<R> processor) {
-        Objects.requireNonNull(processor);
-        if (processor instanceof Collector)
-            return (CollectedDouble<A, R>) new ByCollectedDouble<A, R>((DoubleCollectorPlus<A, R>) processor);
-        
-        Objects.requireNonNull(funcList);
-        return new ByDoubleStreamProcessor<A, R>(funcList, processor);
-    }
     
     
     public static class ByCollector<DATA, ACCUMULATED, RESULT>
@@ -160,217 +101,254 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         }
     }
     
-    public static interface CollectedInt<ACCUMULATED, RESULT> {
-        
-        public static <A, R> CollectedInt<A, R> collectedOf(
-                IntFuncList         FuncList,
-                IntStreamProcessor<R> processor) {
-            return Collected.ofInt(FuncList, processor);
-        }
-        
-        public void   accumulate(int each);
-        public RESULT finish();
+    
+    public static <D, A, R> Collected<D, A, R> collectedOf(
+            AsFuncList<D>                   funcList,
+            StreamProcessor<? extends D, R> processor) {
+        return of(funcList, processor);
     }
     
-    public static class ByCollectedInt<ACCUMULATED, RESULT>
-                    implements CollectedInt<ACCUMULATED, RESULT> {
+    @SuppressWarnings("unchecked")
+    public static <D, A, R> Collected<D, A, R> of(
+            AsFuncList<D>                   funcList,
+            StreamProcessor<? extends D, R> processor) {
+        Objects.requireNonNull(processor);
+        if (processor instanceof Collector)
+            return new ByCollector<D, A, R>(((Collector<D, A, R>)processor));
         
-        final IntCollectorPlus<ACCUMULATED, RESULT> collector;
-        final IntAccumulator<ACCUMULATED>           accumulator;
-        final ACCUMULATED                           accumulated;
-        
-        public ByCollectedInt(IntCollectorPlus<ACCUMULATED, RESULT> collector) {
-            this.collector   = collector;
-            this.accumulated 
-                    = collector
-                    .supplier()
-                    .get();
-            this.accumulator 
-                    = collector
-                    .intAccumulator();
-        }
-        
-        public void accumulate(int each) {
-            accumulator.accept(accumulated, each);
-        }
-        
-        public RESULT finish() {
-            val finisher = collector.finisher();
-            return finisher.apply(accumulated);
-        }
-        
+        Objects.requireNonNull(funcList);
+        return new ByStreamProcessor<>(funcList, processor);
     }
     
-    public static class ByCollectedIntToInt<ACCUMULATED> extends ByCollectedInt<ACCUMULATED, Integer> {
-        
-        public ByCollectedIntToInt(IntCollectorToIntPlus<ACCUMULATED> collector) {
-            super(collector);
-        }
-        
-        public void accumulate(int each) {
-            accumulator.accept(accumulated, each);
-        }
-        
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        public int finishAsInt() {
-            val finisher = ((IntCollectorToIntPlus)collector).finisherAsInt();
-            return finisher.applyAsInt(accumulated);
-        }
-        
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        public Integer finish() {
-            val finisher = ((IntCollectorToIntPlus)collector).finisherAsInt();
-            return finisher.applyAsInt(accumulated);
-        }
-        
+    public static <A, R> IntCollected<A, R> of(
+            AsIntFuncList         funcList,
+            IntStreamProcessor<R> processor) {
+        return IntCollected.of(funcList, processor);
     }
     
-    public static class ByIntStreamProcessor<ACCUMULATED, RESULT>
-                    implements CollectedInt<ACCUMULATED, RESULT> {
-        
-        private final IntStreamProcessor<RESULT> processor;
-        private final AsIntFuncList              funcList;
-        
-        public ByIntStreamProcessor(
-                AsIntFuncList              funcList,
-                IntStreamProcessor<RESULT> processor) {
-            this.processor = processor;
-            this.funcList  = funcList;
-        }
-        
-        public void accumulate(int each) {
-        }
-        
-        public RESULT finish() {
-            val intStream = funcList.intStreamPlus();
-            return processor.process(intStream);
-        }
+    public static <A, R> LongCollected<A, R> of(
+            AsLongFuncList         funcList,
+            LongStreamProcessor<R> processor) {
+        return LongCollected.of(funcList, processor);
     }
     
-    //-- Long --
-    
-    public static interface CollectedLong<ACCUMULATED, RESULT> {
-        
-        public static <A, R> CollectedLong<A, R> collectedOf(
-                LongFuncList         FuncList,
-                LongStreamProcessor<R> processor) {
-            return Collected.ofLong(FuncList, processor);
-        }
-        
-        public void   accumulate(long each);
-        public RESULT finish();
+    public static <A, R> DoubleCollected<A, R> of(
+            AsDoubleFuncList         funcList,
+            DoubleStreamProcessor<R> processor) {
+        return DoubleCollected.of(funcList, processor);
     }
     
-    public static class ByCollectedLong<ACCUMULATED, RESULT>
-                    implements CollectedLong<ACCUMULATED, RESULT> {
-        
-        private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
-        private final LongAccumulator<ACCUMULATED>           accumulator;
-        private final ACCUMULATED                            accumulated;
-        
-        public ByCollectedLong(LongCollectorPlus<ACCUMULATED, RESULT> collector) {
-            this.collector   = collector;
-            this.accumulated 
-                    = collector
-                    .supplier()
-                    .get();
-            this.accumulator 
-                    = collector
-                    .longAccumulator();
-        }
-        
-        public void accumulate(long each) {
-            accumulator.accept(accumulated, each);
-        }
-        
-        public RESULT finish() {
-            val finisher = collector.finisher();
-            return finisher.apply(accumulated);
-        }
-        
-    }
-    
-    public static class ByLongStreamProcessor<ACCUMULATED, RESULT>
-                    implements CollectedLong<ACCUMULATED, RESULT> {
-        
-        private final LongStreamProcessor<RESULT> processor;
-        private final AsLongFuncList              funcList;
-        
-        public ByLongStreamProcessor(
-                AsLongFuncList              funcList,
-                LongStreamProcessor<RESULT> processor) {
-            this.processor = processor;
-            this.funcList  = funcList;
-        }
-        
-        public void accumulate(long each) {
-        }
-        
-        public RESULT finish() {
-            val intStream = funcList.longStreamPlus();
-            return processor.process(intStream);
-        }
-    }
-    
-    //-- Doouble --
-    
-    public static interface CollectedDouble<ACCUMULATED, RESULT> {
-        
-        public static <A, R> CollectedDouble<A, R> collectedOf(
-                AsDoubleFuncList         funcList,
-                DoubleStreamProcessor<R> processor) {
-            return Collected.ofDouble(funcList, processor);
-        }
-        
-        public void   accumulate(double each);
-        public RESULT finish();
-    }
-    
-    public static class ByCollectedDouble<ACCUMULATED, RESULT>
-                            implements CollectedDouble<ACCUMULATED, RESULT> {
-        
-        private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
-        private final DoubleAccumulator<ACCUMULATED>           accumulator;
-        private final ACCUMULATED                              accumulated;
-        
-        public ByCollectedDouble(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
-            this.collector   = collector;
-            this.accumulated = collector.supplier().get();
-            this.accumulator = collector.doubleAccumulator();
-        }
-        
-        public void accumulate(double each) {
-            accumulator.accept(accumulated, each);
-        }
-        
-        public RESULT finish() {
-            val finisher = collector.finisher();
-            return finisher.apply(accumulated);
-        }
-        
-    }
-    
-    public static class ByDoubleStreamProcessor<ACCUMULATED, RESULT>
-                    implements CollectedDouble<ACCUMULATED, RESULT> {
-        
-        private final DoubleStreamProcessor<RESULT> processor;
-        private final AsDoubleFuncList              funcList;
-        
-        public ByDoubleStreamProcessor(
-                AsDoubleFuncList              stream,
-                DoubleStreamProcessor<RESULT> processor) {
-            this.processor = processor;
-            this.funcList  = stream;
-        }
-        
-        public void accumulate(double each) {
-        }
-        
-        public RESULT finish() {
-           val doubleStream = funcList.doubleStreamPlus();
-            return processor.process(doubleStream);
-        }
-    }
+//    public static interface CollectedInt<ACCUMULATED, RESULT> {
+//        
+//        public static <A, R> CollectedInt<A, R> collectedOf(
+//                IntFuncList         FuncList,
+//                IntStreamProcessor<R> processor) {
+//            return Collected.ofInt(FuncList, processor);
+//        }
+//        
+//        public void   accumulate(int each);
+//        public RESULT finish();
+//    }
+//    
+//    public static class ByCollectedInt<ACCUMULATED, RESULT>
+//                    implements CollectedInt<ACCUMULATED, RESULT> {
+//        
+//        final IntCollectorPlus<ACCUMULATED, RESULT> collector;
+//        final IntAccumulator<ACCUMULATED>           accumulator;
+//        final ACCUMULATED                           accumulated;
+//        
+//        public ByCollectedInt(IntCollectorPlus<ACCUMULATED, RESULT> collector) {
+//            this.collector   = collector;
+//            this.accumulated 
+//                    = collector
+//                    .supplier()
+//                    .get();
+//            this.accumulator 
+//                    = collector
+//                    .intAccumulator();
+//        }
+//        
+//        public void accumulate(int each) {
+//            accumulator.accept(accumulated, each);
+//        }
+//        
+//        public RESULT finish() {
+//            val finisher = collector.finisher();
+//            return finisher.apply(accumulated);
+//        }
+//        
+//    }
+//    
+//    public static class ByCollectedIntToInt<ACCUMULATED> extends ByCollectedInt<ACCUMULATED, Integer> {
+//        
+//        public ByCollectedIntToInt(IntCollectorToIntPlus<ACCUMULATED> collector) {
+//            super(collector);
+//        }
+//        
+//        public void accumulate(int each) {
+//            accumulator.accept(accumulated, each);
+//        }
+//        
+//        @SuppressWarnings({ "rawtypes", "unchecked" })
+//        public int finishAsInt() {
+//            val finisher = ((IntCollectorToIntPlus)collector).finisherAsInt();
+//            return finisher.applyAsInt(accumulated);
+//        }
+//        
+//        @SuppressWarnings({ "rawtypes", "unchecked" })
+//        public Integer finish() {
+//            val finisher = ((IntCollectorToIntPlus)collector).finisherAsInt();
+//            return finisher.applyAsInt(accumulated);
+//        }
+//        
+//    }
+//    
+//    public static class ByIntStreamProcessor<ACCUMULATED, RESULT>
+//                    implements CollectedInt<ACCUMULATED, RESULT> {
+//        
+//        private final IntStreamProcessor<RESULT> processor;
+//        private final AsIntFuncList              funcList;
+//        
+//        public ByIntStreamProcessor(
+//                AsIntFuncList              funcList,
+//                IntStreamProcessor<RESULT> processor) {
+//            this.processor = processor;
+//            this.funcList  = funcList;
+//        }
+//        
+//        public void accumulate(int each) {
+//        }
+//        
+//        public RESULT finish() {
+//            val intStream = funcList.intStreamPlus();
+//            return processor.process(intStream);
+//        }
+//    }
+//    
+//    //-- Long --
+//    
+//    public static interface CollectedLong<ACCUMULATED, RESULT> {
+//        
+//        public static <A, R> CollectedLong<A, R> collectedOf(
+//                LongFuncList         FuncList,
+//                LongStreamProcessor<R> processor) {
+//            return Collected.ofLong(FuncList, processor);
+//        }
+//        
+//        public void   accumulate(long each);
+//        public RESULT finish();
+//    }
+//    
+//    public static class ByCollectedLong<ACCUMULATED, RESULT>
+//                    implements CollectedLong<ACCUMULATED, RESULT> {
+//        
+//        private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
+//        private final LongAccumulator<ACCUMULATED>           accumulator;
+//        private final ACCUMULATED                            accumulated;
+//        
+//        public ByCollectedLong(LongCollectorPlus<ACCUMULATED, RESULT> collector) {
+//            this.collector   = collector;
+//            this.accumulated 
+//                    = collector
+//                    .supplier()
+//                    .get();
+//            this.accumulator 
+//                    = collector
+//                    .longAccumulator();
+//        }
+//        
+//        public void accumulate(long each) {
+//            accumulator.accept(accumulated, each);
+//        }
+//        
+//        public RESULT finish() {
+//            val finisher = collector.finisher();
+//            return finisher.apply(accumulated);
+//        }
+//        
+//    }
+//    
+//    public static class ByLongStreamProcessor<ACCUMULATED, RESULT>
+//                    implements CollectedLong<ACCUMULATED, RESULT> {
+//        
+//        private final LongStreamProcessor<RESULT> processor;
+//        private final AsLongFuncList              funcList;
+//        
+//        public ByLongStreamProcessor(
+//                AsLongFuncList              funcList,
+//                LongStreamProcessor<RESULT> processor) {
+//            this.processor = processor;
+//            this.funcList  = funcList;
+//        }
+//        
+//        public void accumulate(long each) {
+//        }
+//        
+//        public RESULT finish() {
+//            val intStream = funcList.longStreamPlus();
+//            return processor.process(intStream);
+//        }
+//    }
+//    
+//    //-- Double --
+//    
+//    public static interface CollectedDouble<ACCUMULATED, RESULT> {
+//        
+//        public static <A, R> CollectedDouble<A, R> collectedOf(
+//                AsDoubleFuncList         funcList,
+//                DoubleStreamProcessor<R> processor) {
+//            return Collected.ofDouble(funcList, processor);
+//        }
+//        
+//        public void   accumulate(double each);
+//        public RESULT finish();
+//    }
+//    
+//    public static class ByCollectedDouble<ACCUMULATED, RESULT>
+//                            implements CollectedDouble<ACCUMULATED, RESULT> {
+//        
+//        private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
+//        private final DoubleAccumulator<ACCUMULATED>           accumulator;
+//        private final ACCUMULATED                              accumulated;
+//        
+//        public ByCollectedDouble(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
+//            this.collector   = collector;
+//            this.accumulated = collector.supplier().get();
+//            this.accumulator = collector.doubleAccumulator();
+//        }
+//        
+//        public void accumulate(double each) {
+//            accumulator.accept(accumulated, each);
+//        }
+//        
+//        public RESULT finish() {
+//            val finisher = collector.finisher();
+//            return finisher.apply(accumulated);
+//        }
+//        
+//    }
+//    
+//    public static class ByDoubleStreamProcessor<ACCUMULATED, RESULT>
+//                    implements CollectedDouble<ACCUMULATED, RESULT> {
+//        
+//        private final DoubleStreamProcessor<RESULT> processor;
+//        private final AsDoubleFuncList              funcList;
+//        
+//        public ByDoubleStreamProcessor(
+//                AsDoubleFuncList              stream,
+//                DoubleStreamProcessor<RESULT> processor) {
+//            this.processor = processor;
+//            this.funcList  = stream;
+//        }
+//        
+//        public void accumulate(double each) {
+//        }
+//        
+//        public RESULT finish() {
+//           val doubleStream = funcList.doubleStreamPlus();
+//            return processor.process(doubleStream);
+//        }
+//    }
     
 }
 
