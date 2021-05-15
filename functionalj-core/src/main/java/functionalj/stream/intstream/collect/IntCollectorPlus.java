@@ -150,17 +150,17 @@ class IntCollectorPlusBacked<ACCUMULATED, RESULT> {
     }
     
 }
-    
+
 class IntCollectorPlusFrom<SOURCE, ACCUMULATED, RESULT> 
         extends IntCollectorPlusBacked<ACCUMULATED, RESULT>
         implements
             CollectorPlus<SOURCE, ACCUMULATED, RESULT>,
-            StreamProcessor<SOURCE, RESULT>{
+            StreamProcessor<SOURCE, RESULT> {
     
     private final ToIntFunction<SOURCE> mapper;
     
     public IntCollectorPlusFrom(
-            IntCollectorPlus<ACCUMULATED, RESULT> collector, 
+            IntCollectorPlus<ACCUMULATED, RESULT> collector,
             ToIntFunction<SOURCE>                 mapper) {
         super(collector);
         this.mapper = mapper;
@@ -186,7 +186,7 @@ class IntCollectorPlusFrom<SOURCE, ACCUMULATED, RESULT>
     }
     
 }
-    
+
 class IntCollectorPlusFromInt<ACCUMULATED, RESULT> 
         extends IntCollectorPlusBacked<ACCUMULATED, RESULT>
         implements IntCollectorPlus<ACCUMULATED, RESULT> {
@@ -194,7 +194,7 @@ class IntCollectorPlusFromInt<ACCUMULATED, RESULT>
     private final IntUnaryOperator mapper;
     
     public IntCollectorPlusFromInt(
-            IntCollectorPlus<ACCUMULATED, RESULT> collector, 
+            IntCollectorPlus<ACCUMULATED, RESULT> collector,
             IntUnaryOperator                      mapper) {
         super(collector);
         this.mapper = mapper;
@@ -220,11 +220,10 @@ class IntCollectorPlusFromInt<ACCUMULATED, RESULT>
     
     @Override
     public RESULT process(IntStreamPlus stream) {
-        return intCollector.process(stream);
+        return intCollector.process(stream.map(mapper));
     }
-    
 }
-    
+
 class IntCollectorPlusFromLong<ACCUMULATED, RESULT>
         extends IntCollectorPlusBacked<ACCUMULATED, RESULT>
         implements LongCollectorPlus<ACCUMULATED, RESULT> {
@@ -235,23 +234,33 @@ class IntCollectorPlusFromLong<ACCUMULATED, RESULT>
             IntCollectorPlus<ACCUMULATED, RESULT> intCollector, 
             LongToIntFunction                     mapper) {
         super(intCollector);
-        this.mapper       = mapper;
+        this.mapper = mapper;
+    }
+    
+    @Override
+    public ObjLongConsumer<ACCUMULATED> longAccumulator() {
+        val accumulator = intCollector.accumulator();
+        return (a, l) -> {
+            val i = mapper.applyAsInt(l);
+            accumulator.accept(a, i);
+        };
+    }
+    
+    @Override
+    public BiConsumer<ACCUMULATED, Long> accumulator() {
+        val accumulator = intCollector.accumulator();
+        return (a, s) -> {
+            val d = mapper.applyAsInt(s);
+            accumulator.accept(a, d);
+        };
     }
     
     @Override
     public RESULT process(LongStreamPlus stream) {
         return intCollector.process(stream.mapToInt(mapper));
     }
-    
-    @Override
-    public ObjLongConsumer<ACCUMULATED> longAccumulator() {
-        return (a, l) -> {
-            val i = mapper.applyAsInt(l);
-            intCollector.intAccumulator().accept(a, i);
-        };
-    }
 }
-    
+
 class IntCollectorPlusFromDouble<ACCUMULATED, RESULT> 
         extends IntCollectorPlusBacked<ACCUMULATED, RESULT>
         implements DoubleCollectorPlus<ACCUMULATED, RESULT> {
@@ -266,17 +275,26 @@ class IntCollectorPlusFromDouble<ACCUMULATED, RESULT>
     }
     
     @Override
+    public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator() {
+        val accumulator = intCollector.accumulator();
+        return (a, l) -> {
+            val i = mapper.applyAsInt(l);
+            accumulator.accept(a, i);
+        };
+    }
+    
+    @Override
+    public BiConsumer<ACCUMULATED, Double> accumulator() {
+        val accumulator = intCollector.accumulator();
+        return (a, s) -> {
+            val d = mapper.applyAsInt(s);
+            accumulator.accept(a, d);
+        };
+    }
+    
+    @Override
     public RESULT process(DoubleStreamPlus stream) {
         return intCollector.process(stream.mapToInt(mapper));
     }
     
-    @Override
-    public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator() {
-        return (a, l) -> {
-            val i = mapper.applyAsInt(l);
-            intCollector.intAccumulator().accept(a, i);
-        };
-    }
-    
 }
-
