@@ -10,9 +10,10 @@ import java.util.stream.Collector.Characteristics;
 
 public class CollectorPlusHelper {
     
-    private static final Set<Characteristics> characteristics = unmodifiableSet(EnumSet.of(CONCURRENT, UNORDERED));
+    private static final Set<Characteristics> unorderedConcurrent = unmodifiableSet(EnumSet.of(UNORDERED, CONCURRENT));
     
-    public static Set<Characteristics> characteristics() {
-        return characteristics;
+    public static Set<Characteristics> unorderedConcurrent() {
+        return unorderedConcurrent;
     }
+    
 }

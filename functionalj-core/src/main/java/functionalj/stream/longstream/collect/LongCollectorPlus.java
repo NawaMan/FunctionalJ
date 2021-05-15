@@ -28,6 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
+import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
@@ -42,12 +43,12 @@ public interface LongCollectorPlus<ACCUMULATED, RESULT>
             LongStreamProcessor<RESULT> {
     
     Supplier<ACCUMULATED>         supplier();
-    LongAccumulator<ACCUMULATED>  longAccumulator();
+    ObjLongConsumer<ACCUMULATED>  longAccumulator();
     BinaryOperator<ACCUMULATED>   combiner();
     Function<ACCUMULATED, RESULT> finisher();
     
     public default Set<Characteristics> characteristics() {
-        return CollectorPlusHelper.characteristics();
+        return CollectorPlusHelper.unorderedConcurrent();
     }
     
     public default Collector<Long, ACCUMULATED, RESULT> collector() {
@@ -55,7 +56,7 @@ public interface LongCollectorPlus<ACCUMULATED, RESULT>
     }
     
     public default BiConsumer<ACCUMULATED, Long> accumulator() {
-        return longAccumulator();
+        return longAccumulator()::accept;
     }
 //    
 //    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToIntFunction<SOURCE> mapper) {

@@ -28,6 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
+import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 
 import functionalj.stream.longstream.LongStreamPlus;
@@ -50,7 +51,7 @@ public class LongCollectorFromLong<ACCUMULATED, RESULT>
     }
     
     @Override
-    public LongAccumulator<ACCUMULATED> longAccumulator() {
+    public ObjLongConsumer<ACCUMULATED> longAccumulator() {
         val accumulator = collector.accumulator();
         return (a, s) -> {
             val d = mapper.applyAsLong(s);

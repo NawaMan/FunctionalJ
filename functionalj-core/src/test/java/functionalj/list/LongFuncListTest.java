@@ -1,7 +1,7 @@
 package functionalj.list;
 
-import static functionalj.lens.Access.theDouble;
 import static functionalj.TestHelper.assertAsString;
+import static functionalj.lens.Access.theDouble;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theLong;
 import static functionalj.ref.Run.With;
@@ -60,7 +60,6 @@ import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.collect.LongAccumulator;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
 
@@ -951,7 +950,7 @@ public class LongFuncListTest {
             return () -> new AtomicLong();
         }
         @Override
-        public LongAccumulator<AtomicLong> longAccumulator() {
+        public ObjLongConsumer<AtomicLong> longAccumulator() {
             return (atomicLong, i) -> {
                 atomicLong.set(atomicLong.get() + i);
             };
@@ -1790,7 +1789,7 @@ public class LongFuncListTest {
     static class SumHalf implements LongCollectorPlus<long[], Long> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         @Override public Supplier<long[]>              supplier()                     { return ()       -> new long[] { 0 }; }
-        @Override public LongAccumulator<long[]>       longAccumulator()              { return (a, i)   -> { a[0] += i; }; }
+        @Override public ObjLongConsumer<long[]>       longAccumulator()              { return (a, i)   -> { a[0] += i; }; }
         @Override public BinaryOperator<long[]>        combiner()                     { return (a1, a2) -> new long[] { a1[0] + a2[0] }; }
         @Override public Function<long[], Long>        finisher()                     { return (a)      -> a[0] / 2; }
         @Override public Set<Characteristics>          characteristics()              { return characteristics; }
@@ -1800,7 +1799,7 @@ public class LongFuncListTest {
     static class Average implements LongCollectorPlus<long[], OptionalDouble> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         @Override public Supplier<long[]>                        supplier()                     { return ()       -> new long[] { 0, 0 }; }
-        @Override public LongAccumulator<long[]>                 longAccumulator()              { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
+        @Override public ObjLongConsumer<long[]>                 longAccumulator()              { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
         @Override public BinaryOperator<long[]>                  combiner()                     { return (a1, a2) -> new long[] { a1[0] + a2[0], a1[1] + a2[1] }; }
         @Override public Function<long[], OptionalDouble>        finisher()                     { return (a)      -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]); }
         @Override public Set<Characteristics>                    characteristics()              { return characteristics; }
@@ -1810,7 +1809,7 @@ public class LongFuncListTest {
     static class MinLong implements LongCollectorPlus<long[], OptionalLong> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         @Override public Supplier<long[]>                      supplier()                     { return ()       -> new long[] { 0, 0 }; }
-        @Override public LongAccumulator<long[]>               longAccumulator()              { return (a, i)   -> { a[0] = Math.min(i, a[0]); a[1] = 1; }; }
+        @Override public ObjLongConsumer<long[]>               longAccumulator()              { return (a, i)   -> { a[0] = Math.min(i, a[0]); a[1] = 1; }; }
         @Override public BinaryOperator<long[]>                combiner()                     { return (a1, a2) -> new long[] { Math.min(a1[0], a2[0]), a1[1] + a2[1] }; }
         @Override public Function<long[], OptionalLong>        finisher()                     { return (a)      -> (a[1] == 0) ? OptionalLong.empty() : OptionalLong.of(a[0]); }
         @Override public Set<Characteristics>                  characteristics()              { return characteristics; }
@@ -1820,7 +1819,7 @@ public class LongFuncListTest {
     static class MaxLong implements LongCollectorPlus<long[], OptionalLong> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         @Override public Supplier<long[]>                      supplier()                     { return ()       -> new long[] { 0, 0 }; }
-        @Override public LongAccumulator<long[]>               longAccumulator()              { return (a, i)   -> { a[0] = Math.max(i, a[0]); a[1] = 1; }; }
+        @Override public ObjLongConsumer<long[]>               longAccumulator()              { return (a, i)   -> { a[0] = Math.max(i, a[0]); a[1] = 1; }; }
         @Override public BinaryOperator<long[]>                combiner()                     { return (a1, a2) -> new long[] { Math.max(a1[0], a2[0]), a1[1] + a2[1] }; }
         @Override public Function<long[], OptionalLong>        finisher()                     { return (a)      -> (a[1] == 0) ? OptionalLong.empty() : OptionalLong.of(a[0]); }
         @Override public Set<Characteristics>                  characteristics()              { return characteristics; }
@@ -1830,7 +1829,7 @@ public class LongFuncListTest {
     static class SumLong implements LongCollectorPlus<long[], Long> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         @Override public Supplier<long[]>              supplier()                     { return ()       -> new long[] { 0 }; }
-        @Override public LongAccumulator<long[]>       longAccumulator()              { return (a, i)   -> { a[0] += i; }; }
+        @Override public ObjLongConsumer<long[]>       longAccumulator()              { return (a, i)   -> { a[0] += i; }; }
         @Override public BinaryOperator<long[]>        combiner()                     { return (a1, a2) -> new long[] { a1[0] + a2[0] }; }
         @Override public Function<long[], Long>        finisher()                     { return (a)      -> a[0]; }
         @Override public Set<Characteristics>          characteristics()              { return characteristics; }
@@ -1840,7 +1839,7 @@ public class LongFuncListTest {
     static class AvgLong implements LongCollectorPlus<long[], OptionalLong> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         @Override public Supplier<long[]>                      supplier()                     { return ()       -> new long[] { 0, 0 }; }
-        @Override public LongAccumulator<long[]>               longAccumulator()              { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
+        @Override public ObjLongConsumer<long[]>               longAccumulator()              { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
         @Override public BinaryOperator<long[]>                combiner()                     { return (a1, a2) -> new long[] { a1[0] + a2[0], a1[1] + a2[1] }; }
         @Override public Function<long[], OptionalLong>        finisher()                     { return (a)      -> (a[1] == 0) ? OptionalLong.empty() : OptionalLong.of(a[0]/a[1]); }
         @Override public Set<Characteristics>                  characteristics()              { return characteristics; }

@@ -26,6 +26,7 @@ package functionalj.stream.longstream.collect;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
+import java.util.function.ObjLongConsumer;
 import java.util.stream.Collector;
 
 import functionalj.list.longlist.AsLongFuncList;
@@ -90,7 +91,7 @@ public interface LongCollected<ACCUMULATED, RESULT>
                 LongCollected<ACCUMULATED, RESULT> {
         
         private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
-        private final LongAccumulator<ACCUMULATED>           accumulator;
+        private final ObjLongConsumer<ACCUMULATED>           accumulator;
         private final ACCUMULATED                            accumulated;
         
         public ByCollector(LongCollectorPlus<ACCUMULATED, RESULT> collector) {

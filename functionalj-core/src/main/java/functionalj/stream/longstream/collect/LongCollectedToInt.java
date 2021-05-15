@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream.longstream.collect;
 
+import java.util.function.ObjLongConsumer;
+
 import functionalj.list.longlist.AsLongFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.longstream.LongStreamPlus;
@@ -52,7 +54,7 @@ public interface LongCollectedToInt<ACCUMULATED>
                 LongCollectedToInt<ACCUMULATED> {
         
         private final LongCollectorToIntPlus<ACCUMULATED> collector;
-        private final LongAccumulator<ACCUMULATED>        accumulator;
+        private final ObjLongConsumer<ACCUMULATED>        accumulator;
         private final ACCUMULATED                         accumulated;
         
         public ByCollector(LongCollectorToIntPlus<ACCUMULATED> collector) {

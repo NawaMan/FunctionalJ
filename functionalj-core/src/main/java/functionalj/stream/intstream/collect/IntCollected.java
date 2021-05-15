@@ -39,6 +39,14 @@ import lombok.val;
 public interface IntCollected<ACCUMULATED, RESULT> 
                     extends Collected<Integer, ACCUMULATED, RESULT> {
     
+    public void   accumulate(int each);
+    public RESULT finish();
+    
+    public default void accumulate(Integer each) {
+        accumulate(each);
+    }
+    
+    
     @SuppressWarnings("unchecked")
     public static <A, R> IntCollected<A, R> of(
             AsIntFuncList         funcList,
@@ -73,14 +81,6 @@ public interface IntCollected<ACCUMULATED, RESULT>
             IntCollectorToDoublePlus<A> collector) {
         requireNonNull(collector);
         return new IntCollectedToDouble.ByCollector<>(collector);
-    }
-    
-    
-    public void   accumulate(int each);
-    public RESULT finish();
-    
-    public default void accumulate(Integer each) {
-        accumulate(each);
     }
     
     //== Implementation ==

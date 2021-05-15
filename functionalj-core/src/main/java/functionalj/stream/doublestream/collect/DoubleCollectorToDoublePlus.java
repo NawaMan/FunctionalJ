@@ -25,6 +25,7 @@ package functionalj.stream.doublestream.collect;
 
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
@@ -32,7 +33,7 @@ public interface DoubleCollectorToDoublePlus<ACCUMULATED>
                     extends DoubleCollectorPlus<ACCUMULATED, Double> {
     
     public Supplier<ACCUMULATED>          supplier();
-    public DoubleAccumulator<ACCUMULATED> doubleAccumulator();
+    public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator();
     public BinaryOperator<ACCUMULATED>    combiner();
     
     public ToDoubleFunction<ACCUMULATED> finisherAsDouble();

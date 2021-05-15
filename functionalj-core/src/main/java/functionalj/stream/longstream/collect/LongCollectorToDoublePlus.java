@@ -25,6 +25,7 @@ package functionalj.stream.longstream.collect;
 
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
@@ -32,7 +33,7 @@ public interface LongCollectorToDoublePlus<ACCUMULATED>
                     extends LongCollectorPlus<ACCUMULATED, Double> {
     
     public Supplier<ACCUMULATED>        supplier();
-    public LongAccumulator<ACCUMULATED> longAccumulator();
+    public ObjLongConsumer<ACCUMULATED> longAccumulator();
     public BinaryOperator<ACCUMULATED>  combiner();
     
     public ToDoubleFunction<ACCUMULATED> finisherAsDouble();

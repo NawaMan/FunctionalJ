@@ -2036,7 +2036,7 @@ public class IntFuncListTest {
             val sum = new Sum();
             // 2*2 + 3*2 + 4*2 + 11*2
             // 4   + 6   + 8   + 22
-            assertAsString("40", list.calculate(sum.ofInt(theInteger.time(2))));
+            assertAsString("40", list.calculate(sum.of(theInteger.time(2))));
         });
     }
     

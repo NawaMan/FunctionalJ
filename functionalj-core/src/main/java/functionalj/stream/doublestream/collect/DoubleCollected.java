@@ -25,6 +25,7 @@ package functionalj.stream.doublestream.collect;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.ObjDoubleConsumer;
 import java.util.stream.Collector;
 
 import functionalj.list.doublelist.AsDoubleFuncList;
@@ -89,7 +90,7 @@ public interface DoubleCollected<ACCUMULATED, RESULT>
                 DoubleCollected<ACCUMULATED, RESULT> {
         
         private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
-        private final DoubleAccumulator<ACCUMULATED>           accumulator;
+        private final ObjDoubleConsumer<ACCUMULATED>           accumulator;
         private final ACCUMULATED                              accumulated;
         
         public ByCollector(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {

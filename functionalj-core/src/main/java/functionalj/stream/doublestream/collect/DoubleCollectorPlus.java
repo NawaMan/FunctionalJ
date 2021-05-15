@@ -28,6 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
@@ -42,12 +43,12 @@ public interface DoubleCollectorPlus<ACCUMULATED, RESULT>
             DoubleStreamProcessor<RESULT> {
     
     Supplier<ACCUMULATED>          supplier();
-    DoubleAccumulator<ACCUMULATED> doubleAccumulator();
+    ObjDoubleConsumer<ACCUMULATED> doubleAccumulator();
     BinaryOperator<ACCUMULATED>    combiner();
     Function<ACCUMULATED, RESULT>  finisher();
     
     public default Set<Characteristics> characteristics() {
-        return CollectorPlusHelper.characteristics();
+        return CollectorPlusHelper.unorderedConcurrent();
     }
     
     public default Collector<Double, ACCUMULATED, RESULT> collector() {
@@ -55,7 +56,7 @@ public interface DoubleCollectorPlus<ACCUMULATED, RESULT>
     }
     
     public default BiConsumer<ACCUMULATED, Double> accumulator() {
-        return doubleAccumulator();
+        return doubleAccumulator()::accept;
     }
 //    
 //    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(Dou<SOURCE> mapper) {

@@ -28,6 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 
 import functionalj.stream.doublestream.DoubleStreamPlus;
@@ -50,7 +51,7 @@ public class DoubleCollectorFromDouble<ACCUMULATED, RESULT>
     }
     
     @Override
-    public DoubleAccumulator<ACCUMULATED> doubleAccumulator() {
+    public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator() {
         val accumulator = collector.accumulator();
         return (a, s) -> {
             val d = mapper.applyAsDouble(s);
