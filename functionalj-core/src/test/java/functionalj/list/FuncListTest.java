@@ -37,6 +37,7 @@ import static functionalj.list.FuncList.newListBuilder;
 import static functionalj.ref.Run.With;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
+import static functionalj.stream.intstream.CollectorPlusHelper.unorderedConcurrent;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
@@ -76,6 +77,7 @@ import org.junit.Test;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
+import functionalj.function.aggregator.Aggregator;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList.Mode;
 import functionalj.list.doublelist.DoubleFuncList;
@@ -1802,6 +1804,27 @@ public class FuncListTest {
         @Override public Collector<Integer, int[], Integer> collector() { return this; }
     }
     
+    static class SumLengthAggregate implements Aggregator<String, Integer> {
+        private CollectorPlus<String, int[], Integer> sumCollector = new CollectorPlus<String, int[], Integer>() {
+            @Override public Supplier<int[]>           supplier()          { return ()->new int[] { 0 }; }
+            @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] += s.length(); }; }
+            @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
+            @Override public Set<Characteristics>      characteristics()   { return unorderedConcurrent(); }
+            @Override public Collector<String, int[], Integer> collector() { return this; }
+            @Override public Function<int[], Integer> finisher()           { return a -> a[0]; }
+            
+            @Override public Integer process(StreamPlus<? extends String> stream) {
+                return stream.mapToInt(String::length).sum();
+            }
+            
+        };
+        
+        @Override
+        public CollectorPlus<String, int[], Integer> collector() {
+            return sumCollector;
+        }
+    }
+    
     @Test
     public void testCalculate() {
         run(FuncList.of(Two, Three, Four, Eleven), list -> {
@@ -1936,6 +1959,16 @@ public class FuncListTest {
         run(FuncList.of(Two, Three, Four, Eleven), list -> {
             val sum = new Sum();
             assertEquals(18, list.calculate(sum.of(theString.length())).intValue());
+        });
+    }
+    
+    //-- Aggregate --
+    
+    @Test
+    public void testAggregator() {
+        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+            val sum = new SumLengthAggregate();
+            assertEquals(18, list.calculate(sum).intValue());
         });
     }
     

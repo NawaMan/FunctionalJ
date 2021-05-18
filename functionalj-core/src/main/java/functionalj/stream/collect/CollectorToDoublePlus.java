@@ -28,7 +28,9 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.ToLongFunction;
+import java.util.function.ToDoubleFunction;
+
+import lombok.val;
 
 public interface CollectorToDoublePlus<DATA, ACCUMULATED> 
                     extends CollectorPlus<DATA, ACCUMULATED, Double> {
@@ -36,8 +38,14 @@ public interface CollectorToDoublePlus<DATA, ACCUMULATED>
     public Supplier<ACCUMULATED>         supplier();
     public BiConsumer<ACCUMULATED, DATA> accumulator();
     public BinaryOperator<ACCUMULATED>   combiner();
-    public ToLongFunction<ACCUMULATED>   finisherToDouble();
-    public Function<ACCUMULATED, Double> finisher();
+    public ToDoubleFunction<ACCUMULATED> finisherToDouble();
     public Set<Characteristics>          characteristics();
+    
+    public default Function<ACCUMULATED, Double> finisher() {
+        val finisherToDouble = finisherToDouble();
+        return accumulated -> {
+            return finisherToDouble.applyAsDouble(accumulated);
+        };
+    }
     
 }

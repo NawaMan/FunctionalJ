@@ -62,7 +62,7 @@ public interface CollectedToDouble<DATA, ACCUMULATED>
         }
         
         public double finishToDouble() {
-            return collector.finisherToDouble().applyAsLong(accumulated);
+            return collector.finisherToDouble().applyAsDouble(accumulated);
         }
         
         @Override

@@ -70,7 +70,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func0;
-import functionalj.function.aggregator.Aggregator;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
@@ -785,15 +784,6 @@ public class StreamPlusTest {
         @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
         @Override public Set<Characteristics>      characteristics()   { return characteristics; }
         @Override public Collector<String, int[], Integer> collector() { return this; }
-    }
-    static class Sum implements Aggregator<Integer, int[], Integer> {
-        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<int[]>            supplier()          { return ()->new int[] { 0 }; }
-        @Override public BiConsumer<int[], Integer> accumulator()       { return (a, e)->{ a[0] += e.intValue(); }; }
-        @Override public BinaryOperator<int[]>      combiner()          { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
-        @Override public Function<int[], Integer>   finisher()          { return a -> a[0]; }
-        @Override public Set<Characteristics>       characteristics()   { return characteristics; }
-        @Override public Collector<Integer, int[], Integer> collector() { return this; }
     }
     
     @Test

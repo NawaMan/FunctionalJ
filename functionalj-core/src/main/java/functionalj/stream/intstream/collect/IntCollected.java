@@ -59,26 +59,22 @@ public interface IntCollected<ACCUMULATED, RESULT>
         return new IntCollected.ByStreamProcessor<A, R>(funcList, processor);
     }
     
-    public static <A, R> IntCollected<A, R> of(
-            IntCollectorPlus<A, R> collector) {
+    public static <A, R> IntCollected<A, R> of(IntCollectorPlus<A, R> collector) {
         requireNonNull(collector);
         return new IntCollected.ByCollector<>(collector);
     }
     
-    public static <A> IntCollectedToInt<A> of(
-            IntCollectorToIntPlus<A> collector) {
+    public static <A> IntCollectedToInt<A> of(IntCollectorToIntPlus<A> collector) {
         requireNonNull(collector);
         return new IntCollectedToInt.ByCollector<>(collector);
     }
     
-    public static <A> IntCollectedToLong<A> of(
-            IntCollectorToLongPlus<A> collector) {
+    public static <A> IntCollectedToLong<A> of(IntCollectorToLongPlus<A> collector) {
         requireNonNull(collector);
         return new IntCollectedToLong.ByCollector<>(collector);
     }
     
-    public static <A> IntCollectedToDouble<A> of(
-            IntCollectorToDoublePlus<A> collector) {
+    public static <A> IntCollectedToDouble<A> of(IntCollectorToDoublePlus<A> collector) {
         requireNonNull(collector);
         return new IntCollectedToDouble.ByCollector<>(collector);
     }

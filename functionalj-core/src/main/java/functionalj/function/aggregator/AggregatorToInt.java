@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,14 +23,29 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.collect.Collected;
-import functionalj.stream.collect.CollectorPlus;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamProcessor;
+import functionalj.stream.collect.CollectorToIntPlus;
+import lombok.val;
 
-public interface AggregatorToInt<DATA, ACCUMULATED, TARGET> 
-                    extends CollectorPlus<DATA, ACCUMULATED, TARGET> {
+@FunctionalInterface
+public interface AggregatorToInt<SOURCE> extends StreamProcessor<SOURCE, Integer> {
     
-    public default Collected<DATA, ACCUMULATED, TARGET> newAccumulator() {
-        return new Collected.ByCollector<>(this);
+    public static <S, A> AggregatorToInt<S> from(CollectorToIntPlus<S, A> collector) {
+        return () -> collector;
+    }
+    
+    public CollectorToIntPlus<SOURCE, ?> collectorToInt();
+    
+    
+    public default Integer process(StreamPlus<? extends SOURCE> stream) {
+        val collector = collectorToInt();
+        return ((StreamProcessor<SOURCE, Integer>)collector).process(stream);
+    }
+    
+    public default AccumulatorToInt<SOURCE> newAccumulatorToInt() {
+        val collector = collectorToInt();
+        return new AccumulatorToInt<>(collector);
     }
     
 }

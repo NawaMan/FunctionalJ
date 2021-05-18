@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,31 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.collect;
+package functionalj.function.aggregator;
 
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.function.ToLongFunction;
-
+import functionalj.stream.longstream.LongStreamPlus;
+import functionalj.stream.longstream.LongStreamProcessor;
+import functionalj.stream.longstream.collect.LongCollectorToDoublePlus;
 import lombok.val;
 
-public interface CollectorToLongPlus<DATA, ACCUMULATED> 
-                    extends CollectorPlus<DATA, ACCUMULATED, Long> {
+@FunctionalInterface
+public interface LongAggregatorToDouble extends LongStreamProcessor<Double> {
     
-    public Supplier<ACCUMULATED>         supplier();
-    public BiConsumer<ACCUMULATED, DATA> accumulator();
-    public BinaryOperator<ACCUMULATED>   combiner();
-    public ToLongFunction<ACCUMULATED>   finisherToLong();
-    public Set<Characteristics>          characteristics();
+    public static <A> LongAggregatorToDouble from(LongCollectorToDoublePlus<A> collector) {
+        return () -> collector;
+    }
     
-    public default Function<ACCUMULATED, Long> finisher() {
-        val finisher = finisherToLong();
-        return accumulated -> {
-            return finisher.applyAsLong(accumulated);
-        };
+    public LongCollectorToDoublePlus<?> collectorToDouble();
+    
+    
+    public default Double process(LongStreamPlus stream) {
+        val collector = collectorToDouble();
+        return ((LongStreamProcessor<Double>)collector).process(stream);
+    }
+    
+    public default LongAccumulatorToDouble newLongAccumulatorToDouble() {
+        val collector = collectorToDouble();
+        return new LongAccumulatorToDouble(collector);
     }
     
 }

@@ -30,6 +30,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
+import lombok.val;
+
 
 public interface CollectorToIntPlus<DATA, ACCUMULATED> 
                     extends CollectorPlus<DATA, ACCUMULATED, Integer> {
@@ -38,7 +40,13 @@ public interface CollectorToIntPlus<DATA, ACCUMULATED>
     public BiConsumer<ACCUMULATED, DATA>  accumulator();
     public BinaryOperator<ACCUMULATED>    combiner();
     public ToIntFunction<ACCUMULATED>     finisherToInt();
-    public Function<ACCUMULATED, Integer> finisher();
     public Set<Characteristics>           characteristics();
+    
+    public default Function<ACCUMULATED, Integer> finisher() {
+        val finisher = finisherToInt();
+        return accumulated -> {
+            return finisher.applyAsInt(accumulated);
+        };
+    }
     
 }
