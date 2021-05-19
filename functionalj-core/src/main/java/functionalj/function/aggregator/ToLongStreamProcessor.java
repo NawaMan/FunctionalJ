@@ -21,30 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.doublestream;
+package functionalj.function.aggregator;
+
+import functionalj.lens.lenses.LongAccess;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.Aggregator;
 
 @FunctionalInterface
-public interface DoubleStreamProcessor<TARGET> extends AsDoubleStreamProcessor<TARGET> {
+public interface ToLongAggregator<DATA> extends Aggregator<DATA, Long>, LongAccess<StreamPlus<DATA>> {
     
-    public TARGET process(DoubleStreamPlus stream);
-    
-    public default DoubleStreamProcessor<TARGET> asDoubleStreamProcessor() {
-        return this::process;
+    @Override
+    public default Long applyUnsafe(StreamPlus<DATA> input) throws Exception {
+        return process(input);
     }
     
+    @Override
+    public default long applyAsLong(StreamPlus<DATA> host) {
+        return apply(host);
+    }
     
-    // TODO - uncomment this
-//    default StreamProcessor<? super Integer, TARGET> ofInteger() {
-//        return of(i -> i);
-//    }
-//    default <SOURCE> StreamProcessor<? super SOURCE, TARGET> of(ToIntFunction<? super SOURCE> mapper) {
-//        return new StreamProcessor<SOURCE, TARGET>() {
-//            @Override
-//            public TARGET process(StreamPlus<SOURCE> stream) {
-//                val dataStream = stream.mapToInt(mapper);
-//                val target     = IntStreamProcessor.this.process(dataStream);
-//                return target;
-//            }
-//        };
-//    }
 }

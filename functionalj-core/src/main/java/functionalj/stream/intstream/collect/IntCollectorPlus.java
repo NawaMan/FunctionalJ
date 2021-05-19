@@ -42,13 +42,13 @@ import functionalj.lens.lenses.DoubleToIntegerAccessPrimitive;
 import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
 import functionalj.lens.lenses.LongToIntegerAccessPrimitive;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
+import functionalj.stream.Aggregator;
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.intstream.CollectorPlusHelper;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
+import functionalj.stream.intstream.IntAggregator;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
@@ -57,7 +57,7 @@ import lombok.val;
 public interface IntCollectorPlus<ACCUMULATED, RESULT>
         extends
             CollectorPlus<Integer, ACCUMULATED, RESULT>,
-            IntStreamProcessor<RESULT> {
+            IntAggregator<RESULT> {
     
     Supplier<ACCUMULATED>         supplier();
     ObjIntConsumer<ACCUMULATED>   intAccumulator();
@@ -155,7 +155,7 @@ class IntCollectorPlusFrom<SOURCE, ACCUMULATED, RESULT>
         extends IntCollectorPlusBacked<ACCUMULATED, RESULT>
         implements
             CollectorPlus<SOURCE, ACCUMULATED, RESULT>,
-            StreamProcessor<SOURCE, RESULT> {
+            Aggregator<SOURCE, RESULT> {
     
     private final ToIntFunction<SOURCE> mapper;
     

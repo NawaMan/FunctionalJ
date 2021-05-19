@@ -31,7 +31,7 @@ import java.util.stream.Collector;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.stream.doublestream.DoubleStreamProcessor;
+import functionalj.stream.doublestream.DoubleAggregator;
 import lombok.val;
 
 
@@ -41,13 +41,13 @@ public interface DoubleCollected<ACCUMULATED, RESULT>
     @SuppressWarnings("unchecked")
     public static <A, R> DoubleCollected<A, R> of(
             AsDoubleFuncList         funcList,
-            DoubleStreamProcessor<R> processor) {
+            DoubleAggregator<R> processor) {
         requireNonNull(processor);
         if (processor instanceof Collector)
             return new DoubleCollected.ByCollector<>(((DoubleCollectorPlus<A, R>)processor));
         
         requireNonNull(funcList);
-        return new DoubleCollected.ByStreamProcessor<A, R>(funcList, processor);
+        return new DoubleCollected.ByAggregator<A, R>(funcList, processor);
     }
     
     public static <A, R> DoubleCollected<A, R> of(
@@ -86,7 +86,7 @@ public interface DoubleCollected<ACCUMULATED, RESULT>
     
     public static class ByCollector<ACCUMULATED, RESULT>
             implements
-                DoubleStreamProcessor<RESULT>,
+                DoubleAggregator<RESULT>,
                 DoubleCollected<ACCUMULATED, RESULT> {
         
         private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
@@ -114,16 +114,16 @@ public interface DoubleCollected<ACCUMULATED, RESULT>
         
     }
     
-    public static class ByStreamProcessor<ACCUMULATED, RESULT>
+    public static class ByAggregator<ACCUMULATED, RESULT>
             implements
                 DoubleCollected<ACCUMULATED, RESULT> {
         
-        private final DoubleStreamProcessor<RESULT> processor;
+        private final DoubleAggregator<RESULT> processor;
         private final AsDoubleFuncList              funcList;
         
-        ByStreamProcessor(
+        ByAggregator(
                 AsDoubleFuncList              funcList,
-                DoubleStreamProcessor<RESULT> processor) {
+                DoubleAggregator<RESULT> processor) {
             this.processor = processor;
             this.funcList  = funcList;
         }

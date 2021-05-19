@@ -27,7 +27,7 @@ import java.util.function.BiConsumer;
 
 import functionalj.list.AsFuncList;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
+import functionalj.stream.Aggregator;
 import lombok.val;
 
 public interface CollectedToInt<DATA, ACCUMULATED>
@@ -44,7 +44,7 @@ public interface CollectedToInt<DATA, ACCUMULATED>
     
     public static class ByCollector<DATA, ACCUMULATED>
             implements
-                StreamProcessor<DATA, Integer>,
+                Aggregator<DATA, Integer>,
                 CollectedToInt<DATA, ACCUMULATED> {
         
         private final CollectorToIntPlus<DATA, ACCUMULATED> collector;
@@ -71,16 +71,16 @@ public interface CollectedToInt<DATA, ACCUMULATED>
         }
     }
     
-    public static class ByStreamProcessor<DATA, ACCUMULATED>
+    public static class ByAggregator<DATA, ACCUMULATED>
             implements
             CollectedToInt<DATA, ACCUMULATED> {
         
-        private final StreamProcessor<? extends DATA, Integer> processor;
+        private final Aggregator<? extends DATA, Integer> processor;
         private final AsFuncList<DATA> funcList;
         
-        ByStreamProcessor(
+        ByAggregator(
                 AsFuncList<DATA>                         funcList,
-                StreamProcessor<? extends DATA, Integer> processor) {
+                Aggregator<? extends DATA, Integer> processor) {
             this.processor = processor;
             this.funcList  = funcList;
         }

@@ -31,6 +31,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+import functionalj.function.aggregator.AsAggregator;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableFuncMap;
@@ -91,10 +92,10 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             Function<? super DATA, KEY>           keyMapper,
-            AsStreamProcessor<? super DATA, VALUE> processor) {
+            AsAggregator<? super DATA, VALUE> processor) {
         FuncMap<KEY, FuncList<? super DATA>> groupingBy = groupingBy(keyMapper);
         return (FuncMap<KEY, VALUE>) groupingBy
-                .mapValue(stream -> stream.calculate((StreamProcessor)processor.asStreamProcessor()));
+                .mapValue(stream -> stream.calculate((Aggregator)processor.asAggregator()));
     }
     
 }

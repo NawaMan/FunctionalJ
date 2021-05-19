@@ -24,12 +24,12 @@
 package functionalj.function.aggregator;
 
 import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
+import functionalj.stream.longstream.LongAggregator;
 import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface LongAggregatorToInt extends LongStreamProcessor<Integer> {
+public interface LongAggregatorToInt extends LongAggregator<Integer> {
     
     public static <A> LongAggregatorToInt from(LongCollectorToIntPlus<A> collector) {
         return () -> collector;
@@ -38,9 +38,15 @@ public interface LongAggregatorToInt extends LongStreamProcessor<Integer> {
     public LongCollectorToIntPlus<?> collectorToInt();
     
     
+    @Override
+    public default LongAggregator<Integer> asLongAggregator() {
+        return this;
+    }
+    
+    @Override
     public default Integer process(LongStreamPlus stream) {
         val collector = collectorToInt();
-        return ((LongStreamProcessor<Integer>)collector).process(stream);
+        return ((LongAggregator<Integer>)collector).process(stream);
     }
     
     public default LongAccumulatorToInt newLongAccumulatorToInt() {

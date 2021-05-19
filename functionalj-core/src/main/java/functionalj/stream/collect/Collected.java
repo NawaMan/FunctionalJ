@@ -34,14 +34,14 @@ import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.longlist.AsLongFuncList;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
-import functionalj.stream.doublestream.DoubleStreamProcessor;
+import functionalj.stream.Aggregator;
+import functionalj.stream.doublestream.DoubleAggregator;
 import functionalj.stream.doublestream.collect.DoubleCollected;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
+import functionalj.stream.intstream.IntAggregator;
 import functionalj.stream.intstream.collect.IntCollected;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
+import functionalj.stream.longstream.LongAggregator;
 import functionalj.stream.longstream.collect.LongCollected;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
@@ -55,7 +55,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     
     public static class ByCollector<DATA, ACCUMULATED, RESULT>
             implements
-                StreamProcessor<DATA, RESULT>,
+                Aggregator<DATA, RESULT>,
                 Collected<DATA, ACCUMULATED, RESULT> {
         
         private final Collector<DATA, ACCUMULATED, RESULT> collector;
@@ -82,16 +82,16 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         }
     }
     
-    public static class ByStreamProcessor<DATA, ACCUMULATED, RESULT>
+    public static class ByAggregator<DATA, ACCUMULATED, RESULT>
             implements
                 Collected<DATA, ACCUMULATED, RESULT> {
         
-        private final StreamProcessor<? extends DATA, RESULT> processor;
+        private final Aggregator<? extends DATA, RESULT> processor;
         private final AsFuncList<DATA> funcList;
         
-        ByStreamProcessor(
+        ByAggregator(
                 AsFuncList<DATA>                        funcList,
-                StreamProcessor<? extends DATA, RESULT> processor) {
+                Aggregator<? extends DATA, RESULT> processor) {
             this.processor = processor;
             this.funcList  = funcList;
         }
@@ -109,37 +109,37 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     
     public static <D, A, R> Collected<D, A, R> collectedOf(
             AsFuncList<D>                   funcList,
-            StreamProcessor<? extends D, R> processor) {
+            Aggregator<? extends D, R> processor) {
         return of(funcList, processor);
     }
     
     @SuppressWarnings("unchecked")
     public static <D, A, R> Collected<D, A, R> of(
             AsFuncList<D>                   funcList,
-            StreamProcessor<? extends D, R> processor) {
+            Aggregator<? extends D, R> processor) {
         Objects.requireNonNull(processor);
         if (processor instanceof Collector)
             return new ByCollector<D, A, R>(((Collector<D, A, R>)processor));
         
         Objects.requireNonNull(funcList);
-        return new ByStreamProcessor<>(funcList, processor);
+        return new ByAggregator<>(funcList, processor);
     }
     
     public static <A, R> IntCollected<A, R> of(
             AsIntFuncList         funcList,
-            IntStreamProcessor<R> processor) {
+            IntAggregator<R> processor) {
         return IntCollected.of(funcList, processor);
     }
     
     public static <A, R> LongCollected<A, R> of(
             AsLongFuncList         funcList,
-            LongStreamProcessor<R> processor) {
+            LongAggregator<R> processor) {
         return LongCollected.of(funcList, processor);
     }
     
     public static <A, R> DoubleCollected<A, R> of(
             AsDoubleFuncList         funcList,
-            DoubleStreamProcessor<R> processor) {
+            DoubleAggregator<R> processor) {
         return DoubleCollected.of(funcList, processor);
     }
     

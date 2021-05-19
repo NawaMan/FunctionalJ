@@ -32,7 +32,7 @@ import java.util.stream.Collector;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
+import functionalj.stream.intstream.IntAggregator;
 import lombok.val;
 
 
@@ -50,13 +50,13 @@ public interface IntCollected<ACCUMULATED, RESULT>
     @SuppressWarnings("unchecked")
     public static <A, R> IntCollected<A, R> of(
             AsIntFuncList         funcList,
-            IntStreamProcessor<R> processor) {
+            IntAggregator<R> processor) {
         Objects.requireNonNull(processor);
         if (processor instanceof Collector)
             return new IntCollected.ByCollector<>(((IntCollectorPlus<A, R>)processor));
         
         Objects.requireNonNull(funcList);
-        return new IntCollected.ByStreamProcessor<A, R>(funcList, processor);
+        return new IntCollected.ByAggregator<A, R>(funcList, processor);
     }
     
     public static <A, R> IntCollected<A, R> of(IntCollectorPlus<A, R> collector) {
@@ -83,7 +83,7 @@ public interface IntCollected<ACCUMULATED, RESULT>
     
     public static class ByCollector<ACCUMULATED, RESULT>
             implements
-                IntStreamProcessor<RESULT>,
+                IntAggregator<RESULT>,
                 IntCollected<ACCUMULATED, RESULT> {
         
         private final IntCollectorPlus<ACCUMULATED, RESULT> collector;
@@ -111,16 +111,16 @@ public interface IntCollected<ACCUMULATED, RESULT>
         
     }
     
-    public static class ByStreamProcessor<ACCUMULATED, RESULT>
+    public static class ByAggregator<ACCUMULATED, RESULT>
             implements
                 IntCollected<ACCUMULATED, RESULT> {
         
-        private final IntStreamProcessor<RESULT> processor;
+        private final IntAggregator<RESULT> processor;
         private final AsIntFuncList              funcList;
         
-        ByStreamProcessor(
+        ByAggregator(
                 AsIntFuncList              funcList,
-                IntStreamProcessor<RESULT> processor) {
+                IntAggregator<RESULT> processor) {
             this.processor = processor;
             this.funcList  = funcList;
         }

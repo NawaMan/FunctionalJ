@@ -32,7 +32,7 @@ import java.util.stream.Collector;
 import functionalj.list.longlist.AsLongFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
+import functionalj.stream.longstream.LongAggregator;
 import lombok.val;
 
 
@@ -42,13 +42,13 @@ public interface LongCollected<ACCUMULATED, RESULT>
     @SuppressWarnings("unchecked")
     public static <A, R> LongCollected<A, R> of(
             AsLongFuncList         funcList,
-            LongStreamProcessor<R> processor) {
+            LongAggregator<R> processor) {
         Objects.requireNonNull(processor);
         if (processor instanceof Collector)
             return new LongCollected.ByCollector<>(((LongCollectorPlus<A, R>)processor));
         
         Objects.requireNonNull(funcList);
-        return new LongCollected.ByStreamProcessor<A, R>(funcList, processor);
+        return new LongCollected.ByAggregator<A, R>(funcList, processor);
     }
     
     public static <A, R> LongCollected<A, R> of(
@@ -87,7 +87,7 @@ public interface LongCollected<ACCUMULATED, RESULT>
     
     public static class ByCollector<ACCUMULATED, RESULT>
             implements
-                LongStreamProcessor<RESULT>,
+                LongAggregator<RESULT>,
                 LongCollected<ACCUMULATED, RESULT> {
         
         private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
@@ -115,16 +115,16 @@ public interface LongCollected<ACCUMULATED, RESULT>
         
     }
     
-    public static class ByStreamProcessor<ACCUMULATED, RESULT>
+    public static class ByAggregator<ACCUMULATED, RESULT>
             implements
                 LongCollected<ACCUMULATED, RESULT> {
         
-        private final LongStreamProcessor<RESULT> processor;
+        private final LongAggregator<RESULT> processor;
         private final AsLongFuncList              funcList;
         
-        ByStreamProcessor(
+        ByAggregator(
                 AsLongFuncList              funcList,
-                LongStreamProcessor<RESULT> processor) {
+                LongAggregator<RESULT> processor) {
             this.processor = processor;
             this.funcList  = funcList;
         }

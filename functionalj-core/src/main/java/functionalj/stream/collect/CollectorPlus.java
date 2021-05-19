@@ -26,13 +26,13 @@ package functionalj.stream.collect;
 import java.util.stream.Collector;
 
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
+import functionalj.stream.Aggregator;
 
 
 public interface CollectorPlus<DATA, ACCUMULATED, TARGET> 
             extends
                 CollectorExtensible<DATA, ACCUMULATED, TARGET>,
-                StreamProcessor<DATA, TARGET> {
+                Aggregator<DATA, TARGET> {
     
     public static <D, A, R> CollectorPlus<D, A, R> from(Collector<D, A, R> collector) {
         return (collector instanceof CollectorPlus)

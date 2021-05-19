@@ -26,7 +26,7 @@ package functionalj.list.doublelist;
 import static functionalj.list.doublelist.AsDoubleFuncListHelper.funcListOf;
 
 import functionalj.stream.collect.Collected;
-import functionalj.stream.doublestream.DoubleStreamProcessor;
+import functionalj.stream.doublestream.DoubleAggregator;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -40,7 +40,7 @@ public interface DoubleFuncListWithCalculate extends AsDoubleFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <A, T> T calculate(
-            DoubleStreamProcessor<T> processor) {
+            DoubleAggregator<T> processor) {
         val funcList  = funcListOf(this);
         val collected = Collected.of(funcList, processor);
         funcList
@@ -53,8 +53,8 @@ public interface DoubleFuncListWithCalculate extends AsDoubleFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2> Tuple2<T1, T2> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2) {
+            DoubleAggregator<T1> processor1,
+            DoubleAggregator<T2> processor2) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -70,9 +70,9 @@ public interface DoubleFuncListWithCalculate extends AsDoubleFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2,
-            DoubleStreamProcessor<T3> processor3) {
+            DoubleAggregator<T1> processor1,
+            DoubleAggregator<T2> processor2,
+            DoubleAggregator<T3> processor3) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -91,10 +91,10 @@ public interface DoubleFuncListWithCalculate extends AsDoubleFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2,
-            DoubleStreamProcessor<T3> processor3,
-            DoubleStreamProcessor<T4> processor4) {
+            DoubleAggregator<T1> processor1,
+            DoubleAggregator<T2> processor2,
+            DoubleAggregator<T3> processor3,
+            DoubleAggregator<T4> processor4) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -116,11 +116,11 @@ public interface DoubleFuncListWithCalculate extends AsDoubleFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2,
-            DoubleStreamProcessor<T3> processor3,
-            DoubleStreamProcessor<T4> processor4,
-            DoubleStreamProcessor<T5> processor5) {
+            DoubleAggregator<T1> processor1,
+            DoubleAggregator<T2> processor2,
+            DoubleAggregator<T3> processor3,
+            DoubleAggregator<T4> processor4,
+            DoubleAggregator<T5> processor5) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -145,12 +145,12 @@ public interface DoubleFuncListWithCalculate extends AsDoubleFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-            DoubleStreamProcessor<T1> processor1,
-            DoubleStreamProcessor<T2> processor2,
-            DoubleStreamProcessor<T3> processor3,
-            DoubleStreamProcessor<T4> processor4,
-            DoubleStreamProcessor<T5> processor5,
-            DoubleStreamProcessor<T6> processor6) {
+            DoubleAggregator<T1> processor1,
+            DoubleAggregator<T2> processor2,
+            DoubleAggregator<T3> processor3,
+            DoubleAggregator<T4> processor4,
+            DoubleAggregator<T5> processor5,
+            DoubleAggregator<T6> processor6) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);

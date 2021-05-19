@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
+import functionalj.function.aggregator.AsIntAggregator;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableFuncMap;
@@ -91,10 +92,10 @@ public interface AsIntStreamPlusWithGroupingBy {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             IntFunction<KEY>            keyMapper,
-            AsIntStreamProcessor<VALUE> processor) {
+            AsIntAggregator<VALUE> processor) {
         FuncMap<KEY, IntFuncList> groupingBy = groupingBy(keyMapper);
         return (FuncMap<KEY, VALUE>) groupingBy
-                .mapValue(stream -> stream.calculate((IntStreamProcessor) processor.asIntStreamProcessor()));
+                .mapValue(stream -> stream.calculate((IntAggregator) processor.asIntAggregator()));
     }
     
 }

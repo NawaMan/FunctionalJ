@@ -25,7 +25,7 @@ package functionalj.list;
 
 import static functionalj.stream.collect.Collected.collectedOf;
 
-import functionalj.stream.StreamProcessor;
+import functionalj.function.aggregator.Aggregator;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -42,7 +42,7 @@ public interface FuncListWithCalculate<DATA> {
     
     /** Perform the calculation using the data of this funcList */
     public default <A, T> T calculate(
-            StreamProcessor<? extends DATA, T> processor) {
+            Aggregator<? extends DATA, T> processor) {
         // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
         val funcList  = asFuncList();
         val collected = collectedOf(funcList, processor);
@@ -56,8 +56,8 @@ public interface FuncListWithCalculate<DATA> {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2> Tuple2<T1, T2> calculate(
-            StreamProcessor<DATA, T1> processor1,
-            StreamProcessor<DATA, T2> processor2) {
+            Aggregator<DATA, T1> processor1,
+            Aggregator<DATA, T2> processor2) {
         // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
         val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);
@@ -74,9 +74,9 @@ public interface FuncListWithCalculate<DATA> {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-            StreamProcessor<DATA, T1> processor1,
-            StreamProcessor<DATA, T2> processor2,
-            StreamProcessor<DATA, T3> processor3) {
+            Aggregator<DATA, T1> processor1,
+            Aggregator<DATA, T2> processor2,
+            Aggregator<DATA, T3> processor3) {
         // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
         val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);
@@ -96,10 +96,10 @@ public interface FuncListWithCalculate<DATA> {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-            StreamProcessor<DATA, T1> processor1,
-            StreamProcessor<DATA, T2> processor2,
-            StreamProcessor<DATA, T3> processor3,
-            StreamProcessor<DATA, T4> processor4) {
+            Aggregator<DATA, T1> processor1,
+            Aggregator<DATA, T2> processor2,
+            Aggregator<DATA, T3> processor3,
+            Aggregator<DATA, T4> processor4) {
         // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
         val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);
@@ -122,11 +122,11 @@ public interface FuncListWithCalculate<DATA> {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-            StreamProcessor<DATA, T1> processor1,
-            StreamProcessor<DATA, T2> processor2,
-            StreamProcessor<DATA, T3> processor3,
-            StreamProcessor<DATA, T4> processor4,
-            StreamProcessor<DATA, T5> processor5) {
+            Aggregator<DATA, T1> processor1,
+            Aggregator<DATA, T2> processor2,
+            Aggregator<DATA, T3> processor3,
+            Aggregator<DATA, T4> processor4,
+            Aggregator<DATA, T5> processor5) {
         // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
         val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);
@@ -152,12 +152,12 @@ public interface FuncListWithCalculate<DATA> {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-            StreamProcessor<DATA, T1> processor1,
-            StreamProcessor<DATA, T2> processor2,
-            StreamProcessor<DATA, T3> processor3,
-            StreamProcessor<DATA, T4> processor4,
-            StreamProcessor<DATA, T5> processor5,
-            StreamProcessor<DATA, T6> processor6) {
+            Aggregator<DATA, T1> processor1,
+            Aggregator<DATA, T2> processor2,
+            Aggregator<DATA, T3> processor3,
+            Aggregator<DATA, T4> processor4,
+            Aggregator<DATA, T5> processor5,
+            Aggregator<DATA, T6> processor6) {
         // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
         val funcList   = asFuncList();
         val collected1 = collectedOf(funcList, processor1);

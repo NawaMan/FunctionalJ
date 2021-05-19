@@ -25,10 +25,10 @@ package functionalj.stream.intstream;
 
 import functionalj.lens.lenses.IntegerAccess;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
+import functionalj.stream.Aggregator;
 
 @FunctionalInterface
-public interface ToIntStreamProcessor<DATA> extends StreamProcessor<DATA, Integer>, IntegerAccess<StreamPlus<DATA>> {
+public interface ToIntAggregator<DATA> extends Aggregator<DATA, Integer>, IntegerAccess<StreamPlus<DATA>> {
     @Override
     public default Integer applyUnsafe(StreamPlus<DATA> input) throws Exception {
         return process(input);

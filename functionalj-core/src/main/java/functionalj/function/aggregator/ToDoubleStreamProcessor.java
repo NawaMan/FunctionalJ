@@ -1,11 +1,11 @@
-package functionalj.stream.doublestream;
+package functionalj.function.aggregator;
 
 import functionalj.lens.lenses.DoubleAccess;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
+import functionalj.stream.Aggregator;
 
 @FunctionalInterface
-public interface ToDoubleStreamProcessor<DATA> extends StreamProcessor<DATA, Double>, DoubleAccess<StreamPlus<DATA>> {
+public interface ToDoubleAggregator<DATA> extends Aggregator<DATA, Double>, DoubleAccess<StreamPlus<DATA>> {
     @Override
     public default Double applyUnsafe(StreamPlus<DATA> input) throws Exception {
         return process(input);

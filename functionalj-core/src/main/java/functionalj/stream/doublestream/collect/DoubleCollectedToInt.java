@@ -28,7 +28,7 @@ import java.util.function.ObjDoubleConsumer;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.stream.doublestream.DoubleStreamProcessor;
+import functionalj.stream.doublestream.DoubleAggregator;
 import lombok.val;
 
 
@@ -50,7 +50,7 @@ public interface DoubleCollectedToInt<ACCUMULATED>
     
     public static class ByCollector<ACCUMULATED>
             implements
-                DoubleStreamProcessor<Integer>,
+                DoubleAggregator<Integer>,
                 DoubleCollectedToInt<ACCUMULATED> {
         
         private final DoubleCollectorToIntPlus<ACCUMULATED> collector;
@@ -79,16 +79,16 @@ public interface DoubleCollectedToInt<ACCUMULATED>
         
     }
     
-    public static class ByStreamProcessor<ACCUMULATED>
+    public static class ByAggregator<ACCUMULATED>
             implements
                 DoubleCollectedToInt<ACCUMULATED> {
         
-        private final DoubleStreamProcessor<Integer> processor;
+        private final DoubleAggregator<Integer> processor;
         private final AsDoubleFuncList               funcList;
         
-        ByStreamProcessor(
+        ByAggregator(
                 AsDoubleFuncList               funcList,
-                DoubleStreamProcessor<Integer> processor) {
+                DoubleAggregator<Integer> processor) {
             this.processor = processor;
             this.funcList  = funcList;
         }

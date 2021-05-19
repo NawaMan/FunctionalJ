@@ -26,7 +26,7 @@ package functionalj.list.longlist;
 import static functionalj.list.longlist.AsLongFuncListHelper.funcListOf;
 
 import functionalj.stream.collect.Collected;
-import functionalj.stream.longstream.LongStreamProcessor;
+import functionalj.stream.longstream.LongAggregator;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -39,7 +39,7 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <A, T> T calculate(
-            LongStreamProcessor<T> processor) {
+            LongAggregator<T> processor) {
         val funcList  = funcListOf(this);
         val collected = Collected.of(funcList, processor);
         funcList
@@ -52,8 +52,8 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2> Tuple2<T1, T2> calculate(
-            LongStreamProcessor<T1> processor1,
-            LongStreamProcessor<T2> processor2) {
+            LongAggregator<T1> processor1,
+            LongAggregator<T2> processor2) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -69,9 +69,9 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-            LongStreamProcessor<T1> processor1,
-            LongStreamProcessor<T2> processor2,
-            LongStreamProcessor<T3> processor3) {
+            LongAggregator<T1> processor1,
+            LongAggregator<T2> processor2,
+            LongAggregator<T3> processor3) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -90,10 +90,10 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-            LongStreamProcessor<T1> processor1,
-            LongStreamProcessor<T2> processor2,
-            LongStreamProcessor<T3> processor3,
-            LongStreamProcessor<T4> processor4) {
+            LongAggregator<T1> processor1,
+            LongAggregator<T2> processor2,
+            LongAggregator<T3> processor3,
+            LongAggregator<T4> processor4) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -115,11 +115,11 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-            LongStreamProcessor<T1> processor1,
-            LongStreamProcessor<T2> processor2,
-            LongStreamProcessor<T3> processor3,
-            LongStreamProcessor<T4> processor4,
-            LongStreamProcessor<T5> processor5) {
+            LongAggregator<T1> processor1,
+            LongAggregator<T2> processor2,
+            LongAggregator<T3> processor3,
+            LongAggregator<T4> processor4,
+            LongAggregator<T5> processor5) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -144,12 +144,12 @@ public interface LongFuncListWithCalculate extends AsLongFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-            LongStreamProcessor<T1> processor1,
-            LongStreamProcessor<T2> processor2,
-            LongStreamProcessor<T3> processor3,
-            LongStreamProcessor<T4> processor4,
-            LongStreamProcessor<T5> processor5,
-            LongStreamProcessor<T6> processor6) {
+            LongAggregator<T1> processor1,
+            LongAggregator<T2> processor2,
+            LongAggregator<T3> processor3,
+            LongAggregator<T4> processor4,
+            LongAggregator<T5> processor5,
+            LongAggregator<T6> processor6) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);

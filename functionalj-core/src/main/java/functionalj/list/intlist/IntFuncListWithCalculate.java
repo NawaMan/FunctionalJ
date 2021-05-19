@@ -26,7 +26,7 @@ package functionalj.list.intlist;
 import static functionalj.list.intlist.AsIntFuncListHelper.funcListOf;
 
 import functionalj.stream.collect.Collected;
-import functionalj.stream.intstream.IntStreamProcessor;
+import functionalj.stream.intstream.IntAggregator;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -39,7 +39,7 @@ public interface IntFuncListWithCalculate extends AsIntFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <A, T> T calculate(
-            IntStreamProcessor<T> processor) {
+            IntAggregator<T> processor) {
         val funcList  = funcListOf(this);
         val collected = Collected.of(funcList, processor);
         funcList
@@ -52,8 +52,8 @@ public interface IntFuncListWithCalculate extends AsIntFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2> Tuple2<T1, T2> calculate(
-            IntStreamProcessor<T1> processor1,
-            IntStreamProcessor<T2> processor2) {
+            IntAggregator<T1> processor1,
+            IntAggregator<T2> processor2) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -69,9 +69,9 @@ public interface IntFuncListWithCalculate extends AsIntFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-            IntStreamProcessor<T1> processor1,
-            IntStreamProcessor<T2> processor2,
-            IntStreamProcessor<T3> processor3) {
+            IntAggregator<T1> processor1,
+            IntAggregator<T2> processor2,
+            IntAggregator<T3> processor3) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -90,10 +90,10 @@ public interface IntFuncListWithCalculate extends AsIntFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-            IntStreamProcessor<T1> processor1,
-            IntStreamProcessor<T2> processor2,
-            IntStreamProcessor<T3> processor3,
-            IntStreamProcessor<T4> processor4) {
+            IntAggregator<T1> processor1,
+            IntAggregator<T2> processor2,
+            IntAggregator<T3> processor3,
+            IntAggregator<T4> processor4) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -115,11 +115,11 @@ public interface IntFuncListWithCalculate extends AsIntFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-            IntStreamProcessor<T1> processor1,
-            IntStreamProcessor<T2> processor2,
-            IntStreamProcessor<T3> processor3,
-            IntStreamProcessor<T4> processor4,
-            IntStreamProcessor<T5> processor5) {
+            IntAggregator<T1> processor1,
+            IntAggregator<T2> processor2,
+            IntAggregator<T3> processor3,
+            IntAggregator<T4> processor4,
+            IntAggregator<T5> processor5) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);
@@ -144,12 +144,12 @@ public interface IntFuncListWithCalculate extends AsIntFuncList {
     
     /** Perform the calculation using the data of this funcList */
     public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-            IntStreamProcessor<T1> processor1,
-            IntStreamProcessor<T2> processor2,
-            IntStreamProcessor<T3> processor3,
-            IntStreamProcessor<T4> processor4,
-            IntStreamProcessor<T5> processor5,
-            IntStreamProcessor<T6> processor6) {
+            IntAggregator<T1> processor1,
+            IntAggregator<T2> processor2,
+            IntAggregator<T3> processor3,
+            IntAggregator<T4> processor4,
+            IntAggregator<T5> processor5,
+            IntAggregator<T6> processor6) {
         val funcList   = funcListOf(this);
         val collected1 = Collected.of(funcList, processor1);
         val collected2 = Collected.of(funcList, processor2);

@@ -28,7 +28,7 @@ import java.util.function.ObjLongConsumer;
 import functionalj.list.longlist.AsLongFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
+import functionalj.stream.longstream.LongAggregator;
 import lombok.val;
 
 
@@ -50,7 +50,7 @@ public interface LongCollectedToDouble<ACCUMULATED>
     
     public static class ByCollector<ACCUMULATED>
             implements
-                LongStreamProcessor<Double>,
+                LongAggregator<Double>,
                 LongCollectedToDouble<ACCUMULATED> {
         
         private final LongCollectorToDoublePlus<ACCUMULATED> collector;
@@ -79,16 +79,16 @@ public interface LongCollectedToDouble<ACCUMULATED>
         
     }
     
-    public static class ByStreamProcessor<ACCUMULATED>
+    public static class ByAggregator<ACCUMULATED>
             implements
                 LongCollectedToDouble<ACCUMULATED> {
         
-        private final LongStreamProcessor<Double> processor;
+        private final LongAggregator<Double> processor;
         private final AsLongFuncList              funcList;
         
-        ByStreamProcessor(
+        ByAggregator(
                 AsLongFuncList              funcList,
-                LongStreamProcessor<Double> processor) {
+                LongAggregator<Double> processor) {
             this.processor = processor;
             this.funcList  = funcList;
         }

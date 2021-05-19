@@ -28,7 +28,7 @@ import java.util.function.ObjIntConsumer;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
+import functionalj.stream.intstream.IntAggregator;
 import lombok.val;
 
 
@@ -50,7 +50,7 @@ public interface IntCollectedToDouble<ACCUMULATED>
     
     public static class ByCollector<ACCUMULATED>
             implements
-                IntStreamProcessor<Double>,
+                IntAggregator<Double>,
                 IntCollectedToDouble<ACCUMULATED> {
         
         private final IntCollectorToDoublePlus<ACCUMULATED> collector;
@@ -79,16 +79,16 @@ public interface IntCollectedToDouble<ACCUMULATED>
         
     }
     
-    public static class ByStreamProcessor<ACCUMULATED>
+    public static class ByAggregator<ACCUMULATED>
             implements
                 IntCollectedToDouble<ACCUMULATED> {
         
-        private final IntStreamProcessor<Double> processor;
+        private final IntAggregator<Double> processor;
         private final AsIntFuncList            funcList;
         
-        ByStreamProcessor(
+        ByAggregator(
                 AsIntFuncList              funcList,
-                IntStreamProcessor<Double> processor) {
+                IntAggregator<Double> processor) {
             this.processor = processor;
             this.funcList  = funcList;
         }

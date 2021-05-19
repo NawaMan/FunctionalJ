@@ -24,12 +24,12 @@
 package functionalj.function.aggregator;
 
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
+import functionalj.stream.intstream.IntAggregator;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface IntAggregatorToInt extends IntStreamProcessor<Integer> {
+public interface IntAggregatorToInt extends IntAggregator<Integer> {
     
     public static <A> IntAggregatorToInt from(IntCollectorToIntPlus<A> collector) {
         return () -> collector;
@@ -40,7 +40,7 @@ public interface IntAggregatorToInt extends IntStreamProcessor<Integer> {
     
     public default Integer process(IntStreamPlus stream) {
         val collector = collectorToInt();
-        return ((IntStreamProcessor<Integer>)collector).process(stream);
+        return ((IntAggregator<Integer>)collector).process(stream);
     }
     
     public default IntAccumulatorToInt newIntAccumulatorToInt() {
