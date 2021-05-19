@@ -23,29 +23,29 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
-import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
+import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.doublestream.DoubleStreamProcessor;
+import functionalj.stream.doublestream.collect.DoubleCollectorToLongPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface LongAggregatorToInt extends LongStreamProcessor<Integer> {
+public interface DoubleAggregationToLong extends DoubleStreamProcessor<Long> {
     
-    public static <A> LongAggregatorToInt from(LongCollectorToIntPlus<A> collector) {
+    public static <A> DoubleAggregationToLong from(DoubleCollectorToLongPlus<A> collector) {
         return () -> collector;
     }
     
-    public LongCollectorToIntPlus<?> collectorToInt();
+    public DoubleCollectorToLongPlus<?> collectorToLong();
     
     
-    public default Integer process(LongStreamPlus stream) {
-        val collector = collectorToInt();
-        return ((LongStreamProcessor<Integer>)collector).process(stream);
+    public default Long process(DoubleStreamPlus stream) {
+        val collector = collectorToLong();
+        return ((DoubleStreamProcessor<Long>)collector).process(stream);
     }
     
-    public default LongAccumulatorToInt newLongAccumulatorToInt() {
-        val collector = collectorToInt();
-        return new LongAccumulatorToInt(collector);
+    public default DoubleAccumulatorToLong newDoubleAccumulatorToLong() {
+        val collector = collectorToLong();
+        return new DoubleAccumulatorToLong(collector);
     }
     
 }

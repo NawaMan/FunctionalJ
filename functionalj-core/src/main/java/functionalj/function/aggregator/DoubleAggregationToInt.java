@@ -23,29 +23,29 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
-import functionalj.stream.intstream.collect.IntCollectorToDoublePlus;
+import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.doublestream.DoubleStreamProcessor;
+import functionalj.stream.doublestream.collect.DoubleCollectorToIntPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface IntAggregatorToDouble extends IntStreamProcessor<Double> {
+public interface DoubleAggregationToInt extends DoubleStreamProcessor<Integer> {
     
-    public static <A> IntAggregatorToDouble from(IntCollectorToDoublePlus<A> collector) {
+    public static <A> DoubleAggregationToInt from(DoubleCollectorToIntPlus<A> collector) {
         return () -> collector;
     }
     
-    public IntCollectorToDoublePlus<?> collectorToDouble();
+    public DoubleCollectorToIntPlus<?> collectorToInt();
     
     
-    public default Double process(IntStreamPlus stream) {
-        val collector = collectorToDouble();
-        return ((IntStreamProcessor<Double>)collector).process(stream);
+    public default Integer process(DoubleStreamPlus stream) {
+        val collector = collectorToInt();
+        return ((DoubleStreamProcessor<Integer>)collector).process(stream);
     }
     
-    public default IntAccumulatorToDouble newIntAccumulatorToDouble() {
-        val collector = collectorToDouble();
-        return new IntAccumulatorToDouble(collector);
+    public default DoubleAccumulatorToInt newDoubleAccumulatorToInt() {
+        val collector = collectorToInt();
+        return new DoubleAccumulatorToInt(collector);
     }
     
 }

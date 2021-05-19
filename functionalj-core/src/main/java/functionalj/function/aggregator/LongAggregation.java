@@ -23,57 +23,57 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
-import functionalj.stream.intstream.collect.IntCollectorPlus;
-import functionalj.stream.intstream.collect.IntCollectorToDoublePlus;
-import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
-import functionalj.stream.intstream.collect.IntCollectorToLongPlus;
+import functionalj.stream.longstream.LongStreamPlus;
+import functionalj.stream.longstream.LongStreamProcessor;
+import functionalj.stream.longstream.collect.LongCollectorPlus;
+import functionalj.stream.longstream.collect.LongCollectorToDoublePlus;
+import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
+import functionalj.stream.longstream.collect.LongCollectorToLongPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface IntAggregator<TARGET> extends IntStreamProcessor<TARGET> {
+public interface LongAggregation<TARGET> extends LongStreamProcessor<TARGET> {
     
-    public static <A, T> IntAggregator<T> from(IntCollectorPlus<A, T> collector) {
+    public static <A, T> LongAggregation<T> from(LongCollectorPlus<A, T> collector) {
         return () -> collector;
     }
     
-    public static <A> IntAggregatorToInt from(IntCollectorToIntPlus<A> collector) {
+    public static <A> LongAggregationToInt from(LongCollectorToIntPlus<A> collector) {
         return () -> collector;
     }
     
-    public static <A> IntAggregatorToLong from(IntCollectorToLongPlus<A> collector) {
+    public static <A> LongAggregationToLong from(LongCollectorToLongPlus<A> collector) {
         return () -> collector;
     }
     
-    public static <A> IntAggregatorToDouble from(IntCollectorToDoublePlus<A> collector) {
+    public static <A> LongAggregationToDouble from(LongCollectorToDoublePlus<A> collector) {
         return () -> collector;
     }
     
-    public static <A> IntAggregatorToInt forInt(IntCollectorToIntPlus<A> collector) {
+    public static <A> LongAggregationToInt forInt(LongCollectorToIntPlus<A> collector) {
         return () -> collector;
     }
     
-    public static <A> IntAggregatorToLong forLong(IntCollectorToLongPlus<A> collector) {
+    public static <A> LongAggregationToLong forLong(LongCollectorToLongPlus<A> collector) {
         return () -> collector;
     }
     
-    public static <A> IntAggregatorToDouble forDouble(IntCollectorToDoublePlus<A> collector) {
+    public static <A> LongAggregationToDouble forDouble(LongCollectorToDoublePlus<A> collector) {
         return () -> collector;
     }
     
     
-    public IntCollectorPlus<?, TARGET> collector();
+    public LongCollectorPlus<?, TARGET> collector();
     
     
-    public default TARGET process(IntStreamPlus stream) {
+    public default TARGET process(LongStreamPlus stream) {
         val collector = collector();
-        return ((IntStreamProcessor<TARGET>)collector).process(stream);
+        return ((LongStreamProcessor<TARGET>)collector).process(stream);
     }
     
-    public default IntAccumulator<TARGET> newAccumulator() {
+    public default LongAccumulator<TARGET> newAccumulator() {
         val collector = collector();
-        return new IntAccumulator<>(collector);
+        return new LongAccumulator<>(collector);
     }
     
 }

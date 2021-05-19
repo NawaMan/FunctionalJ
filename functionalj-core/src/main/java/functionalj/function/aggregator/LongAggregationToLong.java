@@ -25,55 +25,27 @@ package functionalj.function.aggregator;
 
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamProcessor;
-import functionalj.stream.longstream.collect.LongCollectorPlus;
-import functionalj.stream.longstream.collect.LongCollectorToDoublePlus;
-import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
 import functionalj.stream.longstream.collect.LongCollectorToLongPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface LongAggregator<TARGET> extends LongStreamProcessor<TARGET> {
+public interface LongAggregationToLong extends LongStreamProcessor<Long> {
     
-    public static <A, T> LongAggregator<T> from(LongCollectorPlus<A, T> collector) {
+    public static <A> LongAggregationToLong from(LongCollectorToLongPlus<A> collector) {
         return () -> collector;
     }
     
-    public static <A> LongAggregatorToInt from(LongCollectorToIntPlus<A> collector) {
-        return () -> collector;
+    public LongCollectorToLongPlus<?> collectorToLong();
+    
+    
+    public default Long process(LongStreamPlus stream) {
+        val collector = collectorToLong();
+        return ((LongStreamProcessor<Long>)collector).process(stream);
     }
     
-    public static <A> LongAggregatorToLong from(LongCollectorToLongPlus<A> collector) {
-        return () -> collector;
-    }
-    
-    public static <A> LongAggregatorToDouble from(LongCollectorToDoublePlus<A> collector) {
-        return () -> collector;
-    }
-    
-    public static <A> LongAggregatorToInt forInt(LongCollectorToIntPlus<A> collector) {
-        return () -> collector;
-    }
-    
-    public static <A> LongAggregatorToLong forLong(LongCollectorToLongPlus<A> collector) {
-        return () -> collector;
-    }
-    
-    public static <A> LongAggregatorToDouble forDouble(LongCollectorToDoublePlus<A> collector) {
-        return () -> collector;
-    }
-    
-    
-    public LongCollectorPlus<?, TARGET> collector();
-    
-    
-    public default TARGET process(LongStreamPlus stream) {
-        val collector = collector();
-        return ((LongStreamProcessor<TARGET>)collector).process(stream);
-    }
-    
-    public default LongAccumulator<TARGET> newAccumulator() {
-        val collector = collector();
-        return new LongAccumulator<>(collector);
+    public default LongAccumulatorToLong newLongAccumulatorToLong() {
+        val collector = collectorToLong();
+        return new LongAccumulatorToLong(collector);
     }
     
 }

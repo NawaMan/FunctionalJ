@@ -77,7 +77,7 @@ import org.junit.Test;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
-import functionalj.function.aggregator.Aggregator;
+import functionalj.function.aggregator.Aggregation;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList.Mode;
 import functionalj.list.doublelist.DoubleFuncList;
@@ -1804,7 +1804,7 @@ public class FuncListTest {
         @Override public Collector<Integer, int[], Integer> collector() { return this; }
     }
     
-    static class SumLengthAggregate implements Aggregator<String, Integer> {
+    static class SumLengthAggregate implements Aggregation<String, Integer> {
         private CollectorPlus<String, int[], Integer> sumCollector = new CollectorPlus<String, int[], Integer>() {
             @Override public Supplier<int[]>           supplier()          { return ()->new int[] { 0 }; }
             @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] += s.length(); }; }

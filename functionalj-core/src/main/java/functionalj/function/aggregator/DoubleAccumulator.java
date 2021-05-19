@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,29 +23,34 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
-import functionalj.stream.intstream.collect.IntCollectorToLongPlus;
-import lombok.val;
+import java.util.function.DoubleFunction;
 
-@FunctionalInterface
-public interface IntAggregatorToLong extends IntStreamProcessor<Long> {
+import functionalj.function.Func1;
+import functionalj.stream.collect.Collected;
+import functionalj.stream.doublestream.collect.DoubleCollected;
+import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
+
+public class DoubleAccumulator<TARGET> implements DoubleFunction<TARGET>, Func1<Double, TARGET> {
     
-    public static <A> IntAggregatorToLong from(IntCollectorToLongPlus<A> collector) {
-        return () -> collector;
+    private final DoubleCollected<?, TARGET> collected;
+    
+    public DoubleAccumulator(DoubleCollectorPlus<?, TARGET> collector) {
+        this.collected = Collected.of(collector);
     }
     
-    public IntCollectorToLongPlus<?> collectorToLong();
-    
-    
-    public default Long process(IntStreamPlus stream) {
-        val collector = collectorToLong();
-        return ((IntStreamProcessor<Long>)collector).process(stream);
+    @Override
+    public TARGET apply(double input) {
+        collected.accumulate(input);
+        return collected.finish();
     }
     
-    public default IntAccumulatorToLong newIntAccumulatorToLong() {
-        val collector = collectorToLong();
-        return new IntAccumulatorToLong(collector);
+    @Override
+    public TARGET applyUnsafe(Double input) throws Exception {
+        return apply(input);
+    }
+    
+    public DoubleCollected<?, TARGET> asCollected() {
+        return collected;
     }
     
 }

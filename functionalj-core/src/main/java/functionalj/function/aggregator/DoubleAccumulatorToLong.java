@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,29 +23,27 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
-import functionalj.stream.longstream.collect.LongCollectorToLongPlus;
-import lombok.val;
+import functionalj.lens.lenses.DoubleToLongAccessPrimitive;
+import functionalj.stream.doublestream.collect.DoubleCollected;
+import functionalj.stream.doublestream.collect.DoubleCollectedToLong;
+import functionalj.stream.doublestream.collect.DoubleCollectorToLongPlus;
 
-@FunctionalInterface
-public interface LongAggregatorToLong extends LongStreamProcessor<Long> {
+public class DoubleAccumulatorToLong implements DoubleToLongAccessPrimitive {
     
-    public static <A> LongAggregatorToLong from(LongCollectorToLongPlus<A> collector) {
-        return () -> collector;
+    private final DoubleCollectedToLong<?> collected;
+    
+    public DoubleAccumulatorToLong(DoubleCollectorToLongPlus<?> collector) {
+        this.collected = DoubleCollected.of(collector);
     }
     
-    public LongCollectorToLongPlus<?> collectorToLong();
-    
-    
-    public default Long process(LongStreamPlus stream) {
-        val collector = collectorToLong();
-        return ((LongStreamProcessor<Long>)collector).process(stream);
+    @Override
+    public long applyDoubleToLong(double input) {
+        collected.accumulate(input);
+        return collected.finish();
     }
     
-    public default LongAccumulatorToLong newLongAccumulatorToLong() {
-        val collector = collectorToLong();
-        return new LongAccumulatorToLong(collector);
+    public DoubleCollectedToLong<?> asCollected() {
+        return collected;
     }
     
 }

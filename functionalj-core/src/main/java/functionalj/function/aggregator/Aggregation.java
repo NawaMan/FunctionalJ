@@ -25,27 +25,55 @@ package functionalj.function.aggregator;
 
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
+import functionalj.stream.collect.CollectorPlus;
+import functionalj.stream.collect.CollectorToDoublePlus;
+import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.collect.CollectorToLongPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface AggregatorToLong<SOURCE> extends StreamProcessor<SOURCE, Long> {
+public interface Aggregation<SOURCE, TARGET> extends StreamProcessor<SOURCE, TARGET> {
     
-    public static <S, A> AggregatorToLong<S> from(CollectorToLongPlus<S, A> collector) {
+    public static <S, A, T> Aggregation<S, T> from(CollectorPlus<S, A, T> collector) {
         return () -> collector;
     }
     
-    public CollectorToLongPlus<SOURCE, ?> collectorToLong();
-    
-    
-    public default Long process(StreamPlus<? extends SOURCE> stream) {
-        val collector = collectorToLong();
-        return ((StreamProcessor<SOURCE, Long>)collector).process(stream);
+    public static <S, A> AggregationToInt<S> from(CollectorToIntPlus<S, A> collector) {
+        return () -> collector;
     }
     
-    public default AccumulatorToLong<SOURCE> newAccumulatorToLong() {
-        val collector = collectorToLong();
-        return new AccumulatorToLong<>(collector);
+    public static <S, A> AggregationToLong<S> from(CollectorToLongPlus<S, A> collector) {
+        return () -> collector;
+    }
+    
+    public static <S, A> AggregationToDouble<S> from(CollectorToDoublePlus<S, A> collector) {
+        return () -> collector;
+    }
+    
+    public static <S, A> AggregationToInt<S> forInt(CollectorToIntPlus<S, A> collector) {
+        return () -> collector;
+    }
+    
+    public static <S, A> AggregationToLong<S> forLong(CollectorToLongPlus<S, A> collector) {
+        return () -> collector;
+    }
+    
+    public static <S, A> AggregationToDouble<S> forDouble(CollectorToDoublePlus<S, A> collector) {
+        return () -> collector;
+    }
+    
+    
+    public CollectorPlus<SOURCE, ?, TARGET> collector();
+    
+    
+    public default TARGET process(StreamPlus<? extends SOURCE> stream) {
+        val collector = collector();
+        return ((StreamProcessor<SOURCE, TARGET>)collector).process(stream);
+    }
+    
+    public default Accumulator<SOURCE, TARGET> newAccumulator() {
+        val collector = collector();
+        return new Accumulator<>(collector);
     }
     
 }
