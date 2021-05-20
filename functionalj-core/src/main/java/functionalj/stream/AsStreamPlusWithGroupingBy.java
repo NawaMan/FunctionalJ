@@ -70,8 +70,8 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
     /** Group the elements by determining the grouping keys and aggregate the result */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            Function<DATA, KEY>                     keyMapper,
-            Function<? super FuncList<DATA>, VALUE> aggregate) {
+            Function<DATA, KEY>                         keyMapper,
+            Function<? super AsStreamPlus<DATA>, VALUE> aggregate) {
         FuncMap<KEY, FuncList<? super DATA>> groupingBy = groupingBy(keyMapper);
         return (FuncMap<KEY, VALUE>) groupingBy.mapValue((Function)aggregate);
     }
@@ -85,16 +85,6 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
         Function<? super FuncList<DATA>, VALUE> aggregate  = stream -> stream.collect(collectorSupplier.get());
         FuncMap<KEY, VALUE> mapValue = groupingBy.mapValue((Function)aggregate);
         return (FuncMap<KEY, VALUE>) mapValue;
-    }
-    
-    /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            Function<? super DATA, KEY>           keyMapper,
-            AsStreamProcessor<? super DATA, VALUE> processor) {
-        FuncMap<KEY, FuncList<? super DATA>> groupingBy = groupingBy(keyMapper);
-        return (FuncMap<KEY, VALUE>) groupingBy
-                .mapValue(stream -> stream.calculate((StreamProcessor)processor.asStreamProcessor()));
     }
     
 }

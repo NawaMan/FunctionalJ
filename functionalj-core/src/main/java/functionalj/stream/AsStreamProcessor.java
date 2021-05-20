@@ -23,9 +23,9 @@
 // ============================================================================
 package functionalj.stream;
 
-@FunctionalInterface
-public interface AsStreamProcessor<DATA, TARGET> {
-    
-    public StreamProcessor<DATA, TARGET> asStreamProcessor();
-    
-}
+//@FunctionalInterface
+//public interface AsStreamProcessor<DATA, TARGET> {
+//    
+//    public StreamProcessor<DATA, TARGET> asStreamProcessor();
+//    
+//}

@@ -23,8 +23,8 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
+import functionalj.function.Func1;
+import functionalj.stream.AsStreamPlus;
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.collect.CollectorToDoublePlus;
 import functionalj.stream.collect.CollectorToIntPlus;
@@ -32,7 +32,7 @@ import functionalj.stream.collect.CollectorToLongPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface Aggregation<SOURCE, TARGET> extends StreamProcessor<SOURCE, TARGET> {
+public interface Aggregation<SOURCE, TARGET> extends Func1<AsStreamPlus<SOURCE>, TARGET> {
     
     public static <S, A, T> Aggregation<S, T> from(CollectorPlus<S, A, T> collector) {
         return () -> collector;
@@ -66,14 +66,19 @@ public interface Aggregation<SOURCE, TARGET> extends StreamProcessor<SOURCE, TAR
     public CollectorPlus<SOURCE, ?, TARGET> collector();
     
     
-    public default TARGET process(StreamPlus<? extends SOURCE> stream) {
+    public default TARGET applyUnsafe(AsStreamPlus<SOURCE> stream) throws Exception {
         val collector = collector();
-        return ((StreamProcessor<SOURCE, TARGET>)collector).process(stream);
+        return stream.collect(collector);
     }
     
     public default Aggregator<SOURCE, TARGET> newAccumulator() {
         val collector = collector();
         return new Aggregator<>(collector);
+    }
+    
+    public default <INPUT> Aggregation<INPUT, TARGET> of(Func1<INPUT, SOURCE> mapper) {
+        val newCollector = collector().of(mapper);
+        return () -> newCollector;
     }
     
 }

@@ -25,8 +25,10 @@ package functionalj.stream.collect;
 
 import java.util.stream.Collector;
 
+import functionalj.function.Func1;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
+import lombok.val;
 
 
 public interface CollectorPlus<DATA, ACCUMULATED, TARGET> 
@@ -52,9 +54,9 @@ public interface CollectorPlus<DATA, ACCUMULATED, TARGET>
         // Let the stream decided what to do with this.
         return stream.calculate(this);
     }
-//    
-//    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {
-//        val collector = new DerivedCollectorPlus<>(this, mapper);
-//        return CollectorPlus.from(collector);
-//    }
+    
+    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {
+        val collector = new DerivedCollectorPlus<>(this, mapper);
+        return CollectorPlus.from(collector);
+    }
 }
