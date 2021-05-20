@@ -23,26 +23,33 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
-import functionalj.stream.intstream.collect.IntCollected;
-import functionalj.stream.intstream.collect.IntCollectedToInt;
-import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
+import java.util.function.IntFunction;
 
-public class IntAccumulatorToInt implements IntegerToIntegerAccessPrimitive {
+import functionalj.function.Func1;
+import functionalj.stream.collect.Collected;
+import functionalj.stream.intstream.collect.IntCollected;
+import functionalj.stream.intstream.collect.IntCollectorPlus;
+
+public class IntAggregator<TARGET> implements IntFunction<TARGET>, Func1<Integer, TARGET> {
     
-    private final IntCollectedToInt<?> collected;
+    private final IntCollected<?, TARGET> collected;
     
-    public IntAccumulatorToInt(IntCollectorToIntPlus<?> collector) {
-        this.collected = IntCollected.of(collector);
+    public IntAggregator(IntCollectorPlus<?, TARGET> collector) {
+        this.collected = Collected.of(collector);
     }
     
     @Override
-    public int applyIntToInt(int input) {
+    public TARGET apply(int input) {
         collected.accumulate(input);
         return collected.finish();
     }
     
-    public IntCollectedToInt<?> asCollected() {
+    @Override
+    public TARGET applyUnsafe(Integer input) throws Exception {
+        return apply(input);
+    }
+    
+    public IntCollected<?, TARGET> asCollected() {
         return collected;
     }
     

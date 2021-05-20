@@ -43,9 +43,9 @@ public interface DoubleAggregationToInt extends DoubleStreamProcessor<Integer> {
         return ((DoubleStreamProcessor<Integer>)collector).process(stream);
     }
     
-    public default DoubleAccumulatorToInt newDoubleAccumulatorToInt() {
+    public default DoubleAggregatorToInt newDoubleAccumulatorToInt() {
         val collector = collectorToInt();
-        return new DoubleAccumulatorToInt(collector);
+        return new DoubleAggregatorToInt(collector);
     }
     
 }

@@ -43,9 +43,9 @@ public interface DoubleAggregationToLong extends DoubleStreamProcessor<Long> {
         return ((DoubleStreamProcessor<Long>)collector).process(stream);
     }
     
-    public default DoubleAccumulatorToLong newDoubleAccumulatorToLong() {
+    public default DoubleAggregatorToLong newDoubleAccumulatorToLong() {
         val collector = collectorToLong();
-        return new DoubleAccumulatorToLong(collector);
+        return new DoubleAggregatorToLong(collector);
     }
     
 }

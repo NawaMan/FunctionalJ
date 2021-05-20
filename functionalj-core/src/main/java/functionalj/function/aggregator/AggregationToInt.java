@@ -43,9 +43,9 @@ public interface AggregationToInt<SOURCE> extends StreamProcessor<SOURCE, Intege
         return ((StreamProcessor<SOURCE, Integer>)collector).process(stream);
     }
     
-    public default AccumulatorToInt<SOURCE> newAccumulatorToInt() {
+    public default AggregatorToInt<SOURCE> newAccumulatorToInt() {
         val collector = collectorToInt();
-        return new AccumulatorToInt<>(collector);
+        return new AggregatorToInt<>(collector);
     }
     
 }

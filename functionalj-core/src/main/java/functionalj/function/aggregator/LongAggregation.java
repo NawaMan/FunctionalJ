@@ -71,9 +71,9 @@ public interface LongAggregation<TARGET> extends LongStreamProcessor<TARGET> {
         return ((LongStreamProcessor<TARGET>)collector).process(stream);
     }
     
-    public default LongAccumulator<TARGET> newAccumulator() {
+    public default LongAggregator<TARGET> newAccumulator() {
         val collector = collector();
-        return new LongAccumulator<>(collector);
+        return new LongAggregator<>(collector);
     }
     
 }

@@ -71,9 +71,9 @@ public interface IntAggregation<TARGET> extends IntStreamProcessor<TARGET> {
         return ((IntStreamProcessor<TARGET>)collector).process(stream);
     }
     
-    public default IntAccumulator<TARGET> newAccumulator() {
+    public default IntAggregator<TARGET> newAccumulator() {
         val collector = collector();
-        return new IntAccumulator<>(collector);
+        return new IntAggregator<>(collector);
     }
     
 }

@@ -23,26 +23,33 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
-import functionalj.stream.doublestream.collect.DoubleCollected;
-import functionalj.stream.doublestream.collect.DoubleCollectedToDouble;
-import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;
+import java.util.function.LongFunction;
 
-public class DoubleAccumulatorToDouble implements DoubleToDoubleAccessPrimitive {
+import functionalj.function.Func1;
+import functionalj.stream.collect.Collected;
+import functionalj.stream.longstream.collect.LongCollected;
+import functionalj.stream.longstream.collect.LongCollectorPlus;
+
+public class LongAggregator<TARGET> implements LongFunction<TARGET>, Func1<Long, TARGET> {
     
-    private final DoubleCollectedToDouble<?> collected;
+    private final LongCollected<?, TARGET> collected;
     
-    public DoubleAccumulatorToDouble(DoubleCollectorToDoublePlus<?> collector) {
-        this.collected = DoubleCollected.of(collector);
+    public LongAggregator(LongCollectorPlus<?, TARGET> collector) {
+        this.collected = Collected.of(collector);
     }
     
     @Override
-    public double applyToDouble(double input) {
+    public TARGET apply(long input) {
         collected.accumulate(input);
         return collected.finish();
     }
     
-    public DoubleCollectedToDouble<?> asCollected() {
+    @Override
+    public TARGET applyUnsafe(Long input) throws Exception {
+        return apply(input);
+    }
+    
+    public LongCollected<?, TARGET> asCollected() {
         return collected;
     }
     

@@ -43,9 +43,9 @@ public interface AggregationToLong<SOURCE> extends StreamProcessor<SOURCE, Long>
         return ((StreamProcessor<SOURCE, Long>)collector).process(stream);
     }
     
-    public default AccumulatorToLong<SOURCE> newAccumulatorToLong() {
+    public default AggregatorToLong<SOURCE> newAccumulatorToLong() {
         val collector = collectorToLong();
-        return new AccumulatorToLong<>(collector);
+        return new AggregatorToLong<>(collector);
     }
     
 }

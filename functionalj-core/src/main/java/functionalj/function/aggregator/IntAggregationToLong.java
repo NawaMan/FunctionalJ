@@ -43,9 +43,9 @@ public interface IntAggregationToLong extends IntStreamProcessor<Long> {
         return ((IntStreamProcessor<Long>)collector).process(stream);
     }
     
-    public default IntAccumulatorToLong newIntAccumulatorToLong() {
+    public default IntAggregatorToLong newIntAccumulatorToLong() {
         val collector = collectorToLong();
-        return new IntAccumulatorToLong(collector);
+        return new IntAggregatorToLong(collector);
     }
     
 }

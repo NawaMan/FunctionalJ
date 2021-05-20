@@ -71,9 +71,9 @@ public interface Aggregation<SOURCE, TARGET> extends StreamProcessor<SOURCE, TAR
         return ((StreamProcessor<SOURCE, TARGET>)collector).process(stream);
     }
     
-    public default Accumulator<SOURCE, TARGET> newAccumulator() {
+    public default Aggregator<SOURCE, TARGET> newAccumulator() {
         val collector = collector();
-        return new Accumulator<>(collector);
+        return new Aggregator<>(collector);
     }
     
 }

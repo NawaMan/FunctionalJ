@@ -43,9 +43,9 @@ public interface IntAggregationToInt extends IntStreamProcessor<Integer> {
         return ((IntStreamProcessor<Integer>)collector).process(stream);
     }
     
-    public default IntAccumulatorToInt newIntAccumulatorToInt() {
+    public default IntAggregatorToInt newIntAccumulatorToInt() {
         val collector = collectorToInt();
-        return new IntAccumulatorToInt(collector);
+        return new IntAggregatorToInt(collector);
     }
     
 }

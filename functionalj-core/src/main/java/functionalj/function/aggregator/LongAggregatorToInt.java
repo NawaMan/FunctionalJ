@@ -23,25 +23,26 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.lens.lenses.LongAccessPrimitive;
-import functionalj.stream.collect.CollectedToLong;
-import functionalj.stream.collect.CollectorToLongPlus;
+import functionalj.lens.lenses.LongToIntegerAccessPrimitive;
+import functionalj.stream.longstream.collect.LongCollected;
+import functionalj.stream.longstream.collect.LongCollectedToInt;
+import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
 
-public class AccumulatorToLong<SOURCE> implements LongAccessPrimitive<SOURCE> {
+public class LongAggregatorToInt implements LongToIntegerAccessPrimitive {
     
-    private final CollectedToLong<SOURCE, ?> collected;
+    private final LongCollectedToInt<?> collected;
     
-    public AccumulatorToLong(CollectorToLongPlus<SOURCE, ?> collector) {
-        this.collected = new CollectedToLong.ByCollector<>(collector);
+    public LongAggregatorToInt(LongCollectorToIntPlus<?> collector) {
+        this.collected = LongCollected.of(collector);
     }
     
     @Override
-    public long applyAsLong(SOURCE host) {
-        collected.accumulate(host);
-        return collected.finishToLong();
+    public int applyLongToInt(long input) {
+        collected.accumulate(input);
+        return collected.finish();
     }
     
-    public CollectedToLong<SOURCE, ?> asCollected() {
+    public LongCollectedToInt<?> asCollected() {
         return collected;
     }
     

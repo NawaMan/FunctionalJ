@@ -27,11 +27,11 @@ import functionalj.function.Func1;
 import functionalj.stream.collect.Collected;
 import functionalj.stream.collect.CollectorPlus;
 
-public class Accumulator<SOURCE, TARGET> implements Func1<SOURCE, TARGET> {
+public class Aggregator<SOURCE, TARGET> implements Func1<SOURCE, TARGET> {
     
     private final Collected<SOURCE, ?, TARGET> collected;
     
-    public Accumulator(CollectorPlus<SOURCE, ?, TARGET> collector) {
+    public Aggregator(CollectorPlus<SOURCE, ?, TARGET> collector) {
         this.collected = Collected.of(collector);
     }
     

@@ -71,9 +71,9 @@ public interface DoubleAggregation<TARGET> extends DoubleStreamProcessor<TARGET>
         return ((DoubleStreamProcessor<TARGET>)collector).process(stream);
     }
     
-    public default DoubleAccumulator<TARGET> newAccumulator() {
+    public default DoubleAggregator<TARGET> newAccumulator() {
         val collector = collector();
-        return new DoubleAccumulator<>(collector);
+        return new DoubleAggregator<>(collector);
     }
     
 }

@@ -43,9 +43,9 @@ public interface DoubleAggregationToDouble extends DoubleStreamProcessor<Double>
         return ((DoubleStreamProcessor<Double>)collector).process(stream);
     }
     
-    public default DoubleAccumulatorToDouble newDoubleAccumulatorToDouble() {
+    public default DoubleAggregatorToDouble newDoubleAccumulatorToDouble() {
         val collector = collectorToDouble();
-        return new DoubleAccumulatorToDouble(collector);
+        return new DoubleAggregatorToDouble(collector);
     }
     
 }

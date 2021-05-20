@@ -43,9 +43,9 @@ public interface IntAggregationToDouble extends IntStreamProcessor<Double> {
         return ((IntStreamProcessor<Double>)collector).process(stream);
     }
     
-    public default IntAccumulatorToDouble newIntAccumulatorToDouble() {
+    public default IntAggregatorToDouble newIntAccumulatorToDouble() {
         val collector = collectorToDouble();
-        return new IntAccumulatorToDouble(collector);
+        return new IntAggregatorToDouble(collector);
     }
     
 }

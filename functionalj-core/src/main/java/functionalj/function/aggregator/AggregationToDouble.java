@@ -43,9 +43,9 @@ public interface AggregationToDouble<SOURCE> extends StreamProcessor<SOURCE, Dou
         return ((StreamProcessor<SOURCE, Double>)collector).process(stream);
     }
     
-    public default AccumulatorToDouble<SOURCE> newAccumulatorToDouble() {
+    public default AggregatorToDouble<SOURCE> newAccumulatorToDouble() {
         val collector = collectorToDouble();
-        return new AccumulatorToDouble<>(collector);
+        return new AggregatorToDouble<>(collector);
     }
     
 }

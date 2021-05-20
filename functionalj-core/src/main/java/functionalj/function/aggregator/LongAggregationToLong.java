@@ -43,9 +43,9 @@ public interface LongAggregationToLong extends LongStreamProcessor<Long> {
         return ((LongStreamProcessor<Long>)collector).process(stream);
     }
     
-    public default LongAccumulatorToLong newLongAccumulatorToLong() {
+    public default LongAggregatorToLong newLongAccumulatorToLong() {
         val collector = collectorToLong();
-        return new LongAccumulatorToLong(collector);
+        return new LongAggregatorToLong(collector);
     }
     
 }
