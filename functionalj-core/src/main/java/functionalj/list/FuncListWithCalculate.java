@@ -53,10 +53,10 @@ public interface FuncListWithCalculate<DATA> {
     public default <T1, T2> Tuple2<T1, T2> calculate(
             Aggregation<DATA, T1> aggregation1,
             Aggregation<DATA, T2> aggregation2) {
-        // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
-        val funcList   = asFuncList();
-        val collected1 = collectedOf(funcList, aggregation1.collector());
-        val collected2 = collectedOf(funcList, aggregation2.collector());
+        val collected1 = collectedOf(aggregation1.collector());
+        val collected2 = collectedOf(aggregation2.collector());
+        
+        val funcList = asFuncList();
         funcList
         .forEach(each -> {
             collected1.accumulate(each);
@@ -72,11 +72,11 @@ public interface FuncListWithCalculate<DATA> {
             Aggregation<DATA, T1> aggregation1,
             Aggregation<DATA, T2> aggregation2,
             Aggregation<DATA, T3> aggregation3) {
-        // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
+        val collected1 = collectedOf(aggregation1.collector());
+        val collected2 = collectedOf(aggregation2.collector());
+        val collected3 = collectedOf(aggregation3.collector());
+        
         val funcList   = asFuncList();
-        val collected1 = collectedOf(funcList, aggregation1.collector());
-        val collected2 = collectedOf(funcList, aggregation2.collector());
-        val collected3 = collectedOf(funcList, aggregation3.collector());
         funcList
         .forEach(each -> {
             collected1.accumulate(each);
@@ -95,12 +95,12 @@ public interface FuncListWithCalculate<DATA> {
             Aggregation<DATA, T2> aggregation2,
             Aggregation<DATA, T3> aggregation3,
             Aggregation<DATA, T4> aggregation4) {
-        // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
+        val collected1 = collectedOf(aggregation1.collector());
+        val collected2 = collectedOf(aggregation2.collector());
+        val collected3 = collectedOf(aggregation3.collector());
+        val collected4 = collectedOf(aggregation4.collector());
+        
         val funcList   = asFuncList();
-        val collected1 = collectedOf(funcList, aggregation1.collector());
-        val collected2 = collectedOf(funcList, aggregation2.collector());
-        val collected3 = collectedOf(funcList, aggregation3.collector());
-        val collected4 = collectedOf(funcList, aggregation4.collector());
         funcList
         .forEach(each -> {
             collected1.accumulate(each);
@@ -122,13 +122,13 @@ public interface FuncListWithCalculate<DATA> {
             Aggregation<DATA, T3> aggregation3,
             Aggregation<DATA, T4> aggregation4,
             Aggregation<DATA, T5> aggregation5) {
-        // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
-        val funcList   = asFuncList();
-        val collected1 = collectedOf(funcList, aggregation1.collector());
-        val collected2 = collectedOf(funcList, aggregation2.collector());
-        val collected3 = collectedOf(funcList, aggregation3.collector());
-        val collected4 = collectedOf(funcList, aggregation4.collector());
-        val collected5 = collectedOf(funcList, aggregation5.collector());
+        val collected1 = collectedOf(aggregation1.collector());
+        val collected2 = collectedOf(aggregation2.collector());
+        val collected3 = collectedOf(aggregation3.collector());
+        val collected4 = collectedOf(aggregation4.collector());
+        val collected5 = collectedOf(aggregation5.collector());
+        
+        val funcList = asFuncList();
         funcList
         .forEach(each -> {
             collected1.accumulate(each);
@@ -153,14 +153,14 @@ public interface FuncListWithCalculate<DATA> {
             Aggregation<DATA, T4> aggregation4,
             Aggregation<DATA, T5> aggregation5,
             Aggregation<DATA, T6> aggregation6) {
-        // TODO - Check if the processor is not Collector ... then there is no need to accumulate ... just call finish.
-        val funcList   = asFuncList();
-        val collected1 = collectedOf(funcList, aggregation1.collector());
-        val collected2 = collectedOf(funcList, aggregation2.collector());
-        val collected3 = collectedOf(funcList, aggregation3.collector());
-        val collected4 = collectedOf(funcList, aggregation4.collector());
-        val collected5 = collectedOf(funcList, aggregation5.collector());
-        val collected6 = collectedOf(funcList, aggregation6.collector());
+        val collected1 = collectedOf(aggregation1.collector());
+        val collected2 = collectedOf(aggregation2.collector());
+        val collected3 = collectedOf(aggregation3.collector());
+        val collected4 = collectedOf(aggregation4.collector());
+        val collected5 = collectedOf(aggregation5.collector());
+        val collected6 = collectedOf(aggregation6.collector());
+        
+        val funcList = asFuncList();
         funcList
         .forEach(each -> {
             collected1.accumulate(each);

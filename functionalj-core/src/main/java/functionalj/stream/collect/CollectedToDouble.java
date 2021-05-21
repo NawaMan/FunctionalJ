@@ -25,78 +25,29 @@ package functionalj.stream.collect;
 
 import java.util.function.BiConsumer;
 
-import functionalj.list.AsFuncList;
-import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
-import lombok.val;
-
-public interface CollectedToDouble<DATA, ACCUMULATED>
+public class CollectedToDouble<DATA, ACCUMULATED>
                     extends Collected<DATA, ACCUMULATED, Double> {
     
-    public void   accumulate(DATA each);
-    public double finishToDouble();
+    private final CollectorToDoublePlus<DATA, ACCUMULATED> collector;
+    private final BiConsumer<ACCUMULATED, DATA>            accumulator;
+    private final ACCUMULATED                              accumulated;
+    
+    public CollectedToDouble(CollectorToDoublePlus<DATA, ACCUMULATED> collector) {
+        this.collector   = collector;
+        this.accumulated = collector.supplier().get();
+        this.accumulator = collector.accumulator();
+    }
+    
+    public void accumulate(DATA each) {
+        accumulator.accept(accumulated, each);
+    }
+    
+    public double finishToDouble() {
+        return collector.finisherToDouble().applyAsDouble(accumulated);
+    }
     
     public default Double finish() {
         return finishToDouble();
-    }
-    
-    //-- Implementation --
-    
-    public static class ByCollector<DATA, ACCUMULATED>
-            implements
-                StreamProcessor<DATA, Double>,
-                CollectedToDouble<DATA, ACCUMULATED> {
-        
-        private final CollectorToDoublePlus<DATA, ACCUMULATED> collector;
-        private final BiConsumer<ACCUMULATED, DATA>            accumulator;
-        private final ACCUMULATED                              accumulated;
-        
-        public ByCollector(CollectorToDoublePlus<DATA, ACCUMULATED> collector) {
-            this.collector   = collector;
-            this.accumulated = collector.supplier().get();
-            this.accumulator = collector.accumulator();
-        }
-        
-        public void accumulate(DATA each) {
-            accumulator.accept(accumulated, each);
-        }
-        
-        public double finishToDouble() {
-            return collector.finisherToDouble().applyAsDouble(accumulated);
-        }
-        
-        @Override
-        public Double process(StreamPlus<? extends DATA> stream) {
-            return stream.calculate(collector);
-        }
-    }
-    
-    public static class ByStreamProcessor<DATA, ACCUMULATED>
-                            implements CollectedToDouble<DATA, ACCUMULATED> {
-        
-        private final StreamProcessor<? extends DATA, Double> processor;
-        private final AsFuncList<DATA>                        funcList;
-        
-        ByStreamProcessor(
-                AsFuncList<DATA>                        funcList,
-                StreamProcessor<? extends DATA, Double> processor) {
-            this.processor = processor;
-            this.funcList  = funcList;
-        }
-        
-        public void accumulate(DATA each) {
-        }
-        
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        public Double finish() {
-            val stream = funcList.streamPlus();
-            return (Double)processor.process((StreamPlus)stream);
-        }
-        
-        @Override
-        public double finishToDouble() {
-            return finish();
-        }
     }
     
 }

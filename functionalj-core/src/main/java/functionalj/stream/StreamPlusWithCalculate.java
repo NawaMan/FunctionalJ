@@ -47,7 +47,7 @@ public interface StreamPlusWithCalculate<DATA> {
     /** Perform the calculation using the data of this stream */
     public default <RESULT, ACCUMULATED> RESULT calculate(
             Collector<? super DATA, ACCUMULATED, RESULT> collector) {
-        val collected = new Collected.ByCollector<>(collector);
+        val collected = Collected.of(collector);
         forEach(each -> {
             collected.accumulate(each);
         });
@@ -62,8 +62,8 @@ public interface StreamPlusWithCalculate<DATA> {
                         calculate(
                             Collector<? super DATA, ACCUMULATED1, RESULT1> collector1,
                             Collector<? super DATA, ACCUMULATED2, RESULT2> collector2) {
-        val collected1 = new Collected.ByCollector<>(collector1);
-        val collected2 = new Collected.ByCollector<>(collector2);
+        val collected1 = Collected.of(collector1);
+        val collected2 = Collected.of(collector2);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -83,9 +83,9 @@ public interface StreamPlusWithCalculate<DATA> {
                             Collector<? super DATA, ACCUMULATED1, RESULT1> collector1,
                             Collector<? super DATA, ACCUMULATED2, RESULT2> collector2,
                             Collector<? super DATA, ACCUMULATED3, RESULT3> collector3) {
-        val collected1 = new Collected.ByCollector<>(collector1);
-        val collected2 = new Collected.ByCollector<>(collector2);
-        val collected3 = new Collected.ByCollector<>(collector3);
+        val collected1 = Collected.of(collector1);
+        val collected2 = Collected.of(collector2);
+        val collected3 = Collected.of(collector3);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -109,10 +109,10 @@ public interface StreamPlusWithCalculate<DATA> {
                             Collector<? super DATA, ACCUMULATED2, RESULT2> collector2,
                             Collector<? super DATA, ACCUMULATED3, RESULT3> collector3,
                             Collector<? super DATA, ACCUMULATED4, RESULT4> collector4) {
-        val collected1 = new Collected.ByCollector<>(collector1);
-        val collected2 = new Collected.ByCollector<>(collector2);
-        val collected3 = new Collected.ByCollector<>(collector3);
-        val collected4 = new Collected.ByCollector<>(collector4);
+        val collected1 = Collected.of(collector1);
+        val collected2 = Collected.of(collector2);
+        val collected3 = Collected.of(collector3);
+        val collected4 = Collected.of(collector4);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -140,11 +140,11 @@ public interface StreamPlusWithCalculate<DATA> {
                             Collector<DATA, ACCUMULATED3, RESULT3> collector3,
                             Collector<DATA, ACCUMULATED4, RESULT4> collector4,
                             Collector<DATA, ACCUMULATED5, RESULT5> collector5) {
-        val collected1 = new Collected.ByCollector<>(collector1);
-        val collected2 = new Collected.ByCollector<>(collector2);
-        val collected3 = new Collected.ByCollector<>(collector3);
-        val collected4 = new Collected.ByCollector<>(collector4);
-        val collected5 = new Collected.ByCollector<>(collector5);
+        val collected1 = Collected.of(collector1);
+        val collected2 = Collected.of(collector2);
+        val collected3 = Collected.of(collector3);
+        val collected4 = Collected.of(collector4);
+        val collected5 = Collected.of(collector5);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -176,12 +176,12 @@ public interface StreamPlusWithCalculate<DATA> {
                             Collector<DATA, ACCUMULATED4, RESULT4> collector4,
                             Collector<DATA, ACCUMULATED5, RESULT5> collector5,
                             Collector<DATA, ACCUMULATED6, RESULT6> collector6) {
-        val collected1 = new Collected.ByCollector<>(collector1);
-        val collected2 = new Collected.ByCollector<>(collector2);
-        val collected3 = new Collected.ByCollector<>(collector3);
-        val collected4 = new Collected.ByCollector<>(collector4);
-        val collected5 = new Collected.ByCollector<>(collector5);
-        val collected6 = new Collected.ByCollector<>(collector6);
+        val collected1 = Collected.of(collector1);
+        val collected2 = Collected.of(collector2);
+        val collected3 = Collected.of(collector3);
+        val collected4 = Collected.of(collector4);
+        val collected5 = Collected.of(collector5);
+        val collected6 = Collected.of(collector6);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);

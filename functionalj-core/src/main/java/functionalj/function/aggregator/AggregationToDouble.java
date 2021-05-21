@@ -23,13 +23,11 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
 import functionalj.stream.collect.CollectorToDoublePlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface AggregationToDouble<SOURCE> extends StreamProcessor<SOURCE, Double> {
+public interface AggregationToDouble<SOURCE> {
     
     public static <S, A> AggregationToDouble<S> from(CollectorToDoublePlus<S, A> collector) {
         return () -> collector;
@@ -37,11 +35,6 @@ public interface AggregationToDouble<SOURCE> extends StreamProcessor<SOURCE, Dou
     
     public CollectorToDoublePlus<SOURCE, ?> collectorToDouble();
     
-    
-    public default Double process(StreamPlus<? extends SOURCE> stream) {
-        val collector = collectorToDouble();
-        return ((StreamProcessor<SOURCE, Double>)collector).process(stream);
-    }
     
     public default AggregatorToDouble<SOURCE> newAccumulatorToDouble() {
         val collector = collectorToDouble();

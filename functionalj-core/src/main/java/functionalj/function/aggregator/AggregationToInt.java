@@ -23,25 +23,17 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
 import functionalj.stream.collect.CollectorToIntPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface AggregationToInt<SOURCE> extends StreamProcessor<SOURCE, Integer> {
+public interface AggregationToInt<SOURCE> {
     
     public static <S, A> AggregationToInt<S> from(CollectorToIntPlus<S, A> collector) {
         return () -> collector;
     }
     
     public CollectorToIntPlus<SOURCE, ?> collectorToInt();
-    
-    
-    public default Integer process(StreamPlus<? extends SOURCE> stream) {
-        val collector = collectorToInt();
-        return ((StreamProcessor<SOURCE, Integer>)collector).process(stream);
-    }
     
     public default AggregatorToInt<SOURCE> newAccumulatorToInt() {
         val collector = collectorToInt();

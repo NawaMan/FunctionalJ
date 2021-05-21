@@ -25,16 +25,13 @@ package functionalj.stream.collect;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 
-import functionalj.list.AsFuncList;
+import functionalj.function.aggregator.Aggregation;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.longlist.AsLongFuncList;
-import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
 import functionalj.stream.doublestream.DoubleStreamProcessor;
 import functionalj.stream.doublestream.collect.DoubleCollected;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
@@ -44,86 +41,30 @@ import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.longstream.LongStreamProcessor;
 import functionalj.stream.longstream.collect.LongCollected;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
-import lombok.val;
 
 
 public interface Collected<DATA, ACCUMULATED, RESULT> {
     
-    public void   accumulate(DATA each);
-    public RESULT finish();
-    
-    
-    public static class ByCollector<DATA, ACCUMULATED, RESULT>
-            implements
-                StreamProcessor<DATA, RESULT>,
-                Collected<DATA, ACCUMULATED, RESULT> {
-        
-        private final Collector<DATA, ACCUMULATED, RESULT> collector;
-        private final BiConsumer<ACCUMULATED, DATA>        accumulator;
-        private final ACCUMULATED                          accumulated;
-        
-        public ByCollector(Collector<DATA, ACCUMULATED, RESULT> collector) {
-            this.collector   = collector;
-            this.accumulated = collector.supplier().get();
-            this.accumulator = collector.accumulator();
-        }
-        
-        public void accumulate(DATA each) {
-            accumulator.accept(accumulated, each);
-        }
-        
-        public RESULT finish() {
-            return collector.finisher().apply(accumulated);
-        }
-        
-        @Override
-        public RESULT process(StreamPlus<? extends DATA> stream) {
-            return stream.calculate(collector);
-        }
-    }
-    
-    public static class ByStreamProcessor<DATA, ACCUMULATED, RESULT>
-            implements
-                Collected<DATA, ACCUMULATED, RESULT> {
-        
-        private final StreamProcessor<? extends DATA, RESULT> processor;
-        private final AsFuncList<DATA> funcList;
-        
-        ByStreamProcessor(
-                AsFuncList<DATA>                        funcList,
-                StreamProcessor<? extends DATA, RESULT> processor) {
-            this.processor = processor;
-            this.funcList  = funcList;
-        }
-        
-        public void accumulate(DATA each) {
-        }
-        
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        public RESULT finish() {
-            val stream = funcList.streamPlus();
-            return (RESULT) processor.process((StreamPlus)stream);
-        }
-    }
-    
-    
-    public static <D, A, R> Collected<D, A, R> collectedOf(
-            AsFuncList<D>                   funcList,
-            StreamProcessor<? extends D, R> processor) {
-        return of(funcList, processor);
+    public static <D, A, R> Collected<D, A, R> collectedOf(Aggregation<? extends D, R> aggregation) {
+        return of(aggregation);
     }
     
     @SuppressWarnings("unchecked")
-    public static <D, A, R> Collected<D, A, R> of(
-            AsFuncList<D>                   funcList,
-            StreamProcessor<? extends D, R> processor) {
-        Objects.requireNonNull(processor);
-        if (processor instanceof Collector)
-            return new ByCollector<D, A, R>(((Collector<D, A, R>)processor));
-        
-        Objects.requireNonNull(funcList);
-        return new ByStreamProcessor<>(funcList, processor);
+    public static <D, A, R> Collected<D, A, R> of(Aggregation<? extends D, R> aggregation) {
+        return new Collected.Impl<D, A, R>((Collector<D, A, R>) aggregation.collector());
     }
+    
+    public static <D, A, R> Collected<D, A, R> collectedOf(Collector<? extends D, A, R> collector) {
+        return of(collector);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <D, A, R> Collected<D, A, R> of(Collector<? extends D, A, R> collector) {
+        requireNonNull(collector);
+        return new Collected.Impl<D, A, R>((Collector<D, A, R>)collector);
+    }
+    
+    //-- Integer --
     
     public static <A, R> IntCollected<A, R> of(
             AsIntFuncList         funcList,
@@ -146,7 +87,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D, A, R> Collected<D, A, R> of(CollectorPlus<D, A, R> collector) {
         requireNonNull(collector);
-        return new ByCollector(collector);
+        return new Collected.Impl(collector);
     }
     
     public static <A, R> IntCollected<A, R> of(IntCollectorPlus<A, R> collector) {
@@ -159,6 +100,30 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     
     public static <A, R> DoubleCollected<A, R> of(DoubleCollectorPlus<A, R> processor) {
         return DoubleCollected.of(processor);
+    }
+    
+    //== Instance ==
+    
+    public static class Impl<DATA, ACCUMULATED, RESULT> implements Collected<DATA, ACCUMULATED, RESULT> {
+        
+        private final Collector<DATA, ACCUMULATED, RESULT> collector;
+        private final BiConsumer<ACCUMULATED, DATA>        accumulator;
+        private final ACCUMULATED                          accumulated;
+        
+        public Impl(Collector<DATA, ACCUMULATED, RESULT> collector) {
+            this.collector   = collector;
+            this.accumulated = collector.supplier().get();
+            this.accumulator = collector.accumulator();
+        }
+        
+        public void accumulate(DATA each) {
+            accumulator.accept(accumulated, each);
+        }
+        
+        public RESULT finish() {
+            return collector.finisher().apply(accumulated);
+        }
+        
     }
     
 }
