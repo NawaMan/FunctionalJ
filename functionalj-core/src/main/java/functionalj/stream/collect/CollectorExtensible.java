@@ -32,7 +32,7 @@ import java.util.stream.Collector;
 
 @FunctionalInterface
 public interface CollectorExtensible<DATA, ACCUMULATED, RESULT> extends Collector<DATA, ACCUMULATED, RESULT> {
-
+    
     Collector<DATA, ACCUMULATED, RESULT> collector();
     
     default Supplier<ACCUMULATED>         supplier()        { return collector().supplier();        }

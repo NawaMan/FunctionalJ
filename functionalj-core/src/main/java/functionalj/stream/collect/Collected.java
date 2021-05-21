@@ -104,6 +104,11 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     
     //== Instance ==
     
+    public void accumulate(DATA each);
+    public RESULT finish();
+    
+    //== Implementation ==
+    
     public static class Impl<DATA, ACCUMULATED, RESULT> implements Collected<DATA, ACCUMULATED, RESULT> {
         
         private final Collector<DATA, ACCUMULATED, RESULT> collector;

@@ -25,29 +25,36 @@ package functionalj.stream.collect;
 
 import java.util.function.BiConsumer;
 
-public class CollectedToDouble<DATA, ACCUMULATED>
+public interface CollectedToDouble<DATA, ACCUMULATED>
                     extends Collected<DATA, ACCUMULATED, Double> {
     
-    private final CollectorToDoublePlus<DATA, ACCUMULATED> collector;
-    private final BiConsumer<ACCUMULATED, DATA>            accumulator;
-    private final ACCUMULATED                              accumulated;
-    
-    public CollectedToDouble(CollectorToDoublePlus<DATA, ACCUMULATED> collector) {
-        this.collector   = collector;
-        this.accumulated = collector.supplier().get();
-        this.accumulator = collector.accumulator();
-    }
-    
-    public void accumulate(DATA each) {
-        accumulator.accept(accumulated, each);
-    }
-    
-    public double finishToDouble() {
-        return collector.finisherToDouble().applyAsDouble(accumulated);
-    }
+    public void accumulate(DATA each);
+    public double finishToDouble();
     
     public default Double finish() {
         return finishToDouble();
+    }
+    
+    public static class Impl<DATA, ACCUMULATED> implements CollectedToDouble<DATA, ACCUMULATED> {
+        
+        private final CollectorToDoublePlus<DATA, ACCUMULATED> collector;
+        private final BiConsumer<ACCUMULATED, DATA>            accumulator;
+        private final ACCUMULATED                              accumulated;
+        
+        public Impl(CollectorToDoublePlus<DATA, ACCUMULATED> collector) {
+            this.collector   = collector;
+            this.accumulated = collector.supplier().get();
+            this.accumulator = collector.accumulator();
+        }
+        
+        public void accumulate(DATA each) {
+            accumulator.accept(accumulated, each);
+        }
+        
+        public double finishToDouble() {
+            return collector.finisherToDouble().applyAsDouble(accumulated);
+        }
+        
     }
     
 }

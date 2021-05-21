@@ -25,11 +25,6 @@ package functionalj.stream.collect;
 
 import java.util.function.BiConsumer;
 
-import functionalj.list.AsFuncList;
-import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
-import lombok.val;
-
 public interface CollectedToInt<DATA, ACCUMULATED>
                     extends Collected<DATA, ACCUMULATED, Integer> {
     
@@ -42,16 +37,13 @@ public interface CollectedToInt<DATA, ACCUMULATED>
     
     //-- Implementation --
     
-    public static class ByCollector<DATA, ACCUMULATED>
-            implements
-                StreamProcessor<DATA, Integer>,
-                CollectedToInt<DATA, ACCUMULATED> {
+    public static class Impl<DATA, ACCUMULATED> implements CollectedToInt<DATA, ACCUMULATED> {
         
         private final CollectorToIntPlus<DATA, ACCUMULATED> collector;
         private final BiConsumer<ACCUMULATED, DATA>         accumulator;
         private final ACCUMULATED                           accumulated;
         
-        public ByCollector(CollectorToIntPlus<DATA, ACCUMULATED> collector) {
+        public Impl(CollectorToIntPlus<DATA, ACCUMULATED> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.accumulator();
@@ -63,40 +55,6 @@ public interface CollectedToInt<DATA, ACCUMULATED>
         
         public int finishToInt() {
             return collector.finisherToInt().applyAsInt(accumulated);
-        }
-        
-        @Override
-        public Integer process(StreamPlus<? extends DATA> stream) {
-            return stream.calculate(collector);
-        }
-    }
-    
-    public static class ByStreamProcessor<DATA, ACCUMULATED>
-            implements
-            CollectedToInt<DATA, ACCUMULATED> {
-        
-        private final StreamProcessor<? extends DATA, Integer> processor;
-        private final AsFuncList<DATA> funcList;
-        
-        ByStreamProcessor(
-                AsFuncList<DATA>                         funcList,
-                StreamProcessor<? extends DATA, Integer> processor) {
-            this.processor = processor;
-            this.funcList  = funcList;
-        }
-        
-        public void accumulate(DATA each) {
-        }
-        
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        public Integer finish() {
-            val stream = funcList.streamPlus();
-            return (Integer)processor.process((StreamPlus)stream);
-        }
-        
-        @Override
-        public int finishToInt() {
-            return finish();
         }
     }
     

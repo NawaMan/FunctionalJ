@@ -26,15 +26,16 @@ package functionalj.stream.collect;
 import java.util.stream.Collector;
 
 import functionalj.function.Func1;
+import functionalj.function.aggregator.Aggregation;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
 import lombok.val;
 
 
+@FunctionalInterface
 public interface CollectorPlus<DATA, ACCUMULATED, TARGET> 
             extends
-                CollectorExtensible<DATA, ACCUMULATED, TARGET>,
-                StreamProcessor<DATA, TARGET> {
+                Aggregation<DATA, TARGET>,
+                CollectorExtensible<DATA, ACCUMULATED, TARGET> {
     
     public static <D, A, R> CollectorPlus<D, A, R> from(Collector<D, A, R> collector) {
         return (collector instanceof CollectorPlus)
@@ -49,10 +50,9 @@ public interface CollectorPlus<DATA, ACCUMULATED, TARGET>
     // or
     // (DATA)->ACCUMULATED , (ACCUMULATED, ACCUMULATED) -> ACCUMULATED, (ACCUMULATED) -> TARGET
     
-    
     public default TARGET process(StreamPlus<? extends DATA> stream) {
         // Let the stream decided what to do with this.
-        return stream.calculate(this);
+        return stream.collect(this);
     }
     
     public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {

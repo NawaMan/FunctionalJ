@@ -26,6 +26,7 @@ package functionalj.stream;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
 
+import functionalj.function.aggregator.Aggregation;
 import functionalj.stream.collect.Collected;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -42,11 +43,13 @@ public interface StreamPlusWithCalculate<DATA> {
     
     
     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
-    //        Still not sure how to do that.
+    //        Still not sure how to do that properly.
+    // Might try to quickly segment the stream (might use splitator) and spawn them.
     
     /** Perform the calculation using the data of this stream */
-    public default <RESULT, ACCUMULATED> RESULT calculate(
-            Collector<? super DATA, ACCUMULATED, RESULT> collector) {
+    public default <RESULT> RESULT calculate(
+            Aggregation<? super DATA, RESULT> aggregation) {
+        val collector = aggregation.collector();
         val collected = Collected.of(collector);
         forEach(each -> {
             collected.accumulate(each);

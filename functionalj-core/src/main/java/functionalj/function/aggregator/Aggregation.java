@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
+
 import functionalj.function.Func1;
 import functionalj.stream.AsStreamPlus;
 import functionalj.stream.collect.CollectorPlus;
@@ -63,21 +64,21 @@ public interface Aggregation<SOURCE, TARGET> extends Func1<AsStreamPlus<SOURCE>,
     }
     
     
-    public CollectorPlus<SOURCE, ?, TARGET> collector();
+    public CollectorPlus<SOURCE, ?, TARGET> collectorPlus();
     
     
     public default TARGET applyUnsafe(AsStreamPlus<SOURCE> stream) throws Exception {
-        val collector = collector();
+        val collector = collectorPlus();
         return stream.collect(collector);
     }
     
     public default Aggregator<SOURCE, TARGET> newAccumulator() {
-        val collector = collector();
+        val collector = collectorPlus();
         return new Aggregator<>(collector);
     }
     
     public default <INPUT> Aggregation<INPUT, TARGET> of(Func1<INPUT, SOURCE> mapper) {
-        val newCollector = collector().of(mapper);
+        val newCollector = collectorPlus().of(mapper);
         return () -> newCollector;
     }
     
