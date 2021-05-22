@@ -23,8 +23,10 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
+import java.util.function.ToIntFunction;
+
+import functionalj.function.Func1;
+import functionalj.stream.intstream.AsIntStreamPlus;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToDoublePlus;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
@@ -32,7 +34,7 @@ import functionalj.stream.intstream.collect.IntCollectorToLongPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface IntAggregation<TARGET> extends IntStreamProcessor<TARGET> {
+public interface IntAggregation<TARGET> extends Func1<AsIntStreamPlus, TARGET> {
     
     public static <A, T> IntAggregation<T> from(IntCollectorPlus<A, T> collector) {
         return () -> collector;
@@ -62,18 +64,26 @@ public interface IntAggregation<TARGET> extends IntStreamProcessor<TARGET> {
         return () -> collector;
     }
     
+    //== Instance == 
     
-    public IntCollectorPlus<?, TARGET> collector();
+    public IntCollectorPlus<?, TARGET> intCollectorPlus();
     
     
-    public default TARGET process(IntStreamPlus stream) {
-        val collector = collector();
-        return ((IntStreamProcessor<TARGET>)collector).process(stream);
+    public default TARGET applyUnsafe(AsIntStreamPlus stream) throws Exception {
+        val collector = intCollectorPlus();
+        return stream.collect(collector);
     }
     
-    public default IntAggregator<TARGET> newAccumulator() {
-        val collector = collector();
+    public default IntAggregator<TARGET> newAggregator() {
+        val collector = intCollectorPlus();
         return new IntAggregator<>(collector);
+    }
+    
+    //== Derived ==
+    
+    public default <INPUT> Aggregation<INPUT, TARGET> of(ToIntFunction<INPUT> mapper) {
+        val newCollector = intCollectorPlus().of(mapper);
+        return () -> newCollector;
     }
     
 }

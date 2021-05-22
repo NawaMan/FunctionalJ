@@ -1,6 +1,5 @@
 package functionalj.stream;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import functionalj.lens.lenses.BigIntegerAccess;

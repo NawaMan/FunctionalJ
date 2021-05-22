@@ -23,8 +23,10 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
+import java.util.function.ToLongFunction;
+
+import functionalj.function.Func1;
+import functionalj.stream.longstream.AsLongStreamPlus;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorToDoublePlus;
 import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
@@ -32,7 +34,7 @@ import functionalj.stream.longstream.collect.LongCollectorToLongPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface LongAggregation<TARGET> extends LongStreamProcessor<TARGET> {
+public interface LongAggregation<TARGET> extends Func1<AsLongStreamPlus, TARGET> {
     
     public static <A, T> LongAggregation<T> from(LongCollectorPlus<A, T> collector) {
         return () -> collector;
@@ -62,18 +64,26 @@ public interface LongAggregation<TARGET> extends LongStreamProcessor<TARGET> {
         return () -> collector;
     }
     
+    //== Instance == 
     
-    public LongCollectorPlus<?, TARGET> collector();
+    public LongCollectorPlus<?, TARGET> longCollectorPlus();
     
     
-    public default TARGET process(LongStreamPlus stream) {
-        val collector = collector();
-        return ((LongStreamProcessor<TARGET>)collector).process(stream);
+    public default TARGET applyUnsafe(AsLongStreamPlus stream) throws Exception {
+        val collector = longCollectorPlus();
+        return stream.collect(collector);
     }
     
     public default LongAggregator<TARGET> newAccumulator() {
-        val collector = collector();
+        val collector = longCollectorPlus();
         return new LongAggregator<>(collector);
+    }
+    
+    //== Derived ==
+    
+    public default <INPUT> Aggregation<INPUT, TARGET> of(ToLongFunction<INPUT> mapper) {
+        val newCollector = longCollectorPlus().of(mapper);
+        return () -> newCollector;
     }
     
 }

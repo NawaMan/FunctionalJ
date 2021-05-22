@@ -40,29 +40,30 @@ public interface Aggregation<SOURCE, TARGET> extends Func1<AsStreamPlus<SOURCE>,
     }
     
     public static <S, A> AggregationToInt<S> from(CollectorToIntPlus<S, A> collector) {
-        return () -> collector;
+        return forInt(collector);
     }
     
     public static <S, A> AggregationToLong<S> from(CollectorToLongPlus<S, A> collector) {
-        return () -> collector;
+        return forLong(collector);
     }
     
     public static <S, A> AggregationToDouble<S> from(CollectorToDoublePlus<S, A> collector) {
-        return () -> collector;
+        return forDouble(collector);
     }
     
     public static <S, A> AggregationToInt<S> forInt(CollectorToIntPlus<S, A> collector) {
-        return () -> collector;
+        return AggregationToInt.from(collector);
     }
     
     public static <S, A> AggregationToLong<S> forLong(CollectorToLongPlus<S, A> collector) {
-        return () -> collector;
+        return AggregationToLong.from(collector);
     }
     
     public static <S, A> AggregationToDouble<S> forDouble(CollectorToDoublePlus<S, A> collector) {
-        return () -> collector;
+        return AggregationToDouble.from(collector);
     }
     
+    //== Instance == 
     
     public CollectorPlus<SOURCE, ?, TARGET> collectorPlus();
     
@@ -72,10 +73,12 @@ public interface Aggregation<SOURCE, TARGET> extends Func1<AsStreamPlus<SOURCE>,
         return stream.collect(collector);
     }
     
-    public default Aggregator<SOURCE, TARGET> newAccumulator() {
+    public default Aggregator<SOURCE, TARGET> newAggregator() {
         val collector = collectorPlus();
         return new Aggregator<>(collector);
     }
+    
+    //== Derived ==
     
     public default <INPUT> Aggregation<INPUT, TARGET> of(Func1<INPUT, SOURCE> mapper) {
         val newCollector = collectorPlus().of(mapper);

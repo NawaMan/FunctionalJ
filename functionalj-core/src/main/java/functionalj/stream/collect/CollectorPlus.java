@@ -50,6 +50,10 @@ public interface CollectorPlus<DATA, ACCUMULATED, TARGET>
     // or
     // (DATA)->ACCUMULATED , (ACCUMULATED, ACCUMULATED) -> ACCUMULATED, (ACCUMULATED) -> TARGET
     
+    public default CollectorPlus<DATA, ACCUMULATED, TARGET> collectorPlus() {
+        return this;
+    }
+    
     public default TARGET process(StreamPlus<? extends DATA> stream) {
         // Let the stream decided what to do with this.
         return stream.collect(this);

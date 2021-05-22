@@ -30,6 +30,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
+import functionalj.function.Func1;
+import functionalj.stream.doublestream.collect.DerivedCollectorToDoublePlus;
 import lombok.val;
 
 public interface CollectorToDoublePlus<DATA, ACCUMULATED> 
@@ -46,6 +48,12 @@ public interface CollectorToDoublePlus<DATA, ACCUMULATED>
         return accumulated -> {
             return finisherToDouble.applyAsDouble(accumulated);
         };
+    }
+    
+    //== Derived ==
+    
+    public default <SOURCE> CollectorToDoublePlus<SOURCE, ACCUMULATED> of(Func1<SOURCE, DATA> mapper) {
+        return new DerivedCollectorToDoublePlus<>(this, mapper);
     }
     
 }

@@ -30,6 +30,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
 
+import functionalj.function.Func1;
+import functionalj.stream.longstream.collect.DerivedCollectorToLongPlus;
 import lombok.val;
 
 public interface CollectorToLongPlus<DATA, ACCUMULATED> 
@@ -46,6 +48,12 @@ public interface CollectorToLongPlus<DATA, ACCUMULATED>
         return accumulated -> {
             return finisher.applyAsLong(accumulated);
         };
+    }
+    
+    //== Derived ==
+    
+    public default <SOURCE> CollectorToLongPlus<SOURCE, ACCUMULATED> of(Func1<SOURCE, DATA> mapper) {
+        return new DerivedCollectorToLongPlus<>(this, mapper);
     }
     
 }

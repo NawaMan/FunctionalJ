@@ -23,29 +23,48 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
+import java.util.function.ToDoubleFunction;
+
+import functionalj.lens.lenses.DoubleAccessPrimitive;
+import functionalj.stream.doublestream.AsDoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.stream.doublestream.DoubleStreamProcessor;
 import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface DoubleAggregationToDouble extends DoubleStreamProcessor<Double> {
+public interface DoubleAggregationToDouble extends DoubleAccessPrimitive<AsDoubleStreamPlus> {
     
     public static <A> DoubleAggregationToDouble from(DoubleCollectorToDoublePlus<A> collector) {
         return () -> collector;
     }
     
-    public DoubleCollectorToDoublePlus<?> collectorToDouble();
+    //== Instance == 
+    
+    public DoubleCollectorToDoublePlus<?> collectorToDoublePlus();
+    
+    
+    @Override
+    public default double applyAsDouble(AsDoubleStreamPlus stream) {
+        val collector = collectorToDoublePlus();
+        return stream.collect(collector);
+    }
     
     
     public default Double process(DoubleStreamPlus stream) {
-        val collector = collectorToDouble();
-        return ((DoubleStreamProcessor<Double>)collector).process(stream);
+        val collector = collectorToDoublePlus();
+        return stream.collect(collector);
     }
     
     public default DoubleAggregatorToDouble newDoubleAccumulatorToDouble() {
-        val collector = collectorToDouble();
+        val collector = collectorToDoublePlus();
         return new DoubleAggregatorToDouble(collector);
+    }
+    
+    //== Derived ==
+    
+    public default <INPUT> AggregationToDouble<INPUT> of(ToDoubleFunction<INPUT> mapper) {
+        val newCollector = collectorToDoublePlus().of(mapper);
+        return () -> newCollector;
     }
     
 }

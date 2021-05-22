@@ -30,6 +30,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
+import functionalj.function.Func1;
+import functionalj.stream.intstream.collect.DerivedCollectorToIntPlus;
 import lombok.val;
 
 
@@ -47,6 +49,12 @@ public interface CollectorToIntPlus<DATA, ACCUMULATED>
         return accumulated -> {
             return finisher.applyAsInt(accumulated);
         };
+    }
+    
+    //== Derived ==
+    
+    public default <SOURCE> CollectorToIntPlus<SOURCE, ACCUMULATED> of(Func1<SOURCE, DATA> mapper) {
+        return new DerivedCollectorToIntPlus<>(this, mapper);
     }
     
 }

@@ -23,21 +23,40 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
+import functionalj.function.Func1;
+import functionalj.lens.lenses.LongAccessPrimitive;
+import functionalj.stream.AsStreamPlus;
 import functionalj.stream.collect.CollectorToLongPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface AggregationToLong<SOURCE> {
+public interface AggregationToLong<SOURCE> extends LongAccessPrimitive<AsStreamPlus<SOURCE>> {
     
     public static <S, A> AggregationToLong<S> from(CollectorToLongPlus<S, A> collector) {
         return () -> collector;
     }
     
+    //== Instance == 
+    
     public CollectorToLongPlus<SOURCE, ?> collectorToLong();
     
-    public default AggregatorToLong<SOURCE> newAccumulatorToLong() {
+    
+    @Override
+    public default long applyAsLong(AsStreamPlus<SOURCE> stream) {
+        val collector = collectorToLong();
+        return stream.collect(collector);
+    }
+    
+    public default AggregatorToLong<SOURCE> newAggregatorToLong() {
         val collector = collectorToLong();
         return new AggregatorToLong<>(collector);
+    }
+    
+    //== Derived ==
+    
+    public default <INPUT> AggregationToLong<INPUT> of(Func1<INPUT, SOURCE> mapper) {
+        val newCollector = collectorToLong().of(mapper);
+        return () -> newCollector;
     }
     
 }

@@ -32,7 +32,7 @@ public class AggregatorToInt<SOURCE> implements IntegerAccessPrimitive<SOURCE> {
     private final CollectedToInt<SOURCE, ?> collected;
     
     public AggregatorToInt(CollectorToIntPlus<SOURCE, ?> collector) {
-        this.collected = new CollectedToInt.ByCollector<>(collector);
+        this.collected = CollectedToInt.of(collector);
     }
     
     @Override

@@ -58,4 +58,8 @@ public interface CollectedToLong<DATA, ACCUMULATED>
         }
     }
     
+    public static <SRC, ACC> CollectedToLong<SRC, ACC> of(CollectorToLongPlus<SRC, ACC> collector) {
+        return new CollectedToLong.Impl<SRC, ACC>(collector);
+    }
+    
 }

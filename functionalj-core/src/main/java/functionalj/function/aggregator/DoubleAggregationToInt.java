@@ -35,7 +35,7 @@ public interface DoubleAggregationToInt extends DoubleStreamProcessor<Integer> {
         return () -> collector;
     }
     
-    public DoubleCollectorToIntPlus<?> collectorToInt();
+    public DoubleCollectorToIntPlus<?> collectorToIntPlus();
     
     
     public default Integer process(DoubleStreamPlus stream) {

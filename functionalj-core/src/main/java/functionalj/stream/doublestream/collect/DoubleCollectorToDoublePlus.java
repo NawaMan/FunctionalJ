@@ -29,6 +29,11 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
+import functionalj.function.Func1;
+import functionalj.function.aggregator.ACCUMULATED;
+import functionalj.function.aggregator.DATA;
+import functionalj.stream.collect.CollectorToDoublePlus;
+
 public interface DoubleCollectorToDoublePlus<ACCUMULATED>
                     extends DoubleCollectorPlus<ACCUMULATED, Double> {
     
@@ -40,6 +45,12 @@ public interface DoubleCollectorToDoublePlus<ACCUMULATED>
     
     public default Function<ACCUMULATED, Double> finisher() {
         return acc -> finisherAsDouble().applyAsDouble(acc);
+    }
+    
+    //== Derived ==
+    
+    public default <SOURCE> CollectorToDoublePlus<SOURCE, ACCUMULATED> of(ToDoubleFunction<SOURCE> mapper) {
+        return new DerivedCollectorToDoublePlus<>(this, mapper);
     }
     
 }

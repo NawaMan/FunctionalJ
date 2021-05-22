@@ -23,21 +23,40 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
+import functionalj.function.Func1;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
+import functionalj.stream.AsStreamPlus;
 import functionalj.stream.collect.CollectorToIntPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface AggregationToInt<SOURCE> {
+public interface AggregationToInt<SOURCE> extends IntegerAccessPrimitive<AsStreamPlus<SOURCE>> {
     
     public static <S, A> AggregationToInt<S> from(CollectorToIntPlus<S, A> collector) {
         return () -> collector;
     }
     
+    //== Instance == 
+    
     public CollectorToIntPlus<SOURCE, ?> collectorToInt();
     
-    public default AggregatorToInt<SOURCE> newAccumulatorToInt() {
+    
+    @Override
+    public default int applyAsInt(AsStreamPlus<SOURCE> stream) {
+        val collector = collectorToInt();
+        return stream.collect(collector);
+    }
+    
+    public default AggregatorToInt<SOURCE> newAggregatorToInt() {
         val collector = collectorToInt();
         return new AggregatorToInt<>(collector);
+    }
+    
+    //== Derived ==
+    
+    public default <INPUT> AggregationToInt<INPUT> of(Func1<INPUT, SOURCE> mapper) {
+        val newCollector = collectorToInt().of(mapper);
+        return () -> newCollector;
     }
     
 }

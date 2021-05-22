@@ -61,7 +61,9 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -70,12 +72,15 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func0;
+import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToInt;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.promise.DeferAction;
 import functionalj.stream.collect.CollectorPlus;
+import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
@@ -749,14 +754,21 @@ public class StreamPlusTest {
     
     //-- StreamPlusWithCalculate --
     
-    static class SumLength implements CollectorPlus<String, int[], Integer> {
+    static class SumLength implements AggregationToInt<String> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<int[]>           supplier()          { return ()->new int[] { 0 }; }
-        @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] += s.length(); }; }
-        @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
-        @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
-        @Override public Set<Characteristics>      characteristics()   { return characteristics; }
-        @Override public Collector<String, int[], Integer> collector() { return this; }
+        private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
+            @Override public Supplier<int[]>                   supplier()        { return ()->new int[] { 0 }; }
+            @Override public BiConsumer<int[], String>         accumulator()     { return (a, s)->{ a[0] += s.length(); }; }
+            @Override public BinaryOperator<int[]>             combiner()        { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
+            @Override public ToIntFunction<int[]>              finisherToInt()   { return a -> a[0]; }
+            @Override public Collector<String, int[], Integer> collector()       { return this; }
+            @Override public Set<Characteristics>              characteristics() { return characteristics; }
+        };
+        @Override
+        public CollectorToIntPlus<String, ?> collectorPlus() {
+            return collectorPlus;
+        }
+        
     }
     static class AvgLength implements CollectorPlus<String, int[], Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);

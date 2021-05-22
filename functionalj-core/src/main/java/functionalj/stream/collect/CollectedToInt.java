@@ -58,4 +58,8 @@ public interface CollectedToInt<DATA, ACCUMULATED>
         }
     }
     
+    public static <SRC, ACC> CollectedToInt<SRC, ACC> of(CollectorToIntPlus<SRC, ACC> collector) {
+        return new CollectedToInt.Impl<SRC, ACC>(collector);
+    }
+    
 }

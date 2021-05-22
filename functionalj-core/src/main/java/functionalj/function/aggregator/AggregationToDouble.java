@@ -23,22 +23,40 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
+import functionalj.function.Func1;
+import functionalj.lens.lenses.DoubleAccessPrimitive;
+import functionalj.stream.AsStreamPlus;
 import functionalj.stream.collect.CollectorToDoublePlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface AggregationToDouble<SOURCE> {
+public interface AggregationToDouble<SOURCE> extends DoubleAccessPrimitive<AsStreamPlus<SOURCE>> {
     
     public static <S, A> AggregationToDouble<S> from(CollectorToDoublePlus<S, A> collector) {
         return () -> collector;
     }
     
+    //== Instance == 
+    
     public CollectorToDoublePlus<SOURCE, ?> collectorToDouble();
     
     
-    public default AggregatorToDouble<SOURCE> newAccumulatorToDouble() {
+    @Override
+    public default double applyAsDouble(AsStreamPlus<SOURCE> stream) {
+        val collector = collectorToDouble();
+        return stream.collect(collector);
+    }
+    
+    public default AggregatorToDouble<SOURCE> newAggregatorToDouble() {
         val collector = collectorToDouble();
         return new AggregatorToDouble<>(collector);
+    }
+    
+    //== Derived ==
+    
+    public default <INPUT> AggregationToDouble<INPUT> of(Func1<INPUT, SOURCE> mapper) {
+        val newCollector = collectorToDouble().of(mapper);
+        return () -> newCollector;
     }
     
 }

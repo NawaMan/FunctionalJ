@@ -32,7 +32,7 @@ public class AggregatorToDouble<SOURCE> implements DoubleAccessPrimitive<SOURCE>
     private final CollectedToDouble<SOURCE, ?> collected;
     
     public AggregatorToDouble(CollectorToDoublePlus<SOURCE, ?> collector) {
-        this.collected = new CollectedToDouble.ByCollector<>(collector);
+        this.collected = CollectedToDouble.of(collector);
     }
     
     @Override

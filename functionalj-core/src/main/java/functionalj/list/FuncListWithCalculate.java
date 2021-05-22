@@ -53,8 +53,8 @@ public interface FuncListWithCalculate<DATA> {
     public default <T1, T2> Tuple2<T1, T2> calculate(
             Aggregation<DATA, T1> aggregation1,
             Aggregation<DATA, T2> aggregation2) {
-        val collected1 = collectedOf(aggregation1.collector());
-        val collected2 = collectedOf(aggregation2.collector());
+        val collected1 = collectedOf(aggregation1);
+        val collected2 = collectedOf(aggregation2);
         
         val funcList = asFuncList();
         funcList
@@ -72,9 +72,9 @@ public interface FuncListWithCalculate<DATA> {
             Aggregation<DATA, T1> aggregation1,
             Aggregation<DATA, T2> aggregation2,
             Aggregation<DATA, T3> aggregation3) {
-        val collected1 = collectedOf(aggregation1.collector());
-        val collected2 = collectedOf(aggregation2.collector());
-        val collected3 = collectedOf(aggregation3.collector());
+        val collected1 = collectedOf(aggregation1);
+        val collected2 = collectedOf(aggregation2);
+        val collected3 = collectedOf(aggregation3);
         
         val funcList   = asFuncList();
         funcList
@@ -95,10 +95,10 @@ public interface FuncListWithCalculate<DATA> {
             Aggregation<DATA, T2> aggregation2,
             Aggregation<DATA, T3> aggregation3,
             Aggregation<DATA, T4> aggregation4) {
-        val collected1 = collectedOf(aggregation1.collector());
-        val collected2 = collectedOf(aggregation2.collector());
-        val collected3 = collectedOf(aggregation3.collector());
-        val collected4 = collectedOf(aggregation4.collector());
+        val collected1 = collectedOf(aggregation1);
+        val collected2 = collectedOf(aggregation2);
+        val collected3 = collectedOf(aggregation3);
+        val collected4 = collectedOf(aggregation4);
         
         val funcList   = asFuncList();
         funcList
@@ -122,11 +122,11 @@ public interface FuncListWithCalculate<DATA> {
             Aggregation<DATA, T3> aggregation3,
             Aggregation<DATA, T4> aggregation4,
             Aggregation<DATA, T5> aggregation5) {
-        val collected1 = collectedOf(aggregation1.collector());
-        val collected2 = collectedOf(aggregation2.collector());
-        val collected3 = collectedOf(aggregation3.collector());
-        val collected4 = collectedOf(aggregation4.collector());
-        val collected5 = collectedOf(aggregation5.collector());
+        val collected1 = collectedOf(aggregation1);
+        val collected2 = collectedOf(aggregation2);
+        val collected3 = collectedOf(aggregation3);
+        val collected4 = collectedOf(aggregation4);
+        val collected5 = collectedOf(aggregation5);
         
         val funcList = asFuncList();
         funcList
@@ -153,12 +153,12 @@ public interface FuncListWithCalculate<DATA> {
             Aggregation<DATA, T4> aggregation4,
             Aggregation<DATA, T5> aggregation5,
             Aggregation<DATA, T6> aggregation6) {
-        val collected1 = collectedOf(aggregation1.collector());
-        val collected2 = collectedOf(aggregation2.collector());
-        val collected3 = collectedOf(aggregation3.collector());
-        val collected4 = collectedOf(aggregation4.collector());
-        val collected5 = collectedOf(aggregation5.collector());
-        val collected6 = collectedOf(aggregation6.collector());
+        val collected1 = collectedOf(aggregation1);
+        val collected2 = collectedOf(aggregation2);
+        val collected3 = collectedOf(aggregation3);
+        val collected4 = collectedOf(aggregation4);
+        val collected5 = collectedOf(aggregation5);
+        val collected6 = collectedOf(aggregation6);
         
         val funcList = asFuncList();
         funcList

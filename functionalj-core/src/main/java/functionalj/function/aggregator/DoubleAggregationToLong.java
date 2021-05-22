@@ -35,7 +35,7 @@ public interface DoubleAggregationToLong extends DoubleStreamProcessor<Long> {
         return () -> collector;
     }
     
-    public DoubleCollectorToLongPlus<?> collectorToLong();
+    public DoubleCollectorToLongPlus<?> collectorToLongPlus();
     
     
     public default Long process(DoubleStreamPlus stream) {

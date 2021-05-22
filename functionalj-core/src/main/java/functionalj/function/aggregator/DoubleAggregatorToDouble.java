@@ -23,7 +23,10 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
+import functionalj.function.Func1;
 import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
+import functionalj.stream.collect.CollectorToDoublePlus;
+import functionalj.stream.doublestream.collect.DerivedCollectorToDoublePlus;
 import functionalj.stream.doublestream.collect.DoubleCollected;
 import functionalj.stream.doublestream.collect.DoubleCollectedToDouble;
 import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;

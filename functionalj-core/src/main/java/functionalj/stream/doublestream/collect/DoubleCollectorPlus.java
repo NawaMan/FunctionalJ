@@ -55,9 +55,7 @@ import lombok.val;
 
 
 public interface DoubleCollectorPlus<ACCUMULATED, RESULT>
-        extends
-            CollectorPlus<Double, ACCUMULATED, RESULT>,
-            DoubleStreamProcessor<RESULT> {
+        extends CollectorPlus<Double, ACCUMULATED, RESULT>{
     
     Supplier<ACCUMULATED>          supplier();
     ObjDoubleConsumer<ACCUMULATED> doubleAccumulator();
@@ -153,9 +151,7 @@ class DoubleCollectorPlusBacked<ACCUMULATED, RESULT> {
 
 class DoubleCollectorPlusFrom<SOURCE, ACCUMULATED, RESULT> 
         extends DoubleCollectorPlusBacked<ACCUMULATED, RESULT>
-        implements
-            CollectorPlus<SOURCE, ACCUMULATED, RESULT>,
-            StreamProcessor<SOURCE, RESULT> {
+        implements CollectorPlus<SOURCE, ACCUMULATED, RESULT> {
     
     private final ToDoubleFunction<SOURCE> mapper;
     
@@ -173,11 +169,6 @@ class DoubleCollectorPlusFrom<SOURCE, ACCUMULATED, RESULT>
             val i = mapper.applyAsDouble(s);
             accumulator.accept(a, i);
         };
-    }
-    
-    @Override
-    public RESULT process(StreamPlus<? extends SOURCE> stream) {
-        return doubleCollector.process(stream.mapToDouble(mapper));
     }
     
     @Override
@@ -217,11 +208,6 @@ class DoubleCollectorPlusFromDouble<ACCUMULATED, RESULT>
             accumulator.accept(a, d);
         };
     }
-    
-    @Override
-    public RESULT process(DoubleStreamPlus stream) {
-        return doubleCollector.process(stream.map(mapper));
-    }
 }
 
 class DoubleCollectorPlusFromLong<ACCUMULATED, RESULT>
@@ -255,10 +241,6 @@ class DoubleCollectorPlusFromLong<ACCUMULATED, RESULT>
         };
     }
     
-    @Override
-    public RESULT process(LongStreamPlus stream) {
-        return doubleCollector.process(stream.mapToDouble(mapper));
-    }
 }
 
 class DoubleCollectorPlusFromInt<ACCUMULATED, RESULT> 
@@ -290,11 +272,6 @@ class DoubleCollectorPlusFromInt<ACCUMULATED, RESULT>
             val d = mapper.applyAsDouble(s);
             accumulator.accept(a, d);
         };
-    }
-    
-    @Override
-    public RESULT process(IntStreamPlus stream) {
-        return doubleCollector.process(stream.mapToDouble(mapper));
     }
     
 }

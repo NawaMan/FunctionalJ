@@ -57,4 +57,8 @@ public interface CollectedToDouble<DATA, ACCUMULATED>
         
     }
     
+    public static <SRC, ACC> CollectedToDouble<SRC, ACC> of(CollectorToDoublePlus<SRC, ACC> collector) {
+        return new CollectedToDouble.Impl<SRC, ACC>(collector);
+    }
+    
 }

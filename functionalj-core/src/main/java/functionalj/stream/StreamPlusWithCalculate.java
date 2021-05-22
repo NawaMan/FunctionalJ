@@ -49,8 +49,7 @@ public interface StreamPlusWithCalculate<DATA> {
     /** Perform the calculation using the data of this stream */
     public default <RESULT> RESULT calculate(
             Aggregation<? super DATA, RESULT> aggregation) {
-        val collector = aggregation.collector();
-        val collected = Collected.of(collector);
+        val collected = Collected.of(aggregation);
         forEach(each -> {
             collected.accumulate(each);
         });

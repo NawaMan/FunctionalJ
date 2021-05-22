@@ -51,7 +51,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     
     @SuppressWarnings("unchecked")
     public static <D, A, R> Collected<D, A, R> of(Aggregation<? extends D, R> aggregation) {
-        return new Collected.Impl<D, A, R>((Collector<D, A, R>) aggregation.collector());
+        return new Collected.Impl<D, A, R>((Collector<D, A, R>) aggregation.collectorPlus());
     }
     
     public static <D, A, R> Collected<D, A, R> collectedOf(Collector<? extends D, A, R> collector) {

@@ -32,7 +32,7 @@ public class AggregatorToLong<SOURCE> implements LongAccessPrimitive<SOURCE> {
     private final CollectedToLong<SOURCE, ?> collected;
     
     public AggregatorToLong(CollectorToLongPlus<SOURCE, ?> collector) {
-        this.collected = new CollectedToLong.ByCollector<>(collector);
+        this.collected = CollectedToLong.of(collector);
     }
     
     @Override
