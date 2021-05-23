@@ -15,9 +15,14 @@ public class DerivedDoubleCollectorToDoublePlus<ACCUMULATED> implements DoubleCo
     private final CollectorToDoublePlus<?, ACCUMULATED> collector;
     private final DoubleFunction<?>                     mapper;
     
-    public <INPUT> DerivedCollectorToDoublePlus(CollectorToDoublePlus<INPUT, ACCUMULATED> collector, DoubleFunction<INPUT> mapper) {
+    public <INPUT> DerivedDoubleCollectorToDoublePlus(CollectorToDoublePlus<INPUT, ACCUMULATED> collector, DoubleFunction<INPUT> mapper) {
         this.collector = collector;
         this.mapper    = mapper;
+    }
+    
+    @Override
+    public CollectorToDoublePlus<SOURCE, ACCUMULATED> collector() {
+        return this;
     }
     
     @Override
