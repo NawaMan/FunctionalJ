@@ -49,12 +49,6 @@ public interface DoubleAggregationToDouble extends DoubleAccessPrimitive<AsDoubl
         return stream.collect(collector);
     }
     
-    
-    public default Double process(DoubleStreamPlus stream) {
-        val collector = collectorToDoublePlus();
-        return stream.collect(collector);
-    }
-    
     public default DoubleAggregatorToDouble newDoubleAccumulatorToDouble() {
         val collector = collectorToDoublePlus();
         return new DoubleAggregatorToDouble(collector);

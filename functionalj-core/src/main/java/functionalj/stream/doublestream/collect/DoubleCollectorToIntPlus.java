@@ -27,7 +27,11 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
+
+import functionalj.stream.collect.CollectorToDoublePlus;
+import functionalj.stream.collect.CollectorToIntPlus;
 
 public interface DoubleCollectorToIntPlus<ACCUMULATED>
                     extends DoubleCollectorPlus<ACCUMULATED, Integer> {
@@ -40,6 +44,12 @@ public interface DoubleCollectorToIntPlus<ACCUMULATED>
     
     public default Function<ACCUMULATED, Integer> finisher() {
         return acc -> finisherAsInt().applyAsInt(acc);
+    }
+    
+    //== Derived ==
+    
+    public default <SOURCE> CollectorToIntPlus<SOURCE, ACCUMULATED> of(ToDoubleFunction<SOURCE> mapper) {
+        return new DerivedCollectorToDoublePlus<>(this, mapper);
     }
     
 }

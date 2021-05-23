@@ -1,8 +1,6 @@
 package functionalj.stream.doublestream.collect;
 
 import java.util.function.BinaryOperator;
-import java.util.function.DoubleFunction;
-import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -10,15 +8,7 @@ import java.util.function.ToDoubleFunction;
 import functionalj.stream.collect.CollectorToDoublePlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 
-public class DerivedDoubleCollectorToDoublePlus<ACCUMULATED> implements DoubleCollectorToDoublePlus<ACCUMULATED> {
-    
-    private final CollectorToDoublePlus<?, ACCUMULATED> collector;
-    private final DoubleFunction<?>                     mapper;
-    
-    public <INPUT> DerivedCollectorToDoublePlus(CollectorToDoublePlus<INPUT, ACCUMULATED> collector, DoubleFunction<INPUT> mapper) {
-        this.collector = collector;
-        this.mapper    = mapper;
-    }
+public class DerivedDoubleCollectorToIntPlus<ACCUMULATED> implements DoubleCollectorToIntPlus<ACCUMULATED> {
     
     @Override
     public Supplier<ACCUMULATED> supplier() {
