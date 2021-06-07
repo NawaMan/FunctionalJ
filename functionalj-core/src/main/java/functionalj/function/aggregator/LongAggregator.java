@@ -25,32 +25,37 @@ package functionalj.function.aggregator;
 
 import java.util.function.LongFunction;
 
-import functionalj.function.Func1;
-import functionalj.stream.collect.Collected;
 import functionalj.stream.longstream.collect.LongCollected;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 
-public class LongAggregator<TARGET> implements LongFunction<TARGET>, Func1<Long, TARGET> {
+public interface LongAggregator<TARGET> extends LongFunction<TARGET>, Aggregator<Long, TARGET> {
     
-    private final LongCollected<?, TARGET> collected;
+    public LongCollected<?, TARGET> asCollected();
     
-    public LongAggregator(LongCollectorPlus<?, TARGET> collector) {
-        this.collected = Collected.of(collector);
-    }
+    //== Implementation ==
     
-    @Override
-    public TARGET apply(long input) {
-        collected.accumulate(input);
-        return collected.finish();
-    }
-    
-    @Override
-    public TARGET applyUnsafe(Long input) throws Exception {
-        return apply(input);
-    }
-    
-    public LongCollected<?, TARGET> asCollected() {
-        return collected;
+    public static class Impl<TARGET> implements LongAggregator<TARGET> {
+        
+        private final LongCollected<?, TARGET> collected;
+        
+        public Impl(LongCollectorPlus<?, TARGET> collector) {
+            this.collected = LongCollected.collectedOf(collector);
+        }
+        
+        @Override
+        public TARGET apply(long input) {
+            collected.accumulate(input);
+            return collected.finish();
+        }
+        
+        @Override
+        public TARGET applyUnsafe(Long input) throws Exception {
+            return apply(input);
+        }
+        
+        public LongCollected<?, TARGET> asCollected() {
+            return collected;
+        }
     }
     
 }

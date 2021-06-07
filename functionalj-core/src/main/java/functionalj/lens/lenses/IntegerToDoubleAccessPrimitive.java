@@ -33,6 +33,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 
 import functionalj.function.IntComparator;
@@ -44,7 +45,7 @@ import lombok.val;
  * Classes implementing this interface know how to access from an integer to a double value.
  **/
 @FunctionalInterface
-public interface IntegerToDoubleAccessPrimitive extends DoubleAccessPrimitive<Integer>, IntToDoubleFunction {
+public interface IntegerToDoubleAccessPrimitive extends DoubleAccessPrimitive<Integer>, IntToDoubleFunction, IntFunction<Double> {
     
     //== Constructor ==
     
@@ -62,6 +63,10 @@ public interface IntegerToDoubleAccessPrimitive extends DoubleAccessPrimitive<In
     }
     
     public default double applyAsDouble(Integer host) {
+        return applyIntToDouble(host);
+    }
+    
+    public default Double apply(int host) {
         return applyIntToDouble(host);
     }
     

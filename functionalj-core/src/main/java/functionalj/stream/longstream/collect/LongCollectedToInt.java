@@ -25,15 +25,16 @@ package functionalj.stream.longstream.collect;
 
 import java.util.function.ObjLongConsumer;
 
-import functionalj.list.longlist.AsLongFuncList;
 import functionalj.stream.collect.Collected;
-import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
-import lombok.val;
 
 
-public interface LongCollectedToInt<ACCUMULATED> 
-                    extends Collected<Long, ACCUMULATED, Integer> {
+public interface LongCollectedToInt<ACCUMULATED> extends Collected<Long, ACCUMULATED, Integer>, LongCollected<ACCUMULATED, Integer> {
+    
+    public static <ACC> LongCollectedToInt<ACC> of(LongCollectorToIntPlus<ACC> collector) {
+        return new LongCollectedToInt.Impl<ACC>(collector);
+    }
+    
+    //== Instance ==
     
     public void accumulate(long each);
     public int  finishAsInt();
@@ -48,16 +49,13 @@ public interface LongCollectedToInt<ACCUMULATED>
     
     //== Implementation ==
     
-    public static class ByCollector<ACCUMULATED>
-            implements
-                LongStreamProcessor<Integer>,
-                LongCollectedToInt<ACCUMULATED> {
+    public static class Impl<ACCUMULATED> implements LongCollectedToInt<ACCUMULATED> {
         
         private final LongCollectorToIntPlus<ACCUMULATED> collector;
         private final ObjLongConsumer<ACCUMULATED>        accumulator;
         private final ACCUMULATED                         accumulated;
         
-        public ByCollector(LongCollectorToIntPlus<ACCUMULATED> collector) {
+        public Impl(LongCollectorToIntPlus<ACCUMULATED> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.longAccumulator();
@@ -72,37 +70,6 @@ public interface LongCollectedToInt<ACCUMULATED>
             return collector.finisher().apply(accumulated);
         }
         
-        @Override
-        public Integer process(LongStreamPlus stream) {
-            return stream.calculate(collector);
-        }
-        
-    }
-    
-    public static class ByStreamProcessor<ACCUMULATED>
-            implements
-                LongCollectedToInt<ACCUMULATED> {
-        
-        private final LongStreamProcessor<Integer> processor;
-        private final AsLongFuncList                funcList;
-        
-        ByStreamProcessor(
-                AsLongFuncList               funcList,
-                LongStreamProcessor<Integer> processor) {
-            this.processor = processor;
-            this.funcList  = funcList;
-        }
-        
-        public void accumulate(long each) {
-        }
-        
-        @Override
-        public int finishAsInt() {
-            val stream = funcList.longStreamPlus();
-            return processor.process((LongStreamPlus)stream);
-        }
-        
     }
     
 }
-

@@ -83,7 +83,6 @@ public interface LongFuncList
             AsLongFuncList,
             LongIterable,
             LongPredicate,
-            LongFuncListWithCalculate,
             LongFuncListWithCombine,
             LongFuncListWithFilter,
             LongFuncListWithFlatMap,

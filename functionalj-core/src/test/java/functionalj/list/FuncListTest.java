@@ -37,7 +37,6 @@ import static functionalj.list.FuncList.newListBuilder;
 import static functionalj.ref.Run.With;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
-import static functionalj.stream.intstream.CollectorPlusHelper.unorderedConcurrent;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
@@ -66,7 +65,9 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -86,7 +87,7 @@ import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.collect.CollectorPlus;
+import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
@@ -1131,18 +1132,18 @@ public class FuncListTest {
                     .sortedByKey(theInteger));
         });
     }
-    
-    @Test
-    public void testGroupingBy_process() {
-        run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            val sumLength = new SumLength();
-            assertAsString(
-                    "{3:6, 4:8, 5:5}",
-                    list
-                    .groupingBy(theString.length(), sumLength)
-                    .sortedByKey(theInteger));
-        });
-    }
+//    
+//    @Test
+//    public void testGroupingBy_process() {
+//        run(FuncList.of(One, Two, Three, Four, Five), list -> {
+//            val sumLength = new SumLength();
+//            assertAsString(
+//                    "{3:6, 4:8, 5:5}",
+//                    list
+//                    .groupingBy(theString.length(), sumLength)
+//                    .sortedByKey(theInteger));
+//        });
+//    }
     
     @Test
     public void testGroupingBy_collect() {
@@ -1759,139 +1760,67 @@ public class FuncListTest {
     //-- StreamPlusWithCalculate --
     
     static class SumLength implements Aggregation<String, Integer> {
-        
-        private CollectorPlus<String, int[], Integer> collector = new CollectorPlus<String, int[], Integer>() {
-            private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-            @Override public Supplier<int[]>                       supplier()        { return ()->new int[] { 0 }; }
-            @Override public BiConsumer<int[], String>             accumulator()     { return (a, s)->{ a[0] += s.length(); }; }
-            @Override public BinaryOperator<int[]>                 combiner()        { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
-            @Override public Function<int[], Integer>              finisher()        { return a -> a[0]; }
-            @Override public Set<Characteristics>                  characteristics() { return characteristics; }
-            @Override public CollectorPlus<String, int[], Integer> collector()       { return this; }
-            
-            @Override public Integer process(StreamPlus<? extends String> stream) {
-                return stream.mapToInt(String::length).sum();
-            }
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
+            @Override public Supplier<int[]>                   supplier()        { return ()->new int[] { 0 }; }
+            @Override public BiConsumer<int[], String>         accumulator()     { return (a, s)->{ a[0] += s.length(); }; }
+            @Override public BinaryOperator<int[]>             combiner()        { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
+            @Override public ToIntFunction<int[]>              finisherToInt()   { return a -> a[0]; }
+            @Override public Collector<String, int[], Integer> collector()       { return this; }
+            @Override public Set<Characteristics>              characteristics() { return characteristics; }
         };
-        
         @Override
-        public CollectorPlus<String, int[], Integer> collector() {
-            return collector;
+        public CollectorToIntPlus<String, ?> collectorPlus() {
+            return collectorPlus;
         }
         
     }
     static class AvgLength implements Aggregation<String, Integer> {
-        private CollectorPlus<String, int[], Integer> collector = new CollectorPlus<String, int[], Integer>() {
-            private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-            @Override public Supplier<int[]>           supplier()              { return ()->new int[] { 0, 0 }; }
-            @Override public BiConsumer<int[], String> accumulator()           { return (a, s)->{ a[0] += s.length(); a[1]++; }; }
-            @Override public BinaryOperator<int[]>     combiner()              { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
-            @Override public Function<int[], Integer>  finisher()              { return a -> a[0]/a[1]; }
-            @Override public Set<Characteristics>      characteristics()       { return characteristics; }
-            @Override public CollectorPlus<String, int[], Integer> collector() { return this; }
-            
-            @Override public Integer process(StreamPlus<? extends String> stream) {
-                val avg = stream.mapToInt(String::length).average();
-                if (!avg.isPresent()) {
-                    return null;
-                }
-                return (int)avg.getAsDouble();
-            }
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
+            @Override public Supplier<int[]>                   supplier()        { return ()->new int[] { 0, 0 }; }
+            @Override public BiConsumer<int[], String>         accumulator()     { return (a, s)->{ a[0] += s.length(); a[1]++; }; }
+            @Override public BinaryOperator<int[]>             combiner()        { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
+            @Override public Function<int[], Integer>          finisher()        { return a -> a[0]/a[1]; }
+            @Override public ToIntFunction<int[]>              finisherToInt()   { return a -> a[0]/a[1]; }
+            @Override public Collector<String, int[], Integer> collector()       { return this; }
+            @Override public Set<Characteristics>              characteristics() { return characteristics; }
         };
-        
         @Override
-        public CollectorPlus<String, int[], Integer> collector() {
-            return collector;
+        public CollectorToIntPlus<String, ?> collectorPlus() {
+            return collectorPlus;
         }
     }
     static class MinLength implements Aggregation<String, Integer> {
-        private CollectorPlus<String, int[], Integer> collector = new CollectorPlus<String, int[], Integer>() {
-            private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MAX_VALUE }; }
             @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] = Math.min(a[0], s.length()); }; }
             @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { Math.min(a1[0], a2[0]) }; }
             @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
+            @Override public ToIntFunction<int[]>      finisherToInt()     { return a -> a[0]; }
             @Override public Set<Characteristics>      characteristics()   { return characteristics; }
-            @Override public CollectorPlus<String, int[], Integer> collector() { return this; }
-            
-            @Override public Integer process(StreamPlus<? extends String> stream) {
-                val avg = stream.mapToInt(String::length).min();
-                if (!avg.isPresent()) {
-                    return null;
-                }
-                return (int)avg.getAsInt();
-            }
+            @Override public Collector<String, int[], Integer> collector() { return this; }
         };
-        
         @Override
-        public CollectorPlus<String, int[], Integer> collector() {
-            return collector;
+        public CollectorToIntPlus<String, ?> collectorPlus() {
+            return collectorPlus;
         }
     }
     static class MaxLength implements Aggregation<String, Integer> {
-        private CollectorPlus<String, int[], Integer> collector = new CollectorPlus<String, int[], Integer>() {
-            private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MIN_VALUE }; }
             @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] = Math.max(a[0], s.length()); }; }
             @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { Math.max(a1[0], a2[0]) }; }
             @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
+            @Override public ToIntFunction<int[]>      finisherToInt()     { return a -> a[0]; }
             @Override public Set<Characteristics>      characteristics()   { return characteristics; }
-            @Override public CollectorPlus<String, int[], Integer> collector() { return this; }
-            
-            @Override public Integer process(StreamPlus<? extends String> stream) {
-                val avg = stream.mapToInt(String::length).max();
-                if (!avg.isPresent()) {
-                    return null;
-                }
-                return (int)avg.getAsInt();
-            }
-        };
-        
-        @Override
-        public CollectorPlus<String, int[], Integer> collector() {
-            return collector;
-        }
-    }
-    static class Sum implements Aggregation<Integer, Integer> {
-        
-        private CollectorPlus<Integer, int[], Integer> sumCollector = new CollectorPlus<Integer, int[], Integer>() {
-            private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-            @Override public Supplier<int[]>            supplier()          { return ()->new int[] { 0 }; }
-            @Override public BiConsumer<int[], Integer> accumulator()       { return (a, e)->{ a[0] += e.intValue(); }; }
-            @Override public BinaryOperator<int[]>      combiner()          { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
-            @Override public Function<int[], Integer>   finisher()          { return a -> a[0]; }
-            @Override public Set<Characteristics>       characteristics()   { return characteristics; }
-            @Override public CollectorPlus<Integer, int[], Integer> collector() { return this; }
-            
-            @Override public Integer process(StreamPlus<? extends Integer> stream) {
-                return stream.mapToInt(theInteger).sum();
-            }
-        };
-        
-        @Override
-        public CollectorPlus<Integer, int[], Integer> collector() {
-            return sumCollector;
-        }
-    }
-    
-    static class SumLengthAggregate implements Aggregation<String, Integer> {
-        private CollectorPlus<String, int[], Integer> sumCollector = new CollectorPlus<String, int[], Integer>() {
-            @Override public Supplier<int[]>           supplier()          { return ()->new int[] { 0 }; }
-            @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] += s.length(); }; }
-            @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
-            @Override public Set<Characteristics>      characteristics()   { return unorderedConcurrent(); }
             @Override public Collector<String, int[], Integer> collector() { return this; }
-            @Override public Function<int[], Integer> finisher()           { return a -> a[0]; }
-            
-            @Override public Integer process(StreamPlus<? extends String> stream) {
-                return stream.mapToInt(String::length).sum();
-            }
-            
         };
-        
         @Override
-        public CollectorPlus<String, int[], Integer> collector() {
-            return sumCollector;
+        public CollectorToIntPlus<String, ?> collectorPlus() {
+            return collectorPlus;
         }
     }
     
@@ -2021,24 +1950,6 @@ public class FuncListTest {
                                 return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2 + ", avg2: " + avg2;
                             });
             assertAsString("sum: 18, avg: 4, min: 3, max: 6, sum2: 18, avg2: 4", value);
-        });
-    }
-    
-    @Test
-    public void testCalculate_of() {
-        run(FuncList.of(Two, Three, Four, Eleven), list -> {
-            val sum = new Sum();
-            assertEquals(18, list.calculate(sum.of(theString.length())).intValue());
-        });
-    }
-    
-    //-- Aggregate --
-    
-    @Test
-    public void testAggregator() {
-        run(FuncList.of(Two, Three, Four, Eleven), list -> {
-            val sum = new SumLengthAggregate();
-            assertEquals(18, list.calculate(sum).intValue());
         });
     }
     

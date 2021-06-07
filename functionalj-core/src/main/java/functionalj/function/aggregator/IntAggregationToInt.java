@@ -23,29 +23,72 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
+import java.util.function.DoubleFunction;
+import java.util.function.DoubleToIntFunction;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.IntFunction;
+import java.util.function.IntUnaryOperator;
+import java.util.function.LongToIntFunction;
+import java.util.function.ToIntFunction;
+
+import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import lombok.val;
 
+
 @FunctionalInterface
-public interface IntAggregationToInt extends IntStreamProcessor<Integer> {
+public interface IntAggregationToInt extends IntAggregation<Integer> {
     
     public static <A> IntAggregationToInt from(IntCollectorToIntPlus<A> collector) {
         return () -> collector;
     }
     
-    public IntCollectorToIntPlus<?> collectorToInt();
+    //== Instance == 
+    
+    public IntCollectorToIntPlus<?> collectorToIntPlus();
     
     
-    public default Integer process(IntStreamPlus stream) {
-        val collector = collectorToInt();
-        return ((IntStreamProcessor<Integer>)collector).process(stream);
+    @Override
+    public default IntCollectorPlus<?, Integer> intCollectorPlus() {
+        return collectorToIntPlus();
     }
     
     public default IntAggregatorToInt newIntAccumulatorToInt() {
-        val collector = collectorToInt();
-        return new IntAggregatorToInt(collector);
+        val collector = collectorToIntPlus();
+        return new IntAggregatorToInt.Impl(collector);
+    }
+    
+    //== Derived ==
+    
+    public default <INPUT> AggregationToInt<INPUT> of(ToIntFunction<INPUT> mapper) {
+        val newCollector = collectorToIntPlus().of(mapper);
+        return () -> newCollector;
+    }
+    
+    public default IntAggregationToInt ofInt(IntFunction<Integer> mapper) {
+        if (mapper instanceof IntUnaryOperator) {
+            return ofIntToInt((IntUnaryOperator)mapper);
+        }
+        
+        val newCollector = collectorToIntPlus().of(mapper);
+        return () -> newCollector;
+    }
+    
+    // This is a terrible name .... :-(
+    // But Java confuse this one and the one in LongAggregate
+    public default IntAggregationToInt ofIntToInt(IntUnaryOperator mapper) {
+        val newCollector = collectorToIntPlus().of(mapper);
+        return () -> newCollector;
+    }
+    
+    public default LongAggregationToInt ofLong(LongToIntFunction mapper) {
+        val newCollector = collectorToIntPlus().of(mapper);
+        return () -> newCollector;
+    }
+    
+    public default DoubleAggregationToInt ofDouble(DoubleToIntFunction mapper) {
+        val newCollector = collectorToIntPlus().of(mapper);
+        return () -> newCollector;
     }
     
 }

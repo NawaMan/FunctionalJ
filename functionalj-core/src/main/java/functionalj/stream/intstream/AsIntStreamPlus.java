@@ -47,6 +47,7 @@ class AsIntStreamPlusHelper {
 @FunctionalInterface
 public interface AsIntStreamPlus
                     extends
+                        AsIntStreamPlusWithCalculate,
                         AsIntStreamPlusWithConversion,
                         AsIntStreamPlusWithCollect,
                         AsIntStreamPlusWithForEach,

@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.function.LongFunction;
 import java.util.function.Supplier;
 
+import functionalj.function.aggregator.LongAggregation;
 import functionalj.list.longlist.LongFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableFuncMap;
@@ -88,13 +89,11 @@ public interface AsLongStreamPlusWithGroupingBy {
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            LongFunction<KEY>            keyMapper,
-            AsLongStreamProcessor<VALUE> processor) {
+            LongFunction<KEY>      keyMapper,
+            LongAggregation<VALUE> aggregation) {
         FuncMap<KEY, LongFuncList> groupingBy = groupingBy(keyMapper);
-        return (FuncMap<KEY, VALUE>) groupingBy
-                .mapValue(stream -> stream.calculate((LongStreamProcessor) processor.asLongStreamProcessor()));
+        return (FuncMap<KEY, VALUE>) groupingBy.mapValue(stream -> stream.calculate(aggregation));
     }
     
 }

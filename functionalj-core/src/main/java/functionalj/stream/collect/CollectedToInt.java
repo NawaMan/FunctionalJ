@@ -25,8 +25,13 @@ package functionalj.stream.collect;
 
 import java.util.function.BiConsumer;
 
-public interface CollectedToInt<DATA, ACCUMULATED>
-                    extends Collected<DATA, ACCUMULATED, Integer> {
+public interface CollectedToInt<DATA, ACCUMULATED> extends Collected<DATA, ACCUMULATED, Integer> {
+    
+    public static <SRC, ACC> CollectedToInt<SRC, ACC> of(CollectorToIntPlus<SRC, ACC> collector) {
+        return new CollectedToInt.Impl<SRC, ACC>(collector);
+    }
+    
+    //== Instance ==
     
     public void accumulate(DATA each);
     public int  finishToInt();
@@ -56,10 +61,7 @@ public interface CollectedToInt<DATA, ACCUMULATED>
         public int finishToInt() {
             return collector.finisherToInt().applyAsInt(accumulated);
         }
-    }
-    
-    public static <SRC, ACC> CollectedToInt<SRC, ACC> of(CollectorToIntPlus<SRC, ACC> collector) {
-        return new CollectedToInt.Impl<SRC, ACC>(collector);
+        
     }
     
 }

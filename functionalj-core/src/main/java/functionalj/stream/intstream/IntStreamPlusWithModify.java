@@ -109,8 +109,8 @@ public interface IntStreamPlusWithModify {
         val splitr      = intStreamPlus().spliterator();
         val isPrimitive = (collector instanceof IntCollectorToIntPlus);
         val collected   = isPrimitive
-                        ? IntCollected.of((IntCollectorToIntPlus)collector)
-                        : IntCollected.of(collector);
+                        ? IntCollected.collectedOf((IntCollectorToIntPlus)collector)
+                        : IntCollected.collectedOf(collector);
         val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
             @Override
             public boolean tryAdvance(IntConsumer consumer) {

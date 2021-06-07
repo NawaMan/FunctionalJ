@@ -33,6 +33,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.function.LongFunction;
 import java.util.function.LongToDoubleFunction;
 
 import functionalj.function.LongComparator;
@@ -44,7 +45,7 @@ import lombok.val;
  * Classes implementing this interface know how to access from a long to a double value.
  **/
 @FunctionalInterface
-public interface LongToDoubleAccessPrimitive extends DoubleAccessPrimitive<Long>, LongToDoubleFunction {
+public interface LongToDoubleAccessPrimitive extends DoubleAccessPrimitive<Long>, LongToDoubleFunction, LongFunction<Double>  {
 
     //== Constructor ==
     
@@ -62,6 +63,10 @@ public interface LongToDoubleAccessPrimitive extends DoubleAccessPrimitive<Long>
     }
     
     public default double applyAsDouble(Long host) {
+        return applyLongToDouble(host);
+    }
+    
+    public default Double apply(long host) {
         return applyLongToDouble(host);
     }
     

@@ -81,7 +81,6 @@ public interface DoubleFuncList
             AsDoubleFuncList,
             DoubleIterable,
             DoublePredicate,
-            DoubleFuncListWithCalculate,
             DoubleFuncListWithCombine,
             DoubleFuncListWithFilter,
             DoubleFuncListWithFlatMap,

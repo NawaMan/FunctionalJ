@@ -74,7 +74,6 @@ public interface LongStreamPlus
         extends
             LongStream,
             AsLongStreamPlus,
-            LongStreamPlusWithCalculate,
             LongStreamPlusWithCombine,
             LongStreamPlusWithFilter,
             LongStreamPlusWithFlatMap,

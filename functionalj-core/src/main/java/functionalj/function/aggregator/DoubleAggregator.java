@@ -25,32 +25,37 @@ package functionalj.function.aggregator;
 
 import java.util.function.DoubleFunction;
 
-import functionalj.function.Func1;
-import functionalj.stream.collect.Collected;
 import functionalj.stream.doublestream.collect.DoubleCollected;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 
-public class DoubleAggregator<TARGET> implements DoubleFunction<TARGET>, Func1<Double, TARGET> {
+public interface DoubleAggregator<TARGET> extends DoubleFunction<TARGET>, Aggregator<Double, TARGET> {
     
-    private final DoubleCollected<?, TARGET> collected;
+    public DoubleCollected<?, TARGET> asCollected();
     
-    public DoubleAggregator(DoubleCollectorPlus<?, TARGET> collector) {
-        this.collected = Collected.of(collector);
-    }
+    //== Implementation ==
     
-    @Override
-    public TARGET apply(double input) {
-        collected.accumulate(input);
-        return collected.finish();
-    }
-    
-    @Override
-    public TARGET applyUnsafe(Double input) throws Exception {
-        return apply(input);
-    }
-    
-    public DoubleCollected<?, TARGET> asCollected() {
-        return collected;
+    public static class Impl<TARGET> implements DoubleAggregator<TARGET> {
+        
+        private final DoubleCollected<?, TARGET> collected;
+        
+        public Impl(DoubleCollectorPlus<?, TARGET> collector) {
+            this.collected = DoubleCollected.collectedOf(collector);
+        }
+        
+        @Override
+        public TARGET apply(double input) {
+            collected.accumulate(input);
+            return collected.finish();
+        }
+        
+        @Override
+        public TARGET applyUnsafe(Double input) throws Exception {
+            return apply(input);
+        }
+        
+        public DoubleCollected<?, TARGET> asCollected() {
+            return collected;
+        }
     }
     
 }

@@ -25,15 +25,16 @@ package functionalj.stream.intstream.collect;
 
 import java.util.function.ObjIntConsumer;
 
-import functionalj.list.intlist.AsIntFuncList;
 import functionalj.stream.collect.Collected;
-import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
-import lombok.val;
 
 
-public interface IntCollectedToInt<ACCUMULATED> 
-                    extends Collected<Integer, ACCUMULATED, Integer> {
+public interface IntCollectedToInt<ACCUMULATED> extends Collected<Integer, ACCUMULATED, Integer>, IntCollected<ACCUMULATED, Integer> {
+    
+    public static <ACC> IntCollectedToInt<ACC> of(IntCollectorToIntPlus<ACC> collector) {
+        return new IntCollectedToInt.Impl<ACC>(collector);
+    }
+    
+    //== Instance ==
     
     public void accumulateAsInt(int each);
     public int  finishAsInt();
@@ -48,16 +49,13 @@ public interface IntCollectedToInt<ACCUMULATED>
     
     //== Implementation ==
     
-    public static class ByCollector<ACCUMULATED>
-            implements
-                IntStreamProcessor<Integer>,
-                IntCollectedToInt<ACCUMULATED> {
+    public static class Impl<ACCUMULATED> implements IntCollectedToInt<ACCUMULATED> {
         
         private final IntCollectorToIntPlus<ACCUMULATED> collector;
         private final ObjIntConsumer<ACCUMULATED>        accumulator;
         private final ACCUMULATED                        accumulated;
         
-        public ByCollector(IntCollectorToIntPlus<ACCUMULATED> collector) {
+        public Impl(IntCollectorToIntPlus<ACCUMULATED> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.intAccumulator();
@@ -73,36 +71,10 @@ public interface IntCollectedToInt<ACCUMULATED>
         }
         
         @Override
-        public Integer process(IntStreamPlus stream) {
-            return stream.calculate(collector);
-        }
-        
-    }
-    
-    public static class ByStreamProcessor<ACCUMULATED>
-            implements
-                IntCollectedToInt<ACCUMULATED> {
-        
-        private final IntStreamProcessor<Integer> processor;
-        private final AsIntFuncList               funcList;
-        
-        ByStreamProcessor(
-                AsIntFuncList               funcList,
-                IntStreamProcessor<Integer> processor) {
-            this.processor = processor;
-            this.funcList  = funcList;
-        }
-        
-        public void accumulateAsInt(int each) {
-        }
-        
-        @Override
-        public int finishAsInt() {
-            val stream = funcList.intStreamPlus();
-            return processor.process((IntStreamPlus)stream);
+        public void accumulate(int each) {
+            accumulateAsInt(each);
         }
         
     }
     
 }
-

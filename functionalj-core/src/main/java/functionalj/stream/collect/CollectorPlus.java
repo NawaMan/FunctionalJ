@@ -23,19 +23,22 @@
 // ============================================================================
 package functionalj.stream.collect;
 
+import java.util.function.DoubleFunction;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.LongFunction;
 import java.util.stream.Collector;
 
-import functionalj.function.Func1;
-import functionalj.function.aggregator.Aggregation;
-import functionalj.stream.StreamPlus;
+import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
+import functionalj.stream.intstream.collect.IntCollectorPlus;
+import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
 
 
 @FunctionalInterface
-public interface CollectorPlus<DATA, ACCUMULATED, TARGET> 
+public interface CollectorPlus<DATA, ACCUMULATED, RESULT> 
             extends
-                Aggregation<DATA, TARGET>,
-                CollectorExtensible<DATA, ACCUMULATED, TARGET> {
+                CollectorExtensible<DATA, ACCUMULATED, RESULT> {
     
     public static <D, A, R> CollectorPlus<D, A, R> from(Collector<D, A, R> collector) {
         return (collector instanceof CollectorPlus)
@@ -50,17 +53,26 @@ public interface CollectorPlus<DATA, ACCUMULATED, TARGET>
     // or
     // (DATA)->ACCUMULATED , (ACCUMULATED, ACCUMULATED) -> ACCUMULATED, (ACCUMULATED) -> TARGET
     
-    public default CollectorPlus<DATA, ACCUMULATED, TARGET> collectorPlus() {
+    public default CollectorPlus<DATA, ACCUMULATED, RESULT> collectorPlus() {
         return this;
     }
     
-    public default TARGET process(StreamPlus<? extends DATA> stream) {
-        // Let the stream decided what to do with this.
-        return stream.collect(this);
+    //== Derive == 
+    
+    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(Function<SOURCE, DATA> mapper) {
+        val collector = new DerivedCollectorPlus.FromObj<>(this, mapper);
+        return CollectorPlus.from(collector);
     }
     
-    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {
-        val collector = new DerivedCollectorPlus<>(this, mapper);
-        return CollectorPlus.from(collector);
+    public default IntCollectorPlus<ACCUMULATED, RESULT> of(IntFunction<DATA> mapper) {
+        return new DerivedCollectorPlus.FromInt<>(this, mapper);
+    }
+    
+    public default LongCollectorPlus<ACCUMULATED, RESULT> of(LongFunction<DATA> mapper) {
+        return new DerivedCollectorPlus.FromLong<>(this, mapper);
+    }
+    
+    public default DoubleCollectorPlus<ACCUMULATED, RESULT> of(DoubleFunction<DATA> mapper) {
+        return new DerivedCollectorPlus.FromDouble<>(this, mapper);
     }
 }

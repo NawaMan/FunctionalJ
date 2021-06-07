@@ -47,6 +47,7 @@ class AsLongStreamPlusHelper {
 @FunctionalInterface
 public interface AsLongStreamPlus
                     extends
+                        AsLongStreamPlusWithCalculate,
                         AsLongStreamPlusWithConversion,
                         AsLongStreamPlusWithCollect,
                         AsLongStreamPlusWithForEach,

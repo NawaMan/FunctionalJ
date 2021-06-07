@@ -20,13 +20,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-// ============================================================================ 
-package functionalj.stream.intstream;
+// ============================================================================
+package functionalj.stream;
 
-import java.util.function.IntConsumer;
+import static functionalj.stream.collect.Collected.collectedOf;
 
-import functionalj.stream.intstream.collect.IntCollected;
-import functionalj.stream.intstream.collect.IntCollectorPlus;
+import java.util.function.Consumer;
+
+import functionalj.function.aggregator.Aggregation;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -36,18 +37,18 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
-public interface IntStreamPlusWithCalculate {
+public interface AsStreamPlusWithCalculate<DATA> {
 
-     public void forEach(IntConsumer action);
-     
-     
-     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
-     //        Still not sure how to do that.
-     
-     /** Perform the calculation using the data of this stream */
-    public default <RESULT, ACCUMULATED> RESULT calculate(
-            IntCollectorPlus<ACCUMULATED, RESULT> collector) {
-        val collected = IntCollected.of(collector);
+    public void forEach(Consumer<? super DATA> action);
+    
+    
+    // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
+    //        Still not sure how to do that properly.
+    // Might try to quickly segment the stream (might use splitator) and spawn them.
+    
+    /** Perform the calculation using the data of this stream */
+    public default <RESULT> RESULT calculate(Aggregation<? super DATA, RESULT> aggregation) {
+        val collected = collectedOf(aggregation);
         forEach(each -> {
             collected.accumulate(each);
         });
@@ -56,14 +57,13 @@ public interface IntStreamPlusWithCalculate {
     }
     
     /** Perform the calculation using the data of this stream */
-    public default <ACCUMULATED1, RESULT1, 
-                    ACCUMULATED2, RESULT2>
+    public default <RESULT1, RESULT2>
                         Tuple2<RESULT1, RESULT2> 
                         calculate(
-                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2) {
-        val collected1 = IntCollected.of(collector1);
-        val collected2 = IntCollected.of(collector2);
+                                Aggregation<? super DATA, RESULT1> collector1,
+                                Aggregation<? super DATA, RESULT2> collector2) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -75,17 +75,15 @@ public interface IntStreamPlusWithCalculate {
     }
     
     /** Perform the calculation using the data of this stream */
-    public default <ACCUMULATED1, RESULT1, 
-                    ACCUMULATED2, RESULT2, 
-                    ACCUMULATED3, RESULT3>
+    public default <RESULT1, RESULT2, RESULT3>
                         Tuple3<RESULT1, RESULT2, RESULT3> 
                         calculate(
-                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
-                            IntCollectorPlus<ACCUMULATED3, RESULT3> collector3) {
-        val collected1 = IntCollected.of(collector1);
-        val collected2 = IntCollected.of(collector2);
-        val collected3 = IntCollected.of(collector3);
+                                Aggregation<? super DATA, RESULT1> collector1,
+                                Aggregation<? super DATA, RESULT2> collector2,
+                                Aggregation<? super DATA, RESULT3> collector3) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -99,20 +97,17 @@ public interface IntStreamPlusWithCalculate {
     }
     
     /** Perform the calculation using the data of this stream */
-    public default <ACCUMULATED1, RESULT1, 
-                    ACCUMULATED2, RESULT2, 
-                    ACCUMULATED3, RESULT3, 
-                    ACCUMULATED4, RESULT4>
+    public default <RESULT1, RESULT2, RESULT3, RESULT4>
                         Tuple4<RESULT1, RESULT2, RESULT3, RESULT4> 
                         calculate(
-                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
-                            IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
-                            IntCollectorPlus<ACCUMULATED4, RESULT4> collector4) {
-        val collected1 = IntCollected.of(collector1);
-        val collected2 = IntCollected.of(collector2);
-        val collected3 = IntCollected.of(collector3);
-        val collected4 = IntCollected.of(collector4);
+                                Aggregation<? super DATA, RESULT1> collector1,
+                                Aggregation<? super DATA, RESULT2> collector2,
+                                Aggregation<? super DATA, RESULT3> collector3,
+                                Aggregation<? super DATA, RESULT4> collector4) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -128,23 +123,19 @@ public interface IntStreamPlusWithCalculate {
     }
     
     /** Perform the calculation using the data of this stream */
-    public default <ACCUMULATED1, RESULT1, 
-                    ACCUMULATED2, RESULT2, 
-                    ACCUMULATED3, RESULT3, 
-                    ACCUMULATED4, RESULT4, 
-                    ACCUMULATED5, RESULT5>
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5>
                         Tuple5<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5> 
                         calculate(
-                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
-                            IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
-                            IntCollectorPlus<ACCUMULATED4, RESULT4> collector4,
-                            IntCollectorPlus<ACCUMULATED5, RESULT5> collector5) {
-        val collected1 = IntCollected.of(collector1);
-        val collected2 = IntCollected.of(collector2);
-        val collected3 = IntCollected.of(collector3);
-        val collected4 = IntCollected.of(collector4);
-        val collected5 = IntCollected.of(collector5);
+                                Aggregation<DATA, RESULT1> collector1,
+                                Aggregation<DATA, RESULT2> collector2,
+                                Aggregation<DATA, RESULT3> collector3,
+                                Aggregation<DATA, RESULT4> collector4,
+                                Aggregation<DATA, RESULT5> collector5) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
+        val collected5 = collectedOf(collector5);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -162,26 +153,21 @@ public interface IntStreamPlusWithCalculate {
     }
     
     /** Perform the calculation using the data of this stream */
-    public default <ACCUMULATED1, RESULT1, 
-                    ACCUMULATED2, RESULT2, 
-                    ACCUMULATED3, RESULT3, 
-                    ACCUMULATED4, RESULT4, 
-                    ACCUMULATED5, RESULT5, 
-                    ACCUMULATED6, RESULT6>
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6>
                         Tuple6<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6> 
                         calculate(
-                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
-                            IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
-                            IntCollectorPlus<ACCUMULATED4, RESULT4> collector4,
-                            IntCollectorPlus<ACCUMULATED5, RESULT5> collector5,
-                            IntCollectorPlus<ACCUMULATED6, RESULT6> collector6) {
-        val collected1 = IntCollected.of(collector1);
-        val collected2 = IntCollected.of(collector2);
-        val collected3 = IntCollected.of(collector3);
-        val collected4 = IntCollected.of(collector4);
-        val collected5 = IntCollected.of(collector5);
-        val collected6 = IntCollected.of(collector6);
+                                Aggregation<DATA, RESULT1> collector1,
+                                Aggregation<DATA, RESULT2> collector2,
+                                Aggregation<DATA, RESULT3> collector3,
+                                Aggregation<DATA, RESULT4> collector4,
+                                Aggregation<DATA, RESULT5> collector5,
+                                Aggregation<DATA, RESULT6> collector6) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
+        val collected5 = collectedOf(collector5);
+        val collected6 = collectedOf(collector6);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);

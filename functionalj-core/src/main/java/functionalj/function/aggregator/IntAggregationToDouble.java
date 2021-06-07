@@ -23,29 +23,65 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
+import java.util.function.DoubleToIntFunction;
+import java.util.function.IntUnaryOperator;
+import java.util.function.LongToIntFunction;
+import java.util.function.ToIntFunction;
+
+import functionalj.stream.intstream.collect.IntCollected;
+import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToDoublePlus;
 import lombok.val;
 
+
 @FunctionalInterface
-public interface IntAggregationToDouble extends IntStreamProcessor<Double> {
+public interface IntAggregationToDouble extends IntAggregation<Double> {
     
     public static <A> IntAggregationToDouble from(IntCollectorToDoublePlus<A> collector) {
         return () -> collector;
     }
     
-    public IntCollectorToDoublePlus<?> collectorToDouble();
+    //== Instance == 
+    
+    public IntCollectorToDoublePlus<?> collectorToDoublePlus();
     
     
-    public default Double process(IntStreamPlus stream) {
-        val collector = collectorToDouble();
-        return ((IntStreamProcessor<Double>)collector).process(stream);
+    @Override
+    public default IntCollectorPlus<?, Double> intCollectorPlus() {
+        return collectorToDoublePlus();
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public default IntCollected<?, Double> asCollected() {
+        return (IntCollected<?, Double>) collectorToDoublePlus();
     }
     
     public default IntAggregatorToDouble newIntAccumulatorToDouble() {
-        val collector = collectorToDouble();
-        return new IntAggregatorToDouble(collector);
+        val collector = collectorToDoublePlus();
+        return new IntAggregatorToDouble.Impl(collector);
+    }
+    
+    //== Derived ==
+    
+    public default <INPUT> AggregationToDouble<INPUT> of(ToIntFunction<INPUT> mapper) {
+        val newCollector = collectorToDoublePlus().of(mapper);
+        return () -> newCollector;
+    }
+    
+    public default IntAggregationToDouble ofInt(IntUnaryOperator mapper) {
+        val newCollector = collectorToDoublePlus().of(mapper);
+        return () -> newCollector;
+    }
+    
+    public default LongAggregationToDouble ofLong(LongToIntFunction mapper) {
+        val newCollector = collectorToDoublePlus().of(mapper);
+        return () -> newCollector;
+    }
+    
+    public default DoubleAggregationToDouble ofDouble(DoubleToIntFunction mapper) {
+        val newCollector = collectorToDoublePlus().of(mapper);
+        return () -> newCollector;
     }
     
 }

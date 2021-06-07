@@ -49,6 +49,7 @@ class AsStreamPlusHelper {
 @FunctionalInterface
 public interface AsStreamPlus<DATA>
                     extends
+                        AsStreamPlusWithCalculate<DATA>,
                         AsStreamPlusWithConversion<DATA>,
                         AsStreamPlusWithCollect<DATA>,
                         AsStreamPlusWithForEach<DATA>,

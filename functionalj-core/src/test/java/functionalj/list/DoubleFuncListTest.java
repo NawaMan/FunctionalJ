@@ -42,11 +42,14 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
+import java.util.stream.Collector.Characteristics;
 
 import org.junit.Test;
 
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
+import functionalj.function.aggregator.DoubleAggregation;
+import functionalj.function.aggregator.DoubleAggregationToDouble;
 import functionalj.functions.TimeFuncs;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList.Mode;
@@ -60,6 +63,7 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
+import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;
 import lombok.val;
 
 public class DoubleFuncListTest {
@@ -946,46 +950,26 @@ public class DoubleFuncListTest {
         });
     }
     
-    static class Sum implements DoubleCollectorPlus<double[], Double> {
-        
+    static class Sum implements DoubleAggregationToDouble {
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        private DoubleCollectorToDoublePlus<double[]> collectorPlus = new DoubleCollectorToDoublePlus<double[]>() {
+            @Override public Supplier<double[]>          supplier()          { return ()->new double[] { 0 }; }
+            @Override public ObjDoubleConsumer<double[]> doubleAccumulator() { return (a, s)->{ a[0] += s; }; }
+            @Override public BinaryOperator<double[]>    combiner()          { return (a1, a2) -> new double[] { a1[0] + a1[1] }; }
+            @Override public ToDoubleFunction<double[]>  finisherToDouble()  { return a -> a[0]; }
+            @Override public Set<Characteristics>        characteristics()   { return characteristics; }
+        };
         @Override
-        public Collector<Double, double[], Double> collector() {
-            return this;
+        public DoubleCollectorToDoublePlus<?> collectorToDoublePlus() {
+            return collectorPlus;
         }
-        @Override
-        public Double process(DoubleStreamPlus stream) {
-            return stream.sum();
-        }
-        @Override
-        public Supplier<double[]> supplier() {
-            return () -> new double[] { 0.0 };
-        }
-        @Override
-        public ObjDoubleConsumer<double[]> doubleAccumulator() {
-            return (arrayDouble, d) -> {
-                arrayDouble[0] = (arrayDouble[0] + d);
-            };
-        }
-        @Override
-        public BinaryOperator<double[]> combiner() {
-            return (arrayDouble1, arrayDouble2) -> new double[] { arrayDouble1[0] + arrayDouble2[0] };
-        }
-        @Override
-        public Function<double[], Double> finisher() {
-            return arrayDouble -> arrayDouble[0];
-        }
-        @Override
-        public Set<Characteristics> characteristics() {
-            return EnumSet.noneOf(Characteristics.class);
-        }
-        
     }
     
     @Test
     public void testCollect() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             val sum = new Sum();
-            assertAsString("6.0", list.collect(sum));
+            assertAsString("6.0", list.collect(sum.collectorToDoublePlus()));
             
             Supplier<StringBuffer>                 supplier    = ()          -> new StringBuffer();
             ObjDoubleConsumer<StringBuffer>        accumulator = (buffer, i) -> buffer.append(i);
@@ -1233,33 +1217,33 @@ public class DoubleFuncListTest {
         });
     }
     
-    @Test
-    public void testGroupingBy_collect() {
-        run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
-            assertAsString(
-//                     "{1:[1.0, 2.0], 2:[3.0, 4.0], 3:[5.0]}"    << Before sum
-                    "{1:3.0, 2:7.0, 3:5.0}",
-                    list
-                    .groupingBy(theDouble.dividedBy(2).asInteger(), () -> new Sum())
-                    .sortedByKey(theInteger));
-        });
-    }
-    
-    @Test
-    public void testGroupingBy_process() {
-        run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
-            val sumHalf = new SumHalf();
-            assertAsString(
-//                  "{1:[1.0, 2.0], 2:[3.0, 4.0], 3:[5.0]}"    << Before half
-//                  "{1:[3.0],      2:[7.0],      3:[5.0]}"         << Sum
-//                  "{1:[1.5],      2:[3.5],      3:[2.5]}"         << Half
-                    "{1:1.5, 2:3.5, 3:2.5}",
-                    list
-                    .groupingBy(theDouble.dividedBy(2).asInteger(), sumHalf)
-                    .sortedByKey(theInteger));
-        });
-    }
-    
+//    @Test
+//    public void testGroupingBy_collect() {
+//        run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
+//            assertAsString(
+////                     "{1:[1.0, 2.0], 2:[3.0, 4.0], 3:[5.0]}"    << Before sum
+//                    "{1:3.0, 2:7.0, 3:5.0}",
+//                    list
+//                    .groupingBy(theDouble.dividedBy(2).asInteger(), () -> new Sum())
+//                    .sortedByKey(theInteger));
+//        });
+//    }
+//    
+//    @Test
+//    public void testGroupingBy_process() {
+//        run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
+//            val sumHalf = new SumHalf();
+//            assertAsString(
+////                  "{1:[1.0, 2.0], 2:[3.0, 4.0], 3:[5.0]}"    << Before half
+////                  "{1:[3.0],      2:[7.0],      3:[5.0]}"         << Sum
+////                  "{1:[1.5],      2:[3.5],      3:[2.5]}"         << Half
+//                    "{1:1.5, 2:3.5, 3:2.5}",
+//                    list
+//                    .groupingBy(theDouble.dividedBy(2).asInteger(), sumHalf)
+//                    .sortedByKey(theInteger));
+//        });
+//    }
+//    
     //-- Functional list
     
     @Test
@@ -1836,65 +1820,92 @@ public class DoubleFuncListTest {
     
     //-- IntFuncListWithCalculate --
     
-    static class SumHalf implements DoubleCollectorPlus<double[], Double> {
+    static class SumHalf implements DoubleAggregation<Double> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<double[]>                  supplier()                       { return ()       -> new double[] { 0.0 }; }
-        @Override public ObjDoubleConsumer<double[]>         doubleAccumulator()              { return (a, i)   -> { a[0] += i / 2.0; }; }
-        @Override public BinaryOperator<double[]>            combiner()                       { return (a1, a2) -> new double[] { a1[0] + a2[0] }; }
-        @Override public Function<double[], Double>          finisher()                       { return (a)      -> a[0]; }
-        @Override public Set<Characteristics>                characteristics()                { return characteristics; }
-        @Override public Collector<Double, double[], Double> collector()                      { return this; }
-        @Override public Double                              process(DoubleStreamPlus stream) { return stream.map(i -> i/2.0).sum(); }
+        private DoubleCollectorPlus<double[], Double> collectorPlus = new DoubleCollectorPlus<double[], Double>() {
+            @Override public Supplier<double[]>          supplier()          { return ()       -> new double[] { 0.0 }; }
+            @Override public ObjDoubleConsumer<double[]> doubleAccumulator() { return (a, i)   -> { a[0] += i / 2.0; }; }
+            @Override public BinaryOperator<double[]>    combiner()          { return (a1, a2) -> new double[] { a1[0] + a2[0] }; }
+            @Override public Function<double[], Double>  finisher()          { return (a)      -> a[0]; }
+            @Override public Set<Characteristics>        characteristics()   { return characteristics; }
+        };
+        @Override
+        public DoubleCollectorPlus<?, Double> doubleCollectorPlus() {
+            return collectorPlus;
+        }
     }
-    static class Average implements DoubleCollectorPlus<double[], OptionalDouble> {
+    static class Average implements DoubleAggregation<OptionalDouble> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<double[]>                          supplier()                       { return ()       -> new double[] { 0, 0 }; }
-        @Override public ObjDoubleConsumer<double[]>                 doubleAccumulator()              { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
-        @Override public BinaryOperator<double[]>                    combiner()                       { return (a1, a2) -> new double[] { a1[0] + a2[0], a1[1] + a2[1] }; }
-        @Override public Function<double[], OptionalDouble>          finisher()                       { return (a)      -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]); }
-        @Override public Set<Characteristics>                        characteristics()                { return characteristics; }
-        @Override public Collector<Double, double[], OptionalDouble> collector()                      { return this; }
-        @Override public OptionalDouble                              process(DoubleStreamPlus stream) { return stream.average(); }
+        private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
+            @Override public Supplier<double[]>                 supplier()          { return ()       -> new double[] { 0, 0 }; }
+            @Override public ObjDoubleConsumer<double[]>        doubleAccumulator() { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
+            @Override public BinaryOperator<double[]>           combiner()          { return (a1, a2) -> new double[] { a1[0] + a2[0], a1[1] + a2[1] }; }
+            @Override public Function<double[], OptionalDouble> finisher()          { return (a)      -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]); }
+            @Override public Set<Characteristics>               characteristics()   { return characteristics; }
+        };
+        @Override
+        public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
+            return collectorPlus;
+        }
     }
-    static class MinDouble implements DoubleCollectorPlus<double[], OptionalDouble> {
+    static class MinDouble implements DoubleAggregation<OptionalDouble> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<double[]>                          supplier()                       { return ()       -> new double[] { 0, 0 }; }
-        @Override public ObjDoubleConsumer<double[]>                 doubleAccumulator()              { return (a, i)   -> { a[0] = Math.min(i, a[0]); a[1] = 1; }; }
-        @Override public BinaryOperator<double[]>                    combiner()                       { return (a1, a2) -> new double[] { Math.min(a1[0], a2[0]), a1[1] + a2[1] }; }
-        @Override public Function<double[], OptionalDouble>          finisher()                       { return (a)      -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]); }
-        @Override public Set<Characteristics>                        characteristics()                { return characteristics; }
-        @Override public Collector<Double, double[], OptionalDouble> collector()                      { return this; }
-        @Override public OptionalDouble                              process(DoubleStreamPlus stream) { return stream.min(); }
+        private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
+            @Override public Supplier<double[]>                 supplier()          { return ()       -> new double[] { 0, 0 }; }
+            @Override public ObjDoubleConsumer<double[]>        doubleAccumulator() { return (a, i)   -> { a[0] = Math.min(i, a[0]); a[1] = 1; }; }
+            @Override public BinaryOperator<double[]>           combiner()          { return (a1, a2) -> new double[] { Math.min(a1[0], a2[0]), a1[1] + a2[1] }; }
+            @Override public Function<double[], OptionalDouble> finisher()          { return (a)      -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]); }
+            @Override public Set<Characteristics>               characteristics()   { return characteristics; }
+        };
+        @Override
+        public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
+            return collectorPlus;
+        }
     }
-    static class MaxDouble implements DoubleCollectorPlus<double[], OptionalDouble> {
+    static class MaxDouble implements DoubleAggregation<OptionalDouble> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<double[]>                          supplier()                       { return ()       -> new double[] { 0, 0 }; }
-        @Override public ObjDoubleConsumer<double[]>                 doubleAccumulator()              { return (a, i)   -> { a[0] = Math.max(i, a[0]); a[1] = 1; }; }
-        @Override public BinaryOperator<double[]>                    combiner()                       { return (a1, a2) -> new double[] { Math.max(a1[0], a2[0]), a1[1] + a2[1] }; }
-        @Override public Function<double[], OptionalDouble>          finisher()                       { return (a)      -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]); }
-        @Override public Set<Characteristics>                        characteristics()                { return characteristics; }
-        @Override public Collector<Double, double[], OptionalDouble> collector()                      { return this; }
-        @Override public OptionalDouble                              process(DoubleStreamPlus stream) { return stream.max(); }
+        private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
+            @Override public Supplier<double[]>                          supplier()          { return ()       -> new double[] { 0, 0 }; }
+            @Override public ObjDoubleConsumer<double[]>                 doubleAccumulator() { return (a, i)   -> { a[0] = Math.max(i, a[0]); a[1] = 1; }; }
+            @Override public BinaryOperator<double[]>                    combiner()          { return (a1, a2) -> new double[] { Math.max(a1[0], a2[0]), a1[1] + a2[1] }; }
+            @Override public Function<double[], OptionalDouble>          finisher()          { return (a)      -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]); }
+            @Override public Set<Characteristics>                        characteristics()   { return characteristics; }
+            @Override public Collector<Double, double[], OptionalDouble> collector()         { return this; }
+        };
+        @Override
+        public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
+            return collectorPlus;
+        }
     }
-    static class SumDouble implements DoubleCollectorPlus<double[], Double> {
+    static class SumDouble implements DoubleAggregation<Double> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-        @Override public Supplier<double[]>                  supplier()                       { return ()       -> new double[] { 0 }; }
-        @Override public ObjDoubleConsumer<double[]>         doubleAccumulator()              { return (a, i)   -> { a[0] += i; }; }
-        @Override public BinaryOperator<double[]>            combiner()                       { return (a1, a2) -> new double[] { a1[0] + a2[0] }; }
-        @Override public Function<double[], Double>          finisher()                       { return (a)      -> a[0]; }
-        @Override public Set<Characteristics>                characteristics()                { return characteristics; }
-        @Override public Collector<Double, double[], Double> collector()                      { return this; }
-        @Override public Double                              process(DoubleStreamPlus stream) { return stream.sum(); }
+        private DoubleCollectorPlus<double[], Double> collectorPlus = new DoubleCollectorPlus<double[], Double>() {
+            @Override public Supplier<double[]>                  supplier()                       { return ()       -> new double[] { 0 }; }
+            @Override public ObjDoubleConsumer<double[]>         doubleAccumulator()              { return (a, i)   -> { a[0] += i; }; }
+            @Override public BinaryOperator<double[]>            combiner()                       { return (a1, a2) -> new double[] { a1[0] + a2[0] }; }
+            @Override public Function<double[], Double>          finisher()                       { return (a)      -> a[0]; }
+            @Override public Set<Characteristics>                characteristics()                { return characteristics; }
+            @Override public Collector<Double, double[], Double> collector()                      { return this; }
+        };
+        @Override
+        public DoubleCollectorPlus<?, Double> doubleCollectorPlus() {
+            return collectorPlus;
+        }
     }
-    static class AvgDouble implements DoubleCollectorPlus<double[], OptionalDouble> {
+    static class AvgDouble implements DoubleAggregation<OptionalDouble> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
         @Override public Supplier<double[]>                          supplier()                       { return ()       -> new double[] { 0, 0 }; }
         @Override public ObjDoubleConsumer<double[]>                 doubleAccumulator()              { return (a, i)   -> { a[0] += i; a[1] += 1; }; }
         @Override public BinaryOperator<double[]>                    combiner()                       { return (a1, a2) -> new double[] { a1[0] + a2[0], a1[1] + a2[1] }; }
         @Override public Function<double[], OptionalDouble>          finisher()                       { return (a)      -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]/a[1]); }
         @Override public Set<Characteristics>                        characteristics()                { return characteristics; }
         @Override public Collector<Double, double[], OptionalDouble> collector()                      { return this; }
-        @Override public OptionalDouble                              process(DoubleStreamPlus stream) { val avg = stream.average(); return avg.isPresent() ? OptionalDouble.of((int)Math.round(avg.getAsDouble())) : OptionalDouble.empty(); }
+        };
+        @Override
+        public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
+            return collectorPlus;
+        }
     }
     
     @Test
@@ -1904,144 +1915,144 @@ public class DoubleFuncListTest {
             assertAsString("10.0", list.calculate(sumHalf).doubleValue());
         });
     }
-//    
-//    @Test
-//    public void testCalculate2() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val sumHalf = new SumHalf();
-//            val average = new Average();
-//            assertAsString("(9,OptionalDouble[20.0])", list.calculate(sumHalf, average));
-//        });
-//    }
-//    
-//    @Test
-//    public void testCalculate2_combine() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val minDouble = new MinDouble();
-//            val maxDouble = new MaxDouble();
-//            val range = list.calculate(minDouble, maxDouble).mapTo((max, min) -> max.getAsDouble() + min.getAsDouble());
-//            assertAsString("11", range);
-//        });
-//    }
-//    
-//    @Test
-//    public void testCalculate3() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val sumHalf   = new SumHalf();
-//            val average   = new Average();
-//            val minDouble = new MinDouble();
-//            assertAsString("(9,OptionalDouble[20.0],OptionalInt[0])", list.calculate(sumHalf, average, minDouble));
-//        });
-//    }
-//    
-//    @Test
-//    public void testCalculate3_combine() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val sumHalf   = new SumHalf();
-//            val average   = new Average();
-//            val minDouble = new MinDouble();
-//            val value     = list
-//                            .calculate(sumHalf, average, minDouble)
-//                            .mapTo((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
-//            assertAsString("sumH: 9, avg: OptionalDouble[20.0], min: OptionalInt[0]", value);
-//        });
-//    }
-//    
-//    @Test
-//    public void testCalculate4() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val sumHalf   = new SumHalf();
-//            val average   = new Average();
-//            val minDouble = new MinDouble();
-//            val maxDouble = new MaxDouble();
-//            assertAsString(
-//                    "(9,OptionalDouble[20.0],OptionalInt[0],OptionalInt[11])", 
-//                    list.calculate(sumHalf, average, minDouble, maxDouble));
-//        });
-//    }
-//    
-//    @Test
-//    public void testCalculate4_combine() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val sumHalf   = new SumHalf();
-//            val average   = new Average();
-//            val minDouble = new MinDouble();
-//            val maxDouble = new MaxDouble();
-//            val value     = list
-//                            .calculate(sumHalf, average, minDouble, maxDouble)
-//                            .mapTo((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
-//            assertAsString(
-//                    "sumH: 9, avg: OptionalDouble[20.0], min: OptionalInt[0], max: OptionalInt[11]", 
-//                    value);
-//        });
-//    }
-//    
-//    @Test
-//    public void testCalculate5() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val sumHalf   = new SumHalf();
-//            val average   = new Average();
-//            val minDouble = new MinDouble();
-//            val maxDouble = new MaxDouble();
-//            val sumDouble = new SumDouble();
-//            assertAsString(
-//                    "(9,OptionalDouble[20.0],OptionalInt[0],OptionalInt[11],20)",
-//                    list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble));
-//        });
-//    }
-//    
-//    @Test
-//    public void testCalculate5_combine() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val sumHalf   = new SumHalf();
-//            val average   = new Average();
-//            val minDouble = new MinDouble();
-//            val maxDouble = new MaxDouble();
-//            val sumDouble = new SumDouble();
-//            val value     = list
-//                            .calculate(sumHalf, average, minDouble, maxDouble, sumDouble)
-//                            .mapTo((sumH, avg, min, max, sumI) -> {
-//                                return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI;
-//                            });
-//            assertAsString(
-//                    "sumH: 9, avg: OptionalDouble[20.0], min: OptionalInt[0], max: OptionalInt[11], max: OptionalInt[11], sumI: 20", 
-//                    value);
-//        });
-//    }
-//    
-//    @Test
-//    public void testCalculate6() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val sumHalf   = new SumHalf();
-//            val average   = new Average();
-//            val minDouble = new MinDouble();
-//            val maxDouble = new MaxDouble();
-//            val sumDouble = new SumDouble();
-//            val avgDouble = new AvgDouble();
-//            assertAsString(
-//                    "(9,OptionalDouble[20.0],OptionalInt[0],OptionalInt[11],20,OptionalInt[5])", 
-//                    list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble, avgDouble));
-//        });
-//    }
-//    
-//    @Test
-//    public void testCalculate6_combine() {
-//        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
-//            val sumHalf   = new SumHalf();
-//            val average   = new Average();
-//            val minDouble = new MinDouble();
-//            val maxDouble = new MaxDouble();
-//            val sumDouble = new SumDouble();
-//            val avgDouble = new AvgDouble();
-//            val value     = list
-//                            .calculate(sumHalf, average, minDouble, maxDouble, sumDouble, avgDouble)
-//                            .mapTo((sumH, avg, min, max, sumI, avgI) -> {
-//                                return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI + ", avgI: " + avgI;
-//                            });
-//            assertAsString("sumH: 9, avg: OptionalDouble[20.0], min: OptionalInt[0], max: OptionalInt[11], max: OptionalInt[11], sumI: 20, avgI: OptionalInt[5]", value);
-//        });
-//    }
-//    
+    
+    @Test
+    public void testCalculate2() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val sumHalf = new SumHalf();
+            val average = new Average();
+            assertAsString("(10.0,OptionalDouble[20.0])", list.calculate(sumHalf, average));
+        });
+    }
+    
+    @Test
+    public void testCalculate2_combine() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val minDouble = new MinDouble();
+            val maxDouble = new MaxDouble();
+            val range = list.calculate(minDouble, maxDouble).mapTo((max, min) -> max.getAsDouble() + min.getAsDouble());
+            assertAsString("11.0", range);
+        });
+    }
+    
+    @Test
+    public void testCalculate3() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val sumHalf   = new SumHalf();
+            val average   = new Average();
+            val minDouble = new MinDouble();
+            assertAsString("(10.0,OptionalDouble[20.0],OptionalDouble[0.0])", list.calculate(sumHalf, average, minDouble));
+        });
+    }
+    
+    @Test
+    public void testCalculate3_combine() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val sumHalf   = new SumHalf();
+            val average   = new Average();
+            val minDouble = new MinDouble();
+            val value     = list
+                            .calculate(sumHalf, average, minDouble)
+                            .mapTo((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
+            assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0]", value);
+        });
+    }
+    
+    @Test
+    public void testCalculate4() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val sumHalf   = new SumHalf();
+            val average   = new Average();
+            val minDouble = new MinDouble();
+            val maxDouble = new MaxDouble();
+            assertAsString(
+                    "(10.0,OptionalDouble[20.0],OptionalDouble[0.0],OptionalDouble[11.0])", 
+                    list.calculate(sumHalf, average, minDouble, maxDouble));
+        });
+    }
+    
+    @Test
+    public void testCalculate4_combine() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val sumHalf   = new SumHalf();
+            val average   = new Average();
+            val minDouble = new MinDouble();
+            val maxDouble = new MaxDouble();
+            val value     = list
+                            .calculate(sumHalf, average, minDouble, maxDouble)
+                            .mapTo((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
+            assertAsString(
+                    "sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0], max: OptionalDouble[11.0]", 
+                    value);
+        });
+    }
+    
+    @Test
+    public void testCalculate5() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val sumHalf   = new SumHalf();
+            val average   = new Average();
+            val minDouble = new MinDouble();
+            val maxDouble = new MaxDouble();
+            val sumDouble = new SumDouble();
+            assertAsString(
+                    "(10.0,OptionalDouble[20.0],OptionalDouble[0.0],OptionalDouble[11.0],20.0)",
+                    list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble));
+        });
+    }
+    
+    @Test
+    public void testCalculate5_combine() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val sumHalf   = new SumHalf();
+            val average   = new Average();
+            val minDouble = new MinDouble();
+            val maxDouble = new MaxDouble();
+            val sumDouble = new SumDouble();
+            val value     = list
+                            .calculate(sumHalf, average, minDouble, maxDouble, sumDouble)
+                            .mapTo((sumH, avg, min, max, sumI) -> {
+                                return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI;
+                            });
+            assertAsString(
+                    "sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0], max: OptionalDouble[11.0], max: OptionalDouble[11.0], sumI: 20.0", 
+                    value);
+        });
+    }
+    
+    @Test
+    public void testCalculate6() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val sumHalf   = new SumHalf();
+            val average   = new Average();
+            val minDouble = new MinDouble();
+            val maxDouble = new MaxDouble();
+            val sumDouble = new SumDouble();
+            val avgDouble = new AvgDouble();
+            assertAsString(
+                    "(10.0,OptionalDouble[20.0],OptionalDouble[0.0],OptionalDouble[11.0],20.0,OptionalDouble[5.0])", 
+                    list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble, avgDouble));
+        });
+    }
+    
+    @Test
+    public void testCalculate6_combine() {
+        run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
+            val sumHalf   = new SumHalf();
+            val average   = new Average();
+            val minDouble = new MinDouble();
+            val maxDouble = new MaxDouble();
+            val sumDouble = new SumDouble();
+            val avgDouble = new AvgDouble();
+            val value     = list
+                            .calculate(sumHalf, average, minDouble, maxDouble, sumDouble, avgDouble)
+                            .mapTo((sumH, avg, min, max, sumI, avgI) -> {
+                                return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI + ", avgI: " + avgI;
+                            });
+            assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0], max: OptionalDouble[11.0], max: OptionalDouble[11.0], sumI: 20.0, avgI: OptionalDouble[5.0]", value);
+        });
+    }
+    
     @Test
     public void testCalculate_of() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {

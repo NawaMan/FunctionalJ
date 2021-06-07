@@ -25,56 +25,40 @@ package functionalj.stream.longstream.collect;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Objects;
 import java.util.function.ObjLongConsumer;
-import java.util.stream.Collector;
 
-import functionalj.list.longlist.AsLongFuncList;
+import functionalj.function.aggregator.LongAggregation;
 import functionalj.stream.collect.Collected;
-import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
 import lombok.val;
 
 
-public interface LongCollected<ACCUMULATED, RESULT> 
-                    extends Collected<Long, ACCUMULATED, RESULT> {
+public interface LongCollected<ACCUMULATED, RESULT> extends Collected<Long, ACCUMULATED, RESULT> {
     
-    @SuppressWarnings("unchecked")
-    public static <A, R> LongCollected<A, R> of(
-            AsLongFuncList         funcList,
-            LongStreamProcessor<R> processor) {
-        Objects.requireNonNull(processor);
-        if (processor instanceof Collector)
-            return new LongCollected.ByCollector<>(((LongCollectorPlus<A, R>)processor));
-        
-        Objects.requireNonNull(funcList);
-        return new LongCollected.ByStreamProcessor<A, R>(funcList, processor);
+    public static <ACC, RES> LongCollected<ACC, RES> collectedOf(LongAggregation<RES> aggregation) {
+        requireNonNull(aggregation);
+        @SuppressWarnings("unchecked")
+        val collectorPlus = (LongCollectorPlus<ACC, RES>) aggregation.longCollectorPlus();
+        return new LongCollected.Impl<>(collectorPlus);
     }
     
-    public static <A, R> LongCollected<A, R> of(
-            LongCollectorPlus<A, R> collector) {
+    public static <ACC, RES> LongCollected<ACC, RES> collectedOf(LongCollectorPlus<ACC, RES> collector) {
         requireNonNull(collector);
-        return new LongCollected.ByCollector<>(collector);
+        return new LongCollected.Impl<>(collector);
     }
     
-    public static <A> LongCollectedToInt<A> of(
-            LongCollectorToIntPlus<A> collector) {
+    public static <ACC, RES> LongCollected<ACC, RES> of(LongAggregation<RES> aggregation) {
+        requireNonNull(aggregation);
+        @SuppressWarnings("unchecked")
+        val collectorPlus = (LongCollectorPlus<ACC, RES>) aggregation.longCollectorPlus();
+        return new LongCollected.Impl<>(collectorPlus);
+    }
+    
+    public static <ACC, RES> LongCollected<ACC, RES> of(LongCollectorPlus<ACC, RES> collector) {
         requireNonNull(collector);
-        return new LongCollectedToInt.ByCollector<>(collector);
+        return new LongCollected.Impl<>(collector);
     }
     
-    public static <A> LongCollectedToLong<A> of(
-            LongCollectorToLongPlus<A> collector) {
-        requireNonNull(collector);
-        return new LongCollectedToLong.ByCollector<>(collector);
-    }
-    
-    public static <A> LongCollectedToDouble<A> of(
-            LongCollectorToDoublePlus<A> collector) {
-        requireNonNull(collector);
-        return new LongCollectedToDouble.ByCollector<>(collector);
-    }
-    
+    //== Instance ==
     
     public void   accumulate(long each);
     public RESULT finish();
@@ -85,16 +69,13 @@ public interface LongCollected<ACCUMULATED, RESULT>
     
     //== Implementation ==
     
-    public static class ByCollector<ACCUMULATED, RESULT>
-            implements
-                LongStreamProcessor<RESULT>,
-                LongCollected<ACCUMULATED, RESULT> {
+    public static class Impl<ACCUMULATED, RESULT> implements LongCollected<ACCUMULATED, RESULT> {
         
         private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
         private final ObjLongConsumer<ACCUMULATED>           accumulator;
         private final ACCUMULATED                            accumulated;
         
-        public ByCollector(LongCollectorPlus<ACCUMULATED, RESULT> collector) {
+        public Impl(LongCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.longAccumulator();
@@ -108,34 +89,6 @@ public interface LongCollected<ACCUMULATED, RESULT>
             return collector.finisher().apply(accumulated);
         }
         
-        @Override
-        public RESULT process(LongStreamPlus stream) {
-            return stream.calculate(collector);
-        }
-        
-    }
-    
-    public static class ByStreamProcessor<ACCUMULATED, RESULT>
-            implements
-                LongCollected<ACCUMULATED, RESULT> {
-        
-        private final LongStreamProcessor<RESULT> processor;
-        private final AsLongFuncList              funcList;
-        
-        ByStreamProcessor(
-                AsLongFuncList              funcList,
-                LongStreamProcessor<RESULT> processor) {
-            this.processor = processor;
-            this.funcList  = funcList;
-        }
-        
-        public void accumulate(long each) {
-        }
-        
-        public RESULT finish() {
-            val stream = funcList.longStreamPlus();
-            return (RESULT) processor.process((LongStreamPlus)stream);
-        }
     }
     
 }

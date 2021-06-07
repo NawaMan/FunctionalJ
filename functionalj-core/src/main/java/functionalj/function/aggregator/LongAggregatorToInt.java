@@ -24,26 +24,32 @@
 package functionalj.function.aggregator;
 
 import functionalj.lens.lenses.LongToIntegerAccessPrimitive;
-import functionalj.stream.longstream.collect.LongCollected;
 import functionalj.stream.longstream.collect.LongCollectedToInt;
 import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
 
-public class LongAggregatorToInt implements LongToIntegerAccessPrimitive {
+public interface LongAggregatorToInt extends LongToIntegerAccessPrimitive, LongAggregator<Integer> {
     
-    private final LongCollectedToInt<?> collected;
+    public LongCollectedToInt<?> asCollected();
     
-    public LongAggregatorToInt(LongCollectorToIntPlus<?> collector) {
-        this.collected = LongCollected.of(collector);
-    }
+    //== Implementation ==
     
-    @Override
-    public int applyLongToInt(long input) {
-        collected.accumulate(input);
-        return collected.finish();
-    }
-    
-    public LongCollectedToInt<?> asCollected() {
-        return collected;
+    public static class Impl implements LongAggregatorToInt {
+        
+        private final LongCollectedToInt<?> collected;
+        
+        public Impl(LongCollectorToIntPlus<?> collector) {
+            this.collected = LongCollectedToInt.of(collector);
+        }
+        
+        @Override
+        public int applyLongToInt(long input) {
+            collected.accumulate(input);
+            return collected.finish();
+        }
+        
+        public LongCollectedToInt<?> asCollected() {
+            return collected;
+        }
     }
     
 }

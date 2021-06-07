@@ -23,10 +23,11 @@
 // ============================================================================
 package functionalj.stream.doublestream;
 
+import static functionalj.stream.doublestream.collect.DoubleCollected.collectedOf;
+
 import java.util.function.DoubleConsumer;
 
-import functionalj.stream.doublestream.collect.DoubleCollected;
-import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
+import functionalj.function.aggregator.DoubleAggregation;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -36,7 +37,7 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
-public interface DoubleStreamPlusWithCalculate {
+public interface AsDoubleStreamPlusWithCalculate {
 
      public void forEach(DoubleConsumer action);
     
@@ -45,9 +46,9 @@ public interface DoubleStreamPlusWithCalculate {
     
     //TODO - Optimize this so the concurrent one can has benefit from the Java implementation
     
-    public default <RESULT, ACCUMULATED> RESULT calculate(
-            DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
-        val collected = DoubleCollected.of(collector);
+    public default <RESULT> RESULT calculate(
+            DoubleAggregation<RESULT> collector) {
+        val collected = collectedOf(collector);
         forEach(each -> {
             collected.accumulate(each);
         });
@@ -55,14 +56,13 @@ public interface DoubleStreamPlusWithCalculate {
         return value;
     }
     
-    public default <ACCUMULATED1, RESULT1,
-                    ACCUMULATED2, RESULT2>
+    public default <RESULT1, RESULT2>
                         Tuple2<RESULT1, RESULT2>
                         calculate(
-                            DoubleCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            DoubleCollectorPlus<ACCUMULATED2, RESULT2> collector2) {
-        val collected1 = DoubleCollected.of(collector1);
-        val collected2 = DoubleCollected.of(collector2);
+                                DoubleAggregation<RESULT1> collector1,
+                                DoubleAggregation<RESULT2> collector2) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -73,17 +73,15 @@ public interface DoubleStreamPlusWithCalculate {
         );
     }
     
-    public default <ACCUMULATED1, RESULT1,
-                    ACCUMULATED2, RESULT2,
-                    ACCUMULATED3, RESULT3>
+    public default <RESULT1, RESULT2, RESULT3>
                         Tuple3<RESULT1, RESULT2, RESULT3>
                         calculate(
-                            DoubleCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            DoubleCollectorPlus<ACCUMULATED2, RESULT2> collector2,
-                            DoubleCollectorPlus<ACCUMULATED3, RESULT3> collector3) {
-        val collected1 = DoubleCollected.of(collector1);
-        val collected2 = DoubleCollected.of(collector2);
-        val collected3 = DoubleCollected.of(collector3);
+                                DoubleAggregation<RESULT1> collector1,
+                                DoubleAggregation<RESULT2> collector2,
+                                DoubleAggregation<RESULT3> collector3) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -96,20 +94,17 @@ public interface DoubleStreamPlusWithCalculate {
         );
     }
     
-    public default <ACCUMULATED1, RESULT1,
-                    ACCUMULATED2, RESULT2,
-                    ACCUMULATED3, RESULT3,
-                    ACCUMULATED4, RESULT4>
+    public default <RESULT1, RESULT2, RESULT3, RESULT4>
                         Tuple4<RESULT1, RESULT2, RESULT3, RESULT4>
                         calculate(
-                            DoubleCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            DoubleCollectorPlus<ACCUMULATED2, RESULT2> collector2,
-                            DoubleCollectorPlus<ACCUMULATED3, RESULT3> collector3,
-                            DoubleCollectorPlus<ACCUMULATED4, RESULT4> collector4) {
-        val collected1 = DoubleCollected.of(collector1);
-        val collected2 = DoubleCollected.of(collector2);
-        val collected3 = DoubleCollected.of(collector3);
-        val collected4 = DoubleCollected.of(collector4);
+                                DoubleAggregation<RESULT1> collector1,
+                                DoubleAggregation<RESULT2> collector2,
+                                DoubleAggregation<RESULT3> collector3,
+                                DoubleAggregation<RESULT4> collector4) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -124,23 +119,19 @@ public interface DoubleStreamPlusWithCalculate {
         );
     }
     
-    public default <ACCUMULATED1, RESULT1,
-                    ACCUMULATED2, RESULT2,
-                    ACCUMULATED3, RESULT3,
-                    ACCUMULATED4, RESULT4,
-                    ACCUMULATED5, RESULT5>
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5>
                         Tuple5<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5>
                         calculate(
-                            DoubleCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            DoubleCollectorPlus<ACCUMULATED2, RESULT2> collector2,
-                            DoubleCollectorPlus<ACCUMULATED3, RESULT3> collector3,
-                            DoubleCollectorPlus<ACCUMULATED4, RESULT4> collector4,
-                            DoubleCollectorPlus<ACCUMULATED5, RESULT5> collector5) {
-        val collected1 = DoubleCollected.of(collector1);
-        val collected2 = DoubleCollected.of(collector2);
-        val collected3 = DoubleCollected.of(collector3);
-        val collected4 = DoubleCollected.of(collector4);
-        val collected5 = DoubleCollected.of(collector5);
+                                DoubleAggregation<RESULT1> collector1,
+                                DoubleAggregation<RESULT2> collector2,
+                                DoubleAggregation<RESULT3> collector3,
+                                DoubleAggregation<RESULT4> collector4,
+                                DoubleAggregation<RESULT5> collector5) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
+        val collected5 = collectedOf(collector5);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -157,26 +148,21 @@ public interface DoubleStreamPlusWithCalculate {
         );
     }
     
-    public default <ACCUMULATED1, RESULT1,
-                    ACCUMULATED2, RESULT2,
-                    ACCUMULATED3, RESULT3,
-                    ACCUMULATED4, RESULT4,
-                    ACCUMULATED5, RESULT5,
-                    ACCUMULATED6, RESULT6>
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6>
                         Tuple6<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6>
                         calculate(
-                            DoubleCollectorPlus<ACCUMULATED1, RESULT1> collector1,
-                            DoubleCollectorPlus<ACCUMULATED2, RESULT2> collector2,
-                            DoubleCollectorPlus<ACCUMULATED3, RESULT3> collector3,
-                            DoubleCollectorPlus<ACCUMULATED4, RESULT4> collector4,
-                            DoubleCollectorPlus<ACCUMULATED5, RESULT5> collector5,
-                            DoubleCollectorPlus<ACCUMULATED6, RESULT6> collector6) {
-        val collected1 = DoubleCollected.of(collector1);
-        val collected2 = DoubleCollected.of(collector2);
-        val collected3 = DoubleCollected.of(collector3);
-        val collected4 = DoubleCollected.of(collector4);
-        val collected5 = DoubleCollected.of(collector5);
-        val collected6 = DoubleCollected.of(collector6);
+                                DoubleAggregation<RESULT1> collector1,
+                                DoubleAggregation<RESULT2> collector2,
+                                DoubleAggregation<RESULT3> collector3,
+                                DoubleAggregation<RESULT4> collector4,
+                                DoubleAggregation<RESULT5> collector5,
+                                DoubleAggregation<RESULT6> collector6) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
+        val collected5 = collectedOf(collector5);
+        val collected6 = collectedOf(collector6);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);

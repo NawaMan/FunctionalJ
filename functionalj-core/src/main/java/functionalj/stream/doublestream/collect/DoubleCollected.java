@@ -26,54 +26,39 @@ package functionalj.stream.doublestream.collect;
 import static java.util.Objects.requireNonNull;
 
 import java.util.function.ObjDoubleConsumer;
-import java.util.stream.Collector;
 
-import functionalj.list.doublelist.AsDoubleFuncList;
+import functionalj.function.aggregator.DoubleAggregation;
 import functionalj.stream.collect.Collected;
-import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.stream.doublestream.DoubleStreamProcessor;
 import lombok.val;
 
 
-public interface DoubleCollected<ACCUMULATED, RESULT> 
-                    extends Collected<Double, ACCUMULATED, RESULT> {
+public interface DoubleCollected<ACCUMULATED, RESULT> extends Collected<Double, ACCUMULATED, RESULT> {
     
-    @SuppressWarnings("unchecked")
-    public static <A, R> DoubleCollected<A, R> of(
-            AsDoubleFuncList         funcList,
-            DoubleStreamProcessor<R> processor) {
-        requireNonNull(processor);
-        if (processor instanceof Collector)
-            return new DoubleCollected.ByCollector<>(((DoubleCollectorPlus<A, R>)processor));
-        
-        requireNonNull(funcList);
-        return new DoubleCollected.ByStreamProcessor<A, R>(funcList, processor);
+    public static <ACC, RES> DoubleCollected<ACC, RES> collectedOf(DoubleAggregation<RES> aggregation) {
+        requireNonNull(aggregation);
+        @SuppressWarnings("unchecked")
+        val collectorPlus = (DoubleCollectorPlus<ACC, RES>) aggregation.doubleCollectorPlus();
+        return new DoubleCollected.Impl<>(collectorPlus);
     }
     
-    public static <A, R> DoubleCollected<A, R> of(
-            DoubleCollectorPlus<A, R> collector) {
+    public static <ACC, RES> DoubleCollected<ACC, RES> collectedOf(DoubleCollectorPlus<ACC, RES> collector) {
         requireNonNull(collector);
-        return new DoubleCollected.ByCollector<>(collector);
+        return new DoubleCollected.Impl<>(collector);
     }
     
-    public static <A> DoubleCollectedToInt<A> of(
-            DoubleCollectorToIntPlus<A> collector) {
+    public static <ACC, RES> DoubleCollected<ACC, RES> of(DoubleAggregation<RES> aggregation) {
+        requireNonNull(aggregation);
+        @SuppressWarnings("unchecked")
+        val collectorPlus = (DoubleCollectorPlus<ACC, RES>) aggregation.doubleCollectorPlus();
+        return new DoubleCollected.Impl<>(collectorPlus);
+    }
+    
+    public static <ACC, RES> DoubleCollected<ACC, RES> of(DoubleCollectorPlus<ACC, RES> collector) {
         requireNonNull(collector);
-        return new DoubleCollectedToInt.ByCollector<>(collector);
+        return new DoubleCollected.Impl<>(collector);
     }
     
-    public static <A> DoubleCollectedToLong<A> of(
-            DoubleCollectorToLongPlus<A> collector) {
-        requireNonNull(collector);
-        return new DoubleCollectedToLong.ByCollector<>(collector);
-    }
-    
-    public static <A> DoubleCollectedToDouble<A> of(
-            DoubleCollectorToDoublePlus<A> collector) {
-        requireNonNull(collector);
-        return new DoubleCollectedToDouble.ByCollector<>(collector);
-    }
-    
+    //== Instance ==
     
     public void   accumulate(double each);
     public RESULT finish();
@@ -84,16 +69,13 @@ public interface DoubleCollected<ACCUMULATED, RESULT>
     
     //== Implementation ==
     
-    public static class ByCollector<ACCUMULATED, RESULT>
-            implements
-                DoubleStreamProcessor<RESULT>,
-                DoubleCollected<ACCUMULATED, RESULT> {
+    public static class Impl<ACCUMULATED, RESULT> implements DoubleCollected<ACCUMULATED, RESULT> {
         
         private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
         private final ObjDoubleConsumer<ACCUMULATED>           accumulator;
         private final ACCUMULATED                              accumulated;
         
-        public ByCollector(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
+        public Impl(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.doubleAccumulator();
@@ -107,34 +89,6 @@ public interface DoubleCollected<ACCUMULATED, RESULT>
             return collector.finisher().apply(accumulated);
         }
         
-        @Override
-        public RESULT process(DoubleStreamPlus stream) {
-            return stream.calculate(collector);
-        }
-        
-    }
-    
-    public static class ByStreamProcessor<ACCUMULATED, RESULT>
-            implements
-                DoubleCollected<ACCUMULATED, RESULT> {
-        
-        private final DoubleStreamProcessor<RESULT> processor;
-        private final AsDoubleFuncList              funcList;
-        
-        ByStreamProcessor(
-                AsDoubleFuncList              funcList,
-                DoubleStreamProcessor<RESULT> processor) {
-            this.processor = processor;
-            this.funcList  = funcList;
-        }
-        
-        public void accumulate(double each) {
-        }
-        
-        public RESULT finish() {
-            val stream = funcList.doubleStreamPlus();
-            return (RESULT) processor.process((DoubleStreamPlus)stream);
-        }
     }
     
 }

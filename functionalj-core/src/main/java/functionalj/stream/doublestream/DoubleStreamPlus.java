@@ -69,7 +69,6 @@ public interface DoubleStreamPlus
         extends
             DoubleStream,
             AsDoubleStreamPlus,
-            DoubleStreamPlusWithCalculate,
             DoubleStreamPlusWithCombine,
             DoubleStreamPlusWithFilter,
             DoubleStreamPlusWithFlatMap,

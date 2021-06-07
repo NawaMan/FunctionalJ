@@ -86,7 +86,6 @@ public interface FuncList<DATA>
             ReadOnlyList<DATA>,
             Predicate<DATA>,
             AsFuncList<DATA>,
-            FuncListWithCalculate<DATA>,
             FuncListWithCombine<DATA>,
             FuncListWithFillNull<DATA>,
             FuncListWithFilter<DATA>,

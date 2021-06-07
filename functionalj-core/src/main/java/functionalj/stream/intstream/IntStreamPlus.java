@@ -74,7 +74,6 @@ public interface IntStreamPlus
         extends
             IntStream,
             AsIntStreamPlus,
-            IntStreamPlusWithCalculate,
             IntStreamPlusWithCombine,
             IntStreamPlusWithFilter,
             IntStreamPlusWithFlatMap,

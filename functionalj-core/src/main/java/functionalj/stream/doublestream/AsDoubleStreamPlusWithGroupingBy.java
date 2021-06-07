@@ -7,6 +7,7 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import functionalj.function.aggregator.DoubleAggregation;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableFuncMap;
@@ -65,13 +66,11 @@ public interface AsDoubleStreamPlusWithGroupingBy {
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            DoubleFunction<KEY>            keyMapper,
-            AsDoubleStreamProcessor<VALUE> processor) {
+            DoubleFunction<KEY>      keyMapper,
+            DoubleAggregation<VALUE> aggregation) {
         FuncMap<KEY, DoubleFuncList> groupingBy = groupingBy(keyMapper);
-        return (FuncMap<KEY, VALUE>) groupingBy
-                .mapValue(stream -> stream.calculate((DoubleStreamProcessor) processor.asDoubleStreamProcessor()));
+        return (FuncMap<KEY, VALUE>) groupingBy.mapValue(stream -> stream.calculate(aggregation));
     }
     
 }

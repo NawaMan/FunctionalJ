@@ -25,8 +25,13 @@ package functionalj.stream.collect;
 
 import java.util.function.BiConsumer;
 
-public interface CollectedToDouble<DATA, ACCUMULATED>
-                    extends Collected<DATA, ACCUMULATED, Double> {
+public interface CollectedToDouble<DATA, ACCUMULATED> extends Collected<DATA, ACCUMULATED, Double> {
+    
+    public static <SRC, ACC> CollectedToDouble<SRC, ACC> of(CollectorToDoublePlus<SRC, ACC> collector) {
+        return new CollectedToDouble.Impl<SRC, ACC>(collector);
+    }
+    
+    //== Instance ==
     
     public void accumulate(DATA each);
     public double finishToDouble();
@@ -34,6 +39,8 @@ public interface CollectedToDouble<DATA, ACCUMULATED>
     public default Double finish() {
         return finishToDouble();
     }
+    
+    //== Implementation ==
     
     public static class Impl<DATA, ACCUMULATED> implements CollectedToDouble<DATA, ACCUMULATED> {
         
@@ -55,10 +62,6 @@ public interface CollectedToDouble<DATA, ACCUMULATED>
             return collector.finisherToDouble().applyAsDouble(accumulated);
         }
         
-    }
-    
-    public static <SRC, ACC> CollectedToDouble<SRC, ACC> of(CollectorToDoublePlus<SRC, ACC> collector) {
-        return new CollectedToDouble.Impl<SRC, ACC>(collector);
     }
     
 }

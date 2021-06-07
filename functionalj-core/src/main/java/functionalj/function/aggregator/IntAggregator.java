@@ -25,32 +25,37 @@ package functionalj.function.aggregator;
 
 import java.util.function.IntFunction;
 
-import functionalj.function.Func1;
-import functionalj.stream.collect.Collected;
 import functionalj.stream.intstream.collect.IntCollected;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 
-public class IntAggregator<TARGET> implements IntFunction<TARGET>, Func1<Integer, TARGET> {
+public interface IntAggregator<TARGET> extends IntFunction<TARGET>, Aggregator<Integer, TARGET> {
     
-    private final IntCollected<?, TARGET> collected;
+    public IntCollected<?, TARGET> asCollected();
     
-    public IntAggregator(IntCollectorPlus<?, TARGET> collector) {
-        this.collected = Collected.of(collector);
-    }
+    //== Implementation ==
     
-    @Override
-    public TARGET apply(int input) {
-        collected.accumulate(input);
-        return collected.finish();
-    }
-    
-    @Override
-    public TARGET applyUnsafe(Integer input) throws Exception {
-        return apply(input);
-    }
-    
-    public IntCollected<?, TARGET> asCollected() {
-        return collected;
+    public static class Impl<TARGET> implements IntAggregator<TARGET> {
+        
+        private final IntCollected<?, TARGET> collected;
+        
+        public Impl(IntCollectorPlus<?, TARGET> collector) {
+            this.collected = IntCollected.collectedOf(collector);
+        }
+        
+        @Override
+        public TARGET apply(int input) {
+            collected.accumulate(input);
+            return collected.finish();
+        }
+        
+        @Override
+        public TARGET applyUnsafe(Integer input) throws Exception {
+            return apply(input);
+        }
+        
+        public IntCollected<?, TARGET> asCollected() {
+            return collected;
+        }
     }
     
 }

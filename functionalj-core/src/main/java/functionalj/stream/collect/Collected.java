@@ -29,82 +29,43 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 
 import functionalj.function.aggregator.Aggregation;
-import functionalj.list.doublelist.AsDoubleFuncList;
-import functionalj.list.intlist.AsIntFuncList;
-import functionalj.list.longlist.AsLongFuncList;
-import functionalj.stream.doublestream.DoubleStreamProcessor;
-import functionalj.stream.doublestream.collect.DoubleCollected;
-import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
-import functionalj.stream.intstream.IntStreamProcessor;
-import functionalj.stream.intstream.collect.IntCollected;
-import functionalj.stream.intstream.collect.IntCollectorPlus;
-import functionalj.stream.longstream.LongStreamProcessor;
-import functionalj.stream.longstream.collect.LongCollected;
-import functionalj.stream.longstream.collect.LongCollectorPlus;
+
+import lombok.val;
 
 
 public interface Collected<DATA, ACCUMULATED, RESULT> {
     
-    public static <D, A, R> Collected<D, A, R> collectedOf(Aggregation<? extends D, R> aggregation) {
-        return of(aggregation);
+    public static <INP, ACC, RES> Collected<INP, ACC, RES> collectedOf(Aggregation<? extends INP, RES> aggregation) {
+        requireNonNull(aggregation);
+        @SuppressWarnings("unchecked")
+        val collectorPlus = (Collector<INP, ACC, RES>) aggregation.collectorPlus();
+        return new Collected.Impl<>(collectorPlus);
     }
     
-    @SuppressWarnings("unchecked")
-    public static <D, A, R> Collected<D, A, R> of(Aggregation<? extends D, R> aggregation) {
-        return new Collected.Impl<D, A, R>((Collector<D, A, R>) aggregation.collectorPlus());
-    }
-    
-    public static <D, A, R> Collected<D, A, R> collectedOf(Collector<? extends D, A, R> collector) {
-        return of(collector);
-    }
-    
-    @SuppressWarnings("unchecked")
-    public static <D, A, R> Collected<D, A, R> of(Collector<? extends D, A, R> collector) {
+    public static <INP, ACC, RES> Collected<INP, ACC, RES> collectedOf(Collector<? extends INP, ACC, RES> collector) {
         requireNonNull(collector);
-        return new Collected.Impl<D, A, R>((Collector<D, A, R>)collector);
+        @SuppressWarnings("unchecked")
+        val collectorPlus = (Collector<INP, ACC, RES>)collector;
+        return new Collected.Impl<>(collectorPlus);
     }
     
-    //-- Integer --
-    
-    public static <A, R> IntCollected<A, R> of(
-            AsIntFuncList         funcList,
-            IntStreamProcessor<R> processor) {
-        return IntCollected.of(funcList, processor);
+    public static <INP, ACC, RES> Collected<INP, ACC, RES> of(Aggregation<? extends INP, RES> aggregation) {
+        requireNonNull(aggregation);
+        @SuppressWarnings("unchecked")
+        val collectorPlus = (Collector<INP, ACC, RES>) aggregation.collectorPlus();
+        return new Collected.Impl<>(collectorPlus);
     }
     
-    public static <A, R> LongCollected<A, R> of(
-            AsLongFuncList         funcList,
-            LongStreamProcessor<R> processor) {
-        return LongCollected.of(funcList, processor);
-    }
-    
-    public static <A, R> DoubleCollected<A, R> of(
-            AsDoubleFuncList         funcList,
-            DoubleStreamProcessor<R> processor) {
-        return DoubleCollected.of(funcList, processor);
-    }
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <D, A, R> Collected<D, A, R> of(CollectorPlus<D, A, R> collector) {
+    public static <INP, ACC, RES> Collected<INP, ACC, RES> of(Collector<? extends INP, ACC, RES> collector) {
         requireNonNull(collector);
-        return new Collected.Impl(collector);
-    }
-    
-    public static <A, R> IntCollected<A, R> of(IntCollectorPlus<A, R> collector) {
-        return IntCollected.of(collector);
-    }
-    
-    public static <A, R> LongCollected<A, R> of(LongCollectorPlus<A, R> collector) {
-    return LongCollected.of(collector);
-    }
-    
-    public static <A, R> DoubleCollected<A, R> of(DoubleCollectorPlus<A, R> processor) {
-        return DoubleCollected.of(processor);
+        @SuppressWarnings("unchecked")
+        val collectorPlus = (Collector<INP, ACC, RES>)collector;
+        return new Collected.Impl<>(collectorPlus);
     }
     
     //== Instance ==
     
-    public void accumulate(DATA each);
+    public void   accumulate(DATA each);
     public RESULT finish();
     
     //== Implementation ==

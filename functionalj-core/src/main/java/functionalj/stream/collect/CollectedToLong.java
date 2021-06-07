@@ -28,6 +28,12 @@ import java.util.function.BiConsumer;
 public interface CollectedToLong<DATA, ACCUMULATED>
                     extends Collected<DATA, ACCUMULATED, Long> {
     
+    public static <SRC, ACC> CollectedToLong<SRC, ACC> of(CollectorToLongPlus<SRC, ACC> collector) {
+        return new CollectedToLong.Impl<SRC, ACC>(collector);
+    }
+    
+    //== Instance ==
+    
     public void accumulate(DATA each);
     public long finishToLong();
     
@@ -56,10 +62,7 @@ public interface CollectedToLong<DATA, ACCUMULATED>
         public long finishToLong() {
             return collector.finisherToLong().applyAsLong(accumulated);
         }
-    }
-    
-    public static <SRC, ACC> CollectedToLong<SRC, ACC> of(CollectorToLongPlus<SRC, ACC> collector) {
-        return new CollectedToLong.Impl<SRC, ACC>(collector);
+        
     }
     
 }

@@ -82,7 +82,6 @@ public interface IntFuncList
             AsIntFuncList, 
             IntIterable, 
             IntPredicate, 
-            IntFuncListWithCalculate,
             IntFuncListWithCombine,
             IntFuncListWithFilter,
             IntFuncListWithFlatMap,

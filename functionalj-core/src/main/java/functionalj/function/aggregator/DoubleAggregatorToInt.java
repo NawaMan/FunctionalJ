@@ -24,26 +24,32 @@
 package functionalj.function.aggregator;
 
 import functionalj.lens.lenses.DoubleToIntegerAccessPrimitive;
-import functionalj.stream.doublestream.collect.DoubleCollected;
 import functionalj.stream.doublestream.collect.DoubleCollectedToInt;
 import functionalj.stream.doublestream.collect.DoubleCollectorToIntPlus;
 
-public class DoubleAggregatorToInt implements DoubleToIntegerAccessPrimitive {
+public interface DoubleAggregatorToInt extends DoubleToIntegerAccessPrimitive, DoubleAggregator<Integer> {
     
-    private final DoubleCollectedToInt<?> collected;
+    public DoubleCollectedToInt<?> asCollected();
     
-    public DoubleAggregatorToInt(DoubleCollectorToIntPlus<?> collector) {
-        this.collected = DoubleCollected.of(collector);
-    }
+    //== Implementation ==
     
-    @Override
-    public int applyDoubleToInt(double input) {
-        collected.accumulate(input);
-        return collected.finish();
-    }
-    
-    public DoubleCollectedToInt<?> asCollected() {
-        return collected;
+    public static class Impl implements DoubleAggregatorToInt {
+        
+        private final DoubleCollectedToInt<?> collected;
+        
+        public Impl(DoubleCollectorToIntPlus<?> collector) {
+            this.collected = DoubleCollectedToInt.of(collector);
+        }
+        
+        @Override
+        public int applyDoubleToInt(double input) {
+            collected.accumulate(input);
+            return collected.finish();
+        }
+        
+        public DoubleCollectedToInt<?> asCollected() {
+            return collected;
+        }
     }
     
 }

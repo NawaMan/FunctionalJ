@@ -106,7 +106,6 @@ public interface StreamPlus<DATA>
         extends
             Stream<DATA>,
             AsStreamPlus<DATA>,
-            StreamPlusWithCalculate<DATA>,
             StreamPlusWithCombine<DATA>,
             StreamPlusWithFillNull<DATA>,
             StreamPlusWithFilter<DATA>,

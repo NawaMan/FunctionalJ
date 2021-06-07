@@ -48,6 +48,7 @@ class AsDoubleStreamPlusHelper {
 @FunctionalInterface
 public interface AsDoubleStreamPlus
                     extends
+                        AsDoubleStreamPlusWithCalculate,
                         AsDoubleStreamPlusWithConversion,
                         AsDoubleStreamPlusWithCollect,
                         AsDoubleStreamPlusWithForEach,
