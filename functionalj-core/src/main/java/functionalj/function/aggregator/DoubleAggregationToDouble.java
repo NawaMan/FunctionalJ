@@ -72,7 +72,7 @@ public interface DoubleAggregationToDouble extends DoubleAggregation<Double> {
         return () -> newCollector;
     }
     
-    public default DoubleAggregationToDouble ofDouble(DoubleFunction<Double> mapper) {
+    public default DoubleAggregation<Double> ofDouble(DoubleFunction<Double> mapper) {
         if (mapper instanceof DoubleUnaryOperator) {
             return ofDoubletoDouble((DoubleUnaryOperator)mapper);
         }
@@ -82,7 +82,7 @@ public interface DoubleAggregationToDouble extends DoubleAggregation<Double> {
     }
     
     // This is a terrible name .... :-(
-    // But Java confuse this one and the one in LongAggregate
+    // But if we use `ofDouble`, Java confuse this one and the one above
     public default DoubleAggregationToDouble ofDoubletoDouble(DoubleUnaryOperator mapper) {
         val newCollector = collectorToDoublePlus().of(mapper);
         return () -> newCollector;

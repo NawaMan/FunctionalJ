@@ -26,7 +26,6 @@ package functionalj.function.aggregator;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.LongFunction;
-import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
 
 import functionalj.stream.collect.CollectorPlus;
@@ -102,11 +101,6 @@ public interface LongAggregation<TARGET> extends Aggregation<Long, TARGET> {
     }
     
     public default LongAggregation<TARGET> ofLong(LongFunction<Long> mapper) {
-        val newCollector = longCollectorPlus().of(mapper);
-        return () -> newCollector;
-    }
-    
-    public default LongAggregation<TARGET> ofLong(LongUnaryOperator mapper) {
         val newCollector = longCollectorPlus().of(mapper);
         return () -> newCollector;
     }

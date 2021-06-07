@@ -2048,7 +2048,7 @@ public class LongFuncListTest {
             val sum = new Sum();
             // 2*2 + 3*2 + 4*2 + 11*2
             // 4   + 6   + 8   + 22
-            assertAsString("40", list.calculate(sum.ofLongToLong(theLong.time(2))));
+            assertAsString("40", list.calculate(sum.ofLong(theLong.time(2))));
         });
     }
     

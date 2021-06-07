@@ -23,9 +23,7 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import java.util.function.DoubleFunction;
 import java.util.function.DoubleToIntFunction;
-import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
@@ -65,7 +63,7 @@ public interface IntAggregationToInt extends IntAggregation<Integer> {
         return () -> newCollector;
     }
     
-    public default IntAggregationToInt ofInt(IntFunction<Integer> mapper) {
+    public default IntAggregation<Integer> ofInt(IntFunction<Integer> mapper) {
         if (mapper instanceof IntUnaryOperator) {
             return ofIntToInt((IntUnaryOperator)mapper);
         }
@@ -75,7 +73,7 @@ public interface IntAggregationToInt extends IntAggregation<Integer> {
     }
     
     // This is a terrible name .... :-(
-    // But Java confuse this one and the one in LongAggregate
+    // But if we use ofInt, Java confuse this one and the one above
     public default IntAggregationToInt ofIntToInt(IntUnaryOperator mapper) {
         val newCollector = collectorToIntPlus().of(mapper);
         return () -> newCollector;

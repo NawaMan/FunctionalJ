@@ -23,9 +23,7 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-import java.util.function.DoubleFunction;
 import java.util.function.DoubleToLongFunction;
-import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToLongFunction;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
@@ -70,9 +68,10 @@ public interface LongAggregationToLong extends LongAggregation<Long> {
         return () -> newCollector;
     }
     
-    public default LongAggregationToLong ofLong(LongFunction<Long> mapper) {
+    public default LongAggregation<Long> ofLong(LongFunction<Long> mapper) {
         if (mapper instanceof LongUnaryOperator) {
-            return ofLongToLong((LongUnaryOperator)mapper);
+            val newCollector = collectorToLongPlus().of((LongUnaryOperator)mapper);
+            return () -> newCollector;
         }
         
         val newCollector = collectorToLongPlus().of(mapper);
@@ -80,7 +79,7 @@ public interface LongAggregationToLong extends LongAggregation<Long> {
     }
     
     // This is a terrible name .... :-(
-    // But Java confuse this one and the one in LongAggregate
+    // But if we just use `ofLong`, Java confuse this one and the one above
     public default LongAggregationToLong ofLongToLong(LongUnaryOperator mapper) {
         val newCollector = collectorToLongPlus().of(mapper);
         return () -> newCollector;

@@ -25,7 +25,6 @@ package functionalj.function.aggregator;
 
 import java.util.function.DoubleToIntFunction;
 import java.util.function.IntFunction;
-import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
 
@@ -95,11 +94,6 @@ public interface IntAggregation<TARGET> extends Aggregator<Integer, TARGET> {
     }
     
     public default IntAggregation<TARGET> ofInt(IntFunction<Integer> mapper) {
-        val newCollector = intCollectorPlus().of(mapper);
-        return () -> newCollector;
-    }
-    
-    public default IntAggregation<TARGET> ofInt(IntUnaryOperator mapper) {
         val newCollector = intCollectorPlus().of(mapper);
         return () -> newCollector;
     }
