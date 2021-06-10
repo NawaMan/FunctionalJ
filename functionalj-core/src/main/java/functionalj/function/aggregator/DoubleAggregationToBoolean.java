@@ -30,76 +30,77 @@ import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
 
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
-import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;
+import functionalj.stream.doublestream.collect.DoubleCollectorToBooleanPlus;
 import lombok.val;
 
 
-public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double> {
+public abstract class DoubleAggregationToBoolean extends DoubleAggregation<Boolean> {
     
-    public static <A> DoubleAggregationToDouble from(DoubleCollectorToDoublePlus<A> collector) {
-        return new DoubleAggregationToDouble.Impl(collector);
+    public static <A> DoubleAggregationToBoolean from(DoubleCollectorToBooleanPlus<A> collector) {
+        return new DoubleAggregationToBoolean.Impl(collector);
     }
     
     //== Instance == 
     
-    public abstract DoubleCollectorToDoublePlus<?> doubleCollectorToDoublePlus();
+    public abstract DoubleCollectorToBooleanPlus<?> doubleCollectorToBooleanPlus();
     
     
     @Override
-    public DoubleCollectorPlus<?, Double> doubleCollectorPlus() {
-        return doubleCollectorToDoublePlus();
+    public DoubleCollectorPlus<?, Boolean> doubleCollectorPlus() {
+        return doubleCollectorToBooleanPlus();
     }
     
-    public DoubleAggregatorToDouble newAggregator() {
-        val collector = doubleCollectorToDoublePlus();
-        return new DoubleAggregatorToDouble.Impl(collector);
+    
+    public DoubleAggregatorToBoolean newAggregator() {
+        val collector = doubleCollectorToBooleanPlus();
+        return new DoubleAggregatorToBoolean.Impl(collector);
     }
     
     //== Derived ==
     
-    public <INPUT> AggregationToDouble<INPUT> of(ToDoubleFunction<INPUT> mapper) {
-        val newCollector = doubleCollectorToDoublePlus().of(mapper);
-        return new AggregationToDouble.Impl<INPUT>(newCollector);
+    public <INPUT> AggregationToBoolean<INPUT> of(ToDoubleFunction<INPUT> mapper) {
+        val newCollector = doubleCollectorToBooleanPlus().of(mapper);
+        return new AggregationToBoolean.Impl<INPUT>(newCollector);
     }
     
-    public IntAggregationToDouble ofInt(IntToDoubleFunction mapper) {
-        val newCollector = doubleCollectorToDoublePlus().of(mapper);
-        return new IntAggregationToDouble.Impl(newCollector);
+    public IntAggregationToBoolean ofInt(IntToDoubleFunction mapper) {
+        val newCollector = doubleCollectorToBooleanPlus().of(mapper);
+        return new IntAggregationToBoolean.Impl(newCollector);
     }
     
-    public LongAggregationToDouble ofLong(LongToDoubleFunction mapper) {
-        val newCollector = doubleCollectorToDoublePlus().of(mapper);
-        return new LongAggregationToDouble.Impl(newCollector);
+    public LongAggregationToBoolean ofLong(LongToDoubleFunction mapper) {
+        val newCollector = doubleCollectorToBooleanPlus().of(mapper);
+        return new LongAggregationToBoolean.Impl(newCollector);
     }
     
-    public DoubleAggregation<Double> ofDouble(DoubleFunction<Double> mapper) {
+    public DoubleAggregation<Boolean> ofDouble(DoubleFunction<Double> mapper) {
         if (mapper instanceof DoubleUnaryOperator) {
-            return ofDoubleToDouble((DoubleUnaryOperator)mapper);
+            return ofDoubleToBoolean((DoubleUnaryOperator)mapper);
         }
         
-        val newCollector = doubleCollectorToDoublePlus().of(mapper);
+        val newCollector = doubleCollectorToBooleanPlus().of(mapper);
         return new DoubleAggregation.Impl<>(newCollector);
     }
     
     // This is a terrible name .... :-(
     // But if we use `ofDouble`, Java confuse this one and the one above
-    public DoubleAggregationToDouble ofDoubleToDouble(DoubleUnaryOperator mapper) {
-        val newCollector = doubleCollectorToDoublePlus().of(mapper);
-        return new DoubleAggregationToDouble.Impl(newCollector);
+    public DoubleAggregationToBoolean ofDoubleToBoolean(DoubleUnaryOperator mapper) {
+        val newCollector = doubleCollectorToBooleanPlus().of(mapper);
+        return new DoubleAggregationToBoolean.Impl(newCollector);
     }
     
     //== Implementation ==
     
-    public static class Impl extends DoubleAggregationToDouble {
+    public static class Impl extends DoubleAggregationToBoolean {
         
-        private final DoubleCollectorToDoublePlus<?> collector;
+        private final DoubleCollectorToBooleanPlus<?> collector;
         
-        public Impl(DoubleCollectorToDoublePlus<?> collector) {
+        public Impl(DoubleCollectorToBooleanPlus<?> collector) {
             this.collector = collector;
         }
         
         @Override
-        public DoubleCollectorToDoublePlus<?> doubleCollectorToDoublePlus() {
+        public DoubleCollectorToBooleanPlus<?> doubleCollectorToBooleanPlus() {
             return collector;
         }
         

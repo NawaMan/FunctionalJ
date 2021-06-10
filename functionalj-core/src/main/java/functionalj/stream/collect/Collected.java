@@ -29,7 +29,6 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 
 import functionalj.function.aggregator.Aggregation;
-
 import lombok.val;
 
 

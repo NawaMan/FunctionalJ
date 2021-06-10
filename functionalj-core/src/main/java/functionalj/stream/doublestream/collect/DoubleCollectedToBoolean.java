@@ -21,52 +21,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.intstream.collect;
+package functionalj.stream.doublestream.collect;
 
-import java.util.function.ObjIntConsumer;
+import java.util.function.ObjDoubleConsumer;
 
 import functionalj.stream.collect.Collected;
 
 
-public interface IntCollectedToDouble<ACCUMULATED> extends Collected<Integer, ACCUMULATED, Double>, IntCollected<ACCUMULATED, Double> {
+public interface DoubleCollectedToBoolean<ACCUMULATED> extends Collected<Double, ACCUMULATED, Boolean>, DoubleCollected<ACCUMULATED, Boolean> {
     
-    public static <ACC> IntCollectedToDouble<ACC> of(IntCollectorToDoublePlus<ACC> collector) {
-        return new IntCollectedToDouble.Impl<ACC>(collector);
+    public static <ACC> DoubleCollectedToBoolean<ACC> of(DoubleCollectorToBooleanPlus<ACC> collector) {
+        return new DoubleCollectedToBoolean.Impl<>(collector);
     }
     
     //== Instance ==
     
-    public void   accumulate(int each);
-    public double finishAsDouble();
+    public void    accumulate(double each);
+    public boolean finishAsBoolean();
     
-    public default Double finish() {
-        return finishAsDouble();
+    public default Boolean finish() {
+        return finishAsBoolean();
     }
     
-    public default void accumulate(Integer each) {
+    public default void accumulate(Double each) {
         accumulate(each);
     }
     
     //== Implementation ==
     
-    public static class Impl<ACCUMULATED> implements IntCollectedToDouble<ACCUMULATED> {
+    public static class Impl<ACCUMULATED> implements DoubleCollectedToBoolean<ACCUMULATED> {
         
-        private final IntCollectorToDoublePlus<ACCUMULATED> collector;
-        private final ObjIntConsumer<ACCUMULATED>           accumulator;
-        private final ACCUMULATED                           accumulated;
+        private final DoubleCollectorToBooleanPlus<ACCUMULATED> collector;
+        private final ObjDoubleConsumer<ACCUMULATED>            accumulator;
+        private final ACCUMULATED                               accumulated;
         
-        public Impl(IntCollectorToDoublePlus<ACCUMULATED> collector) {
+        public Impl(DoubleCollectorToBooleanPlus<ACCUMULATED> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
-            this.accumulator = collector.intAccumulator();
+            this.accumulator = collector.doubleAccumulator();
         }
         
-        public void accumulate(int each) {
+        public void accumulate(double each) {
             accumulator.accept(accumulated, each);
         }
         
         @Override
-        public double finishAsDouble() {
+        public boolean finishAsBoolean() {
             return collector.finisher().apply(accumulated);
         }
         

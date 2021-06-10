@@ -28,84 +28,69 @@ import java.util.function.IntFunction;
 import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
 
-import functionalj.stream.collect.Collected;
+import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import lombok.val;
 
 
 
-@FunctionalInterface
-public interface IntAggregation<TARGET> extends Aggregator<Integer, TARGET> {
+public abstract class IntAggregation<TARGET> extends Aggregation<Integer, TARGET> {
     
-//    public static <A, T> IntAggregation<T> from(IntCollectorPlus<A, T> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> IntAggregationToInt from(IntCollectorToIntPlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> IntAggregationToLong from(IntCollectorToLongPlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> IntAggregationToDouble from(IntCollectorToDoublePlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> IntAggregationToInt forInt(IntCollectorToIntPlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> IntAggregationToLong forLong(IntCollectorToLongPlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> IntAggregationToDouble forDouble(IntCollectorToDoublePlus<A> collector) {
-//        return () -> collector;
-//    }
+    public static <A, T> IntAggregation<T> from(IntCollectorPlus<A, T> collector) {
+        return new IntAggregation.Impl<T>(collector);
+    }
     
     //== Instance == 
     
-    public IntCollectorPlus<?, TARGET> intCollectorPlus();
-    
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public default Collected<Integer, ?, TARGET> asCollected() {
-        return (Collected<Integer, ?, TARGET>) intCollectorPlus();
-    }
+    public abstract IntCollectorPlus<?, TARGET> intCollectorPlus();
     
     @Override
-    public default TARGET applyUnsafe(Integer input) throws Exception {
-        return null;
+    public CollectorPlus<Integer, ?, TARGET> collectorPlus() {
+        return intCollectorPlus();
     }
     
-    public default IntAggregator<TARGET> newAggregator() {
+    public IntAggregator<TARGET> newAggregator() {
         val collector = intCollectorPlus();
         return new IntAggregator.Impl<>(collector);
     }
     
     //== Derived ==
     
-    public default <INPUT> Aggregation<INPUT, TARGET> of(ToIntFunction<INPUT> mapper) {
+    public <INPUT> Aggregation<INPUT, TARGET> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorPlus().of(mapper);
-        return () -> newCollector;
+        return new Aggregation.Impl<INPUT, TARGET>(newCollector);
     }
     
-    public default IntAggregation<TARGET> ofInt(IntFunction<Integer> mapper) {
+    public IntAggregation<TARGET> ofInt(IntFunction<Integer> mapper) {
         val newCollector = intCollectorPlus().of(mapper);
-        return () -> newCollector;
+        return new IntAggregation.Impl<TARGET>(newCollector);
     }
     
-    public default LongAggregation<TARGET> ofLong(LongToIntFunction mapper) {
+    public LongAggregation<TARGET> ofLong(LongToIntFunction mapper) {
         val newCollector = intCollectorPlus().of(mapper);
-        return () -> newCollector;
+        return new LongAggregation.Impl<TARGET>(newCollector);
     }
     
-    public default DoubleAggregation<TARGET> ofDouble(DoubleToIntFunction mapper) {
+    public DoubleAggregation<TARGET> ofDouble(DoubleToIntFunction mapper) {
         val newCollector = intCollectorPlus().of(mapper);
-        return () -> newCollector;
+        return new DoubleAggregation.Impl<TARGET>(newCollector);
+    }
+    
+    //== Implementation ==
+    
+    public static class Impl<TRG> extends IntAggregation<TRG> {
+        
+        private final IntCollectorPlus<?, TRG> collector;
+        
+        public Impl(IntCollectorPlus<?, TRG> collector) {
+            this.collector = collector;
+        }
+        
+        @Override
+        public IntCollectorPlus<?, TRG> intCollectorPlus() {
+            return collector;
+        }
+        
     }
     
 }

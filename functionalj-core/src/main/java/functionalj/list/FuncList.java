@@ -55,6 +55,10 @@ import functionalj.function.Func;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.LongLongBiFunction;
+import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToDouble;
+import functionalj.function.aggregator.AggregationToInt;
+import functionalj.function.aggregator.AggregationToLong;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.doublelist.ImmutableDoubleFuncList;
@@ -330,6 +334,12 @@ public interface FuncList<DATA>
         return FuncList.from(()->StreamPlus.iterate(seed, compounder));
     }
     
+    public static <TARGET> FuncList<TARGET> iterate(
+            TARGET                      seed,
+            Aggregation<TARGET, TARGET> aggregation) {
+        return FuncList.from(()->StreamPlus.iterate(seed, aggregation));
+    }
+    
     /**
      * Create a FuncList by apply the compounder to the seed over and over.
      *
@@ -348,6 +358,12 @@ public interface FuncList<DATA>
             TARGET                   seed,
             Function<TARGET, TARGET> compounder) {
         return FuncList.from(()->StreamPlus.compound(seed, compounder));
+    }
+    
+    public static <TARGET> FuncList<TARGET> compound(
+            TARGET                      seed,
+            Aggregation<TARGET, TARGET> aggregation) {
+        return FuncList.from(()->StreamPlus.compound(seed, aggregation));
     }
     
     /**
@@ -791,6 +807,31 @@ public interface FuncList<DATA>
     
     public default <TARGET> FuncList<TARGET> mapToObj(Function<? super DATA, ? extends TARGET> mapper) {
         return map(mapper);
+    }
+
+    
+    /** Map each value into other value using the function. */
+    public default <TARGET> FuncList<TARGET> map(Aggregation<? super DATA, ? extends TARGET> aggregation) {
+        return deriveFrom(this, stream -> stream.map(aggregation));
+    }
+    
+    /** Map each value into an integer value using the function. */
+    public default IntFuncList mapToInt(AggregationToInt<? super DATA> aggregation) {
+        return IntFuncList.deriveFrom(this, stream -> stream.mapToInt(aggregation));
+    }
+    
+    /** Map each value into an integer value using the function. */
+    public default LongFuncList mapToLong(AggregationToLong<? super DATA> aggregation) {
+        return LongFuncList.deriveFrom(this, stream -> stream.mapToLong(aggregation));
+    }
+    
+    /** Map each value into a double value using the function. */
+    public default DoubleFuncList mapToDouble(AggregationToDouble<? super DATA> aggregation) {
+        return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(aggregation));
+    }
+    
+    public default <TARGET> FuncList<TARGET> mapToObj(Aggregation<? super DATA, ? extends TARGET> aggregation) {
+        return map(aggregation);
     }
     
     //-- FlatMap --

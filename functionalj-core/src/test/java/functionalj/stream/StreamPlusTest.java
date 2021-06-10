@@ -78,6 +78,7 @@ import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.promise.DeferAction;
+import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
@@ -752,7 +753,7 @@ public class StreamPlusTest {
     
     //-- StreamPlusWithCalculate --
     
-    static class SumLength implements Aggregation<String, Integer> {
+    static class SumLength extends Aggregation<String, Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>                   supplier()        { return ()->new int[] { 0 }; }
@@ -763,12 +764,12 @@ public class StreamPlusTest {
             @Override public Set<Characteristics>              characteristics() { return characteristics; }
         };
         @Override
-        public CollectorToIntPlus<String, ?> collectorPlus() {
+        public CollectorPlus<String, ?, Integer> collectorPlus() {
             return collectorPlus;
         }
         
     }
-    static class AvgLength implements Aggregation<String, Integer> {
+    static class AvgLength extends Aggregation<String, Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>                   supplier()        { return ()->new int[] { 0, 0 }; }
@@ -784,7 +785,7 @@ public class StreamPlusTest {
             return collectorPlus;
         }
     }
-    static class MinLength implements Aggregation<String, Integer> {
+    static class MinLength extends Aggregation<String, Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MAX_VALUE }; }
@@ -800,7 +801,7 @@ public class StreamPlusTest {
             return collectorPlus;
         }
     }
-    static class MaxLength implements Aggregation<String, Integer> {
+    static class MaxLength extends Aggregation<String, Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MIN_VALUE }; }

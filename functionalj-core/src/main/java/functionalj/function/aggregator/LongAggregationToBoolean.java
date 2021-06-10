@@ -29,65 +29,65 @@ import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
 
 import functionalj.stream.longstream.collect.LongCollectorPlus;
-import functionalj.stream.longstream.collect.LongCollectorToDoublePlus;
+import functionalj.stream.longstream.collect.LongCollectorToBooleanPlus;
 import lombok.val;
 
 
-public abstract class LongAggregationToDouble extends LongAggregation<Double> {
+public abstract class LongAggregationToBoolean extends LongAggregation<Boolean> {
     
-    public static <A> LongAggregationToDouble from(LongCollectorToDoublePlus<A> collector) {
-        return new LongAggregationToDouble.Impl(collector);
+    public static <A> LongAggregationToBoolean from(LongCollectorToBooleanPlus<A> collector) {
+        return new LongAggregationToBoolean.Impl(collector);
     }
     
     //== Instance == 
     
-    public abstract LongCollectorToDoublePlus<?> longCollectorToDoublePlus();
+    public abstract LongCollectorToBooleanPlus<?> longCollectorToBooleanPlus();
     
     
     @Override
-    public LongCollectorPlus<?, Double> longCollectorPlus() {
-        return longCollectorToDoublePlus();
+    public LongCollectorPlus<?, Boolean> longCollectorPlus() {
+        return longCollectorToBooleanPlus();
     }
     
-    public LongAggregatorToDouble newLongAccumulatorToDouble() {
-        val collector = longCollectorToDoublePlus();
-        return new LongAggregatorToDouble.Impl(collector);
+    public LongAggregatorToBoolean newLongAccumulatorToBoolean() {
+        val collector = longCollectorToBooleanPlus();
+        return new LongAggregatorToBoolean.Impl(collector);
     }
     
     //== Derived ==
     
-    public <INPUT> AggregationToDouble<INPUT> of(ToLongFunction<INPUT> mapper) {
-        val newCollector = longCollectorToDoublePlus().of(mapper);
-        return new AggregationToDouble.Impl<INPUT>(newCollector);
+    public <INPUT> AggregationToBoolean<INPUT> of(ToLongFunction<INPUT> mapper) {
+        val newCollector = longCollectorToBooleanPlus().of(mapper);
+        return new AggregationToBoolean.Impl<>(newCollector);
     }
     
-    public IntAggregationToDouble ofInt(IntToLongFunction mapper) {
-        val newCollector = longCollectorToDoublePlus().of(mapper);
-        return new IntAggregationToDouble.Impl(newCollector);
+    public IntAggregationToBoolean ofInt(IntToLongFunction mapper) {
+        val newCollector = longCollectorToBooleanPlus().of(mapper);
+        return new IntAggregationToBoolean.Impl(newCollector);
     }
     
-    public LongAggregationToDouble ofLong(LongUnaryOperator mapper) {
-        val newCollector = longCollectorToDoublePlus().of(mapper);
-        return new LongAggregationToDouble.Impl(newCollector);
+    public LongAggregationToBoolean ofLong(LongUnaryOperator mapper) {
+        val newCollector = longCollectorToBooleanPlus().of(mapper);
+        return new LongAggregationToBoolean.Impl(newCollector);
     }
     
-    public DoubleAggregationToDouble ofDouble(DoubleToLongFunction mapper) {
-        val newCollector = longCollectorToDoublePlus().of(mapper);
-        return new DoubleAggregationToDouble.Impl(newCollector);
+    public DoubleAggregationToBoolean ofDouble(DoubleToLongFunction mapper) {
+        val newCollector = longCollectorToBooleanPlus().of(mapper);
+        return new DoubleAggregationToBoolean.Impl(newCollector);
     }
     
     //== Implementation ==
     
-    public static class Impl extends LongAggregationToDouble {
+    public static class Impl extends LongAggregationToBoolean {
         
-        private final LongCollectorToDoublePlus<?> collector;
+        private final LongCollectorToBooleanPlus<?> collector;
         
-        public Impl(LongCollectorToDoublePlus<?> collector) {
+        public Impl(LongCollectorToBooleanPlus<?> collector) {
             this.collector = collector;
         }
         
         @Override
-        public LongCollectorToDoublePlus<?> longCollectorToDoublePlus() {
+        public LongCollectorToBooleanPlus<?> longCollectorToBooleanPlus() {
             return collector;
         }
         

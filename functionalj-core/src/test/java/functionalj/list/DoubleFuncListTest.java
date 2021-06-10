@@ -950,7 +950,7 @@ public class DoubleFuncListTest {
         });
     }
     
-    static class Sum implements DoubleAggregationToDouble {
+    static class Sum extends DoubleAggregationToDouble {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private DoubleCollectorToDoublePlus<double[]> collectorPlus = new DoubleCollectorToDoublePlus<double[]>() {
             @Override public Supplier<double[]>          supplier()          { return ()->new double[] { 0 }; }
@@ -960,7 +960,7 @@ public class DoubleFuncListTest {
             @Override public Set<Characteristics>        characteristics()   { return characteristics; }
         };
         @Override
-        public DoubleCollectorToDoublePlus<?> collectorToDoublePlus() {
+        public DoubleCollectorToDoublePlus<?> doubleCollectorToDoublePlus() {
             return collectorPlus;
         }
     }
@@ -969,7 +969,7 @@ public class DoubleFuncListTest {
     public void testCollect() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             val sum = new Sum();
-            assertAsString("6.0", list.collect(sum.collectorToDoublePlus()));
+            assertAsString("6.0", list.collect(sum.doubleCollectorPlus()));
             
             Supplier<StringBuffer>                 supplier    = ()          -> new StringBuffer();
             ObjDoubleConsumer<StringBuffer>        accumulator = (buffer, i) -> buffer.append(i);
@@ -1820,7 +1820,7 @@ public class DoubleFuncListTest {
     
     //-- IntFuncListWithCalculate --
     
-    static class SumHalf implements DoubleAggregation<Double> {
+    static class SumHalf extends DoubleAggregation<Double> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private DoubleCollectorPlus<double[], Double> collectorPlus = new DoubleCollectorPlus<double[], Double>() {
             @Override public Supplier<double[]>          supplier()          { return ()       -> new double[] { 0.0 }; }
@@ -1834,7 +1834,7 @@ public class DoubleFuncListTest {
             return collectorPlus;
         }
     }
-    static class Average implements DoubleAggregation<OptionalDouble> {
+    static class Average extends DoubleAggregation<OptionalDouble> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
             @Override public Supplier<double[]>                 supplier()          { return ()       -> new double[] { 0, 0 }; }
@@ -1848,7 +1848,7 @@ public class DoubleFuncListTest {
             return collectorPlus;
         }
     }
-    static class MinDouble implements DoubleAggregation<OptionalDouble> {
+    static class MinDouble extends DoubleAggregation<OptionalDouble> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
             @Override public Supplier<double[]>                 supplier()          { return ()       -> new double[] { 0, 0 }; }
@@ -1862,7 +1862,7 @@ public class DoubleFuncListTest {
             return collectorPlus;
         }
     }
-    static class MaxDouble implements DoubleAggregation<OptionalDouble> {
+    static class MaxDouble extends DoubleAggregation<OptionalDouble> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
             @Override public Supplier<double[]>                          supplier()          { return ()       -> new double[] { 0, 0 }; }
@@ -1877,7 +1877,7 @@ public class DoubleFuncListTest {
             return collectorPlus;
         }
     }
-    static class SumDouble implements DoubleAggregation<Double> {
+    static class SumDouble extends DoubleAggregation<Double> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private DoubleCollectorPlus<double[], Double> collectorPlus = new DoubleCollectorPlus<double[], Double>() {
             @Override public Supplier<double[]>                  supplier()                       { return ()       -> new double[] { 0 }; }
@@ -1892,7 +1892,7 @@ public class DoubleFuncListTest {
             return collectorPlus;
         }
     }
-    static class AvgDouble implements DoubleAggregation<OptionalDouble> {
+    static class AvgDouble extends DoubleAggregation<OptionalDouble> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
         @Override public Supplier<double[]>                          supplier()                       { return ()       -> new double[] { 0, 0 }; }

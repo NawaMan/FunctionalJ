@@ -33,48 +33,64 @@ import functionalj.stream.doublestream.collect.DoubleCollectorToLongPlus;
 import lombok.val;
 
 
-@FunctionalInterface
-public interface DoubleAggregationToLong extends DoubleAggregation<Long> {
+public abstract class DoubleAggregationToLong extends DoubleAggregation<Long> {
     
     public static <A> DoubleAggregationToLong from(DoubleCollectorToLongPlus<A> collector) {
-        return () -> collector;
+        return new DoubleAggregationToLong.Impl(collector);
     }
     
     //== Instance == 
     
-    public DoubleCollectorToLongPlus<?> collectorToLongPlus();
+    public abstract DoubleCollectorToLongPlus<?> doubleCollectorToLongPlus();
     
     
     @Override
-    public default DoubleCollectorPlus<?, Long> doubleCollectorPlus() {
-        return collectorToLongPlus();
+    public DoubleCollectorPlus<?, Long> doubleCollectorPlus() {
+        return doubleCollectorToLongPlus();
     }
     
-    public default DoubleAggregatorToLong newDoubleAccumulatorToLong() {
-        val collector = collectorToLongPlus();
+    public DoubleAggregatorToLong newDoubleAccumulatorToLong() {
+        val collector = doubleCollectorToLongPlus();
         return new DoubleAggregatorToLong.Impl(collector);
     }
     
     //== Derived ==
     
-    public default <INPUT> AggregationToLong<INPUT> of(ToDoubleFunction<INPUT> mapper) {
-        val newCollector = collectorToLongPlus().of(mapper);
-        return () -> newCollector;
+    public <INPUT> AggregationToLong<INPUT> of(ToDoubleFunction<INPUT> mapper) {
+        val newCollector = doubleCollectorToLongPlus().of(mapper);
+        return new AggregationToLong.Impl<>(newCollector);
     }
     
-    public default IntAggregationToLong ofInt(IntToDoubleFunction mapper) {
-        val newCollector = collectorToLongPlus().of(mapper);
-        return () -> newCollector;
+    public IntAggregationToLong ofInt(IntToDoubleFunction mapper) {
+        val newCollector = doubleCollectorToLongPlus().of(mapper);
+        return new IntAggregationToLong.Impl(newCollector);
     }
     
-    public default LongAggregationToLong ofLong(LongToDoubleFunction mapper) {
-        val newCollector = collectorToLongPlus().of(mapper);
-        return () -> newCollector;
+    public LongAggregationToLong ofLong(LongToDoubleFunction mapper) {
+        val newCollector = doubleCollectorToLongPlus().of(mapper);
+        return new LongAggregationToLong.Impl(newCollector);
     }
     
-    public default DoubleAggregationToLong ofDouble(DoubleUnaryOperator mapper) {
-        val newCollector = collectorToLongPlus().of(mapper);
-        return () -> newCollector;
+    public DoubleAggregationToLong ofDouble(DoubleUnaryOperator mapper) {
+        val newCollector = doubleCollectorToLongPlus().of(mapper);
+        return new DoubleAggregationToLong.Impl(newCollector);
+    }
+    
+    //== Implementation ==
+    
+    public static class Impl extends DoubleAggregationToLong {
+        
+        private final DoubleCollectorToLongPlus<?> collector;
+        
+        public Impl(DoubleCollectorToLongPlus<?> collector) {
+            this.collector = collector;
+        }
+        
+        @Override
+        public DoubleCollectorToLongPlus<?> doubleCollectorToLongPlus() {
+            return collector;
+        }
+        
     }
     
 }

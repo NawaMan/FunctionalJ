@@ -28,19 +28,19 @@ import java.util.function.ObjIntConsumer;
 import functionalj.stream.collect.Collected;
 
 
-public interface IntCollectedToDouble<ACCUMULATED> extends Collected<Integer, ACCUMULATED, Double>, IntCollected<ACCUMULATED, Double> {
+public interface IntCollectedToBoolean<ACCUMULATED> extends Collected<Integer, ACCUMULATED, Boolean>, IntCollected<ACCUMULATED, Boolean> {
     
-    public static <ACC> IntCollectedToDouble<ACC> of(IntCollectorToDoublePlus<ACC> collector) {
-        return new IntCollectedToDouble.Impl<ACC>(collector);
+    public static <ACC> IntCollectedToBoolean<ACC> of(IntCollectorToBooleanPlus<ACC> collector) {
+        return new IntCollectedToBoolean.Impl<ACC>(collector);
     }
     
     //== Instance ==
     
-    public void   accumulate(int each);
-    public double finishAsDouble();
+    public void    accumulate(int each);
+    public boolean finishAsBoolean();
     
-    public default Double finish() {
-        return finishAsDouble();
+    public default Boolean finish() {
+        return finishAsBoolean();
     }
     
     public default void accumulate(Integer each) {
@@ -49,13 +49,13 @@ public interface IntCollectedToDouble<ACCUMULATED> extends Collected<Integer, AC
     
     //== Implementation ==
     
-    public static class Impl<ACCUMULATED> implements IntCollectedToDouble<ACCUMULATED> {
+    public static class Impl<ACCUMULATED> implements IntCollectedToBoolean<ACCUMULATED> {
         
-        private final IntCollectorToDoublePlus<ACCUMULATED> collector;
-        private final ObjIntConsumer<ACCUMULATED>           accumulator;
-        private final ACCUMULATED                           accumulated;
+        private final IntCollectorToBooleanPlus<ACCUMULATED> collector;
+        private final ObjIntConsumer<ACCUMULATED>            accumulator;
+        private final ACCUMULATED                            accumulated;
         
-        public Impl(IntCollectorToDoublePlus<ACCUMULATED> collector) {
+        public Impl(IntCollectorToBooleanPlus<ACCUMULATED> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.intAccumulator();
@@ -66,7 +66,7 @@ public interface IntCollectedToDouble<ACCUMULATED> extends Collected<Integer, AC
         }
         
         @Override
-        public double finishAsDouble() {
+        public boolean finishAsBoolean() {
             return collector.finisher().apply(accumulated);
         }
         

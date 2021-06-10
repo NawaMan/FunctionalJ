@@ -33,81 +33,64 @@ import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
 
 
-@FunctionalInterface
-public interface LongAggregation<TARGET> extends Aggregation<Long, TARGET> {
+public abstract class LongAggregation<TARGET> extends Aggregation<Long, TARGET> {
     
-//    public static <A, R> LongCollected<A, R> collectedOf(LongAggregation<R> aggregation) {
-//        return of(aggregation);
-//    }
-//    
-//    @SuppressWarnings("unchecked")
-//    public static <A, R> LongCollected<A, R> of(LongAggregation<R> aggregation) {
-//        return new LongCollected.Impl<A, R>((LongCollectorPlus<A, R>) aggregation.longCollectorPlus());
-//    }
-//    
-//    public static <A, T> LongAggregation<T> from(LongCollectorPlus<A, T> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> LongAggregationToInt from(LongCollectorToIntPlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> LongAggregationToLong from(LongCollectorToLongPlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> LongAggregationToDouble from(LongCollectorToDoublePlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> LongAggregationToInt forInt(LongCollectorToIntPlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> LongAggregationToLong forLong(LongCollectorToLongPlus<A> collector) {
-//        return () -> collector;
-//    }
-//    
-//    public static <A> LongAggregationToDouble forDouble(LongCollectorToDoublePlus<A> collector) {
-//        return () -> collector;
-//    }
+    public static <A, T> LongAggregation<T> from(LongCollectorPlus<A, T> collector) {
+        return new LongAggregation.Impl<T>(collector);
+    }
     
     //== Instance == 
     
-    public LongCollectorPlus<?, TARGET> longCollectorPlus();
+    public abstract LongCollectorPlus<?, TARGET> longCollectorPlus();
     
     
     @Override
-    public default CollectorPlus<Long, ?, TARGET> collectorPlus() {
+    public CollectorPlus<Long, ?, TARGET> collectorPlus() {
         return longCollectorPlus();
     }
     
-    public default LongAggregator<TARGET> newAggregator() {
+    public LongAggregator<TARGET> newAggregator() {
         val collector = longCollectorPlus();
         return new LongAggregator.Impl<>(collector);
     }
     
     //== Derived ==
     
-    public default <INPUT> Aggregation<INPUT, TARGET> of(ToLongFunction<INPUT> mapper) {
+    public <INPUT> Aggregation<INPUT, TARGET> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorPlus().of(mapper);
-        return () -> newCollector;
+        return new Aggregation.Impl<>(newCollector);
     }
     
-    public default IntAggregation<TARGET> ofInt(IntToLongFunction mapper) {
+    public IntAggregation<TARGET> ofInt(IntToLongFunction mapper) {
         val newCollector = longCollectorPlus().of(mapper);
-        return () -> newCollector;
+        return new IntAggregation.Impl<>(newCollector);
     }
     
-    public default LongAggregation<TARGET> ofLong(LongFunction<Long> mapper) {
+    public LongAggregation<TARGET> ofLong(LongFunction<Long> mapper) {
         val newCollector = longCollectorPlus().of(mapper);
-        return () -> newCollector;
+        return new LongAggregation.Impl<>(newCollector);
     }
     
-    public default DoubleAggregation<TARGET> ofDouble(DoubleToLongFunction mapper) {
+    public DoubleAggregation<TARGET> ofDouble(DoubleToLongFunction mapper) {
         val newCollector = longCollectorPlus().of(mapper);
-        return () -> newCollector;
+        return new DoubleAggregation.Impl<>(newCollector);
+    }
+    
+    //== Implementation ==
+    
+    public static class Impl<TRG> extends LongAggregation<TRG> {
+        
+        private final LongCollectorPlus<?, TRG> collector;
+        
+        public Impl(LongCollectorPlus<?, TRG> collector) {
+            this.collector = collector;
+        }
+        
+        @Override
+        public LongCollectorPlus<?, TRG> longCollectorPlus() {
+            return collector;
+        }
+        
     }
     
 }

@@ -936,7 +936,7 @@ public class IntFuncListTest {
         });
     }
     
-    static class Sum implements IntAggregationToInt {
+    static class Sum extends IntAggregationToInt {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private IntCollectorToIntPlus<int[]> collectorPlus = new IntCollectorToIntPlus<int[]>() {
             @Override public Supplier<int[]>       supplier()        { return ()->new int[] { 0 }; }
@@ -946,7 +946,7 @@ public class IntFuncListTest {
             @Override public Set<Characteristics>  characteristics() { return characteristics; }
         };
         @Override
-        public IntCollectorToIntPlus<?> collectorToIntPlus() {
+        public IntCollectorToIntPlus<?> intCollectorToIntPlus() {
             return collectorPlus;
         }
     }
@@ -955,7 +955,7 @@ public class IntFuncListTest {
     public void testCollect() {
         run(IntFuncList.of(One, Two, Three), list -> {
             val sum = new Sum();
-            assertAsString("6", list.collect(sum.collectorToIntPlus()));
+            assertAsString("6", list.collect(sum.intCollectorToIntPlus()));
             
             Supplier<StringBuffer>                 supplier    = ()          -> new StringBuffer();
             ObjIntConsumer<StringBuffer>           accumulator = (buffer, i) -> buffer.append(i);
@@ -1789,7 +1789,7 @@ public class IntFuncListTest {
     
     //-- IntFuncListWithCalculate --
     
-    static class SumHalf implements IntAggregation<Integer> {
+    static class SumHalf extends IntAggregation<Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
             @Override public Supplier<int[]>          supplier()        { return ()       -> new int[] { 0 }; }
@@ -1803,7 +1803,7 @@ public class IntFuncListTest {
             return collectorPlus;
         }
     }
-    static class Average implements IntAggregation<Double> {
+    static class Average extends IntAggregation<Double> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private IntCollectorPlus<int[], Double> collectorPlus = new IntCollectorPlus<int[], Double>() {
             @Override public Supplier<int[]>         supplier()         { return ()       -> new int[] { 0, 0 }; }
@@ -1817,7 +1817,7 @@ public class IntFuncListTest {
             return collectorPlus;
         }
     }
-    static class MinInt implements IntAggregation<Integer> {
+    static class MinInt extends IntAggregation<Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
             @Override public Supplier<int[]>          supplier()        { return ()       -> new int[] { 0, 0 }; }
@@ -1831,7 +1831,7 @@ public class IntFuncListTest {
             return collectorPlus;
         }
     }
-    static class MaxInt implements IntAggregation<Integer> {
+    static class MaxInt extends IntAggregation<Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
             @Override public Supplier<int[]>          supplier()        { return ()       -> new int[] { 0, 0 }; }
@@ -1845,7 +1845,7 @@ public class IntFuncListTest {
             return collectorPlus;
         }
     }
-    static class SumInt implements IntAggregation<Integer> {
+    static class SumInt extends IntAggregation<Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
             @Override public Supplier<int[]>          supplier()        { return ()       -> new int[] { 0 }; }
@@ -1860,7 +1860,7 @@ public class IntFuncListTest {
             return collectorPlus;
         }
     }
-    static class AvgInt implements IntAggregation<Integer> {
+    static class AvgInt extends IntAggregation<Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
             @Override public Supplier<int[]>          supplier()        { return ()       -> new int[] { 0, 0 }; }

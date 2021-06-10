@@ -61,7 +61,7 @@ public interface AsIntStreamPlusWithCalculate {
     /** Perform the calculation using the data of this stream */
    public default int calculate(
            IntAggregationToInt aggregation) {
-       val collected = IntCollectedToInt.of(aggregation.collectorToIntPlus());
+       val collected = IntCollectedToInt.of(aggregation.intCollectorToIntPlus());
        forEach(each -> {
            collected.accumulate(each);
        });

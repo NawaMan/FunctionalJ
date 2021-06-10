@@ -29,65 +29,65 @@ import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
 
 import functionalj.stream.intstream.collect.IntCollectorPlus;
-import functionalj.stream.intstream.collect.IntCollectorToLongPlus;
+import functionalj.stream.intstream.collect.IntCollectorToBooleanPlus;
 import lombok.val;
 
 
-public abstract class IntAggregationToLong extends IntAggregation<Long> {
+public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
     
-    public static <A> IntAggregationToLong from(IntCollectorToLongPlus<A> collector) {
-        return new IntAggregationToLong.Impl(collector);
+    public static <A> IntAggregationToBoolean from(IntCollectorToBooleanPlus<A> collector) {
+        return new IntAggregationToBoolean.Impl(collector);
     }
     
     //== Instance == 
     
-    public abstract IntCollectorToLongPlus<?> intCollectorToLongPlus();
+    public abstract IntCollectorToBooleanPlus<?> intCollectorToBooleanPlus();
     
     
     @Override
-    public IntCollectorPlus<?, Long> intCollectorPlus() {
-        return intCollectorToLongPlus();
+    public IntCollectorPlus<?, Boolean> intCollectorPlus() {
+        return intCollectorToBooleanPlus();
     }
     
-    public IntAggregatorToLong newIntAccumulatorToLong() {
-        val collector = intCollectorToLongPlus();
-        return new IntAggregatorToLong.Impl(collector);
+    public IntAggregatorToBoolean newIntAccumulatorToBoolean() {
+        val collector = intCollectorToBooleanPlus();
+        return new IntAggregatorToBoolean.Impl(collector);
     }
     
     //== Derived ==
     
-    public <INPUT> AggregationToLong<INPUT> of(ToIntFunction<INPUT> mapper) {
-        val newCollector = intCollectorToLongPlus().of(mapper);
-        return new AggregationToLong.Impl<>(newCollector);
+    public <INPUT> AggregationToBoolean<INPUT> of(ToIntFunction<INPUT> mapper) {
+        val newCollector = intCollectorToBooleanPlus().of(mapper);
+        return new AggregationToBoolean.Impl<>(newCollector);
     }
     
-    public IntAggregationToLong ofInt(IntUnaryOperator mapper) {
-        val newCollector = intCollectorToLongPlus().of(mapper);
-        return new IntAggregationToLong.Impl(newCollector);
+    public IntAggregationToBoolean ofInt(IntUnaryOperator mapper) {
+        val newCollector = intCollectorToBooleanPlus().of(mapper);
+        return new IntAggregationToBoolean.Impl(newCollector);
     }
     
-    public LongAggregationToLong ofLong(LongToIntFunction mapper) {
-        val newCollector = intCollectorToLongPlus().of(mapper);
-        return new LongAggregationToLong.Impl(newCollector);
+    public LongAggregationToBoolean ofLong(LongToIntFunction mapper) {
+        val newCollector = intCollectorToBooleanPlus().of(mapper);
+        return new LongAggregationToBoolean.Impl(newCollector);
     }
     
-    public DoubleAggregationToLong ofDouble(DoubleToIntFunction mapper) {
-        val newCollector = intCollectorToLongPlus().of(mapper);
-        return new DoubleAggregationToLong.Impl(newCollector);
+    public DoubleAggregationToBoolean ofDouble(DoubleToIntFunction mapper) {
+        val newCollector = intCollectorToBooleanPlus().of(mapper);
+        return new DoubleAggregationToBoolean.Impl(newCollector);
     }
     
     //== Implementation ==
     
-    public static class Impl extends IntAggregationToLong {
+    public static class Impl extends IntAggregationToBoolean {
         
-        private final IntCollectorToLongPlus<?> collector;
+        private final IntCollectorToBooleanPlus<?> collector;
         
-        public Impl(IntCollectorToLongPlus<?> collector) {
+        public Impl(IntCollectorToBooleanPlus<?> collector) {
             this.collector = collector;
         }
         
         @Override
-        public IntCollectorToLongPlus<?> intCollectorToLongPlus() {
+        public IntCollectorToBooleanPlus<?> intCollectorToBooleanPlus() {
             return collector;
         }
         

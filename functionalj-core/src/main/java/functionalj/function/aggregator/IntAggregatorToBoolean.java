@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,47 +21,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.collect;
+package functionalj.function.aggregator;
 
-import java.util.function.BiConsumer;
+import functionalj.lens.lenses.IntegerToBooleanAccessPrimitive;
+import functionalj.stream.intstream.collect.IntCollectedToBoolean;
+import functionalj.stream.intstream.collect.IntCollectorToBooleanPlus;
 
-public interface CollectedToDouble<DATA, ACCUMULATED> extends Collected<DATA, ACCUMULATED, Double> {
+public interface IntAggregatorToBoolean extends IntegerToBooleanAccessPrimitive, IntAggregator<Boolean> {
     
-    public static <SRC, ACC> CollectedToDouble<SRC, ACC> of(CollectorToDoublePlus<SRC, ACC> collector) {
-        return new CollectedToDouble.Impl<SRC, ACC>(collector);
-    }
-    
-    //== Instance ==
-    
-    public void   accumulate(DATA each);
-    public double finishToDouble();
-    
-    public default Double finish() {
-        return finishToDouble();
-    }
+    public IntCollectedToBoolean<?> asCollected();
     
     //== Implementation ==
     
-    public static class Impl<DATA, ACCUMULATED> implements CollectedToDouble<DATA, ACCUMULATED> {
+    public static class Impl implements IntAggregatorToBoolean {
         
-        private final CollectorToDoublePlus<DATA, ACCUMULATED> collector;
-        private final BiConsumer<ACCUMULATED, DATA>            accumulator;
-        private final ACCUMULATED                              accumulated;
+        private final IntCollectedToBoolean<?> collected;
         
-        public Impl(CollectorToDoublePlus<DATA, ACCUMULATED> collector) {
-            this.collector   = collector;
-            this.accumulated = collector.supplier().get();
-            this.accumulator = collector.accumulator();
+        public Impl(IntCollectorToBooleanPlus<?> collector) {
+            this.collected = IntCollectedToBoolean.of(collector);
         }
         
-        public void accumulate(DATA each) {
-            accumulator.accept(accumulated, each);
+        @Override
+        public boolean applyIntToBoolean(int input) {
+            collected.accumulate(input);
+            return collected.finish();
         }
         
-        public double finishToDouble() {
-            return collector.finisherToDouble().applyAsDouble(accumulated);
+        public IntCollectedToBoolean<?> asCollected() {
+            return collected;
         }
         
+        @Override
+        public Boolean apply(int input) {
+            return applyIntToBoolean(input);
+        }
     }
     
 }

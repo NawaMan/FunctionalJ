@@ -21,52 +21,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.intstream.collect;
+package functionalj.stream.longstream.collect;
 
-import java.util.function.ObjIntConsumer;
+import java.util.function.ObjLongConsumer;
 
 import functionalj.stream.collect.Collected;
 
 
-public interface IntCollectedToDouble<ACCUMULATED> extends Collected<Integer, ACCUMULATED, Double>, IntCollected<ACCUMULATED, Double> {
+public interface LongCollectedToBoolean<ACCUMULATED> extends Collected<Long, ACCUMULATED, Boolean>, LongCollected<ACCUMULATED, Boolean> {
     
-    public static <ACC> IntCollectedToDouble<ACC> of(IntCollectorToDoublePlus<ACC> collector) {
-        return new IntCollectedToDouble.Impl<ACC>(collector);
+    public static <ACC> LongCollectedToBoolean<ACC> of(LongCollectorToBooleanPlus<ACC> collector) {
+        return new LongCollectedToBoolean.Impl<ACC>(collector);
     }
     
     //== Instance ==
     
-    public void   accumulate(int each);
-    public double finishAsDouble();
+    public void    accumulate(long each);
+    public boolean finishAsBoolean();
     
-    public default Double finish() {
-        return finishAsDouble();
+    public default Boolean finish() {
+        return finishAsBoolean();
     }
     
-    public default void accumulate(Integer each) {
+    public default void accumulate(Long each) {
         accumulate(each);
     }
     
     //== Implementation ==
     
-    public static class Impl<ACCUMULATED> implements IntCollectedToDouble<ACCUMULATED> {
+    public static class Impl<ACCUMULATED> implements LongCollectedToBoolean<ACCUMULATED> {
         
-        private final IntCollectorToDoublePlus<ACCUMULATED> collector;
-        private final ObjIntConsumer<ACCUMULATED>           accumulator;
-        private final ACCUMULATED                           accumulated;
+        private final LongCollectorToBooleanPlus<ACCUMULATED> collector;
+        private final ObjLongConsumer<ACCUMULATED>            accumulator;
+        private final ACCUMULATED                             accumulated;
         
-        public Impl(IntCollectorToDoublePlus<ACCUMULATED> collector) {
+        public Impl(LongCollectorToBooleanPlus<ACCUMULATED> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
-            this.accumulator = collector.intAccumulator();
+            this.accumulator = collector.longAccumulator();
         }
         
-        public void accumulate(int each) {
+        public void accumulate(long each) {
             accumulator.accept(accumulated, each);
         }
         
         @Override
-        public double finishAsDouble() {
+        public boolean finishAsBoolean() {
             return collector.finisher().apply(accumulated);
         }
         

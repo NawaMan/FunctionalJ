@@ -58,6 +58,10 @@ import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.LongLongBiFunction;
+import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToDouble;
+import functionalj.function.aggregator.AggregationToInt;
+import functionalj.function.aggregator.AggregationToLong;
 import functionalj.list.FuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
@@ -311,6 +315,13 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(Stream.iterate(seed, compounder::apply));
     }
     
+    public static <TARGET> StreamPlus<TARGET> iterate(
+            TARGET                      seed,
+            Aggregation<TARGET, TARGET> aggregation) {
+        val compounder = aggregation.newAggregator();
+        return StreamPlus.from(Stream.iterate(seed, compounder::apply));
+    }
+    
     /**
      * Create a StreamPlus by apply the compounder to the seed over and over.
      *
@@ -329,6 +340,12 @@ public interface StreamPlus<DATA>
             TARGET                   seed,
             Function<TARGET, TARGET> compounder) {
         return iterate(seed, compounder);
+    }
+    
+    public static <TARGET> StreamPlus<TARGET> compound(
+            TARGET                      seed,
+            Aggregation<TARGET, TARGET> aggregation) {
+        return iterate(seed, aggregation);
     }
     
     /**
@@ -656,6 +673,32 @@ public interface StreamPlus<DATA>
     public default <T> StreamPlus<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
         return StreamPlus.from(stream().map(mapper));
     }
+    
+    public default <T> StreamPlus<T> map(Aggregation<? super DATA, ? extends T> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return StreamPlus.from(stream().map(mapper));
+    }
+    
+    public default IntStreamPlus mapToInt(AggregationToInt<? super DATA> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return IntStreamPlus.from(stream().mapToInt(mapper));
+    }
+    
+    public default LongStreamPlus mapToLong(AggregationToLong<? super DATA> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return LongStreamPlus.from(stream().mapToLong(mapper));
+    }
+    
+    public default DoubleStreamPlus mapToDouble(AggregationToDouble<? super DATA> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return DoubleStreamPlus.from(stream().mapToDouble(mapper));
+    }
+    
+    public default <T> StreamPlus<T> mapToObj(Aggregation<? super DATA, ? extends T> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return StreamPlus.from(stream().map(mapper));
+    }
+    
     
     //-- FlatMap --
     

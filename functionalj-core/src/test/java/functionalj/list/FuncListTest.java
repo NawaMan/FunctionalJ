@@ -1759,7 +1759,7 @@ public class FuncListTest {
     
     //-- StreamPlusWithCalculate --
     
-    static class SumLength implements Aggregation<String, Integer> {
+    static class SumLength extends Aggregation<String, Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>                   supplier()        { return ()->new int[] { 0 }; }
@@ -1775,7 +1775,7 @@ public class FuncListTest {
         }
         
     }
-    static class AvgLength implements Aggregation<String, Integer> {
+    static class AvgLength extends Aggregation<String, Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>                   supplier()        { return ()->new int[] { 0, 0 }; }
@@ -1791,7 +1791,7 @@ public class FuncListTest {
             return collectorPlus;
         }
     }
-    static class MinLength implements Aggregation<String, Integer> {
+    static class MinLength extends Aggregation<String, Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MAX_VALUE }; }
@@ -1807,7 +1807,7 @@ public class FuncListTest {
             return collectorPlus;
         }
     }
-    static class MaxLength implements Aggregation<String, Integer> {
+    static class MaxLength extends Aggregation<String, Integer> {
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
             @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MIN_VALUE }; }

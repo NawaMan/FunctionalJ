@@ -36,7 +36,7 @@ public interface LongCollectedToDouble<ACCUMULATED> extends Collected<Long, ACCU
     
     //== Instance ==
     
-    public void accumulate(long each);
+    public void   accumulate(long each);
     public double finishAsDouble();
     
     public default Double finish() {

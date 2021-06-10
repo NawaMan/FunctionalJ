@@ -35,11 +35,11 @@ import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.collect.CollectorToLongPlus;
 import lombok.val;
 
-@FunctionalInterface
-public interface Aggregation<SOURCE, TARGET> {
+
+public abstract class Aggregation<SOURCE, TARGET> {
     
     public static <S, A, T> Aggregation<S, T> from(CollectorPlus<S, A, T> collector) {
-        return () -> collector;
+        return new Aggregation.Impl<S, T>(collector);
     }
     
     public static <S, A> AggregationToInt<S> from(CollectorToIntPlus<S, A> collector) {
@@ -68,34 +68,51 @@ public interface Aggregation<SOURCE, TARGET> {
     
     //== Instance == 
     
-    public CollectorPlus<SOURCE, ?, TARGET> collectorPlus();
+    public abstract CollectorPlus<SOURCE, ?, TARGET> collectorPlus();
     
     
-    public default Aggregator<SOURCE, TARGET> newAggregator() {
+    public Aggregator<SOURCE, TARGET> newAggregator() {
         val collector = collectorPlus();
         return new Aggregator.Impl<>(collector);
     }
     
     //== Derived ==
     
-    public default <INPUT> Aggregation<INPUT, TARGET> of(Function<INPUT, SOURCE> mapper) {
+    public <INPUT> Aggregation<INPUT, TARGET> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorPlus().of(mapper);
-        return () -> newCollector;
+        return new Aggregation.Impl<>(newCollector);
     }
     
-    public default IntAggregation<TARGET> ofInt(IntFunction<SOURCE> mapper) {
+    public IntAggregation<TARGET> ofInt(IntFunction<SOURCE> mapper) {
         val newCollector = collectorPlus().of(mapper);
-        return () -> newCollector;
+        return new IntAggregation.Impl<>(newCollector);
     }
     
-    public default LongAggregation<TARGET> ofLong(LongFunction<SOURCE> mapper) {
+    public LongAggregation<TARGET> ofLong(LongFunction<SOURCE> mapper) {
         val newCollector = collectorPlus().of(mapper);
-        return () -> newCollector;
+        return new LongAggregation.Impl<>(newCollector);
     }
     
-    public default DoubleAggregation<TARGET> ofDouble(DoubleFunction<SOURCE> mapper) {
+    public DoubleAggregation<TARGET> ofDouble(DoubleFunction<SOURCE> mapper) {
         val newCollector = collectorPlus().of(mapper);
-        return () -> newCollector;
+        return new DoubleAggregation.Impl<>(newCollector);
+    }
+    
+    //== Implementation ==
+    
+    public static class Impl<SRC, TRG> extends Aggregation<SRC, TRG> {
+        
+        private final CollectorPlus<SRC, ?, TRG> collector;
+        
+        public Impl(CollectorPlus<SRC, ?, TRG> collector) {
+            this.collector = collector;
+        }
+        
+        @Override
+        public CollectorPlus<SRC, ?, TRG> collectorPlus() {
+            return collector;
+        }
+        
     }
     
 }
