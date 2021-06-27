@@ -96,7 +96,7 @@ public class UnitOfMeasureGeneratorTest {
                 + "import javax.annotation.Generated;\n"
                 + "\n"
                 + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec\")\n"
-                + "@SuppressWarnings({\"unchecked\"})\n"
+                + "@SuppressWarnings(\"all\")\n"
                 + "public abstract class Temperature implements IChoice<Temperature.TemperatureFirstSwitch>, Pipeable<Temperature> {\n"
                 + "    \n"
                 + "    public static final Celsius Celsius(double celsius) {\n"

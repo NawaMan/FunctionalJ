@@ -163,6 +163,7 @@ public class TargetClass implements Lines {
         val sourceSpec = spec.sourceType.fullName();
         val genTime    = LocalDateTime.now();
         val generated  = "@Generated(value = \"FunctionalJ\",date = \"" + genTime + "\", comments = \"" + sourceSpec + "\")";
+        val suppress   = "@SuppressWarnings(\"all\")";
         
         val typeName = type.typeWithGenerics();
         val pckgName = spec.sourceType.packageName();
@@ -180,7 +181,7 @@ public class TargetClass implements Lines {
                 importLines,
                 asList(format("")),
                 asList(generated),
-                asList(format("@SuppressWarnings({\"unchecked\"})")),
+                asList(suppress),
                 asList(format("public abstract class %1$s implements %6$s<%2$s.%2$sFirstSwitch%3$s>, Pipeable<%4$s>%5$s {", type.typeWithGenericDef(), type.simpleName(), type.genericsString(), type.typeWithGenerics(), selfDef, IChoice.class.getSimpleName())),
                 asList(format("    ")),
                 subClassConstructors,

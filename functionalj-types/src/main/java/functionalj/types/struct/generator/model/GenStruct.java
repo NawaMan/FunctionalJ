@@ -98,11 +98,13 @@ public class GenStruct implements ILines {
         val source    = sourceSpec.getPackageName() + "." + sourceSpec.getEncloseName() + specName;
         val genTime   = LocalDateTime.now();
         val generated = "@Generated(value = \"FunctionalJ\",date = \"" + genTime + "\", comments = \"" + source + "\")";
+        val suppress  = "@SuppressWarnings(\"all\")";
         val lines
                 = linesOf(Stream.of(
                     line(packageDef),
                     line(importLines),
                     line(generated),
+                    line(suppress),
                     dataObjDef
                 )
                 .filter (Objects::nonNull)

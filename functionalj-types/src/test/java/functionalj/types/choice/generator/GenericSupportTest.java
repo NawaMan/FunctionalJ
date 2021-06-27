@@ -76,7 +76,7 @@ public class GenericSupportTest {
             + "import javax.annotation.Generated;\n"
             + "\n"
             + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"functionalj.types.choice.generator.GenericSupportTest.OptionSpec\")\n"
-            + "@SuppressWarnings({\"unchecked\"})\n"
+            + "@SuppressWarnings(\"all\")\n"
             + "public abstract class Option<T extends Number> implements IChoice<Option.OptionFirstSwitch<T>>, Pipeable<Option<T>> {\n"
             + "    \n"
             + "    \n"

@@ -1013,10 +1013,10 @@ public class DoubleFuncListTest {
             assertAsString("OptionalDouble[4.0]", list.max());
         });
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalDouble[1.0],OptionalDouble[4.0])", list.minMax());
+            assertAsString("Optional[(1.0,4.0)]", list.minMax());
         });
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalDouble[4.0],OptionalDouble[1.0])", list.minMax((a,b) -> Double.compare(b, a)));
+            assertAsString("Optional[(4.0,1.0)]", list.minMax((a,b) -> Double.compare(b, a)));
         });
     }
     
@@ -1801,7 +1801,7 @@ public class DoubleFuncListTest {
     public void testMinMaxBy_withMapper() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
             assertAsString(
-                    "(OptionalDouble[3.0],OptionalDouble[6.0])", 
+                    "Optional[(3.0,6.0)]", 
                     list.minMaxBy(theDouble.minus(3).square()));
         });
     }
@@ -1810,7 +1810,7 @@ public class DoubleFuncListTest {
     public void testMinMaxBy_withMapper_withComparator() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
             assertAsString(
-                    "(OptionalDouble[1.0],OptionalDouble[3.0])", 
+                    "Optional[(1.0,3.0)]", 
                     list.minMaxBy(
                             theDouble.minus(3).square(), 
                             theDouble.inReverseOrder()));

@@ -59,7 +59,7 @@ public class ChoiceWtihOptionalParameterTest {
             + "import javax.annotation.Generated;\n"
             + "\n"
             + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"example.functionalj.elm.ElmExamples.LoginStatus\")\n"
-            + "@SuppressWarnings({\"unchecked\"})\n"
+            + "@SuppressWarnings(\"all\")\n"
             + "public abstract class LoginStatus implements IChoice<LoginStatus.LoginStatusFirstSwitch>, Pipeable<LoginStatus> {\n"
             + "    \n"
             + "    public static final Loggined Loggined(Optional<java.lang.Double> wealth) {\n"

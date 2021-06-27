@@ -27,14 +27,6 @@ public class StructMapGeneratorHelper {
                 .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")$utils.fromMapValue(map.get(\"" + g.getName() + "\"), $schema.get(\"" + g.getName() + "\"))")
                 .collect(Collectors.joining(",\n"))
                 .split("\n"));
-        val getterHasGeneric
-                = sourceSpec
-                .getGetters().stream()
-                .anyMatch(g ->
-                        !g
-                        .getType()
-                        .generics()
-                        .isEmpty());
         val fromMap = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.STATIC,
@@ -44,7 +36,6 @@ public class StructMapGeneratorHelper {
                 asList(new GenParam("map", Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic("? extends Object", "? extends Object", null))))),
                 ILines.linesOf(
                     line("Map<String, Getter> $schema = getStructSchema();"),
-                    getterHasGeneric ? line("@SuppressWarnings(\"unchecked\")") : line(""),
                     line(sourceSpec.getTargetType().simpleName() + " obj = new " + sourceSpec.getTargetType().simpleName() + "("),
                     fromMapBody,
                     line("        );"),

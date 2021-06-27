@@ -71,7 +71,7 @@ public class FullGeneratorTest {
               + "import javax.annotation.Generated;\n"
               + "\n"
               + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"functionalj.types.choice.generator.ChoiceTypeExampleTest.ChoiceType1TypeSpec\")\n"
-              + "@SuppressWarnings({\"unchecked\"})\n"
+              + "@SuppressWarnings(\"all\")\n"
               + "public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSwitch>, Pipeable<BasicColor> {\n"
               + "    \n"
               + "    public static final White white = White.instance;\n"

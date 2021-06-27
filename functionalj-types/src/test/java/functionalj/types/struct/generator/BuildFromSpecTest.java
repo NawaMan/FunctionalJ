@@ -18,7 +18,6 @@ public class BuildFromSpecTest {
         assertEquals(
                 "public static Birthday fromMap(Map<String, ? extends Object> map) {\n"
                 + "    Map<String, Getter> $schema = getStructSchema();\n"
-                + "    \n"
                 + "    Birthday obj = new Birthday(\n"
                 + "                (String)$utils.fromMapValue(map.get(\"name\"), $schema.get(\"name\")),\n"
                 + "                (LocalDate)$utils.fromMapValue(map.get(\"date\"), $schema.get(\"date\"))\n"

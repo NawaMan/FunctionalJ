@@ -74,7 +74,7 @@ public class GenericChoiceTest {
                 + "import javax.annotation.Generated;\n"
                 + "\n"
                 + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"functionalj.types.choice.generator.MayBeTest.MayBe\")\n"
-                + "@SuppressWarnings({\"unchecked\"})\n"
+                + "@SuppressWarnings(\"all\")\n"
                 + "public abstract class MayBe implements IChoice<MayBe.MayBeFirstSwitch>, Pipeable<MayBe> {\n"
                 + "    \n"
                 + "    public static final Nill nill = Nill.instance;\n"

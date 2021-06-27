@@ -24,6 +24,7 @@
 package functionalj.types.struct.generator;
 
 import static functionalj.types.TestHelper.assertAsString;
+import static functionalj.types.struct.generator.ILines.line;
 import static java.util.Arrays.asList;
 
 import java.util.List;
@@ -91,6 +92,8 @@ public class GenerateParentFuncListChildTest {
                 + "\n"
                 + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"me.test.null.Definitions.ParentDef\")\n"
                 + "\n"
+                + "@SuppressWarnings(\"all\")\n"
+                + "\n"
                 + "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n"
                 + "    \n"
                 + "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n"
@@ -148,7 +151,6 @@ public class GenerateParentFuncListChildTest {
                 + "    }\n"
                 + "    public static Parent fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
-                + "        @SuppressWarnings(\"unchecked\")\n"
                 + "        Parent obj = new Parent(\n"
                 + "                    (FuncList<String>)$utils.fromMapValue(map.get(\"names\"), $schema.get(\"names\")),\n"
                 + "                    (FuncList<Child>)$utils.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n"
