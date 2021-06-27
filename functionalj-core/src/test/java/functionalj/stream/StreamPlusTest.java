@@ -736,19 +736,19 @@ public class StreamPlusTest {
     @Test
     public void testMinMaxBy() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
-        assertAsString("(Optional[Five],Optional[Two])", stream.minMax(String.CASE_INSENSITIVE_ORDER));
+        assertAsString("Optional[(Five,Two)]", stream.minMax(String.CASE_INSENSITIVE_ORDER));
     }
     
     @Test
     public void testMinMaxBy_withMapper() {
         val stream3 = StreamPlus.of("One", "Two", "Three", "Four");
-        assertAsString("(Optional[One],Optional[Three])", stream3.minMaxBy(theString.length()));
+        assertAsString("Optional[(One,Three)]", stream3.minMaxBy(theString.length()));
     }
     
     @Test
     public void testMinMaxBy_withMapper_withComparator() {
         val stream3 = StreamPlus.of("One", "Two", "Three", "Four");
-        assertAsString("(Optional[Three],Optional[Two])", stream3.minMaxBy(theString.length(), (a, b) -> b-a));
+        assertAsString("Optional[(Three,Two)]", stream3.minMaxBy(theString.length(), (a, b) -> b-a));
     }
     
     //-- StreamPlusWithCalculate --

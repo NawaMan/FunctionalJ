@@ -33,6 +33,7 @@ import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.IntBiPredicatePrimitive;
+import functionalj.function.aggregator.IntAggregationToBoolean;
 import functionalj.stream.markers.Sequential;
 import lombok.val;
 
@@ -40,7 +41,6 @@ import lombok.val;
 public interface IntStreamPlusWithLimit {
     
     public IntStreamPlus intStreamPlus();
-    
     
     /** Limit the size of the stream to the given size. */
     public default IntStreamPlus limit(Long maxSize) {
@@ -76,6 +76,13 @@ public interface IntStreamPlusWithLimit {
                 return !isStillTrue.get();
             });
         });
+    }
+    
+    /** Skip any value while the condition is true. */
+    @Sequential
+    public default IntStreamPlus skipWhile(IntAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return skipWhile(condition);
     }
     
     /** Skip any value while the condition is true. */
@@ -136,6 +143,13 @@ public interface IntStreamPlusWithLimit {
                 return !isStillTrue.get();
             });
         });
+    }
+    
+    /** Skip any value until the condition is true. */
+    @Sequential
+    public default IntStreamPlus skipUntil(IntAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return skipUntil(condition);
     }
     
     /** Skip any value until the condition is true. */
@@ -211,6 +225,13 @@ public interface IntStreamPlusWithLimit {
     
     /** Accept any value while the condition is true. */
     @Sequential
+    public default IntStreamPlus takeWhile(IntAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return takeWhile(condition);
+    }
+    
+    /** Accept any value while the condition is true. */
+    @Sequential
     public default IntStreamPlus takeWhile(IntBiPredicatePrimitive condition) {
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
@@ -277,6 +298,13 @@ public interface IntStreamPlusWithLimit {
     
     /** Accept any value until the condition is true. */
     @Sequential
+    public default IntStreamPlus takeUntil(IntAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return takeWhile(condition);
+    }
+    
+    /** Accept any value until the condition is true. */
+    @Sequential
     public default IntStreamPlus takeUntil(IntBiPredicatePrimitive condition) {
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
@@ -339,6 +367,13 @@ public interface IntStreamPlusWithLimit {
             val newStream = StreamSupport.intStream(newSpliterator, false);
             return IntStreamPlus.from(newStream);
         });
+    }
+    
+    /** Accept any value until the condition is false - include the item that the condition is false. */
+    @Sequential
+    public default IntStreamPlus dropAfter(IntAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return dropAfter(condition);
     }
     
     /** Accept any value until the condition is false - include the item that the condition is false. */

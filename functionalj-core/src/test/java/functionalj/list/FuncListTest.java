@@ -1739,21 +1739,21 @@ public class FuncListTest {
     @Test
     public void testMinMaxBy() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {
-            assertAsString("(Optional[Five],Optional[Two])", list.minMax(String.CASE_INSENSITIVE_ORDER));
+            assertAsString("Optional[(Five,Two)]", list.minMax(String.CASE_INSENSITIVE_ORDER));
         });
     }
     
     @Test
     public void testMinMaxBy_withMapper() {
         run(FuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(Optional[One],Optional[Three])", list.minMaxBy(theString.length()));
+            assertAsString("Optional[(One,Three)]", list.minMaxBy(theString.length()));
         });
     }
     
     @Test
     public void testMinMaxBy_withMapper_withComparator() {
         run(FuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(Optional[Three],Optional[Two])", list.minMaxBy(theString.length(), (a, b) -> b-a));
+            assertAsString("Optional[(Three,Two)]", list.minMaxBy(theString.length(), (a, b) -> b-a));
         });
     }
     

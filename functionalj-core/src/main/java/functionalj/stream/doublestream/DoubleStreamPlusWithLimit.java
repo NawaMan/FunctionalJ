@@ -33,6 +33,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.DoubleDoublePredicatePrimitive;
+import functionalj.function.aggregator.DoubleAggregationToBoolean;
 import functionalj.stream.markers.Sequential;
 import lombok.val;
 
@@ -79,6 +80,13 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Skip any value while the condition is true. */
     @Sequential
+    public default DoubleStreamPlus skipWhile(DoubleAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return skipWhile(condition);
+    }
+    
+    /** Skip any value while the condition is true. */
+    @Sequential
     public default DoubleStreamPlus skipWhile(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
@@ -114,7 +122,7 @@ public interface DoubleStreamPlusWithLimit {
                     return hadNext;
                 }
             };
-            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            val newStream = StreamSupport.doubleStream(newSpliterator, false);
             return DoubleStreamPlus.from(newStream);
         });
     }
@@ -135,6 +143,13 @@ public interface DoubleStreamPlusWithLimit {
                 return !isStillTrue.get();
             });
         });
+    }
+    
+    /** Skip any value until the condition is true. */
+    @Sequential
+    public default DoubleStreamPlus skipUntil(DoubleAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return skipUntil(condition);
     }
     
     /** Skip any value until the condition is true. */
@@ -174,7 +189,7 @@ public interface DoubleStreamPlusWithLimit {
                     return hadNext;
                 }
             };
-            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            val newStream = StreamSupport.doubleStream(newSpliterator, false);
             return DoubleStreamPlus.from(newStream);
         });
     }
@@ -203,9 +218,16 @@ public interface DoubleStreamPlusWithLimit {
                     return false;
                 }
             };
-            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            val newStream = StreamSupport.doubleStream(newSpliterator, false);
             return DoubleStreamPlus.from(newStream);
         });
+    }
+    
+    /** Accept any value while the condition is true. */
+    @Sequential
+    public default DoubleStreamPlus takeWhile(DoubleAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return takeWhile(condition);
     }
     
     /** Accept any value while the condition is true. */
@@ -240,7 +262,7 @@ public interface DoubleStreamPlusWithLimit {
                     return false;
                 }
             };
-            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            val newStream = StreamSupport.doubleStream(newSpliterator, false);
             return DoubleStreamPlus.from(newStream);
         });
     }
@@ -269,9 +291,16 @@ public interface DoubleStreamPlusWithLimit {
                     return false;
                 }
             };
-            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            val newStream = StreamSupport.doubleStream(newSpliterator, false);
             return DoubleStreamPlus.from(newStream);
         });
+    }
+    
+    /** Accept any value until the condition is true. */
+    @Sequential
+    public default DoubleStreamPlus takeUntil(DoubleAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return takeWhile(condition);
     }
     
     /** Accept any value until the condition is true. */
@@ -306,12 +335,12 @@ public interface DoubleStreamPlusWithLimit {
                     return false;
                 }
             };
-            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            val newStream = StreamSupport.doubleStream(newSpliterator, false);
             return DoubleStreamPlus.from(newStream);
         });
     }
     
-    /** Accept any value while the condition is true. */
+    /** Accept any value until the condition is false - include the item that the condition is false. */
     @Sequential
     public default DoubleStreamPlus dropAfter(DoublePredicate condition) {
         val streamPlus = doubleStreamPlus();
@@ -335,12 +364,19 @@ public interface DoubleStreamPlusWithLimit {
                     return false;
                 }
             };
-            DoubleStream newStream = StreamSupport.doubleStream(newSpliterator, false);
+            val newStream = StreamSupport.doubleStream(newSpliterator, false);
             return DoubleStreamPlus.from(newStream);
         });
     }
     
-    /** Accept any value while the condition is true. */
+    /** Accept any value until the condition is false - include the item that the condition is false. */
+    @Sequential
+    public default DoubleStreamPlus dropAfter(DoubleAggregationToBoolean aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return dropAfter(condition);
+    }
+    
+    /** Accept any value until the condition is false - include the item that the condition is false. */
     @Sequential
     public default DoubleStreamPlus dropAfter(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();

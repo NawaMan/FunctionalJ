@@ -31,8 +31,11 @@ import java.util.Spliterators;
 import java.util.function.BinaryOperator;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongFunction;
+import java.util.function.LongToDoubleFunction;
+import java.util.function.LongToIntFunction;
 import java.util.stream.Collectors;
 
+import functionalj.function.aggregator.LongAggregation;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
@@ -75,7 +78,6 @@ public interface AsLongStreamPlusWithConversion {
         return new StreamBackedLongFuncList(this.longStreamPlus());
     }
     
-    
     //-- toArray --
     
     @Eager
@@ -84,6 +86,36 @@ public interface AsLongStreamPlusWithConversion {
         val streamPlus = longStreamPlus();
         return streamPlus
                 .toArray();
+    }
+    
+    /** Map the data to int and return the int array of all the results. */
+    @Eager
+    @Terminal
+    public default int[] toIntArray(LongToIntFunction toInt) {
+        val streamPlus = longStreamPlus();
+        return streamPlus
+                .mapToInt(toInt)
+                .toArray ();
+    }
+    
+    /** Map the data to double and return the byte array of all the results. */
+    @Eager
+    @Terminal
+    public default double[] toDoubleArray(LongToDoubleFunction toDouble) {
+        val streamPlus = longStreamPlus();
+        return streamPlus
+                .mapToDouble(toDouble)
+                .toArray    ();
+    }
+    
+    /** Map the data to double and return the byte array of all the results. */
+    @Eager
+    @Terminal
+    public default double[] toDoubleArray() {
+        val streamPlus = longStreamPlus();
+        return streamPlus
+                .mapToDouble(l -> (double)l)
+                .toArray    ();
     }
     
     //-- toList --
@@ -229,6 +261,113 @@ public interface AsLongStreamPlusWithConversion {
                         i -> i,
                         (a, b) -> mergeFunction.applyAsLong(a, b)));
         return ImmutableFuncMap.from(theMap);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper.
+     * This method throw an exception with duplicate keys.
+     */
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, Long> toMap(LongAggregation<KEY> keyAggregation) {
+        val aggregator = keyAggregation.newAggregator();
+        return toMap(aggregator);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * This method throw an exception with duplicate keys.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            LongAggregation<KEY> keyAggregation,
+            LongFunction<VALUE>  valueMapper) {
+        val keyAggregator = keyAggregation.newAggregator();
+        return toMap(keyAggregator, valueMapper);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * This method throw an exception with duplicate keys.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            LongFunction<KEY>      keyMapper,
+            LongAggregation<VALUE> valueAggregation) {
+        val valueAggregator = valueAggregation.newAggregator();
+        return toMap(keyMapper, valueAggregator);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * This method throw an exception with duplicate keys.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            LongAggregation<KEY>   keyAggregation,
+            LongAggregation<VALUE> valueAggregation) {
+        val keyAggregator   = keyAggregation.newAggregator();
+        val valueAggregator = valueAggregation.newAggregator();
+        return toMap(keyAggregator, valueAggregator);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            LongAggregation<KEY>   keyAggregation,
+            LongFunction<VALUE>    valueMapper,
+            BinaryOperator<VALUE>  mergeFunction) {
+        val keyAggregator = keyAggregation.newAggregator();
+        return toMap(keyAggregator, valueMapper, mergeFunction);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            LongFunction<KEY>      keyMapper,
+            LongAggregation<VALUE> valueAggregation,
+            BinaryOperator<VALUE>  mergeFunction) {
+        val valueAggregator = valueAggregation.newAggregator();
+        return toMap(keyMapper, valueAggregator, mergeFunction);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            LongAggregation<KEY>   keyAggregation,
+            LongAggregation<VALUE> valueAggregation,
+            BinaryOperator<VALUE>  mergeFunction) {
+        val keyAggregator   = keyAggregation.newAggregator();
+        val valueAggregator = valueAggregation.newAggregator();
+        return toMap(keyAggregator, valueAggregator, mergeFunction);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, Long> toMap(
+            LongAggregation<KEY> keyAggregation,
+            LongBinaryOperator   mergeFunction) {
+        val keyAggregator = keyAggregation.newAggregator();
+        return toMap(keyAggregator, mergeFunction);
     }
     
     //-- toSet --

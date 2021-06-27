@@ -53,6 +53,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.IntComparator;
+import functionalj.function.aggregator.IntAggregation;
+import functionalj.function.aggregator.IntAggregationToBoolean;
+import functionalj.function.aggregator.IntAggregationToInt;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
@@ -68,6 +71,7 @@ import lombok.val;
 
 // TODO - Use this for byte, short and char
 // TODO - Intersect
+// TODO - Shuffle
 
 @FunctionalInterface
 public interface IntStreamPlus
@@ -131,9 +135,6 @@ public interface IntStreamPlus
         
         return ()->intStream;
     }
-    
-    // TODO : Nawa Latest - Random
-    // TODO : Nawa Latest - Cache
     
     public static IntStreamPlus zeroes() {
         return IntStreamPlus.generate(()->0);
@@ -290,6 +291,11 @@ public interface IntStreamPlus
         return IntStreamPlus.from(IntStream.iterate(seed, compounder));
     }
     
+    public static IntStreamPlus iterate(int seed, IntAggregationToInt aggregation) {
+        val compounder = aggregation.newAggregator();
+        return iterate(seed, compounder);
+    }
+    
     /**
      * Create a StreamPlus by apply the function to the seed over and over.
      *
@@ -306,6 +312,10 @@ public interface IntStreamPlus
      **/
     public static IntStreamPlus compound(int seed, IntUnaryOperator compounder) {
         return iterate(seed, compounder);
+    }
+    
+    public static IntStreamPlus compound(int seed, IntAggregationToInt aggregation) {
+        return iterate(seed, aggregation);
     }
     
     /**
@@ -620,11 +630,25 @@ public interface IntStreamPlus
         return IntStreamPlus.from(intStream().flatMap(mapper));
     }
     
+    public default IntStreamPlus flatMap(IntAggregation<? extends IntStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMap(mapper);
+    }
+    
     public default IntStreamPlus flatMapToInt(IntFunction<? extends IntStream> mapper) {
         return flatMap(mapper);
     }
     
+    public default IntStreamPlus flatMapToInt(IntAggregation<? extends IntStream> aggregation) {
+        return flatMap(aggregation);
+    }
+    
     public default LongStreamPlus flatMapToLong(IntFunction<? extends LongStream> mapper) {
+        return LongStreamPlus.from(mapToObj(mapper).flatMapToLong(itself()));
+    }
+    
+    public default LongStreamPlus flatMapToLong(IntAggregation<? extends LongStream> aggregation) {
+        val mapper = aggregation.newAggregator();
         return LongStreamPlus.from(mapToObj(mapper).flatMapToLong(itself()));
     }
     
@@ -632,7 +656,17 @@ public interface IntStreamPlus
         return DoubleStreamPlus.from(mapToObj(mapper).flatMapToDouble(itself()));
     }
     
+    public default DoubleStreamPlus flatMapToDouble(IntAggregation<? extends DoubleStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return DoubleStreamPlus.from(mapToObj(mapper).flatMapToDouble(itself()));
+    }
+    
     public default <DATA> StreamPlus<DATA> flatMapToObj(IntFunction<? extends Stream<DATA>> mapper) {
+        return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
+    }
+    
+    public default <DATA> StreamPlus<DATA> flatMapToObj(IntAggregation<? extends Stream<DATA>> aggregation) {
+        val mapper = aggregation.newAggregator();
         return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
     }
     
@@ -640,6 +674,11 @@ public interface IntStreamPlus
     
     @Override
     public default IntStreamPlus filter(IntPredicate predicate) {
+        return from(intStream().filter(predicate));
+    }
+    
+    public default IntStreamPlus filter(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
         return from(intStream().filter(predicate));
     }
     
@@ -826,6 +865,35 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default boolean noneMatch(IntPredicate predicate) {
+        return terminate(this, stream -> {
+            return stream
+                    .noneMatch(predicate);
+        });
+    }
+    
+    @Terminal
+    public default boolean anyMatch(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return terminate(this, stream -> {
+            return stream
+                    .anyMatch(predicate);
+        });
+    }
+    
+    @Eager
+    @Terminal
+    public default boolean allMatch(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return terminate(this, stream -> {
+            return stream
+                    .allMatch(predicate);
+        });
+    }
+    
+    @Eager
+    @Terminal
+    public default boolean noneMatch(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
         return terminate(this, stream -> {
             return stream
                     .noneMatch(predicate);

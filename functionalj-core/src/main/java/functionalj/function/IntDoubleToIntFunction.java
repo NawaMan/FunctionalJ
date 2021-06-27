@@ -30,7 +30,7 @@ import functionalj.functions.ThrowFuncs;
 
 
 @FunctionalInterface
-public interface IntegerDoubleToIntegerFunction extends ToIntBiFunction<Integer, Double>, Func2<Integer, Double, Integer> {
+public interface IntDoubleToIntFunction extends ToIntBiFunction<Integer, Double>, Func2<Integer, Double, Integer> {
     
     public int applyIntAndDoubleUnsafe(int intValue, double doubleValue) throws Exception;
     

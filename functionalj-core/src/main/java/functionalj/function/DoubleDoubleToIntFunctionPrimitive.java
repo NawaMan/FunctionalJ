@@ -24,12 +24,16 @@
 package functionalj.function;
 
 @FunctionalInterface
-public interface DoubleDoubleToIntFunctionPrimitive extends ToIntegerBiDoubleFunction<Double> {
+public interface DoubleDoubleToIntFunctionPrimitive extends ToIntegerBiDoubleFunction<Double>, DoubleComparator {
     
     public int applyAsDoubleAndDouble(double data, double doubleValue);
     
     public default int applyAsInt(Double data, double doubleValue) {
         return applyAsDoubleAndDouble(data, doubleValue);
+    }
+    
+    public default int compareDouble(double o1, double o2) {
+        return applyAsDoubleAndDouble(o1, o2);
     }
     
 }

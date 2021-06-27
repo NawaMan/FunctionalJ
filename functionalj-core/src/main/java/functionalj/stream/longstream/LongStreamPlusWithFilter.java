@@ -46,7 +46,6 @@ public interface LongStreamPlusWithFilter {
     
     public LongStreamPlus longStreamPlus();
     
-    
     /** Map each value to an int and used it to filter the value. */
     public default LongStreamPlus filterAsInt(
             LongToIntFunction mapper,

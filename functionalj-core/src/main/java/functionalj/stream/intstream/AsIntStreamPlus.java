@@ -23,11 +23,24 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+import functionalj.function.aggregator.AggregationToBoolean;
+import functionalj.function.aggregator.IntAggregation;
+import functionalj.function.aggregator.IntAggregationToBoolean;
+import functionalj.function.aggregator.IntAggregationToInt;
 import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
+import lombok.val;
 
 
 class AsIntStreamPlusHelper {
@@ -52,7 +65,6 @@ public interface AsIntStreamPlus
                         AsIntStreamPlusWithCollect,
                         AsIntStreamPlusWithForEach,
                         AsIntStreamPlusWithGroupingBy,
-                        AsIntStreamPlusWithMatch,
                         AsIntStreamPlusWithReduce,
                         AsIntStreamPlusWithStatistic {
     
@@ -69,6 +81,206 @@ public interface AsIntStreamPlus
     @Terminal
     public default void forEach(IntConsumer action) {
         intStreamPlus().forEach(action);
+    }
+    
+    //-- Match --
+    
+    /** Return the first element that matches the predicate. */
+    @Terminal
+    @Sequential
+    public default OptionalInt findFirst(
+            IntPredicate predicate) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .filter(predicate)
+                .findFirst();
+    }
+    
+    /** Return the first element that matches the predicate. */
+    @Terminal
+    @Sequential
+    public default OptionalInt findFirst(
+            IntAggregationToBoolean aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return findFirst(aggregator::test);
+    }
+    
+    /** Return the any element that matches the predicate. */
+    @Terminal
+    public default OptionalInt findAny(
+            IntPredicate predicate) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .filter(predicate)
+                .findAny();
+    }
+    
+    /** Return the any element that matches the predicate. */
+    @Terminal
+    public default OptionalInt findAny(
+            IntAggregationToBoolean aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return findFirst(aggregator::apply);
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default OptionalInt findFirst(
+            IntUnaryOperator mapper, 
+            IntPredicate     theCondition) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .filter(mapper, theCondition)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default OptionalInt findFirst(
+            IntAggregationToInt aggregation, 
+            IntPredicate        theCondition) {
+        val mapper = aggregation.newAggregator();
+        return findFirst(mapper, theCondition);
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalInt findFirstBy(
+            IntFunction<? extends T> mapper, 
+            Predicate<? super T>     theCondition) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalInt findFirstBy(
+            IntFunction<T>                  mapper, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val theCondition = theConditionAggregation.newAggregator();
+        val streamPlus   = intStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition::test)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalInt findFirstBy(
+            IntAggregation<? extends T> aggregation,
+            Predicate<? super T>        theCondition) {
+        val mapper     = aggregation.newAggregator();
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalInt findFirstBy(
+            IntAggregation<T>               aggregation, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val mapper       = aggregation.newAggregator();
+        val theCondition = theConditionAggregation.newAggregator();
+        val streamPlus   = intStreamPlus();
+        return streamPlus
+                .filterAsObject((IntFunction<T>)mapper, (Predicate<T>)theCondition::test)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the any element that its mapped value matches the predicate. */
+    @Terminal
+    public default <T> OptionalInt findAny(
+            IntUnaryOperator mapper, 
+            IntPredicate     theCondition) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .filter(mapper, theCondition)
+                .findAny();
+    }
+    
+    /** Use the mapper, return the any element that its mapped value matches the predicate. */
+    @Terminal
+    public default <T> OptionalInt findAnyBy(
+            IntFunction<? extends T> mapper, 
+            Predicate<? super T>      theCondition) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition)
+                .findAny();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalInt findAnyBy(
+            IntAggregation<T> aggregation, 
+            Predicate<? super T> theCondition) {
+        val mapper       = aggregation.newAggregator();
+        val streamPlus   = intStreamPlus();
+        return streamPlus
+                .filterAsObject((IntFunction<T>)mapper, (Predicate<T>)theCondition::test)
+                .findAny();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalInt findAnyBy(
+            IntFunction<T>                  mapper, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val theCondition = theConditionAggregation.newAggregator();
+        val streamPlus   = intStreamPlus();
+        return streamPlus
+                .filterAsObject((IntFunction<T>)mapper, (Predicate<T>)theCondition::test)
+                .findAny();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalInt findAnyBy(
+            IntAggregation<T>               aggregation, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val mapper       = aggregation.newAggregator();
+        val theCondition = theConditionAggregation.newAggregator();
+        val streamPlus   = intStreamPlus();
+        return streamPlus
+                .filterAsObject((IntFunction<T>)mapper, (Predicate<T>)theCondition::test)
+                .findAny();
+    }
+    
+    //== Contains ==
+    
+    /** Check if the list contains all the given values */
+    public default boolean containsAllOf(int ... values) {
+        val set = new HashSet<Integer>(values.length);
+        for (val value : values) {
+            set.add(value);
+        }
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .peek(set::remove)
+                .anyMatch(__ -> set.isEmpty());
+    }
+    
+    public default boolean containsAnyOf(int ... values) {
+        return intStreamPlus().
+                anyMatch(each -> IntStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsNoneOf(int ... values) {
+        return intStreamPlus().
+                noneMatch(each -> IntStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }
     
 }

@@ -830,8 +830,8 @@ public class LongFuncListTest {
     @Test
     public void testContainsAnyOf() {
         run(LongFuncList.of(One, Two, Three, Four, Five), list -> {
-            assertTrue (list.containsAnyOf(One, Six));
-            assertFalse(list.containsAnyOf(Six, Seven));
+            assertTrue (list.containsSomeOf(One, Six));
+            assertFalse(list.containsSomeOf(Six, Seven));
         });
     }
     
@@ -1002,10 +1002,10 @@ public class LongFuncListTest {
             assertAsString("OptionalLong[4]", list.max());
         });
         run(LongFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalLong[1],OptionalLong[4])", list.minMax());
+            assertAsString("Optional[(1,4)]", list.minMax());
         });
         run(LongFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalLong[4],OptionalLong[1])", list.minMax((a,b) -> (int)(b - a)));
+            assertAsString("Optional[(4,1)]", list.minMax((a,b) -> (int)(b - a)));
         });
     }
     
@@ -1029,11 +1029,11 @@ public class LongFuncListTest {
     @Test
     public void testMinMaxBy() {
         run(LongFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalLong[1],OptionalLong[4])", list.minMaxBy(a ->  a));
+            assertAsString("Optional[(1,4)]", list.minMaxBy(a ->  a));
         });
         
         run(LongFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalLong[4],OptionalLong[1])", list.minMaxBy(a -> a, (a,b)->(int)(b - a)));
+            assertAsString("Optional[(4,1)]", list.minMaxBy(a -> a, (a,b)->(int)(b - a)));
         });
     }
     
@@ -1138,14 +1138,14 @@ public class LongFuncListTest {
     @Test
     public void testFirstResult() {
         run(LongFuncList.of(One, Two, Three), list -> {
-            assertAsString("OptionalLong[1]", list.firstResult());
+            assertAsString("OptionalLong[1]", list.first());
         });
     }
     
     @Test
     public void testLastResult() {
         run(LongFuncList.of(One, Two, Three), list -> {
-            assertAsString("OptionalLong[3]", list.lastResult());
+            assertAsString("OptionalLong[3]", list.last());
         });
     }
     
@@ -1299,7 +1299,7 @@ public class LongFuncListTest {
         run(LongFuncList.of(One, Two, Three, Four), list -> {
             assertAsString(
                     "[1, 2, 2, 3, 3, 3, 4, 4, 4, 4]",
-                    list.flatMapToInt(i -> LongFuncList.cycle(i).limit(i)));
+                    list.flatMapToInt(i -> IntFuncList.cycle((int)i).limit(i)));
         });
     }
     
@@ -1757,14 +1757,14 @@ public class LongFuncListTest {
     @Test
     public void testMinMaxBy_withMapper() {
         run(LongFuncList.of(One, Two, Three, Four, Five, Six), list -> {
-            assertAsString("(OptionalLong[3],OptionalLong[6])", list.minMaxBy(theLong.minus(3).square()));
+            assertAsString("Optional[(3,6)]", list.minMaxBy(theLong.minus(3).square()));
         });
     }
     
     @Test
     public void testMinMaxBy_withMapper_withComparator() {
         run(LongFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalLong[1],OptionalLong[3])", list.minMaxBy(theLong.minus(3).square(), theLong.inReverseOrder()));
+            assertAsString("Optional[(1,3)]", list.minMaxBy(theLong.minus(3).square(), theLong.inReverseOrder()));
         });
     }
     

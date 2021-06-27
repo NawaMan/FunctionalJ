@@ -318,8 +318,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
     
     @Sequential
     @Terminal
-    @Override
-    public OptionalDouble firstResult() {
+    public OptionalDouble first() {
         return (this.size == 0)
                 ? OptionalDouble.empty()
                 : OptionalDouble.of(this.data.get(0));
@@ -327,8 +326,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
     
     @Sequential
     @Terminal
-    @Override
-    public OptionalDouble lastResult() {
+    public OptionalDouble last() {
         return (size == 0)
                 ? OptionalDouble.empty()
                 : OptionalDouble.of(this.data.get(size - 1));

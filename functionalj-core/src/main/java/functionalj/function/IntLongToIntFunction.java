@@ -24,12 +24,12 @@
 package functionalj.function;
 
 @FunctionalInterface
-public interface IntLongToIntFunction<TARGET> extends Func2<Integer, Long, TARGET> {
+public interface IntLongToIntFunction extends Func2<Integer, Long, Integer> {
     
-    public TARGET applyInt(int input1, long input2);
+    public int applyInt(int input1, long input2);
     
     @Override
-    public default TARGET applyUnsafe(Integer input1, Long input2) throws Exception {
+    public default Integer applyUnsafe(Integer input1, Long input2) throws Exception {
         return applyInt(input1, input2);
     }
 }

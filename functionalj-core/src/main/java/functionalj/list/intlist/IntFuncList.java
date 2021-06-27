@@ -50,6 +50,12 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func;
 import functionalj.function.IntComparator;
+import functionalj.function.aggregator.IntAggregation;
+import functionalj.function.aggregator.IntAggregationToBoolean;
+import functionalj.function.aggregator.IntAggregationToDouble;
+import functionalj.function.aggregator.IntAggregationToInt;
+import functionalj.function.aggregator.IntAggregationToLong;
+import functionalj.list.AsFuncList;
 import functionalj.list.FuncList;
 import functionalj.list.FuncList.Mode;
 import functionalj.list.ImmutableFuncList;
@@ -79,9 +85,9 @@ import nullablej.nullable.Nullable;
 
 public interface IntFuncList 
         extends 
-            AsIntFuncList, 
-            IntIterable, 
-            IntPredicate, 
+            AsIntFuncList,
+            IntIterable,
+            IntPredicate,
             IntFuncListWithCombine,
             IntFuncListWithFilter,
             IntFuncListWithFlatMap,
@@ -99,8 +105,7 @@ public interface IntFuncList
             IntFuncListWithPipe,
             IntFuncListWithSegment,
             IntFuncListWithSort,
-            IntFuncListWithSplit,
-            IntFuncListWithStatistic {
+            IntFuncListWithSplit {
     
     
     /** Throw a no more element exception. This is used for generator. */
@@ -292,9 +297,9 @@ public interface IntFuncList
     
     /**
      * Concatenate all the given lists.
-     *
-     * This method is the alias of {@link FuncList#concat(FuncList...)} but allowing static import without colliding with
-     * {@link String#concat(String)}.
+     * 
+     * This method is the alias of {@link FuncList#concat(FuncList...)}
+     *   but allowing static import without colliding with {@link String#concat(String)}.
      **/
     public static IntFuncList combine(IntFuncList... lists) {
         ImmutableFuncList<IntFuncList> listOfList = FuncList.listOf(lists);
@@ -305,8 +310,8 @@ public interface IntFuncList
     //          we may want to do cache here.
     
     /**
-     * Create a FuncList from the supplier of suppliers. The supplier will be repeatedly asked for value until NoMoreResultException is
-     * thrown.
+     * Create a FuncList from the supplier of suppliers.
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static IntFuncList generate(Supplier<IntSupplier> suppliers) {
         return IntFuncList.from(() -> {
@@ -316,7 +321,8 @@ public interface IntFuncList
     }
     
     /**
-     * Create a list from the supplier of suppliers. The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
+     * Create a list from the supplier of suppliers.
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static IntFuncList generateWith(Supplier<IntSupplier> suppliers) {
         return generate(suppliers);
@@ -342,6 +348,12 @@ public interface IntFuncList
         return IntFuncList.from(() -> IntStreamPlus.iterate(seed, compounder));
     }
     
+    public static IntFuncList iterate(
+            int                 seed, 
+            IntAggregationToInt aggregation) {
+        return IntFuncList.from(() -> IntStreamPlus.iterate(seed, aggregation));
+    }
+    
     /**
      * Create a list by apply the compounder to the seed over and over.
      *
@@ -356,8 +368,16 @@ public interface IntFuncList
      *
      * Note: this is an alias of iterate()
      **/
-    public static IntFuncList compound(int seed, IntUnaryOperator compounder) {
+    public static IntFuncList compound(
+            int              seed, 
+            IntUnaryOperator compounder) {
         return IntFuncList.from(() -> IntStreamPlus.compound(seed, compounder));
+    }
+    
+    public static IntFuncList compound(
+            int                 seed, 
+            IntAggregationToInt aggregation) {
+        return IntFuncList.from(() -> IntStreamPlus.compound(seed, aggregation));
     }
     
     /**
@@ -375,64 +395,104 @@ public interface IntFuncList
      *
      * Note: this is an alias of compound()
      **/
-    public static IntFuncList iterate(int seed1, int seed2, IntBinaryOperator compounder) {
+    public static IntFuncList iterate(
+            int               seed1,
+            int               seed2,
+            IntBinaryOperator compounder) {
         return IntFuncList.from(() -> IntStreamPlus.iterate(seed1, seed2, compounder));
     }
     
     /**
      * Create a list by apply the compounder to the seeds over and over.
      *
-     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b. The result stream will be: 1 <- seed1, 1 <- seed2, 2 <- (1+1), 3 <-
-     * (1+2), 5 <- (2+3), 8 <- (5+8) ...
+     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
+     * The result stream will be:
+     *      1 <- seed1,
+     *      1 <- seed2,
+     *      2 <- (1+1),
+     *      3 <- (1+2),
+     *      5 <- (2+3),
+     *      8 <- (5+8)
+     *      ...
      *
      * Note: this is an alias of iterate()
      **/
-    public static IntFuncList compound(int seed1, int seed2, IntBinaryOperator compounder) {
-        return IntFuncList.from(() -> IntStreamPlus.compound(seed1, seed2, compounder));
+    public static IntFuncList compound(
+            int               seed1,
+            int               seed2,
+            IntBinaryOperator compounder) {
+        return iterate(seed1, seed2, compounder);
     }
     
     // == Zip ==
     
     /**
-     * Create a FuncList by combining elements together into a FuncList of tuples. Only elements with pair will be combined. If this is not
-     * desirable, use FuncList1.zip(FuncList2).
+     * Create a FuncList by combining elements together into a FuncList of tuples.
+     * Only elements with pair will be combined. If this is not desirable, use FuncList1.zip(FuncList2).
      *
-     * For example: list1 = [A, B, C, D, E] list2 = [1, 2, 3, 4]
+     * For example:
+     *     list1 = [A, B, C, D, E]
+     *     list2 = [1, 2, 3, 4]
      *
      * The result stream = [(A,1), (B,2), (C,3), (D,4)].
      **/
-    public static FuncList<IntIntTuple> zipOf(AsIntFuncList list1, AsIntFuncList list2) {
+    public static FuncList<IntIntTuple> zipOf(
+            AsIntFuncList list1,
+            AsIntFuncList list2) {
         return FuncList.from(() -> {
-            return IntStreamPlus.zipOf(list1.intStream(), list2.intStream());
+            return IntStreamPlus.zipOf(
+                    list1.intStream(),
+                    list2.intStream());
         });
     }
     
-    public static FuncList<IntIntTuple> zipOf(AsIntFuncList list1, int defaultValue1, IntFuncList list2, int defaultValue2) {
+    /**
+     * Create a FuncList by combining elements together using the merger function and collected into the result stream.
+     * Only elements with pair will be combined. If this is not desirable, use FuncList1.zip(FuncList2).
+     *
+     * For example:
+     *     list1 = [A, B, C, D, E]
+     *     list2 = [1, 2, 3, 4]
+     *     merger      = a + "+" + b
+     *
+     * The result stream = ["A+1", "B+2", "C+3", "D+4"].
+     **/
+    public static FuncList<IntIntTuple> zipOf(
+            AsIntFuncList list1, int defaultValue1, 
+            AsIntFuncList list2, int defaultValue2) {
         return FuncList.from(() -> {
-            return IntStreamPlus.zipOf(list1.intStream(), defaultValue1, list2.intStream(), defaultValue2);
+            return IntStreamPlus.zipOf(
+                    list1.intStream(), defaultValue1,
+                    list2.intStream(), defaultValue2);
         });
     }
     
     /** Zip integers from two IntFuncLists and combine it into another object. */
     public static IntFuncList zipOf(
-            AsIntFuncList list1, 
-            AsIntFuncList list2, 
+            AsIntFuncList     list1,
+            AsIntFuncList     list2,
             IntBinaryOperator merger) {
         return IntFuncList.from(() -> {
-            return IntStreamPlus.zipOf(list1.intStream(), list2.intStream(), merger);
+            return IntStreamPlus.zipOf(
+                    list1.intStream(),
+                    list2.intStream(),
+                    merger);
         });
     }
     
     /**
-     * Zip integers from an int stream and another object stream and combine it into another object. The result stream has the size of the
-     * shortest stream.
+     * Zip integers from an int stream and another object stream and combine it into another object.
+     * The result stream has the size of the shortest stream.
      */
     public static IntFuncList zipOf(
             AsIntFuncList list1, int defaultValue1, 
             AsIntFuncList list2, int defaultValue2,
             IntBinaryOperator merger) {
         return IntFuncList.from(() -> {
-            return IntStreamPlus.zipOf(list1.intStream(), defaultValue1, list2.intStream(), defaultValue2, merger);
+            return IntStreamPlus.zipOf(
+                    list1.intStream(), defaultValue1,
+                    list2.intStream(), defaultValue2,
+                    merger);
         });
     }
     
@@ -457,6 +517,7 @@ public interface IntFuncList
     
     /** Return the stream of data behind this IntFuncList. */
     public IntStreamPlus intStream();
+    
     
     /** Return the stream of data behind this IntFuncList. */
     public default IntStreamPlus intStreamPlus() {
@@ -512,7 +573,7 @@ public interface IntFuncList
     
     /** Create a FuncList from the given IntFuncList. */
     public static <TARGET> IntFuncList deriveFrom(
-            AsIntFuncList                      asFuncList, 
+            AsIntFuncList                      asFuncList,
             Function<IntStreamPlus, IntStream> action) {
         Mode mode = asFuncList.asIntFuncList().mode();
         switch (mode) {
@@ -536,7 +597,7 @@ public interface IntFuncList
     
     /** Create a FuncList from the given IntFuncList. */
     public static <TARGET> IntFuncList deriveFrom(
-            AsLongFuncList                      asFuncList, 
+            AsLongFuncList                      asFuncList,
             Function<LongStreamPlus, IntStream> action) {
         Mode mode = asFuncList.asLongFuncList().mode();
         switch (mode) {
@@ -560,47 +621,52 @@ public interface IntFuncList
     
     /** Create a FuncList from the given DoubleFuncList. */
     public static <TARGET> IntFuncList deriveFrom(
-            AsDoubleFuncList                      asFuncList, 
+            AsDoubleFuncList                      asFuncList,
             Function<DoubleStreamPlus, IntStream> action) {
-        boolean isLazy = asFuncList.asDoubleFuncList().isLazy();
-        if (!isLazy) {
-            val orgStreamPlus = asFuncList.doubleStreamPlus();
-            val newStream     = action.apply(orgStreamPlus);
-            val newStreamPlus = IntStreamPlus.from(newStream);
-            return ImmutableIntFuncList.from(Mode.eager, newStreamPlus);
+        Mode mode = asFuncList.asDoubleFuncList().mode();
+        switch (mode) {
+            case lazy: {
+                return IntFuncList.from(() -> {
+                    val orgStreamPlus = asFuncList.doubleStreamPlus();
+                    val newStream     = action.apply(orgStreamPlus);
+                    return IntStreamPlus.from(newStream);
+                });
+            }
+            case eager:
+            case cache: {
+                val orgStreamPlus = asFuncList.doubleStreamPlus();
+                val newStream     = action.apply(orgStreamPlus);
+                val newStreamPlus = IntStreamPlus.from(newStream);
+                return ImmutableIntFuncList.from(mode, newStreamPlus);
+            }
+            default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
         }
-        
-        return IntFuncList.from(() -> {
-            val orgStreamPlus = asFuncList.doubleStreamPlus();
-            val newStream     = action.apply(orgStreamPlus);
-            return IntStreamPlus.from(newStream);
-        });
     }
     
     /** Create a FuncList from another FuncList. */
     public static IntFuncList deriveToInt(
-            AsIntFuncList                      funcList, 
+            AsIntFuncList                      funcList,
             Function<IntStreamPlus, IntStream> action) {
         return IntFuncList.deriveFrom(funcList, action);
     }
     
     /** Create a FuncList from another FuncList. */
     public static LongFuncList deriveToLong(
-            AsIntFuncList                       funcList, 
+            AsIntFuncList                       funcList,
             Function<IntStreamPlus, LongStream> action) {
         return LongFuncList.deriveFrom(funcList, action);
     }
     
     /** Create a FuncList from another FuncList. */
     public static DoubleFuncList deriveToDouble(
-            AsIntFuncList                         funcList, 
+            AsIntFuncList                         funcList,
             Function<IntStreamPlus, DoubleStream> action) {
         return DoubleFuncList.deriveFrom(funcList, action);
     }
     
     /** Create a FuncList from another FuncList. */
     public static <TARGET> FuncList<TARGET> deriveToObj(
-            AsIntFuncList                           funcList, 
+            AsIntFuncList                           funcList,
             Function<IntStreamPlus, Stream<TARGET>> action) {
         return FuncList.deriveFrom(funcList, action);
     }
@@ -715,14 +781,32 @@ public interface IntFuncList
         return deriveFrom(this, streamble -> streamble.intStream().map(mapper));
     }
     
+    /** Map each value into other value using the function. */
+    public default IntFuncList map(IntAggregationToInt aggregation) {
+        val mapper = aggregation.newAggregator();
+        return map(mapper);
+    }
+    
     /** Map each value into an integer value using the function. */
     public default IntFuncList mapToInt(IntUnaryOperator mapper) {
-        return deriveFrom(this, stream -> stream.mapToInt(mapper));
+        return map(mapper);
+    }
+    
+    /** Map each value into an integer value using the function. */
+    public default IntFuncList mapToInt(IntAggregationToInt aggregation) {
+        val mapper = aggregation.newAggregator();
+        return map(mapper);
     }
     
     /** Map each value into an integer value using the function. */
     public default LongFuncList mapToLong(IntToLongFunction mapper) {
         return LongFuncList.deriveFrom(this, stream -> stream.mapToLong(mapper));
+    }
+    
+    /** Map each value into an integer value using the function. */
+    public default LongFuncList mapToLong(IntAggregationToLong aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToLong(mapper);
     }
     
     /** Map each value into a double value. */
@@ -735,8 +819,19 @@ public interface IntFuncList
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(mapper));
     }
     
+    /** Map each value into a double value using the function. */
+    public default DoubleFuncList mapToDouble(IntAggregationToDouble aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToDouble(mapper);
+    }
+    
     public default <TARGET> FuncList<TARGET> mapToObj(IntFunction<? extends TARGET> mapper) {
         return FuncList.deriveFrom(this, stream -> stream.mapToObj(mapper));
+    }
+    
+    public default <TARGET> FuncList<TARGET> mapToObj(IntAggregation<? extends TARGET> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToObj(mapper);
     }
     
     //-- FlatMap --
@@ -746,9 +841,21 @@ public interface IntFuncList
         return IntFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).intStream()));
     }
     
+    /** Map a value into a FuncList and then flatten that list */
+    public default IntFuncList flatMap(IntAggregation<? extends AsIntFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMap(mapper);
+    }
+    
     /** Map a value into an integer FuncList and then flatten that list */
     public default IntFuncList flatMapToInt(IntFunction<? extends AsIntFuncList> mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).intStream()));
+    }
+    
+    /** Map a value into a FuncList and then flatten that list */
+    public default IntFuncList flatMapToInt(IntAggregation<? extends AsIntFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToInt(mapper);
     }
     
     /** Map a value into an integer FuncList and then flatten that list */
@@ -756,9 +863,32 @@ public interface IntFuncList
         return LongFuncList.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
     }
     
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default LongFuncList flatMapToLong(IntAggregation<? extends AsLongFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToLong(mapper);
+    }
+    
     /** Map a value into a double FuncList and then flatten that list */
     public default DoubleFuncList flatMapToDouble(IntFunction<? extends AsDoubleFuncList> mapper) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default DoubleFuncList flatMapToDouble(IntAggregation<? extends AsDoubleFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToDouble(mapper);
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default <D> FuncList<D> flatMapToObj(IntFunction<? extends AsFuncList<D>> mapper) {
+        return FuncList.deriveFrom(this, stream -> stream.flatMapToObj(value -> mapper.apply(value).stream()));
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default <D> FuncList<D> flatMapToObj(IntAggregation<? extends AsFuncList<D>> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToObj(mapper);
     }
     
     //-- Filter --
@@ -768,8 +898,16 @@ public interface IntFuncList
         return deriveFrom(this, stream -> stream.filter(predicate));
     }
     
+    /** Select only the element that passes the predicate */
+    public default IntFuncList filter(IntAggregationToBoolean aggregation) {
+        val mapper = aggregation.newAggregator();
+        return filter(mapper);
+    }
+    
     /** Select only the element that the mapped value passes the predicate */
-    public default IntFuncList filter(IntUnaryOperator mapper, IntPredicate predicate) {
+    public default IntFuncList filter(
+            IntUnaryOperator mapper,
+            IntPredicate     predicate) {
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
     
@@ -788,7 +926,6 @@ public interface IntFuncList
     }
     
     /** Trim off the first n values */
-    
     public default IntFuncList skip(long offset) {
         return deriveFrom(this, stream -> stream.skip(offset));
     }
@@ -820,7 +957,8 @@ public interface IntFuncList
     }
     
     /**
-     * Performs an action for each element of this stream, in the encounter order of the stream if the stream has a defined encounter order.
+     * Performs an action for each element of this stream,
+     *   in the encounter order of the stream if the stream has a defined encounter order.
      */
     public default void forEachOrdered(IntConsumer action) {
         intStream().forEachOrdered(action);
@@ -863,12 +1001,25 @@ public interface IntFuncList
     
     // -- List specific --
     
+    public default int size() {
+        return (int)intStream().count();
+    }
+    
+    /** Find any indexes that the elements match the predicate */
     public default IntFuncList indexesOf(IntPredicate check) {
-        return mapWithIndex((index, data) -> check.test(data) ? index : -1).filter(i -> i != -1);
+        return mapWithIndex((index, data) -> check.test(data) ? index : -1)
+                .filter(i -> i != -1);
+    }
+    
+    /** Find any indexes that the elements match the predicate */
+    public default IntFuncList indexesOf(IntAggregationToBoolean aggregation) {
+        val check = aggregation.newAggregator();
+        return indexesOf(check);
     }
     
     public default IntFuncList indexesOf(int value) {
-        return mapWithIndex((index, data) -> (data == value) ? index : -1).filter(i -> i != -1);
+        return mapWithIndex((index, data) -> (data == value) ? index : -1)
+                .filter(i -> i != -1);
     }
     
     public default int indexOf(int o) {
@@ -893,7 +1044,8 @@ public interface IntFuncList
     
     /** Returns the last element. */
     public default OptionalInt last() {
-        return last(1).findFirst();
+        return last(1)
+                .findFirst();
     }
     
     /** Returns the last elements */
@@ -985,8 +1137,6 @@ public interface IntFuncList
         });
     }
     
-    // TODO - add one for List and FuncList
-    
     /** Returns a new functional list with the value replacing at the index. */
     public default IntFuncList with(int index, int value) {
         if (index < 0)
@@ -1076,7 +1226,8 @@ public interface IntFuncList
     /** Returns the sub list from the index starting `fromIndexInclusive` to `toIndexExclusive`. */
     public default IntFuncList subList(int fromIndexInclusive, int toIndexExclusive) {
         val length = toIndexExclusive - fromIndexInclusive;
-        return skip(fromIndexInclusive).limit(length);
+        return skip(fromIndexInclusive)
+                .limit(length);
     }
     
     /** Returns the new list with reverse order of this list. */
@@ -1119,11 +1270,18 @@ public interface IntFuncList
     
     /** Returns the list of tuple of the index and the value for which the value match the predicate. */
     public default FuncList<IntIntTuple> query(IntPredicate check) {
-        return mapToObjWithIndex((index, data) -> check.test(data) ? IntIntTuple.of(index, data) : null).filterNonNull();
+        return mapToObjWithIndex((index, data) -> check.test(data) ? IntIntTuple.of(index, data) : null)
+                .filterNonNull();
+    }
+    
+    /** Returns the list of tuple of the index and the value for which the value match the predicate. */
+    public default FuncList<IntIntTuple> query(IntAggregationToBoolean aggregation) {
+        val check = aggregation.newAggregator();
+        return query(check);
     }
     
     public default boolean isEmpty() {
-        return !iterator().hasNext();
+        return ! iterator().hasNext();
     }
     
     public default boolean contains(int value) {
@@ -1202,8 +1360,20 @@ public interface IntFuncList
         return intStream().anyMatch(predicate);
     }
     
+    /** Check if any element match the predicate */
+    public default boolean anyMatch(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return intStream().anyMatch(predicate);
+    }
+    
     /** Check if all elements match the predicate */
     public default boolean allMatch(IntPredicate predicate) {
+        return intStream().allMatch(predicate);
+    }
+    
+    /** Check if all elements match the predicate */
+    public default boolean allMatch(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
         return intStream().allMatch(predicate);
     }
     
@@ -1212,9 +1382,26 @@ public interface IntFuncList
         return intStream().noneMatch(predicate);
     }
     
+    /** Check if none of the elements match the predicate */
+    public default boolean noneMatch(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return intStream().noneMatch(predicate);
+    }
+    
     /** Returns the sequentially first element */
     public default OptionalInt findFirst() {
         return intStream().findFirst();
+    }
+    
+    /** Returns the sequentially first element */
+    public default OptionalInt findFirst(IntPredicate predicate) {
+        return intStream().filter(predicate).findFirst();
+    }
+    
+    /** Returns the sequentially first element */
+    public default OptionalInt findFirst(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return intStream().filter(predicate).findFirst();
     }
     
     /** Returns the any element */
@@ -1222,10 +1409,33 @@ public interface IntFuncList
         return intStream().findAny();
     }
     
+    /** Returns the sequentially first element */
+    public default OptionalInt findAny(IntPredicate predicate) {
+        return intStream().filter(predicate).findFirst();
+    }
+    
+    /** Returns the sequentially first element */
+    public default OptionalInt findAny(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return intStream().filter(predicate).findFirst();
+    }
+    
     @Sequential
     @Terminal
     public default OptionalInt findLast() {
         return intStream().findLast();
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalInt findLast(IntPredicate predicate) {
+        return intStream().filter(predicate).findLast();
+    }
+    @Sequential
+    @Terminal
+    public default OptionalInt findLast(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return intStream().filter(predicate).findLast();
     }
     
 }

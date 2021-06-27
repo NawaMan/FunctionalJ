@@ -25,11 +25,24 @@ package functionalj.stream.doublestream;
 
 import static functionalj.stream.doublestream.AsDoubleStreamPlusHelper.streamFrom;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.OptionalDouble;
 import java.util.function.DoubleConsumer;
+import java.util.function.DoubleFunction;
+import java.util.function.DoublePredicate;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.Predicate;
 import java.util.stream.DoubleStream;
 
+import functionalj.function.aggregator.AggregationToBoolean;
+import functionalj.function.aggregator.DoubleAggregation;
+import functionalj.function.aggregator.DoubleAggregationToBoolean;
+import functionalj.function.aggregator.DoubleAggregationToDouble;
 import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
+import lombok.val;
 
 class AsDoubleStreamPlusHelper {
     
@@ -49,11 +62,10 @@ class AsDoubleStreamPlusHelper {
 public interface AsDoubleStreamPlus
                     extends
                         AsDoubleStreamPlusWithCalculate,
-                        AsDoubleStreamPlusWithConversion,
                         AsDoubleStreamPlusWithCollect,
+                        AsDoubleStreamPlusWithConversion,
                         AsDoubleStreamPlusWithForEach,
                         AsDoubleStreamPlusWithGroupingBy,
-                        AsDoubleStreamPlusWithMatch,
                         AsDoubleStreamPlusWithReduce,
                         AsDoubleStreamPlusWithStatistic {
     
@@ -65,148 +77,212 @@ public interface AsDoubleStreamPlus
         return doubleStreamPlus();
     }
     
-//    //== Terminal operations ==
-//    
-//    /** @return a iterator of this FuncList. */
-//    public default DoubleIteratorPlus iterator() {
-//        return streamFrom(this).iterator();
-//    }
-//    
-//    /** @return a spliterator of this FuncList. */
-//    public default Spliterator.OfDouble spliterator() {
-//        val iterator = iterator();
-//        return Spliterators.spliteratorUnknownSize(iterator, 0);
-//    }
-//    
+    /** Iterate all element through the action */
     @Eager
     @Terminal
     public default void forEach(DoubleConsumer action) {
-        streamFrom(this).forEach(action);
+        streamFrom(this)
+        .forEach(action);
     }
-//    
-//    @Eager
-//    @Terminal
-//    @Sequential
-//    public default void forEachOrdered(DoubleConsumer action) {
-//        streamFrom(this).forEachOrdered(action);
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default double reduce(double identity, DoubleBinaryOperator reducer) {
-//        return streamFrom(this).reduce(identity, reducer);
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default OptionalDouble reduce(DoubleBinaryOperator reducer) {
-//        return streamFrom(this).reduce(reducer);
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default <R> R collect(
-//            Supplier<R>          supplier,
-//            ObjDoubleConsumer<R> accumulator,
-//            BiConsumer<R, R>     combiner) {
-//        return streamFrom(this).collect(supplier, accumulator, combiner);
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    @SuppressWarnings({ "unchecked", "rawtypes" })
-//    public default <R> R collect(DoubleCollectorPlus<?, R> collector) {
-//        Supplier<R>          supplier    = (Supplier)         collector.supplier();
-//        ObjDoubleConsumer<R> accumulator = (ObjDoubleConsumer)collector.accumulator();
-//        BiConsumer<R, R>     combiner    = (BiConsumer)       collector.combiner();
-//        return streamFrom(this).collect(supplier, accumulator, combiner);
-//    }
-//    
-//    //-- statistics --
-//    
-//    @Eager
-//    @Terminal
-//    public default OptionalDouble min() {
-//        return streamFrom(this).min();
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default OptionalDouble max() {
-//        return streamFrom(this).max();
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default long count() {
-//        return streamFrom(this).count();
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default double sum() {
-//        return streamFrom(this).sum();
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default OptionalDouble average() {
-//        return streamFrom(this).average();
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default DoubleSummaryStatistics summaryStatistics() {
-//        return streamFrom(this).summaryStatistics();
-//    }
-//    
-//    //-- Match --
-//    
-//    @Terminal
-//    public default boolean anyMatch(DoublePredicate predicate) {
-//        return streamFrom(this).anyMatch(predicate);
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default boolean allMatch(DoublePredicate predicate) {
-//        return streamFrom(this).allMatch(predicate);
-//    }
-//    
-//    @Eager
-//    @Terminal
-//    public default boolean noneMatch(DoublePredicate predicate) {
-//        return streamFrom(this).noneMatch(predicate);
-//    }
-//    
-//    @Terminal
-//    public default OptionalDouble findFirst() {
-//        return streamFrom(this).findFirst();
-//    }
-//    
-//    @Terminal
-//    public default OptionalDouble findAny() {
-//        return streamFrom(this).findAny();
-//    }
-//    
-//    @Sequential
-//    @Terminal
-//    public default OptionalDouble firstResult() {
-//        return streamFrom(this).firstResult();
-//    }
-//    
-//    @Sequential
-//    @Terminal
-//    public default OptionalDouble lastResult() {
-//        return streamFrom(this).lastResult();
-//    }
-//    
-//    //== Conversion ==
-//    
-//    @Eager
-//    @Terminal
-//    public default double[] toArray() {
-//        return streamFrom(this).toArray();
-//    }
-//    
+    
+    //-- Match --
+    
+    /** Return the first element that matches the predicate. */
+    @Terminal
+    @Sequential
+    public default OptionalDouble findFirst(
+            DoublePredicate predicate) {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .filter(predicate)
+                .findFirst();
+    }
+    
+    /** Return the first element that matches the predicate. */
+    @Terminal
+    @Sequential
+    public default OptionalDouble findFirst(
+            DoubleAggregationToBoolean aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return findFirst(aggregator::test);
+    }
+    
+    /** Return the any element that matches the predicate. */
+    @Terminal
+    public default OptionalDouble findAny(
+            DoublePredicate predicate) {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .filter(predicate)
+                .findAny();
+    }
+    
+    /** Return the any element that matches the predicate. */
+    @Terminal
+    public default OptionalDouble findAny(
+            DoubleAggregationToBoolean aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return findFirst(aggregator::test);
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default OptionalDouble findFirst(
+            DoubleUnaryOperator mapper,
+            DoublePredicate     theCondition) {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .filter(mapper, theCondition)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default OptionalDouble findFirst(
+            DoubleAggregationToDouble aggregation, 
+            DoublePredicate           theCondition) {
+        val mapper = aggregation.newAggregator();
+        return findFirst(mapper, theCondition);
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalDouble findFirstBy(
+            DoubleFunction<? extends T> mapper,
+            Predicate<? super T>        theCondition) {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalDouble findFirstBy(
+            DoubleFunction<T>               mapper, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val theCondition = theConditionAggregation.newAggregator();
+        val streamPlus   = doubleStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition::test)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalDouble findFirstBy(
+            DoubleAggregation<? extends T> aggregation,
+            Predicate<? super T>           theCondition) {
+        val mapper     = aggregation.newAggregator();
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalDouble findFirstBy(
+            DoubleAggregation<T>            aggregation, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val mapper       = aggregation.newAggregator();
+        val theCondition = theConditionAggregation.newAggregator();
+        val streamPlus   = doubleStreamPlus();
+        return streamPlus
+                .filterAsObject((DoubleFunction<T>)mapper, (Predicate<T>)theCondition::test)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the any element that its mapped value matches the predicate. */
+    @Terminal
+    public default <T> OptionalDouble findAny(
+            DoubleUnaryOperator mapper,
+            DoublePredicate     theCondition) {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .filter(mapper, theCondition)
+                .findAny();
+    }
+    
+    /** Use the mapper, return the any element that its mapped value matches the predicate. */
+    @Terminal
+    public default <T> OptionalDouble findAnyBy(
+            DoubleFunction<? extends T> mapper, 
+            Predicate<? super T>      theCondition) {
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition)
+                .findAny();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalDouble findAnyBy(
+            DoubleAggregation<T> aggregation, 
+            Predicate<? super T> theCondition) {
+        val mapper       = aggregation.newAggregator();
+        val streamPlus   = doubleStreamPlus();
+        return streamPlus
+                .filterAsObject((DoubleFunction<T>)mapper, (Predicate<T>)theCondition::test)
+                .findAny();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalDouble findAnyBy(
+            DoubleFunction<T>               mapper, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val theCondition = theConditionAggregation.newAggregator();
+        val streamPlus   = doubleStreamPlus();
+        return streamPlus
+                .filterAsObject((DoubleFunction<T>)mapper, (Predicate<T>)theCondition::test)
+                .findAny();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalDouble findAnyBy(
+            DoubleAggregation<T>            aggregation, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val mapper       = aggregation.newAggregator();
+        val theCondition = theConditionAggregation.newAggregator();
+        val streamPlus   = doubleStreamPlus();
+        return streamPlus
+                .filterAsObject((DoubleFunction<T>)mapper, (Predicate<T>)theCondition::test)
+                .findAny();
+    }
+    
+    //== Contains ==
+    
+    /** Check if the list contains all the given values */
+    public default boolean containsAllOf(double ... values) {
+        val set = new HashSet<Double>(values.length);
+        for (val value : values) {
+            set.add(value);
+        }
+        val streamPlus = doubleStreamPlus();
+        return streamPlus
+                .peek(set::remove)
+                .anyMatch(__ -> set.isEmpty());
+    }
+    
+    public default boolean containsAnyOf(double ... values) {
+        return doubleStreamPlus().
+                allMatch(each -> DoubleStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsNoneOf(double ... values) {
+        return doubleStreamPlus()
+                .noneMatch(each -> DoubleStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
+    }
+    
 }

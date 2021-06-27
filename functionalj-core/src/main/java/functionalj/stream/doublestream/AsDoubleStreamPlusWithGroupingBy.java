@@ -1,4 +1,29 @@
+// ============================================================================
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream.doublestream;
+
+import static functionalj.function.Func.f;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,63 +39,94 @@ import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import lombok.val;
 
+
 public interface AsDoubleStreamPlusWithGroupingBy {
     
     public DoubleStreamPlus doubleStreamPlus();
     
     /** Group the elements by determining the grouping keys */
     public default <KEY> FuncMap<KEY, DoubleFuncList> groupingBy(DoubleFunction<KEY> keyMapper) {
+        val toFuncList = f((GrowOnlyDoubleArray array) -> array.toFuncList());
+        val newArray   = f(() -> new GrowOnlyDoubleArray());
+        val streamPlus = this.doubleStreamPlus();
+        
         Supplier  <Map<KEY, GrowOnlyDoubleArray>>                                 supplier;
         BiConsumer<Map<KEY, GrowOnlyDoubleArray>, Double>                         accumulator;
         BiConsumer<Map<KEY, GrowOnlyDoubleArray>, Map<KEY, GrowOnlyDoubleArray>>  combiner;
-        
-        Supplier<GrowOnlyDoubleArray>                 collectorSupplier = GrowOnlyDoubleArray::new;
-        Function<GrowOnlyDoubleArray, DoubleFuncList> toFuncList         = array -> array.toFuncList();
         
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
             val key = keyMapper.apply(each);
             map.compute(key, (k, a)->{
                 if (a == null) {
-                    a = collectorSupplier.get();
+                    a = newArray.get();
                 }
                 a.add(each);
                 return a;
             });
         };
         combiner = (map1, map2) -> map1.putAll(map2);
-        val theMap = doubleStreamPlus().boxed().collect(supplier, accumulator, combiner);
+        
+        val theMap = streamPlus.boxed().collect(supplier, accumulator, combiner);
         return ImmutableFuncMap
                     .from    (theMap)
                     .mapValue(toFuncList);
     }
     
-    /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            DoubleFunction<KEY>             keyMapper,
-            Function<DoubleFuncList, VALUE> aggregate) {
-        FuncMap<KEY, DoubleFuncList> groupingBy = groupingBy(keyMapper);
-        return (FuncMap<KEY, VALUE>) groupingBy.mapValue((Function)aggregate);
+    /** Group the elements by determining the grouping keys */
+    public default <KEY> FuncMap<KEY, DoubleFuncList> groupingBy(DoubleAggregation<KEY> keyAggregation) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper);
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            DoubleFunction<KEY>                               keyMapper,
-            Supplier<DoubleCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
-        FuncMap<KEY, DoubleFuncList>    groupingBy = groupingBy(keyMapper);
-        Function<DoubleFuncList, VALUE> aggregate  = stream -> stream.collect(collectorSupplier.get());
-        FuncMap<KEY, VALUE> mapValue = groupingBy.mapValue((Function)aggregate);
-        return (FuncMap<KEY, VALUE>) mapValue;
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            DoubleFunction<KEY>             keyMapper,
+            Function<DoubleFuncList, VALUE> aggregate) {
+        return groupingBy(keyMapper)
+                .mapValue(aggregate);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            DoubleAggregation<KEY>          keyAggregation,
+            Function<DoubleFuncList, VALUE> aggregate) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper, aggregate);
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             DoubleFunction<KEY>      keyMapper,
-            DoubleAggregation<VALUE> aggregation) {
-        FuncMap<KEY, DoubleFuncList> groupingBy = groupingBy(keyMapper);
-        return (FuncMap<KEY, VALUE>) groupingBy.mapValue(stream -> stream.calculate(aggregation));
+            DoubleAggregation<VALUE> aggregate) {
+        val valueMapper = f((DoubleFuncList list) -> list.aggregate(aggregate));
+        return groupingBy(keyMapper)
+                .mapValue(valueMapper);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            DoubleAggregation<KEY>   keyAggregation,
+            DoubleAggregation<VALUE> aggregate) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper, aggregate);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            DoubleFunction<KEY>                               keyMapper,
+            Supplier<DoubleCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
+        val valueMapper = f((DoubleFuncList list) -> list.collect(collectorSupplier.get()));
+        return groupingBy(keyMapper)
+                .mapValue(valueMapper);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            DoubleAggregation<KEY>                            keyAggregation,
+            Supplier<DoubleCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper, collectorSupplier);
     }
     
 }

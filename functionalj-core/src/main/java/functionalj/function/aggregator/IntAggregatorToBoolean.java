@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -41,14 +41,14 @@ public interface IntAggregatorToBoolean extends IntegerToBooleanAccessPrimitive,
             this.collected = IntCollectedToBoolean.of(collector);
         }
         
+        public IntCollectedToBoolean<?> asCollected() {
+            return collected;
+        }
+        
         @Override
         public boolean applyIntToBoolean(int input) {
             collected.accumulate(input);
             return collected.finish();
-        }
-        
-        public IntCollectedToBoolean<?> asCollected() {
-            return collected;
         }
         
         @Override

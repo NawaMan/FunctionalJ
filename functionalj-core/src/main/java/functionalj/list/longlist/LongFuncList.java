@@ -50,6 +50,12 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func;
 import functionalj.function.LongComparator;
+import functionalj.function.aggregator.LongAggregation;
+import functionalj.function.aggregator.LongAggregationToBoolean;
+import functionalj.function.aggregator.LongAggregationToDouble;
+import functionalj.function.aggregator.LongAggregationToInt;
+import functionalj.function.aggregator.LongAggregationToLong;
+import functionalj.list.AsFuncList;
 import functionalj.list.FuncList;
 import functionalj.list.FuncList.Mode;
 import functionalj.list.ImmutableFuncList;
@@ -100,8 +106,7 @@ public interface LongFuncList
             LongFuncListWithPipe,
             LongFuncListWithSegment,
             LongFuncListWithSort,
-            LongFuncListWithSplit,
-            LongFuncListWithStatistic {
+            LongFuncListWithSplit {
     
     
     /** Throw a no more element exception. This is used for generator. */
@@ -270,6 +275,7 @@ public interface LongFuncList
         return LongFuncList.from(() -> LongStreamPlus.naturalNumbers(count));
     }
     
+    /** Returns the infinite streams of wholes numbers -- 0, 1, 2, 3, .... */
     public static LongFuncList wholeNumbers() {
         return LongFuncList.from(() -> LongStreamPlus.wholeNumbers());
     }
@@ -344,6 +350,12 @@ public interface LongFuncList
         return LongFuncList.from(() -> LongStreamPlus.iterate(seed, compounder));
     }
     
+    public static LongFuncList iterate(
+            long                  seed, 
+            LongAggregationToLong aggregation) {
+        return LongFuncList.from(() -> LongStreamPlus.iterate(seed, aggregation));
+    }
+    
     /**
      * Create a list by apply the compounder to the seed over and over.
      *
@@ -361,6 +373,12 @@ public interface LongFuncList
     public static LongFuncList compound(
             long              seed, 
             LongUnaryOperator compounder) {
+        return LongFuncList.from(() -> LongStreamPlus.compound(seed, compounder));
+    }
+    
+    public static LongFuncList compound(
+            long                  seed, 
+            LongAggregationToLong compounder) {
         return LongFuncList.from(() -> LongStreamPlus.compound(seed, compounder));
     }
     
@@ -421,8 +439,8 @@ public interface LongFuncList
      * The result stream = [(A,1), (B,2), (C,3), (D,4)].
      **/
     public static FuncList<LongLongTuple> zipOf(
-            LongFuncList list1, 
-            LongFuncList list2) {
+            AsLongFuncList list1,
+            AsLongFuncList list2) {
         return FuncList.from(() -> {
             return LongStreamPlus.zipOf(
                     list1.longStream(),
@@ -431,8 +449,8 @@ public interface LongFuncList
     }
     
     public static FuncList<LongLongTuple> zipOf(
-            LongFuncList list1, long defaultValue1,
-            LongFuncList list2, long defaultValue2) {
+            AsLongFuncList list1, long defaultValue1,
+            AsLongFuncList list2, long defaultValue2) {
         return FuncList.from(() -> {
             return LongStreamPlus.zipOf(
                     list1.longStream(), defaultValue1,
@@ -442,8 +460,8 @@ public interface LongFuncList
     
     /** Zip integers from two LongFuncLists and combine it into another object. */
     public static LongFuncList zipOf(
-            LongFuncList       list1,
-            LongFuncList       list2,
+            AsLongFuncList     list1,
+            AsLongFuncList     list2,
             LongBinaryOperator merger) {
         return LongFuncList.from(() -> {
             return LongStreamPlus.zipOf(
@@ -458,8 +476,8 @@ public interface LongFuncList
      * The result stream has the size of the shortest stream.
      */
     public static LongFuncList zipOf(
-            LongFuncList       list1, long defaultValue1, 
-            LongFuncList       list2, long defaultValue2,
+            AsLongFuncList     list1, long defaultValue1, 
+            AsLongFuncList     list2, long defaultValue2,
             LongBinaryOperator merger) {
         return LongFuncList.from(() -> {
             return LongStreamPlus.zipOf(
@@ -505,7 +523,7 @@ public interface LongFuncList
     //-- Derive --
     
     /** Create a FuncList from the given FuncList. */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <SOURCE> LongFuncList deriveFrom(
             List<SOURCE>                             list,
             Function<StreamPlus<SOURCE>, LongStream> action) {
@@ -515,7 +533,7 @@ public interface LongFuncList
                 : Mode.lazy;
         switch (mode) {
             case lazy: {
-                return LongFuncList.from(() -> {
+                return LongFuncList.from(()->{
                     val orgStreamPlus = (list instanceof FuncList)
                             ? ((FuncList)list).streamPlus()
                             : StreamPlus.from(list.stream());
@@ -545,7 +563,7 @@ public interface LongFuncList
     
     /** Create a FuncList from the given LongFuncList. */
     public static <TARGET> LongFuncList deriveFrom(
-            AsIntFuncList                        asFuncList, 
+            AsIntFuncList                       asFuncList, 
             Function<IntStreamPlus, LongStream> action) {
         Mode mode = asFuncList.asIntFuncList().mode();
         switch (mode) {
@@ -593,26 +611,26 @@ public interface LongFuncList
     
     /** Create a FuncList from the given DoubleFuncList. */
     public static <TARGET> LongFuncList deriveFrom(
-            AsDoubleFuncList                       asFuncList, 
+            AsDoubleFuncList                       asFuncList,
             Function<DoubleStreamPlus, LongStream> action) {
-      Mode mode = asFuncList.asDoubleFuncList().mode();
-      switch (mode) {
-          case lazy: {
-              return LongFuncList.from(() -> {
-                  val orgStreamPlus = asFuncList.doubleStreamPlus();
-                  val newStream     = action.apply(orgStreamPlus);
-                  return LongStreamPlus.from(newStream);
-              });
-          }
-          case eager:
-          case cache: {
-              val orgStreamPlus = asFuncList.doubleStreamPlus();
-              val newStream     = action.apply(orgStreamPlus);
-              val newStreamPlus = LongStreamPlus.from(newStream);
-              return ImmutableLongFuncList.from(mode, newStreamPlus);
-          }
-          default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
-      }
+        Mode mode = asFuncList.asDoubleFuncList().mode();
+        switch (mode) {
+            case lazy: {
+                return LongFuncList.from(() -> {
+                    val orgStreamPlus = asFuncList.doubleStreamPlus();
+                    val newStream     = action.apply(orgStreamPlus);
+                    return LongStreamPlus.from(newStream);
+                });
+            }
+            case eager:
+            case cache: {
+                val orgStreamPlus = asFuncList.doubleStreamPlus();
+                val newStream     = action.apply(orgStreamPlus);
+                val newStreamPlus = LongStreamPlus.from(newStream);
+                return ImmutableLongFuncList.from(mode, newStreamPlus);
+            }
+            default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
+        }
     }
     
     /** Create a FuncList from another FuncList. */
@@ -677,7 +695,7 @@ public interface LongFuncList
         return mode().isEager();
     }
     
-    /** Check if this list is an cache list. */
+    /** Check if this list is a cache list. */
     public default boolean isCache() {
         return mode().isCache();
     }
@@ -753,14 +771,32 @@ public interface LongFuncList
         return deriveFrom(this, streamble -> streamble.longStream().map(mapper));
     }
     
+    /** Map each value into other value using the function. */
+    public default LongFuncList map(LongAggregationToLong aggregation) {
+        val mapper = aggregation.newAggregator();
+        return map(mapper);
+    }
+    
     /** Map each value into an integer value using the function. */
     public default IntFuncList mapToInt(LongToIntFunction mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
     
     /** Map each value into an integer value using the function. */
+    public default IntFuncList mapToInt(LongAggregationToInt aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToInt(mapper);
+    }
+    
+    /** Map each value into an integer value using the function. */
     public default LongFuncList mapToLong(LongUnaryOperator mapper) {
         return deriveFrom(this, stream -> stream.mapToLong(mapper));
+    }
+    
+    /** Map each value into an integer value using the function. */
+    public default LongFuncList mapToLong(LongAggregationToLong aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToLong(mapper);
     }
     
     /** Map each value into a double value. */
@@ -773,20 +809,43 @@ public interface LongFuncList
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(mapper));
     }
     
+    /** Map each value into a double value using the function. */
+    public default DoubleFuncList mapToDouble(LongAggregationToDouble aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToDouble(mapper);
+    }
+    
     public default <TARGET> FuncList<TARGET> mapToObj(LongFunction<? extends TARGET> mapper) {
         return FuncList.deriveFrom(this, stream -> stream.mapToObj(mapper));
     }
     
+    public default <TARGET> FuncList<TARGET> mapToObj(LongAggregation<? extends TARGET> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToObj(mapper);
+    }
+    
     //-- FlatMap --
     
-    /** Map a value into a FuncList and then flatten that list */
+    /** Map a value into a FuncList and then flatten that FuncList */
     public default LongFuncList flatMap(LongFunction<? extends AsLongFuncList> mapper) {
         return LongFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).longStream()));
     }
     
-    /** Map a value into an integer FuncList and then flatten that list */
-    public default LongFuncList flatMapToInt(LongFunction<? extends AsLongFuncList> mapper) {
-        return LongFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).longStream()));
+    /** Map a value into a FuncList and then flatten that FuncList */
+    public default LongFuncList flatMap(LongAggregation<? extends AsLongFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMap(mapper);
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that FuncList */
+    public default IntFuncList flatMapToInt(LongFunction<? extends AsIntFuncList> mapper) {
+        return IntFuncList.deriveFrom(this, stream -> stream.flatMapToInt(value -> mapper.apply(value).intStream()));
+    }
+    
+    /** Map a value into a FuncList and then flatten that FuncList */
+    public default IntFuncList flatMapToInt(LongAggregation<? extends AsIntFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToInt(mapper);
     }
     
     /** Map a value into an integer FuncList and then flatten that list */
@@ -794,9 +853,32 @@ public interface LongFuncList
         return LongFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).longStream()));
     }
     
-    /** Map a value into a double FuncList and then flatten that list */
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default LongFuncList flatMapToLong(LongAggregation<? extends AsLongFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToLong(mapper);
+    }
+    
+    /** Map a value into a double FuncList and then flatten that FuncList */
     public default DoubleFuncList flatMapToDouble(LongFunction<? extends AsDoubleFuncList> mapper) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that FuncList */
+    public default DoubleFuncList flatMapToDouble(LongAggregation<? extends AsDoubleFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToDouble(mapper);
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that FuncList */
+    public default <D> FuncList<D> flatMapToObj(LongFunction<? extends AsFuncList<D>> mapper) {
+        return FuncList.deriveFrom(this, stream -> stream.flatMapToObj(value -> mapper.apply(value).stream()));
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that FuncList */
+    public default <D> FuncList<D> flatMapToObj(LongAggregation<? extends AsFuncList<D>> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToObj(mapper);
     }
     
     //-- Filter --
@@ -806,9 +888,15 @@ public interface LongFuncList
         return deriveFrom(this, stream -> stream.filter(predicate));
     }
     
+    /** Select only the element that passes the predicate */
+    public default LongFuncList filter(LongAggregationToBoolean aggregation) {
+        val mapper = aggregation.newAggregator();
+        return filter(mapper);
+    }
+    
     /** Select only the element that the mapped value passes the predicate */
     public default LongFuncList filter(
-            LongUnaryOperator mapper, 
+            LongUnaryOperator mapper,
             LongPredicate     predicate) {
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
@@ -828,7 +916,6 @@ public interface LongFuncList
     }
     
     /** Trim off the first n values */
-    
     public default LongFuncList skip(long offset) {
         return deriveFrom(this, stream -> stream.skip(offset));
     }
@@ -860,7 +947,8 @@ public interface LongFuncList
     }
     
     /**
-     * Performs an action for each element of this stream, in the encounter order of the stream if the stream has a defined encounter order.
+     * Performs an action for each element of this stream,
+     *   in the encounter order of the stream if the stream has a defined encounter order.
      */
     public default void forEachOrdered(LongConsumer action) {
         longStream().forEachOrdered(action);
@@ -903,12 +991,26 @@ public interface LongFuncList
     
     // -- List specific --
     
+    public default int size() {
+        return (int)longStream().count();
+    }
+    
     public default IntFuncList indexesOf(LongPredicate check) {
-        return mapWithIndex((index, data) -> check.test(data) ? index : -1).filter(i -> i != -1).mapToInt(l -> (int)l);
+        return mapWithIndex((index, data) -> check.test(data) ? index : -1)
+                .filter(i -> i != -1)
+                .mapToInt(l -> (int)l);
+    }
+    
+    /** Find any indexes that the elements match the predicate */
+    public default IntFuncList indexesOf(LongAggregationToBoolean aggregation) {
+        val check = aggregation.newAggregator();
+        return indexesOf(check);
     }
     
     public default IntFuncList indexesOf(long value) {
-        return mapWithIndex((index, data) -> (data == value) ? index : -1).filter(i -> i != -1).mapToInt(l -> (int)l);
+        return mapWithIndex((index, data) -> (data == value) ? index : -1)
+                .filter(i -> i != -1)
+                .mapToInt(l -> (int)l);
     }
     
     public default int indexOf(long o) {
@@ -933,7 +1035,8 @@ public interface LongFuncList
     
     /** Returns the last element. */
     public default OptionalLong last() {
-        return last(1).findFirst();
+        return last(1)
+                .findFirst();
     }
     
     /** Returns the last elements */
@@ -1114,7 +1217,8 @@ public interface LongFuncList
     /** Returns the sub list from the index starting `fromIndexInclusive` to `toIndexExclusive`. */
     public default LongFuncList subList(int fromIndexInclusive, int toIndexExclusive) {
         val length = toIndexExclusive - fromIndexInclusive;
-        return skip(fromIndexInclusive).limit(length);
+        return skip(fromIndexInclusive)
+                .limit(length);
     }
     
     /** Returns the new list with reverse order of this list. */
@@ -1157,11 +1261,18 @@ public interface LongFuncList
     
     /** Returns the list of tuple of the index and the value for which the value match the predicate. */
     public default FuncList<IntLongTuple> query(LongPredicate check) {
-        return mapToObjWithIndex((index, data) -> check.test(data) ? IntLongTuple.of(index, data) : null).filterNonNull();
+        return mapToObjWithIndex((index, data) -> check.test(data) ? IntLongTuple.of(index, data) : null)
+                .filterNonNull();
+    }
+    
+    /** Returns the list of tuple of the index and the value for which the value match the predicate. */
+    public default FuncList<IntLongTuple> query(LongAggregationToBoolean aggregation) {
+        val check = aggregation.newAggregator();
+        return query(check);
     }
     
     public default boolean isEmpty() {
-        return !iterator().hasNext();
+        return ! iterator().hasNext();
     }
     
     public default boolean contains(long value) {
@@ -1240,8 +1351,20 @@ public interface LongFuncList
         return longStream().anyMatch(predicate);
     }
     
+    /** Check if any element match the predicate */
+    public default boolean anyMatch(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return longStream().anyMatch(predicate);
+    }
+    
     /** Check if all elements match the predicate */
     public default boolean allMatch(LongPredicate predicate) {
+        return longStream().allMatch(predicate);
+    }
+    
+    /** Check if all elements match the predicate */
+    public default boolean allMatch(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
         return longStream().allMatch(predicate);
     }
     
@@ -1250,9 +1373,26 @@ public interface LongFuncList
         return longStream().noneMatch(predicate);
     }
     
+    /** Check if none of the elements match the predicate */
+    public default boolean noneMatch(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return longStream().noneMatch(predicate);
+    }
+    
     /** Returns the sequentially first element */
     public default OptionalLong findFirst() {
         return longStream().findFirst();
+    }
+    
+    /** Returns the sequentially first element */
+    public default OptionalLong findFirst(LongPredicate predicate) {
+        return longStream().filter(predicate).findFirst();
+    }
+    
+    /** Returns the sequentially first element */
+    public default OptionalLong findFirst(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return longStream().filter(predicate).findFirst();
     }
     
     /** Returns the any element */
@@ -1260,10 +1400,33 @@ public interface LongFuncList
         return longStream().findAny();
     }
     
+    /** Returns the sequentially first element */
+    public default OptionalLong findAny(LongPredicate predicate) {
+        return longStream().filter(predicate).findFirst();
+    }
+    
+    /** Returns the sequentially first element */
+    public default OptionalLong findAny(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return longStream().filter(predicate).findFirst();
+    }
+    
     @Sequential
     @Terminal
     public default OptionalLong findLast() {
         return longStream().findLast();
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalLong findLast(LongPredicate predicate) {
+        return longStream().filter(predicate).findLast();
+    }
+    @Sequential
+    @Terminal
+    public default OptionalLong findLast(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return longStream().filter(predicate).findLast();
     }
     
 }

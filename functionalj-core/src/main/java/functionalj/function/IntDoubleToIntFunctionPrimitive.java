@@ -23,42 +23,42 @@
 // ============================================================================
 package functionalj.function;
 
-import java.util.function.ToDoubleBiFunction;
+import java.util.function.ToIntBiFunction;
 
 
 @FunctionalInterface
-public interface IntegerDoubleToDoubleFunctionPrimitive 
+public interface IntDoubleToIntFunctionPrimitive 
             extends 
-                ToDoubleBiFunction<Integer, Double>, 
-                ObjectDoubleToDoubleFunctionPrimitive<Integer> {
+                ToIntBiFunction<Integer, Double>, 
+                ObjectDoubleToIntegerFunctionPrimitive<Integer> {
     
-    public static IntegerDoubleToDoubleFunctionPrimitive of(IntegerDoubleToDoubleFunctionPrimitive function) {
+    public static IntDoubleToIntFunctionPrimitive of(IntDoubleToIntFunctionPrimitive function) {
         return function;
         
     }
-    public static IntegerDoubleToDoubleFunctionPrimitive from(ToDoubleBiFunction<Integer, Double> function) {
-        return (function instanceof IntegerDoubleToDoubleFunctionPrimitive)
-                ? (IntegerDoubleToDoubleFunctionPrimitive)function
-                : ((d1, d2) -> function.applyAsDouble(d1, d2));
+    public static IntDoubleToIntFunctionPrimitive from(ToIntBiFunction<Integer, Double> function) {
+        return (function instanceof IntDoubleToIntFunctionPrimitive)
+                ? (IntDoubleToIntFunctionPrimitive)function
+                : ((d1, d2) -> function.applyAsInt(d1, d2));
     }
-    public static IntegerDoubleToDoubleFunctionPrimitive from(ObjectDoubleToDoubleFunctionPrimitive<Integer> function) {
-        return (function instanceof IntegerDoubleToDoubleFunctionPrimitive)
-                ? (IntegerDoubleToDoubleFunctionPrimitive)function
+    public static IntDoubleToIntFunctionPrimitive from(ObjectDoubleToIntegerFunctionPrimitive<Integer> function) {
+        return (function instanceof IntDoubleToIntFunctionPrimitive)
+                ? (IntDoubleToIntFunctionPrimitive)function
                 : ((d1, d2) -> function.applyObjectDouble(d1, d2));
     }
     
     //-- functionality --
     
-    public double applyIntegerDouble(int intValue, double doubleValue);
+    public int applyIntDouble(int intValue, double doubleValue);
     
     
-    public default double applyAsDouble(Integer intValue, Double doubleValue) {
-        return applyIntegerDouble(intValue, doubleValue);
+    public default int applyAsInt(Integer intValue, Double doubleValue) {
+        return applyIntDouble(intValue, doubleValue);
     }
     
     @Override
-    public default double applyObjectDouble(Integer data, double doubleValue) {
-        return applyIntegerDouble(data, doubleValue);
+    public default int applyObjectDouble(Integer data, double doubleValue) {
+        return applyIntDouble(data, doubleValue);
     }
     
 }

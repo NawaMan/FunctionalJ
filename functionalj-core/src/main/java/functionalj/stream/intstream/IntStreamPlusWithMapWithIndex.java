@@ -26,11 +26,11 @@ package functionalj.stream.intstream;
 import static functionalj.tuple.IntIntTuple.tuple;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.function.IntIntBiFunction;
+import functionalj.function.IntIntToIntFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
 import functionalj.stream.StreamPlus;
 import functionalj.tuple.IntIntTuple;
@@ -57,11 +57,23 @@ public interface IntStreamPlusWithMapWithIndex {
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
-    public default IntStreamPlus mapWithIndex(IntBinaryOperator combinator) {
+    public default IntStreamPlus mapWithIndex(IntIntToIntFunctionPrimitive  combinator) {
         val index = new AtomicInteger();
         val streamPlus = intStreamPlus();
         return streamPlus
                 .map(each -> {
+                    val currentIndex = index.getAndIncrement();
+                    val target       = combinator.applyAsInt(currentIndex, each);
+                    return target;
+                });
+    }
+    
+    /** Create a stream whose value is the combination between value of this stream and its index. */
+    public default IntStreamPlus mapToIntWithIndex(IntIntToIntFunctionPrimitive combinator) {
+        val index = new AtomicInteger();
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .mapToInt(each -> {
                     val currentIndex = index.getAndIncrement();
                     val target       = combinator.applyAsInt(currentIndex, each);
                     return target;
@@ -105,7 +117,7 @@ public interface IntStreamPlusWithMapWithIndex {
                 .mapToObj(each -> {
                     val currentIndex = index.getAndIncrement();
                     val value        = valueMapper.apply(each);
-                    val target       = combiner.apply(currentIndex, value);
+                    val target       = combiner.applyAsInt(currentIndex, value);
                     return target;
                 });
     }

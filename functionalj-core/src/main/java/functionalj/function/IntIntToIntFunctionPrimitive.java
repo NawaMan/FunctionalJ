@@ -23,36 +23,43 @@
 // ============================================================================
 package functionalj.function;
 
-import java.util.function.Function;
-import java.util.function.IntFunction;
+import java.util.function.IntBinaryOperator;
 
-public interface IntegerFunctionPrimitive<TARGET> extends IntFunction<TARGET>, Func1<Integer, TARGET> {
+
+@FunctionalInterface
+public interface IntIntToIntFunctionPrimitive extends IntBinaryOperator, ObjIntToIntFunctionPrimitive<Integer>, IntComparator {
     
-    public static <T> IntegerFunctionPrimitive<T> of(Function<Integer, T> function) {
-        if (function instanceof IntegerFunctionPrimitive)
-            return (IntegerFunctionPrimitive<T>)function;
+    public static IntIntToIntFunctionPrimitive of(IntIntToIntFunctionPrimitive function) {
+        return function;
         
-        return i -> function.apply(i);
     }
-    public static <T> IntegerFunctionPrimitive<T> intFunction(Function<Integer, T> function) {
-        if (function instanceof IntegerFunctionPrimitive)
-            return (IntegerFunctionPrimitive<T>)function;
-        
-        return i -> function.apply(i);
+    public static IntIntToIntFunctionPrimitive from(IntBinaryOperator function) {
+        return (function instanceof IntIntToIntFunctionPrimitive)
+                ? (IntIntToIntFunctionPrimitive)function
+                : ((d1, d2) -> function.applyAsInt(d1, d2));
+    }
+    public static IntIntToIntFunctionPrimitive from(ObjIntToIntFunctionPrimitive<Integer> function) {
+        return (function instanceof IntIntToIntFunctionPrimitive)
+                ? (IntIntToIntFunctionPrimitive)function
+                : ((d1, d2) -> function.applyObjInt(d1, d2));
     }
     
+    //-- functionality --
     
-    public TARGET applyInt(int value);
+    public int applyIntInt(int data, int intValue);
     
+    
+    public default int applyAsInt(int data, int intValue) {
+        return applyIntInt(data, intValue);
+    }
     
     @Override
-    public default TARGET apply(int value) {
-        return applyInt(value);
+    public default int applyObjInt(Integer data, int intValue) {
+        return applyIntInt(data, intValue);
     }
     
-    @Override
-    public default TARGET applyUnsafe(Integer input) throws Exception {
-        return applyInt(input);
+    public default int compareInt(int o1, int o2) {
+        return applyIntInt(o1, o2);
     }
     
 }

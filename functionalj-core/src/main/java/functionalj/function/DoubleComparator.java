@@ -35,6 +35,10 @@ public interface DoubleComparator extends Comparator<Double> {
         return compareDouble(o1, o2);
     }
     
+    public default DoubleComparator reverse() {
+        return (o1, o2) -> compareDouble(o2, o1);
+    }
+    
     
     public static DoubleComparator compare(DoubleComparator comparator) {
         return Objects.requireNonNull(comparator);

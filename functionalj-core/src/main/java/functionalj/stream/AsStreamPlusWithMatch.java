@@ -31,6 +31,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.result.Result;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -52,6 +54,12 @@ public interface AsStreamPlusWithMatch<DATA> {
     }
     
     @Terminal
+    public default boolean anyMatch(AggregationToBoolean<? super DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return anyMatch(aggregator::test);
+    }
+    
+    @Terminal
     public default boolean allMatch(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
         return streamPlus
@@ -59,10 +67,22 @@ public interface AsStreamPlusWithMatch<DATA> {
     }
     
     @Terminal
+    public default boolean allMatch(AggregationToBoolean<? super DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return allMatch(aggregator::test);
+    }
+    
+    @Terminal
     public default boolean noneMatch(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
         return streamPlus
                 .noneMatch(predicate);
+    }
+    
+    @Terminal
+    public default boolean noneMatch(AggregationToBoolean<? super DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return noneMatch(aggregator::test);
     }
     
     @Terminal
@@ -114,6 +134,15 @@ public interface AsStreamPlusWithMatch<DATA> {
                 .findFirst();
     }
     
+    /** Return the first element that matches the predicate. */
+    @Terminal
+    @Sequential
+    public default Optional<DATA> findFirst(
+            AggregationToBoolean<? super DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return findFirst(aggregator::test);
+    }
+    
     /** Return the any element that matches the predicate. */
     @Terminal
     public default Optional<DATA> findAny(
@@ -122,6 +151,14 @@ public interface AsStreamPlusWithMatch<DATA> {
         return streamPlus
                 .filter(predicate)
                 .findAny();
+    }
+    
+    /** Return the any element that matches the predicate. */
+    @Terminal
+    public default Optional<DATA> findAny(
+            AggregationToBoolean<? super DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return findFirst(aggregator::test);
     }
     
     /** Use the mapper, return the first element that its mapped value matches the predicate. */
@@ -136,6 +173,37 @@ public interface AsStreamPlusWithMatch<DATA> {
                 .findFirst();
     }
     
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> Optional<DATA> findFirst(
+            Aggregation<? super DATA, T> aggregation, 
+            Predicate<? super T>         theCondition) {
+        val mapper = aggregation.newAggregator();
+        return findFirst(mapper, theCondition);
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> Optional<DATA> findFirst(
+            Function<? super DATA, T>       mapper, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val theCondition = theConditionAggregation.newAggregator();
+        return findFirst(mapper, theCondition::test);
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> Optional<DATA> findFirst(
+            Aggregation<? super DATA, T>    aggregation, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val mapper = aggregation.newAggregator();
+        val theCondition = theConditionAggregation.newAggregator();
+        return findFirst(mapper, theCondition::test);
+    }
+    
     /** Use the mapper, return the any element that its mapped value matches the predicate. */
     @Terminal
     public default <T>  Optional<DATA> findAny(
@@ -145,6 +213,37 @@ public interface AsStreamPlusWithMatch<DATA> {
         return streamPlus
                 .filter(mapper, theCondition)
                 .findAny();
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> Optional<DATA> findAny(
+            Aggregation<? super DATA, T> aggregation, 
+            Predicate<? super T>         theCondition) {
+        val mapper = aggregation.newAggregator();
+        return findAny(mapper, theCondition);
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> Optional<DATA> findAny(
+            Function<? super DATA, T>       mapper, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val theCondition = theConditionAggregation.newAggregator();
+        return findAny(mapper, theCondition::test);
+    }
+    
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> Optional<DATA> findAny(
+            Aggregation<? super DATA, T>    aggregation, 
+            AggregationToBoolean<? super T> theConditionAggregation) {
+        val mapper = aggregation.newAggregator();
+        val theCondition = theConditionAggregation.newAggregator();
+        return findAny(mapper, theCondition::test);
     }
     
     //== Contains ==

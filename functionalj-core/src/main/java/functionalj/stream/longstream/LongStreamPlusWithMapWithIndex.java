@@ -30,9 +30,11 @@ import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 
 import functionalj.function.IntLongBiFunction;
-import functionalj.function.IntegerLongToLongFunctionPrimitive;
+import functionalj.function.IntLongToIntFunction;
+import functionalj.function.IntLongToLongFunctionPrimitive;
 import functionalj.function.LongObjBiFunction;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.IntLongTuple;
 import lombok.val;
 
@@ -56,13 +58,25 @@ public interface LongStreamPlusWithMapWithIndex {
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
-    public default LongStreamPlus mapWithIndex(IntegerLongToLongFunctionPrimitive combinator) {
+    public default LongStreamPlus mapWithIndex(IntLongToLongFunctionPrimitive combinator) {
         val index = new AtomicInteger();
         val streamPlus = longStreamPlus();
         return streamPlus
                 .map(each -> {
                     val currentIndex = index.getAndIncrement();
                     val target       = combinator.applyAsLong(currentIndex, each);
+                    return target;
+                });
+    }
+    
+    /** Create a stream whose value is the combination between value of this stream and its index. */
+    public default IntStreamPlus mapToIntWithIndex(IntLongToIntFunction combinator) {
+        val index = new AtomicInteger();
+        val streamPlus = longStreamPlus();
+        return streamPlus
+                .mapToInt(each -> {
+                    val currentIndex = index.getAndIncrement();
+                    val target       = combinator.applyInt(currentIndex, each);
                     return target;
                 });
     }
@@ -96,7 +110,7 @@ public interface LongStreamPlusWithMapWithIndex {
     
     /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
     public default <T1, T> StreamPlus<T> mapToObjWithIndex(
-                LongFunction<? extends T1>      valueMapper,
+                LongFunction<? extends T1>       valueMapper,
                 LongObjBiFunction<? super T1, T> combiner) {
         val index = new AtomicInteger();
         val streamPlus = longStreamPlus();

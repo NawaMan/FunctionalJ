@@ -23,23 +23,36 @@
 // ============================================================================
 package functionalj.function;
 
-import java.util.function.BiFunction;
-import java.util.function.ToIntBiFunction;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 
-
-@FunctionalInterface
-public interface ObjectIntegerToIntegerFunctionPrimitive<DATA> extends BiFunction<DATA, Integer, Integer>, ToIntBiFunction<DATA, Integer> {
+public interface IntFunctionPrimitive<TARGET> extends IntFunction<TARGET>, Func1<Integer, TARGET> {
     
-    public int applyObjectInteger(DATA data, int intValue);
+    public static <T> IntFunctionPrimitive<T> of(Function<Integer, T> function) {
+        if (function instanceof IntFunctionPrimitive)
+            return (IntFunctionPrimitive<T>)function;
+        
+        return i -> function.apply(i);
+    }
+    public static <T> IntFunctionPrimitive<T> intFunction(Function<Integer, T> function) {
+        if (function instanceof IntFunctionPrimitive)
+            return (IntFunctionPrimitive<T>)function;
+        
+        return i -> function.apply(i);
+    }
+    
+    
+    public TARGET applyInt(int value);
     
     
     @Override
-    public default Integer apply(DATA data, Integer doubleValue) {
-        return applyObjectInteger(data, doubleValue);
+    public default TARGET apply(int value) {
+        return applyInt(value);
     }
     
     @Override
-    public default int applyAsInt(DATA data, Integer intValue) {
-        return applyObjectInteger(data, intValue);
+    public default TARGET applyUnsafe(Integer input) throws Exception {
+        return applyInt(input);
     }
+    
 }

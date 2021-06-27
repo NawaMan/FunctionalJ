@@ -38,6 +38,7 @@ import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 import functionalj.function.IntBiPredicatePrimitive;
+import functionalj.function.aggregator.IntAggregationToBoolean;
 import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 
@@ -183,6 +184,12 @@ public interface IntStreamPlusWithFilter {
         val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(data -> !predicate.test(data));
+    }
+    
+    /** Filter only the value that the predicate returns false. */
+    public default IntStreamPlus exclude(IntAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return exclude(predicate);
     }
     
     /** Filter out any value that is in the given items. */

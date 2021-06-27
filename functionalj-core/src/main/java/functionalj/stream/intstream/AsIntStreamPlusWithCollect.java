@@ -29,6 +29,10 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 
 import functionalj.function.Func;
+import functionalj.function.aggregator.IntAggregation;
+import functionalj.function.aggregator.IntAggregationToDouble;
+import functionalj.function.aggregator.IntAggregationToInt;
+import functionalj.function.aggregator.IntAggregationToLong;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
@@ -78,4 +82,31 @@ public interface AsIntStreamPlusWithCollect {
         return result;
     }
     
+    @Eager
+    @Terminal
+    public default <RESULT> RESULT aggregate(IntAggregation<RESULT> aggregation) {
+        val collector = aggregation.intCollectorPlus();
+        return collect(collector);
+    }
+    
+    @Eager
+    @Terminal
+    public default int aggregateToInt(IntAggregationToInt aggregation) {
+        val collector = aggregation.intCollectorPlus();
+        return collect(collector);
+    }
+    
+    @Eager
+    @Terminal
+    public default long aggregateToLong(IntAggregationToLong aggregation) {
+        val collector = aggregation.intCollectorPlus();
+        return collect(collector);
+    }
+    
+    @Eager
+    @Terminal
+    public default double aggregateToDouble(IntAggregationToDouble aggregation) {
+        val collector = aggregation.intCollectorPlus();
+        return collect(collector);
+    }
 }

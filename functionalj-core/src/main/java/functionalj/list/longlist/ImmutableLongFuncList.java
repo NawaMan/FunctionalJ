@@ -319,16 +319,15 @@ public class ImmutableLongFuncList implements LongFuncList {
     @Sequential
     @Terminal
     @Override
-    public OptionalLong firstResult() {
+    public OptionalLong first() {
         return (this.size == 0)
                 ? OptionalLong.empty()
                 : OptionalLong.of(this.data.get(0));
     }
     
     @Sequential
-    @Terminal
-    @Override
-    public OptionalLong lastResult() {
+    @Terminal    @Override
+    public OptionalLong last() {
         return (size == 0)
                 ? OptionalLong.empty()
                 : OptionalLong.of(this.data.get(size - 1));

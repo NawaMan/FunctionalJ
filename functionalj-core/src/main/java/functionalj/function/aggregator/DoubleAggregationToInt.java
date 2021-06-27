@@ -49,7 +49,7 @@ public abstract class DoubleAggregationToInt extends DoubleAggregation<Integer> 
         return doubleCollectorToIntPlus();
     }
     
-    public DoubleAggregatorToInt newDoubleAccumulatorToInt() {
+    public DoubleAggregatorToInt newAggregator() {
         val collector = doubleCollectorToIntPlus();
         return new DoubleAggregatorToInt.Impl(collector);
     }

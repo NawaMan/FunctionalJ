@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
+import java.util.function.DoubleToIntFunction;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
@@ -49,7 +50,7 @@ public abstract class IntAggregationToInt extends IntAggregation<Integer> {
         return intCollectorToIntPlus();
     }
     
-    public IntAggregatorToInt newIntAccumulatorToInt() {
+    public IntAggregatorToInt newAggregator() {
         val collector = intCollectorToIntPlus();
         return new IntAggregatorToInt.Impl(collector);
     }
@@ -70,16 +71,22 @@ public abstract class IntAggregationToInt extends IntAggregation<Integer> {
         return new IntAggregation.Impl<>(newCollector);
     }
     
+    public LongAggregationToInt ofLong(LongToIntFunction mapper) {
+        val newCollector = intCollectorToIntPlus().of(mapper);
+        return new LongAggregationToInt.Impl(newCollector);
+    }
+    
+    public DoubleAggregationToInt ofDouble(DoubleToIntFunction mapper) {
+        val newCollector = intCollectorToIntPlus().of(mapper);
+
+        return new DoubleAggregationToInt.Impl(newCollector);
+    }
+    
     // This is a terrible name .... :-(
     // But if we use ofInt, Java confuse this one and the one above
     public IntAggregationToInt ofIntToInt(IntUnaryOperator mapper) {
         val newCollector = intCollectorToIntPlus().of(mapper);
         return new IntAggregationToInt.Impl(newCollector);
-    }
-    
-    public LongAggregationToInt ofLong(LongToIntFunction mapper) {
-        val newCollector = intCollectorToIntPlus().of(mapper);
-        return new LongAggregationToInt.Impl(newCollector);
     }
     
     //== Implementation ==

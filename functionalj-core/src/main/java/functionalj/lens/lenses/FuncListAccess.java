@@ -95,7 +95,7 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         val access  = new AccessParameterized<HOST, FuncList<Integer>, Integer, IntegerAccess<HOST>>() {
             @Override
             public FuncList<Integer> applyUnsafe(HOST host) throws Exception {
-                return FuncListAccess.this.apply(host).indexesOf(check);
+                return FuncListAccess.this.apply(host).indexesOf(check).boxed();
             }
             @Override
             public IntegerAccess<HOST> createSubAccessFromHost(Function<HOST, Integer> accessToParameter) {

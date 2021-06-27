@@ -46,7 +46,7 @@ public interface IntFuncListWithMapWithIndex extends AsIntFuncList {
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default IntFuncList mapWithIndex(IntBinaryOperator combinator) {
-        return deriveToInt(this, stream -> stream.mapWithIndex(combinator));
+        return deriveToInt(this, stream -> stream.mapWithIndex(combinator::applyAsInt));
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */

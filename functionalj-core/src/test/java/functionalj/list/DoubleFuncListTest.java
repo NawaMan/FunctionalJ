@@ -839,10 +839,10 @@ public class DoubleFuncListTest {
     }
     
     @Test
-    public void testContainsAnyOf() {
+    public void testContainsSomeOf() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
-            assertTrue (list.containsAnyOf(One, Six));
-            assertFalse(list.containsAnyOf(Six, Seven));
+            assertTrue (list.containsSomeOf(One, Six));
+            assertFalse(list.containsSomeOf(Six, Seven));
         });
     }
     
@@ -1040,11 +1040,11 @@ public class DoubleFuncListTest {
     @Test
     public void testMinMaxBy() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalDouble[1.0],OptionalDouble[4.0])", list.minMaxBy(a ->  a));
+            assertAsString("Optional[(1.0,4.0)]", list.minMaxBy(a ->  a));
         });
         
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalDouble[4.0],OptionalDouble[1.0])", list.minMaxBy(a -> a, (a,b)->Double.compare(b, a)));
+            assertAsString("Optional[(4.0,1.0)]", list.minMaxBy(a -> a, (a,b)->Double.compare(b, a)));
         });
     }
     
@@ -1149,14 +1149,14 @@ public class DoubleFuncListTest {
     @Test
     public void testFirstResult() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
-            assertAsString("OptionalDouble[1.0]", list.firstResult());
+            assertAsString("OptionalDouble[1.0]", list.first());
         });
     }
     
     @Test
     public void testLastResult() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
-            assertAsString("OptionalDouble[3.0]", list.lastResult());
+            assertAsString("OptionalDouble[3.0]", list.last());
         });
     }
     
@@ -1729,8 +1729,7 @@ public class DoubleFuncListTest {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString(
                     "OptionalDouble[3.0]", 
-                    list.findFirst(
-                            theDouble.square().thatGreaterThan(theDouble.time(2))));
+                    list.findFirst(theDouble.square().thatGreaterThan(theDouble.time(2))));
         });
     }
     

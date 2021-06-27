@@ -30,7 +30,7 @@ import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 
 import functionalj.function.IntLongBiFunction;
-import functionalj.function.IntegerLongToLongFunctionPrimitive;
+import functionalj.function.IntLongToLongFunctionPrimitive;
 import functionalj.function.LongObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.tuple.IntLongTuple;
@@ -45,7 +45,7 @@ public interface LongFuncListWithMapWithIndex extends AsLongFuncList {
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
-    public default LongFuncList mapWithIndex(IntegerLongToLongFunctionPrimitive combinator) {
+    public default LongFuncList mapWithIndex(IntLongToLongFunctionPrimitive combinator) {
         return deriveToLong(this, stream -> stream.mapWithIndex(combinator));
     }
     

@@ -2,7 +2,7 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -34,6 +34,7 @@ import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
 
+import functionalj.function.aggregator.DoubleAggregation;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
@@ -65,6 +66,15 @@ public interface AsDoubleStreamPlusWithConversion {
                 .spliteratorUnknownSize(iterator, 0);
     }
     
+    /** @return a functional list containing the elements. */
+    @Eager
+    @Terminal
+    public default DoubleFuncList toFuncList() {
+        val streamPlus = doubleStreamPlus();
+        return new StreamBackedDoubleFuncList(streamPlus);
+    }
+    
+    //-- toArray --
     
     /** Map the data to double and return the byte array of all the results. */
     @Eager
@@ -90,14 +100,6 @@ public interface AsDoubleStreamPlusWithConversion {
         return new ArrayList<Double>(javaList);
     }
     
-    /** @return a functional list containing the elements. */
-    @Eager
-    @Terminal
-    public default DoubleFuncList toFuncList() {
-        val streamPlus = doubleStreamPlus();
-        return new StreamBackedDoubleFuncList(streamPlus);
-    }
-
     /** @return an immutable list containing the elements. */
     @Eager
     @Terminal
@@ -228,6 +230,113 @@ public interface AsDoubleStreamPlusWithConversion {
                         i -> i,
                         (a, b) -> mergeFunction.applyAsDouble(a, b)));
         return ImmutableFuncMap.from(theMap);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper.
+     * This method throw an exception with duplicate keys.
+     */
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, Double> toMap(DoubleAggregation<KEY> keyAggregation) {
+        val aggregator = keyAggregation.newAggregator();
+        return toMap(aggregator);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * This method throw an exception with duplicate keys.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            DoubleAggregation<KEY> keyAggregation,
+            DoubleFunction<VALUE>  valueMapper) {
+        val keyAggregator = keyAggregation.newAggregator();
+        return toMap(keyAggregator, valueMapper);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * This method throw an exception with duplicate keys.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            DoubleFunction<KEY>      keyMapper,
+            DoubleAggregation<VALUE> valueAggregation) {
+        val valueAggregator = valueAggregation.newAggregator();
+        return toMap(keyMapper, valueAggregator);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * This method throw an exception with duplicate keys.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            DoubleAggregation<KEY>   keyAggregation,
+            DoubleAggregation<VALUE> valueAggregation) {
+        val keyAggregator   = keyAggregation.newAggregator();
+        val valueAggregator = valueAggregation.newAggregator();
+        return toMap(keyAggregator, valueAggregator);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            DoubleAggregation<KEY> keyAggregation,
+            DoubleFunction<VALUE>  valueMapper,
+            BinaryOperator<VALUE>  mergeFunction) {
+        val keyAggregator = keyAggregation.newAggregator();
+        return toMap(keyAggregator, valueMapper, mergeFunction);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            DoubleFunction<KEY>      keyMapper,
+            DoubleAggregation<VALUE> valueAggregation,
+            BinaryOperator<VALUE>    mergeFunction) {
+        val valueAggregator = valueAggregation.newAggregator();
+        return toMap(keyMapper, valueAggregator, mergeFunction);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            DoubleAggregation<KEY>   keyAggregation,
+            DoubleAggregation<VALUE> valueAggregation,
+            BinaryOperator<VALUE>    mergeFunction) {
+        val keyAggregator   = keyAggregation.newAggregator();
+        val valueAggregator = valueAggregation.newAggregator();
+        return toMap(keyAggregator, valueAggregator, mergeFunction);
+    }
+    
+    /**
+     * Create a map from the data using the keyMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
+    @Eager
+    @Terminal
+    public default <KEY> FuncMap<KEY, Double> toMap(
+            DoubleAggregation<KEY> keyAggregation,
+            DoubleBinaryOperator   mergeFunction) {
+        val keyAggregator = keyAggregation.newAggregator();
+        return toMap(keyAggregator, mergeFunction);
     }
     
     //-- toSet --

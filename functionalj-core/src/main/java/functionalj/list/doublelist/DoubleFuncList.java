@@ -39,6 +39,7 @@ import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleToIntFunction;
+import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -47,11 +48,17 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
+import functionalj.function.DoubleComparator;
 import functionalj.function.Func;
+import functionalj.function.aggregator.DoubleAggregation;
+import functionalj.function.aggregator.DoubleAggregationToBoolean;
+import functionalj.function.aggregator.DoubleAggregationToDouble;
+import functionalj.function.aggregator.DoubleAggregationToInt;
+import functionalj.function.aggregator.DoubleAggregationToLong;
+import functionalj.list.AsFuncList;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableFuncList;
 import functionalj.list.FuncList.Mode;
+import functionalj.list.ImmutableFuncList;
 import functionalj.list.intlist.AsIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.list.longlist.AsLongFuncList;
@@ -98,8 +105,7 @@ public interface DoubleFuncList
             DoubleFuncListWithPipe,
             DoubleFuncListWithSegment,
             DoubleFuncListWithSort,
-            DoubleFuncListWithSplit,
-            DoubleFuncListWithStatistic {
+            DoubleFuncListWithSplit {
     
     
     /** Throw a no more element exception. This is used for generator. */
@@ -344,6 +350,12 @@ public interface DoubleFuncList
         return DoubleFuncList.from(() -> DoubleStreamPlus.iterate(seed, compounder));
     }
     
+    public static DoubleFuncList iterate(
+            double                    seed, 
+            DoubleAggregationToDouble aggregation) {
+        return DoubleFuncList.from(() -> DoubleStreamPlus.iterate(seed, aggregation));
+    }
+    
     /**
      * Create a list by apply the compounder to the seed over and over.
      *
@@ -362,6 +374,12 @@ public interface DoubleFuncList
             double              seed, 
             DoubleUnaryOperator compounder) {
         return DoubleFuncList.from(() -> DoubleStreamPlus.compound(seed, compounder));
+    }
+    
+    public static DoubleFuncList compound(
+            double                    seed, 
+            DoubleAggregationToDouble aggregation) {
+        return DoubleFuncList.from(() -> DoubleStreamPlus.compound(seed, aggregation));
     }
     
     /**
@@ -421,8 +439,8 @@ public interface DoubleFuncList
      * The result stream = [(A,1), (B,2), (C,3), (D,4)].
      **/
     public static FuncList<DoubleDoubleTuple> zipOf(
-            DoubleFuncList list1,
-            DoubleFuncList list2) {
+            AsDoubleFuncList list1,
+            AsDoubleFuncList list2) {
         return FuncList.from(() -> {
             return DoubleStreamPlus.zipOf(
                     list1.doubleStream(),
@@ -430,9 +448,20 @@ public interface DoubleFuncList
         });
     }
     
+    /**
+     * Create a FuncList by combining elements together using the merger function and collected into the result stream.
+     * Only elements with pair will be combined. If this is not desirable, use FuncList1.zip(FuncList2).
+     *
+     * For example:
+     *     list1 = [A, B, C, D, E]
+     *     list2 = [1, 2, 3, 4]
+     *     merger      = a + "+" + b
+     *
+     * The result stream = ["A+1", "B+2", "C+3", "D+4"].
+     **/
     public static FuncList<DoubleDoubleTuple> zipOf(
-            DoubleFuncList list1, double defaultValue1,
-            DoubleFuncList list2, double defaultValue2) {
+            AsDoubleFuncList list1, double defaultValue1,
+            AsDoubleFuncList list2, double defaultValue2) {
         return FuncList.from(() -> {
             return DoubleStreamPlus.zipOf(
                     list1.doubleStream(), defaultValue1,
@@ -440,10 +469,13 @@ public interface DoubleFuncList
         });
     }
     
-    /** Zip integers from two IntFuncLists and combine it into another object. */
+    /**
+     * Zip integers from two IntFuncLists and combine it into another object.
+     * The result stream has the size of the shortest FuncList.
+     */
     public static DoubleFuncList zipOf(
-            DoubleFuncList       list1,
-            DoubleFuncList       list2,
+            AsDoubleFuncList     list1,
+            AsDoubleFuncList     list2,
             DoubleBinaryOperator merger) {
         return DoubleFuncList.from(() -> {
             return DoubleStreamPlus.zipOf(
@@ -458,8 +490,8 @@ public interface DoubleFuncList
      * The result stream has the size of the shortest stream.
      */
     public static DoubleFuncList zipOf(
-            DoubleFuncList       list1, double defaultValue1,
-            DoubleFuncList       list2, double defaultValue2,
+            AsDoubleFuncList     list1, double defaultValue1,
+            AsDoubleFuncList     list2, double defaultValue2,
             DoubleBinaryOperator merger) {
         return DoubleFuncList.from(() -> {
             return DoubleStreamPlus.zipOf(
@@ -570,7 +602,7 @@ public interface DoubleFuncList
     
     /** Create a FuncList from the given IntFuncList. */
     public static <TARGET> DoubleFuncList deriveFrom(
-            AsLongFuncList                        asFuncList, 
+            AsLongFuncList                        asFuncList,
             Function<LongStreamPlus, DoubleStream> action) {
         Mode mode = asFuncList.asLongFuncList().mode();
         switch (mode) {
@@ -625,7 +657,7 @@ public interface DoubleFuncList
     
     /** Create a FuncList from another FuncList. */
     public static LongFuncList deriveToLong(
-            AsDoubleFuncList                       funcList, 
+            AsDoubleFuncList                       funcList,
             Function<DoubleStreamPlus, LongStream> action) {
         return LongFuncList.deriveFrom(funcList, action);
     }
@@ -678,7 +710,7 @@ public interface DoubleFuncList
         return mode().isEager();
     }
     
-    /** Check if this list is an cache list. */
+    /** Check if this list is a cache list. */
     public default boolean isCache() {
         return mode().isCache();
     }
@@ -736,7 +768,7 @@ public interface DoubleFuncList
         return DoubleIteratorPlus.from(doubleStream());
     }
     
-    /** @return a spliterator of this FuncList. */
+    /** @return a spliterator of this list. */
     public default Spliterator.OfDouble spliterator() {
         val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
@@ -754,9 +786,21 @@ public interface DoubleFuncList
         return deriveFrom(this, streamble -> streamble.doubleStream().map(mapper));
     }
     
+    /** Map each value into other value using the function. */
+    public default DoubleFuncList map(DoubleAggregationToDouble aggregation) {
+        val mapper = aggregation.newAggregator();
+        return map(mapper);
+    }
+    
     /** Map each value into an integer value using the function. */
     public default IntFuncList mapToInt(DoubleToIntFunction mapper) {
         return deriveToInt(this, stream -> stream.mapToInt(mapper));
+    }
+    
+    /** Map each value into an integer value using the function. */
+    public default IntFuncList mapToInt(DoubleAggregationToInt aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToInt(mapper);
     }
     
     /** Map each value into an integer value using the function. */
@@ -770,29 +814,58 @@ public interface DoubleFuncList
     }
     
     /** Map each value into an integer value using the function. */
-    public default LongFuncList mapToLong(DoubleUnaryOperator mapper) {
-        return deriveToLong(this, stream -> stream.mapToLong(d -> (long)mapper.applyAsDouble(d)));
+    public default LongFuncList mapToLong(DoubleToLongFunction mapper) {
+        return deriveToLong(this, stream -> stream.mapToLong(d -> mapper.applyAsLong(d)));
+    }
+    
+    /** Map each value into an integer value using the function. */
+    public default LongFuncList mapToLong(DoubleAggregationToLong aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToLong(mapper);
     }
     
     /** Map each value into a double value using the function. */
     public default DoubleFuncList mapToDouble(DoubleUnaryOperator mapper) {
-        return deriveToDouble(this, stream -> stream.mapToDouble(mapper));
+        return map(mapper);
+    }
+    
+    /** Map each value into a double value using the function. */
+    public default DoubleFuncList mapToDouble(DoubleAggregationToDouble aggregation) {
+        val mapper = aggregation.newAggregator();
+        return map(mapper);
     }
     
     public default <TARGET> FuncList<TARGET> mapToObj(DoubleFunction<? extends TARGET> mapper) {
         return FuncList.deriveFrom(this, stream -> stream.mapToObj(mapper));
     }
     
+    public default <TARGET> FuncList<TARGET> mapToObj(DoubleAggregation<? extends TARGET> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return FuncList.deriveFrom(this, stream -> stream.mapToObj(mapper));
+    }
+    
     //-- FlatMap --
     
-    /** Map a value into a FuncList and then flatten that FuncList */
+    /** Map a value into a FuncList and then flatten that list */
     public default DoubleFuncList flatMap(DoubleFunction<? extends AsDoubleFuncList> mapper) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).doubleStream()));
     }
     
-    /** Map a value into a FuncList and then flatten that FuncList */
+    /** Map a value into a FuncList and then flatten that list */
+    public default DoubleFuncList flatMap(DoubleAggregation<? extends AsDoubleFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMap(mapper);
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that list */
     public default IntFuncList flatMapToInt(DoubleFunction<? extends AsIntFuncList> mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.flatMapToInt(value -> mapper.apply(value).intStream()));
+    }
+    
+    /** Map a value into a FuncList and then flatten that list */
+    public default IntFuncList flatMapToInt(DoubleAggregation<? extends AsIntFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToInt(mapper);
     }
     
     /** Map a value into an integer FuncList and then flatten that list */
@@ -800,9 +873,32 @@ public interface DoubleFuncList
         return LongFuncList.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
     }
     
-    /** Map a value into an integer FuncList and then flatten that FuncList */
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default LongFuncList flatMapToLong(DoubleAggregation<? extends AsLongFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToLong(mapper);
+    }
+    
+    /** Map a value into a double FuncList and then flatten that list */
     public default DoubleFuncList flatMapToDouble(DoubleFunction<? extends AsDoubleFuncList> mapper) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).doubleStream()));
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default DoubleFuncList flatMapToDouble(DoubleAggregation<? extends AsDoubleFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToDouble(mapper);
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default <D> FuncList<D> flatMapToObj(DoubleFunction<? extends AsFuncList<D>> mapper) {
+        return FuncList.deriveFrom(this, stream -> stream.flatMapToObj(value -> mapper.apply(value).stream()));
+    }
+    
+    /** Map a value into an integer FuncList and then flatten that list */
+    public default <D> FuncList<D> flatMapToObj(DoubleAggregation<? extends AsFuncList<D>> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToObj(mapper);
     }
     
     //-- Filter --
@@ -810,6 +906,12 @@ public interface DoubleFuncList
     /** Select only the element that passes the predicate */
     public default DoubleFuncList filter(DoublePredicate predicate) {
         return deriveFrom(this, stream -> stream.filter(predicate));
+    }
+    
+    /** Select only the element that passes the predicate */
+    public default DoubleFuncList filter(DoubleAggregationToBoolean aggregation) {
+        val mapper = aggregation.newAggregator();
+        return filter(mapper);
     }
     
     /** Select only the element that the mapped value passes the predicate */
@@ -834,7 +936,6 @@ public interface DoubleFuncList
     }
     
     /** Trim off the first n values */
-    
     public default DoubleFuncList skip(long offset) {
         return deriveFrom(this, stream -> stream.skip(offset));
     }
@@ -854,8 +955,7 @@ public interface DoubleFuncList
     }
     
     /** Sort the values in this stream using the given comparator */
-    public default DoubleFuncList sorted(
-            DoubleDoubleToIntFunctionPrimitive comparator) {
+    public default DoubleFuncList sorted(DoubleComparator comparator) {
         return deriveFrom(this, stream -> stream.sorted(comparator));
     }
     
@@ -863,17 +963,15 @@ public interface DoubleFuncList
     
     /** Process each value using the given action */
     public default void forEach(DoubleConsumer action) {
-        doubleStream()
-        .forEach(action);
+        doubleStream().forEach(action);
     }
     
     /**
-     * Performs an action for each element of this stream, in the encounter
-     * order of the stream if the stream has a defined encounter order.
+     * Performs an action for each element of this stream,
+     *   in the encounter order of the stream if the stream has a defined encounter order.
      */
     public default void forEachOrdered(DoubleConsumer action) {
-        doubleStream()
-        .forEachOrdered(action);
+        doubleStream().forEachOrdered(action);
     }
     
     //== Conversion ==
@@ -884,8 +982,7 @@ public interface DoubleFuncList
     
     /** Convert this FuncList to an array. */
     public default double[] toArray() {
-        return doubleStream()
-                .toArray();
+        return doubleStream().toArray();
     }
     
     /** Returns stream of Double from the value of this list. */
@@ -914,9 +1011,20 @@ public interface DoubleFuncList
     
     // -- List specific --
     
+    public default int size() {
+        return (int)doubleStream().count();
+    }
+    
+    /** Find any indexes that the elements match the predicate */
     public default IntFuncList indexesOf(DoublePredicate check) {
         return mapToIntWithIndex((index, data) -> check.test(data) ? index : -1)
                 .filter(i -> i != -1);
+    }
+    
+    /** Find any indexes that the elements match the predicate */
+    public default IntFuncList indexesOf(DoubleAggregationToBoolean aggregation) {
+        val check = aggregation.newAggregator();
+        return indexesOf(check);
     }
     
     public default IntFuncList indexesOf(double value) {
@@ -936,8 +1044,7 @@ public interface DoubleFuncList
     public default OptionalDouble first() {
         return doubleStream()
                 .limit(1)
-                .findFirst()
-                ;
+                .findFirst();
     }
     
     /** Returns the first elements */
@@ -1117,13 +1224,12 @@ public interface DoubleFuncList
         if (toIndexExclusive < 0)
             throw new IndexOutOfBoundsException("toIndexExclusive: " + toIndexExclusive);
         if (fromIndexInclusive > toIndexExclusive)
-            throw new IndexOutOfBoundsException(
-                    "fromIndexInclusive: " + fromIndexInclusive + ", toIndexExclusive: " + toIndexExclusive);
+            throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive + ", toIndexExclusive: " + toIndexExclusive);
         if (fromIndexInclusive == toIndexExclusive)
             return this;
         
-        val first  = limit(fromIndexInclusive);
-        val tail   = skip(toIndexExclusive);
+        val first = limit(fromIndexInclusive);
+        val tail  = skip(toIndexExclusive);
         return DoubleFuncList.concat(first, tail);
     }
     
@@ -1144,7 +1250,7 @@ public interface DoubleFuncList
         val array = toArray();
         val mid   = length / 2;
         for (int i = 0; i < mid; i++) {
-            val j = length - i - 1;
+            val j    = length - i - 1;
             val temp = array[i];
             array[i] = array[j];
             array[j] = temp;
@@ -1162,7 +1268,7 @@ public interface DoubleFuncList
         val array = toArray();
         val rand  = new Random();
         for (int i = 0; i < length; i++) {
-            val j = rand.nextInt(length);
+            val j    = rand.nextInt(length);
             val temp = array[i];
             array[i] = array[j];
             array[j] = temp;
@@ -1176,6 +1282,12 @@ public interface DoubleFuncList
     public default FuncList<IntDoubleTuple> query(DoublePredicate check) {
         return mapToObjWithIndex((index, data) -> check.test(data) ? IntDoubleTuple.of(index, data) : null)
                 .filterNonNull();
+    }
+    
+    /** Returns the list of tuple of the index and the value for which the value match the predicate. */
+    public default FuncList<IntDoubleTuple> query(DoubleAggregationToBoolean aggregation) {
+        val check = aggregation.newAggregator();
+        return query(check);
     }
     
     public default boolean isEmpty() {
@@ -1258,8 +1370,20 @@ public interface DoubleFuncList
         return doubleStream().anyMatch(predicate);
     }
     
+    /** Check if any element match the predicate */
+    public default boolean anyMatch(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return doubleStream().anyMatch(predicate);
+    }
+    
     /** Check if all elements match the predicate */
     public default boolean allMatch(DoublePredicate predicate) {
+        return doubleStream().allMatch(predicate);
+    }
+    
+    /** Check if all elements match the predicate */
+    public default boolean allMatch(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
         return doubleStream().allMatch(predicate);
     }
     
@@ -1268,9 +1392,26 @@ public interface DoubleFuncList
         return doubleStream().noneMatch(predicate);
     }
     
+    /** Check if none of the elements match the predicate */
+    public default boolean noneMatch(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return doubleStream().noneMatch(predicate);
+    }
+    
     /** Returns the sequentially first element */
     public default OptionalDouble findFirst() {
         return doubleStream().findFirst();
+    }
+    
+    /** Returns the sequentially first element */
+    public default OptionalDouble findFirst(DoublePredicate predicate) {
+        return doubleStream().filter(predicate).findFirst();
+    }
+    
+    /** Returns the sequentially first element */
+    public default OptionalDouble findFirst(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return doubleStream().filter(predicate).findFirst();
     }
     
     /** Returns the any element */
@@ -1278,10 +1419,33 @@ public interface DoubleFuncList
         return doubleStream().findAny();
     }
     
+    /** Returns the sequentially first element */
+    public default OptionalDouble findAny(DoublePredicate predicate) {
+        return doubleStream().filter(predicate).findFirst();
+    }
+    
+    /** Returns the sequentially first element */
+    public default OptionalDouble findAny(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return doubleStream().filter(predicate).findFirst();
+    }
+    
     @Sequential
     @Terminal
     public default OptionalDouble findLast() {
         return doubleStream().findLast();
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalDouble findLast(DoublePredicate predicate) {
+        return doubleStream().filter(predicate).findLast();
+    }
+    @Sequential
+    @Terminal
+    public default OptionalDouble findLast(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return doubleStream().filter(predicate).findLast();
     }
     
 }

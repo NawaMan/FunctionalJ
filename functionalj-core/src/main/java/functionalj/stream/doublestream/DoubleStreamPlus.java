@@ -50,7 +50,10 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
+import functionalj.function.DoubleComparator;
+import functionalj.function.aggregator.DoubleAggregation;
+import functionalj.function.aggregator.DoubleAggregationToBoolean;
+import functionalj.function.aggregator.DoubleAggregationToDouble;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
@@ -63,6 +66,9 @@ import functionalj.stream.markers.Terminal;
 import functionalj.tuple.DoubleDoubleTuple;
 import lombok.val;
 
+
+//TODO - Intersect
+//TODO - Shuffle
 
 @FunctionalInterface
 public interface DoubleStreamPlus
@@ -95,7 +101,7 @@ public interface DoubleStreamPlus
         return Double.NaN;
     }
     
-    // //== Constructor ==
+    // == Constructor ==
     
     /** Returns an empty IntStreamPlus. */
     public static DoubleStreamPlus empty() {
@@ -105,8 +111,7 @@ public interface DoubleStreamPlus
     
     /** Returns an empty StreamPlus. */
     public static DoubleStreamPlus emptyDoubleStream() {
-        return DoubleStreamPlus
-                .from(DoubleStream.empty());
+        return empty();
     }
     
     /** Returns an empty StreamPlus. */
@@ -129,8 +134,6 @@ public interface DoubleStreamPlus
         
         return ()->doubleStream;
     }
-    
-    // TODO : Nawa Latest - Cache
     
     public static DoubleStreamPlus zeroes() {
         return DoubleStreamPlus.generate(()->0.0);
@@ -300,6 +303,11 @@ public interface DoubleStreamPlus
         return DoubleStreamPlus.from(DoubleStream.iterate(seed, compounder));
     }
     
+    public static DoubleStreamPlus iterate(double seed, DoubleAggregationToDouble aggregation) {
+        val compounder = aggregation.newAggregator();
+        return iterate(seed, compounder);
+    }
+    
     /**
      * Create a StreamPlus by apply the function to the seed over and over.
      *
@@ -316,6 +324,10 @@ public interface DoubleStreamPlus
      **/
     public static DoubleStreamPlus compound(double seed, DoubleUnaryOperator compounder) {
         return iterate(seed, compounder);
+    }
+    
+    public static DoubleStreamPlus compound(double seed, DoubleAggregationToDouble aggregation) {
+        return iterate(seed, aggregation);
     }
     
     /**
@@ -506,7 +518,7 @@ public interface DoubleStreamPlus
      * the underlying stream state was modified to be parallel.
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
-     * operation</a>.
+     * operation</a>.Combine 
      *
      * @return a parallel stream
      */
@@ -619,19 +631,43 @@ public interface DoubleStreamPlus
         return DoubleStreamPlus.from(doubleStream().flatMap(mapper));
     }
     
+    public default DoubleStreamPlus flatMap(DoubleAggregation<? extends DoubleStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMap(mapper);
+    }
+    
     public default IntStreamPlus flatMapToInt(DoubleFunction<? extends IntStream> mapper) {
-        return mapToObj(mapper).flatMapToInt(itself());
+        return IntStreamPlus.from(mapToObj(mapper).flatMapToInt(itself()));
+    }
+    
+    public default IntStreamPlus flatMapToInt(DoubleAggregation<? extends IntStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return IntStreamPlus.from(mapToObj(mapper).flatMapToInt(itself()));
     }
     
     public default LongStreamPlus flatMapToLong(DoubleFunction<? extends LongStream> mapper) {
-        return mapToObj(mapper).flatMapToLong(itself());
+        return LongStreamPlus.from(mapToObj(mapper).flatMapToLong(itself()));
+    }
+    
+    public default LongStreamPlus flatMapToLong(DoubleAggregation<? extends LongStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return LongStreamPlus.from(mapToObj(mapper).flatMapToLong(itself()));
     }
     
     public default DoubleStreamPlus flatMapToDouble(DoubleFunction<? extends DoubleStream> mapper) {
         return flatMap(mapper);
     }
     
+    public default DoubleStreamPlus flatMapToDouble(DoubleAggregation<? extends DoubleStream> aggregation) {
+        return flatMap(aggregation);
+    }
+    
     public default <DATA> StreamPlus<DATA> flatMapToObj(DoubleFunction<? extends Stream<DATA>> mapper) {
+        return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
+    }
+    
+    public default <DATA> StreamPlus<DATA> flatMapToObj(DoubleAggregation<? extends Stream<DATA>> aggregation) {
+        val mapper = aggregation.newAggregator();
         return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
     }
     
@@ -639,6 +675,11 @@ public interface DoubleStreamPlus
     
     @Override
     public default DoubleStreamPlus filter(DoublePredicate predicate) {
+        return from(doubleStream().filter(predicate));
+    }
+    
+    public default DoubleStreamPlus filter(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
         return from(doubleStream().filter(predicate));
     }
     
@@ -677,11 +718,11 @@ public interface DoubleStreamPlus
     }
     
     @Eager
-    public default DoubleStreamPlus sorted(DoubleDoubleToIntFunctionPrimitive comparator) {
+    public default DoubleStreamPlus sorted(DoubleComparator comparator) {
         return DoubleStreamPlus.from(
                 doubleStream()
                 .boxed      ()
-                .sorted     ((a,b) -> comparator.applyAsDoubleAndDouble(a, b))
+                .sorted     ((a,b) -> comparator.compare(a, b))
                 .mapToDouble(d -> d));
     }
     
@@ -811,6 +852,15 @@ public interface DoubleStreamPlus
         });
     }
     
+    @Terminal
+    public default boolean anyMatch(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return terminate(this, stream -> {
+            return stream
+                    .anyMatch(predicate);
+        });
+    }
+    
     @Eager
     @Terminal
     @Override
@@ -823,8 +873,28 @@ public interface DoubleStreamPlus
     
     @Eager
     @Terminal
+    public default boolean allMatch(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return terminate(this, stream -> {
+            return stream
+                    .allMatch(predicate);
+        });
+    }
+    
+    @Eager
+    @Terminal
     @Override
     public default boolean noneMatch(DoublePredicate predicate) {
+        return terminate(this, stream -> {
+            return stream
+                    .noneMatch(predicate);
+        });
+    }
+    
+    @Eager
+    @Terminal
+    public default boolean noneMatch(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
         return terminate(this, stream -> {
             return stream
                     .noneMatch(predicate);

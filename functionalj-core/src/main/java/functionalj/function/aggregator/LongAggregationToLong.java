@@ -49,7 +49,7 @@ public abstract class LongAggregationToLong extends LongAggregation<Long> {
         return longCollectorToLongPlus();
     }
     
-    public LongAggregatorToLong newLongAccumulatorToLong() {
+    public LongAggregatorToLong newAggregator() {
         val collector = longCollectorToLongPlus();
         return new LongAggregatorToLong.Impl(collector);
     }

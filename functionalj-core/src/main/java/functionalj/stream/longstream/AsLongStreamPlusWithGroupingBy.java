@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream.longstream;
 
+import static functionalj.function.Func.f;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -43,57 +45,87 @@ public interface AsLongStreamPlusWithGroupingBy {
     
     /** Group the elements by determining the grouping keys */
     public default <KEY> FuncMap<KEY, LongFuncList> groupingBy(LongFunction<KEY> keyMapper) {
+        val toFuncList = f((GrowOnlyLongArray array) -> array.toFuncList());
+        val newArray   = f(() -> new GrowOnlyLongArray());
+        val streamPlus = this.longStreamPlus();
+        
         Supplier  <Map<KEY, GrowOnlyLongArray>>                               supplier;
         BiConsumer<Map<KEY, GrowOnlyLongArray>, Long>                         accumulator;
         BiConsumer<Map<KEY, GrowOnlyLongArray>, Map<KEY, GrowOnlyLongArray>>  combiner;
-        
-        Supplier<GrowOnlyLongArray>               collectorSupplier = GrowOnlyLongArray::new;
-        Function<GrowOnlyLongArray, LongFuncList> toFuncList         = array -> array.toFuncList();
         
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
             val key = keyMapper.apply(each);
             map.compute(key, (k, a)->{
                 if (a == null) {
-                    a = collectorSupplier.get();
+                    a = newArray.get();
                 }
                 a.add(each);
                 return a;
             });
         };
         combiner = (map1, map2) -> map1.putAll(map2);
-        val theMap = longStreamPlus().boxed().collect(supplier, accumulator, combiner);
+        
+        val theMap = streamPlus.boxed().collect(supplier, accumulator, combiner);
         return ImmutableFuncMap
                     .from    (theMap)
                     .mapValue(toFuncList);
     }
     
-    /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            LongFunction<KEY>             keyMapper,
-            Function<LongFuncList, VALUE> aggregate) {
-        FuncMap<KEY, LongFuncList> groupingBy = groupingBy(keyMapper);
-        return (FuncMap<KEY, VALUE>) groupingBy.mapValue((Function)aggregate);
+    /** Group the elements by determining the grouping keys */
+    public default <KEY> FuncMap<KEY, LongFuncList> groupingBy(LongAggregation<KEY> keyAggregation) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper);
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            LongFunction<KEY>                               keyMapper,
-            Supplier<LongCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
-        FuncMap<KEY, LongFuncList>    groupingBy = groupingBy(keyMapper);
-        Function<LongFuncList, VALUE> aggregate  = stream -> stream.collect(collectorSupplier.get());
-        FuncMap<KEY, VALUE> mapValue = groupingBy.mapValue((Function)aggregate);
-        return (FuncMap<KEY, VALUE>) mapValue;
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            LongFunction<KEY>             keyMapper,
+            Function<LongFuncList, VALUE> aggregate) {
+        return groupingBy(keyMapper)
+                .mapValue(aggregate);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            LongAggregation<KEY>          keyAggregation,
+            Function<LongFuncList, VALUE> aggregate) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper, aggregate);
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             LongFunction<KEY>      keyMapper,
-            LongAggregation<VALUE> aggregation) {
-        FuncMap<KEY, LongFuncList> groupingBy = groupingBy(keyMapper);
-        return (FuncMap<KEY, VALUE>) groupingBy.mapValue(stream -> stream.calculate(aggregation));
+            LongAggregation<VALUE> aggregate) {
+        val valueMapper = f((LongFuncList list) -> list.aggregate(aggregate));
+        return groupingBy(keyMapper)
+                .mapValue(valueMapper);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            LongAggregation<KEY>   keyAggregation,
+            LongAggregation<VALUE> aggregate) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper, aggregate);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            LongFunction<KEY>                               keyMapper,
+            Supplier<LongCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
+        val valueMapper = f((LongFuncList list) -> list.collect(collectorSupplier.get()));
+        return groupingBy(keyMapper)
+                .mapValue(valueMapper);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            LongAggregation<KEY>                            keyAggregation,
+            Supplier<LongCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper, collectorSupplier);
     }
     
 }

@@ -59,6 +59,7 @@ import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.LongLongBiFunction;
 import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.function.aggregator.AggregationToDouble;
 import functionalj.function.aggregator.AggregationToInt;
 import functionalj.function.aggregator.AggregationToLong;
@@ -726,11 +727,43 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(stream().flatMap(mapper));
     }
     
+    public default <T> StreamPlus<T> flatMap(Aggregation<? super DATA, ? extends Stream<? extends T>> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return StreamPlus.from(stream().flatMap(mapper));
+    }
+    
+    public default IntStreamPlus flatMapToInt(Aggregation<? super DATA, ? extends IntStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return IntStreamPlus.from(stream().flatMapToInt(mapper));
+    }
+    
+    public default LongStreamPlus flatMapToLong(Aggregation<? super DATA, ? extends LongStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return LongStreamPlus.from(stream().flatMapToLong(mapper));
+    }
+    
+    public default DoubleStreamPlus flatMapToDouble(Aggregation<? super DATA, ? extends DoubleStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return DoubleStreamPlus.from(stream().flatMapToDouble(mapper));
+    }
+    
+    public default <T> StreamPlus<T> flatMapToObj(Aggregation<? super DATA, ? extends Stream<? extends T>> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return StreamPlus.from(stream().flatMap(mapper));
+    }
+    
     //-- Filter --
     
     @Override
     public default StreamPlus<DATA> filter(Predicate<? super DATA> predicate) {
         return StreamPlus.from(stream().filter(predicate));
+    }
+    
+    public default StreamPlus<DATA> filter(AggregationToBoolean<? super DATA> aggregation) {
+        val predicate = aggregation.newAggregator();
+        return StreamPlus
+                .from(stream()
+                .filter(each -> predicate.test(each)));
     }
     
     //-- Peek --
@@ -853,6 +886,16 @@ public interface StreamPlus<DATA>
         });
     }
     
+    @Eager
+    @Terminal
+    public default <R> R collect(Aggregation<? super DATA, R> aggregation) {
+        val collector = aggregation.collectorPlus();
+        return terminate(this, stream -> {
+            return stream
+                    .collect(collector);
+        });
+    }
+    
     //-- statistics --
     
     @Eager
@@ -911,6 +954,35 @@ public interface StreamPlus<DATA>
         return terminate(this, stream -> {
             return stream
                     .noneMatch(predicate);
+        });
+    }
+    
+    @Terminal
+    public default boolean anyMatch(AggregationToBoolean<? super DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return terminate(this, stream -> {
+            return stream
+                    .anyMatch(each -> aggregator.test(each));
+        });
+    }
+    
+    @Eager
+    @Terminal
+    public default boolean allMatch(AggregationToBoolean<? super DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return terminate(this, stream -> {
+            return stream
+                    .allMatch(each -> aggregator.test(each));
+        });
+    }
+    
+    @Eager
+    @Terminal
+    public default boolean noneMatch(AggregationToBoolean<? super DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return terminate(this, stream -> {
+            return stream
+                    .noneMatch(each -> aggregator.test(each));
         });
     }
     

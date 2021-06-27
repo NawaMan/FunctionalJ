@@ -53,6 +53,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.LongComparator;
+import functionalj.function.aggregator.LongAggregation;
+import functionalj.function.aggregator.LongAggregationToBoolean;
+import functionalj.function.aggregator.LongAggregationToLong;
 import functionalj.list.longlist.AsLongFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
@@ -65,9 +68,8 @@ import functionalj.stream.markers.Terminal;
 import functionalj.tuple.LongLongTuple;
 import lombok.val;
 
-
-// TODO - Use this for byte, short and char
 // TODO - Intersect
+// TODO - Shuffle
 
 @FunctionalInterface
 public interface LongStreamPlus
@@ -93,12 +95,13 @@ public interface LongStreamPlus
             LongStreamPlusWithSort,
             LongStreamPlusWithSplit {
     
+    
     /** Throw a no more element exception. This is used for generator. */
     public static int noMoreElement() throws NoMoreResultException {
         return SupplierBackedIterator.noMoreElement();
     }
     
-    //== Constructor ==
+    // == Constructor ==
     
     /** Returns an empty LongStreamPlus. */
     public static LongStreamPlus empty() {
@@ -131,9 +134,6 @@ public interface LongStreamPlus
         
         return ()->longStream;
     }
-    
-    // TODO : Nawa Latest - Random
-    // TODO : Nawa Latest - Cache
     
     public static LongStreamPlus zeroes() {
         return LongStreamPlus.generate(()->0);
@@ -295,6 +295,11 @@ public interface LongStreamPlus
         return LongStreamPlus.from(LongStream.iterate(seed, compounder));
     }
     
+    public static LongStreamPlus iterate(long seed, LongAggregationToLong aggregation) {
+        val compounder = aggregation.newAggregator();
+        return iterate(seed, compounder);
+    }
+    
     /**
      * Create a StreamPlus by apply the function to the seed over and over.
      *
@@ -311,6 +316,10 @@ public interface LongStreamPlus
      **/
     public static LongStreamPlus compound(long seed, LongUnaryOperator compounder) {
         return iterate(seed, compounder);
+    }
+    
+    public static LongStreamPlus compound(long seed, LongAggregationToLong aggregation) {
+        return iterate(seed, aggregation);
     }
     
     /**
@@ -624,7 +633,26 @@ public interface LongStreamPlus
         return LongStreamPlus.from(longStream().flatMap(mapper));
     }
     
-    public default LongStreamPlus flatMapToInt(LongFunction<? extends LongStream> mapper) {
+    public default LongStreamPlus flatMap(LongAggregation<? extends LongStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMap(mapper);
+    }
+    
+    public default IntStreamPlus flatMapToInt(LongFunction<? extends IntStream> mapper) {
+        return IntStreamPlus.from(mapToObj(mapper).flatMapToInt(itself()));
+    }
+    
+    public default IntStreamPlus flatMapToInt(LongAggregation<? extends IntStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToInt(mapper);
+    }
+    
+    public default LongStreamPlus flatMapToLong(LongFunction<? extends LongStream> mapper) {
+        return flatMap(mapper);
+    }
+    
+    public default LongStreamPlus flatMapToLong(LongAggregation<? extends LongStream> aggregation) {
+        val mapper = aggregation.newAggregator();
         return flatMap(mapper);
     }
     
@@ -632,7 +660,17 @@ public interface LongStreamPlus
         return DoubleStreamPlus.from(mapToObj(mapper).flatMapToDouble(itself()));
     }
     
+    public default DoubleStreamPlus flatMapToDouble(LongAggregation<? extends DoubleStream> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToDouble(mapper);
+    }
+    
     public default <DATA> StreamPlus<DATA> flatMapToObj(LongFunction<? extends Stream<DATA>> mapper) {
+        return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
+    }
+    
+    public default <DATA> StreamPlus<DATA> flatMapToObj(LongAggregation<? extends Stream<DATA>> aggregation) {
+        val mapper = aggregation.newAggregator();
         return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
     }
     
@@ -640,6 +678,11 @@ public interface LongStreamPlus
     
     @Override
     public default LongStreamPlus filter(LongPredicate predicate) {
+        return from(longStream().filter(predicate));
+    }
+    
+    public default LongStreamPlus filter(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
         return from(longStream().filter(predicate));
     }
     
@@ -812,6 +855,15 @@ public interface LongStreamPlus
         });
     }
     
+    @Terminal
+    public default boolean anyMatch(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return terminate(this, stream -> {
+            return stream
+                    .anyMatch(predicate);
+        });
+    }
+    
     @Eager
     @Terminal
     @Override
@@ -824,8 +876,28 @@ public interface LongStreamPlus
     
     @Eager
     @Terminal
+    public default boolean allMatch(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return terminate(this, stream -> {
+            return stream
+                    .allMatch(predicate);
+        });
+    }
+    
+    @Eager
+    @Terminal
     @Override
     public default boolean noneMatch(LongPredicate predicate) {
+        return terminate(this, stream -> {
+            return stream
+                    .noneMatch(predicate);
+        });
+    }
+    
+    @Eager
+    @Terminal
+    public default boolean noneMatch(LongAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
         return terminate(this, stream -> {
             return stream
                     .noneMatch(predicate);

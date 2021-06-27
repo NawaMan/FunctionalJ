@@ -50,7 +50,6 @@ public abstract class DoubleAggregationToBoolean extends DoubleAggregation<Boole
         return doubleCollectorToBooleanPlus();
     }
     
-    
     public DoubleAggregatorToBoolean newAggregator() {
         val collector = doubleCollectorToBooleanPlus();
         return new DoubleAggregatorToBoolean.Impl(collector);

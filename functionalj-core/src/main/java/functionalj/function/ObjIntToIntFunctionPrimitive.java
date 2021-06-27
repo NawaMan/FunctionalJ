@@ -23,43 +23,23 @@
 // ============================================================================
 package functionalj.function;
 
-import java.util.function.IntBinaryOperator;
+import java.util.function.BiFunction;
+import java.util.function.ToIntBiFunction;
 
 
 @FunctionalInterface
-public interface IntegerIntegerToIntegerFunctionPrimitive extends IntBinaryOperator, ObjectIntegerToIntegerFunctionPrimitive<Integer> {
+public interface ObjIntToIntFunctionPrimitive<DATA> extends BiFunction<DATA, Integer, Integer>, ToIntBiFunction<DATA, Integer> {
     
-    public static IntegerIntegerToIntegerFunctionPrimitive of(IntegerIntegerToIntegerFunctionPrimitive function) {
-        return function;
-        
-    }
-    public static IntegerIntegerToIntegerFunctionPrimitive from(IntBinaryOperator function) {
-        return (function instanceof IntegerIntegerToIntegerFunctionPrimitive)
-                ? (IntegerIntegerToIntegerFunctionPrimitive)function
-                : ((d1, d2) -> function.applyAsInt(d1, d2));
-    }
-    public static IntegerIntegerToIntegerFunctionPrimitive from(ObjectIntegerToIntegerFunctionPrimitive<Integer> function) {
-        return (function instanceof IntegerIntegerToIntegerFunctionPrimitive)
-                ? (IntegerIntegerToIntegerFunctionPrimitive)function
-                : ((d1, d2) -> function.applyObjectInteger(d1, d2));
-    }
-    
-    //-- functionality --
-    
-    public int applyIntegerInteger(int data, int doubleValue);
+    public int applyObjInt(DATA data, int intValue);
     
     
-    public default int applyAsInt(int data, int doubleValue) {
-        return applyIntegerInteger(data, doubleValue);
-    }
-    
-    public default int applyAsDouble(Integer data, int doubleValue) {
-        return applyIntegerInteger(data, doubleValue);
+    @Override
+    public default Integer apply(DATA data, Integer doubleValue) {
+        return applyObjInt(data, doubleValue);
     }
     
     @Override
-    public default int applyObjectInteger(Integer data, int intValue) {
-        return applyObjectInteger(data, intValue);
+    public default int applyAsInt(DATA data, Integer intValue) {
+        return applyObjInt(data, intValue);
     }
-    
 }

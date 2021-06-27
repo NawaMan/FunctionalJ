@@ -33,7 +33,7 @@ import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import lombok.val;
 
 
-public abstract class  DoubleAggregation<TARGET> extends Aggregation<Double, TARGET> {
+public abstract class DoubleAggregation<TARGET> extends Aggregation<Double, TARGET> {
     
     public static <A, T> DoubleAggregation<T> from(DoubleCollectorPlus<A, T> collector) {
         return new DoubleAggregation.Impl<T>(collector);

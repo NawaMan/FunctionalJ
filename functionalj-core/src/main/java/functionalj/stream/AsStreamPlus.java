@@ -50,14 +50,13 @@ class AsStreamPlusHelper {
 public interface AsStreamPlus<DATA>
                     extends
                         AsStreamPlusWithCalculate<DATA>,
-                        AsStreamPlusWithConversion<DATA>,
                         AsStreamPlusWithCollect<DATA>,
+                        AsStreamPlusWithConversion<DATA>,
                         AsStreamPlusWithForEach<DATA>,
                         AsStreamPlusWithGroupingBy<DATA>,
                         AsStreamPlusWithMatch<DATA>,
                         AsStreamPlusWithReduce<DATA>,
                         AsStreamPlusWithStatistic<DATA> {
-    
     
     /** @return  the stream plus instance of this object. */
     public StreamPlus<DATA> streamPlus();

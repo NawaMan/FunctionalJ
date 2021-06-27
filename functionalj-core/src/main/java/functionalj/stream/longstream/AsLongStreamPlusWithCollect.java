@@ -29,6 +29,10 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 
 import functionalj.function.Func;
+import functionalj.function.aggregator.LongAggregation;
+import functionalj.function.aggregator.LongAggregationToDouble;
+import functionalj.function.aggregator.LongAggregationToInt;
+import functionalj.function.aggregator.LongAggregationToLong;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
@@ -78,4 +82,31 @@ public interface AsLongStreamPlusWithCollect {
         return result;
     }
     
+    @Eager
+    @Terminal
+    public default <RESULT> RESULT aggregate(LongAggregation<RESULT> aggregation) {
+        val collector = aggregation.longCollectorPlus();
+        return collect(collector);
+    }
+    
+    @Eager
+    @Terminal
+    public default int aggregateToInt(LongAggregationToInt aggregation) {
+        val collector = aggregation.longCollectorPlus();
+        return collect(collector);
+    }
+    
+    @Eager
+    @Terminal
+    public default long aggregateToLong(LongAggregationToLong aggregation) {
+        val collector = aggregation.longCollectorPlus();
+        return collect(collector);
+    }
+    
+    @Eager
+    @Terminal
+    public default double aggregateToDouble(LongAggregationToDouble aggregation) {
+        val collector = aggregation.longCollectorPlus();
+        return collect(collector);
+    }
 }

@@ -32,6 +32,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.stream.markers.Sequential;
 import lombok.val;
 
@@ -75,6 +76,13 @@ public interface StreamPlusWithLimit<DATA> {
                 return !isStillTrue.get();
             });
         });
+    }
+    
+    /** Skip any value while the condition is true. */
+    @Sequential
+    public default StreamPlus<DATA> skipWhile(AggregationToBoolean<? super DATA> aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return skipWhile(condition);
     }
     
     /** Skip any value while the condition is true. */
@@ -135,6 +143,13 @@ public interface StreamPlusWithLimit<DATA> {
                 return !isStillTrue.get();
             });
         });
+    }
+    
+    /** Skip any value until the condition is true. */
+    @Sequential
+    public default StreamPlus<DATA> skipUntil(AggregationToBoolean<? super DATA> aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return skipUntil(condition);
     }
     
     /** Skip any value until the condition is true. */
@@ -210,6 +225,13 @@ public interface StreamPlusWithLimit<DATA> {
     
     /** Accept any value while the condition is true. */
     @Sequential
+    public default StreamPlus<DATA> takeWhile(AggregationToBoolean<? super DATA> aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return takeWhile(condition);
+    }
+    
+    /** Accept any value while the condition is true. */
+    @Sequential
     public default StreamPlus<DATA> takeWhile(BiPredicate<? super DATA, ? super DATA> condition) {
         val streamPlus = streamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
@@ -276,6 +298,13 @@ public interface StreamPlusWithLimit<DATA> {
     
     /** Accept any value until the condition is true. */
     @Sequential
+    public default StreamPlus<DATA> takeUntil(AggregationToBoolean<? super DATA> aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return takeWhile(condition);
+    }
+    
+    /** Accept any value until the condition is true. */
+    @Sequential
     public default StreamPlus<DATA> takeUntil(BiPredicate<? super DATA, ? super DATA> condition) {
         val streamPlus = streamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
@@ -338,6 +367,13 @@ public interface StreamPlusWithLimit<DATA> {
             val newStream = StreamSupport.stream(newSpliterator, false);
             return StreamPlus.from(newStream);
         });
+    }
+    
+    /** Accept any value until the condition is false - include the item that the condition is false. */
+    @Sequential
+    public default StreamPlus<DATA> dropAfter(AggregationToBoolean<? super DATA> aggregationCondition) {
+        val condition = aggregationCondition.newAggregator();
+        return dropAfter(condition);
     }
     
     /** Accept any value until the condition is false - include the item that the condition is false. */

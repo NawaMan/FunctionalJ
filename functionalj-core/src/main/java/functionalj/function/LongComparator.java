@@ -35,6 +35,9 @@ public interface LongComparator extends Comparator<Long> {
         return compareLong(o1, o2);
     }
     
+    public default LongComparator reverse() {
+        return (o1, o2) -> compareLong(o2, o1);
+    }
     
     public static LongComparator compare(LongComparator comparator) {
         return Objects.requireNonNull(comparator);

@@ -827,8 +827,8 @@ public class IntFuncListTest {
     @Test
     public void testContainsAnyOf() {
         run(IntFuncList.of(One, Two, Three, Four, Five), list -> {
-            assertTrue (list.containsAnyOf(One, Six));
-            assertFalse(list.containsAnyOf(Six, Seven));
+            assertTrue (list.containsSomeOf(One, Six));
+            assertFalse(list.containsSomeOf(Six, Seven));
         });
     }
     
@@ -999,10 +999,10 @@ public class IntFuncListTest {
             assertAsString("OptionalInt[4]", list.max());
         });
         run(IntFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalInt[1],OptionalInt[4])", list.minMax());
+            assertAsString("Optional[(1,4)]", list.minMax());
         });
         run(IntFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalInt[4],OptionalInt[1])", list.minMax((a,b) -> b - a));
+            assertAsString("Optional[(4,1)]", list.minMax((a,b) -> b - a));
         });
     }
     
@@ -1026,11 +1026,11 @@ public class IntFuncListTest {
     @Test
     public void testMinMaxBy() {
         run(IntFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalInt[1],OptionalInt[4])", list.minMaxBy(a ->  a));
+            assertAsString("Optional[(1,4)]", list.minMaxBy(a ->  a));
         });
         
         run(IntFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalInt[4],OptionalInt[1])", list.minMaxBy(a -> a, (a,b)->b-a));
+            assertAsString("Optional[(4,1)]", list.minMaxBy(a -> a, (a,b)->b-a));
         });
     }
     
@@ -1135,14 +1135,14 @@ public class IntFuncListTest {
     @Test
     public void testFirstResult() {
         run(IntFuncList.of(One, Two, Three), list -> {
-            assertAsString("OptionalInt[1]", list.firstResult());
+            assertAsString("OptionalInt[1]", list.first());
         });
     }
     
     @Test
     public void testLastResult() {
         run(IntFuncList.of(One, Two, Three), list -> {
-            assertAsString("OptionalInt[3]", list.lastResult());
+            assertAsString("OptionalInt[3]", list.last());
         });
     }
     
@@ -1776,14 +1776,14 @@ public class IntFuncListTest {
     @Test
     public void testMinMaxBy_withMapper() {
         run(IntFuncList.of(One, Two, Three, Four, Five, Six), list -> {
-            assertAsString("(OptionalInt[3],OptionalInt[6])", list.minMaxBy(theInteger.minus(3).square()));
+            assertAsString("Optional[(3,6)]", list.minMaxBy(theInteger.minus(3).square()));
         });
     }
     
     @Test
     public void testMinMaxBy_withMapper_withComparator() {
         run(IntFuncList.of(One, Two, Three, Four), list -> {
-            assertAsString("(OptionalInt[1],OptionalInt[3])", list.minMaxBy(theInteger.minus(3).square(), (a, b) -> b-a));
+            assertAsString("Optional[(1,3)]", list.minMaxBy(theInteger.minus(3).square(), (a, b) -> b-a));
         });
     }
     

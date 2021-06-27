@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
+import static functionalj.function.Func.f;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -37,63 +39,94 @@ import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import lombok.val;
 
+
 public interface AsIntStreamPlusWithGroupingBy {
     
     public IntStreamPlus intStreamPlus();
     
     /** Group the elements by determining the grouping keys */
     public default <KEY> FuncMap<KEY, IntFuncList> groupingBy(IntFunction<KEY> keyMapper) {
+        val toFuncList = f((GrowOnlyIntArray array) -> array.toFuncList());
+        val newArray   = f(() -> new GrowOnlyIntArray());
+        val streamPlus = this.intStreamPlus();
+        
         Supplier  <Map<KEY, GrowOnlyIntArray>>                              supplier;
         BiConsumer<Map<KEY, GrowOnlyIntArray>, Integer>                     accumulator;
         BiConsumer<Map<KEY, GrowOnlyIntArray>, Map<KEY, GrowOnlyIntArray>>  combiner;
-        
-        Supplier<GrowOnlyIntArray>              collectorSupplier = GrowOnlyIntArray::new;
-        Function<GrowOnlyIntArray, IntFuncList> toFuncList         = array -> array.toFuncList();
         
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
             val key = keyMapper.apply(each);
             map.compute(key, (k, a)->{
                 if (a == null) {
-                    a = collectorSupplier.get();
+                    a = newArray.get();
                 }
                 a.add(each);
                 return a;
             });
         };
         combiner = (map1, map2) -> map1.putAll(map2);
-        val theMap = intStreamPlus().boxed().collect(supplier, accumulator, combiner);
+        
+        val theMap = streamPlus.boxed().collect(supplier, accumulator, combiner);
         return ImmutableFuncMap
                     .from    (theMap)
                     .mapValue(toFuncList);
     }
     
-    /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            IntFunction<KEY>             keyMapper,
-            Function<IntFuncList, VALUE> aggregate) {
-        FuncMap<KEY, IntFuncList> groupingBy = groupingBy(keyMapper);
-        return (FuncMap<KEY, VALUE>) groupingBy.mapValue((Function)aggregate);
+    /** Group the elements by determining the grouping keys */
+    public default <KEY> FuncMap<KEY, IntFuncList> groupingBy(IntAggregation<KEY> keyAggregation) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper);
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            IntFunction<KEY>                               keyMapper,
-            Supplier<IntCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
-        FuncMap<KEY, IntFuncList>    groupingBy = groupingBy(keyMapper);
-        Function<IntFuncList, VALUE> aggregate  = stream -> stream.collect(collectorSupplier.get());
-        FuncMap<KEY, VALUE> mapValue = groupingBy.mapValue((Function)aggregate);
-        return (FuncMap<KEY, VALUE>) mapValue;
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            IntFunction<KEY>             keyMapper,
+            Function<IntFuncList, VALUE> aggregate) {
+        return groupingBy(keyMapper)
+                .mapValue(aggregate);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            IntAggregation<KEY>          keyAggregation,
+            Function<IntFuncList, VALUE> aggregate) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper, aggregate);
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             IntFunction<KEY>      keyMapper,
-            IntAggregation<VALUE> aggregation) {
-        FuncMap<KEY, IntFuncList> groupingBy = groupingBy(keyMapper);
-        return (FuncMap<KEY, VALUE>) groupingBy.mapValue(stream -> stream.calculate(aggregation));
+            IntAggregation<VALUE> aggregate) {
+        val valueMapper = f((IntFuncList list) -> list.aggregate(aggregate));
+        return groupingBy(keyMapper)
+                .mapValue(valueMapper);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            IntAggregation<KEY>   keyAggregation,
+            IntAggregation<VALUE> aggregate) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper, aggregate);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            IntFunction<KEY>                               keyMapper,
+            Supplier<IntCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
+        val valueMapper = f((IntFuncList list) -> list.collect(collectorSupplier.get()));
+        return groupingBy(keyMapper)
+                .mapValue(valueMapper);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            IntAggregation<KEY>                            keyAggregation,
+            Supplier<IntCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
+        val keyMapper = keyAggregation.newAggregator();
+        return groupingBy(keyMapper, collectorSupplier);
     }
     
 }

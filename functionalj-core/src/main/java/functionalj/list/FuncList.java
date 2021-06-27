@@ -56,6 +56,7 @@ import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.LongLongBiFunction;
 import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.function.aggregator.AggregationToDouble;
 import functionalj.function.aggregator.AggregationToInt;
 import functionalj.function.aggregator.AggregationToLong;
@@ -246,28 +247,28 @@ public interface FuncList<DATA>
         return FuncList.from(()->StreamPlus.repeat(data));
     }
     
-    /** Create a FuncList that is the repeat of the given array of data. */
+    /** Create a list that is the repeat of the given array of data. */
     @SafeVarargs
     public static <TARGET> FuncList<TARGET> cycle(TARGET ... data) {
         return FuncList.from(()->StreamPlus.cycle(data));
     }
     
-    /** Create a FuncList that is the repeat of the given list of data. */
+    /** Create a list that is the repeat of the given list of data. */
     public static <TARGET> FuncList<TARGET> cycle(Collection<TARGET> data) {
         return FuncList.from(()->StreamPlus.cycle(data));
     }
     
-    /** Create a FuncList that for an infinite loop - the value is null */
+    /** Create a list that for an infinite loop - the value is null */
     public static <TARGET> FuncList<TARGET> loop() {
         return FuncList.from(()->StreamPlus.loop());
     }
     
-    /** Create a FuncList that for a loop with the number of time given - the value is the index of the loop. */
+    /** Create a list that for a loop with the number of time given - the value is the index of the loop. */
     public static <TARGET> FuncList<TARGET> loop(int times) {
         return FuncList.from(()->StreamPlus.loop(times));
     }
     
-    /** Create a FuncList that for an infinite loop - the value is the index of the loop. */
+    /** Create a list that for an infinite loop - the value is the index of the loop. */
     public static FuncList<Integer> infiniteInt() {
         return FuncList.from(()->StreamPlus.infiniteInt());
     }
@@ -282,7 +283,7 @@ public interface FuncList<DATA>
     
     /**
      * Concatenate all the given lists.
-     *
+     * 
      * This method is the alias of {@link FuncList#concat(FuncList...)}
      *   but allowing static import without colliding with {@link String#concat(String)}.
      **/
@@ -296,7 +297,7 @@ public interface FuncList<DATA>
     //          we may want to do cache here.
     
     /**
-     * Create a FuncList from the supplier of supplier.
+     * Create a FuncList from the supplier of suppliers.
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static <TARGET> FuncList<TARGET> generate(Supplier<Supplier<TARGET>> supplier) {
@@ -307,7 +308,7 @@ public interface FuncList<DATA>
     }
     
     /**
-     * Create a FuncList from the supplier of supplier.
+     * Create a list from the supplier of suppliers.
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static <TARGET> FuncList<TARGET> generateWith(Supplier<Supplier<TARGET>> supplier) {
@@ -315,8 +316,8 @@ public interface FuncList<DATA>
     }
     
     /**
-     * Create a FuncList by apply the compounder to the seed over and over.
-     *
+     * Create a list by apply the compounder to the seed over and over.
+     * 
      * For example: let say seed = 1 and f(x) = x*2.
      * The result stream will be:
      *      1 <- seed,
@@ -341,7 +342,7 @@ public interface FuncList<DATA>
     }
     
     /**
-     * Create a FuncList by apply the compounder to the seed over and over.
+     * Create a list by apply the compounder to the seed over and over.
      *
      * For example: let say seed = 1 and f(x) = x*2.
      * The result stream will be:
@@ -357,17 +358,17 @@ public interface FuncList<DATA>
     public static <TARGET> FuncList<TARGET> compound(
             TARGET                   seed,
             Function<TARGET, TARGET> compounder) {
-        return FuncList.from(()->StreamPlus.compound(seed, compounder));
+        return FuncList.from(() -> StreamPlus.compound(seed, compounder));
     }
     
     public static <TARGET> FuncList<TARGET> compound(
             TARGET                      seed,
             Aggregation<TARGET, TARGET> aggregation) {
-        return FuncList.from(()->StreamPlus.compound(seed, aggregation));
+        return FuncList.from(() -> StreamPlus.compound(seed, aggregation));
     }
     
     /**
-     * Create a FuncList by apply the compounder to the seeds over and over.
+     * Create a list by apply the compounder to the seeds over and over.
      *
      * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
      * The result stream will be:
@@ -389,7 +390,7 @@ public interface FuncList<DATA>
     }
     
     /**
-     * Create a FuncList by apply the compounder to the seeds over and over.
+     * Create a list by apply the compounder to the seeds over and over.
      *
      * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
      * The result stream will be:
@@ -522,9 +523,9 @@ public interface FuncList<DATA>
             DoubleObjBiFunction<ANOTHER, TARGET> merger) {
         return FuncList.from(() -> {
             return StreamPlus.zipOf(
-                        list1.doubleStream(),
-                        list2.stream(),
-                        merger);
+                    list1.doubleStream(),
+                    list2.stream(),
+                    merger);
         });
     }
     
@@ -561,6 +562,7 @@ public interface FuncList<DATA>
         return stream();
     }
     
+    /** Return the this as a FuncList. */
     @Override
     public default FuncList<DATA> asFuncList() {
         return this;
@@ -579,7 +581,7 @@ public interface FuncList<DATA>
                 : Mode.lazy;
         switch (mode) {
             case lazy: {
-                return FuncList.from(()->{
+                return FuncList.from(() -> {
                     val orgStreamPlus = (list instanceof FuncList)
                             ? ((FuncList)list).streamPlus()
                             : StreamPlus.from(list.stream());
@@ -606,61 +608,76 @@ public interface FuncList<DATA>
         throw new IllegalArgumentException("Unknown functional list mode: " + mode);
     }
     
-    /** Create a FuncList from the given IntFuncList. */
+    /** Create a FuncList from the given FuncList. */
     public static <TARGET> FuncList<TARGET> deriveFrom(
             AsIntFuncList                           asFuncList,
             Function<IntStreamPlus, Stream<TARGET>> action) {
-        boolean isLazy = asFuncList.asIntFuncList().isLazy();
-        if (!isLazy) {
-            val orgStreamPlus = asFuncList.intStreamPlus();
-            val newStream     = action.apply(orgStreamPlus);
-            val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableFuncList.from(Mode.eager, newStreamPlus);
+        Mode mode = asFuncList.asIntFuncList().mode();
+        switch (mode) {
+            case lazy: {
+                return FuncList.from(() -> {
+                    val orgStreamPlus = asFuncList.intStreamPlus();
+                    val newStream     = action.apply(orgStreamPlus);
+                    return StreamPlus.from(newStream);
+                });
+            }
+            case eager:
+            case cache: {
+                val orgStreamPlus = asFuncList.intStreamPlus();
+                val newStream     = action.apply(orgStreamPlus);
+                val newStreamPlus = StreamPlus.from(newStream);
+                return ImmutableFuncList.from(mode, newStreamPlus);
+            }
+            default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
         }
-        
-        return FuncList.from(() -> {
-            val orgStreamPlus = asFuncList.intStreamPlus();
-            val newStream = action.apply(orgStreamPlus);
-            return StreamPlus.from(newStream);
-        });
     }
     
     /** Create a FuncList from the given IntFuncList. */
     public static <TARGET> FuncList<TARGET> deriveFrom(
             AsLongFuncList                           asFuncList,
             Function<LongStreamPlus, Stream<TARGET>> action) {
-        boolean isLazy = asFuncList.asLongFuncList().isLazy();
-        if (!isLazy) {
-            val orgStreamPlus = asFuncList.longStreamPlus();
-            val newStream     = action.apply(orgStreamPlus);
-            val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableFuncList.from(Mode.eager, newStreamPlus);
+        Mode mode = asFuncList.asLongFuncList().mode();
+        switch (mode) {
+            case lazy: {
+                return FuncList.from(() -> {
+                    val orgStreamPlus = asFuncList.longStreamPlus();
+                    val newStream     = action.apply(orgStreamPlus);
+                    return StreamPlus.from(newStream);
+                });
+            }
+            case eager:
+            case cache: {
+                val orgStreamPlus = asFuncList.longStreamPlus();
+                val newStream     = action.apply(orgStreamPlus);
+                val newStreamPlus = StreamPlus.from(newStream);
+                return ImmutableFuncList.from(mode, newStreamPlus);
+            }
+            default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
         }
-        
-        return FuncList.from(() -> {
-            val orgStreamPlus = asFuncList.longStreamPlus();
-            val newStream = action.apply(orgStreamPlus);
-            return StreamPlus.from(newStream);
-        });
     }
     
     /** Create a FuncList from the given DoubleFuncList. */
     public static <TARGET> FuncList<TARGET> deriveFrom(
-            AsDoubleFuncList                           funcList,
+            AsDoubleFuncList                           asFuncList,
             Function<DoubleStreamPlus, Stream<TARGET>> action) {
-        boolean isLazy = funcList.asDoubleFuncList().isLazy();
-        if (!isLazy) {
-            val orgStreamPlus = funcList.doubleStreamPlus();
-            val newStream     = action.apply(orgStreamPlus);
-            val newStreamPlus = StreamPlus.from(newStream);
-            return ImmutableFuncList.from(Mode.eager, newStreamPlus);
+        Mode mode = asFuncList.asDoubleFuncList().mode();
+        switch (mode) {
+            case lazy: {
+                return FuncList.from(() -> {
+                    val orgStreamPlus = asFuncList.doubleStreamPlus();
+                    val newStream     = action.apply(orgStreamPlus);
+                    return StreamPlus.from(newStream);
+                });
+            }
+            case eager:
+            case cache: {
+                val orgStreamPlus = asFuncList.doubleStreamPlus();
+                val newStream     = action.apply(orgStreamPlus);
+                val newStreamPlus = StreamPlus.from(newStream);
+                return ImmutableFuncList.from(mode, newStreamPlus);
+            }
+            default: throw new IllegalArgumentException("Unknown functional list mode: " + mode);
         }
-        
-        return FuncList.from(() -> {
-            val orgStreamPlus = funcList.doubleStreamPlus();
-            val newStream = action.apply(orgStreamPlus);
-            return StreamPlus.from(newStream);
-        });
     }
     
     /** Create a FuncList from another FuncList. */
@@ -713,13 +730,17 @@ public interface FuncList<DATA>
         return mode().isLazy();
     }
     
+    /** Check if this list is an eager list. */
     public default boolean isEager() {
         return mode().isEager();
     }
     
+    /** Check if this list is an cache list. */
     public default boolean isCache() {
         return mode().isCache();
     }
+    
+    //-- Lazy + Eager --
     
     /** Return a lazy list with the data of this list. */
     public default FuncList<DATA> toLazy() {
@@ -790,9 +811,21 @@ public interface FuncList<DATA>
         return deriveFrom(this, stream -> stream.map(mapper));
     }
     
+    /** Map each value into other value using the function. */
+    public default <TARGET> FuncList<TARGET> map(Aggregation<? super DATA, ? extends TARGET> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return map(mapper);
+    }
+    
     /** Map each value into an integer value using the function. */
     public default IntFuncList mapToInt(ToIntFunction<? super DATA> mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.mapToInt(mapper));
+    }
+    
+    /** Map each value into an integer value using the function. */
+    public default IntFuncList mapToInt(AggregationToInt<? super DATA> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToInt(mapper);
     }
     
     /** Map each value into an integer value using the function. */
@@ -800,34 +833,24 @@ public interface FuncList<DATA>
         return LongFuncList.deriveFrom(this, stream -> stream.mapToLong(mapper));
     }
     
+    /** Map each value into an integer value using the function. */
+    public default LongFuncList mapToLong(AggregationToLong<? super DATA> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return mapToLong(mapper);
+    }
+    
     /** Map each value into a double value using the function. */
     public default DoubleFuncList mapToDouble(ToDoubleFunction<? super DATA> mapper) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(mapper));
     }
     
-    public default <TARGET> FuncList<TARGET> mapToObj(Function<? super DATA, ? extends TARGET> mapper) {
-        return map(mapper);
-    }
-
-    
-    /** Map each value into other value using the function. */
-    public default <TARGET> FuncList<TARGET> map(Aggregation<? super DATA, ? extends TARGET> aggregation) {
-        return deriveFrom(this, stream -> stream.map(aggregation));
-    }
-    
-    /** Map each value into an integer value using the function. */
-    public default IntFuncList mapToInt(AggregationToInt<? super DATA> aggregation) {
-        return IntFuncList.deriveFrom(this, stream -> stream.mapToInt(aggregation));
-    }
-    
-    /** Map each value into an integer value using the function. */
-    public default LongFuncList mapToLong(AggregationToLong<? super DATA> aggregation) {
-        return LongFuncList.deriveFrom(this, stream -> stream.mapToLong(aggregation));
-    }
-    
     /** Map each value into a double value using the function. */
     public default DoubleFuncList mapToDouble(AggregationToDouble<? super DATA> aggregation) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(aggregation));
+    }
+    
+    public default <TARGET> FuncList<TARGET> mapToObj(Function<? super DATA, ? extends TARGET> mapper) {
+        return map(mapper);
     }
     
     public default <TARGET> FuncList<TARGET> mapToObj(Aggregation<? super DATA, ? extends TARGET> aggregation) {
@@ -841,9 +864,21 @@ public interface FuncList<DATA>
         return deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).stream()));
     }
     
+    /** Map a value into a list and then flatten that list */
+    public default <TARGET> FuncList<TARGET> flatMap(Aggregation<? super DATA, ? extends FuncList<? extends TARGET>> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMap(mapper);
+    }
+    
     /** Map a value into an integer list and then flatten that list */
     public default IntFuncList flatMapToInt(Function<? super DATA, ? extends AsIntFuncList> mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.flatMapToInt(value -> mapper.apply(value).intStream()));
+    }
+    
+    /** Map a value into an integer list and then flatten that list */
+    public default IntFuncList flatMapToInt(Aggregation<? super DATA, ? extends AsIntFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToInt(mapper);
     }
     
     /** Map a value into an integer list and then flatten that list */
@@ -851,9 +886,32 @@ public interface FuncList<DATA>
         return LongFuncList.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
     }
     
+    /** Map a value into an integer list and then flatten that list */
+    public default LongFuncList flatMapToLong(Aggregation<? super DATA, ? extends AsLongFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToLong(mapper);
+    }
+    
     /** Map a value into a double list and then flatten that list */
     public default DoubleFuncList flatMapToDouble(Function<? super DATA, ? extends AsDoubleFuncList> mapper) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
+    }
+    
+    /** Map a value into a double list and then flatten that list */
+    public default DoubleFuncList flatMapToDouble(Aggregation<? super DATA, ? extends AsDoubleFuncList> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMapToDouble(mapper);
+    }
+    
+    /** Map a value into a list and then flatten that list */
+    public default <TARGET> FuncList<TARGET> flatMapToObj(Function<? super DATA, ? extends FuncList<? extends TARGET>> mapper) {
+        return deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).stream()));
+    }
+    
+    /** Map a value into a list and then flatten that list */
+    public default <TARGET> FuncList<TARGET> flatMapToObj(Aggregation<? super DATA, ? extends FuncList<? extends TARGET>> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return flatMap(mapper);
     }
     
     //-- Filter --
@@ -861,6 +919,12 @@ public interface FuncList<DATA>
     /** Select only the element that passes the predicate */
     public default FuncList<DATA> filter(Predicate<? super DATA> predicate) {
         return deriveFrom(this, stream -> stream.filter(predicate));
+    }
+    
+    /** Select only the element that passes the predicate */
+    public default FuncList<DATA> filter(AggregationToBoolean<? super DATA> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return filter(mapper);
     }
     
     //-- Peek --
@@ -905,13 +969,12 @@ public interface FuncList<DATA>
     
     /** Process each value using the given action */
     public default void forEach(Consumer<? super DATA> action) {
-        stream()
-        .forEach(action);
+        stream().forEach(action);
     }
     
     /**
-     * Performs an action for each element of this stream, in the encounter
-     * order of the stream if the stream has a defined encounter order.
+     * Performs an action for each element of this stream,
+     *   in the encounter order of the stream if the stream has a defined encounter order.
      */
     public default void forEachOrdered(Consumer<? super DATA> action) {
         stream()
@@ -989,11 +1052,17 @@ public interface FuncList<DATA>
     }
     
     /** Find any indexes that the elements match the predicate */
-    public default FuncList<Integer> indexesOf(Predicate<? super DATA> predicate) {
+    public default IntFuncList indexesOf(Predicate<? super DATA> predicate) {
         return this
-                .mapWithIndex((index, data) -> predicate.test(data) ? index : -1)
-                .filter($I.thatNotEqualsTo(-1))
+                .mapToIntWithIndex((index, data) -> predicate.test(data) ? index : -1)
+                .filter($I.thatNotEquals(-1))
                 .toImmutableList();
+    }
+    
+    /** Find any indexes that the elements match the predicate */
+    public default IntFuncList indexesOf(AggregationToBoolean<? super DATA> aggregation) {
+        val check = aggregation.newAggregator();
+        return indexesOf(check);
     }
     
     /** Find the first index of the given object. */
@@ -1217,6 +1286,12 @@ public interface FuncList<DATA>
         return this
                 .mapWithIndex((index, data) -> predicate.test(data) ? new IntTuple2<DATA>(index, data) : null)
                 .filterNonNull();
+    }
+    
+    /** Returns the list of tuple of the index and the value for which the value match the predicate. */
+    public default FuncList<IntTuple2<DATA>> query(AggregationToBoolean<? super DATA> aggregation) {
+        val check = aggregation.newAggregator();
+        return query(check);
     }
     
     //-- de-ambiguous --

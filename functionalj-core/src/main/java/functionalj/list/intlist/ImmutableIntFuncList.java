@@ -317,7 +317,6 @@ public class ImmutableIntFuncList implements IntFuncList {
     
     @Sequential
     @Terminal
-    @Override
     public OptionalInt firstResult() {
         return (this.size == 0)
                 ? OptionalInt.empty()
@@ -326,7 +325,6 @@ public class ImmutableIntFuncList implements IntFuncList {
     
     @Sequential
     @Terminal
-    @Override
     public OptionalInt lastResult() {
         return (size == 0)
                 ? OptionalInt.empty()

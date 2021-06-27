@@ -24,7 +24,7 @@
 package functionalj.stream;
 
 import static functionalj.function.Func.alwaysTrue;
-import static functionalj.tuple.Tuple.tuple2;
+import static functionalj.stream.StreamPlusHelper.dummy;
 
 import java.util.Comparator;
 import java.util.Optional;
@@ -32,7 +32,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.function.Func1;
+import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.Tuple;
@@ -86,6 +87,14 @@ public interface AsStreamPlusWithStatistic<DATA> {
                 });
     }
     
+    /** Return the value whose mapped value is the smallest. */
+    @Eager
+    @Terminal
+    public default <D extends Comparable<D>> Optional<DATA> minBy(Aggregation<DATA, D> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return minBy(mapper);
+    }
+    
     /** Return the value whose mapped value is the biggest. */
     @Eager
     @Terminal
@@ -97,6 +106,14 @@ public interface AsStreamPlusWithStatistic<DATA> {
                     val mappedB = mapper.apply(b);
                     return mappedA.compareTo(mappedB);
                 });
+    }
+    
+    /** Return the value whose mapped value is the biggest. */
+    @Eager
+    @Terminal
+    public default <D extends Comparable<D>> Optional<DATA> maxBy(Aggregation<DATA, D> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return maxBy(mapper);
     }
     
     /** Return the value whose mapped value is the smallest using the comparator. */
@@ -114,6 +131,16 @@ public interface AsStreamPlusWithStatistic<DATA> {
                 });
     }
     
+    /** Return the value whose mapped value is the smallest using the comparator. */
+    @Eager
+    @Terminal
+    public default <D> Optional<DATA> minBy(
+            Aggregation<DATA, D>  aggregation, 
+            Comparator<? super D> comparator) {
+        val mapper = aggregation.newAggregator();
+        return minBy(mapper, comparator);
+    }
+    
     /** Return the value whose mapped value is the biggest using the comparator. */
     @Eager
     @Terminal
@@ -129,14 +156,24 @@ public interface AsStreamPlusWithStatistic<DATA> {
                 });
     }
     
+    /** Return the value whose mapped value is the biggest using the comparator. */
+    @Eager
+    @Terminal
+    public default <D> Optional<DATA> maxBy(
+            Aggregation<DATA, D>  aggregation, 
+            Comparator<? super D> comparator) {
+        val mapper = aggregation.newAggregator();
+        return maxBy(mapper, comparator);
+    }
+    
     /** Return the value is the smallest and the biggest using the comparator. */
     @Eager
     @Terminal
     @SuppressWarnings("unchecked")
-    public default Tuple2<Optional<DATA>, Optional<DATA>> minMax(Comparator<? super DATA> comparator) {
+    public default Optional<Tuple2<DATA, DATA>> minMax(Comparator<? super DATA> comparator) {
         val streamPlus = streamPlus();
-        val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-        val maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
+        val minRef = new AtomicReference<Object>(dummy);
+        val maxRef = new AtomicReference<Object>(dummy);
         streamPlus
             .sorted(comparator)
             .forEach(each -> {
@@ -145,39 +182,47 @@ public interface AsStreamPlusWithStatistic<DATA> {
             });
         val min = minRef.get();
         val max = maxRef.get();
-        return Tuple2.of(
-                StreamPlusHelper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
-                StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
+        return (dummy.equals(min) || dummy.equals(max))
+                ? Optional.empty()
+                : Optional.of(Tuple2.of((DATA)min, (DATA)max));
     }
     
     /** Return the value whose mapped value is the smallest and the biggest. */
     @Eager
     @Terminal
     @SuppressWarnings("unchecked")
-    public default <D extends Comparable<D>> Tuple2<Optional<DATA>, Optional<DATA>> minMaxBy(Func1<DATA, D> mapper) {
+    public default <D extends Comparable<D>> Optional<Tuple2<DATA, DATA>> minMaxBy(Function<DATA, D> mapper) {
         val streamPlus = streamPlus();
-        val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-        val maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
+        val minRef = new AtomicReference<Object>(dummy);
+        val maxRef = new AtomicReference<Object>(dummy);
         streamPlus
         .sortedBy(mapper)
         .forEach(each -> {
-            minRef.compareAndSet(StreamPlusHelper.dummy, each);
+            minRef.compareAndSet(dummy, each);
             maxRef.set(each);
         });
         
         val min = minRef.get();
         val max = maxRef.get();
-        return tuple2(
-                StreamPlusHelper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
-                StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
+        return (dummy.equals(min) || dummy.equals(max))
+                ? Optional.empty()
+                : Optional.of(Tuple2.of((DATA)min, (DATA)max));
+    }
+    
+    /** Return the value whose mapped value is the smallest and the biggest. */
+    @Eager
+    @Terminal
+    public default <D extends Comparable<D>> Optional<Tuple2<DATA, DATA>> minMaxBy(Aggregation<DATA, D> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return minMaxBy(mapper);
     }
     
     /** Return the value whose mapped value is the smallest and the biggest using the comparator. */
     @Eager
     @Terminal
     @SuppressWarnings("unchecked")
-    public default <D> Tuple2<Optional<DATA>, Optional<DATA>> minMaxBy(
-            Func1<DATA, D>        mapper, 
+    public default <D> Optional<Tuple2<DATA, DATA>> minMaxBy(
+            Function<DATA, D>     mapper, 
             Comparator<? super D> comparator) {
         val streamPlus = streamPlus();
         val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
@@ -191,9 +236,19 @@ public interface AsStreamPlusWithStatistic<DATA> {
         
         val min = minRef.get();
         val max = maxRef.get();
-        return tuple2(
-                StreamPlusHelper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
-                StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
+        return (dummy.equals(min) || dummy.equals(max))
+                ? Optional.empty()
+                : Optional.of(Tuple2.of((DATA)min, (DATA)max));
+    }
+    
+    /** Return the value whose mapped value is the smallest and the biggest using the comparator. */
+    @Eager
+    @Terminal
+    public default <D> Optional<Tuple2<DATA, DATA>> minMaxBy(
+            Aggregation<DATA, D>  aggregation, 
+            Comparator<? super D> comparator) {
+        val mapper = aggregation.newAggregator();
+        return minMaxBy(mapper, comparator);
     }
     
     /** Map each value using the mapper to a comparable value and use it to find a minimal value then return the index */
@@ -201,8 +256,20 @@ public interface AsStreamPlusWithStatistic<DATA> {
         return minIndexBy(alwaysTrue(), mapper);
     }
     
+    /** Map each value using the mapper to a comparable value and use it to find a minimal value then return the index */
+    public default <D extends Comparable<D>> Optional<Integer> minIndexBy(Aggregation<DATA, D> aggregation) {
+        val mapper = aggregation.newAggregator();
+        return minIndexBy(alwaysTrue(), mapper);
+    }
+    
     /** Map each value using the mapper to a comparable value and use it to find a maximum value then return the index */
     public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(Function<DATA, D> mapper) {
+        return maxIndexBy(alwaysTrue(), mapper);
+    }
+    
+    /** Map each value using the mapper to a comparable value and use it to find a maximum value then return the index */
+    public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(Aggregation<DATA, D> aggregation) {
+        val mapper = aggregation.newAggregator();
         return maxIndexBy(alwaysTrue(), mapper);
     }
     
@@ -218,6 +285,31 @@ public interface AsStreamPlusWithStatistic<DATA> {
                 .map   (t -> t._1);
     }
     
+    /** Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index */
+    public default <D extends Comparable<D>> Optional<Integer> minIndexBy(
+            AggregationToBoolean<DATA> aggregationFilter,
+            Function<DATA, D>          mapper) {
+        val filter = aggregationFilter.newAggregator();
+        return minIndexBy(filter, mapper);
+    }
+    
+    /** Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index */
+    public default <D extends Comparable<D>> Optional<Integer> minIndexBy(
+            Predicate<DATA>   filter,
+            Aggregation<DATA, D> aggregationMapper) {
+        val mapper = aggregationMapper.newAggregator();
+        return minIndexBy(filter, mapper);
+    }
+    
+    /** Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index */
+    public default <D extends Comparable<D>> Optional<Integer> minIndexBy(
+            AggregationToBoolean<DATA> aggregationFilter,
+            Aggregation<DATA, D>       aggregationMapper) {
+        val filter = aggregationFilter.newAggregator();
+        val mapper = aggregationMapper.newAggregator();
+        return minIndexBy(filter, mapper);
+    }
+    
     /** Using the mapper to map each value that passes the filter to a comparable and use it to find a maximum value then return the index */
     public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(
             Predicate<DATA>   filter,
@@ -228,6 +320,32 @@ public interface AsStreamPlusWithStatistic<DATA> {
                 .filter(t -> filter.test(t._2))
                 .maxBy (t -> mapper.apply(t._2))
                 .map   (t -> t._1);
+    }
+    
+    /** Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index */
+    public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(
+            AggregationToBoolean<DATA> aggregationFilter,
+            Function<DATA, D>          mapper) {
+        val filter = aggregationFilter.newAggregator();
+        return maxIndexBy(filter, mapper);
+    }
+    
+    /** Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index */
+    public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(
+            Predicate<DATA>   filter,
+            Aggregation<DATA, D> aggregationMapper) {
+        val mapper = aggregationMapper.newAggregator();
+        return maxIndexBy(filter, mapper);
+        
+    }
+    
+    /** Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index */
+    public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(
+            AggregationToBoolean<DATA> aggregationFilter,
+            Aggregation<DATA, D>       aggregationMapper) {
+        val filter = aggregationFilter.newAggregator();
+        val mapper = aggregationMapper.newAggregator();
+        return maxIndexBy(filter, mapper);
     }
     
 }

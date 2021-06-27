@@ -35,6 +35,9 @@ public interface IntComparator extends Comparator<Integer> {
         return compareInt(o1, o2);
     }
     
+    public default IntComparator reverse() {
+        return (o1, o2) -> compareInt(o2, o1);
+    }
     
     public static IntComparator compare(IntComparator comparator) {
         return Objects.requireNonNull(comparator);

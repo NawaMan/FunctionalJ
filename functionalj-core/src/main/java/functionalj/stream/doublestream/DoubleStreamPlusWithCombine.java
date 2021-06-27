@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -247,11 +247,11 @@ public interface DoubleStreamPlusWithCombine {
     }
     
     /**
-     * Create a new stream by choosing value from each stream suing the selector.
+     * Create a new stream by choosing value from each stream using the selector.
      * The parameter option can be used to select when the stream should end.
      * In the case that the unpair is allow,
      *   the value from the longer stream is automatically used after the shorter stream ended.
-     *
+     * 
      * For an example with ZipWithOption.AllowUnpaired: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
@@ -259,9 +259,9 @@ public interface DoubleStreamPlusWithCombine {
      *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
      */
     public default DoubleStreamPlus choose(
-                                        DoubleStream               anotherStream, 
-                                        ZipWithOption              option, 
-                                        DoubleDoublePredicatePrimitive selectThisNotAnother) {
+            DoubleStream               anotherStream, 
+            ZipWithOption              option, 
+            DoubleDoublePredicatePrimitive selectThisNotAnother) {
         val iteratorA = this.doubleStreamPlus().iterator();
         val iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         val iterator = new PrimitiveIterator.OfDouble() {

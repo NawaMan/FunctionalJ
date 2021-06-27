@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,12 +33,12 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 import functionalj.function.IntDoublePredicate;
+import functionalj.function.aggregator.DoubleAggregationToBoolean;
 import functionalj.list.doublelist.DoubleFuncList;
 import lombok.val;
 
@@ -90,18 +90,6 @@ public interface DoubleStreamPlusWithFilter {
     public default <T> DoubleStreamPlus filterAsObject(
             DoubleFunction<T>    mapper,
             Predicate<? super T> predicate) {
-        val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .filter(value -> {
-                    val target = mapper.apply(value);
-                    val isPass = predicate.test(target);
-                    return isPass;
-                });
-    }
-    
-    public default <T> DoubleStreamPlus filterAsObject(
-            Function<Double, ? extends T> mapper,
-            Predicate<? super T>          predicate) {
         val streamPlus = doubleStreamPlus();
         return streamPlus
                 .filter(value -> {
@@ -195,6 +183,12 @@ public interface DoubleStreamPlusWithFilter {
         val streamPlus = doubleStreamPlus();
         return streamPlus
                 .filter(data -> !predicate.test(data));
+    }
+    
+    /** Filter only the value that the predicate returns false. */
+    public default DoubleStreamPlus exclude(DoubleAggregationToBoolean aggregation) {
+        val predicate = aggregation.newAggregator();
+        return exclude(predicate);
     }
     
     /** Filter out any value that is in the given items. */

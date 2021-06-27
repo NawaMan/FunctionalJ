@@ -24,6 +24,7 @@
 package functionalj.function.aggregator;
 
 import java.util.function.DoubleToIntFunction;
+import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
@@ -49,7 +50,7 @@ public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
         return intCollectorToBooleanPlus();
     }
     
-    public IntAggregatorToBoolean newIntAccumulatorToBoolean() {
+    public IntAggregatorToBoolean newAggregator() {
         val collector = intCollectorToBooleanPlus();
         return new IntAggregatorToBoolean.Impl(collector);
     }
@@ -61,9 +62,13 @@ public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
         return new AggregationToBoolean.Impl<>(newCollector);
     }
     
-    public IntAggregationToBoolean ofInt(IntUnaryOperator mapper) {
+    public IntAggregation<Boolean> ofInt(IntFunction<Integer> mapper) {
+        if (mapper instanceof IntUnaryOperator) {
+            return ofIntToBoolean((IntUnaryOperator)mapper);
+        }
+        
         val newCollector = intCollectorToBooleanPlus().of(mapper);
-        return new IntAggregationToBoolean.Impl(newCollector);
+        return new IntAggregation.Impl<>(newCollector);
     }
     
     public LongAggregationToBoolean ofLong(LongToIntFunction mapper) {
@@ -74,6 +79,13 @@ public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
     public DoubleAggregationToBoolean ofDouble(DoubleToIntFunction mapper) {
         val newCollector = intCollectorToBooleanPlus().of(mapper);
         return new DoubleAggregationToBoolean.Impl(newCollector);
+    }
+    
+    // This is a terrible name .... :-(
+    // But if we use `ofDouble`, Java confuse this one and the one above
+    public IntAggregationToBoolean ofIntToBoolean(IntUnaryOperator mapper) {
+        val newCollector = intCollectorToBooleanPlus().of(mapper);
+        return new IntAggregationToBoolean.Impl(newCollector);
     }
     
     //== Implementation ==

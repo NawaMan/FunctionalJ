@@ -49,7 +49,7 @@ public abstract class LongAggregationToInt extends LongAggregation<Integer> {
         return longCollectorToIntPlus();
     }
     
-    public LongAggregatorToInt newLongAccumulatorToInt() {
+    public LongAggregatorToInt newAggregator() {
         val collector = longCollectorToIntPlus();
         return new LongAggregatorToInt.Impl(collector);
     }

@@ -90,7 +90,7 @@ public interface AnyAccess<HOST, DATA>
                     return Objects.equals(any, value);
                 });
     }
-    public default BooleanAccess<HOST> thatNotEqualsTo(DATA value) {
+    public default BooleanAccess<HOST> thatNotEquals(DATA value) {
         return booleanAccess(
                 value == null,
                 any -> {
