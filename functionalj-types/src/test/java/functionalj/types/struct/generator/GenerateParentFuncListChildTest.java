@@ -24,7 +24,6 @@
 package functionalj.types.struct.generator;
 
 import static functionalj.types.TestHelper.assertAsString;
-import static functionalj.types.struct.generator.ILines.line;
 import static java.util.Arrays.asList;
 
 import java.util.List;
@@ -78,6 +77,7 @@ public class GenerateParentFuncListChildTest {
                 + "import functionalj.lens.lenses.StringLens;\n"
                 + "import functionalj.list.FuncList;\n"
                 + "import functionalj.pipeable.Pipeable;\n"
+                + "import functionalj.types.Generated;\n"
                 + "import functionalj.types.IPostConstruct;\n"
                 + "import functionalj.types.IStruct;\n"
                 + "import functionalj.types.struct.generator.Getter;\n"
@@ -88,7 +88,6 @@ public class GenerateParentFuncListChildTest {
                 + "import java.util.function.BiFunction;\n"
                 + "import java.util.function.Function;\n"
                 + "import java.util.function.Supplier;\n"
-                + "import javax.annotation.Generated;\n"
                 + "\n"
                 + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"me.test.null.Definitions.ParentDef\")\n"
                 + "\n"
