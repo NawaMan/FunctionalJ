@@ -931,7 +931,8 @@ public interface Func {
         val cache = new ConcurrentHashMap<INPUT, OUTPUT>();
         return in -> cache.computeIfAbsent(in, inFunction::apply);
     }
-    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(long time, Function<INPUT, OUTPUT> inFunction) {
+    
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(long timeMilliSecond, Function<INPUT, OUTPUT> inFunction) {
         val cache       = new ConcurrentHashMap<INPUT, OUTPUT>();
         val expiredTime = new ConcurrentHashMap<INPUT, Long>();
         return in -> {
@@ -940,7 +941,7 @@ public interface Func {
                 cache.remove(in);
             }
             return cache.computeIfAbsent(in, key->{
-                expiredTime.put(key, Env.time().currentMilliSecond() + time);
+                expiredTime.put(key, Env.time().currentMilliSecond() + timeMilliSecond);
                 return inFunction.apply(key);
             });
         };
