@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-26T17:34:49.112636", comments = "functionalj.types.struct.WithPostConstruct.WithPostConstruct.SimpleDOWithPostReConstruct")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.509188", comments = "functionalj.types.struct.WithPostConstruct.WithPostConstruct.SimpleDOWithPostReConstruct")
 
 public class SimpleWithPostReConstruct implements WithPostConstruct.SimpleDOWithPostReConstruct,IStruct,Pipeable<SimpleWithPostReConstruct> {
     

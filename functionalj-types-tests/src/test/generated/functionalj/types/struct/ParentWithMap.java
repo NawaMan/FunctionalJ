@@ -18,7 +18,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-26T17:34:48.721361", comments = "functionalj.types.struct.WithMapTest.WithMapTest.IParent4")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.382417", comments = "functionalj.types.struct.WithMapTest.WithMapTest.IParent4")
 
 public class ParentWithMap implements WithMapTest.IParent4,IStruct,Pipeable<ParentWithMap> {
     

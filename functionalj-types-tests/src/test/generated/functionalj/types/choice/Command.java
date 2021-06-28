@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-27T07:56:33.547221", comments = "functionalj.types.choice.ChoiceToMapTest.CommandModel")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:43.061092", comments = "functionalj.types.choice.ChoiceToMapTest.CommandModel")
 @SuppressWarnings({"unchecked"})
 public abstract class Command implements IChoice<Command.CommandFirstSwitch>, Pipeable<Command> {
     

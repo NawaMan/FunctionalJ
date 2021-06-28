@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-26T17:34:49.122708", comments = "functionalj.types.struct.DOConstructorTest.DOConstructorTest.DONoNoArgsConstructorDef")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.514006", comments = "functionalj.types.struct.DOConstructorTest.DOConstructorTest.DONoNoArgsConstructorDef")
 
 public class DONoNoArgsConstructor implements DOConstructorTest.DONoNoArgsConstructorDef,IStruct,Pipeable<DONoNoArgsConstructor> {
     

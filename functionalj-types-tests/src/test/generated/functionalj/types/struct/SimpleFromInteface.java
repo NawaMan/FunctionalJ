@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-27T07:50:31.798966", comments = "functionalj.types.struct.SimpleStructTest.SimpleStructTest.SimpleDOInterface")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.470330", comments = "functionalj.types.struct.SimpleStructTest.SimpleStructTest.SimpleDOInterface")
 
 public class SimpleFromInteface implements SimpleStructTest.SimpleDOInterface,IStruct,Pipeable<SimpleFromInteface> {
     

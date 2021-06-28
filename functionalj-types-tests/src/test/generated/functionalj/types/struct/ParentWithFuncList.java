@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-27T08:31:26.293328", comments = "functionalj.types.struct.WithFuncListTest.WithFuncListTest.IParent2")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.389826", comments = "functionalj.types.struct.WithFuncListTest.WithFuncListTest.IParent2")
 
 public class ParentWithFuncList implements WithFuncListTest.IParent2,IStruct,Pipeable<ParentWithFuncList> {
     

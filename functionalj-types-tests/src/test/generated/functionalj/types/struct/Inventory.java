@@ -18,7 +18,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-27T08:55:41.027539", comments = "functionalj.types.struct.FromMethodTest")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.518754", comments = "functionalj.types.struct.FromMethodTest")
 
 public class Inventory implements IStruct,Pipeable<Inventory> {
     

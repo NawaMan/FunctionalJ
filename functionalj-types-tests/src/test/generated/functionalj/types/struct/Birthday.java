@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-26T17:34:49.061897", comments = "functionalj.types.struct.FromMapTest")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.490205", comments = "functionalj.types.struct.FromMapTest")
 
 public class Birthday implements IStruct,Pipeable<Birthday> {
     

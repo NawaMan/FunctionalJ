@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-27T07:56:33.572611", comments = "functionalj.types.choice.ChoiceToMapTest")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:43.072399", comments = "functionalj.types.choice.ChoiceToMapTest")
 
 public class MapTimedAction implements IStruct,Pipeable<MapTimedAction> {
     

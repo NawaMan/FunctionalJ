@@ -17,7 +17,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-26T17:34:49.043605", comments = "functionalj.types.struct.DOFromClassTest.DOFromClassTest.DOFromClassDef")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.474920", comments = "functionalj.types.struct.DOFromClassTest.DOFromClassTest.DOFromClassDef")
 
 public class DOFromClass extends DOFromClassTest.DOFromClassDef implements IStruct,Pipeable<DOFromClass> {
     

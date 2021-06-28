@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import javax.annotation.Generated;
 import nullablej.nullable.Nullable;
 
-@Generated(value = "FunctionalJ",date = "2021-06-26T17:34:49.015824", comments = "functionalj.types.struct.WithNullableOptionalTest.WithNullableOptionalTest.IParent3")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.421980", comments = "functionalj.types.struct.WithNullableOptionalTest.WithNullableOptionalTest.IParent3")
 
 public class ParentWithNullableOptional implements WithNullableOptionalTest.IParent3,IStruct,Pipeable<ParentWithNullableOptional> {
     

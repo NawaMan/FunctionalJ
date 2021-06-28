@@ -17,7 +17,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-26T17:34:48.840272", comments = "functionalj.types.struct.SubDOTest.SubDOTest.IParent")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.408071", comments = "functionalj.types.struct.SubDOTest.SubDOTest.IParent")
 
 public class Parent implements SubDOTest.IParent,IStruct,Pipeable<Parent> {
     

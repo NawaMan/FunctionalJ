@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Generated;
 
-@Generated(value = "FunctionalJ",date = "2021-06-26T17:34:48.961142", comments = "functionalj.types.struct.DOWithSameClassName.DOWithSameClassName.DOSameName")
+@Generated(value = "FunctionalJ",date = "2021-06-27T22:28:42.412713", comments = "functionalj.types.struct.DOWithSameClassName.DOWithSameClassName.DOSameName")
 
 public class DOSameName implements DOWithSameClassName.DOSameName,IStruct,Pipeable<DOSameName> {
     
