@@ -9,16 +9,16 @@ dependencies {
     compile project(':functionalj-types')
     annotationProcessor project(':functionalj-types')
     
-    compileOnly         'org.projectlombok:lombok:1.18.12'
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    compileOnly         'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
     
     // == Test ==
     
     testAnnotationProcessor project(':functionalj-types')
     
-    testCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:4.13.2'
     
-    testCompile             'org.projectlombok:lombok:1.18.12'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompile             'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
     
 }

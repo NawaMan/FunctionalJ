@@ -11,21 +11,21 @@ dependencies {
     annotationProcessor project(':functionalj-types')
     annotationProcessor project(':functionalj-elm')
     
-    compileOnly         'org.projectlombok:lombok:1.18.12'
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    compileOnly         'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
     
     compile 'org.knowm.xchart:xchart:3.8.0'
     
-    compile 'junit:junit:4.12'
+    compile 'junit:junit:4.13.2'
     
     // == Test ==
     
-    testCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:4.13.2'
     
     testAnnotationProcessor project(':functionalj-types')
     testAnnotationProcessor project(':functionalj-elm')
     
-    testCompile             'org.projectlombok:lombok:1.18.12'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompile             'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
     
 }
