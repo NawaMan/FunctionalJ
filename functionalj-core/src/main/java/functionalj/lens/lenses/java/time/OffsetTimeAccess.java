@@ -12,10 +12,12 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface OffsetTimeAccess<HOST>
@@ -56,25 +58,25 @@ public interface OffsetTimeAccess<HOST>
             return value.toLocalTime();
         };
     }
-    public default IntegerAccess<HOST> getHour() {
+    public default IntegerAccessPrimitive<HOST> getHour() {
         return host -> {
             val value = apply(host);
             return value.getHour();
         };
     }
-    public default IntegerAccess<HOST> getMinute() {
+    public default IntegerAccessPrimitive<HOST> getMinute() {
         return host -> {
             val value = apply(host);
             return value.getMinute();
         };
     }
-    public default IntegerAccess<HOST> getSecond() {
+    public default IntegerAccessPrimitive<HOST> getSecond() {
         return host -> {
             val value = apply(host);
             return value.getSecond();
         };
     }
-    public default IntegerAccess<HOST> getNano() {
+    public default IntegerAccessPrimitive<HOST> getNano() {
         return host -> {
             val value = apply(host);
             return value.getNano();
@@ -213,7 +215,7 @@ public interface OffsetTimeAccess<HOST>
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(OffsetTime other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(OffsetTime other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);
@@ -232,19 +234,19 @@ public interface OffsetTimeAccess<HOST>
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(OffsetTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(OffsetTime other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(OffsetTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(OffsetTime other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsEqual(OffsetTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsEqual(OffsetTime other) {
         return host -> {
             val value = apply(host);
             return value.isEqual(other);

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,8 +26,7 @@ package functionalj.result;
 import functionalj.list.FuncList;
 import functionalj.validator.Validator;
 
-@SuppressWarnings("javadoc")
-public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
+public abstract class Acceptable<DATA> extends Value<DATA> {
     
     protected Acceptable(DATA data, Validation<DATA> validating) {
         this(data, FuncList.of(validating.toValidator()));
@@ -36,7 +35,7 @@ public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
         super(data, validators);
     }
     protected Acceptable(DATA data, FuncList<Validator<? super DATA>> validators, Validation<DATA> validating) {
-        super(data, FuncList.from(validators).append(validating.toValidator()));
+        super(data, validators.append(validating.toValidator()));
     }
     
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -47,18 +47,18 @@ import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.list.FuncList;
+import functionalj.stream.AsStreamPlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.Streamable;
 import lombok.val;
+
 
 // TODO - Should only contains methods that return functions or constance of functions
 
-@SuppressWarnings("javadoc")
 public class StrFuncs {
     
     @SuppressWarnings("unused")
-	private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
+    private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
     
     /**
      * Return the string representation of the given object or null if the object is null.
@@ -84,7 +84,7 @@ public class StrFuncs {
      * @param <I>  the input data type.
      * @return the function.
      */
-    public static <I> Func1<I, String> toStr() {
+    public static <I> Function<I, String> toStr() {
         return (i) -> toStr(i);
     }
     
@@ -97,7 +97,15 @@ public class StrFuncs {
         return str -> (str != null) && !str.isEmpty();
     }
     
-    public static <I1, I2> Func2<I1, I2, String> concat2() {
+    public static <I> Function<AsStreamPlus<I>, String> concat(Class<I> clz) {
+        return concat();
+    }
+    
+    public static <I> Function<AsStreamPlus<I>, String> concat() {
+        return strings -> strings.streamPlus().map(StrFuncs::toStr).join();
+    }
+    
+    public static <I1, I2> BiFunction<I1, I2, String> concat2() {
         return (i1, i2) -> toStr(i1) + toStr(i2);
     }
     public static <I1, I2, I3> Func3<I1, I2, I3, String> concat3() {
@@ -111,6 +119,14 @@ public class StrFuncs {
     }
     public static <I1, I2, I3, I4, I5, I6> Func6<I1, I2, I3, I4, I5, I6, String> concat6() {
         return (i1, i2, i3, i4, i5, i6) -> toStr(i1) + toStr(i2) + toStr(i3) + toStr(i4) + toStr(i5) + toStr(i6);
+    }
+    
+    public static <I> Func1<AsStreamPlus<I>, String> join(Class<I> clz, String delimiter) {
+        return join(delimiter);
+    }
+    
+    public static <I> Func1<AsStreamPlus<I>, String> join(String delimiter) {
+        return strings -> strings.streamPlus().map(StrFuncs::toStr).join(delimiter);
     }
     
     public static <I1, I2> Func2<I1, I2, String> join2(String delimiter) {
@@ -243,27 +259,27 @@ public class StrFuncs {
         };
     }
     
-    public static <I1> Func1<I1, String> formatWith1(String template) {
+    public static <I1> Func1<I1, Object> formatWith1(String template) {
         return (i1) -> String.format(template, i1);
     }
     
-    public static <I1, I2> Func2<I1, I2, String> formatWith2(String template) {
+    public static <I1, I2> Func2<I1, I2, Object> formatWith2(String template) {
         return (i1, i2) -> String.format(template, i1, i2);
     }
     
-    public static <I1, I2, I3> Func3<I1, I2, I3, String> formatWith3(String template) {
+    public static <I1, I2, I3> Func3<I1, I2, I3, Object> formatWith3(String template) {
         return (i1, i2, i3) -> String.format(template, i1, i2, i3);
     }
     
-    public static <I1, I2, I3, I4> Func4<I1, I2, I3, I4, String> formatWith4(String template) {
+    public static <I1, I2, I3, I4> Func4<I1, I2, I3, I4, Object> formatWith4(String template) {
         return (i1, i2, i3, i4) -> String.format(template, i1, i2, i3, i4);
     }
     
-    public static <I1, I2, I3, I4, I5> Func5<I1, I2, I3, I4, I5, String> formatWith5(String template) {
+    public static <I1, I2, I3, I4, I5> Func5<I1, I2, I3, I4, I5, Object> formatWith5(String template) {
         return (i1, i2, i3, i4, i5) -> String.format(template, i1, i2, i3, i4, i5);
     }
     
-    public static <I1, I2, I3, I4, I5, I6> Func6<I1, I2, I3, I4, I5, I6, String> formatWith6(String template) {
+    public static <I1, I2, I3, I4, I5, I6> Func6<I1, I2, I3, I4, I5, I6, Object> formatWith6(String template) {
         return (i1, i2, i3, i4, i5, i6) -> String.format(template, i1, i2, i3, i4, i5, i6);
     }
     
@@ -415,25 +431,30 @@ public class StrFuncs {
     
     public static FuncList<String> grab(CharSequence strValue, String regex, int patternFlags) {
         val pattern  = Pattern.compile(regex, patternFlags);
-        return FuncList.from(Streamable.from(()->{
+        return FuncList.from(FuncList.from(()->{
             val matcher  = pattern.matcher(strValue);
-            val iterator = new IteratorPlus<String>() {
-                @Override
-                public Iterator<String> asIterator() {
-                    return new Iterator<String>() {
-                        @Override
-                        public boolean hasNext() {
-                            return matcher.find();
-                        }
-                        @Override
-                        public String next() {
-                            return matcher.group();
-                        }
-                    };
-                }
-            };
-            return iterator.stream();
+            try (val iterator = createMatchIterator(matcher)) {
+                return iterator.stream();
+            }
         }));
+    }
+    
+    private static IteratorPlus<String> createMatchIterator(final java.util.regex.Matcher matcher) {
+        return new IteratorPlus<String>() {
+            @Override
+            public Iterator<String> asIterator() {
+                return new Iterator<String>() {
+                    @Override
+                    public boolean hasNext() {
+                        return matcher.find();
+                    }
+                    @Override
+                    public String next() {
+                        return matcher.group();
+                    }
+                };
+            }
+        };
     }
     
     public static Func1<CharSequence, RegExMatchResultStream> matches(String regex) {

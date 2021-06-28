@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -36,7 +36,6 @@ class BigDecimalAccessConstants {
 }
 
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BigDecimalAccess<HOST> 
                     extends 
@@ -68,23 +67,23 @@ public interface BigDecimalAccess<HOST>
             return BigDecimalAccessConstants.MINUS_ONE;
         }
         @Override
-        public Integer toInteger(BigDecimal number) {
-            return toBigDecimal(number).intValue();
+        public Integer asInteger(BigDecimal number) {
+            return asBigDecimal(number).intValue();
         }
         @Override
-        public Long toLong(BigDecimal number) {
-            return toBigDecimal(number).longValue();
+        public Long asLong(BigDecimal number) {
+            return asBigDecimal(number).longValue();
         }
         @Override
-        public Double toDouble(BigDecimal number) {
-            return toBigDecimal(number).doubleValue();
+        public Double asDouble(BigDecimal number) {
+            return asBigDecimal(number).doubleValue();
         }
         @Override
-        public BigInteger toBigInteger(BigDecimal number) {
-            return toBigDecimal(number).toBigInteger();
+        public BigInteger asBigInteger(BigDecimal number) {
+            return asBigDecimal(number).toBigInteger();
         }
         @Override
-        public BigDecimal toBigDecimal(BigDecimal number) {
+        public BigDecimal asBigDecimal(BigDecimal number) {
             return Nullable.of(number).orElse(BigDecimal.ZERO);
         }
         
@@ -118,7 +117,7 @@ public interface BigDecimalAccess<HOST>
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.remainder(v2);
         }
-
+        
         @Override
         public Tuple2<BigDecimal, BigDecimal> divideAndRemainder(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
@@ -126,14 +125,14 @@ public interface BigDecimalAccess<HOST>
             BigDecimal[] rs = v1.divideAndRemainder(v2);
             return Tuple.of(rs[0], rs[1]);
         }
-
+        
         @Override
         public BigDecimal pow(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.pow(v2.intValue());
         }
-
+        
         @Override
         public BigDecimal abs(BigDecimal number) {
             BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
@@ -149,7 +148,7 @@ public interface BigDecimalAccess<HOST>
             BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
             return BigDecimal.valueOf(v.signum());
         }
-
+        
         @Override
         public BigDecimal min(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
@@ -164,5 +163,21 @@ public interface BigDecimalAccess<HOST>
         }
         
     };
+    
+    // TODO - Add more.
+    
+//    Math.acos(doubleValue)
+//    Math.asin(doubleValue)
+//    Math.tan(doubleValue)
+//    Math.tan2(doubleValue)
+//    Math.cos(doubleValue)
+//    Math.cosh(doubleValue)
+//    Math.sin(doubleValue)
+//    Math.sinh(doubleValue)
+//    Math.tan(doubleValue)
+//    Math.tanh(doubleValue)
+//    
+//    Math.toDegrees(doubleValue)
+//    Math.toRadians(doubleValue)
     
 }

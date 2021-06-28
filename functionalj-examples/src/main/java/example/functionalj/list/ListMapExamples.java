@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,7 +23,9 @@
 // ============================================================================
 package example.functionalj.list;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,7 @@ import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import lombok.val;
 
+
 public class ListMapExamples {
     
     @Test
@@ -43,7 +46,7 @@ public class ListMapExamples {
         List<String>        list = FuncList.of("I", "Me", "Myself");
         Map<String, Double> map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
         assertEquals("[I, Me, Myself]",                  list.toString());
-        assertEquals("{One:1.0, PI:3.14159, E:2.71828}", map.toString());
+        assertEquals("{E:2.71828, One:1.0, PI:3.14159}", map.toString());
     }
     
     @Test
@@ -82,9 +85,9 @@ public class ListMapExamples {
         val newMap  = map .with("Ten", 10.0);
         
         assertEquals("[I, Me, Myself]",                            list.toString());
-        assertEquals("{One:1.0, PI:3.14159, E:2.71828}",           map .toString());
+        assertEquals("{E:2.71828, One:1.0, PI:3.14159}",           map .toString());
         assertEquals("[I, Me, Myself, First-Person]",              newList.toString());
-        assertEquals("{One:1.0, PI:3.14159, E:2.71828, Ten:10.0}", newMap .toString());
+        assertEquals("{E:2.71828, One:1.0, PI:3.14159, Ten:10.0}", newMap .toString());
     }
     
     @Test
@@ -92,7 +95,7 @@ public class ListMapExamples {
         val list = FuncList.of("I", "Me", "Myself");
         val map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
         assertEquals("[1, 2, 6]",          list.map     (String::length).toString());
-        assertEquals("{One:1, PI:3, E:3}", map .mapValue(Math::round)   .toString());
+        assertEquals("{E:3, One:1, PI:3}", map .mapValue(Math::round)   .toString());
     }
     
     @Test

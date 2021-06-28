@@ -29,7 +29,7 @@ This class has two fields: `firstName` and `lastName`.
 The following code shows how to create the object.
 
 ```java
-    val person = new Person("John", "Doe");
+    var person = new Person("John", "Doe");
     assertEquals("Person[firstName: John, lastName: Doe]", person.toString());
 ```
 
@@ -39,8 +39,8 @@ Common object methods such as `toString()`, `hashCode()` and `equals(...)` are a
 The code above shows how `toString()` might return and the following code shows `hashCode()` and `equals(...)`.
 
 ```java
-    val person1 = new Person("John", "Doe");
-    val person2 = new Person("John", "Doe");
+    var person1 = new Person("John", "Doe");
+    var person2 = new Person("John", "Doe");
     assertTrue(person1.hashCode() == person2.hashCode());
     assertTrue(person1.equals(person2));
     assertFalse(person1.hashCode() == person3.hashCode());
@@ -51,7 +51,7 @@ The code above shows how `toString()` might return and the following code shows 
 The fields can be access using its getter which is just the method with the same name.
 
 ```java
-    val person = new Person("John", "Doe");
+    var person = new Person("John", "Doe");
     assertEquals("John", person.firstName());
     assertEquals("Doe",  person.lastName());
 ```
@@ -62,8 +62,8 @@ So to change the field value, we create another object with the new field value 
 The method `withXXX(...)` can be used to do just that.
 
 ```java
-    val person1 = new Person("John", "Doe");
-    val person2 = person1.withLastName("Smith");
+    var person1 = new Person("John", "Doe");
+    var person2 = person1.withLastName("Smith");
     assertEquals("Person[firstName: John, lastName: Doe]",   person1.toString());
     assertEquals("Person[firstName: John, lastName: Smith]", person2.toString());
 ```
@@ -94,7 +94,7 @@ So let say we add `middleName` field to the `Person` class and make it nullable.
 Now, you can use `null` to specify the middle name.
 
 ```java
-    val person = new Person("John", null, "Doe");
+    var person = new Person("John", null, "Doe");
     assertEquals("Person[firstName: John, middleName: null, lastName: Doe]", person.toString());
 ```
 
@@ -102,7 +102,7 @@ With this **nullable** field,
   we got another constructor that only have required fields.
 
 ```java
-    val person = new Person("John", "Doe");
+    var person = new Person("John", "Doe");
     assertEquals("Person[firstName: John, middleName: null, lastName: Doe]", person.toString());
 ```
 
@@ -125,18 +125,18 @@ So now we can create person with either a value or null (to use default value).
 
 ```java
     // With value
-    val person1 = new Person("John", null, "Doe", 30);
+    var person1 = new Person("John", null, "Doe", 30);
     assertEquals("Person[firstName: John, middleName: null, lastName: Doe, age: 30]", person1.toString());
     
     // With default value
-    val person2 = new Person("John", null, "Doe", null);
+    var person2 = new Person("John", null, "Doe", null);
     assertEquals("Person[firstName: John, middleName: null, lastName: Doe, age: -1]", person2.toString());
 ```
 
 Of course, the constructors with only required field is still there.
 
 ```java
-    val person = new Person("John", "Doe");
+    var person = new Person("John", "Doe");
     assertEquals("Person[firstName: John, middleName: null, lastName: Doe]", person.toString());
 ```
 
@@ -166,11 +166,11 @@ Now you can use the lens to access the field in employee.
     import static pkg.Employee.theEmployee;
     ...
     
-    val employee1 = new Employee("John", "Doe");
+    var employee1 = new Employee("John", "Doe");
     assertEquals("John", theEmployee.firstName.apply(employee1));
     assertEquals("Doe",  theEmployee.lastName .apply(employee1));
     
-    val employee2 = theEmployee.firstName.changeTo("Jonathan").apply(employee1);
+    var employee2 = theEmployee.firstName.changeTo("Jonathan").apply(employee1);
     assertEquals("Employee[firstName: Jonathan, middleName: null, lastName: Doe]", employee2.toString());
 ```
 
@@ -184,8 +184,8 @@ With lens, it is possible to quickly access to field in the employee from the de
     import static pkg.Employee.theEmployee;
     ...
     
-    val employee   = new Employee("John", "Doe");
-    val department = new Department("Sales", employee);
+    var employee   = new Employee("John", "Doe");
+    var department = new Department("Sales", employee);
     assertEquals(
             "Department[name: Sales, manager: Employee[firstName: John, middleName: null, lastName: Doe]]",
             department.toString());
@@ -195,7 +195,7 @@ With lens, it is possible to quickly access to field in the employee from the de
     assertEquals("Doe",  theDepartment.manager.lastName .apply(department));
     
     // Change
-    val department2 = theDepartment.manager.firstName.changeTo("Jonathan").apply(department);
+    var department2 = theDepartment.manager.firstName.changeTo("Jonathan").apply(department);
     assertEquals(
             "Department[name: Sales, manager: Employee[firstName: Jonathan, middleName: null, lastName: Doe]]",
             department2.toString());
@@ -205,7 +205,7 @@ This is more useful when using it with stream or `FuncList`.
 The following code extract the list of manager family name.
 
 ```java
-    val departments = FuncList.of(
+    var departments = FuncList.of(
             new Department("Sales",   new Employee("John", "Doe")),
             new Department("R&D",     new Employee("John", "Jackson")),
             new Department("Support", new Employee("Jack", "Johnson"))
@@ -216,7 +216,7 @@ The following code extract the list of manager family name.
 Another example get the list of the department name with the manager last name but only when his name is "John".
 
 ```java
-    val departments = FuncList.of(
+    var departments = FuncList.of(
             new Department("Sales",   new Employee("John", "Doe")),
             new Department("R&D",     new Employee("John", "Jackson")),
             new Department("Support", new Employee("Jack", "Johnson"))
@@ -235,7 +235,7 @@ Struct is also comes with a builder.
 This build is exhaustive meaning that all requires fields are required.
 
 ```java
-    val person = new Person.Builder()
+    var person = new Person.Builder()
             .firstName("John")
             .lastName("Doe")
             .build();
@@ -245,7 +245,7 @@ This build is exhaustive meaning that all requires fields are required.
 You can also put in non-required fields.
 
 ```java
-    val person = new Person.Builder()
+    var person = new Person.Builder()
             .firstName ("John")
             .middleName("F")
             .lastName  ("Doe")
@@ -268,11 +268,11 @@ The first way is to have the spec method return boolean indicating if the parame
         return radius > 0;
     }
     
-    val validCircle = new Circle(10, 10, 10);
+    var validCircle = new Circle(10, 10, 10);
     assertEquals("Circle[x: 10, y: 10, radius: 10]", validCircle.toString());
     
     try {
-        val invalidCircle = new Circle(10, 10, -10);
+        var invalidCircle = new Circle(10, 10, -10);
         fail("Except a ValidationException.");
     } catch (ValidationException e) {
         assertEquals(

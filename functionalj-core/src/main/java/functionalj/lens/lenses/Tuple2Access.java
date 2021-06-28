@@ -7,7 +7,7 @@ import functionalj.tuple.ToTuple2Func;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface Tuple2Access<HOST, T1, T2, 
                         T1ACCESS extends AnyAccess<HOST,T1>, 
                         T2ACCESS extends AnyAccess<HOST,T2>>

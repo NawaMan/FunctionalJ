@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -48,10 +48,10 @@ import nullablej.nullable.Nullable;
 
 /**
  * Function of one parameter.
- * 
+ *
  * @param <INPUT>   the input data type.
  * @param <OUTPUT>  the output data type.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
@@ -59,17 +59,17 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     /**
      * Constructs a Func1 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func1.
      **/
-    public static <INPUT, OUTPUT> 
+    public static <INPUT, OUTPUT>
             Func1<INPUT, OUTPUT> of(Func1<INPUT, OUTPUT> function) {
         return function;
     }
-    public static <INPUT, OUTPUT> 
+    public static <INPUT, OUTPUT>
             Func1<INPUT, OUTPUT> func1(Func1<INPUT, OUTPUT> function) {
         return function;
     }
@@ -195,7 +195,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return FuncMap.from(input).map(this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT> input) {
-        return FuncList.from(input).map(this);
+        return input.map(this);
     }
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
         return FuncMap.from(input).map(this);
@@ -223,7 +223,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     * 
+     *
      * @param  <TARGET>  the target result value.
      * @param  after     the function to be run after this function.
      * @return           the composed function.
@@ -294,7 +294,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input)->{
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue 
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -308,7 +308,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input)->{
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue 
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -322,7 +322,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input)->{
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue 
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);
@@ -336,7 +336,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input)->{
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue 
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(input, null);
@@ -351,7 +351,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input)->{
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue 
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -365,7 +365,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input)->{
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue 
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -379,7 +379,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input)->{
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue 
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);
@@ -393,7 +393,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input)->{
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue 
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(input, null);
@@ -435,7 +435,16 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
                     .start().getPromise();
         };
     }
-    public default Func1<HasPromise<INPUT>, Promise<OUTPUT>> defer() {
+    public default Func1<INPUT, DeferAction<OUTPUT>> defer() {
+        return input -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.applyUnsafe(input);
+            };
+            return DeferAction.from(supplier);
+        };
+    }
+    
+    public default Func1<HasPromise<INPUT>, Promise<OUTPUT>> forPromise() {
         return input -> input.getPromise().map(this);
     }
     
@@ -453,7 +462,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     /**
      * Create a bind function (a supplier) of the this function.
-     * 
+     *
      * @param   input  the input value.
      * @return         the Supplier.
      */

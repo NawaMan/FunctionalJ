@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -39,7 +39,7 @@ import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
-import lombok.val;
+
 
 // 2018-11-14 - WIP - `Finish` is not done.
 public class GeneratorTest {
@@ -137,21 +137,21 @@ public class GeneratorTest {
             }
         }
         
-        public static <D> GeneratorEntry<D> e(Func0<D> body) {
+        public static <DATA> GeneratorEntry<DATA> e(Func0<DATA> body) {
             return Last(body);
         }
-        public static <D> GeneratorEntry<D> e(Func0<D> body, Func1<D, GeneratorEntry<D>> more) {
+        public static <DATA> GeneratorEntry<DATA> e(Func0<DATA> body, Func1<DATA, GeneratorEntry<DATA>> more) {
             return Next(body, more);
         }
-        public static <D> GeneratorEntry<D> e(Func0<D> body, Func0<GeneratorEntry<D>> more) {
+        public static <DATA> GeneratorEntry<DATA> e(Func0<DATA> body, Func0<GeneratorEntry<DATA>> more) {
             return Next(body, __ -> more.apply());
         }
         
-        public static class GeneratorIterator<D> implements IteratorPlus<D> {
-            private final Generator<D> generator;
-            private D       nextValue = null;
+        public static class GeneratorIterator<DATA> implements IteratorPlus<DATA> {
+            private final Generator<DATA> generator;
+            private DATA    nextValue = null;
             private boolean hasNext   = true;
-            public GeneratorIterator(Generator<D> generator) {
+            public GeneratorIterator(Generator<DATA> generator) {
                 this.generator = generator;
             }
             @Override
@@ -164,11 +164,11 @@ public class GeneratorTest {
                 return hasNext;
             }
             @Override
-            public D next() {
+            public DATA next() {
                 return nextValue;
             }
             @Override
-            public Iterator<D> asIterator() {
+            public Iterator <DATA> asIterator() {
                 return this;
             }
         }

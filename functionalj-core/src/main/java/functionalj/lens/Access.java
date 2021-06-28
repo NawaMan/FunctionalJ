@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,41 +32,43 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.BigDecimalLens;
 import functionalj.lens.lenses.BigIntegerLens;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.BooleanLens;
 import functionalj.lens.lenses.ComparableLens;
-import functionalj.lens.lenses.DoubleLens;
-import functionalj.lens.lenses.IntegerLens;
-import functionalj.lens.lenses.LongLens;
+import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
+import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
+import functionalj.lens.lenses.LongToLongAccessPrimitive;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
 import functionalj.tuple.Tuple2;
 
-@SuppressWarnings("javadoc")
 public interface Access {
     
     public static final AnyLens<Object, Object> theObject  = AnyLens    .of(LensSpec.of(Object.class));
     public static final BooleanLens<Boolean>    theBoolean = BooleanLens.of(LensSpec.of(Boolean.class));
     public static final StringLens<String>      theString  = StringLens .of(LensSpec.of(String.class));
-    public static final IntegerLens<Integer>    theInteger = IntegerLens.of(LensSpec.of(Integer.class));
-    public static final LongLens<Long>          theLong    = LongLens   .of(LensSpec.of(Long.class));
-    public static final DoubleLens<Double>      theDouble  = DoubleLens .of(LensSpec.of(Double.class));
+    public static final TheInteger              theInteger = TheInteger.theInteger;
+    public static final TheInteger              theInt     = TheInteger.theInteger;
+    public static final TheLong                 theLong    = TheLong.theLong;
+    public static final TheDouble               theDouble  = TheDouble.theDouble;
+    public static final TheDouble               theNumber  = TheDouble.theDouble;
     
     public static final BigIntegerLens<BigInteger> theBigInteger = BigIntegerLens.of(LensSpec.of(BigInteger.class));
     public static final BigDecimalLens<BigDecimal> theBigDecimal = BigDecimalLens.of(LensSpec.of(BigDecimal.class));
     
+    public static final AnyLens<Object, Object>    $$ = theObject;
     public static final AnyLens<Object, Object>    $O = theObject;
     public static final BooleanLens<Boolean>       $B = theBoolean;
     public static final StringLens<String>         $S = theString;
-    public static final IntegerLens<Integer>       $I = theInteger;
-    public static final LongLens<Long>             $L = theLong;
-    public static final DoubleLens<Double>         $D = theDouble;
+    public static final TheInteger                 $I = theInteger;
+    public static final TheLong                    $L = theLong;
+    public static final TheDouble                  $D = theDouble;
     public static final BigIntegerLens<BigInteger> $BI = theBigInteger;
     public static final BigDecimalLens<BigDecimal> $BD = theBigDecimal;
     
-    public static final BooleanAccess<Object> True  = any -> true;
-    public static final BooleanAccess<Object> False = any -> false;
+    public static final BooleanAccessPrimitive<Object> True  = any -> true;
+    public static final BooleanAccessPrimitive<Object> False = any -> false;
     
     public static final Accesses.TheListLens   theList   = new Accesses.TheListLens();
     public static final Accesses.TheTuple2Lens theTuple2 = new Accesses.TheTuple2Lens();
@@ -90,13 +92,15 @@ public interface Access {
     }
     
     //-- Each --
-    
-    public static final AnyLens<Object, Object> eachObject  = theObject;
-    public static final BooleanLens<Boolean>    eachBoolean = theBoolean;
-    public static final StringLens<String>      eachString  = theString;
-    public static final IntegerLens<Integer>    eachInteger = theInteger;
-    public static final LongLens<Long>          eachLong    = theLong;
-    public static final DoubleLens<Double>      eachDouble  = theDouble;
+
+    public static final AnyLens<Object, Object>         each        = theObject;
+    public static final AnyLens<Object, Object>         eachObject  = theObject;
+    public static final BooleanLens<Boolean>            eachBoolean = theBoolean;
+    public static final StringLens<String>              eachString  = theString;
+    public static final IntegerToIntegerAccessPrimitive eachInteger = theInteger;
+    public static final LongToLongAccessPrimitive       eachLong    = theLong;
+    public static final DoubleToDoubleAccessPrimitive   eachDouble  = theDouble;
+    public static final DoubleToDoubleAccessPrimitive   eachNumber  = theDouble;
     
     public static final BigIntegerLens<BigInteger> eachBigInteger = theBigInteger;
     public static final BigDecimalLens<BigDecimal> eachBigDecimal = theBigDecimal;

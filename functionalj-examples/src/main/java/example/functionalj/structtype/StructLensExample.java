@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,14 +30,15 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.types.Struct;
 import functionalj.map.FuncMap;
+import functionalj.types.Struct;
 import lombok.val;
+
 
 public class StructLensExample {
     
     @Struct
-    void Personel(int id, String firstName, String lastName) {}
+    void Personel(int id, String firstName, String lastName, double salary, boolean isOnSite) {}
     
     @Struct
     void Company(String name, FuncMap<Integer, Personel> employees) {}
@@ -45,15 +46,17 @@ public class StructLensExample {
     @Test
     public void testLensToMap() {
         val company = new Company("HighProfitCorp", listOf(
-                    new Personel(1, "John", "Doe"),
-                    new Personel(2, "Jane", "Smith")
-                ).toMap(thePersonel.id));
+                    new Personel(1, "John", "Doe", 100_000, true),
+                    new Personel(2, "Jane", "Smith", 150_000, false)
+                )
+                .toMap      (thePersonel.id)
+                .sortedByKey(Integer::compare));
         assertEquals(
                 "Company["
                 + "name: HighProfitCorp, "
                 + "employees: {"
-                +   "1:Personel[id: 1, firstName: John, lastName: Doe], "
-                +   "2:Personel[id: 2, firstName: Jane, lastName: Smith]"
+                + "1:Personel[id: 1, firstName: John, lastName: Doe, salary: 100000.0, isOnSite: true], "
+                + "2:Personel[id: 2, firstName: Jane, lastName: Smith, salary: 150000.0, isOnSite: false]"
                 + "}"
                 + "]", 
                 company.toString());
@@ -67,11 +70,29 @@ public class StructLensExample {
                 "Company["
                 + "name: HighProfitCorp, "
                 + "employees: {"
-                +   "1:Personel[id: 1, firstName: John, lastName: Doe], "
-                +   "2:Personel[id: 2, firstName: Jane, lastName: Skywalker]"
+                + "1:Personel[id: 1, firstName: John, lastName: Doe, salary: 100000.0, isOnSite: true], "
+                + "2:Personel[id: 2, firstName: Jane, lastName: Skywalker, salary: 150000.0, isOnSite: false]"
                 + "}"
                 + "]", 
-                changeJaneFamilyName.apply(company).toString());
+                changeJaneFamilyName
+                .apply(company)
+                .withEmployees(e -> e.sortedByKey(Integer::compare))
+                .toString());
     }
+    
+    // TODO - Must uncomment this.
+//    @Test
+//    public void testPrimitiveField() {
+//        assertEquals("[2]", 
+//                listOf(
+//                        new Personel(1, "John", "Doe", 100_000, true),
+//                        new Personel(2, "Jane", "Smith", 150_000, false)
+//                )
+//                .filter  (eachPersonel.isOnSite.negate())
+//                .filter  (eachPersonel.salary.thatGreaterThan(120_000.0))
+//                .mapToInt(eachPersonel.id)
+//                .toImmutableList()
+//                .toString());
+//    }
 
 }

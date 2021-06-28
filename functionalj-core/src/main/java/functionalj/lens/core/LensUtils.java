@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,10 +29,18 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import functionalj.lens.lenses.AnyLens;
+import functionalj.lens.lenses.BooleanLens;
+import functionalj.lens.lenses.DoubleLens;
 import functionalj.lens.lenses.FuncListLens;
+import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ListLens;
+import functionalj.lens.lenses.LongLens;
 import functionalj.lens.lenses.MapLens;
 import functionalj.lens.lenses.NullableLens;
 import functionalj.lens.lenses.ObjectLens;
@@ -44,7 +52,6 @@ import functionalj.result.Result;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
-@SuppressWarnings("javadoc")
 public class LensUtils {
 
     public static <HOST, DATA, SUB, SUBLENS> SUBLENS createSubLens(
@@ -55,6 +62,42 @@ public class LensUtils {
         val lensSpec    = dataLens.lensSpec();
         val hostSubSpec = lensSpec.then(LensSpec.of(readSub, writeSub, lensSpec.isNullSafe()));
         return subLensCreator.apply(hostSubSpec);
+    }
+    
+    public static <HOST, DATA> IntegerLens<HOST> createSubLens(
+            ObjectLens<HOST, DATA>       dataLens,
+            ToIntFunction<DATA>          readSubInt,
+            WriteLens.PrimitiveInt<DATA> writeSubInt) {
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubInt, writeSubInt));
+        return (IntegerLens<HOST>)()->hostSubSpec;
+    }
+    
+    public static <HOST, DATA> LongLens<HOST> createSubLens(
+            ObjectLens<HOST, DATA>        dataLens,
+            ToLongFunction<DATA>          readSubLong,
+            WriteLens.PrimitiveLong<DATA> writeSubLong) {
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubLong, writeSubLong));
+        return (LongLens<HOST>)()->hostSubSpec;
+    }
+    
+    public static <HOST, DATA> DoubleLens<HOST> createSubLens(
+            ObjectLens<HOST, DATA>           dataLens,
+            ToDoubleFunction<DATA>           readSubDouble,
+            WriteLens.PrimitiveDouble<DATA> writeSubDouble) {
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubDouble, writeSubDouble));
+        return (DoubleLens<HOST>)()->hostSubSpec;
+    }
+    
+    public static <HOST, DATA> BooleanLens<HOST> createSubLens(
+            ObjectLens<HOST, DATA>           dataLens,
+            Predicate<DATA>                  readSubBoolean,
+            WriteLens.PrimitiveBoolean<DATA> writeSubBoolean) {
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubBoolean, writeSubBoolean));
+        return (BooleanLens<HOST>)()->hostSubSpec;
     }
     
     public static <DATA, SUB, HOST> Function<HOST, SUB> createSubRead(
@@ -86,6 +129,104 @@ public class LensUtils {
             BooleanSupplier       isNullSafe) {
         return (host, newSubValue)->{
             return performWrite(readValue, writeValue, writeSub, isNullSafe, host, newSubValue);
+        };
+    }
+    
+    //== Primitive ==
+    
+    //-- Int --
+    
+    public static <HOST, DATA> ToIntFunction<HOST> createSubReadInt(
+            Function<HOST, DATA> readValue,
+            ToIntFunction<DATA>  readSub) {
+        return host ->{
+            val value    = readValue.apply(host);
+            val subValue = readSub.applyAsInt(value);
+            return subValue;
+        };
+    }
+    
+    public static <HOST, DATA> WriteLens.PrimitiveInt<HOST> createSubWriteInt(
+            Function<HOST, DATA>         readValue,
+            WriteLens<HOST, DATA>        writeValue,
+            WriteLens.PrimitiveInt<DATA> writeSub) {
+        return (host, newSubValue)->{
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
+            return newHost;
+        };
+    }
+    
+    //-- Long --
+    
+    public static <HOST, DATA> ToLongFunction<HOST> createSubReadLong(
+            Function<HOST, DATA> readValue,
+            ToLongFunction<DATA> readSub) {
+        return host ->{
+            val value    = readValue.apply(host);
+            val subValue = readSub.applyAsLong(value);
+            return subValue;
+        };
+    }
+    
+    public static <HOST, DATA> WriteLens.PrimitiveLong<HOST> createSubWriteLong(
+            Function<HOST, DATA>          readValue,
+            WriteLens<HOST, DATA>         writeValue,
+            WriteLens.PrimitiveLong<DATA> writeSub) {
+        return (host, newSubValue)->{
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
+            return newHost;
+        };
+    }
+    
+    //-- Double --
+    
+    public static <HOST, DATA> ToDoubleFunction<HOST> createSubReadDouble(
+            Function<HOST, DATA>   readValue,
+            ToDoubleFunction<DATA> readSub) {
+        return host ->{
+            val value    = readValue.apply(host);
+            val subValue = readSub.applyAsDouble(value);
+            return subValue;
+        };
+    }
+    
+    public static <HOST, DATA> WriteLens.PrimitiveDouble<HOST> createSubWriteDouble(
+            Function<HOST, DATA>            readValue,
+            WriteLens<HOST, DATA>           writeValue,
+            WriteLens.PrimitiveDouble<DATA> writeSub) {
+        return (host, newSubValue)->{
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
+            return newHost;
+        };
+    }
+    
+    //-- Boolean --
+    
+    public static <HOST, DATA> Predicate<HOST> createSubReadBoolean(
+            Function<HOST, DATA> readValue,
+            Predicate<DATA>      readSub) {
+        return host ->{
+            val value    = readValue.apply(host);
+            val subValue = readSub.test(value);
+            return subValue;
+        };
+    }
+    
+    public static <HOST, DATA> WriteLens.PrimitiveBoolean<HOST> createSubWriteBoolean(
+            Function<HOST, DATA>             readValue,
+            WriteLens<HOST, DATA>            writeValue,
+            WriteLens.PrimitiveBoolean<DATA> writeSub) {
+        return (host, newSubValue)->{
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
+            return newHost;
         };
     }
     

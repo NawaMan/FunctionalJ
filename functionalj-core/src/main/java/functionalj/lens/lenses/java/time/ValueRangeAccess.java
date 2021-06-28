@@ -5,11 +5,12 @@ import java.time.temporal.ValueRange;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
+
 
 public interface ValueRangeAccess<HOST>
                     extends AnyAccess<HOST, ValueRange>
@@ -23,61 +24,61 @@ public interface ValueRangeAccess<HOST>
         return host -> accessToValue.apply(host);
     }
     
-    public default BooleanAccess<HOST> isFixed() {
+    public default BooleanAccessPrimitive<HOST> isFixed() {
         return host -> {
             val value = apply(host);
             return value.isFixed();
         };
     }
-    public default LongAccess<HOST> getMinimum() {
+    public default LongAccessPrimitive<HOST> getMinimum() {
         return host -> {
             val value = apply(host);
             return value.getMinimum();
         };
     }
-    public default LongAccess<HOST> getLargestMinimum() {
+    public default LongAccessPrimitive<HOST> getLargestMinimum() {
         return host -> {
             val value = apply(host);
             return value.getLargestMinimum();
         };
     }
-    public default LongAccess<HOST> getSmallestMaximum() {
+    public default LongAccessPrimitive<HOST> getSmallestMaximum() {
         return host -> {
             val value = apply(host);
             return value.getSmallestMaximum();
         };
     }
-    public default LongAccess<HOST> getMaximum() {
+    public default LongAccessPrimitive<HOST> getMaximum() {
         return host -> {
             val value = apply(host);
             return value.getMaximum();
         };
     }
-    public default BooleanAccess<HOST> isIntValue() {
+    public default BooleanAccessPrimitive<HOST> isIntValue() {
         return host -> {
             val value = apply(host);
             return value.isIntValue();
         };
     }
-    public default BooleanAccess<HOST> isValidValue(long value) {
+    public default BooleanAccessPrimitive<HOST> isValidValue(long value) {
         return host -> {
             return apply(host)
                     .isValidValue(value);
         };
     }
-    public default BooleanAccess<HOST> isValidIntValue(long value) {
+    public default BooleanAccessPrimitive<HOST> isValidIntValue(long value) {
         return host -> {
             return apply(host)
                     .isValidIntValue(value);
         };
     }
-    public default LongAccess<HOST> checkValidValue(long value, TemporalField field) {
+    public default LongAccessPrimitive<HOST> checkValidValue(long value, TemporalField field) {
         return host -> {
             return apply(host)
                     .checkValidValue(value, field);
         };
     }
-    public default IntegerAccess<HOST> checkValidIntValue(long value, TemporalField field) {
+    public default IntegerAccessPrimitive<HOST> checkValidIntValue(long value, TemporalField field) {
         return host -> {
             return apply(host)
                     .checkValidIntValue(value, field);

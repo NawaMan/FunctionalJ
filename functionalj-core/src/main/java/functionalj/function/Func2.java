@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -125,16 +125,16 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return Task.from(input1, input2, this);
     }
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
-        return input1.combineWith(input2, this);
+        return input1.zipWith(input2, this);
     }
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, ZipWithOption option) {
-        return input1.combineWith(input2, option, this);
+        return input1.zipWith(input2, option, this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
-        return input1.combineWith(input2, this);
+        return input1.zipWith(input2, this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2, ZipWithOption option) {
-        return input1.combineWith(input2, option, this);
+        return input1.zipWith(input2, option, this);
     }
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
         return input1.zipWith(input2, this);
@@ -411,7 +411,16 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         };
     }
     
-    public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<OUTPUT>> defer() {
+    public default Func2<INPUT1, INPUT2, DeferAction<OUTPUT>> defer() {
+        return (input1, input2) -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.applyUnsafe(input1, input2);
+            };
+            return DeferAction.from(supplier);
+        };
+    }
+    
+    public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<OUTPUT>> forPromise() {
         return (promise1, promise2) -> {
             return Promise.from(promise1, promise2, this);
         };
@@ -466,25 +475,20 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     //== Partially apply functions ==
     
-    @SuppressWarnings("javadoc")
     public default Func0<OUTPUT> bind(INPUT1 i1, INPUT2 i2) {
         return () -> this.applyUnsafe(i1, i2);
     }
-    @SuppressWarnings("javadoc")
     public default Func1<INPUT2, OUTPUT> bind1(INPUT1 i1) {
         return i2 -> this.applyUnsafe(i1, i2);
     }
     
-    @SuppressWarnings("javadoc")
     public default Func1<INPUT1, OUTPUT> bind2(INPUT2 i2) {
         return i1 -> this.applyUnsafe(i1, i2);
     }
     
-    @SuppressWarnings("javadoc")
     public default Func1<INPUT1, OUTPUT> bind(Absent a1, INPUT2 i2) {
         return i1 -> this.applyUnsafe(i1, i2);
     }
-    @SuppressWarnings("javadoc")
     public default Func1<INPUT2, OUTPUT> bind(INPUT1 i1, Absent a2) {
         return i2 -> this.applyUnsafe(i1, i2);
     }

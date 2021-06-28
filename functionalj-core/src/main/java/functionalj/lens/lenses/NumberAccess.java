@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,150 +31,90 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func;
 import functionalj.lens.core.AccessCreator;
-import functionalj.result.Result;
-import functionalj.tuple.Tuple2;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS extends NumberAccess<HOST, TYPE, ?>> 
         extends ComparableAccess<HOST, TYPE> {
     
     public default IntegerAccess<HOST> compareTo(TYPE anotherValue) {
-        return intAccess(Integer.MIN_VALUE, any -> any.compareTo(anotherValue));
+        return intPrimitiveAccess(Integer.MIN_VALUE, any -> any.compareTo(anotherValue));
     }
     public default BooleanAccess<HOST> thatGreaterThan(TYPE anotherValue) {
-        return booleanAccess(false, any -> any.compareTo(anotherValue) > 0);
+        return booleanPrimitiveAccess(false, any -> any.compareTo(anotherValue) > 0);
     }
     public default BooleanAccess<HOST> thatLessThan(TYPE anotherValue) {
-        return booleanAccess(false, any -> any.compareTo(anotherValue) < 0);
+        return booleanPrimitiveAccess(false, any -> any.compareTo(anotherValue) < 0);
     }
     public default BooleanAccess<HOST> thatGreaterThanOrEqualsTo(TYPE anotherValue) {
-        return booleanAccess(false, any -> any.compareTo(anotherValue) >= 0);
+        return booleanPrimitiveAccess(false, any -> any.compareTo(anotherValue) >= 0);
     }
     public default BooleanAccess<HOST> thatLessThanOrEqualsTo(TYPE anotherValue) {
-        return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
+        return booleanPrimitiveAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
-    public default BooleanAccess<HOST> thatIsZero() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsZero() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) == 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsNotZero() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsNotZero() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) != 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsPositive() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsPositive() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) > 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsNegative() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsNegative() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) < 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsNotPositive() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsNotPositive() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) <= 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsNotNegative() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsNotNegative() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) >= 0;
         });
     }
     
+    
     public NUMACCESS newAccess(Function<HOST, TYPE> accessToValue);
     
     public MathOperators<TYPE> __mathOperators();
     
     
-    public static interface MathOperators<NUMBER> {
-        
-        public NUMBER zero();
-        public NUMBER one();
-        public NUMBER minusOne();
-        
-        public Integer    toInteger(NUMBER number);
-        public Long       toLong(NUMBER number);
-        public Double     toDouble(NUMBER number);
-        public BigInteger toBigInteger(NUMBER number);
-        public BigDecimal toBigDecimal(NUMBER number);
-        
-        public NUMBER add(NUMBER number1, NUMBER number2);
-        public NUMBER subtract(NUMBER number1, NUMBER number2);
-        public NUMBER multiply(NUMBER number1, NUMBER number2);
-        public NUMBER divide(NUMBER number1, NUMBER number2);
-        public NUMBER remainder(NUMBER number1, NUMBER number2);
-        public Tuple2<NUMBER, NUMBER> divideAndRemainder(NUMBER number, NUMBER divisor);
-        
-        public NUMBER pow(NUMBER number, NUMBER n);
-        public NUMBER abs(NUMBER number);
-        public NUMBER negate(NUMBER number);
-        public NUMBER signum(NUMBER number);
-        public NUMBER min(NUMBER number1, NUMBER number2);
-        public NUMBER max(NUMBER number1, NUMBER number2);
-        
+    public default IntegerAccess<HOST> asInteger() {
+        return intPrimitiveAccess(0, __mathOperators()::asInteger);
     }
-    
-    public default IntegerAccess<HOST> toInteger() {
-        return intAccess(0, __mathOperators()::toInteger);
+    public default LongAccess<HOST> asLong() {
+        return longPrimitiveAccess(0L, __mathOperators()::asLong);
     }
-    public default LongAccess<HOST> toLong() {
-        return longAccess(0L, __mathOperators()::toLong);
+    public default DoubleAccess<HOST> asDouble() {
+        return doublePrimitiveAccess(0.0, __mathOperators()::asDouble);
     }
-    public default DoubleAccess<HOST> toDouble() {
-        return doubleAccess(0.0, __mathOperators()::toDouble);
+    public default BigIntegerAccess<HOST> asBigInteger() {
+        return bigIntegerAccess(BigInteger.ZERO, __mathOperators()::asBigInteger);
     }
-    public default BigIntegerAccess<HOST> toBigInteger() {
-        return bigIntegerAccess(BigInteger.ZERO, __mathOperators()::toBigInteger);
-    }
-    public default BigDecimalAccess<HOST> toBigDecimal() {
-        return bigDecimalAccess(BigDecimal.ZERO, __mathOperators()::toBigDecimal);
-    }
-    
-    public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> asInteger() {
-        return ResultAccess.of(host -> {
-            val value = apply(host);
-            return Result.from(()->__mathOperators().toInteger(value));
-        }, func -> (IntegerAccess<HOST>)(func::apply));
-    }
-    public default ResultAccess<HOST, Long, LongAccess<HOST>> asLong() {
-        return ResultAccess.of(host -> {
-            val value = apply(host);
-            return Result.from(()->__mathOperators().toLong(value));
-        }, func -> (LongAccess<HOST>)(func::apply));
-    }
-    public default ResultAccess<HOST, Double, DoubleAccess<HOST>> asDouble() {
-        return ResultAccess.of(host -> {
-            val value = apply(host);
-            return Result.from(()->__mathOperators().toDouble(value));
-        }, func -> (DoubleAccess<HOST>)(func::apply));
-    }
-    public default ResultAccess<HOST, BigInteger, BigIntegerAccess<HOST>> asBigInteger() {
-        return ResultAccess.of(host -> {
-            val value = apply(host);
-            return Result.from(()->__mathOperators().toBigInteger(value));
-        }, func -> (BigIntegerAccess<HOST>)(func::apply));
-    }
-    public default ResultAccess<HOST, BigDecimal, BigDecimalAccess<HOST>> asBigDecimal() {
-        return ResultAccess.of(host -> {
-            val value = apply(host);
-            return Result.from(()->__mathOperators().toBigDecimal(value));
-        }, func -> (BigDecimalAccess<HOST>)(func::apply));
+    public default BigDecimalAccess<HOST> asBigDecimal() {
+        return bigDecimalAccess(BigDecimal.ZERO, __mathOperators()::asBigDecimal);
     }
     
     // TODO -- These __operate should be moved to a util class.
@@ -253,108 +193,92 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     public default NUMACCESS toMinusOne() {
         return __operate(this::newAccess, __mathOperators()::minusOne);
     }
+    
     @SuppressWarnings("unchecked")
-    public default NUMACCESS add(TYPE value) {
+    public default NUMACCESS plus(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::add);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS add(Supplier<TYPE> valueSupplier) {
+    public default NUMACCESS plus(Supplier<TYPE> valueSupplier) {
         return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::add);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS add(Function<TYPE, TYPE> valueFunction) {
+    public default NUMACCESS plus(Function<TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::add);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS add(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+    public default NUMACCESS plus(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::add);
     }
     
     
     @SuppressWarnings("unchecked")
-    public default NUMACCESS subtract(TYPE value) {
+    public default NUMACCESS less(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::subtract);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS subtract(Supplier<TYPE> valueSupplier) {
+    public default NUMACCESS less(Supplier<TYPE> valueSupplier) {
         return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::subtract);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS subtract(Function<TYPE, TYPE> valueFunction) {
+    public default NUMACCESS less(Function<TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::subtract);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS subtract(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+    public default NUMACCESS less(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::subtract);
     }
     
     
     @SuppressWarnings("unchecked")
-    public default NUMACCESS multiply(TYPE value) {
+    public default NUMACCESS time(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS multiply(Supplier<TYPE> valueSupplier) {
+    public default NUMACCESS time(Supplier<TYPE> valueSupplier) {
         return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS multiply(Function<TYPE, TYPE> valueFunction) {
+    public default NUMACCESS time(Function<TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS multiply(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+    public default NUMACCESS time(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     
     
     @SuppressWarnings("unchecked")
-    public default NUMACCESS divide(TYPE value) {
+    public default NUMACCESS dividedBy(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::divide);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS divide(Supplier<TYPE> valueSupplier) {
+    public default NUMACCESS dividedBy(Supplier<TYPE> valueSupplier) {
         return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::divide);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS divide(Function<TYPE, TYPE> valueFunction) {
+    public default NUMACCESS dividedBy(Function<TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::divide);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS divide(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+    public default NUMACCESS dividedBy(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::divide);
     }
     
     @SuppressWarnings("unchecked")
-    public default NUMACCESS remainder(TYPE value) {
+    public default NUMACCESS remainderBy(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS remainder(Supplier<TYPE> valueSupplier) {
+    public default NUMACCESS remainderBy(Supplier<TYPE> valueSupplier) {
         return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS remainder(Function<TYPE, TYPE> valueFunction) {
+    public default NUMACCESS remainderBy(Function<TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS remainder(BiFunction<HOST, TYPE, TYPE> valueFunction) {
-        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default NUMACCESS mod(TYPE value) {
-        return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
-    }
-    @SuppressWarnings("unchecked")
-    public default NUMACCESS mod(Supplier<TYPE> valueSupplier) {
-        return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
-    }
-    @SuppressWarnings("unchecked")
-    public default NUMACCESS mod(Function<TYPE, TYPE> valueFunction) {
-        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
-    }
-    @SuppressWarnings("unchecked")
-    public default NUMACCESS mod(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+    public default NUMACCESS remainderBy(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
     }
     
@@ -436,5 +360,5 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     public default NUMACCESS max(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::max);
     }
-        
+    
 }

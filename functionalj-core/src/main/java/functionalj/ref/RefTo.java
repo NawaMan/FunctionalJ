@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,10 +23,11 @@
 // ============================================================================
 package functionalj.ref;
 
+import defaultj.api.IProvideDefault;
 import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
-import defaultj.api.IProvideDefault;
+
 
 public class RefTo<DATA> extends Ref<DATA> {
     

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,11 +30,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.result.Result;
 import lombok.val;
 import lombok.experimental.Delegate;
 
+@SuppressWarnings({ "unchecked" })
 public class RaceResult<DATA> implements HasPromise<DATA> {
     
     @SafeVarargs
@@ -89,9 +90,9 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
     }
     
     private final Promise<DATA>                promise;
-    private final ImmutableList<Promise<DATA>> eachPromises;
+    private final ImmutableFuncList<Promise<DATA>> eachPromises;
     
-    RaceResult(Promise<DATA> promise, ImmutableList<Promise<DATA>> eachPromises) {
+    RaceResult(Promise<DATA> promise, ImmutableFuncList<Promise<DATA>> eachPromises) {
         this.promise      = requireNonNull(promise);
         this.eachPromises = requireNonNull(eachPromises);
     }

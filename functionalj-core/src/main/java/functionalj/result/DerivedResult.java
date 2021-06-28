@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,7 +28,7 @@ import static functionalj.function.Func.f;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 
-public class DerivedResult<DATA> extends Result<DATA>{
+public class DerivedResult<DATA> extends Result<DATA> {
 
     private final Func0<Object> dataSupplier;
     

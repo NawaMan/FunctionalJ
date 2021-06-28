@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,7 +30,6 @@ import functionalj.tuple.Tuple2;
 
 // TODO - See if this can be shared with Tuple2Lens.
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface FuncMapEntryAccess<HOST, MAPENTRY extends Tuple2<KEY, VALUE>, KEY, VALUE, 
                                 KEYACCESS extends AnyAccess<HOST,KEY>, 

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,112 +23,145 @@
 // ============================================================================
 package functionalj.list;
 
-import java.util.function.Function;
-import java.util.stream.Stream;
+import static functionalj.list.AsFuncListHelper.funcListOf;
+import static functionalj.list.FuncList.deriveFrom;
 
-import functionalj.function.Func2;
-import functionalj.stream.StreamPlus;
+import java.util.List;
+import java.util.function.BiFunction;
+
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public interface FuncListWithCombine<DATA> {
+public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
     
-    public <TARGET> FuncList<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action);
     
-    public default FuncList<DATA> concatWith(
-            FuncList<DATA> tail) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from      (stream)
-                    .concatWith(tail.stream());
-        });
+    /** Concatenate the given head stream in front of this stream. */
+    public default FuncList<DATA> prependWith(List<DATA> head) {
+        val funcList = funcListOf(this);
+        return FuncList.concat(FuncList.from(head), funcList);
+    }
+
+    /** Concatenate the given tail stream to this stream. */
+    public default FuncList<DATA> appendWith(List<DATA> tail) {
+        val funcList = funcListOf(this);
+        return FuncList.concat(funcList, FuncList.from(tail));
     }
     
-    public default FuncList<DATA> merge(
-            FuncList<DATA> anotherFuncList) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from      (stream)
-                    .concatWith(anotherStream);
-        });
+    /**
+     * Merge this with another stream by alternatively picking value from the each stream.
+     * If one stream ended before another one, the rest of the value will be appended.
+     * 
+     * For an example: <br>
+     *   This list:    [A, B, C] <br>
+     *   Another list: [1, 2, 3, 4, 5] <br>
+     *   Result list:  [A, 1, B, 2, C, 3, 4, 5] <br>
+     */
+    public default FuncList<DATA> mergeWith(List<DATA> anotherList) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mergeWith(anotherList.stream()));
     }
     
     //-- Zip --
     
-    public default <B, TARGET> FuncList<TARGET> combineWith(
-            FuncList<B>            anotherFuncList, 
-            Func2<DATA, B, TARGET> combinator) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from       (stream)
-                    .combineWith(anotherStream, combinator);
-        });
-    }
-    public default <B, TARGET> FuncList<TARGET> combineWith(
-            FuncList<B>            anotherFuncList, 
-            ZipWithOption          option, 
-            Func2<DATA, B, TARGET> combinator) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from       (stream)
-                    .combineWith(anotherStream, option, combinator);
-        });
+    /**
+     * Combine this stream with another stream into a stream of tuple pair.
+     * The combination stops when any of the stream ended.
+     * 
+     * For an example: <br>
+     *   This list:    [A, B, C] <br>
+     *   Another list: [1, 2, 3, 4, 5] <br>
+     *   Result list:  [(A, 1), (B, 2), (C, 3)] <br>
+     */
+    public default <ANOTHER> FuncList<Tuple2<DATA,ANOTHER>> zipWith(List<ANOTHER> anotherList) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream()));
     }
     
-    public default <B> FuncList<Tuple2<DATA,B>> zipWith(
-            FuncList<B> anotherFuncList) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from   (stream)
-                    .zipWith(anotherStream);
-        });
-    }
-    public default <B> FuncList<Tuple2<DATA,B>> zipWith(
-            FuncList<B>   anotherFuncList, 
+    /**
+     * Combine this stream with another stream into a stream of tuple pair.
+     * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
+     * 
+     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *   This list:    [A, B, C] <br>
+     *   Another list: [1, 2, 3, 4, 5] <br>
+     *   Result list:  [(A, 1), (B, 2), (C, 3), (null, 4), (null, 5)] <br>
+     */
+    public default <ANOTHER> FuncList<Tuple2<DATA,ANOTHER>> zipWith(
+            List<ANOTHER> anotherList,
             ZipWithOption option) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from   (stream)
-                    .zipWith(anotherStream, option);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream(), option));
     }
     
-    public default <B, C> FuncList<C> zipWith(
-            FuncList<B>       anotherFuncList, 
-            Func2<DATA, B, C> merger) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from   (stream)
-                    .zipWith(anotherStream, merger);
-        });
-    }
-    public default <B, C> FuncList<C> zipWith(
-            FuncList<B>       anotherFuncList, 
-            ZipWithOption     option, 
-            Func2<DATA, B, C> merger) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from   (stream)
-                    .zipWith(anotherStream, option, merger);
-        });
+    /**
+     * Combine this stream with another stream using the combinator to create the result value one by one.
+     * The combination stops when any of the stream ended.
+     * 
+     * For an example: <br>
+     *   This list:    [A, B, C] <br>
+     *   Another list: [1, 2, 3, 4, 5] <br>
+     *   Combinator:   (v1,v2) -> v1 + "-" + v2
+     *   Result list:  [A-1, B-2, C-3] <br>
+     */
+    public default <ANOTHER, TARGET> FuncList<TARGET> zipWith(
+            List<ANOTHER>                     anotherList, 
+            BiFunction<DATA, ANOTHER, TARGET> combinator) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream(), combinator));
     }
     
+    /**
+     * Combine this stream with another stream using the combinator to create the result value one by one.
+     * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
+     * 
+     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *   This list:    [A, B, C] <br>
+     *   Another list: [1, 2, 3, 4, 5] <br>
+     *   Combinator:   (v1,v2) -> v1 + "-" + v2
+     *   Result list:  [A-1, B-2, C-3, null-4, null-5] <br>
+     */
+    public default <ANOTHER, TARGET> FuncList<TARGET> zipWith(
+            List<ANOTHER>                     anotherList, 
+            ZipWithOption                     option,
+            BiFunction<DATA, ANOTHER, TARGET> combinator) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream(), option, combinator));
+    }
+    
+    /**
+     * Create a new stream by choosing value from each stream using the selector.
+     * The value from the longer stream is automatically used after the shorter stream ended.
+     *
+     * For an example: <br>
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5]
+     */
     public default FuncList<DATA> choose(
-            FuncList<DATA>             anotherFuncList, 
-            Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from  (stream)
-                    .choose(anotherStream, selectThisNotAnother);
-        });
+            List<DATA>                      anotherFuncList,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.choose(anotherFuncList.stream(), selectThisNotAnother));
     }
+    
+    /**
+     * Create a new stream by choosing value from each stream using the selector.
+     * The value from the longer stream is automatically used after the shorter stream ended.
+     *
+     * For an example: <br>
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5]
+     */
+    public default FuncList<DATA> choose(
+            List<DATA>                      anotherFuncList,
+            ZipWithOption                   option,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.choose(anotherFuncList.stream(), option, selectThisNotAnother));
+    }
+    
 }

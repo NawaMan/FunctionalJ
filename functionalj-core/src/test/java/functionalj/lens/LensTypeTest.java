@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,12 +24,14 @@
 package functionalj.lens;
 
 import static functionalj.lens.Access.theList;
-import static functionalj.list.ImmutableList.listOf;
+import static functionalj.list.ImmutableFuncList.listOf;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import lombok.val;
+
+
 
 public class LensTypeTest {
     

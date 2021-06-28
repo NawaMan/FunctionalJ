@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,61 +23,54 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.list.AsFuncListHelper.funcListOf;
+import static functionalj.list.FuncList.deriveFrom;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
-import functionalj.stream.Streamable;
-import functionalj.stream.StreamableWithMapThen;
+import lombok.val;
 
-public interface FuncListWithMapThen<DATA>
-        extends StreamableWithMapThen<DATA> {
+public interface FuncListWithMapThen<DATA> extends AsFuncList<DATA> {
     
-    public <TARGET> FuncList<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action);
-    
-    
-    //== mapThen ==
-    
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T> 
         FuncList<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
-                BiFunction<T1, T2, T> function) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .mapThen(mapper1, mapper2, function)
-                    .stream();
-        });
+                BiFunction<T1, T2, T>      merger) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, merger));
     }
+    
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T> 
         FuncList<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
-                Func3<T1, T2, T3, T> function) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .mapThen(mapper1, mapper2, mapper3, function)
-                    .stream();
-        });
+                Func3<T1, T2, T3, T>       merger) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, merger));
     }
+    
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T> 
         FuncList<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
                 Function<? super DATA, T4> mapper4,
-                Func4<T1, T2, T3, T4, T> function) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .mapThen(mapper1, mapper2, mapper3, mapper4, function)
-                    .stream();
-        });
+                Func4<T1, T2, T3, T4, T>   merger) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, merger));
     }
+    
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5, T> 
         FuncList<T> mapThen(
                 Function<? super DATA, T1> mapper1,
@@ -85,13 +78,12 @@ public interface FuncListWithMapThen<DATA>
                 Function<? super DATA, T3> mapper3,
                 Function<? super DATA, T4> mapper4,
                 Function<? super DATA, T5> mapper5,
-                Func5<T1, T2, T3, T4, T5, T> function) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, function)
-                    .stream();
-        });
+                Func5<T1, T2, T3, T4, T5, T> merger) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, merger));
     }
+    
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5, T6, T> 
         FuncList<T> mapThen(
                 Function<? super DATA, T1> mapper1,
@@ -100,12 +92,9 @@ public interface FuncListWithMapThen<DATA>
                 Function<? super DATA, T4> mapper4,
                 Function<? super DATA, T5> mapper5,
                 Function<? super DATA, T6> mapper6,
-                Func6<T1, T2, T3, T4, T5, T6, T> function) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, function)
-                    .stream();
-        });
+                Func6<T1, T2, T3, T4, T5, T6, T> merger) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, merger));
     }
-
+    
 }

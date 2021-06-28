@@ -6,12 +6,13 @@ import java.time.temporal.TemporalUnit;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.ListAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface PeriodAccess<HOST>
@@ -27,7 +28,7 @@ public interface PeriodAccess<HOST>
         return host -> accessToValue.apply(host);
     }
     
-    public default LongAccess<HOST> get(TemporalUnit unit) {
+    public default LongAccessPrimitive<HOST> get(TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return value.get(unit);
@@ -44,31 +45,31 @@ public interface PeriodAccess<HOST>
             return value.getChronology();
         };
     }
-    public default BooleanAccess<HOST> isZero() {
+    public default BooleanAccessPrimitive<HOST> isZero() {
         return host -> {
             val value = apply(host);
             return value.isZero();
         };
     }
-    public default BooleanAccess<HOST> isNegative() {
+    public default BooleanAccessPrimitive<HOST> isNegative() {
         return host -> {
             val value = apply(host);
             return value.isNegative();
         };
     }
-    public default IntegerAccess<HOST> getYears() {
+    public default IntegerAccessPrimitive<HOST> getYears() {
         return host -> {
             val value = apply(host);
             return value.getYears();
         };
     }
-    public default IntegerAccess<HOST> getMonths() {
+    public default IntegerAccessPrimitive<HOST> getMonths() {
         return host -> {
             val value = apply(host);
             return value.getMonths();
         };
     }
-    public default IntegerAccess<HOST> getDays() {
+    public default IntegerAccessPrimitive<HOST> getDays() {
         return host -> {
             val value = apply(host);
             return value.getDays();
@@ -158,7 +159,7 @@ public interface PeriodAccess<HOST>
             return value.normalized();
         };
     }
-    public default LongAccess<HOST> toTotalMonths() {
+    public default LongAccessPrimitive<HOST> toTotalMonths() {
         return host -> {
             val value = apply(host);
             return value.toTotalMonths();

@@ -14,12 +14,13 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Test;
 
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.promise.DeferAction;
 import functionalj.store.Store;
 import functionalj.stream.StreamPlus;
 import functionalj.task.Task;
 import lombok.val;
+
 
 public class EffectExamples {
     
@@ -49,7 +50,7 @@ public class EffectExamples {
         latch.await();
         
         // Notice the error is sent in the same channel
-        assertEquals("[Result:{ Exception: java.nio.file.NoSuchFileException: path1 }]", logs.toString());
+        assertEquals("[Result:{ Exception: java.nio.file.NoSuchFileException: fileNotFound.txt }]", logs.toString());
     }
     
     @Test
@@ -83,7 +84,7 @@ public class EffectExamples {
     
     @Test
     public void storeExample() {
-        val apppend = f((String str, ImmutableList<String> list)-> list.append(str).toImmutableList());
+        val apppend = f((String str, ImmutableFuncList<String> list)-> list.append(str).toImmutableList());
         
         val list = FuncList.of("One", "Two");
         val store = new Store<>(list);

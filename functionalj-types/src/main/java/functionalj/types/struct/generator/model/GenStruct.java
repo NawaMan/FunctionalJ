@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,11 +25,12 @@ package functionalj.types.struct.generator.model;
 
 import static functionalj.types.struct.generator.ILines.line;
 import static functionalj.types.struct.generator.ILines.linesOf;
+import static functionalj.types.struct.generator.model.utils.samePackage;
 import static functionalj.types.struct.generator.model.utils.themAll;
-import static functionalj.types.struct.generator.model.utils.wrapWith;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -44,9 +45,10 @@ import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.StructSpec;
 import lombok.val;
 
+
 /**
  * Representation of Struct class.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public class GenStruct implements ILines {
@@ -62,7 +64,6 @@ public class GenStruct implements ILines {
     private static final List<Type> alwaysImports = asList(
             Type.of(IPostConstruct.class),
             Core.ObjectLensImpl.type(),
-//            Core.ObjectLens.type(),
             Core.LensSpec.type()
     );
     
@@ -71,7 +72,7 @@ public class GenStruct implements ILines {
     
     /**
      * Construct a GenStruct with the data object spec.
-     * 
+     *
      * @param dataObjSpec  the spec.
      */
     public GenStruct(SourceSpec sourceSpec, StructSpec dataObjSpec) {
@@ -80,16 +81,30 @@ public class GenStruct implements ILines {
     }
     
     public Stream<String> lines() {
-        val importList = importListLines();
-        val imports    = importList.map(wrapWith("import ", ";")).collect(toList());
-        String packageName = dataClass.type().packageName();
-        String packageDef = "package " + packageName + ";";
-        ILines dataObjDef = dataClass.getClassSpec().toDefinition(packageName);
-        ILines lines
+        val packageName = dataClass.type().packageName();
+        
+        val importList  = importListLines();
+        val importLines 
+                = importList
+                .filter (importName -> !samePackage(packageName, importName))
+                .map    (importName -> "import " + importName + ";")
+                .collect(toList());
+        
+        
+        val packageDef  = "package " + packageName + ";";
+        val dataObjDef  = dataClass.getClassSpec().toDefinition(packageName);
+        
+        val specName  = (sourceSpec.getSpecName() == null) ? "" : "." + sourceSpec.getSpecName();
+        val source    = sourceSpec.getPackageName() + "." + sourceSpec.getEncloseName() + specName;
+        val genTime   = LocalDateTime.now();
+        val generated = "@Generated(value = \"FunctionalJ\",date = \"" + genTime + "\", comments = \"" + source + "\")";
+        val suppress  = "@SuppressWarnings(\"all\")";
+        val lines
                 = linesOf(Stream.of(
                     line(packageDef),
-                    line(imports),
-                    line("// " + sourceSpec.getPackageName() + "." + sourceSpec.getEncloseName() + "." + sourceSpec.getSpecName()),
+                    line(importLines),
+                    line(generated),
+                    line(suppress),
                     dataObjDef
                 )
                 .filter (Objects::nonNull)
@@ -99,6 +114,9 @@ public class GenStruct implements ILines {
     
     private Stream<String> importListLines() {
         val types = new HashSet<Type>();
+        
+        types.add(Core.Generated.type());
+        
         dataClass.fields()      .stream().flatMap(GenField      ::requiredTypes).forEach(types::add);
         dataClass.methods()     .stream().flatMap(GenMethod     ::requiredTypes).forEach(types::add);
         dataClass.constructors().stream().flatMap(GenConstructor::requiredTypes).forEach(types::add);

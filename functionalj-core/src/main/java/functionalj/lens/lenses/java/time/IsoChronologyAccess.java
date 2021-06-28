@@ -13,11 +13,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.ListAccess;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface IsoChronologyAccess<HOST>
@@ -105,13 +106,13 @@ public interface IsoChronologyAccess<HOST>
             return value.dateNow(clock);
         };
     }
-    public default BooleanAccess<HOST> isLeapYear(long prolepticYear) {
+    public default BooleanAccessPrimitive<HOST> isLeapYear(long prolepticYear) {
         return host -> {
             val value = apply(host);
             return value.isLeapYear(prolepticYear);
         };
     }
-    public default IntegerAccess<HOST> prolepticYear(Era era, int yearOfEra) {
+    public default IntegerAccessPrimitive<HOST> prolepticYear(Era era, int yearOfEra) {
         return host -> {
             val value = apply(host);
             return value.prolepticYear(era, yearOfEra);

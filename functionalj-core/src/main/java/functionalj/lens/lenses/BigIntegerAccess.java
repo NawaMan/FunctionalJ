@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,7 +35,6 @@ class BigIntegerAccessConstants {
     public static final BigInteger MINUS_ONE = BigInteger.ZERO.subtract(BigInteger.ONE);
 }
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BigIntegerAccess<HOST> 
         extends 
@@ -67,24 +66,24 @@ public interface BigIntegerAccess<HOST>
             return BigIntegerAccessConstants.MINUS_ONE;
         }
         @Override
-        public Integer toInteger(BigInteger number) {
-            return toBigInteger(number).intValue();
+        public Integer asInteger(BigInteger number) {
+            return asBigInteger(number).intValue();
         }
         @Override
-        public Long toLong(BigInteger number) {
-            return toBigInteger(number).longValue();
+        public Long asLong(BigInteger number) {
+            return asBigInteger(number).longValue();
         }
         @Override
-        public Double toDouble(BigInteger number) {
-            return toBigInteger(number).doubleValue();
+        public Double asDouble(BigInteger number) {
+            return asBigInteger(number).doubleValue();
         }
         @Override
-        public BigInteger toBigInteger(BigInteger number) {
+        public BigInteger asBigInteger(BigInteger number) {
             return Nullable.of(number).orElse(BigInteger.ZERO);
         }
         @Override
-        public BigDecimal toBigDecimal(BigInteger number) {
-            return new BigDecimal(toBigInteger(number));
+        public BigDecimal asBigDecimal(BigInteger number) {
+            return new BigDecimal(asBigInteger(number));
         }
         
         @Override

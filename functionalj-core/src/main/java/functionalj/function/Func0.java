@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,9 +33,11 @@ import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
+import functionalj.promise.Promise;
 import functionalj.ref.ComputeBody;
 import functionalj.result.Result;
 import lombok.val;
+
 
 /**
  * Function of zeroth parameter - a supplier.
@@ -58,7 +60,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return supplier::get;
     }
     public static <T> Func0<T> from(IntFunction<T> generatorFunction) {
-        return from(0, generatorFunction);
+        return Func0.from(0, generatorFunction);
     }
     public static <T> Func0<T> from(int start, IntFunction<T> generatorFunction) {
         val counter = new AtomicInteger(start);
@@ -118,7 +120,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         };
     }
     
-    public default Func0<OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
+    public default Func0<OUTPUT> ifException(Consumer<? super Exception> exceptionHandler) {
         return ()->{
             try {
                 val outputValue = this.applyUnsafe();
@@ -177,7 +179,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-    public default Func0<OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
+    public default Func0<OUTPUT> whenAbsentGet(Supplier<? extends OUTPUT> defaultSupplier) {
         return ()->{
             try {
                 val outputValue = this.applyUnsafe();
@@ -279,6 +281,9 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     }
     public default DeferAction<OUTPUT> defer() {
         return DeferAction.from(this);
+    }
+    public default Func0<Promise<OUTPUT>> forPromise() {
+        return () -> defer().start().getPromise();
     }
     
     public default FuncUnit0 ignoreResult() {

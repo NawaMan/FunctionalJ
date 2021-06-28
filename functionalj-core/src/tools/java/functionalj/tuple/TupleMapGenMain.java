@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -38,7 +38,7 @@ import functionalj.functions.Func;
 import functionalj.functions.Func2;
 import functionalj.types.list.FuncList;
 import functionalj.types.result.Result;
-import lombok.val;
+
 
 public class TupleMapGenMain {
     
@@ -82,10 +82,6 @@ public class TupleMapGenMain {
                 "                _6());\n" + 
                 "    }", 
                 generate(6, FuncList.of(true, false, true, true, true, true)));
-    }
-    
-    public static void main(String[] args) {
-        System.out.println(generate(6));
     }
     
     private static String generate(int tupleSize, FuncList<Boolean> flags) {

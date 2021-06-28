@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,6 +31,7 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
 import functionalj.result.Result;
 import lombok.val;
+
 
 // TODO This is made quickly to accommodate Lens for Choice type. It is not complete in anyway.
 @FunctionalInterface
@@ -115,17 +116,17 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
     }
     
     // TODO - Add more of these.
-    public default BooleanAccess<HOST> isPresent() {
+    public default BooleanAccessPrimitive<HOST> isPresent() {
         return host -> {
             return ResultAccess.this.apply(host).isPresent();
         };
     }
-    public default BooleanAccess<HOST> isNull() {
+    public default BooleanAccessPrimitive<HOST> isNull() {
         return host -> {
             return ResultAccess.this.apply(host).isNull();
         };
     }
-    public default BooleanAccess<HOST> isValue() {
+    public default BooleanAccessPrimitive<HOST> isValue() {
         return host -> {
             return ResultAccess.this.apply(host).isValue();
         };

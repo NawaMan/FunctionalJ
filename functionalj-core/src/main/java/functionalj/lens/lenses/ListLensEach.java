@@ -10,6 +10,7 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.list.FuncList;
 import lombok.val;
 
+
 public class ListLensEach <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
                 implements FuncListAccess<HOST, TYPE, TYPELENS> {
     

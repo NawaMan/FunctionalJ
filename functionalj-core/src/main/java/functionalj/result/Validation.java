@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Absent;
 import functionalj.lens.core.LensSpec;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.ResultAccess;
@@ -41,7 +41,7 @@ import functionalj.result.Specs.ValidationSpec;
 import lombok.val;
 import nullablej.utils.reflection.UProxy;
 
-@SuppressWarnings({"javadoc", "rawtypes", "unchecked"})
+@SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class Validation<D extends Object> implements Pipeable<Validation<D>> {
     
     public static final <D extends Object> ToBoolean<D> ToBoolean(Function<D,java.lang.Boolean> checker, String messageTemplate) {
@@ -59,9 +59,9 @@ public abstract class Validation<D extends Object> implements Pipeable<Validatio
     public static final ValidationLens<Validation> theValidation = new ValidationLens<>(LensSpec.of(Validation.class));
     public static class ValidationLens<HOST> extends ObjectLensImpl<HOST, Validation> {
 
-        public final BooleanAccess<Validation> isToBoolean = Validation::isToBoolean;
-        public final BooleanAccess<Validation> isToMessage = Validation::isToMessage;
-        public final BooleanAccess<Validation> isToException = Validation::isToException;
+        public final BooleanAccessPrimitive<Validation> isToBoolean = Validation::isToBoolean;
+        public final BooleanAccessPrimitive<Validation> isToMessage = Validation::isToMessage;
+        public final BooleanAccessPrimitive<Validation> isToException = Validation::isToException;
         public final ResultAccess<HOST, ToBoolean, ToBoolean.ToBooleanLens<HOST>> asToBoolean = createSubResultLens(Validation::asToBoolean,           null, spec -> new ToBoolean.ToBooleanLens(spec));
         public final ResultAccess<HOST, ToMessage, ToMessage.ToMessageLens<HOST>> asToMessage = createSubResultLens(Validation::asToMessage,           null, spec -> new ToMessage.ToMessageLens(spec));
         public final ResultAccess<HOST, ToException, ToException.ToExceptionLens<HOST>> asToException = createSubResultLens(Validation::asToException, null, spec -> new ToException.ToExceptionLens(spec));

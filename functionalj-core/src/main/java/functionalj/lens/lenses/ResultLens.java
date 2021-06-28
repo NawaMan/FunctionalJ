@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,6 +33,7 @@ import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.WriteLens;
 import functionalj.result.Result;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>

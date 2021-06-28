@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,7 +35,6 @@ import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.StringAccess;
 import functionalj.lens.lenses.StringLens;
 
-@SuppressWarnings("javadoc")
 public interface LensTypes {
     
     @SuppressWarnings("rawtypes")

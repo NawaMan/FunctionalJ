@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,11 +28,12 @@ import java.util.function.Predicate;
 
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.tuple.ToMapFunc;
 import functionalj.tuple.ToTuple2Func;
 import functionalj.tuple.Tuple;
 import lombok.val;
+
 
 public class MapTo {
     
@@ -104,7 +105,7 @@ public class MapTo {
     
     public static <D, K, V> ToMapFunc<D, K, V> toMap(
             K key, Func1<? super D, ? extends V> mapper) {
-        return data -> ImmutableMap.of(key, mapper.apply(data));
+        return data -> ImmutableFuncMap.of(key, mapper.apply(data));
     }
     
 }

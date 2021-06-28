@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,6 +30,8 @@ import org.junit.Test;
 
 import lombok.val;
 
+
+
 public class StrFuncsTest {
     
     @Test
@@ -39,8 +41,8 @@ public class StrFuncsTest {
     
     @Test
     public void testLines() {
-        assertEquals("AA, AAA, AAAA, AAAAA", StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").joinToString(", "));
-        assertEquals("AA, AAA",              StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").limit(2).joinToString(", "));
+        assertEquals("AA, AAA, AAAA, AAAAA", StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").join(", "));
+        assertEquals("AA, AAA",              StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").limit(2).join(", "));
     }
     
     @Test
@@ -62,11 +64,11 @@ public class StrFuncsTest {
         assertEquals("A, AA, AAA, AAAA", 
                 matches("ABAABAAABAAAA", "A+")
                 .toTexts()
-                .joinToString(", "));
+                .join(", "));
         assertEquals("#{Hello}, #{There}", 
                 matches("--#{Hello}--#{There}--", "#\\{[a-zA-Z0-9$_]+\\}")
                 .toTexts()
-                .joinToString(", "));
+                .join(", "));
     }
     
     @Test

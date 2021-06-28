@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import functionalj.lens.core.AccessParameterized;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 @FunctionalInterface
 public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
         extends ObjectAccess<HOST, COLLECTION>, AccessParameterized<HOST, COLLECTION, TYPE, AnyAccess<HOST,TYPE>> {
@@ -51,7 +51,7 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     }
     
     public default IntegerAccess<HOST> size() {
-        return intAccess(0, collection -> collection.size());
+        return intPrimitiveAccess(0, collection -> collection.size());
     }
     
     public default BooleanAccess<HOST> thatIsEmpty() {

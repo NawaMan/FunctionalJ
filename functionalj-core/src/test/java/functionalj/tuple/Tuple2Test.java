@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,10 +33,9 @@ import org.junit.Test;
 
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
-import functionalj.list.ImmutableList;
-import functionalj.tuple.ImmutableTuple2;
-import functionalj.tuple.Tuple2;
+import functionalj.list.ImmutableFuncList;
 import lombok.val;
+
 
 public class Tuple2Test {
     
@@ -44,7 +43,7 @@ public class Tuple2Test {
     private static final Tuple2Lens<Tuple2<String, String>, String, String, StringLens<Tuple2<String, String>>, StringLens<Tuple2<String, String>>> 
             theTuple = theTuple2.of(STRING(), STRING());
     
-    private static final ImmutableList<ImmutableTuple2<String, String>> tuples = ImmutableList.of(
+    private static final ImmutableFuncList<ImmutableTuple2<String, String>> tuples = ImmutableFuncList.of(
             new ImmutableTuple2<>("I", "Integer"),
             new ImmutableTuple2<>("S", "String")
         );

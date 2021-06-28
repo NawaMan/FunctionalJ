@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,13 +32,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import example.functionalj.accesslens.User;
-import functionalj.types.Struct;
 import functionalj.lens.lenses.IntegerAccess;
 import functionalj.lens.lenses.StringAccess;
 import functionalj.lens.lenses.StringLens;
 import functionalj.list.FuncList;
+import functionalj.types.Struct;
 import lombok.val;
+
 
 public class AccessLensExamples {
     

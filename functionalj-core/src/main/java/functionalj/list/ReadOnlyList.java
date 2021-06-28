@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -38,40 +39,37 @@ import java.util.stream.Collectors;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
-import functionalj.stream.Streamable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 @FunctionalInterface
 public interface ReadOnlyList<DATA> 
-                    extends List<DATA>, Streamable<DATA> {
+                    extends List<DATA> {
     
     public static <T> ReadOnlyList<T> empty() {
-        return ImmutableList.empty();
+        return ImmutableFuncList.empty();
     }
     
     public static <T> ReadOnlyList<T> of(Collection<T> data) {
-        return ImmutableList.from(data);
+        if (data instanceof ReadOnlyList) {
+            return (ReadOnlyList<T>)data;
+        }
+        
+        return ImmutableFuncList.from(data);
     }
+    
     @SafeVarargs
-	public static <T> ReadOnlyList<T> of(T ... data) {
-        return ImmutableList.of(data);
-    }
-    public static <T> ReadOnlyList<T> of(Streamable<T> streamable) {
-        return ImmutableList.from(streamable);
-    }
-    public static <T> ReadOnlyList<T> of(ReadOnlyList<T> readOnlyList) {
-        return readOnlyList;
+    public static <T> ReadOnlyList<T> of(T ... data) {
+        return ImmutableFuncList.of(data);
     }
     
     @Override
     public StreamPlus<DATA> stream();
     
-    @Override
-    public default ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.from(this);
+    public default ImmutableFuncList<DATA> toImmutableList() {
+        return ImmutableFuncList.from(this);
     }
-    @Override
+    
     public default List<DATA> toJavaList() {
         return this;
     }
@@ -131,22 +129,22 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default int indexOf(Object o) {
-        return StreamPlus.from(stream()).toJavaList().indexOf(o);
+        return stream().toJavaList().indexOf(o);
     }
     
     @Override
     public default int lastIndexOf(Object o) {
-        return StreamPlus.from(stream()).toJavaList().lastIndexOf(o);
+        return stream().toJavaList().lastIndexOf(o);
     }
     
     @Override
     public default ListIterator<DATA> listIterator() {
-        return StreamPlus.from(stream()).toJavaList().listIterator();
+        return stream().toJavaList().listIterator();
     }
     
     @Override
     public default ListIterator<DATA> listIterator(int index) {
-        return StreamPlus.from(stream()).toJavaList().listIterator(index);
+        return stream().toJavaList().listIterator(index);
     }
     
     @Override
@@ -160,7 +158,8 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default Spliterator<DATA> spliterator() {
-        return Streamable.super.spliterator();
+        val iterator = iterator();
+        return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
     @Override

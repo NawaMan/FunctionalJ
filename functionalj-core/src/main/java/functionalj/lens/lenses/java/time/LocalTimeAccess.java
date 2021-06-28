@@ -11,10 +11,12 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
+
 
 public interface LocalTimeAccess<HOST>
                     extends AnyAccess             <HOST, LocalTime>
@@ -30,25 +32,25 @@ public interface LocalTimeAccess<HOST>
         return host -> accessToValue.apply(host);
     }
     
-    public default IntegerAccess<HOST> getHour() {
+    public default IntegerAccessPrimitive<HOST> getHour() {
         return host -> {
             val value = apply(host);
             return value.getHour();
         };
     }
-    public default IntegerAccess<HOST> getMinute() {
+    public default IntegerAccessPrimitive<HOST> getMinute() {
         return host -> {
             val value = apply(host);
             return value.getMinute();
         };
     }
-    public default IntegerAccess<HOST> getSecond() {
+    public default IntegerAccessPrimitive<HOST> getSecond() {
         return host -> {
             val value = apply(host);
             return value.getSecond();
         };
     }
-    public default IntegerAccess<HOST> getNano() {
+    public default IntegerAccessPrimitive<HOST> getNano() {
         return host -> {
             val value = apply(host);
             return value.getNano();
@@ -181,20 +183,20 @@ public interface LocalTimeAccess<HOST>
             return value.atOffset(offset);
         };
     }
-    public default IntegerAccess<HOST> toSecondOfDay() {
+    public default IntegerAccessPrimitive<HOST> toSecondOfDay() {
         return host -> {
             val value = apply(host);
             return value.toSecondOfDay();
         };
     }
-    public default LongAccess<HOST> toNanoOfDay() {
+    public default LongAccessPrimitive<HOST> toNanoOfDay() {
         return host -> {
             val value = apply(host);
             return value.toNanoOfDay();
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(LocalTime other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(LocalTime other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);
@@ -213,13 +215,13 @@ public interface LocalTimeAccess<HOST>
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(LocalTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(LocalTime other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(LocalTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(LocalTime other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,12 +23,12 @@
 // ============================================================================
 package functionalj.result;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.function.Func1;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface ResultFilterAddOn<DATA> {
     
     public Result<DATA> asResult();
@@ -50,7 +50,7 @@ public interface ResultFilterAddOn<DATA> {
         });
     }
     
-    public default <T> Result<DATA> filter(Func1<? super DATA, T> mapper, Predicate<? super T> theCondition) {
+    public default <T> Result<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
         return filter(value -> {
             val target = mapper.apply(value);
             val isPass = theCondition.test(target);

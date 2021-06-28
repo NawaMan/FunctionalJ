@@ -7,13 +7,16 @@ repositories {
 
 dependencies {
     compile             project(':functionalj-all')
+    compile             project(':functionalj-types')
     annotationProcessor project(':functionalj-types')
     annotationProcessor project(':functionalj-elm')
     
-    compile 'junit:junit:4.12'
+    compileOnly         'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
     
-    compileOnly         'org.projectlombok:lombok:1.18.8'
-    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    compile 'org.knowm.xchart:xchart:3.8.0'
+    
+    compile 'junit:junit:4.12'
     
     // == Test ==
     
@@ -22,7 +25,7 @@ dependencies {
     testAnnotationProcessor project(':functionalj-types')
     testAnnotationProcessor project(':functionalj-elm')
     
-    testCompile             'org.projectlombok:lombok:1.18.8'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+    testCompile             'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     
 }

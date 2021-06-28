@@ -1,5 +1,5 @@
 //// ============================================================================
-//// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+//// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 //// ----------------------------------------------------------------------------
 //// MIT License
 //// 
@@ -36,7 +36,7 @@
 //import org.junit.Test;
 //
 //import functionalj.types.Choice;
-//import lombok.val;
+//
 //
 //@SuppressWarnings("javadoc")
 //public class ChioceTypeLinkedListTest {
@@ -60,7 +60,7 @@
 //                .node(l -> "[" + l.value() + "," + toStr(l.rest()) + "]");
 //    }
 //    String toStr2(LinkedList list) {
-//        val noBracketToStr = recusive((f, l) -> {
+//        var noBracketToStr = recusive((f, l) -> {
 //            return Match((LinkedList)l)
 //                     .nill(l2 -> "")
 //                     .node(l2 -> l2.value() + 
@@ -71,7 +71,7 @@
 //        return "[" + noBracketToStr.apply(list) + "]";
 //    }
 //    String toStrReverse(LinkedList list) {
-//        val noBracketToStr = recusive((f, l) -> {
+//        var noBracketToStr = recusive((f, l) -> {
 //            return Match((LinkedList)l)
 //                     .nill(l2 -> "")
 //                     .node(l2 -> Match(l2.rest())

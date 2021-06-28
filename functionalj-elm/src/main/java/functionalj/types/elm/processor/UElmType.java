@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import functionalj.types.Type;
 import lombok.val;
+
 
 /**
  * This utility class help mapping Java type to Elm type.

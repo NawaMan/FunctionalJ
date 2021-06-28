@@ -7,18 +7,20 @@ repositories {
 
 dependencies {
     compile project(':functionalj-core')
-    compile project(':functionalj-elm')
-    compile project(':functionalj-store')
     compile project(':functionalj-types')
     
-    compileOnly         'org.projectlombok:lombok:1.18.8'
-    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    compile project(':functionalj-store')
+    
+    compile project(':functionalj-elm')
+    
+    compileOnly         'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
     
     // == Test ==
     
     testCompile 'junit:junit:4.12'
     
-    testCompile             'org.projectlombok:lombok:1.18.8'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+    testCompile             'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     
 }

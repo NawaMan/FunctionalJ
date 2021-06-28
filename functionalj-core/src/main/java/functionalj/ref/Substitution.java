@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,6 +31,9 @@ import functionalj.function.Func0;
 import functionalj.list.FuncList;
 import lombok.val;
 
+
+// TODO - Add a wrapper for various function so the call to it will use the substitution.
+
 public abstract class Substitution<DATA> {
     
     public static <D> Substitution<D> of(Ref<D> ref, D value) {
@@ -52,7 +55,8 @@ public abstract class Substitution<DATA> {
     public static FuncList<Substitution<?>> getCurrentSubstitutionOf(List<Ref<?>> refs) {
         return Ref
                 .getSubstitutions()
-                .filter(Substitution::ref, refs::contains);
+                .filter(Substitution::ref, refs::contains)
+                .toFuncList();
     }
     
     

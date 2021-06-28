@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import functionalj.functions.ThrowFuncs;
 import lombok.val;
+
 
 public class BlockingQueueIteratorPlus<DATA> implements IteratorPlus<DATA> {
     

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 import functionalj.function.Func;
 import functionalj.function.Func0;
 import lombok.val;
+
 
 class WhenAbsent {
     

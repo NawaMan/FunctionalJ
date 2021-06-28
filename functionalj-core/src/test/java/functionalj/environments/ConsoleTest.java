@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.environments;
 
+import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
 
@@ -31,11 +32,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.promise.DeferAction;
 import functionalj.stream.StreamPlus;
 import lombok.val;
+
 
 public class ConsoleTest {
     
@@ -59,7 +62,7 @@ public class ConsoleTest {
     }
     
     @Test
-    public void testIn() {
+    public void testReadIn() {
         val sysIn = System.in;
         val stream = new ByteArrayInputStream("One\nTwo\n".getBytes());
         System.setIn(stream);
@@ -67,6 +70,26 @@ public class ConsoleTest {
             val console = Env.console();
             assertEquals("One", console.readln());
             assertEquals("Two", console.readln());
+        } finally {
+            System.setIn(sysIn);
+        }
+    }
+    
+    @Ignore("This fails sometimes. Need to investigate.")
+    @Test
+    public void testPollIn() {
+        val sysIn = System.in;
+        val stream = new ByteArrayInputStream("One\nTwo\n".getBytes());
+        System.setIn(stream);
+        try {
+            val console = Env.console();
+            val result  = StreamPlus
+                        .generate     (() -> console.pollln())
+                        .peek         (__ -> Sleep(10))
+                        .limit        (20)
+                        .filterNonNull()
+                        .toList       ();
+            assertEquals("[One, Two]", result.toString());
         } finally {
             System.setIn(sysIn);
         }

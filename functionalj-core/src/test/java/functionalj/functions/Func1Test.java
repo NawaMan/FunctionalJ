@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,10 +34,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import functionalj.function.Func;
+import functionalj.list.FuncList;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
-import functionalj.stream.StreamPlus;
 import lombok.val;
+
 
 public class Func1Test {
     
@@ -73,21 +74,21 @@ public class Func1Test {
     @Test
     public void testApply() {
         val result   = Result.valueOf("Hello");
-        val promise  = Promise.of("Hello");
-        val stream   = f(()->StreamPlus.infiniteInt().limit(5).map($I.asString()));
-        val list     = StreamPlus.infiniteInt().limit(5).map($I.asString()).toList();
-        val map      = StreamPlus.infiniteInt().limit(5).toMap($I, $I.asString());
+        val promise  = Promise.ofValue("Hello");
+        val stream   = f(()->FuncList.infiniteInt().streamPlus().limit(5).map($I.asString()));
+        val list     = FuncList.infiniteInt().streamPlus().limit(5).map($I.asString()).toList();
+        val map      = FuncList.infiniteInt().streamPlus().limit(5).toMap($I, $I.asString());
         val supplier = f(()   -> "Hello");
         val function = f(name -> "Hello " + name + "!");
         val func     = f(String::length);
         assertEquals("Result:{ Value: Hello }",   "" + result);
         assertEquals("Result:{ Value: Hello }",   "" + promise.getResult());
-        assertEquals("0, 1, 2, 3, 4",             "" + stream.get().joinToString(", "));
+        assertEquals("0, 1, 2, 3, 4",             "" + stream.get().join(", "));
         assertEquals("[0, 1, 2, 3, 4]",           "" + list);
         assertEquals("{0:0, 1:1, 2:2, 3:3, 4:4}", "" + map);
         assertEquals("Result:{ Value: 5 }",       "" + func.applyTo(result));
         assertEquals("Result:{ Value: 5 }",       "" + func.applyTo(promise).getResult());
-        assertEquals("1, 1, 1, 1, 1",             "" + func.applyTo(stream.get()).joinToString(", "));
+        assertEquals("1, 1, 1, 1, 1",             "" + func.applyTo(stream.get()).join(", "));
         assertEquals("[1, 1, 1, 1, 1]",           "" + func.applyTo(list));
         assertEquals("{0:1, 1:1, 2:1, 3:1, 4:1}", "" + func.applyTo(map));
         assertEquals("5",                         "" + func.applyTo(supplier).get());

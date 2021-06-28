@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,18 +39,20 @@ import functionalj.types.struct.generator.IGenerateDefinition;
 import functionalj.types.struct.generator.ILines;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import lombok.With;
 import lombok.val;
-import lombok.experimental.Wither;
+
 
 /**
  * Representation of a generated constructor.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
-@Wither
+@With
 @EqualsAndHashCode(callSuper=false)
 public class GenConstructor implements IGenerateDefinition {
+    
     private Accessibility  accessibility;
     private String         name;
     private List<GenParam> params;
@@ -58,7 +60,7 @@ public class GenConstructor implements IGenerateDefinition {
     
     @Override
     public Stream<Type> requiredTypes() {
-        Set<Type> types = new HashSet<>();
+        Set<Type> types = new HashSet<Type>();
         for (val param : params) {
             val paramType = param.getType();
             if (types.contains(paramType))
@@ -70,14 +72,14 @@ public class GenConstructor implements IGenerateDefinition {
             param
                 .requiredTypes()
                 .forEach(types::add);
-            if (paramType.isList())
-                types.add(Core.ImmutableList.type());
-            if (paramType.isMap())
-                types.add(Core.ImmutableMap.type());
-            if (paramType.isFuncList())
-                types.add(Core.ImmutableList.type());
-            if (paramType.isFuncMap())
-                types.add(Core.ImmutableMap.type());
+//            if (paramType.isList())
+//                types.add(Core.ImmutableFuncList.type());
+//            if (paramType.isMap())
+//                types.add(Core.ImmutableFuncMap.type());
+//            if (paramType.isFuncList())
+//                types.add(Core.ImmutableFuncList.type());
+//            if (paramType.isFuncMap())
+//                types.add(Core.ImmutableFuncMap.type());
             if (paramType.isNullable())
                 types.add(Core.Nullable.type());
             if (paramType.isOptional())

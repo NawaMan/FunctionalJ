@@ -1,16 +1,15 @@
 package functionalj.stream;
 
-import static functionalj.functions.ObjFuncs.notEqual;
-import static functionalj.stream.ZipWithOption.AllowUnpaired;
-import static java.lang.Boolean.TRUE;
-
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.function.Func2;
 import lombok.val;
+
 
 public class StreamPlusHelper {
     
@@ -41,30 +40,76 @@ public class StreamPlusHelper {
         return found;
     }
     
-    static <T> boolean equals(Stream<T> stream1, Stream<T> stream2) {
-        return !StreamPlus
-                .from       (stream1)
-                .combineWith(StreamPlus.from(stream2), AllowUnpaired, notEqual())
-                .filter     (TRUE::equals)
-                .findAny    ()
-                .isPresent  ();
+    static <DATA> IteratorPlus<DATA> rawIterator(Stream<DATA> stream) {
+        return IteratorPlus.from(stream);
     }
     
-    public static <T> int hashCode(Stream<T> stream) {
-        return stream
-                .mapToInt(e -> (e == null) ? 0 : e.hashCode())
-                .reduce(1, (h, eh) -> 31*h + eh);
+    static <D, T> StreamPlus<T> derive(
+            AsStreamPlus<D>                asStreamPlus,
+            Function<Stream<D>, Stream<T>> action) {
+        val streamPlus = asStreamPlus.streamPlus();
+        val orgStream  = streamPlus.stream();
+        val newStream  = action.apply(orgStream);
+        return StreamPlus.from(newStream);
     }
     
-    public static <T> String toString(Stream<T> stream) {
-        return "[" + StreamPlus.from(stream).joinToString(", ") + "]";
+    //-- Terminal --
+    
+    static <DATA, TARGET> TARGET terminate(
+            AsStreamPlus<DATA>             asStreamPlus,
+            Function<Stream<DATA>, TARGET> action) {
+        val streamPlus = asStreamPlus.streamPlus();
+        try {
+            val stream = streamPlus.stream();
+            val result = action.apply(stream);
+            return result;
+        } finally {
+            streamPlus.close();
+        }
+    }
+    
+    static <DATA> void terminate(
+            AsStreamPlus<DATA>     asStreamPlus,
+            Consumer<Stream<DATA>> action) {
+        val streamPlus = asStreamPlus.streamPlus();
+        try {
+            val stream = streamPlus.stream();
+            action.accept(stream);
+        } finally {
+            streamPlus.close();
+        }
+    }
+    
+    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
+    static <D, T> StreamPlus<T> sequential(
+            AsStreamPlus<D>                        asStreamPlus,
+            Function<StreamPlus<D>, StreamPlus<T>> action) {
+        val streamPlus = asStreamPlus.streamPlus();
+        val isParallel = streamPlus.isParallel();
+        
+        val orgIntStreamPlus = streamPlus.sequential();
+        val newIntStreamPlus = action.apply(orgIntStreamPlus);
+        if (newIntStreamPlus.isParallel() == isParallel)
+            return newIntStreamPlus;
+        
+        if (isParallel)
+            return newIntStreamPlus.parallel();
+        
+        return newIntStreamPlus.sequential();
+    }
+    
+    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
+    static <D, T> StreamPlus<T> sequentialToObj(
+            AsStreamPlus<D>                        asStreamPlus,
+            Function<StreamPlus<D>, StreamPlus<T>> action) {
+        return sequential(asStreamPlus, action);
     }
     
     static <DATA, C, B> StreamPlus<C> doZipWith(
-            ZipWithOption      option, 
-            Func2<DATA, B, C>  merger,
-            IteratorPlus<DATA> iteratorA, 
-            IteratorPlus<B>    iteratorB) {
+            ZipWithOption          option, 
+            BiFunction<DATA, B, C> merger,
+            IteratorPlus<DATA>     iteratorA, 
+            IteratorPlus<B>        iteratorB) {
         
         val iterator = new Iterator<C>() {
             private boolean hasNextA;
@@ -127,10 +172,6 @@ public class StreamPlusHelper {
         val spliterator = iterable.spliterator();
         val stream      = StreamSupport.stream(spliterator, false);
         return StreamPlus.from(stream);
-    }
-    
-    static <DATA> IteratorPlus<DATA> rawIterator(Stream<DATA> stream) {
-        return IteratorPlus.from(stream);
     }
     
 }

@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,319 +23,287 @@
 // ============================================================================
 package functionalj.stream;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
+import java.util.Objects;
+import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
+import java.util.stream.StreamSupport;
 
-import functionalj.function.Func;
-import functionalj.function.Func1;
-import functionalj.function.Func2;
-import functionalj.result.NoMoreResultException;
+import functionalj.list.FuncList;
+import functionalj.list.FuncListBuilder;
+import functionalj.stream.markers.Sequential;
 import lombok.val;
+
 
 public interface StreamPlusWithSegment<DATA> {
     
-    public <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action);
-    public <T> StreamPlus<T> sequential(Func1<StreamPlus<DATA>, StreamPlus<T>> action);
+    public StreamPlus<DATA> streamPlus();
     
-    public void close();
-    
-    
-    //== segment ==
-    
-    public default StreamPlus<StreamPlus<DATA>> segment(int count) {
-        return segment(count, true);
-    }
-    public default StreamPlus<StreamPlus<DATA>> segment(int count, boolean includeTail) {
-        val index = new AtomicInteger(0);
-        return segment(data -> (index.getAndIncrement() % count) == 0, includeTail);
-    }
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
-        return segment(startCondition, true);
-    }
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, boolean includeTail) {
-        return sequential(stream -> {
-            val list = new AtomicReference<>(new ArrayList<DATA>());
-            val adding = new AtomicBoolean(false);
-            
-            val streamOrNull = (Function<DATA, StreamPlus<DATA>>)((DATA data) ->{
-                if (startCondition.test(data)) {
-                    adding.set(true);
-                    val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
-                    list.get().add(data);
-                    return retList.isEmpty()
-                            ? null
-                            : StreamPlus.from(retList.stream());
+    /**
+     * Segment the stream into sub stream with the fix length of count.
+     * The last portion may be shorter.
+     **/
+    @Sequential
+    public default StreamPlus<FuncList<DATA>> segment(int count) {
+        if (count <= 0) {
+            return StreamPlus.empty();
+        }
+        if (count <= 1) {
+            return streamPlus().map(each -> FuncList.of(each));
+        }
+        
+        val splitr      = streamPlus().spliterator();
+        val isSequence  = false;
+        val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
+            @Override
+            public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
+                val eachListBuilder = FuncList.<DATA>newBuilder();
+                boolean hasThis;
+                int i = count;
+                do { hasThis = splitr.tryAdvance(eachListBuilder::add); }
+                while(hasThis && (--i > 0));
+                
+                val eachList = eachListBuilder.build();
+                val useThis  = !eachList.isEmpty();
+                if (useThis) {
+                    consumer.accept(eachList);
                 }
-                if (adding.get()) list.get().add(data);
-                return null;
-            });
-            val mainStream = StreamPlus.from(stream.map(streamOrNull)).filterNonNull();
-            if (!includeTail)
-                return mainStream;
-            
-            val mainSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->mainStream;
-            val tailSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->{
-                return StreamPlus.of(
-                        StreamPlus.from(
-                                list.get()
-                                .stream()));
-            };
-            val resultStream
-                    = StreamPlus.of(mainSupplier, tailSupplier)
-                    .flatMap(Supplier::get);
-            
-            resultStream
-            .onClose(()->StreamPlusWithSegment.this.close());
-            
-            return resultStream;
-        });
-    }
-    
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition) {
-        return segment(startCondition, endCondition, true);
-    }
-    
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeTail) {
-        return sequential(stream -> {
-            val list = new AtomicReference<>(new ArrayList<DATA>());
-            val adding = new AtomicBoolean(false);
-            
-            StreamPlus<StreamPlus<DATA>> resultStream 
-                = StreamPlus.from(
-                    stream.map(i ->{
-                        if (startCondition.test(i)) {
-                            adding.set(true);
-                        }
-                        if (includeTail && adding.get()) list.get().add(i);
-                        if (endCondition.test(i)) {
-                            adding.set(false);
-                            val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
-                            return StreamPlus.from(retList.stream());
-                        }
-                        
-                        if (!includeTail && adding.get()) list.get().add(i);
-                        return null;
-                    }))
-                .filterNonNull();
-            
-            resultStream
-            .onClose(()->StreamPlusWithSegment.this.close());
-            
-            return resultStream;
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default StreamPlus<StreamPlus<DATA>> segmentSize(Func1<DATA, Integer> segmentSize) {
-        return sequential(stream -> {
-            val listRef = new AtomicReference<List<DATA>>(new ArrayList<DATA>());
-            val leftRef = new AtomicInteger(-1);
-            
-            val head 
-                = stream
-                .map(each -> {
-                    int left = leftRef.get();
-                    if (left == -1) {
-                        Integer newSize = segmentSize.apply(each);
-                        if ((newSize == null) || (newSize == 0)) {
-                            return StreamPlus.empty();
-                        } else if (newSize == 1) {
-                            return StreamPlus.of(each);
-                        } else {
-                            val list = listRef.get();
-                            list.add(each);
-                            leftRef.set(newSize - 1);
-                        }
-                    } else if (left == 1) {
-                        val list = listRef.getAndSet(new ArrayList<DATA>());
-                        list.add(each);
-                        
-                        leftRef.set(-1);
-                        
-                        return StreamPlus.from(list.stream());
-                        
-                    } else {
-                        val list = listRef.get();
-                        list.add(each);
-                        leftRef.decrementAndGet();
-                    }
-                    return null;
-                })
-                .filterNonNull()
-                ;
-            
-            StreamPlus<StreamPlus<DATA>> resultStream 
-                = (StreamPlus<StreamPlus<DATA>>)StreamPlus.of(
-                    Func.f(()-> head),
-                    Func.f(()-> StreamPlus.of(StreamPlus.from(listRef.get().stream())))
-                )
-                .flatMap(s -> (StreamPlus<DATA>)s.get());
-            
-            resultStream
-            .onClose(()->StreamPlusWithSegment.this.close());
-            
-            return resultStream;
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
-        return useIterator(iterator -> {
-            DATA first = null;
-            try {
-                first = iterator.next();
-            } catch (NoSuchElementException e) {
-                return StreamPlus.empty();
+                return useThis;
             }
-            
-            val prev = new AtomicReference<Object>(first);
-            StreamPlus<DATA> resultStream = StreamPlus.generateWith(()->{
-                if (prev.get() == StreamPlusHelper.dummy)
-                    throw new NoMoreResultException();
-                
-                while(true) {
-                    DATA next;
-                    try {
-                        next = iterator.next();
-                    } catch (NoSuchElementException e) {
-                        val yield = prev.get();
-                        prev.set(StreamPlusHelper.dummy);
-                        return (DATA)yield;
-                    }
-                    if (conditionToCollapse.test(next)) {
-                        prev.set(concatFunc.apply((DATA)prev.get(), next));
-                    } else {
-                        val yield = prev.get();
-                        prev.set(next);
-                        return (DATA)yield;
-                    }
-                }
-            });
-            
-            return resultStream;
-        });
+        };
+        return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
     
-    @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> collapseSize(
-            Func1<DATA, Integer>    segmentSize, 
-            Func2<DATA, DATA, DATA> concatFunc) {
-        val firstObj = new Object();
-        return useIterator(iterator -> {
-            val prev = new AtomicReference<Object>(firstObj);
-            StreamPlus<DATA> resultStream = StreamPlus.generateWith(()->{
-                if (prev.get() == StreamPlusHelper.dummy)
-                    throw new NoMoreResultException();
-                
-                while(true) {
-                    DATA next;
-                    try {
-                        next = iterator.next();
-                    } catch (NoSuchElementException e) {
-                        if (prev.get() == firstObj)
-                            throw new NoMoreResultException();
-                        
-                        val yield = prev.get();
-                        prev.set(StreamPlusHelper.dummy);
-                        return (DATA)yield;
-                    }
-                    
-                    Integer newSize = segmentSize.apply(next);
-                    if ((newSize == null) || (newSize == 0)) {
-                        continue;
-                    }
-                    
-                    if (newSize == 1) {
-                        return (DATA)next;
-                    }
-                    
-                    prev.set(next);
-                    for (int i = 0; i < (newSize - 1); i++) {
-                        try {
-                            next = iterator.next();
-                            prev.set(concatFunc.apply((DATA)prev.get(), next));
-                        } catch (NoSuchElementException e) {
-                            val yield = prev.get();
-                            prev.set(StreamPlusHelper.dummy);
-                            return (DATA)yield;
+    /**
+     * Create a stream of sub-stream which size is derived from the value.
+     *
+     * If the segmentSize function return 0,
+     *   the value will be ignored.
+     */
+    @Sequential
+    public default StreamPlus<FuncList<DATA>> segment(ToIntFunction<DATA> segmentSize) {
+        Objects.requireNonNull(segmentSize);
+        
+        val splitr      = streamPlus().spliterator();
+        val isSequence  = false;
+        val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
+            int count = -1;
+            @Override
+            public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
+                val eachListBuilder = FuncList.<DATA>newBuilder();
+                boolean hasThis;
+                do {
+                    hasThis = splitr.tryAdvance(eachValue -> {
+                        if (count < 1) {
+                            count = segmentSize.applyAsInt(eachValue);
                         }
-                    }
-                    
-                    val yield = prev.get();
-                    prev.set(firstObj);
-                    return (DATA)yield;
+                        if (count > 0) {
+                            eachListBuilder.add(eachValue);
+                        }
+                    });
                 }
-            });
-            
-            return resultStream;
-        });
+                while(hasThis && (--count > 0));
+                
+                val eachList = eachListBuilder.build();
+                val useThis  = !eachList.isEmpty();
+                if (useThis) {
+                    consumer.accept(eachList);
+                }
+                return hasThis;
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
     
-    @SuppressWarnings("unchecked")
-    public default <TARGET> StreamPlus<TARGET> collapseSize(
-            Func1<DATA, Integer>          segmentSize, 
-            Func1<DATA, TARGET>           mapper, 
-            Func2<TARGET, TARGET, TARGET> concatFunc) {
-        val firstObj = new Object();
-        return useIterator(iterator -> {
-            val prev = new AtomicReference<Object>(firstObj);
-            StreamPlus<TARGET> resultStream = StreamPlus.generateWith(()->{
-                if (prev.get() == StreamPlusHelper.dummy)
-                    throw new NoMoreResultException();
-                
-                while(true) {
-                    DATA next;
-                    try {
-                        next = iterator.next();
-                    } catch (NoSuchElementException e) {
-                        if (prev.get() == firstObj)
-                            throw new NoMoreResultException();
-                        
-                        val yield = prev.get();
-                        prev.set(StreamPlusHelper.dummy);
-                        return (TARGET)yield;
-                    }
-                    
-                    Integer newSize = segmentSize.apply(next);
-                    if ((newSize == null) || (newSize == 0)) {
-                        continue;
-                    }
-                    
-                    if (newSize == 1) {
-                        val target = (TARGET)mapper.apply((DATA)next);
-                        return target;
-                    }
-                    
-                    TARGET target = (TARGET)mapper.apply((DATA)next);
-                    prev.set(target);
-                    for (int i = 0; i < (newSize - 1); i++) {
-                        try {
-                            next   = iterator.next();
-                            target = (TARGET)mapper.apply((DATA)next);
-                            val prevValue = (TARGET)prev.get();
-                            val newValue  = concatFunc.apply(prevValue, target);
-                            prev.set(newValue);
-                        } catch (NoSuchElementException e) {
-                            val yield = prev.get();
-                            prev.set(StreamPlusHelper.dummy);
-                            return (TARGET)yield;
+    /** Segment the stream into sub stream whenever the start condition is true. */
+    @Sequential
+    public default StreamPlus<FuncList<DATA>> segmentWhen(Predicate<? super DATA> startCondition) {
+        Objects.requireNonNull(startCondition);
+        
+        val splitr       = streamPlus().spliterator();
+        val isSequence   = false;
+        val spliterator  = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
+            FuncListBuilder<DATA> eachListBuilder = FuncList.newBuilder();
+            boolean               hasNewList      = false;
+            @Override
+            public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
+                boolean hasThis;
+                do {
+                    hasThis = splitr.tryAdvance(eachValue -> {
+                        if (startCondition.test(eachValue)) {
+                            val eachList = eachListBuilder.build();
+                            eachListBuilder = FuncList.newBuilder();
+                            
+                            val hasNewList = !eachList.isEmpty();
+                            if (hasNewList) {
+                                consumer.accept(eachList);
+                            }
                         }
-                    }
-                    
-                    val yield = prev.get();
-                    prev.set(firstObj);
-                    return (TARGET)yield;
+                        eachListBuilder.add(eachValue);
+                    });
+                } while(hasThis && !hasNewList);
+                if (hasNewList) {
+                    hasNewList = false;
+                    return true;
                 }
-            });
-            
-            return resultStream;
-        });
+                
+                val eachList = eachListBuilder.build();
+                eachListBuilder = FuncList.newBuilder();
+                val useThis  = !eachList.isEmpty();
+                if (useThis) {
+                    consumer.accept(eachList);
+                }
+                return hasThis || useThis;
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
+    
+    /** Segment the stream into sub stream starting the element after the precondition is true. */
+    @Sequential
+    public default StreamPlus<FuncList<DATA>> segmentAfter(Predicate<? super DATA> endCondition) {
+        Objects.requireNonNull(endCondition);
+        
+        val splitr       = streamPlus().spliterator();
+        val isSequence   = false;
+        val spliterator  = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
+            FuncListBuilder<DATA> eachListBuilder = FuncList.newBuilder();
+            boolean               hasNewList      = false;
+            @Override
+            public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
+                boolean hasThis;
+                do {
+                    hasThis = splitr.tryAdvance(eachValue -> {
+                        eachListBuilder.add(eachValue);
+                        if (endCondition.test(eachValue)) {
+                            val eachList = eachListBuilder.build();
+                            val hasNewList = !eachList.isEmpty();
+                            if (hasNewList) {
+                                consumer.accept(eachList);
+                            }
+                            eachListBuilder = FuncList.newBuilder();
+                        }
+                    });
+                } while(hasThis && !hasNewList);
+                if (hasNewList) {
+                    hasNewList = false;
+                    return true;
+                }
+                
+                val eachList = eachListBuilder.build();
+                eachListBuilder = FuncList.newBuilder();
+                val useThis  = !eachList.isEmpty();
+                if (useThis) {
+                    consumer.accept(eachList);
+                }
+                return hasThis || useThis;
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
+    }
+    
+    /**
+     * Segment the stream into sub stream 
+     *   starting when the start condition is true 
+     *   and ending when the end condition is true
+     *   -- both inclusively.
+     * 
+     * Note: this method will not include the last sub stream 
+     *   even if the end condition is never been true before the stream ended.
+     * 
+     * @param startCondition  the condition to start the sub stream
+     * @param endCondition    the condition to end the sub stream
+     */
+    @Sequential
+    public default StreamPlus<FuncList<DATA>> segmentBetween(
+            Predicate<? super DATA> startCondition,
+            Predicate<? super DATA> endCondition) {
+        return segmentBetween(startCondition, endCondition, false);
+    }
+    
+    /**
+     * Segment the stream into sub stream 
+     *   starting when the start condition is true 
+     *   and ending when the end condition is true
+     *   -- both inclusively.
+     * 
+     * @param startCondition             the condition to start the sub stream
+     * @param endCondition               the condition to end the sub stream
+     * @param includeIncompletedSegment  specifying if the incomplete segment at the end should be included.
+     */
+    @Sequential
+    public default StreamPlus<FuncList<DATA>> segmentBetween(
+            Predicate<? super DATA> startCondition,
+            Predicate<? super DATA> endCondition,
+            IncompletedSegment incompletedSegment) {
+        val includeIncompletedSegment = incompletedSegment == IncompletedSegment.included;
+        return segmentBetween(startCondition, endCondition, includeIncompletedSegment);
+    }
+    
+    /**
+     * Segment the stream into sub stream 
+     *   starting when the start condition is true 
+     *   and ending when the end condition is true
+     *   -- both inclusively.
+     * 
+     * @param startCondition             the condition to start the sub stream
+     * @param endCondition               the condition to end the sub stream
+     * @param includeIncompletedSegment  specifying if the incomplete segment at the end should be included.
+     */
+    @Sequential
+    public default StreamPlus<FuncList<DATA>> segmentBetween(
+            Predicate<? super DATA> startCondition,
+            Predicate<? super DATA> endCondition,
+            boolean                 includeIncompletedSegment) {
+        Objects.requireNonNull(endCondition);
+        
+        val splitr       = streamPlus().spliterator();
+        val isSequence   = false;
+        val spliterator  = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
+            FuncListBuilder<DATA> eachListBuilder = null;
+            boolean               hasNewList      = false;
+            @Override
+            public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
+                boolean hasThis;
+                do {
+                    hasThis = splitr.tryAdvance(eachValue -> {
+                        if ((eachListBuilder == null) && startCondition.test(eachValue)) {
+                            eachListBuilder = FuncList.newBuilder();
+                        }
+                        if (eachListBuilder != null) {
+                            eachListBuilder.add(eachValue);
+                        }
+                        if ((eachListBuilder != null) && endCondition.test(eachValue)) {
+                            val eachList = eachListBuilder.build();
+                            hasNewList = !eachList.isEmpty();
+                            if (hasNewList) {
+                                consumer.accept(eachList);
+                            }
+                            eachListBuilder = null;
+                        }
+                    });
+                } while(hasThis && !hasNewList);
+                
+                if (hasNewList) {
+                    hasNewList = false;
+                    return true;
+                }
+                
+                if (includeIncompletedSegment && (eachListBuilder != null)) {
+                    val eachList = eachListBuilder.build();
+                    eachListBuilder = FuncList.newBuilder();
+                    val useThis  = !eachList.isEmpty();
+                    if (useThis) {
+                        consumer.accept(eachList);
+                    }
+                    return hasThis || useThis;
+                }
+                
+                return hasThis;
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
+    }
+    
 }

@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,11 +23,13 @@
 // ============================================================================
 package functionalj.types.choice.generator;
 
+import static functionalj.types.struct.generator.model.utils.samePackage;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
@@ -36,14 +38,17 @@ import functionalj.types.Type;
 import functionalj.types.choice.ChoiceTypeSwitch;
 import functionalj.types.choice.IChoice;
 import functionalj.types.choice.Self;
-import functionalj.types.choice.generator.model.Method.Kind;
+import functionalj.types.choice.generator.model.Method;
+//import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.SourceSpec;
+import functionalj.types.struct.Core;
 import lombok.Value;
 import lombok.val;
 
 
 @Value
 public class TargetClass implements Lines {
+    
     public final SourceSpec spec;
     public final Type       type;
     
@@ -59,24 +64,18 @@ public class TargetClass implements Lines {
         imports.add(IChoice.class.getCanonicalName());
         imports.add("java.util.function.Function");
         imports.add("java.util.function.Consumer");
-        imports.add("java.util.function.Predicate");
         imports.add("java.util.function.Supplier");
         imports.add("functionalj.result.Result");
         imports.add("functionalj.pipeable.Pipeable");
         imports.add("functionalj.lens.core.LensSpec");
         imports.add("functionalj.lens.lenses.*");
-        
-        val hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
-        if (hasChoiceWuthMoreThanOneParam) {
-            imports.add("functionalj.types.Absent");
-        }
+        imports.add(Core.Generated.type().fullName());
         
         String selfDef = "";
         List<String> specObj = null;
-        if (spec.methods.stream().anyMatch(m -> Kind.DEFAULT.equals(m.kind))) {
-            // TODO - move this to $utils ?
+        if (spec.methods.stream().anyMatch(m -> Method.Kind.DEFAULT.equals(m.kind))) {
             imports.add("nullablej.utils.reflection.UProxy");
-            specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);", 
+            specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);",
                     spec.sourceType.fullName() + spec.sourceType.genericsString(),
                     spec.sourceType.fullName()));
             
@@ -114,8 +113,8 @@ public class TargetClass implements Lines {
                 .filter(Objects::nonNull)
                 .map("    "::concat)
                 .collect(toList());;
-        
-        val subClassConstructors 
+                
+        val subClassConstructors
                 = spec.choices.stream()
                 .flatMap(choice -> new SubClassConstructor(this, choice).lines().stream())
                 .filter(Objects::nonNull)
@@ -140,7 +139,7 @@ public class TargetClass implements Lines {
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
-        val fromMapMethod 
+        val fromMapMethod
                 = new FromMapBuilder(this)
                 .lines().stream()
                 .map("    "::concat)
@@ -161,18 +160,28 @@ public class TargetClass implements Lines {
         
         val choiceLens = new ChoiceLensBuilder(spec).build();
         
-        val typeName     = type.typeWithGenerics();
-        val pckgName     = spec.sourceType.packageName();
-        val importLines  = imports.stream().map(i -> "import " + i + ";").collect(toList());
+        val sourceSpec = spec.sourceType.fullName();
+        val genTime    = LocalDateTime.now();
+        val generated  = "@Generated(value = \"FunctionalJ\",date = \"" + genTime + "\", comments = \"" + sourceSpec + "\")";
+        val suppress   = "@SuppressWarnings(\"all\")";
+        
+        val typeName = type.typeWithGenerics();
+        val pckgName = spec.sourceType.packageName();
+        
+        val importLines 
+                = imports.stream()
+                .filter (importName -> !samePackage(pckgName, importName))
+                .map    (importName -> "import " + importName + ";")
+                .collect(toList());
+        
         val specConstant = (spec.specObjName == null) ? "    " : "    public static final " + SourceSpec.class.getCanonicalName() + " " + spec.specObjName + " = " + spec.toCode() + ";";
         return asList(
                 asList(format("package %s;", pckgName)),
                 asList(format("")),
                 importLines,
                 asList(format("")),
-                asList("// " + spec.sourceType.fullName()),
-                asList(format("")),
-                asList(format("@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})")),
+                asList(generated),
+                asList(suppress),
                 asList(format("public abstract class %1$s implements %6$s<%2$s.%2$sFirstSwitch%3$s>, Pipeable<%4$s>%5$s {", type.typeWithGenericDef(), type.simpleName(), type.genericsString(), type.typeWithGenerics(), selfDef, IChoice.class.getSimpleName())),
                 asList(format("    ")),
                 subClassConstructors,
@@ -207,4 +216,5 @@ public class TargetClass implements Lines {
             .flatMap(List::stream)
             .collect(toList());
     }
+    
 }

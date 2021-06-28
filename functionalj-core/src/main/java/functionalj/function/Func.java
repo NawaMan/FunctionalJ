@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -43,12 +43,12 @@ import java.util.stream.Stream;
 import functionalj.environments.Env;
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface Func {
     
     //== Provide different name for more readability ==
@@ -127,7 +127,7 @@ public interface Func {
     
     @SafeVarargs
     public static <T> FuncList<T> listOf(T ... data) {
-        return ImmutableList.of(data);
+        return ImmutableFuncList.of(data);
     }
     
     //== Of ==
@@ -425,6 +425,10 @@ public interface Func {
     }
     
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> f(FuncUnit2<INPUT1, INPUT2> consumer) {
+        return consumer;
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> f(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
         return consumer;
     }
     
@@ -927,7 +931,8 @@ public interface Func {
         val cache = new ConcurrentHashMap<INPUT, OUTPUT>();
         return in -> cache.computeIfAbsent(in, inFunction::apply);
     }
-    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(long time, Function<INPUT, OUTPUT> inFunction) {
+    
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(long timeMilliSecond, Function<INPUT, OUTPUT> inFunction) {
         val cache       = new ConcurrentHashMap<INPUT, OUTPUT>();
         val expiredTime = new ConcurrentHashMap<INPUT, Long>();
         return in -> {
@@ -936,7 +941,7 @@ public interface Func {
                 cache.remove(in);
             }
             return cache.computeIfAbsent(in, key->{
-                expiredTime.put(key, Env.time().currentMilliSecond() + time);
+                expiredTime.put(key, Env.time().currentMilliSecond() + timeMilliSecond);
                 return inFunction.apply(key);
             });
         };

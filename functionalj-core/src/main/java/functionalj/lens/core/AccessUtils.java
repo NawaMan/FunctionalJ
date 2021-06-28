@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -38,7 +38,6 @@ import functionalj.result.Result;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
-@SuppressWarnings("javadoc")
 public class AccessUtils {
     
     // Nullable
@@ -131,6 +130,23 @@ public class AccessUtils {
             }
         };
         return () -> specWithSub;
+    }
+    
+    public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> 
+            OptionalAccess<HOST, TYPE, TYPELENS> createOptionalAccess(
+                        Function<HOST, Optional<TYPE>>           accessOptional,
+                        Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
+        val accessWithSub = new AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPELENS>() {
+            @Override
+            public Optional<TYPE> applyUnsafe(HOST host) throws Exception {
+                return accessOptional.apply(host);
+            }
+            @Override
+            public TYPELENS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return createSubLens.apply(accessToParameter);
+            }
+        };
+        return () -> accessWithSub;
     }
     
     public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> 

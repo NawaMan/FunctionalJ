@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -37,11 +37,11 @@ import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, T4, T5>> {
     
     public static <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> of(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5) {
@@ -104,7 +104,7 @@ public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, 
         val e3 = (k3 != null) ? ImmutableTuple.of(k3, (Object)_3()) : null;
         val e4 = (k4 != null) ? ImmutableTuple.of(k4, (Object)_4()) : null;
         val e5 = (k5 != null) ? ImmutableTuple.of(k5, (Object)_5()) : null;
-        return ImmutableMap.ofEntries(e1, e2, e3, e4, e5);
+        return ImmutableFuncMap.ofEntries(e1, e2, e3, e4, e5);
     }
     
     //== mapTo ==

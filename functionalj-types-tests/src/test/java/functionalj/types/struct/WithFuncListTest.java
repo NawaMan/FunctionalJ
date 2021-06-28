@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,12 +29,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import functionalj.types.Struct;
-import functionalj.types.struct.Child;
-import functionalj.types.struct.ParentWithFuncList;
 
-@SuppressWarnings("javadoc")
 public class WithFuncListTest {
 
     @Struct(name="ParentWithFuncList")
@@ -48,8 +45,8 @@ public class WithFuncListTest {
     @Test
     public void testAccessToLens() {
         ParentWithFuncList parent = new ParentWithFuncList(
-                ImmutableList.of("One", "Two", "Three", "Four"), 
-                ImmutableList.empty());
+                ImmutableFuncList.of("One", "Two", "Three", "Four"), 
+                ImmutableFuncList.empty());
         assertEquals(
                 "[One, Two, Three, Four]",
                 "" + ParentWithFuncList.theParentWithFuncList
@@ -58,7 +55,7 @@ public class WithFuncListTest {
         
         assertEquals(
                 "[(One,3), (Two,3), (Three,5), (Four,4)]",
-                "" + parent.names().mapTuple(theString, theString.length()));
+                "" + parent.names().mapToTuple(theString, theString.length()));
     }
     
 }

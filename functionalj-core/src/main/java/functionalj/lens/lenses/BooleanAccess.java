@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,47 +23,172 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
-@SuppressWarnings("javadoc")
-@FunctionalInterface
+import functionalj.function.Func1;
+import lombok.val;
+
+
 public interface BooleanAccess<HOST> 
-        extends 
-            AnyAccess<HOST, Boolean>, 
-            Predicate<HOST>, 
-            ConcreteAccess<HOST, Boolean, BooleanAccess<HOST>> {
+                    extends 
+                        AnyAccess<HOST, Boolean>, 
+                        Predicate<HOST>, 
+                        ConcreteAccess<HOST, Boolean, BooleanAccess<HOST>> {
+    
+    public static <H> BooleanAccess<H> of(Function<H, Boolean> accessToValue) {
+        requireNonNull(accessToValue);
+        
+        if (accessToValue instanceof BooleanAccess) {
+            return (BooleanAccess<H>)accessToValue;
+        }
+        
+        if (accessToValue instanceof Predicate) {
+            @SuppressWarnings("unchecked")
+            val func1  = (Predicate<H>)accessToValue;
+            val access = ofPrimitive(func1);
+            return access;
+        }
+        
+        if (accessToValue instanceof Func1) {
+            val func1  = (Func1<H, Boolean>)accessToValue;
+            val access = (BooleanAccessBoxed<H>)func1::applyUnsafe;
+            return access;
+        }
+        
+        val func   = (Function<H, Boolean>)accessToValue;
+        val access = (BooleanAccessBoxed<H>)(host -> func.apply(host));
+        return access;
+    }
+    
+    public static <H> BooleanAccess<H> ofPrimitive(Predicate<H> accessToValue) {
+        requireNonNull(accessToValue);
+        val access = (BooleanAccessPrimitive<H>)accessToValue::test;
+        return access;
+    }
     
     @Override
-    public default BooleanAccess<HOST> newAccess(Function<HOST, Boolean> access) {
-        return access::apply;
+    public default BooleanAccess<HOST> newAccess(Function<HOST, Boolean> accessToValue) {
+        return of(accessToValue);
     }
     
-    public default boolean test(HOST host) {
-        return Boolean.TRUE.equals(this.apply(host));
-    }
+    //== abstract functionalities ==
     
-    public default BooleanAccess<HOST> nagate() {
-        return booleanAccess(false, bool -> !bool);
-    }
-    public default BooleanAccess<HOST> or(boolean anotherBoolean) {
-        return booleanAccess(false, bool -> bool || anotherBoolean);
-    }
-    public default BooleanAccess<HOST> and(boolean anotherBoolean) {
-        return booleanAccess(false, bool -> bool && anotherBoolean);
-    }
-    public default BooleanAccess<HOST> or(Predicate<? super HOST> anotherPredicate) {
+    public boolean test(HOST host);
+    
+    public Boolean applyUnsafe(HOST host) throws Exception;
+    
+    //== Functionality ==
+    
+    public default BooleanAccessPrimitive<HOST> nagate() {
         return host -> {
-            boolean bool1 = test(host);
-            return bool1 || anotherPredicate.test(host);
+            val boolValue = test(host);
+            return !boolValue;
         };
     }
-    public default BooleanAccess<HOST> and(Predicate<? super HOST> anotherPredicate) {
+    
+    public default BooleanAccessPrimitive<HOST> or(boolean anotherBoolean) {
         return host -> {
-            boolean bool1 = test(host);
-            return bool1 && anotherPredicate.test(host);
+            val boolValue = test(host);
+            return boolValue || anotherBoolean;
+        };
+    }
+    public default BooleanAccessPrimitive<HOST> or(BooleanSupplier anotherSupplier) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue || anotherValue;
+        };
+    }
+    public default BooleanAccessPrimitive<HOST> or(BooleanAccess<HOST> anotherAccess) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue || anotherValue;
+        };
+    }
+    
+    public default BooleanAccessPrimitive<HOST> and(boolean anotherBoolean) {
+        return host -> {
+            val boolValue = test(host);
+            return boolValue && anotherBoolean;
+        };
+    }
+    public default BooleanAccessPrimitive<HOST> and(BooleanSupplier anotherSupplier) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherSupplier.getAsBoolean();
+            return boolValue && anotherValue;
+        };
+    }
+    public default BooleanAccessPrimitive<HOST> and(BooleanAccess<HOST> anotherAccess) {
+        return host -> {
+            val boolValue    = test(host);
+            val anotherValue = anotherAccess.apply(host);
+            return boolValue && anotherValue;
+        };
+    }
+    
+    // TODO -Select Obj ... make sure we can put the lens of that object after.
+    
+    public default IntegerAccessPrimitive<HOST> selectInt(int choiceTrue, int choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue ? choiceTrue : choiceFalse;
+        };
+    }
+    
+    public default IntegerAccessPrimitive<HOST> selectInt(
+            ToIntFunction<HOST> choiceTrue, 
+            ToIntFunction<HOST> choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue 
+                    ? choiceTrue.applyAsInt(host)
+                    : choiceFalse.applyAsInt(host);
+        };
+    }
+    
+    public default LongAccessPrimitive<HOST> selectLong(long choiceTrue, long choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue ? choiceTrue : choiceFalse;
+        };
+    }
+    
+    public default LongAccessPrimitive<HOST> selectLong(
+            ToLongFunction<HOST> choiceTrue, 
+            ToLongFunction<HOST> choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue 
+                    ? choiceTrue.applyAsLong(host)
+                    : choiceFalse.applyAsLong(host);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> selectDouble(double choiceTrue, double choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue ? choiceTrue : choiceFalse;
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> selectDouble(
+            ToDoubleFunction<HOST> choiceTrue, 
+            ToDoubleFunction<HOST> choiceFalse) {
+        return host -> {
+            val boolValue    = test(host);
+            return boolValue 
+                    ? choiceTrue.applyAsDouble(host)
+                    : choiceFalse.applyAsDouble(host);
         };
     }
     
 }
-

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,13 +28,12 @@ import java.util.function.Function;
 
 import functionalj.lens.core.AccessParameterized2;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface MapEntryAccess<HOST, MAPENTRY extends Map.Entry<KEY, VALUE>, KEY, VALUE, 
                                 KEYACCESS extends AnyAccess<HOST,KEY>, 
                                 VALUEACCESS extends AnyAccess<HOST,VALUE>>
                     extends AccessParameterized2<HOST, MAPENTRY, KEY, VALUE, KEYACCESS, VALUEACCESS> {
-
+    
     public AccessParameterized2<HOST, MAPENTRY, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2();
     
     @Override

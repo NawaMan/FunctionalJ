@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,75 +23,71 @@
 // ============================================================================
 package functionalj.data;
 
+import static functionalj.function.Func.f;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
+import functionalj.list.FuncList;
 import functionalj.result.Result;
-import functionalj.stream.Streamable;
-import functionalj.types.IData;
 
 public class FuncData {
-    
-    public static <D extends IData> Result<D> fromMap(Map<String, Object> map, Class<D> clazz) {
-        return Result.from(()->IData.$utils.fromMap(map, clazz));
-    }
     
     // == Read text file ==
     
     /**
      * Read lines from file. This method will read lines in lazily and ensure the file is closed.
-     * 
-     * This has been tested with 2GB text file.
-     * 
+     *
+     * This has been tested     with 2GB text file.
+     *
      * @param path
      *          the path to the text file.
-     * @return  the streamable containing the lines of text from the class.
+     * @return  the functional list containing the lines of text from the class.
      */
-    public static Result<Streamable<String>> readLines(String path) {
+    public static Result<FuncList<String>> readLines(String path) {
         return readLines(Paths.get(path), StandardCharsets.UTF_8);
     }
     
     /**
      * Read lines from file. This method will read lines in lazily and ensure the file is closed.
-     * 
+     *
      * This has been tested with 2GB text file.
-     * 
+     *
      * @param path
      *          the path to the text file.
-     * @return  the streamable containing the lines of text from the class.
+     * @return  the functional list containing the lines of text from the class.
      */
-    public static Result<Streamable<String>> readLines(String path, Charset charset) {
+    public static Result<FuncList<String>> readLines(String path, Charset charset) {
         return readLines(Paths.get(path), charset);
     }
     
     /**
      * Read lines from file. This method will read lines in lazily and ensure the file is closed.
-     * 
+     *
      * This has been tested with 2GB text file.
-     * 
+     *
      * @param path
      *          the path to the text file.
-     * @return  the streamable containing the lines of text from the class.
+     * @return  the functional list containing the lines of text from the class.
      */
-    public static Result<Streamable<String>> readLines(Path path) {
+    public static Result<FuncList<String>> readLines(Path path) {
         return readLines(path, StandardCharsets.UTF_8);
     }
     
     /**
      * Read lines from file. This method will read lines in lazily and ensure the file is closed.
-     * 
+     *
      * This has been tested with 2GB text file.
-     * 
+     *
      * @param path
      *          the path to the text file.
-     * @return  the streamable containing the lines of text from the class.
+     * @return  the functional list containing the lines of text from the class.
      */
-    public static Result<Streamable<String>> readLines(Path path, Charset charset) {
-        return Result.from(()->Streamable.from(()->Files.lines(path, charset)));
+    public static Result<FuncList<String>> readLines(Path path, Charset charset) {
+        return Result.from(()->FuncList.from(f(()->Files.lines(path, charset))));
     }
     
     // TODO - Write text file

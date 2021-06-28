@@ -14,10 +14,10 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 @FunctionalInterface
 public interface LocalDateAccess<HOST>
                     extends AnyAccess             <HOST, LocalDate>
@@ -54,13 +54,13 @@ public interface LocalDateAccess<HOST>
             return value.getChronology();
         };
     }
-    public default IntegerAccess<HOST> getYear() {
+    public default IntegerAccessPrimitive<HOST> getYear() {
         return host -> {
             val value = apply(host);
             return value.getYear();
         };
     }
-    public default IntegerAccess<HOST> getMonthValue() {
+    public default IntegerAccessPrimitive<HOST> getMonthValue() {
         return host -> {
             val value = apply(host);
             return value.getMonthValue();
@@ -72,13 +72,13 @@ public interface LocalDateAccess<HOST>
             return value.getMonth();
         };
     }
-    public default IntegerAccess<HOST> getDayOfMonth() {
+    public default IntegerAccessPrimitive<HOST> getDayOfMonth() {
         return host -> {
             val value = apply(host);
             return value.getDayOfMonth();
         };
     }
-    public default IntegerAccess<HOST> getDayOfYear() {
+    public default IntegerAccessPrimitive<HOST> getDayOfYear() {
         return host -> {
             val value = apply(host);
             return value.getDayOfYear();

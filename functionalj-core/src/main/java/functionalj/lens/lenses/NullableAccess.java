@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,7 +32,6 @@ import functionalj.lens.core.AccessUtils;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
             extends
@@ -113,17 +112,17 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
         };
     }
     
-    public default BooleanAccess<HOST> isPresent() {
+    public default BooleanAccessPrimitive<HOST> isPresent() {
         return host -> {
             return NullableAccess.this.apply(host).isPresent();
         };
     }
-    public default BooleanAccess<HOST> isNotNull() {
+    public default BooleanAccessPrimitive<HOST> isNotNull() {
         return host -> {
             return NullableAccess.this.apply(host).isNotNull();
         };
     }
-    public default BooleanAccess<HOST> isNull() {
+    public default BooleanAccessPrimitive<HOST> isNull() {
         return host -> {
             return NullableAccess.this.apply(host).isNull();
         };

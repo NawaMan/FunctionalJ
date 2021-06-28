@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,86 +23,76 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.list.AsFuncListHelper.funcListOf;
+import static functionalj.list.FuncList.deriveFrom;
+
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import functionalj.map.FuncMap;
-import functionalj.stream.Streamable;
-import functionalj.stream.StreamableWithMapToMap;
+import lombok.val;
 
-public interface FuncListWithMapToMap<DATA>
-        extends StreamableWithMapToMap<DATA> {
+public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
     
-    public <TARGET> FuncList<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action);
-    
-    
-    //== mapToMap ==
-    
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, Function<? super DATA, VALUE> mapper) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key, mapper);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(key, mapper));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key1, mapper1,
-                              key2, mapper2);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2,
             KEY key3, Function<? super DATA, VALUE> mapper3) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key1, mapper1,
-                              key2, mapper2,
-                              key3, mapper3);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2,
             KEY key3, Function<? super DATA, VALUE> mapper3,
             KEY key4, Function<? super DATA, VALUE> mapper4) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key1, mapper1,
-                              key2, mapper2,
-                              key3, mapper3,
-                              key4, mapper4);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3,
+                key4, mapper4));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2,
             KEY key3, Function<? super DATA, VALUE> mapper3,
             KEY key4, Function<? super DATA, VALUE> mapper4,
             KEY key5, Function<? super DATA, VALUE> mapper5) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key1, mapper1,
-                              key2, mapper2,
-                              key3, mapper3,
-                              key4, mapper4,
-                              key5, mapper5);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3,
+                key4, mapper4,
+                key5, mapper5));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2,
@@ -110,18 +100,17 @@ public interface FuncListWithMapToMap<DATA>
             KEY key4, Function<? super DATA, VALUE> mapper4,
             KEY key5, Function<? super DATA, VALUE> mapper5,
             KEY key6, Function<? super DATA, VALUE> mapper6) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key1, mapper1,
-                              key2, mapper2,
-                              key3, mapper3,
-                              key4, mapper4,
-                              key5, mapper5,
-                              key6, mapper6);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3,
+                key4, mapper4,
+                key5, mapper5,
+                key6, mapper6));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2,
@@ -130,19 +119,18 @@ public interface FuncListWithMapToMap<DATA>
             KEY key5, Function<? super DATA, VALUE> mapper5,
             KEY key6, Function<? super DATA, VALUE> mapper6,
             KEY key7, Function<? super DATA, VALUE> mapper7) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key1, mapper1,
-                              key2, mapper2,
-                              key3, mapper3,
-                              key4, mapper4,
-                              key5, mapper5,
-                              key6, mapper6,
-                              key7, mapper7);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3,
+                key4, mapper4,
+                key5, mapper5,
+                key6, mapper6,
+                key7, mapper7));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2,
@@ -152,20 +140,19 @@ public interface FuncListWithMapToMap<DATA>
             KEY key6, Function<? super DATA, VALUE> mapper6,
             KEY key7, Function<? super DATA, VALUE> mapper7,
             KEY key8, Function<? super DATA, VALUE> mapper8) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key1, mapper1,
-                              key2, mapper2,
-                              key3, mapper3,
-                              key4, mapper4,
-                              key5, mapper5,
-                              key6, mapper6,
-                              key7, mapper7,
-                              key8, mapper8);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3,
+                key4, mapper4,
+                key5, mapper5,
+                key6, mapper6,
+                key7, mapper7,
+                key8, mapper8));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2,
@@ -176,21 +163,20 @@ public interface FuncListWithMapToMap<DATA>
             KEY key7, Function<? super DATA, VALUE> mapper7,
             KEY key8, Function<? super DATA, VALUE> mapper8,
             KEY key9, Function<? super DATA, VALUE> mapper9) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key1, mapper1,
-                              key2, mapper2,
-                              key3, mapper3,
-                              key4, mapper4,
-                              key5, mapper5,
-                              key6, mapper6,
-                              key7, mapper7,
-                              key8, mapper8,
-                              key9, mapper9);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3,
+                key4, mapper4,
+                key5, mapper5,
+                key6, mapper6,
+                key7, mapper7,
+                key8, mapper8,
+                key9, mapper9));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, VALUE> mapper1,
             KEY key2, Function<? super DATA, VALUE> mapper2,
@@ -202,19 +188,46 @@ public interface FuncListWithMapToMap<DATA>
             KEY key8, Function<? super DATA, VALUE> mapper8,
             KEY key9, Function<? super DATA, VALUE> mapper9,
             KEY key10, Function<? super DATA, VALUE> mapper10) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapToMap(key1, mapper1,
-                              key2, mapper2,
-                              key3, mapper3,
-                              key4, mapper4,
-                              key5, mapper5,
-                              key6, mapper6,
-                              key7, mapper7,
-                              key8, mapper8,
-                              key9, mapper9,
-                              key10, mapper10);
-        });
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3,
+                key4, mapper4,
+                key5, mapper5,
+                key6, mapper6,
+                key7, mapper7,
+                key8, mapper8,
+                key9, mapper9,
+                key10, mapper10));
     }
+    
+    /** Put mapped value and put it in the map with specific keys. */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
+            KEY key1, Function<? super DATA, VALUE> mapper1,
+            KEY key2, Function<? super DATA, VALUE> mapper2,
+            KEY key3, Function<? super DATA, VALUE> mapper3,
+            KEY key4, Function<? super DATA, VALUE> mapper4,
+            KEY key5, Function<? super DATA, VALUE> mapper5,
+            KEY key6, Function<? super DATA, VALUE> mapper6,
+            KEY key7, Function<? super DATA, VALUE> mapper7,
+            KEY key8, Function<? super DATA, VALUE> mapper8,
+            KEY key9, Function<? super DATA, VALUE> mapper9,
+            KEY key10, Function<? super DATA, VALUE> mapper10,
+            KEY key11, Function<? super DATA, VALUE> mapper11) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3,
+                key4, mapper4,
+                key5, mapper5,
+                key6, mapper6,
+                key7, mapper7,
+                key8, mapper8,
+                key9, mapper9,
+                key10, mapper10,
+                key11, mapper11));
+    }
+    
 }

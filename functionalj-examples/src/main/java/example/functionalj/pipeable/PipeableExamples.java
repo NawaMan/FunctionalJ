@@ -13,6 +13,7 @@ import functionalj.pipeable.PipeLine;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
+
 public class PipeableExamples {
     
     @Test

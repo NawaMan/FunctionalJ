@@ -14,9 +14,14 @@ Need code clean up!!!!! The code is so shitty :-(
 
 
 TODO
-- Fix iterator()
-- tripple check if all terminal operation is handled.
-- Calculate -- use Collector instead or make StreamElementProcessor create evertime and not statefull
+- Struct with Generic
+- Check why Elm does not work
+- Mutable builder
+- Int,Long,Double Streamable (char?)
+- Int,Long,Double FuncList (char)
+- Fix IntAccess to use applyAsIntFirst
 
+- IntegerAccess's method that return int should have IntegerToIntegerAccess be primitive to primitive
+- Fix IntegerLens .... for primitive to primitive
 
 

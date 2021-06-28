@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,8 +25,8 @@ package functionalj.types.struct.generator;
 
 import java.util.stream.Stream;
 
-import functionalj.types.Type;
 import functionalj.types.IRequireTypes;
+import functionalj.types.Type;
 
 /**
  * Classes implementing this interface as a term in code.

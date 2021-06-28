@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.lens.lenses;
 
 import java.util.function.Function;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface ObjectAccess<HOST, TYPE> 
         extends

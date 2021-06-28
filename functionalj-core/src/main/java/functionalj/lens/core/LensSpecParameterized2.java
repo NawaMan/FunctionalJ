@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,7 +28,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface LensSpecParameterized2<HOST, TYPE, SUB1, SUB2,
                                          SUBLENS1 extends AnyLens<HOST, SUB1>,
                                          SUBLENS2 extends AnyLens<HOST, SUB2>>

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.lens.core;
 
 import java.util.function.BiFunction;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface WriteLens<HOST, DATA> {
     
@@ -43,6 +42,45 @@ public interface WriteLens<HOST, DATA> {
     
     public default BiFunction<HOST, DATA, HOST> toBiFunction() {
         return this::apply;
+    }
+    
+    
+    public static interface PrimitiveInt<HOST> extends WriteLens<HOST, Integer> {
+        
+        public HOST applyWithInt(HOST host, int newValue);
+        
+        public default HOST apply(HOST host, Integer newValue) {
+            return applyWithInt(host, newValue);
+        }
+        
+    }
+    
+    public static interface PrimitiveLong<HOST> extends WriteLens<HOST, Long> {
+        
+        public HOST applyWithLong(HOST host, long newValue);
+        
+        public default HOST apply(HOST host, Long newValue) {
+            return applyWithLong(host, newValue);
+        }
+        
+    }
+    
+    public static interface PrimitiveDouble<HOST> extends WriteLens<HOST, Double> {
+        
+        public HOST applyWithDouble(HOST host, double newValue);
+        
+        public default HOST apply(HOST host, Double newValue) {
+            return applyWithDouble(host, newValue);
+        }
+    }
+    
+    public static interface PrimitiveBoolean<HOST> extends WriteLens<HOST, Boolean> {
+        
+        public HOST applyWithBoolean(HOST host, boolean newValue);
+        
+        public default HOST apply(HOST host, Boolean newValue) {
+            return applyWithBoolean(host, newValue);
+        }
     }
     
 }

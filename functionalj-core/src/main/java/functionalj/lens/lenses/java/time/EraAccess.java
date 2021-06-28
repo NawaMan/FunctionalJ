@@ -6,9 +6,10 @@ import java.util.Locale;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface EraAccess<HOST, ERA extends Era>
@@ -24,7 +25,7 @@ public interface EraAccess<HOST, ERA extends Era>
         return host -> accessToValue.apply(host);
     }
     
-    public default IntegerAccess<HOST> getValue() {
+    public default IntegerAccessPrimitive<HOST> getValue() {
         return host -> {
             val value = apply(host);
             return value.getValue();

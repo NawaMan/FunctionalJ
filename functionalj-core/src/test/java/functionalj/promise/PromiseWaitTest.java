@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.promise;
 
-import static org.junit.Assert.assertEquals;
+import static functionalj.TestHelper.assertAsString;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -37,15 +37,9 @@ import functionalj.list.FuncList;
 import functionalj.tuple.Tuple;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public class PromiseWaitTest {
     
-    private void assertStrings(String str, Object obj) {
-        assertEquals(str, "" + obj);
-    }
-    private void assertStrings(String message, String str, Object obj) {
-        assertEquals(message, str, "" + obj);
-    }
     
     @Test
     public void testWaitAWhile_complete() throws InterruptedException {
@@ -57,7 +51,7 @@ public class PromiseWaitTest {
         Thread.sleep(50);
         action.complete("Complete!");
         
-        assertStrings("[Complete!]", list);
+        assertAsString("[Complete!]", list);
     }
     
     @Test
@@ -70,7 +64,7 @@ public class PromiseWaitTest {
         Thread.sleep(100);
         action.complete("Complete!");
         
-        assertStrings("[Not done.]", list);
+        assertAsString("[Not done.]", list);
     }
     
     @Test
@@ -80,7 +74,7 @@ public class PromiseWaitTest {
                 .onComplete(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()));
         
         Thread.sleep(100);
-        assertStrings("[Not done.]", list);
+        assertAsString("[Not done.]", list);
     }
     
     @Test
@@ -101,7 +95,7 @@ public class PromiseWaitTest {
         .forEach(tuple -> {
             val list   = new ArrayList<String>();
             val action = DeferAction.of(String.class)
-                    .use(promise -> promise.onComplete(Wait.forMilliseconds(100, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
+                    .use(promise -> promise.onComplete(Wait.forMilliseconds(150, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
                     .start();
             
             try {
@@ -111,7 +105,7 @@ public class PromiseWaitTest {
             }
             action.complete("Complete!");
             
-            assertStrings("Name: " + tuple._1(), "[Complete!]", list);
+            assertAsString("Name: " + tuple._1(), "[Complete!]", list);
         });
     }
     
@@ -143,7 +137,7 @@ public class PromiseWaitTest {
             }
             action.complete("Complete!");
             
-            assertStrings("Name: " + tuple._1(), "[Not done.]", list);
+            assertAsString("Name: " + tuple._1(), "[Not done.]", list);
         });
     }
     
@@ -171,7 +165,7 @@ public class PromiseWaitTest {
         Thread.sleep(50);
         action.complete("Complete!");
         
-        assertStrings("[Not done.]", list);
+        assertAsString("[Not done.]", list);
         // The abort should be initiated at 150 but that was interrupted at 50.
     }
     
@@ -199,7 +193,7 @@ public class PromiseWaitTest {
         Thread.sleep(100);
         threadRef.get().interrupt();
         
-        assertStrings("[Complete!]", list);
+        assertAsString("[Complete!]", list);
     }
     
 }

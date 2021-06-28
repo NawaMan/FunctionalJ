@@ -7,8 +7,9 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.ListAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
+
 
 public interface TemporalAmountAccess<HOST, TEMPORAL_AMOUNT extends TemporalAmount>
                     extends AnyAccess<HOST, TEMPORAL_AMOUNT> {
@@ -17,7 +18,7 @@ public interface TemporalAmountAccess<HOST, TEMPORAL_AMOUNT extends TemporalAmou
         return func::apply;
     }
     
-    public default LongAccess<HOST> get(TemporalUnit unit) {
+    public default LongAccessPrimitive<HOST> get(TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return value.get(unit);

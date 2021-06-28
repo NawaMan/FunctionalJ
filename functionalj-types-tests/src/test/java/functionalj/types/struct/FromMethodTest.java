@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,17 +41,18 @@ import functionalj.types.Nullable;
 import functionalj.types.Struct;
 import lombok.val;
 
+
 public class FromMethodTest {
     
     @Struct(specField="spec")
     static boolean Car(String make, int year, @Nullable @DefaultTo(NULL) String color) { return true; }
     
-    @Struct
+    @Struct(specField="spec")
     public void Inventory(
             @DefaultTo(EMPTY) FuncList<CarForSale> cars) {}
     
     @Struct(specField="spec")
-    public void Price(int price, 
+    public void Price(int price,
             @DefaultTo(ZERO) int discountPercent) { }
     
     @Struct(specField="spec")
@@ -119,9 +120,9 @@ public class FromMethodTest {
         assertEquals("Car[make: BMW, year: 2010, color: Black]", car4.toString());
         
         val cars = FuncList.of(car4);
-        assertEquals("Car[make: BMW, year: 2009, color: Black]",  theCar.year.changeTo($I.subtract(1)).apply(car4).toString());
+        assertEquals("Car[make: BMW, year: 2009, color: Black]",  theCar.year.changeTo($I.less(1)).apply(car4).toString());
         assertEquals("Car[make: Benz, year: 2010, color: Black]", theCar.make.changeTo("Benz").apply(car4).toString());
-        assertEquals("[Car[make: BMW, year: 2009, color: Black]]", "" + cars.mapOnly(theCar.year.thatEquals(2010), theCar.year.changeTo($I.subtract(1))));
+        assertEquals("[Car[make: BMW, year: 2009, color: Black]]", "" + cars.mapOnly(theCar.year.thatEquals(2010), theCar.year.changeTo($I.less(1))));
     }
     
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,6 +35,7 @@ import functionalj.function.FuncUnit2;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
+
 
 public class Topic<DATA> {
     
@@ -76,8 +77,8 @@ public class Topic<DATA> {
             });
     }
     
-    private <T> Topic<T> newSubTopic(FuncUnit2<Result<DATA>, Topic<T>> resultConsumer) {
-        val topic = new SubTopic<T>(this, resultConsumer);
+    private <TOPIC> Topic<TOPIC> newSubTopic(FuncUnit2<Result<DATA>, Topic<TOPIC>> resultConsumer) {
+        val topic = new SubTopic<TOPIC>(this, resultConsumer);
         return topic;
     }
     

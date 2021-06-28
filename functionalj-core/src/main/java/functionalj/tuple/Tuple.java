@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,7 +31,6 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.ObjectLens;
 
-@SuppressWarnings("javadoc")
 public class Tuple {
     
     public static <T1, T2> ImmutableTuple2<T1, T2> of(T1 _1, T2 _2) {

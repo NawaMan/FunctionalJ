@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.tuple;
 
-@SuppressWarnings("javadoc")
 public class ImmutableTuple3<T1, T2, T3> implements Tuple3<T1, T2, T3> {
     
     public final T1 _1;

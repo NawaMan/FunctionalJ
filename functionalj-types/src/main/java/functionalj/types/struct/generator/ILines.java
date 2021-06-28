@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,6 +30,7 @@ import static functionalj.types.struct.generator.utils.themAll;
 import static functionalj.types.struct.generator.utils.toStr;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -38,19 +39,20 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import functionalj.types.Type;
 import functionalj.types.IRequireTypes;
+import functionalj.types.Type;
 import lombok.val;
+
 
 /**
  * Classes implementing this interface can turns itself into lines.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface ILines extends IRequireTypes {
     
     public static final Function<String, ILines> toLine = string -> ILines.line(string);
-
+    
     /** An empty line */
     public static final ILines emptyLine = ()->Stream.of("");
     /** A no line */
@@ -61,7 +63,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Returns the lines as one string (each line separated by '\n').
-     * 
+     *
      * @return  the whole string.
      */
     public default String toText() {
@@ -81,7 +83,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create and return an ILines from the given lines. Any of the line that is null will be ignored.
-     * 
+     *
      * @param lines  the lines.
      * @return       the ILines.
      */
@@ -94,7 +96,7 @@ public interface ILines extends IRequireTypes {
     }
     /**
      * Returns lines of the given stream of string.
-     * 
+     *
      * @param stream  the stream.
      * @return        the lines.
      */
@@ -103,7 +105,7 @@ public interface ILines extends IRequireTypes {
     }
     /**
      * Returns lines of the given list of string.
-     * 
+     *
      * @param list  the list.
      * @return      the lines.
      */
@@ -113,7 +115,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create a clean (no-null line) of the given lines.
-     * 
+     *
      * @param lines  the lines.
      * @return       the lines.
      */
@@ -125,7 +127,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create a combine clean lines of the given stream of lines.
-     * 
+     *
      * @param stream  the stream of lines.
      * @return        the lines.
      */
@@ -138,7 +140,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create a combine clean lines of the given list of lines.
-     * 
+     *
      * @param list  the list of lines.
      * @return      the lines.
      */
@@ -148,7 +150,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create a combine clean lines of the given array of lines.
-     * 
+     *
      * @param array  the array of lines.
      * @return       the lines.
      */
@@ -158,7 +160,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create a combine clean lines of the given list of ILines.
-     * 
+     *
      * @param listOfILines  the list of ILines.
      * @return             the lines.
      */
@@ -174,7 +176,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create indented lines (4 spaces) for the given lines.
-     * 
+     *
      * @param lines  the lines.
      * @return       the lines.
      */
@@ -184,7 +186,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create indented lines (4 spaces) for the given list of lines.
-     * 
+     *
      * @param <LIST>  the list type of the list.
      * @param list    the list of lines.
      * @return        the lines.
@@ -195,7 +197,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create indented empty line as an ILines.
-     * 
+     *
      * @return  the lines.
      */
     public static ILines indent() {
@@ -209,7 +211,7 @@ public interface ILines extends IRequireTypes {
     }
     /**
      * Create indented empty lines from the given stream of lines.
-     * 
+     *
      * @param stream  the stream of lines.
      * @return        the result lines.
      */
@@ -223,7 +225,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Combines the parts into one line each separated by a space - null or empty part is ignored.
-     * 
+     *
      * @param parts  the parts.
      * @return       the combined line.
      */
@@ -236,7 +238,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Given an array of lines, create one (clean) single ILines.
-     * 
+     *
      * @param arrayOflines  the array.
      * @return              the result lines.
      */
@@ -247,7 +249,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Given an stream of lines, create one (clean) single ILines.
-     * 
+     *
      * @param streamOflines  the stream.
      * @return               the result lines.
      */
@@ -260,7 +262,7 @@ public interface ILines extends IRequireTypes {
     
     /**
      * Create a combine stream of ILines given the ILines separate each one with an empty indented line.
-     * 
+     *
      * @param   iLines  the input lines.
      * @return          the result lines.
      */
@@ -286,9 +288,10 @@ public interface ILines extends IRequireTypes {
                 restLines.stream(),
                 lastLine)
             .filter (Objects::nonNull)
-            .flatMap(Function.identity())
+            .flatMap(identity())
             .map    (String::trim)
             .map    (ILines::line);
         return ILines.linesOf(stream);
     }
+    
 }

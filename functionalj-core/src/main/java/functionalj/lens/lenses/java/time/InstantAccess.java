@@ -10,10 +10,12 @@ import java.time.temporal.TemporalUnit;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface InstantAccess<HOST>
@@ -29,13 +31,13 @@ public interface InstantAccess<HOST>
         return accessToValue::apply;
     }
     
-    public default LongAccess<HOST> getEpochSecond() {
+    public default LongAccessPrimitive<HOST> getEpochSecond() {
         return host -> {
             val value = apply(host);
             return value.getEpochSecond();
         };
     }
-    public default IntegerAccess<HOST> getNano() {
+    public default IntegerAccessPrimitive<HOST> getNano() {
         return host -> {
             val value = apply(host);
             return value.getNano();
@@ -137,14 +139,14 @@ public interface InstantAccess<HOST>
         };
     }
     
-    public default LongAccess<HOST> toEpochMilli() {
+    public default LongAccessPrimitive<HOST> toEpochMilli() {
         return host -> {
             val value = apply(host);
             return value.toEpochMilli();
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(Instant other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(Instant other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);
@@ -163,13 +165,13 @@ public interface InstantAccess<HOST>
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(Instant other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(Instant other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(Instant other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(Instant other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);

@@ -12,6 +12,7 @@ import org.junit.Test;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class ResultExample {
     
     @Test
@@ -43,6 +44,6 @@ public class ResultExample {
                 .map     (Stream::count)
                 .validate("Too few words: %d", count -> count > 5)
                 ;
-        assertEquals("Result:{ Invalid: Too few word: 4 }", result2.toString());
+        assertEquals("Result:{ Invalid: Too few words: 4 }", result2.toString());
     }
 }

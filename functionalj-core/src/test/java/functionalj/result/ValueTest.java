@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.result;
 
-import static org.junit.Assert.assertEquals;
+import static functionalj.TestHelper.assertAsString;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,16 +31,14 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import functionalj.result.Result;
 import lombok.val;
+
+
 
 public class ValueTest {
     
     private static final Result<String> value = Result.valueOf("Test");
     
-    private void assertStrings(String str, Object obj) {
-        assertEquals(str, "" + obj);
-    }
     
     @Test
     public void testGet() {
@@ -49,7 +47,7 @@ public class ValueTest {
             return str.length();
         });
         
-        assertStrings("Result:{ Value: 4 }", length);
+        assertAsString("Result:{ Value: 4 }", length);
     }
     
     @Test
@@ -61,16 +59,16 @@ public class ValueTest {
         });
         logs.add("--- After map but logged first ---");
         
-        assertStrings("Result:{ Value: Test }", value);
-        assertStrings("[--- After map but logged first ---]",    logs);
+        assertAsString("Result:{ Value: Test }", value);
+        assertAsString("[--- After map but logged first ---]",    logs);
         
         // First use will have 'Test' added to the log.
-        assertStrings("Result:{ Value: 4 }", length);
-        assertStrings("[--- After map but logged first ---, Test]",    logs);
+        assertAsString("Result:{ Value: 4 }", length);
+        assertAsString("[--- After map but logged first ---, Test]",    logs);
         
         // Second use does not add 'Test' to the log.
-        assertStrings("Result:{ Value: 4 }", length);
-        assertStrings("[--- After map but logged first ---, Test]",    logs);
+        assertAsString("Result:{ Value: 4 }", length);
+        assertAsString("[--- After map but logged first ---, Test]",    logs);
     }
     
     @Test
@@ -80,10 +78,10 @@ public class ValueTest {
             throw new NullPointerException();
         });
         
-        assertStrings(
+        assertAsString(
                 "Result:{ Exception: java.lang.NullPointerException }",
                 length.printException(new PrintWriter(buffer)));
-        assertStrings("java.lang.NullPointerException", buffer.toString().split("\n")[0]);
+        assertAsString("java.lang.NullPointerException", buffer.toString().split("\n")[0]);
     }
     
 }

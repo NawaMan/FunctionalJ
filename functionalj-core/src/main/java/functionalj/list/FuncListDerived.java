@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,72 +32,48 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamPlusHelper;
-import functionalj.stream.Streamable;
+import functionalj.stream.StreamPlusUtils;
+import lombok.val;
 
-@SuppressWarnings("javadoc")
-public class FuncListDerived<SOURCE, DATA> 
-                implements FuncList<DATA> {
+public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
     
-    @SuppressWarnings("rawtypes")
-    private static final Function noAction = Function.identity();
+    //-- Data --
     
     private final Object                                 source;
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
     
-    public static <DATA> FuncListDerived<DATA, DATA> from(FuncList<DATA> funcList) {
-        return new FuncListDerived<>(funcList);
+    //-- Constructors --
+    
+    FuncListDerived(Iterable<SOURCE> iterable, Function<Stream<SOURCE>, Stream<DATA>> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = iterable;
     }
-    @SuppressWarnings("unchecked")
-    public static <DATA> FuncListDerived<DATA, DATA> from(Supplier<Stream<DATA>> supplier) {
-        return new FuncListDerived<>(supplier, noAction);
+    FuncListDerived(FuncList<SOURCE> FuncList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = FuncList;
     }
-    @SuppressWarnings("unchecked")
-    public static <DATA> FuncListDerived<DATA, DATA> from(Streamable<DATA> streamable) {
-        return new FuncListDerived<>(streamable, noAction);
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    FuncListDerived(Supplier<Stream<SOURCE>> streams) {
+        this.action = stream -> (Stream)stream;
+        this.source = streams;
+    }
+    FuncListDerived(Supplier<Stream<SOURCE>> streams, Function<Stream<SOURCE>, Stream<DATA>> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = streams;
     }
     
-    @SuppressWarnings("unchecked")
-    public static <DATA> FuncListDerived<DATA, DATA> from(Collection<DATA> streamable) {
-        return new FuncListDerived<>(streamable, noAction);
-    }
-    
-    public FuncListDerived(Iterable<SOURCE> collection, Function<Stream<SOURCE>, Stream<DATA>> action) {
-        this.action = Objects.requireNonNull(action);
-        this.source = collection;
-    }
-    public FuncListDerived(Supplier<Stream<SOURCE>> streamSupplier, Function<Stream<SOURCE>, Stream<DATA>> action) {
-        this.action = Objects.requireNonNull(action);
-        this.source = streamSupplier;
-    }
-    public FuncListDerived(Streamable<SOURCE> streamable, Function<Stream<SOURCE>, Stream<DATA>> action) {
-        this.action = Objects.requireNonNull(action);
-        this.source = streamable;
-    }
-    public FuncListDerived(ReadOnlyList<SOURCE> readOnlyList, Function<Stream<SOURCE>, Stream<DATA>> action) {
-        this.action = Objects.requireNonNull(action);
-        this.source = readOnlyList;
-    }
-    public FuncListDerived(FuncList<SOURCE> abstractFuncList, Function<Stream<SOURCE>, Stream<DATA>> action) {
-        this.action = Objects.requireNonNull(action);
-        this.source = abstractFuncList;
-    }
-    @SuppressWarnings("unchecked")
-    public FuncListDerived(FuncList<DATA> abstractFuncList) {
-        this.action = s -> (Stream<DATA>)s;
-        this.source = abstractFuncList;
-    }
+    //-- Source Stream --
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Stream<SOURCE> getSourceStream() {
         if (source == null)
             return Stream.empty();
-        if (source instanceof Supplier)
-            return (Stream<SOURCE>)((Supplier)source).get();
-        if (source instanceof Streamable)
-            return (Stream<SOURCE>)((Streamable)source).stream();
+        if (source instanceof FuncList)
+            return (Stream<SOURCE>)((FuncList)source).stream();
         if (source instanceof Collection)
             return ((Collection)source).stream();
+        if (source instanceof Supplier)
+            return ((Supplier<Stream<SOURCE>>)source).get();
         throw new IllegalStateException();
     }
     
@@ -108,45 +84,53 @@ public class FuncListDerived<SOURCE, DATA>
         return StreamPlus.from(newStream);
     }
     
-    public boolean isLazy() {
-        return true;
-    }
-    
-    public boolean isEager() {
-        return false;
-    }
-    
-    public FuncList<DATA> lazy() {
-        return this;
-    }
-    public FuncList<DATA> eager() {
-        return new ImmutableList<DATA>(this, false);
+    /** Check if this list is a lazy list. */
+    public Mode mode() {
+        return Mode.lazy;
     }
     
     @Override
-    public ImmutableList<DATA> toImmutableList() {
-        return new ImmutableList<DATA>(this);
+    public FuncList<DATA> toLazy() {
+        return this;
+    }
+    
+    @Override
+    public FuncList<DATA> toEager() {
+        val list = this.toArrayList();
+        return new ImmutableFuncList<DATA>(list, list.size(), Mode.eager);
+    }
+    
+    @Override
+    public FuncList<DATA> toCache() {
+        return FuncList.from(stream());
+    }
+    
+    /** Returns an immutable list containing the data of this list. Maintaining the mode. */
+    @Override
+    public ImmutableFuncList<DATA> toImmutableList() {
+        return new ImmutableFuncList<>(this, -1, Mode.lazy);
     }
     
     @Override
     public int hashCode() {
-        return StreamPlusHelper.hashCode(this.stream());
+        return StreamPlusUtils.hashCode(this.stream());
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public boolean equals(Object o) {
-        if ((o instanceof Collection))
+        if (!(o instanceof Collection))
             return false;
         
-        return combineWith(FuncList.from((Collection)o), AllowUnpaired, Objects::equals)
-                .findFirst(Boolean.TRUE::equals)
+        val anotherList = FuncList.from((Collection)o);
+        return !zipWith(anotherList, AllowUnpaired, Objects::equals)
+                .findFirst(Boolean.FALSE::equals)
                 .isPresent();
     }
     
     @Override
     public String toString() {
-        return StreamPlusHelper.toString(this.stream());
+        return asFuncList().toListString();
     }
     
 }

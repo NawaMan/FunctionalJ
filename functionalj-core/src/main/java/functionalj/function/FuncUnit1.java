@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,12 +28,18 @@ import static java.util.Objects.requireNonNull;
 import java.util.function.Consumer;
 
 import functionalj.functions.ThrowFuncs;
+import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import lombok.val;
 
+
 public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     
+    public static <D> FuncUnit1<D> doNothing() {
+        return (item) -> {};
+        
+    }
     public static <INPUT> FuncUnit1<INPUT> of(FuncUnit1<INPUT> consumer) {
         return consumer;
     }
@@ -111,14 +117,18 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     public default Func1<INPUT, Promise<Object>> async() {
         return this.thenReturnNull().async();
     }
-    public default Func1<HasPromise<INPUT>, Promise<Object>> defer() {
+    
+    public default Func1<INPUT, DeferAction<Object>> defer() {
+        return this.thenReturnNull().defer();
+    }
+    
+    public default Func1<HasPromise<INPUT>, Promise<Object>> forPromise() {
         return input -> {
             val func0 = this.thenReturnNull();
             return input.getPromise().map(func0);
         };
     }
     
-    @SuppressWarnings("javadoc")
     public default FuncUnit0 bind(INPUT i) {
         return () -> this.acceptUnsafe(i);
     }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -51,7 +51,7 @@ public interface IntTuple2Access<HOST, T2, T2ACCESS extends AnyAccess<HOST,T2>>
     }
     
     public default IntegerAccess<HOST> _1() {
-        return intAccess(0, IntTuple2::_1);
+        return intPrimitiveAccess(0, IntTuple2::_1);
     }
     public default T2ACCESS T2() {
         return accessParameterized().createSubAccess(IntTuple2::_2);

@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -56,7 +56,6 @@ class __internal {
   
 }
 
-@SuppressWarnings("javadoc")
 public interface Pipeable<DATA> {
     
     public static <D> Pipeable<D> of(D data) {
@@ -113,53 +112,53 @@ public interface Pipeable<DATA> {
     
     @SuppressWarnings("unchecked")
     public default <OUTPUT> Result<OUTPUT> __map(Func1<? super DATA, OUTPUT> func) {
-        return ((this instanceof Result) 
-                ? ((Result<DATA>)this) 
+        return ((this instanceof Result)
+                ? ((Result<DATA>)this)
                 : Try(this::__data))
                 .map(func);
     }
     
     @SuppressWarnings("unchecked")
     public default Result<DATA> __filter(Predicate<? super DATA> theCondition) {
-        return ((this instanceof Result) 
-                ? ((Result<DATA>)this) 
+        return ((this instanceof Result)
+                ? ((Result<DATA>)this)
                 : Try(this::__data))
                 .filter(theCondition);
     }
     
     @SuppressWarnings("unchecked")
     public default Result<DATA> __peek(Consumer<? super DATA> theConsumer) {
-        return ((this instanceof Result) 
-                ? ((Result<DATA>)this) 
+        return ((this instanceof Result)
+                ? ((Result<DATA>)this)
                 : Try(this::__data))
                 .peek(theConsumer);
     }
     
     @SuppressWarnings("unchecked")
     public default DATA __orElse(DATA data) {
-        return ((this instanceof Result) 
-                ? ((Result<DATA>)this) 
+        return ((this instanceof Result)
+                ? ((Result<DATA>)this)
                 : Try(this::__data))
                 .orElse(data);
     }
     
     @SuppressWarnings("unchecked")
     public default DATA __orGet(Supplier<DATA> dataSupplier) {
-        return ((this instanceof Result) 
-                ? ((Result<DATA>)this) 
+        return ((this instanceof Result)
+                ? ((Result<DATA>)this)
                 : Try(this::__data))
                 .orGet(dataSupplier);
     }
     
     @SuppressWarnings("unchecked")
     public default DATA __orApply(Func1<Exception, DATA> dataMapper) {
-        return ((this instanceof Result) 
-                ? ((Result<DATA>)this) 
+        return ((this instanceof Result)
+                ? ((Result<DATA>)this)
                 : Try(this::__data))
                 .orApply(dataMapper);
     }
     
-    public default <OUTPUT> 
+    public default <OUTPUT>
         OUTPUT pipeTo(Func1<? super DATA, OUTPUT> func1) {
         try {
             val input  = __data();
@@ -172,7 +171,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
             Func1<? super DATA, OUTPUT>           func1,
             Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
@@ -187,9 +186,9 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, OUTPUT> 
+    public default <DATA1, OUTPUT>
         OUTPUT pipeTo(
-                Func1<? super DATA,  DATA1>  func1, 
+                Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, OUTPUT> func2) {
         try {
             val input  = __data();
@@ -203,9 +202,9 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
-                Func1<? super DATA,  DATA1>  func1, 
+                Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, OUTPUT> func2,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
@@ -220,10 +219,10 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, OUTPUT> 
+    public default <DATA1, DATA2, OUTPUT>
         OUTPUT pipeTo(
-                Func1<? super DATA,  DATA1>  func1, 
-                Func1<? super DATA1, DATA2>  func2, 
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
                 Func1<? super DATA2, OUTPUT> func3) {
         try {
             val input  = __data();
@@ -238,10 +237,10 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
-                Func1<? super DATA,  DATA1>  func1, 
-                Func1<? super DATA1, DATA2>  func2, 
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
                 Func1<? super DATA2, OUTPUT> func3,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
@@ -257,11 +256,11 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, OUTPUT>
         OUTPUT pipeTo(
-                Func1<? super DATA,  DATA1>  func1, 
-                Func1<? super DATA1, DATA2>  func2, 
-                Func1<? super DATA2, DATA3>  func3, 
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
                 Func1<? super DATA3, OUTPUT> func4) {
         try {
             val input  = __data();
@@ -277,11 +276,11 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
-                Func1<? super DATA,  DATA1>  func1, 
-                Func1<? super DATA1, DATA2>  func2, 
-                Func1<? super DATA2, DATA3>  func3, 
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
                 Func1<? super DATA3, OUTPUT> func4,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
@@ -298,7 +297,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -320,7 +319,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -343,7 +342,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -367,7 +366,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -392,7 +391,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -418,7 +417,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -445,7 +444,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -473,7 +472,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -502,7 +501,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -532,7 +531,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -563,7 +562,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -595,7 +594,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,  DATA1>  func1,
                 Func1<? super DATA1, DATA2>  func2,
@@ -628,7 +627,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -662,7 +661,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -697,7 +696,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -733,7 +732,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -770,7 +769,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -808,7 +807,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -847,7 +846,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -887,7 +886,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -928,7 +927,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -970,7 +969,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -1013,7 +1012,7 @@ public interface Pipeable<DATA> {
     }
     
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, DATA15, OUTPUT> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, DATA15, OUTPUT>
         OUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,
@@ -1057,7 +1056,7 @@ public interface Pipeable<DATA> {
         }
     }
     
-    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, DATA15, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
+    public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, DATA15, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception>
         FINALOUTPUT pipeTo(
                 Func1<? super DATA,   DATA1>  func1,
                 Func1<? super DATA1,  DATA2>  func2,

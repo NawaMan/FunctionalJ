@@ -8,9 +8,10 @@ import java.time.temporal.TemporalUnit;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface TemporalAccess<HOST, TEMPORAL extends Temporal>
@@ -21,7 +22,7 @@ public interface TemporalAccess<HOST, TEMPORAL extends Temporal>
         return func::apply;
     }
     
-    public default BooleanAccess<HOST> thatIsSupported(TemporalUnit unit) {
+    public default BooleanAccessPrimitive<HOST> thatIsSupported(TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return value.isSupported(unit);
@@ -64,7 +65,7 @@ public interface TemporalAccess<HOST, TEMPORAL extends Temporal>
         };
     }
     
-    public default LongAccess<HOST> until(Temporal endExclusive, TemporalUnit unit) {
+    public default LongAccessPrimitive<HOST> until(Temporal endExclusive, TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return value.until(endExclusive, unit);

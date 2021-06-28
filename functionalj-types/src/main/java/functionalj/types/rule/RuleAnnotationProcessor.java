@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,8 +54,9 @@ import functionalj.types.Rule;
 import functionalj.types.rule.RuleSpec.RuleType;
 import lombok.val;
 
-public class RuleAnnotationProcessor extends AbstractProcessor {
 
+public class RuleAnnotationProcessor extends AbstractProcessor {
+    
     private Elements elementUtils;
     @SuppressWarnings("unused")
     private Types    typeUtils;
@@ -63,9 +64,8 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     private Messager messager;
     private boolean  hasError;
     
-    @SuppressWarnings("unused")
     private List<String> logs = new ArrayList<String>();
-
+    
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         elementUtils = processingEnv.getElementUtils();
@@ -76,7 +76,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> annotations = new LinkedHashSet<String>();
+        val annotations = new LinkedHashSet<String>();
         annotations.add(Rule.class.getCanonicalName());
         return annotations;
     }
@@ -131,9 +131,9 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
             
             try {
                 val className  = packageName + "." + targetName;
-                val content    = "// " + spec.toString() + "\n" 
-                               + "// " + logs.toString() + "\n" 
-                               + 
+                val content    = "// " + spec.toString() + "\n"
+                               + "// " + logs.toString() + "\n"
+                               +
                                spec.toCode();
                 val logString  = "";//"\n" + logs.stream().map("// "::concat).collect(joining("\n"));
                 generateCode(element, className, content + logString);
@@ -199,4 +199,5 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         }
         return null;
     }
+    
 }

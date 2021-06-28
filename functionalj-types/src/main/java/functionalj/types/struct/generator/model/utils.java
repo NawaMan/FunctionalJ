@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,7 +30,8 @@ import java.util.stream.Stream;
 
 import lombok.val;
 
-class utils {
+
+public class utils {
     
     static <IN extends List<? extends OUT>, OUT> Function<? super IN, Stream<? extends OUT>> allLists() {
         return it -> it.stream();
@@ -67,6 +68,24 @@ class utils {
     
     static <I> Function<I, String> wrapWith(String prefix, String suffix) {
         return in -> prefix + in + suffix;
+    }
+    
+    public static boolean samePackage(String pckgName, String importName) {
+        if (!importName.startsWith(pckgName)) 
+            return false;
+        
+        val tail = importName.substring(pckgName.length() + 1);
+        if (tail.matches("^[^.]+$")) 
+            return true;
+        
+        val parts = tail.split("\\.");
+        if (parts.length != 2)
+            return false;
+        
+        if (parts[1].endsWith(parts[0] + "Lens"))
+            return true;
+        
+        return false;
     }
     
 }

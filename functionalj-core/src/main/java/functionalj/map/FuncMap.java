@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -51,7 +51,7 @@ import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public abstract class FuncMap<KEY, VALUE>
                     implements
                         ReadOnlyMap<KEY, VALUE> {
@@ -142,98 +142,127 @@ public abstract class FuncMap<KEY, VALUE>
         
     }
     
-    public static <K, V> ImmutableMap<K, V> empty() {
-        return ImmutableMap.empty();
+    public static <K, V> ImmutableFuncMap<K, V> empty() {
+        return ImmutableFuncMap.empty();
     }
     
-    public static <K, V> ImmutableMap<K, V> emptyMap() {
-        return ImmutableMap.empty();
+    public static <K, V> ImmutableFuncMap<K, V> emptyMap() {
+        return ImmutableFuncMap.empty();
     }
     
-    public static <K, V> ImmutableMap<K, V> empty(Class<K> keyClass, Class<V> valueClass) {
-        return ImmutableMap.empty();
+    public static <K, V> ImmutableFuncMap<K, V> empty(Class<K> keyClass, Class<V> valueClass) {
+        return ImmutableFuncMap.empty();
     }
     
-    public static <K, V> ImmutableMap<K, V> emptyMap(Class<K> keyClass, Class<V> valueClass) {
-        return ImmutableMap.empty();
+    public static <K, V> ImmutableFuncMap<K, V> emptyMap(Class<K> keyClass, Class<V> valueClass) {
+        return ImmutableFuncMap.empty();
     }
     
-    public static <K, V> ImmutableMap<K, V> from(Map<? extends K, ? extends V> map) {
-        return new ImmutableMap<K, V>(map);
+    public static <K, V> ImmutableFuncMap<K, V> from(Map<? extends K, ? extends V> map) {
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> from(Stream<? extends Map.Entry<? extends K, ? extends V>> stream) {
+    public static <K, V> ImmutableFuncMap<K, V> from(Stream<? extends Map.Entry<? extends K, ? extends V>> stream) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         stream
         .forEach(entry -> map.put(entry.getKey(), entry.getValue()));
-        return new ImmutableMap<K, V>(map);
+        return new ImmutableFuncMap<K, V>(map);
     }
     
     @SafeVarargs
-    public static <K, V> ImmutableMap<K, V> ofEntries(Map.Entry<K, V> ... entries) {
+    public static <K, V> ImmutableFuncMap<K, V> ofEntries(Map.Entry<K, V> ... entries) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         stream(entries)
             .forEach(entry -> map.put(entry.getKey(), entry.getValue()));
-        return new ImmutableMap<K, V>(map);
+        return new ImmutableFuncMap<K, V>(map);
     }
     @SafeVarargs
-    public static <K, V> ImmutableMap<K, V> ofTuples(Tuple2<K, V> ... entries) {
+    public static <K, V> ImmutableFuncMap<K, V> ofTuples(Tuple2<K, V> ... entries) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         stream(entries)
             .forEach(entry -> map.put(entry._1(), entry._2()));
-        return new ImmutableMap<K, V>(map);
+        return new ImmutableFuncMap<K, V>(map);
     }
     
-    public static <K, V> ImmutableMap<K, V> of(
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
             K key3, V value3) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
             K key3, V value3,
             K key4, V value4) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -241,15 +270,20 @@ public abstract class FuncMap<KEY, VALUE>
             K key4, V value4,
             K key5, V value5) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -258,16 +292,21 @@ public abstract class FuncMap<KEY, VALUE>
             K key5, V value5,
             K key6, V value6) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -277,17 +316,22 @@ public abstract class FuncMap<KEY, VALUE>
             K key6, V value6,
             K key7, V value7) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        map.put(key7, value7);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        if (key7 != null) map.put(key7, value7);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -298,18 +342,23 @@ public abstract class FuncMap<KEY, VALUE>
             K key7, V value7,
             K key8, V value8) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        map.put(key7, value7);
-        map.put(key8, value8);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        if (key7 != null) map.put(key7, value7);
+        if (key8 != null) map.put(key8, value8);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -321,19 +370,24 @@ public abstract class FuncMap<KEY, VALUE>
             K key8, V value8,
             K key9, V value9) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        map.put(key7, value7);
-        map.put(key8, value8);
-        map.put(key9, value9);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        if (key7 != null) map.put(key7, value7);
+        if (key8 != null) map.put(key8, value8);
+        if (key9 != null) map.put(key9, value9);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> of(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> of(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -346,85 +400,101 @@ public abstract class FuncMap<KEY, VALUE>
             K key9, V value9,
             K key10, V value10) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        map.put(key7, value7);
-        map.put(key8, value8);
-        map.put(key9, value9);
-        map.put(key10, value10);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        if (key7 != null) map.put(key7, value7);
+        if (key8 != null) map.put(key8, value8);
+        if (key9 != null) map.put(key9, value9);
+        if (key10 != null) map.put(key10, value10);
+        return new ImmutableFuncMap<K, V>(map);
     }
     
-    public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
-        return mapValue(v->mapper.apply(v));
-    }
     
-    public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
-        return mapEntry((k, v)->mapper.apply(k, v));
-    }
-    
-    public <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, ? extends TARGET> mapper) {
-        return map((k, v)->mapper.apply(v));
-    }
-    
-    public abstract <TARGET> FuncMap<KEY, TARGET> mapEntry(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper);
-    
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
             K key3, V value3) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
             K key3, V value3,
             K key4, V value4) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -432,15 +502,20 @@ public abstract class FuncMap<KEY, VALUE>
             K key4, V value4,
             K key5, V value5) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -449,16 +524,21 @@ public abstract class FuncMap<KEY, VALUE>
             K key5, V value5,
             K key6, V value6) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -468,17 +548,22 @@ public abstract class FuncMap<KEY, VALUE>
             K key6, V value6,
             K key7, V value7) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        map.put(key7, value7);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        if (key7 != null) map.put(key7, value7);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -489,18 +574,23 @@ public abstract class FuncMap<KEY, VALUE>
             K key7, V value7,
             K key8, V value8) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        map.put(key7, value7);
-        map.put(key8, value8);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        if (key7 != null) map.put(key7, value7);
+        if (key8 != null) map.put(key8, value8);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -512,19 +602,24 @@ public abstract class FuncMap<KEY, VALUE>
             K key8, V value8,
             K key9, V value9) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        map.put(key7, value7);
-        map.put(key8, value8);
-        map.put(key9, value9);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        if (key7 != null) map.put(key7, value7);
+        if (key8 != null) map.put(key8, value8);
+        if (key9 != null) map.put(key9, value9);
+        return new ImmutableFuncMap<K, V>(map);
     }
-    public static <K, V> ImmutableMap<K, V> mapOf(
+    
+    /**
+     * Create an immutable map with using the key-value pair.
+     * Note: the pair will be ignore if the key is null.
+     * */
+    public static <K, V> ImmutableFuncMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1,
             K key2, V value2,
@@ -537,19 +632,21 @@ public abstract class FuncMap<KEY, VALUE>
             K key9, V value9,
             K key10, V value10) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        map.put(key0, value0);
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        map.put(key5, value5);
-        map.put(key6, value6);
-        map.put(key7, value7);
-        map.put(key8, value8);
-        map.put(key9, value9);
-        map.put(key10, value10);
-        return new ImmutableMap<K, V>(map);
+        if (key0 != null) map.put(key0, value0);
+        if (key1 != null) map.put(key1, value1);
+        if (key2 != null) map.put(key2, value2);
+        if (key3 != null) map.put(key3, value3);
+        if (key4 != null) map.put(key4, value4);
+        if (key5 != null) map.put(key5, value5);
+        if (key6 != null) map.put(key6, value6);
+        if (key7 != null) map.put(key7, value7);
+        if (key8 != null) map.put(key8, value8);
+        if (key9 != null) map.put(key9, value9);
+        if (key10 != null) map.put(key10, value10);
+        return new ImmutableFuncMap<K, V>(map);
     }
+    
+    // Map builder.
     
     public static <K, V> FuncMapBuilder<K, V> newFuncMap() {
         return new FuncMapBuilder<K, V>();
@@ -575,7 +672,22 @@ public abstract class FuncMap<KEY, VALUE>
         return new FuncMapBuilder<K, V>();
     }
     
-    // TODO Map builder.
+    // Functionalities
+    
+    public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
+        return mapValue(v->mapper.apply(v));
+    }
+    
+    public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
+        return mapEntry((k, v)->mapper.apply(k, v));
+    }
+    
+    public <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, TARGET> mapper) {
+        return map((k, v)->mapper.apply(v));
+    }
+    
+    public abstract <TARGET> FuncMap<KEY, TARGET> mapEntry(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper);
+    
     
     public boolean isLazy() {
         return true;
@@ -608,6 +720,8 @@ public abstract class FuncMap<KEY, VALUE>
     
     public abstract FuncList<Map.Entry<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
     
+    // TODO - Add with using function.
+    
     public abstract FuncMap<KEY, VALUE> with(KEY key, VALUE value);
     
     public abstract FuncMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries);
@@ -635,7 +749,7 @@ public abstract class FuncMap<KEY, VALUE>
     
     public abstract Map<KEY, VALUE> toMap();
     
-    public abstract ImmutableMap<KEY, VALUE> toImmutableMap();
+    public abstract ImmutableFuncMap<KEY, VALUE> toImmutableMap();
     
     public Func1<KEY, VALUE> toFunction() {
         return this::get;
@@ -719,7 +833,7 @@ public abstract class FuncMap<KEY, VALUE>
         };
     }
     
-    public ImmutableMap<KEY, VALUE> freeze() {
+    public ImmutableFuncMap<KEY, VALUE> freeze() {
         return toImmutableMap();
     }
     

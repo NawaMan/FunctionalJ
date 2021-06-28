@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
 import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
+
 
 public class DictatedRef<DATA> extends Ref<DATA> {
     

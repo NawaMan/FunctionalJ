@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,10 +35,10 @@ import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         extends
             ObjectLens<HOST, FuncList<TYPE>>,
@@ -106,7 +106,7 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 (list, newValue)->{
                     val newList = new ArrayList<>(list);
                     newList.set(list.size() - 1, newValue);
-                    return ImmutableList.from(newList);
+                    return ImmutableFuncList.from(newList);
                 });
     }
     

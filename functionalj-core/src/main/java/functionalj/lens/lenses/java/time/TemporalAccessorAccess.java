@@ -6,10 +6,11 @@ import java.time.temporal.TemporalQuery;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
-import functionalj.lens.lenses.IntegerAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
+
 
 public interface TemporalAccessorAccess<HOST, TEMPORAL_ACCESSOR extends TemporalAccessor>
                     extends AnyAccess<HOST, TEMPORAL_ACCESSOR> {
@@ -18,7 +19,7 @@ public interface TemporalAccessorAccess<HOST, TEMPORAL_ACCESSOR extends Temporal
         return func::apply;
     }
     
-    public default BooleanAccess<HOST> thatIsSupported(TemporalField field) {
+    public default BooleanAccessPrimitive<HOST> thatIsSupported(TemporalField field) {
         return host -> {
             val value = apply(host);
             return value.isSupported(field);
@@ -31,13 +32,13 @@ public interface TemporalAccessorAccess<HOST, TEMPORAL_ACCESSOR extends Temporal
             return value.range(field);
         };
     }
-    public default IntegerAccess<HOST> get(TemporalField field) {
+    public default IntegerAccessPrimitive<HOST> get(TemporalField field) {
         return host -> {
             val value = apply(host);
             return value.get(field);
         };
     }
-    public default LongAccess<HOST> getLong(TemporalField field) {
+    public default LongAccessPrimitive<HOST> getLong(TemporalField field) {
         return host -> {
             val value = apply(host);
             return value.getLong(field);

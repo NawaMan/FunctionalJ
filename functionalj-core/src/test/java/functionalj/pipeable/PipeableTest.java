@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -40,7 +40,6 @@ import functionalj.function.FunctionInvocationException;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
-@SuppressWarnings("javadoc")
 public class PipeableTest {
     
     @Test
@@ -119,7 +118,6 @@ public class PipeableTest {
         assertEquals("Nullable.EMPTY",         "" +  ListOf(1, 2, 3, 4, 5).__nullable().filter(theList.size().thatIs(3)));
         assertEquals("Optional.empty",         "" +  ListOf(1, 2, 3, 4, 5).__optional().filter(theList.size().thatIs(3)));
         assertEquals("Result:{ Value: null }", "" +  ListOf(1, 2, 3, 4, 5).__result()  .filter(theList.size().thatIs(3)));
-        assertEquals("Result:{ Value: null }", "" +  ListOf(1, 2, 3, 4, 5).           __filter(theList.size().thatIs(3)));
     }
     
     @Test

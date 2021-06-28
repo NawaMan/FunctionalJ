@@ -11,7 +11,7 @@
 //import functionalj.lens.core.LensUtils;
 //import functionalj.lens.core.WriteLens;
 //import functionalj.result.Result;
-//import lombok.val;
+//
 //
 //public class RuleLens<HOST, SUB, SUBLENS extends AnyLens<HOST, SUB>> implements ResultLens<HOST, SUB, SUBLENS> {
 //    

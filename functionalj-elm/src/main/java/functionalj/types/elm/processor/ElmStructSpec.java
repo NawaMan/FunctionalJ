@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,6 +31,7 @@ import javax.lang.model.element.Element;
 import functionalj.types.elm.Elm;
 import functionalj.types.struct.generator.SourceSpec;
 import lombok.val;
+
 
 /**
  * This class represents The spec for an Elm structure type.

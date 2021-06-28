@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,6 +31,7 @@ import javax.lang.model.element.Element;
 import functionalj.types.choice.generator.model.SourceSpec;
 import functionalj.types.elm.Elm;
 import lombok.val;
+
 
 public class ElmChoiceSpec {
     

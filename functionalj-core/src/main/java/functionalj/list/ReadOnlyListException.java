@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -42,7 +42,7 @@ public class ReadOnlyListException extends UnsupportedOperationException {
             if (list.size() <= 3) {
                 listToString = "List " + list;
             } else {
-                listToString = "List starting with" + list.stream().limit(3).joinToString(", ");
+                listToString = "List starting with" + list.stream().limit(3).join(", ");
             }
         } catch (Exception e) {
             try {

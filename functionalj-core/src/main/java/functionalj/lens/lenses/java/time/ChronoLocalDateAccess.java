@@ -15,10 +15,12 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
-import functionalj.lens.lenses.IntegerAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLocalDate>
@@ -44,19 +46,19 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
             return value.getEra();
         };
     }
-    public default BooleanAccess<HOST> thatIsLeapYear() {
+    public default BooleanAccessPrimitive<HOST> thatIsLeapYear() {
         return host -> {
             val value = apply(host);
             return value.isLeapYear();
         };
     }
-    public default IntegerAccess<HOST> lengthOfMonth() {
+    public default IntegerAccessPrimitive<HOST> lengthOfMonth() {
         return host -> {
             val value = apply(host);
             return value.lengthOfMonth();
         };
     }
-    public default IntegerAccess<HOST> lengthOfYear() {
+    public default IntegerAccessPrimitive<HOST> lengthOfYear() {
         return host -> {
             val value = apply(host);
             return value.lengthOfYear();
@@ -127,14 +129,14 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
         };
     }
     
-    public default LongAccess<HOST> toEpochDay() {
+    public default LongAccessPrimitive<HOST> toEpochDay() {
         return host -> {
             val value = apply(host);
             return value.toEpochDay();
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(ChronoLocalDate other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(ChronoLocalDate other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);
@@ -153,19 +155,19 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(ChronoLocalDate other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(ChronoLocalDate other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(ChronoLocalDate other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(ChronoLocalDate other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsEqual(ChronoLocalDate other) {
+    public default BooleanAccessPrimitive<HOST> thatIsEqual(ChronoLocalDate other) {
         return host -> {
             val value = apply(host);
             return value.isEqual(other);

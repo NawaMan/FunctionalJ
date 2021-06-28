@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,6 +25,7 @@ package functionalj.types.elm.processor;
 
 import functionalj.types.struct.generator.ILines;
 import lombok.val;
+
 
 /**
  * Classes implementing this interface can create type definition in Elm.

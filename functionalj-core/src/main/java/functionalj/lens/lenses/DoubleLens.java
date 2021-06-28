@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,8 +26,9 @@ package functionalj.lens.lenses;
 import java.util.function.ToDoubleFunction;
 
 import functionalj.lens.core.LensSpec;
+import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 @FunctionalInterface
 public interface DoubleLens<HOST>
         extends
@@ -41,7 +42,28 @@ public interface DoubleLens<HOST>
     
     @Override
     default Double apply(HOST host) {
-        return lensSpec().getRead().apply(host);
+        LensSpec<HOST, Double> lensSpec = lensSpec();
+        return lensSpec.getRead().apply(host);
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public default double applyAsDouble(HOST host) {
+        LensSpec<HOST, Double> lensSpec = lensSpec();
+        if (lensSpec instanceof PrimitiveLensSpecs.DoubleLensSpecPrimitive) {
+            val spec  = (PrimitiveLensSpecs.DoubleLensSpecPrimitive)lensSpec;
+            val value = spec.applyAsDouble(host);
+            return value;
+        }
+        
+        val value = lensSpec.apply(host);
+        return value;
+    }
+    
+    @Override
+    public default Double applyUnsafe(HOST host) throws Exception {
+        LensSpec<HOST, Double> lensSpec = lensSpec();
+        return lensSpec.apply(host);
     }
     
 }

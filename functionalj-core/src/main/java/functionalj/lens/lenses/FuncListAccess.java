@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,16 +29,13 @@ import static functionalj.lens.lenses.FuncListAccess.__internal__.subList;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
 import functionalj.list.FuncList;
-import functionalj.stream.Streamable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 @FunctionalInterface
 public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> 
         extends CollectionAccess<HOST, FuncList<TYPE>, TYPE, TYPEACCESS> {
@@ -88,21 +85,21 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         return at(index);
     }
     public default IntegerAccess<HOST> indexOf(Object o) {
-        return intAccess(-1, list -> list.indexOf(o));
+        return intPrimitiveAccess(-1, list -> list.indexOf(o));
     }
     public default IntegerAccess<HOST> lastIndexOf(Object o) {
-        return intAccess(-1, list -> list.lastIndexOf(o));
+        return intPrimitiveAccess(-1, list -> list.lastIndexOf(o));
     }
     
     public default FuncListAccess<HOST, Integer, IntegerAccess<HOST>> indexesOf(Predicate<? super TYPE> check) {
         val access  = new AccessParameterized<HOST, FuncList<Integer>, Integer, IntegerAccess<HOST>>() {
             @Override
             public FuncList<Integer> applyUnsafe(HOST host) throws Exception {
-                return FuncListAccess.this.apply(host).indexesOf(check);
+                return FuncListAccess.this.apply(host).indexesOf(check).boxed();
             }
             @Override
             public IntegerAccess<HOST> createSubAccessFromHost(Function<HOST, Integer> accessToParameter) {
-                return host -> accessToParameter.apply(host);
+                return IntegerAccess.of(accessToParameter);
             }
         };
         return () -> access;
@@ -111,7 +108,7 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
     public default FuncListAccess<HOST, TYPE, TYPEACCESS> rest() {
         return subList(this, host -> {
             return apply(host)
-                    .rest();
+                    .tail();
         });
     }
     
@@ -125,7 +122,7 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         });
     }
     
-	public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(TYPE[] data) {
+    public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(TYPE[] data) {
         return subList(this, host -> {
             return apply(host)
                     .appendAll(data);
@@ -139,10 +136,10 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         });
     }
     
-    public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(Supplier<Stream<? extends TYPE>> supplier) {
+    public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(FuncList<? extends TYPE> FuncList) {
         return subList(this, host -> {
             return apply(host)
-                    .appendAll(supplier);
+                    .appendAll(FuncList);
         });
     }
     
@@ -168,10 +165,10 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         });
     }
     
-    public default FuncListAccess<HOST, TYPE, TYPEACCESS> insertAllAt(int index, Streamable<? extends TYPE> streamable) {
+    public default FuncListAccess<HOST, TYPE, TYPEACCESS> insertAllAt(int index, FuncList<? extends TYPE> FuncList) {
         return subList(this, host -> {
             return apply(host)
-                    .insertAllAt(index, streamable);
+                    .insertAllAt(index, FuncList);
         });
     }
     

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,6 +30,7 @@ import functionalj.function.Func1;
 import functionalj.function.FunctionInvocationException;
 import functionalj.ref.Ref;
 import lombok.val;
+
 
 public interface ThrowFuncs {
     

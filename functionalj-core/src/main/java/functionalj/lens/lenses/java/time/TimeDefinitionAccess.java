@@ -7,9 +7,11 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface TimeDefinitionAccess<HOST>
@@ -24,19 +26,19 @@ public interface TimeDefinitionAccess<HOST>
         return host -> accessToValue.apply(host);
     }
     
-    public default BooleanAccess<HOST> isUtc() {
+    public default BooleanAccessPrimitive<HOST> isUtc() {
         return host -> {
             val value = apply(host);
             return value == TimeDefinition.UTC;
         };
     }
-    public default BooleanAccess<HOST> isWall() {
+    public default BooleanAccessPrimitive<HOST> isWall() {
         return host -> {
             val value = apply(host);
             return value == TimeDefinition.WALL;
         };
     }
-    public default BooleanAccess<HOST> isStandard() {
+    public default BooleanAccessPrimitive<HOST> isStandard() {
         return host -> {
             val value = apply(host);
             return value == TimeDefinition.STANDARD;
@@ -51,7 +53,7 @@ public interface TimeDefinitionAccess<HOST>
     }
     
     
-    public default IntegerAccess<HOST> compareTo(TimeDefinition other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(TimeDefinition other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

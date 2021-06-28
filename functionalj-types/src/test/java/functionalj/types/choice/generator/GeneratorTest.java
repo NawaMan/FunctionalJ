@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -48,7 +48,6 @@ import lombok.experimental.ExtensionMethod;
 
 
 @ExtensionMethod(functionalj.types.choice.generator.Utils.class)
-@SuppressWarnings("javadoc")
 public class GeneratorTest {
     
     @Test
@@ -141,7 +140,7 @@ public class GeneratorTest {
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
                 "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
                 "        \n" + 
-                "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
+                "        public final ObjectLens<HOST, Object> next = (ObjectLens<HOST>)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
                 "        \n" + 
                 "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
                 "            super(spec);\n" + 
@@ -160,7 +159,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static Next caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return Next(\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
                 "        );\n" + 
@@ -195,7 +194,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static White caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static White caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return White(\n" + 
                 "        );\n" + 
                 "    }\n" + 
@@ -232,9 +231,9 @@ public class GeneratorTest {
                 "    public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
                 "    public static class RGBLens<HOST> extends ObjectLensImpl<HOST, Color.RGB> {\n" + 
                 "        \n" + 
-                "        public final IntegerLens<HOST> r = (IntegerLens)createSubLens(Color.RGB::r, Color.RGB::withR, IntegerLens::of);\n" + 
-                "        public final IntegerLens<HOST> g = (IntegerLens)createSubLens(Color.RGB::g, Color.RGB::withG, IntegerLens::of);\n" + 
-                "        public final IntegerLens<HOST> b = (IntegerLens)createSubLens(Color.RGB::b, Color.RGB::withB, IntegerLens::of);\n" + 
+                "        public final IntegerLens<HOST> r = createSubLensInt(Color.RGB::r, Color.RGB::withR);\n" + 
+                "        public final IntegerLens<HOST> g = createSubLensInt(Color.RGB::g, Color.RGB::withG);\n" + 
+                "        public final IntegerLens<HOST> b = createSubLensInt(Color.RGB::b, Color.RGB::withB);\n" + 
                 "        \n" + 
                 "        public RGBLens(LensSpec<HOST, Color.RGB> spec) {\n" + 
                 "            super(spec);\n" + 
@@ -257,7 +256,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static RGB caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static RGB caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return RGB(\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"r\"),\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"g\"),\n" + 
@@ -288,7 +287,7 @@ public class GeneratorTest {
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
                 "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
                 "        \n" + 
-                "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
+                "        public final ObjectLens<HOST, Object> next = (ObjectLens<HOST>)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
                 "        \n" + 
                 "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
                 "            super(spec);\n" + 
@@ -307,7 +306,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static Next caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return Next(\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
                 "        );\n" + 
@@ -631,7 +630,7 @@ public class GeneratorTest {
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
                 "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
                 "        \n" + 
-                "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
+                "        public final ObjectLens<HOST, Object> next = (ObjectLens<HOST>)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
                 "        \n" + 
                 "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
                 "            super(spec);\n" + 
@@ -650,7 +649,7 @@ public class GeneratorTest {
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
                 "    }\n" + 
-                "    public static Next caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return Next(\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
                 "        );\n" + 

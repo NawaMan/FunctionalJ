@@ -29,14 +29,14 @@ All other non-modify access are still there.
 But since they are read only, modifying methods such as `add`, `set`, `insert`, `put` will throw `UnsupportedOperationException`.
 
 ```java
-    val list = FuncList.of("I", "Me", "Myself");
+    var list = FuncList.of("I", "Me", "Myself");
     try {
         list.add("We");
         fail("Expect an error!");
     } catch (UnsupportedOperationException e) {
     }
     
-    val map = FuncMap.of("One", 1.0, "PI", 3.14159, "E", 2.71828);
+    var map = FuncMap.of("One", 1.0, "PI", 3.14159, "E", 2.71828);
     try {
         map.put("Ten", 10.0);
         fail("Expect an error!");
@@ -48,8 +48,8 @@ Both `FuncList` and `FuncMap` has method to allow immutable modification -- crea
 This is done using with `append` and `with`.
 
 ```java
-    val newList = list.append("First-Person");
-    val newMap  = map .with("Ten", 10.0);
+    var newList = list.append("First-Person");
+    var newMap  = map .with("Ten", 10.0);
     
     assertEquals("[I, Me, Myself]",                            list.toString());
     assertEquals("{One:1.0, PI:3.14159, E:2.71828}",           map .toString());
@@ -64,8 +64,8 @@ Meaning that it directly supports functional collection operations.
 Operations such as `map`, `filter`, `peek`, `forEach` are available.
 
 ```java
-    val list = FuncList.of("I", "Me", "Myself");
-    val map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
+    var list = FuncList.of("I", "Me", "Myself");
+    var map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
     assertEquals("[1, 2, 6]",          list.map(String::length).toString());
     assertEquals("{One:1, PI:3, E:3}", map .map(Math::round)   .toString());
 ```
@@ -114,8 +114,8 @@ In eager mode, any operation result in the a immutable list or immutable map.
 **Lazy mode**
 
 ```java
-    val counter = new AtomicInteger(0);
-    val value   = IntStreamPlus.range(0, 10).toFuncList()
+    var counter = new AtomicInteger(0);
+    var value   = IntStreamPlus.range(0, 10).toFuncList()
                 .map(i -> counter.getAndIncrement())
                 .limit(4)
                 .joining(", ");
@@ -126,8 +126,8 @@ In eager mode, any operation result in the a immutable list or immutable map.
 **Eager mode**
 
 ```java
-    val counter = new AtomicInteger(0);
-    val value   = IntStreamPlus.range(0, 10)
+    var counter = new AtomicInteger(0);
+    var value   = IntStreamPlus.range(0, 10)
                 .toFuncList()
                 .eager()
                 .map(i -> counter.getAndIncrement())
@@ -150,10 +150,10 @@ Second, if the list or map is derived from other list or map,
 The following code highlights the behavior.
 
 ```java
-    val cats         = FuncList.of("Kitty", "Tigger", "Striped", "Oreo", "Simba", "Scar", "Felix", "Pete", "Schrödinger's");
-    val rand         = new Random();
-    val deadNotAlive = Func.f((String s) -> rand.nextBoolean()).toPredicate();
-    val deadCats     = cats.filter(deadNotAlive);
+    var cats         = FuncList.of("Kitty", "Tigger", "Striped", "Oreo", "Simba", "Scar", "Felix", "Pete", "Schrödinger's");
+    var rand         = new Random();
+    var deadNotAlive = Func.f((String s) -> rand.nextBoolean()).toPredicate();
+    var deadCats     = cats.filter(deadNotAlive);
     assertNotEquals(deadCats, deadCats);
 ```
 
@@ -166,7 +166,7 @@ The method `toImmutableList()` or its alias `freeze()` can be used to create the
 You can also change to eager mode using `eager()`.
 
 ```java
-    val surelyDeadCats = deadCats.toImmutableList();
+    var surelyDeadCats = deadCats.toImmutableList();
     assertEquals(surelyDeadCats, surelyDeadCats);
 ```
 

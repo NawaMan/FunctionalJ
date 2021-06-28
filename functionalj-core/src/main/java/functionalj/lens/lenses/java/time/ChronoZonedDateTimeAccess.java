@@ -16,10 +16,12 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
-import functionalj.lens.lenses.IntegerAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface ChronoZonedDateTimeAccess<
@@ -158,14 +160,14 @@ public interface ChronoZonedDateTimeAccess<
         };
     }
     
-    public default LongAccess<HOST> toEpochSecond() {
+    public default LongAccessPrimitive<HOST> toEpochSecond() {
         return host -> {
             val value = apply(host);
             return value.toEpochSecond();
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(ChronoZonedDateTime<?> other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(ChronoZonedDateTime<?> other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);
@@ -184,19 +186,19 @@ public interface ChronoZonedDateTimeAccess<
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(ChronoZonedDateTime<?> other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(ChronoZonedDateTime<?> other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(ChronoZonedDateTime<?> other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(ChronoZonedDateTime<?> other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsEqual(ChronoZonedDateTime<?> other) {
+    public default BooleanAccessPrimitive<HOST> thatIsEqual(ChronoZonedDateTime<?> other) {
         return host -> {
             val value = apply(host);
             return value.isEqual(other);

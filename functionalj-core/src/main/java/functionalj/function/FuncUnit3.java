@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,10 +26,12 @@ package functionalj.function;
 import static java.util.Objects.requireNonNull;
 
 import functionalj.functions.ThrowFuncs;
+import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.tuple.Tuple3;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
@@ -122,7 +124,12 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     public default Func3<INPUT1, INPUT2, INPUT3, Promise<Object>> async() {
         return this.thenReturnNull().async();
     }
-    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<Object>> defer() {
+    
+    public default Func3<INPUT1, INPUT2, INPUT3, DeferAction<Object>> defer() {
+        return this.thenReturnNull().defer();
+    }
+    
+    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<Object>> forPromise() {
         return (promise1, promise2, promise3) -> {
             val func0 = this.thenReturnNull();
             return Promise.from(
@@ -135,45 +142,35 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     
     //== Partially apply functions ==
     
-    @SuppressWarnings("javadoc")
     public default FuncUnit0 bind(INPUT1 i1, INPUT2 i2, INPUT3 i3) {
         return () -> this.acceptUnsafe(i1, i2, i3);
     }
-    @SuppressWarnings("javadoc")
     public default FuncUnit2<INPUT2, INPUT3> bind1(INPUT1 i1) {
         return (i2,i3) -> this.acceptUnsafe(i1, i2, i3);
     }
-    @SuppressWarnings("javadoc")
     public default FuncUnit2<INPUT1, INPUT3> bind2(INPUT2 i2) {
         return (i1,i3) -> this.acceptUnsafe(i1, i2, i3);
     }
-    @SuppressWarnings("javadoc")
     public default FuncUnit2<INPUT1, INPUT2> bind3(INPUT3 i3) {
         return (i1,i2) -> this.acceptUnsafe(i1, i2, i3);
     }
     
-    @SuppressWarnings("javadoc")
     public default FuncUnit1<INPUT1> bind(Absent a1, INPUT2 i2, INPUT3 i3) {
         return i1 -> this.acceptUnsafe(i1, i2, i3);
     }
-    @SuppressWarnings("javadoc")
     public default FuncUnit1<INPUT2> bind(INPUT1 i1, Absent a2, INPUT3 i3) {
         return i2 -> this.acceptUnsafe(i1, i2, i3);
     }
-    @SuppressWarnings("javadoc")
     public default FuncUnit1<INPUT3> bind(INPUT1 i1, INPUT2 i2, Absent a3) {
         return i3 -> this.acceptUnsafe(i1, i2, i3);
     }
     
-    @SuppressWarnings("javadoc")
     public default FuncUnit2<INPUT1, INPUT2> bind(Absent a1, Absent a2, INPUT3 i3) {
         return (i1, i2) -> this.acceptUnsafe(i1, i2, i3);
     }
-    @SuppressWarnings("javadoc")
     public default FuncUnit2<INPUT1, INPUT3> bind(Absent a1, INPUT2 i2, Absent a3) {
         return (i1, i3) -> this.acceptUnsafe(i1, i2, i3);
     }
-    @SuppressWarnings("javadoc")
     public default FuncUnit2<INPUT2, INPUT3> bind(INPUT1 i1, Absent a2, Absent a3) {
         return (i2, i3) -> this.acceptUnsafe(i1, i2, i3);
     }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,8 +24,9 @@
 package functionalj.lens.lenses;
 
 import functionalj.lens.core.LensSpec;
+import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 @FunctionalInterface
 public interface LongLens<HOST> 
         extends
@@ -38,7 +39,28 @@ public interface LongLens<HOST>
     
     @Override
     default Long apply(HOST host) {
-        return lensSpec().getRead().apply(host);
+        LensSpec<HOST, Long> lensSpec = lensSpec();
+        return lensSpec.getRead().apply(host);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public default long applyAsLong(HOST host) {
+        LensSpec<HOST, Long> lensSpec = lensSpec();
+        if (lensSpec instanceof PrimitiveLensSpecs.LongLensSpecPrimitive) {
+            val spec  = (PrimitiveLensSpecs.LongLensSpecPrimitive)lensSpec;
+            val value = spec.applyAsLong(host);
+            return value;
+        }
+        
+        val value = lensSpec.apply(host);
+        return value;
+    }
+
+    @Override
+    public default Long applyUnsafe(HOST host) throws Exception {
+        LensSpec<HOST, Long> lensSpec = lensSpec();
+        return lensSpec.apply(host);
     }
     
 }

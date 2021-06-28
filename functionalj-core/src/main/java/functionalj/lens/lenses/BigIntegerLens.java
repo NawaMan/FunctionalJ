@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,7 +27,6 @@ import java.math.BigInteger;
 
 import functionalj.lens.core.LensSpec;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BigIntegerLens<HOST> 
         extends

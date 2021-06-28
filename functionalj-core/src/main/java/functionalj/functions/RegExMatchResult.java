@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 
 import functionalj.function.Func1;
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
 import functionalj.stream.StreamPlus;
 
@@ -45,18 +45,18 @@ public class RegExMatchResult implements MatchResult {
         
         public final StringAccess<HOST>           sourceString = (HOST host) -> apply(host).sourceString();
         public final AnyAccess<HOST, Pattern>     pattern      = (HOST host) -> apply(host).pattern();
-        public final IntegerAccess<HOST>          index        = (HOST host) -> apply(host).index();
+        public final IntegerAccessPrimitive<HOST> index        = (HOST host) -> apply(host).index();
         public final AnyAccess<HOST, MatchResult> result       = (HOST host) -> apply(host).result();
         
-        public final IntegerAccess<HOST> start      = (HOST host) -> apply(host).start();
-        public final IntegerAccess<HOST> end        = (HOST host) -> apply(host).end();
-        public final StringAccess<HOST>  group      = (HOST host) -> apply(host).group();
-        public final IntegerAccess<HOST> groupCount = (HOST host) -> apply(host).groupCount();
-        public final StringAccess<HOST>  text       = (HOST host) -> apply(host).text();
+        public final IntegerAccessPrimitive<HOST> start      = (HOST host) -> apply(host).start();
+        public final IntegerAccessPrimitive<HOST> end        = (HOST host) -> apply(host).end();
+        public final StringAccess<HOST>           group      = (HOST host) -> apply(host).group();
+        public final IntegerAccessPrimitive<HOST> groupCount = (HOST host) -> apply(host).groupCount();
+        public final StringAccess<HOST>           text       = (HOST host) -> apply(host).text();
         
-        public final IntegerAccess<HOST> start(int group) { return (HOST host) -> apply(host).start(group); }
-        public final IntegerAccess<HOST> end(int group)   { return (HOST host) -> apply(host).end(group);   }
-        public final StringAccess<HOST>  group(int group) { return (HOST host) -> apply(host).group(group); }
+        public final IntegerAccessPrimitive<HOST> start(int group) { return (HOST host) -> apply(host).start(group); }
+        public final IntegerAccessPrimitive<HOST> end(int group)   { return (HOST host) -> apply(host).end(group);   }
+        public final StringAccess<HOST>           group(int group) { return (HOST host) -> apply(host).group(group); }
         
         private final Func1<HOST, RegExMatchResult> access;
         

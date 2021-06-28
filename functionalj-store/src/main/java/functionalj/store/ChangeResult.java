@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,7 +28,7 @@ import functionalj.function.FuncUnit1;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 
-@SuppressWarnings({"javadoc", "rawtypes"})
+@SuppressWarnings({"rawtypes"})
 public class ChangeResult<D> implements Pipeable<ChangeResult<D>> {
     
     private Store<D> store;

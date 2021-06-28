@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.result;
 
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class ValidationException extends RuntimeException {
     
     private static final long serialVersionUID = 2317758566674598943L;
@@ -34,13 +33,13 @@ public class ValidationException extends RuntimeException {
         if (checkResult)
             return null;
         
-        return from(template, data);
+        return ValidationException.from(template, data);
     }
     public static <DATA> ValidationException from(boolean checkResult, DATA data) {
         if (checkResult)
             return null;
         
-        return from(((data == null) ? "Invalid value: " : data.getClass().getSimpleName() + ": ") + "%s", data);
+        return ValidationException.from(((data == null) ? "Invalid value: " : data.getClass().getSimpleName() + ": ") + "%s", data);
     }
     public static <DATA> ValidationException from(String template, DATA data) {
         if (template == null)
@@ -53,17 +52,17 @@ public class ValidationException extends RuntimeException {
     }
     
     public static <DATA> void ensure(boolean checkResult, DATA data) {
-        val exception = from(checkResult, data);
+        val exception = ValidationException.from(checkResult, data);
         if (exception != null)
             throw exception;
     }
     public static <DATA> void ensure(boolean checkResult, String template, DATA data) {
-        val exception = from(checkResult, template, data);
+        val exception = ValidationException.from(checkResult, template, data);
         if (exception != null)
             throw exception;
     }
     public static <DATA> void ensure(String template, DATA data) {
-        val exception = from(template, data);
+        val exception = ValidationException.from(template, data);
         if (exception != null)
             throw exception;
     }

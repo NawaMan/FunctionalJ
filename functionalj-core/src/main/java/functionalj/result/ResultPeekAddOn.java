@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,18 +24,17 @@
 package functionalj.result;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.function.Func1;
-import functionalj.function.FuncUnit1;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface ResultPeekAddOn<DATA> {
     
     public Result<DATA> peek(Consumer<? super DATA> consumer);
     
-    public default <T extends DATA> Result<DATA> peek(Class<T> clzz, FuncUnit1<? super T> theConsumer) {
+    public default <T extends DATA> Result<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
         return peek(value -> {
             if (!clzz.isInstance(value))
                 return;
@@ -44,7 +43,7 @@ public interface ResultPeekAddOn<DATA> {
             theConsumer.accept(target);
         });
     }
-    public default Result<DATA> peek(Predicate<? super DATA> selector, FuncUnit1<? super DATA> theConsumer) {
+    public default Result<DATA> peek(Predicate<? super DATA> selector, Consumer<? super DATA> theConsumer) {
         return peek(value -> {
             if (!selector.test(value))
                 return;
@@ -52,14 +51,14 @@ public interface ResultPeekAddOn<DATA> {
             theConsumer.accept(value);
         });
     }
-    public default <T> Result<DATA> peek(Func1<? super DATA, T> mapper, FuncUnit1<? super T> theConsumer) {
+    public default <T> Result<DATA> peek(Function<? super DATA, T> mapper, Consumer<? super T> theConsumer) {
         return peek(value -> {
             val target = mapper.apply(value);
             theConsumer.accept(target);
         });
     }
     
-    public default <T> Result<DATA> peek(Func1<? super DATA, T> mapper, Predicate<? super T> selector, FuncUnit1<? super T> theConsumer) {
+    public default <T> Result<DATA> peek(Function<? super DATA, T> mapper, Predicate<? super T> selector, Consumer<? super T> theConsumer) {
         return peek(value -> {
             val target = mapper.apply(value);
             if (selector.test(target))

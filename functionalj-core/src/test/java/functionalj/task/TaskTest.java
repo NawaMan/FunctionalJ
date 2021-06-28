@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -37,8 +37,8 @@ import functionalj.function.Func;
 import functionalj.promise.DeferAction;
 import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
-import functionalj.task.Task;
 import lombok.val;
+
 
 //@Ignore("Still has problems")
 public class TaskTest {
@@ -388,7 +388,7 @@ public class TaskTest {
         val counter1 = new AtomicInteger(0);
         val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             // Action1 will start a little late.
-            Thread.sleep(50);
+            Thread.sleep(70);
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s);

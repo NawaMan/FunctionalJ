@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,8 +26,9 @@ package functionalj.lens.lenses;
 import java.util.function.Predicate;
 
 import functionalj.lens.core.LensSpec;
+import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 @FunctionalInterface
 public interface BooleanLens<HOST>
         extends
@@ -38,13 +39,30 @@ public interface BooleanLens<HOST>
         return () -> spec;
     }
     
+    @Override
+    default Boolean apply(HOST host) {
+        LensSpec<HOST, Boolean> lensSpec = lensSpec();
+        return lensSpec.getRead().apply(host);
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
     public default boolean test(HOST host) {
-        return Boolean.TRUE.equals(this.apply(host));
+        LensSpec<HOST, Boolean> lensSpec = lensSpec();
+        if (lensSpec instanceof PrimitiveLensSpecs.BooleanLensSpecPrimitive) {
+            val spec  = (PrimitiveLensSpecs.BooleanLensSpecPrimitive)lensSpec;
+            val value = spec.test(host);
+            return value;
+        }
+        
+        val value = lensSpec.apply(host);
+        return value;
     }
     
     @Override
     default Boolean applyUnsafe(HOST host) throws Exception {
-        return lensSpec().getRead().apply(host);
+        LensSpec<HOST, Boolean> lensSpec = lensSpec();
+        return lensSpec.apply(host);
     }
     
 }

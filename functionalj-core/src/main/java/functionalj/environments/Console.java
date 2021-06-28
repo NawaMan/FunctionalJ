@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -51,6 +51,7 @@ import functionalj.ref.RunBody;
 import functionalj.stream.BlockingQueueIteratorPlus;
 import functionalj.stream.StreamPlus;
 import lombok.val;
+
 
 public final class Console {
     
@@ -194,61 +195,68 @@ public final class Console {
         public String toString() {
             return "++++++++++++++++++++\n" +
                    "Data: " + data + "\n" + 
-                   "outLines(" + outLines.size() + "): \n    " + outLines.joinToString("\n    ") + "\n" +
-                   "errLines(" + errLines.size() + "): \n    " + errLines.joinToString("\n    ") + "\n" +
-                   "inLines("  + inLines.size()  + "): \n    "  + inLines.joinToString("\n    ")  + "\n" +
+                   "outLines(" + outLines.size() + "): \n    " + outLines.join("\n    ") + "\n" +
+                   "errLines(" + errLines.size() + "): \n    " + errLines.join("\n    ") + "\n" +
+                   "inLines("  + inLines.size()  + "): \n    "  + inLines.join("\n    ")  + "\n" +
                    "--------------------"
                    ;
         }
         
     }
     
-    public static <E extends Exception> StubRecord<Object> useStub(RunBody<E> body) throws E {
+    public static <EXCEPTION extends Exception> StubRecord<Object> useStub(RunBody<EXCEPTION> body) throws EXCEPTION {
         return useStub(new ConsoleInQueue(), ()->{ body.run(); return null; });
     }
     
-    public static <D, E extends Exception> StubRecord<D> useStub(ComputeBody<D, E> body) throws E {
+    public static <DATA, EXCEPTION extends Exception> StubRecord<DATA> useStub(ComputeBody<DATA, EXCEPTION> body) throws EXCEPTION {
         return useStub(new ConsoleInQueue(), ()->{ body.run(); return null; });
     }
     
-    public static <E extends Exception> StubRecord<Object> useStub(FuncUnit1<ConsoleInQueue> holder, RunBody<E> body) throws E {
+    public static <EXCEPTION extends Exception> StubRecord<Object> useStub(FuncUnit1<ConsoleInQueue> holder, RunBody<EXCEPTION> body) 
+            throws EXCEPTION {
         val inQueue = new ConsoleInQueue();
         if (holder != null)
             holder.accept(inQueue);
         return useStub(inQueue, ()->{ body.run(); return null; });
     }
     
-    public static <D, E extends Exception> StubRecord<D> useStub(FuncUnit1<ConsoleInQueue> holder, ComputeBody<D, E> body) throws E {
+    public static <DATA, EXCEPTION extends Exception> StubRecord<DATA> useStub(FuncUnit1<ConsoleInQueue> holder, 
+            ComputeBody<DATA, EXCEPTION> body) throws EXCEPTION {
         val inQueue = new ConsoleInQueue();
         if (holder != null)
             holder.accept(inQueue);
         return useStub(inQueue, ()->{ body.run(); return null; });
     }
     
-    public static <E extends Exception> StubRecord<Object> useStub(Stream<String> inLines, RunBody<E> body) throws E {
+    public static <EXCEPTION extends Exception> StubRecord<Object> useStub(Stream<String> inLines, RunBody<EXCEPTION> body) 
+            throws EXCEPTION {
         return useStub(inLines, ()->{ body.run(); return null; });
     }
     
-    public static <E extends Exception> StubRecord<Object> useStub(ConsoleInQueue inQueue, RunBody<E> body) throws E {
+    public static <EXCEPTION extends Exception> StubRecord<Object> useStub(ConsoleInQueue inQueue, RunBody<EXCEPTION> body) 
+            throws EXCEPTION {
         return useStub(inQueue, ()->{ body.run(); return null; });
     }
     
-    public static <D, E extends Exception> StubRecord<D> useStub(Stream<String> inLines, ComputeBody<D, E> body) throws E {
+    public static <DATA, EXCEPTION extends Exception> StubRecord<DATA> useStub(Stream<String> inLines, ComputeBody<DATA, EXCEPTION> body) 
+            throws EXCEPTION {
         val inQueue = new ConsoleInQueue(StreamPlus.from(inLines).toJavaList());
         return useStub(true, inQueue, body);
     }
     
-    public static <D, E extends Exception> StubRecord<D> useStub(ConsoleInQueue inQueue, ComputeBody<D, E> body) throws E {
+    public static <DATA, EXCEPTION extends Exception> StubRecord<DATA> useStub(ConsoleInQueue inQueue, ComputeBody<DATA, EXCEPTION> body) 
+            throws EXCEPTION {
         return useStub(false, inQueue, body);
     }
-    private static <D, E extends Exception> StubRecord<D> useStub(boolean isInStreamDone, ConsoleInQueue inQueue, ComputeBody<D, E> body) throws E {
+    private static <DATA, EXCEPTION extends Exception> StubRecord<DATA> useStub(boolean isInStreamDone, ConsoleInQueue inQueue, 
+            ComputeBody<DATA, EXCEPTION> body) throws EXCEPTION {
         val stub = new Console.Stub(isInStreamDone, inQueue);
         val data = With(Env.refs.console.butWith(stub)).run(body);
         stub.flush();
         val outLines = stub.outLines().toImmutableList();
         val errLines = stub.errLines().toImmutableList();
         val inLines  = stub.recordedInLines().toImmutableList();
-        val result   = new StubRecord<D>(data, outLines, errLines, inLines);
+        val result   = new StubRecord<DATA>(data, outLines, errLines, inLines);
         return result;
     }
     

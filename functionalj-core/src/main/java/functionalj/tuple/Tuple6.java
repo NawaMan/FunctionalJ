@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,11 +38,11 @@ import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, T3, T4, T5, T6>> {
     
     public static <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> of(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5, T6 _6) {
@@ -91,8 +91,8 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         Array.set(array, 4, _5);
         Array.set(array, 5, _6);
         @SuppressWarnings("unchecked")
-		val toArray = (T[])array;
-		return toArray;
+        val toArray = (T[])array;
+        return toArray;
     }
     
     public default FuncList<Object> toList() {
@@ -112,7 +112,7 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         val e4 = (k4 != null) ? ImmutableTuple.of(k4, (Object)_4()) : null;
         val e5 = (k5 != null) ? ImmutableTuple.of(k5, (Object)_5()) : null;
         val e6 = (k6 != null) ? ImmutableTuple.of(k6, (Object)_6()) : null;
-        return ImmutableMap.ofEntries(e1, e2, e3, e4, e5, e6);
+        return ImmutableFuncMap.ofEntries(e1, e2, e3, e4, e5, e6);
     }
     
     //== mapTo ==
@@ -165,7 +165,7 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
     }
     
     public default <NT1, NT2, NT3, NT4, NT5, NT6, T> T map(
-            Function<? super T1, NT1> mapper1, 
+            Function<? super T1, NT1> mapper1,
             Function<? super T2, NT2> mapper2,
             Function<? super T3, NT3> mapper3,
             Function<? super T4, NT4> mapper4,

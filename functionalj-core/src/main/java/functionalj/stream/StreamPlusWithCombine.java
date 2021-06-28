@@ -1,43 +1,82 @@
+// ============================================================================
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream;
 
 import static functionalj.function.FuncUnit0.funcUnit0;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
+import static functionalj.stream.ZipWithOption.RequireBoth;
 
+import java.util.Iterator;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import functionalj.function.Func1;
-import functionalj.function.Func2;
+import functionalj.result.NoMoreResultException;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
+
 public interface StreamPlusWithCombine<DATA> {
     
-    public Stream<DATA>      stream();
-    public <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action);
+    public StreamPlus<DATA> streamPlus();
     
     
-    @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> concatWith(
-            Stream<DATA> tail) {
+    /** Concatenate the given head stream in front of this stream. */
+    public default StreamPlus<DATA> prependWith(Stream<DATA> head) {
         return StreamPlus.concat(
-                StreamPlus.of(this), 
-                StreamPlus.of(tail)
-               )
-               .flatMap(s -> (StreamPlus<DATA>)s);
+                StreamPlus.from(head),
+                streamPlus());
     }
     
-    public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
-        val thisStream = stream();
-        val iteratorA  = StreamPlusHelper.rawIterator(thisStream);
-        val iteratorB  = StreamPlusHelper.rawIterator(anotherStream);
+    /** Concatenate the given tail stream to this stream. */
+    public default StreamPlus<DATA> appendWith(Stream<DATA> tail) {
+        return StreamPlus.concat(
+                streamPlus(),
+                StreamPlus.from(tail));
+    }
+    
+    /**
+     * Merge this with another stream by alternatively picking value from the each stream.
+     * If one stream ended before another one, the rest of the value will be appended.
+     *
+     * For an example: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
+     */
+    public default StreamPlus<DATA> mergeWith(Stream<DATA> anotherStream) {
+        val streamPlus = streamPlus();
+        val iteratorA  = streamPlus.iterator();
+        val iteratorB  = StreamPlus.from(anotherStream).iterator();
         
-        val resultStream 
+        val resultStream
                 = StreamPlusHelper
                 .doMerge(iteratorA, iteratorB);
         
         resultStream
                 .onClose(()->{
-                    funcUnit0(()->thisStream   .close()).runCarelessly();
+                    funcUnit0(()->streamPlus   .close()).runCarelessly();
                     funcUnit0(()->anotherStream.close()).runCarelessly();
                 });
         return resultStream;
@@ -45,51 +84,136 @@ public interface StreamPlusWithCombine<DATA> {
     
     //-- Zip --
     
-    public default <B, TARGET> StreamPlus<TARGET> combineWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth)
-                .map(combinator::applyTo);
-    }
-    public default <B, TARGET> StreamPlus<TARGET> combineWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
-        return zipWith(anotherStream, option)
-                .map(combinator::applyTo);
+    /**
+     * Combine this stream with another stream into a stream of tuple pair.
+     * The combination stops when any of the stream ended.
+     *
+     * For an example: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Result stream:  [(A, 1), (B, 2), (C, 3)] <br>
+     */
+    public default <ANOTHER> StreamPlus<Tuple2<DATA,ANOTHER>> zipWith(Stream<ANOTHER> anotherStream) {
+        return zipWith(anotherStream, RequireBoth, Tuple2::of);
     }
     
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, Tuple2::of);
-    }
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, ZipWithOption option) {
+    /**
+     * Combine this stream with another stream into a stream of tuple pair.
+     * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
+     *
+     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Result stream:  [(A, 1), (B, 2), (C, 3), (null, 4), (null, 5)] <br>
+     */
+    public default <ANOTHER> StreamPlus<Tuple2<DATA,ANOTHER>> zipWith(
+            Stream<ANOTHER> anotherStream,
+            ZipWithOption   option) {
         return zipWith(anotherStream, option, Tuple2::of);
     }
     
-    public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, Func2<DATA, B, C> merger) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, merger);
-    }
-    // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
-    public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, C> merger) {
-        return useIterator(iteratorA -> {
-            return StreamPlus
-                    .from(anotherStream)
-                    .useIterator(iteratorB -> {
-                        return StreamPlusHelper.doZipWith(option, merger, iteratorA, iteratorB);
-                    });
-        });
+    /**
+     * Combine this stream with another stream using the combinator to create the result value one by one.
+     * The combination stops when any of the stream ended.
+     *
+     * For an example: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Combinator:     (v1,v2) -> v1 + "-" + v2
+     *   Result stream:  [A-1, B-2, C-3] <br>
+     */
+    public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
+            Stream<ANOTHER>                   anotherStream,
+            BiFunction<DATA, ANOTHER, TARGET> combinator) {
+        return zipWith(anotherStream, RequireBoth, combinator);
     }
     
-    public default StreamPlus<DATA> choose(Stream<DATA> anotherStream, Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return zipWith(anotherStream, AllowUnpaired)
-                .map(t -> {
-                    val _1 = t._1();
-                    val _2 = t._2();
-                    if ((_1 != null) && _2 == null)
-                        return _1;
-                    if ((_1 == null) && _2 != null)
-                        return _2;
-                    if ((_1 == null) && _2 == null)
-                        return null;
-                    val which = selectThisNotAnother.applyTo(t);
-                    return which ? _1 : _2;
-                })
-                .filterNonNull();
+    /**
+     * Combine this stream with another stream using the combinator to create the result value one by one.
+     * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
+     *
+     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Combinator:     (v1,v2) -> v1 + "-" + v2
+     *   Result stream:  [A-1, B-2, C-3, null-4, null-5] <br>
+     */
+    public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
+            Stream<ANOTHER>                   anotherStream,
+            ZipWithOption                     option,
+            BiFunction<DATA, ANOTHER, TARGET> combinator) {
+        val iteratorA = streamPlus().iterator();
+        val iteratorB = IteratorPlus.from(anotherStream.iterator());
+        return StreamPlusHelper.doZipWith(option, combinator, iteratorA, iteratorB);
+    }
+    
+    /**
+     * Create a new stream by choosing value from each stream using the selector.
+     * The value from the longer stream is automatically used after the shorter stream ended.
+     *
+     * For an example: <br>
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5]
+     */
+    public default StreamPlus<DATA> choose(
+            Stream<DATA>                    anotherStream,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+        return choose(anotherStream, AllowUnpaired, selectThisNotAnother);
+    }
+    
+    /**
+     * Create a new stream by choosing value from each stream using the selector.
+     * The value from the longer stream is automatically used after the shorter stream ended.
+     * 
+     * For an example: <br>
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5]
+     */
+    public default StreamPlus<DATA> choose(
+            Stream<DATA>                    anotherStream,
+            ZipWithOption                   option,
+            BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
+        val iteratorA = this.streamPlus().iterator();
+        val iteratorB = anotherStream.iterator();
+        val iterator = new Iterator<DATA>() {
+            private boolean hasNextA;
+            private boolean hasNextB;
+            
+            public boolean hasNext() {
+                hasNextA = iteratorA.hasNext();
+                hasNextB = iteratorB.hasNext();
+                return (option == ZipWithOption.RequireBoth)
+                        ? (hasNextA && hasNextB)
+                        : (hasNextA || hasNextB);
+            }
+            public DATA next() {
+                val nextA = hasNextA ? iteratorA.next() : null;
+                val nextB = hasNextB ? iteratorB.next() : null;
+                if (hasNextA && hasNextB) {
+                    boolean selectA = selectThisNotAnother.apply(nextA, nextB);
+                    return selectA ? nextA : nextB;
+                }
+                if (hasNextA) {
+                    return nextA;
+                }
+                if (hasNextB) {
+                    return nextB;
+                }
+                throw new NoMoreResultException();
+            }
+        };
+        val iterable = new Iterable<DATA>() {
+            @Override
+            public Iterator<DATA> iterator() {
+                return iterator;
+            }
+          
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
 }

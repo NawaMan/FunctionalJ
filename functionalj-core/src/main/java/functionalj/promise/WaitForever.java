@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.promise;
 
 import java.util.function.BiConsumer;
 
-@SuppressWarnings("javadoc")
 public class WaitForever extends Wait {
     
     public static WaitForever instance = new WaitForever();

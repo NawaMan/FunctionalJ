@@ -9,10 +9,11 @@ import java.time.zone.ZoneRules;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.ListAccess;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface ZoneRulesAccess<HOST>
@@ -27,7 +28,7 @@ public interface ZoneRulesAccess<HOST>
         return accessToValue::apply;
     }
     
-    public default BooleanAccess<HOST> isFixedOffset() {
+    public default BooleanAccessPrimitive<HOST> isFixedOffset() {
         return host -> {
             val value = apply(host);
             return value.isFixedOffset();
@@ -71,13 +72,13 @@ public interface ZoneRulesAccess<HOST>
             return value.getDaylightSavings(instant);
         };
     }
-    public default BooleanAccess<HOST> isDaylightSavings(Instant instant) {
+    public default BooleanAccessPrimitive<HOST> isDaylightSavings(Instant instant) {
         return host -> {
             val value = apply(host);
             return value.isDaylightSavings(instant);
         };
     }
-    public default BooleanAccess<HOST> isValidOffset(LocalDateTime localDateTime, ZoneOffset offset) {
+    public default BooleanAccessPrimitive<HOST> isValidOffset(LocalDateTime localDateTime, ZoneOffset offset) {
         return host -> {
             val value = apply(host);
             return value.isValidOffset(localDateTime, offset);

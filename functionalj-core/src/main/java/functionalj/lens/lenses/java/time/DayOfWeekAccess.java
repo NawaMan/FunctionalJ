@@ -5,9 +5,11 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface DayOfWeekAccess<HOST>
@@ -24,43 +26,43 @@ public interface DayOfWeekAccess<HOST>
         return host -> accessToValue.apply(host);
     }
     
-    public default BooleanAccess<HOST> isMonday() {
+    public default BooleanAccessPrimitive<HOST> isMonday() {
         return host -> {
             val value = apply(host);
             return value == DayOfWeek.MONDAY;
         };
     }
-    public default BooleanAccess<HOST> isTuesday() {
+    public default BooleanAccessPrimitive<HOST> isTuesday() {
         return host -> {
             val value = apply(host);
             return value == DayOfWeek.TUESDAY;
         };
     }
-    public default BooleanAccess<HOST> isWednesday() {
+    public default BooleanAccessPrimitive<HOST> isWednesday() {
         return host -> {
             val value = apply(host);
             return value == DayOfWeek.WEDNESDAY;
         };
     }
-    public default BooleanAccess<HOST> isThursday() {
+    public default BooleanAccessPrimitive<HOST> isThursday() {
         return host -> {
             val value = apply(host);
             return value == DayOfWeek.THURSDAY;
         };
     }
-    public default BooleanAccess<HOST> isFriday() {
+    public default BooleanAccessPrimitive<HOST> isFriday() {
         return host -> {
             val value = apply(host);
             return value == DayOfWeek.FRIDAY;
         };
     }
-    public default BooleanAccess<HOST> isSaturday() {
+    public default BooleanAccessPrimitive<HOST> isSaturday() {
         return host -> {
             val value = apply(host);
             return value == DayOfWeek.SATURDAY;
         };
     }
-    public default BooleanAccess<HOST> isSunday() {
+    public default BooleanAccessPrimitive<HOST> isSunday() {
         return host -> {
             val value = apply(host);
             return value == DayOfWeek.SUNDAY;
@@ -80,7 +82,7 @@ public interface DayOfWeekAccess<HOST>
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(DayOfWeek other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(DayOfWeek other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,13 +32,14 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import functionalj.list.FuncList;
+import functionalj.result.ValidationException;
 import functionalj.types.DefaultTo;
 import functionalj.types.DefaultValue;
 import functionalj.types.Nullable;
 import functionalj.types.Struct;
-import functionalj.list.FuncList;
-import functionalj.result.ValidationException;
 import lombok.val;
+
 
 public class StructTypeExamples {
     
@@ -195,7 +196,7 @@ public class StructTypeExamples {
         assertEquals("[(Sales,Doe), (R&D,Jackson)]",
                 departments
                     .filter  (theDepartment.manager.firstName.thatEquals("John"))
-                    .mapTuple(theDepartment.name, theDepartment.manager.lastName)
+                    .mapToTuple(theDepartment.name, theDepartment.manager.lastName)
                     .toString());
     }
     

@@ -12,6 +12,7 @@ import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.val;
 
+
 public class ElmChoiceBuilderTest {
     
     private static ElmChoiceBuilder setupBuilder() {

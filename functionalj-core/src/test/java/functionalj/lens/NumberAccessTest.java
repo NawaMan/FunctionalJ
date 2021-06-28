@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,22 +30,22 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.list.ImmutableList;
+import functionalj.list.ImmutableFuncList;
 
 public class NumberAccessTest {
     
     @Test
     public void testAdd() {
-        assertEquals(15,  (int)theInteger.add(5).apply(10));
+        assertEquals(15,  (int)theInteger.plus(5).apply(10));
         
         assertEquals(
                 "[(One,3,true,9.0), (Two,3,true,9.0), (Three,5,false,15.0), (Four,4,false,12.0)]",
-                "" + ImmutableList.of("One", "Two", "Three", "Four")
-                    .mapTuple(
+                "" + ImmutableFuncList.of("One", "Two", "Three", "Four")
+                    .mapToTuple(
                          theString, 
                          theString.length(),
                          theString.length().thatLessThan(4),
-                         theString.length().add($I.multiply(2)).toDouble()));
+                         theString.length().plus($I.time(2)).asDouble()));
     }
     
 }

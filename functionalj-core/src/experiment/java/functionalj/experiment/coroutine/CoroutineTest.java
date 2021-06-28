@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,7 +33,7 @@ import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.map.FuncMap;
 import functionalj.promise.Promise;
-import lombok.val;
+
 
 // This is an experiment to see if we can simulate coroutine the kind that help with async/await
 public class CoroutineTest {
@@ -43,12 +43,12 @@ public class CoroutineTest {
         public abstract OUT get();
         
         
-        public static <I, M, O> CoroutineEntry<I, O> c(Func0<M> f, Func1<M, CoroutineEntry<M, O>> next) {
-            return new CoroutineBetweenEntry<I, M, O>(f, next);
+        public static <IN, MIDDLE, OUT> CoroutineEntry<IN, OUT> c(Func0<MIDDLE> f, Func1<MIDDLE, CoroutineEntry<MIDDLE, OUT>> next) {
+            return new CoroutineBetweenEntry<IN, MIDDLE, OUT>(f, next);
         }
         
-        public static <I, O> CoroutineEntry<I, O> c(Func0<O> supplier) {
-            return new CoroutineLastEntry<I, O>(supplier);
+        public static <IN, OUT> CoroutineEntry<IN, OUT> c(Func0<OUT> supplier) {
+            return new CoroutineLastEntry<IN, OUT>(supplier);
         }
     }
     

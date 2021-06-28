@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,11 +35,11 @@ import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     
     public static <T1, T2, T3> Tuple3<T1, T2, T3> of(T1 _1, T2 _2, T3 _3) {
@@ -75,8 +75,8 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         Array.set(array, 1, _2);
         Array.set(array, 2, _3);
         @SuppressWarnings("unchecked")
-		val toArray = (T[])array;
-		return toArray;
+        val toArray = (T[])array;
+        return toArray;
     }
     
     public default FuncList<Object> toList() {
@@ -90,7 +90,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         val e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object)_1()) : null;
         val e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
         val e3 = (k3 != null) ? ImmutableTuple.of(k3, (Object)_3()) : null;
-        return ImmutableMap.ofEntries(e1, e2, e3);
+        return ImmutableFuncMap.ofEntries(e1, e2, e3);
     }
     
     //== mapTo ==
@@ -125,15 +125,15 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default <NT1, NT2, NT3> Tuple3<NT1, NT2, NT3> map(
-            Function<? super T1, NT1> mapper1, 
-            Function<? super T2, NT2> mapper2, 
+            Function<? super T1, NT1> mapper1,
+            Function<? super T2, NT2> mapper2,
             Function<? super T3, NT3> mapper3) {
         return map(mapper1, mapper2, mapper3, Tuple::of);
     }
     
     public default <NT1, NT2, NT3, T> T map(
-            Function<? super T1, NT1> mapper1, 
-            Function<? super T2, NT2> mapper2, 
+            Function<? super T1, NT1> mapper1,
+            Function<? super T2, NT2> mapper2,
             Function<? super T3, NT3> mapper3,
             Func3<? super NT1, ? super NT2, ? super NT3, T> mapper) {
         val _1 = _1();
@@ -146,8 +146,8 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default <NT2, NT3> Tuple3<T1, NT2, NT3> map(
-            Absent                    absent1, 
-            Function<? super T2, NT2> mapper2, 
+            Absent                    absent1,
+            Function<? super T2, NT2> mapper2,
             Function<? super T3, NT3> mapper3) {
         val _1 = _1();
         val _2 = _2();
@@ -159,8 +159,8 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default <NT1, NT3> Tuple3<NT1, T2, NT3> map(
-            Function<? super T1, NT1> mapper1, 
-            Absent                    absent2, 
+            Function<? super T1, NT1> mapper1,
+            Absent                    absent2,
             Function<? super T3, NT3> mapper3) {
         val _1 = _1();
         val _2 = _2();
@@ -172,7 +172,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default <NT1, NT2> Tuple3<NT1, NT2, T3> map(
-            Function<? super T1, NT1> mapper1, 
+            Function<? super T1, NT1> mapper1,
             Function<? super T2, NT2> mapper2,
             Absent                    absent3) {
         val _1 = _1();
@@ -185,8 +185,8 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default <NT3> Tuple3<T1, T2, NT3> map(
-            Absent                    absent1, 
-            Absent                    absent2, 
+            Absent                    absent1,
+            Absent                    absent2,
             Function<? super T3, NT3> mapper3) {
         val _1 = _1();
         val _2 = _2();
@@ -198,8 +198,8 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default <NT2> Tuple3<T1, NT2, T3> map(
-            Absent                    absent1, 
-            Function<? super T2, NT2> mapper2, 
+            Absent                    absent1,
+            Function<? super T2, NT2> mapper2,
             Absent                    absent3) {
         val _1 = _1();
         val _2 = _2();
@@ -211,7 +211,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default <NT1> Tuple3<NT1, T2, T3> map(
-            Function<? super T1, NT1> mapper1, 
+            Function<? super T1, NT1> mapper1,
             Absent                    absent2,
             Absent                    absent3) {
         val _1 = _1();
@@ -259,7 +259,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default Tuple2<T2, T3> drop(
-            Absent drop1, 
+            Absent drop1,
             Keep   keep2,
             Keep   keep3) {
         val _2 = _2();
@@ -268,7 +268,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default Tuple2<T1, T3> drop(
-            Keep   keep1, 
+            Keep   keep1,
             Absent drop2,
             Keep   keep3) {
         val _1 = _1();
@@ -277,7 +277,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     public default Tuple2<T1, T2> drop(
-            Keep   keep1, 
+            Keep   keep1,
             Keep   keep2,
             Absent drop3) {
         val _1 = _1();

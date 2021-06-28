@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -38,6 +38,7 @@ import functionalj.lens.lenses.MapAccess;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
+
 public class MapAccessTest {
     
     @Test
@@ -60,7 +61,7 @@ public class MapAccessTest {
                     @Override
                     public IntegerAccess<Map<String, Integer>> createSubAccess2(
                             Function<Map<String, Integer>, Integer> accessToParameter) {
-                        return map -> accessToParameter.apply(map);
+                        return IntegerAccess.of(accessToParameter);
                     }
                     @Override
                     public StringAccess<Map<String, Integer>> createSubAccessFromHost1(
@@ -70,7 +71,7 @@ public class MapAccessTest {
                     @Override
                     public IntegerAccess<Map<String, Integer>> createSubAccessFromHost2(
                             Function<Map<String, Integer>, Integer> accessToParameter) {
-                        return accessToParameter::apply;
+                        return IntegerAccess.of(accessToParameter);
                     }
                 };
             }

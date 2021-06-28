@@ -11,6 +11,7 @@ import functionalj.lens.core.WriteLens;
 import functionalj.list.FuncList;
 import lombok.val;
 
+
 public class FuncListLensTest {
     
     private final FuncListLens<FuncList<String>, String, StringLens<FuncList<String>>> listLens;

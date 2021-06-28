@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,27 +30,19 @@ import functionalj.result.Result;
 import functionalj.result.ValidationException;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface SimpleValidator<DATA> extends Validator<DATA> {
     
-    public static <D> 
-            Func2<
-                D, 
-                Predicate<? super D>, 
-                ValidationException> exceptionFor(String template) {
+    public static <D> Func2<D,Predicate<? super D>,ValidationException> exceptionFor(String template) {
         return (d, p) -> new ValidationException(String.format(template, d, p));
     }
-    public static <D> 
-            Func2<
-                D, 
-                Predicate<? super D>, 
-                ValidationException> exceptionFor(String template, Exception cause) {
+    public static <D> Func2<D,Predicate<? super D>,ValidationException> exceptionFor(String template, Exception cause) {
         return (d, p) -> new ValidationException(String.format(template, d, p), cause);
     }
     
     public Predicate<? super DATA> checker();
     public ValidationException     createException(DATA data);
-
+    
     public default Result<DATA> validate(DATA data) {
         return Result.of(()->{
             val checker = checker();

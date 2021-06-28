@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,7 +30,10 @@ import functionalj.promise.DeferAction;
 import functionalj.ref.RunBody;
 import lombok.val;
 
+
 public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
+    
+    public static FuncUnit0 doNothing = () -> {};
     
     public static FuncUnit0 of(FuncUnit0 runnable) {
         return runnable;

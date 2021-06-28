@@ -5,8 +5,9 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
+
 
 @FunctionalInterface
 public interface ZoneOffsetAccess<HOST>
@@ -24,7 +25,7 @@ public interface ZoneOffsetAccess<HOST>
        return accessToValue::apply;
    }
    
-   public default IntegerAccess<HOST> getTotalSeconds() {
+   public default IntegerAccessPrimitive<HOST> getTotalSeconds() {
        return host -> {
            val value = apply(host);
            return value.getTotalSeconds();

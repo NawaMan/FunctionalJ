@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,9 +32,8 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.lens.lenses.StringLens;
-import functionalj.tuple.IntTuple2;
-import functionalj.tuple.IntTuple2Lens;
 import lombok.val;
+
 
 public class IntTuple2Test {
 

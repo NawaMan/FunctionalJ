@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.result;
 
+import static functionalj.function.Func.f;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -56,6 +57,8 @@ import functionalj.validator.SimpleValidator;
 import functionalj.validator.Validator;
 import lombok.val;
 import nullablej.nullable.Nullable;
+
+// TODO - Make Result lazy.
 
 public abstract class Result<DATA>
         implements
@@ -98,11 +101,11 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("rawtypes")
-	private static final Result NULL = new ImmutableResult<>(null);
+    private static final Result NULL = new Value<>(null);
     
     /**
      * Returns the Null result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result containing null value.
      */
@@ -114,7 +117,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the NotExist result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result that is the result does not exist.
      */
@@ -125,7 +128,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotExist result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>      the data type of the result.
      * @return the Result that is the result is not available.
@@ -137,7 +140,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotExist result with message and cause.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>      the data type of the result.
@@ -151,7 +154,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the NoMore result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result that is the result does not exist.
      */
@@ -162,7 +165,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NoMore result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>      the data type of the result.
      * @return the Result that is the result is not available.
@@ -174,7 +177,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NoMore result with message and cause.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>      the data type of the result.
@@ -188,7 +191,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the NotReady result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result that is the result is not ready.
      */
@@ -199,7 +202,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotReady result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>      the data type of the result.
      * @return the Result that is the result is not ready.
@@ -211,7 +214,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotReady result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>      the data type of the result.
@@ -225,7 +228,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the Cancelled result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result that is the result is cancelled.
      */
@@ -236,7 +239,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the Cancelled result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>       the data type of the result.
      * @return the Result that is the result is cancelled.
@@ -248,7 +251,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the Cancelled result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>       the data type of the result.
@@ -262,7 +265,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the Invalid result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>       the data type of the result.
      * @return the Result that is the result is invalid.
@@ -274,7 +277,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the Invalid result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>       the data type of the result.
@@ -286,11 +289,19 @@ public abstract class Result<DATA>
         return invalidResult;
     }
     
+    public static <D> Value<D> Value(D data) {
+        return new Value<D>(data);
+    }
+    
+    public static <D> Result<D> ofValue(D value) {
+        return valueOf(value);
+    }
+    
     public static <D> Result<D> valueOf(D value) {
         if (value == null)
             return Result.ofNull();
         
-        return new ImmutableResult<D>(value, (Exception)null);
+        return new Value<D>(value, (Exception)null);
     }
     
     public static <D> Result<D> from(Supplier<? extends D> supplier) {
@@ -300,9 +311,7 @@ public abstract class Result<DATA>
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> Result<D> of(Func0<? extends D> supplier) {
         try {
-            if (supplier instanceof Func0)
-                 return Result.valueOf((D)((Func0)supplier).applyUnsafe());
-            else return Result.valueOf(supplier.get());
+            return Result.valueOf((D)((Func0)supplier).applyUnsafe());
         } catch (FunctionInvocationException e) {
             val cause = e.getCause();
             if (cause instanceof Exception)
@@ -312,31 +321,25 @@ public abstract class Result<DATA>
             return Result.ofException(e);
         }
     }
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    
     public static <D> Result<D> Try(Func0<? extends D> supplier) {
-        try {
-            if (supplier instanceof Func0)
-                 return Result.valueOf((D)((Func0)supplier).applyUnsafe());
-            else return Result.valueOf(supplier.get());
-        } catch (Exception e) {
-            return Result.ofException(e);
-        }
+        return of(supplier);
     }
     
     public static <D> Result<D> ofException(String exceptionMsg) {
-        return new ImmutableResult<D>((D)null, new FunctionInvocationException(exceptionMsg));
+        return new Value<D>((D)null, new FunctionInvocationException(exceptionMsg));
     }
     
     public static <D> Result<D> ofException(Exception exception) {
-        return new ImmutableResult<D>(null, (exception != null) ? exception : new FunctionInvocationException("Unknown reason."));
+        return new Value<D>(null, (exception != null) ? exception : new FunctionInvocationException("Unknown reason."));
     }
     
     public static <D> Result<D> ofResult(Result<D> result) {
+        if (result == null)
+            return Result.ofNotExist();
+        
         if (result instanceof Result)
             return (Result<D>)result;
-        
-        if (result == null)
-            return Result.ofNull();
         
         val data = result.__valueData();
         
@@ -576,6 +579,7 @@ public abstract class Result<DATA>
     
     abstract Object __valueData();
     
+    
     public Result<DATA> or(Result<DATA> anotherResult) {
         if (this.isPresent())
             return this;
@@ -605,7 +609,7 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public <T> Result<T> mapValue(Func2<DATA, Exception, Result<T>> processor) {
+    public <T> Result<T> mapValue(BiFunction<DATA, Exception, Result<T>> processor) {
         return new DerivedResult<T>(this, org-> {
             try {
                 val data      = org.__valueData();
@@ -614,7 +618,7 @@ public abstract class Result<DATA>
                 val exception = isValue ? null       : ((ExceptionHolder)data).getException();
                 assert !((value != null) && (exception != null));
                 
-                val newValue = processor.applyUnsafe(value, exception);
+                val newValue = Func.from(processor).applyUnsafe(value, exception);
                 return newValue;
             } catch (Exception cause) {
                 return newException(cause);
@@ -636,7 +640,7 @@ public abstract class Result<DATA>
         );
     }
     public final DATA getValue() {
-    	return value();
+        return value();
     }
     
     public final Exception exception() {
@@ -651,7 +655,7 @@ public abstract class Result<DATA>
         );
     }
     public final Exception getException() {
-    	return exception();
+        return exception();
     }
     
     public final <T extends Result<DATA>> T castTo(Class<T> clzz) {
@@ -681,13 +685,17 @@ public abstract class Result<DATA>
         return FuncList.of(this.get());
     }
     
+    public final Func0<DATA> toSupplier() {
+        return ()->get();
+    }
+    
     @Override
     public Promise<DATA> getPromise() {
         return mapData(
                 Promise::ofException,
                 (value, exception) -> {
                     return (exception == null)
-                            ? Promise.of(value)
+                            ? Promise.ofValue(value)
                             : Promise.ofException(exception);
                 }
         );
@@ -699,15 +707,15 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Result<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
+    public final <TARGET> Result<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         return mapValue(
-                (value, exception) -> {
+                f((value, exception) -> {
                     if (value == null)
                         return (Result<TARGET>)this;
                     
-                    val newValue = mapper.applyUnsafe(value);
+                    val newValue = Func.from(mapper).applyUnsafe(value);
                     return Result.valueOf(newValue);
-                }
+                })
         );
     }
     public final <T extends DATA> Result<T> as(Class<T> onlyClass) {
@@ -715,22 +723,22 @@ public abstract class Result<DATA>
                 .map (onlyClass::cast);
     }
     
-    public final Result<DATA> mapException(Func1<? super Exception, ? extends Exception> mapper) {
+    public final Result<DATA> mapException(Function<? super Exception, ? extends Exception> mapper) {
         return mapValue(
-                (value, exception) -> {
+                f((value, exception) -> {
                     if (exception == null)
                         return this;
                     
-                    val newException = mapper.applyUnsafe(exception);
+                    val newException = Func.from(mapper).applyUnsafe(exception);
                     return newException(newException);
-                }
+                })
         );
     }
     
     public final <OPERANT, TARGET> Result<TARGET> mapWith(
-            Func2<? super DATA, ? super OPERANT, ? extends TARGET> func, 
+            Func2<? super DATA, ? super OPERANT, ? extends TARGET> func,
             Result<OPERANT> operantResult) {
-        return flatMap(data -> { 
+        return flatMap(data -> {
             return operantResult.map(operant -> {
                 return func.apply(data, operant);
             });
@@ -738,15 +746,15 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Result<TARGET> flatMap(Func1<? super DATA, ? extends Result<TARGET>> mapper) {
+    public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Result<TARGET>> mapper) {
         return mapValue(
-                (value, exception) -> {
+                f((value, exception) -> {
                     if (value == null)
                         return (Result<TARGET>)this;
                     
-                    val monad = (Result<TARGET>)mapper.applyUnsafe(value);
+                    val monad = (Result<TARGET>)Func.from(mapper).applyUnsafe(value);
                     return monad;
-                }
+                })
         );
     }
     
@@ -800,7 +808,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if ((value == null) && (exception != null))
+                    if ((value == null) && (exception == null))
                         return newException(
                                 new ValidationException(
                                         new NullPointerException()));
@@ -812,7 +820,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if ((value == null) && (exception != null))
+                    if ((value == null) && (exception == null))
                         return newException(
                                 new ValidationException(message));
                     
@@ -882,7 +890,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if (value == null) 
+                    if (value == null)
                         return this;
                     try {
                         if (validChecker.test(value))
@@ -903,7 +911,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if (value == null) 
+                    if (value == null)
                         return this;
                     try {
                         val target = mapper.applyUnsafe(value);
@@ -923,7 +931,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if (value == null) 
+                    if (value == null)
                         return this;
                     
                     return validator.validate(value);
@@ -1040,7 +1048,7 @@ public abstract class Result<DATA>
                 }
         );
     }
-    public final <EXCEPTION extends Exception> DATA orThrow(Func1<Exception, EXCEPTION> toException) 
+    public final <EXCEPTION extends Exception> DATA orThrow(Func1<Exception, EXCEPTION> toException)
             throws EXCEPTION {
         return mapData(
                 e -> { throw toException.applyUnsafe(e); },
@@ -1052,7 +1060,7 @@ public abstract class Result<DATA>
                 }
         );
     }
-    public final <RUNTIMEEXCEPTION extends RuntimeException> 
+    public final <RUNTIMEEXCEPTION extends RuntimeException>
             DATA orThrowRuntimeException(Function<Exception, RUNTIMEEXCEPTION> toRuntimeException) {
         return mapData(
                 e -> {
@@ -1110,7 +1118,7 @@ public abstract class Result<DATA>
     public final String toString() {
         @SuppressWarnings("rawtypes")
         val clss = (Class)this.getClass();
-        val clssName = ((clss == ImmutableResult.class) || (clss == DerivedResult.class))
+        val clssName = ((clss == Value.class) || (clss == DerivedResult.class))
                 ? "Result"
                 : clss.getSimpleName();
         return clssName

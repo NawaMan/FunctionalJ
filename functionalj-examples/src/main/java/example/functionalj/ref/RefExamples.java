@@ -12,6 +12,7 @@ import org.junit.Test;
 import functionalj.ref.Ref;
 import lombok.val;
 
+
 public class RefExamples {
     
     static Ref<Function<String, String>> greeting = Ref.ofValue(RefExamples::defaultGreeting);

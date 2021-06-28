@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -38,6 +38,7 @@ import functionalj.function.Func4;
 import functionalj.function.FunctionInvocationException;
 import functionalj.promise.Promise;
 import lombok.val;
+
 
 public class FuncTest {
     
@@ -103,9 +104,9 @@ public class FuncTest {
     
     @Test
     public void testDefer() {
-        val func = ((Func2<Integer, Integer, Integer>)(a, b) -> a+b).defer();
-        val a    = Promise.of(5);
-        val b    = Promise.of(7);
+        val func = ((Func2<Integer, Integer, Integer>)(a, b) -> a+b).forPromise();
+        val a    = Promise.ofValue(5);
+        val b    = Promise.ofValue(7);
         val c    = func.apply(a, b);
         assertEquals(12, c.getResult().value().intValue());
     }

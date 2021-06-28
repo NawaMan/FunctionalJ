@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,11 +36,11 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
+import functionalj.map.ImmutableFuncMap;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
+
 public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>> {
     
     public static <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> of(T1 _1, T2 _2, T3 _3, T4 _4) {
@@ -80,8 +80,8 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
         Array.set(array, 2, _3);
         Array.set(array, 3, _4);
         @SuppressWarnings("unchecked")
-		val toArray = (T[])array;
-		return toArray;
+        val toArray = (T[])array;
+        return toArray;
     }
     
     public default FuncList<Object> toList() {
@@ -97,7 +97,7 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
         val e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
         val e3 = (k3 != null) ? ImmutableTuple.of(k3, (Object)_3()) : null;
         val e4 = (k4 != null) ? ImmutableTuple.of(k4, (Object)_4()) : null;
-        return ImmutableMap.ofEntries(e1, e2, e3, e4);
+        return ImmutableFuncMap.ofEntries(e1, e2, e3, e4);
     }
     
     //== mapTo ==
@@ -357,7 +357,7 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default Tuple3<T2, T3, T4> drop(
-            Absent drop1, 
+            Absent drop1,
             Keep   keep2,
             Keep   keep3,
             Keep   keep4) {
@@ -368,7 +368,7 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default Tuple3<T1, T3, T4> drop(
-            Keep   keep1, 
+            Keep   keep1,
             Absent drop2,
             Keep   keep3,
             Keep   keep4) {
@@ -379,7 +379,7 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default Tuple3<T1, T2, T4> drop(
-            Keep   keep1, 
+            Keep   keep1,
             Keep   keep2,
             Absent drop3,
             Keep   keep4) {
@@ -390,8 +390,8 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default Tuple3<T1, T2, T3> drop(
-            Keep   keep1, 
-            Keep   keep2, 
+            Keep   keep1,
+            Keep   keep2,
             Keep   keep3,
             Absent drop4) {
         val _1 = _1();
@@ -401,7 +401,7 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default Tuple2<T3, T4> drop(
-            Absent drop1, 
+            Absent drop1,
             Absent drop2,
             Keep   keep3,
             Keep   keep4) {
@@ -411,7 +411,7 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default Tuple2<T2, T4> drop(
-            Absent drop1, 
+            Absent drop1,
             Keep   keep2,
             Absent drop3,
             Keep   keep4) {
@@ -421,7 +421,7 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default Tuple2<T2, T3> drop(
-            Absent drop1, 
+            Absent drop1,
             Keep   keep2,
             Keep   keep3,
             Absent drop4) {
@@ -431,8 +431,8 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default Tuple2<T1, T4> drop(
-            Keep   keep1, 
-            Absent drop2, 
+            Keep   keep1,
+            Absent drop2,
             Absent drop3,
             Keep   keep4) {
         val _1 = _1();
@@ -442,8 +442,8 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     
     public default Tuple2<T1, T2> drop(
             Keep   keep1,
-            Keep   keep2, 
-            Absent drop3, 
+            Keep   keep2,
+            Absent drop3,
             Absent drop4) {
         val _1 = _1();
         val _2 = _2();

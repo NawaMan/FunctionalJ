@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,6 +32,7 @@ import functionalj.function.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
+
 
 @SuppressWarnings("rawtypes")
 public class CombineResult<D> {
