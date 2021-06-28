@@ -155,7 +155,7 @@ public class GenericChoiceTest {
                 + "        public Just withData(T data) { return new Just(data); }\n"
                 + "        public static class JustLens<HOST> extends ObjectLensImpl<HOST, MayBe.Just> {\n"
                 + "            \n"
-                + "            public final ObjectLens<HOST, Object> data = (ObjectLens<HOST>)createSubLens(MayBe.Just::data, MayBe.Just::withData, ObjectLens::of);\n"
+                + "            public final ObjectLens<HOST, Object> data = (ObjectLens)createSubLens(MayBe.Just::data, MayBe.Just::withData, ObjectLens::of);\n"
                 + "            \n"
                 + "            public JustLens(LensSpec<HOST, MayBe.Just> spec) {\n"
                 + "                super(spec);\n"
