@@ -1,7 +1,0 @@
-language: java
-
-jdk:
-  - openjdk8
-
-env:
-  - CODACY_PROJECT_TOKEN=08dd89cd18ee47b1a23da48090a11106
