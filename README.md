@@ -1,5 +1,7 @@
 # FunctionalJ [▲](http://functionalj.io "FunctionalJ")
 
+![alt "Build status"](https://github.com/NawaMan/FunctionalJ/actions/workflows/gradle.yml/badge.svg)
+
 FunctionalJ is a library for writing functional style code in Java.
 It aims be a practical expansion to functional programming added in Java 8.
 FunctionalJ is a pure Java library with all code written in Java
