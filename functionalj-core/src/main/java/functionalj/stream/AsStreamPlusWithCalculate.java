@@ -25,7 +25,11 @@ package functionalj.stream;
 
 import static functionalj.stream.collect.Collected.collectedOf;
 
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import functionalj.function.aggregator.Aggregation;
 import functionalj.tuple.Tuple;
@@ -38,22 +42,29 @@ import lombok.val;
 
 
 public interface AsStreamPlusWithCalculate<DATA> {
-
+    
+    /** @return  the stream plus instance of this object. */
+    public StreamPlus<DATA> streamPlus();
+    
     public void forEach(Consumer<? super DATA> action);
     
     
     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
     //        Still not sure how to do that properly.
-    // Might try to quickly segment the stream (might use splitator) and spawn them.
     
     /** Perform the calculation using the data of this stream */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public default <RESULT> RESULT calculate(Aggregation<? super DATA, RESULT> aggregation) {
-        val collected = collectedOf(aggregation);
-        forEach(each -> {
-            collected.accumulate(each);
-        });
-        val value = collected.finish();
-        return value;
+        val collector  = aggregation.collectorPlus();
+        Supplier       supplier    = collector.supplier();
+        BiConsumer     accumulator = collector.accumulator();
+        BinaryOperator combiner    = collector.combiner();
+        Function       finisher    = collector.finisher();
+        
+        val streamPlus  = streamPlus();
+        val accumulated = streamPlus.stream().collect(supplier, accumulator, (a, b) -> combiner.apply(a, b));
+        val value       = finisher.apply(accumulated);
+        return (RESULT)value;
     }
     
     /** Perform the calculation using the data of this stream */

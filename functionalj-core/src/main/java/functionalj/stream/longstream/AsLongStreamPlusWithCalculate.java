@@ -23,10 +23,17 @@
 // ============================================================================ 
 package functionalj.stream.longstream;
 
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.function.LongConsumer;
+import java.util.function.ObjLongConsumer;
 
 import functionalj.function.aggregator.LongAggregation;
+import functionalj.function.aggregator.LongAggregationToLong;
 import functionalj.stream.longstream.collect.LongCollected;
+import java.util.function.Supplier;
+import java.util.function.ToLongFunction;
+
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -38,29 +45,54 @@ import lombok.val;
 
 public interface AsLongStreamPlusWithCalculate {
     
+    /** @return  the stream plus instance of this object. */
+    public LongStreamPlus longStreamPlus();
+    
     public void forEach(LongConsumer action);
     
     
     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
-    //        Still not sure how to do that.
+    //        Still not sure how to do that properly.
     
     /** Perform the calculation using the data of this stream */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public default <RESULT> RESULT calculate(
-            LongAggregation<RESULT> collector) {
-        val collected = LongCollected.of(collector);
-        forEach(each -> {
-            collected.accumulate(each);
-        });
-        val value = collected.finish();
+            LongAggregation<RESULT> aggregation) {
+        val collector  = aggregation.longCollectorPlus();
+        Supplier        supplier    = collector.supplier();
+        ObjLongConsumer accumulator = collector.longAccumulator();
+        BinaryOperator  combiner    = collector.combiner();
+        Function        finisher    = collector.finisher();
+        
+        val streamPlus  = longStreamPlus();
+        val accumulated = streamPlus.longStream().collect(supplier, accumulator, (a, b) -> combiner.apply(a, b));
+        val value       = finisher.apply(accumulated);
+        return (RESULT)value;
+    }
+    
+    /** Perform the calculation using the data of this stream */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public default long calculate(
+           LongAggregationToLong aggregation) {
+        val collector  = aggregation.longCollectorToLongPlus();
+        Supplier        supplier    = collector.supplier();
+        ObjLongConsumer accumulator = collector.longAccumulator();
+        BinaryOperator  combiner    = collector.combiner();
+        ToLongFunction  finisher    = collector.finisherToLong();
+        
+        val streamPlus  = longStreamPlus();
+        val accumulated = streamPlus.longStream().collect(supplier, accumulator, (a, b) -> combiner.apply(a, b));
+        val value       = finisher.applyAsLong(accumulated);
         return value;
     }
     
     /** Perform the calculation using the data of this stream */
     public default <RESULT1, RESULT2>
-                        Tuple2<RESULT1, RESULT2> 
+                        Tuple2<RESULT1, RESULT2>
                         calculate(
                                 LongAggregation<RESULT1> collector1,
                                 LongAggregation<RESULT2> collector2) {
+        // TODO - Created combined collectors
         val collected1 = LongCollected.of(collector1);
         val collected2 = LongCollected.of(collector2);
         forEach(each -> {
@@ -80,6 +112,7 @@ public interface AsLongStreamPlusWithCalculate {
                                 LongAggregation<RESULT1> collector1,
                                 LongAggregation<RESULT2> collector2,
                                 LongAggregation<RESULT3> collector3) {
+        // TODO - Created combined collectors
         val collected1 = LongCollected.of(collector1);
         val collected2 = LongCollected.of(collector2);
         val collected3 = LongCollected.of(collector3);
@@ -103,6 +136,7 @@ public interface AsLongStreamPlusWithCalculate {
                                 LongAggregation<RESULT2> collector2,
                                 LongAggregation<RESULT3> collector3,
                                 LongAggregation<RESULT4> collector4) {
+        // TODO - Created combined collectors
         val collected1 = LongCollected.of(collector1);
         val collected2 = LongCollected.of(collector2);
         val collected3 = LongCollected.of(collector3);
@@ -130,6 +164,7 @@ public interface AsLongStreamPlusWithCalculate {
                                 LongAggregation<RESULT3> collector3,
                                 LongAggregation<RESULT4> collector4,
                                 LongAggregation<RESULT5> collector5) {
+        // TODO - Created combined collectors
         val collected1 = LongCollected.of(collector1);
         val collected2 = LongCollected.of(collector2);
         val collected3 = LongCollected.of(collector3);
@@ -161,6 +196,7 @@ public interface AsLongStreamPlusWithCalculate {
                                 LongAggregation<RESULT4> collector4,
                                 LongAggregation<RESULT5> collector5,
                                 LongAggregation<RESULT6> collector6) {
+        // TODO - Created combined collectors
         val collected1 = LongCollected.of(collector1);
         val collected2 = LongCollected.of(collector2);
         val collected3 = LongCollected.of(collector3);
