@@ -30,8 +30,10 @@ public class ElmChoiceTest {
         val cases      = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
         val choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
         val spec       = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
-        val builder    = new ElmChoiceBuilder(spec);
-        assertEquals(expected, builder.toElmCode());
+        val choice     = new ElmChoiceBuilder(spec);
+        val genCode    = choice.toElmCode();
+        val code       = genCode.substring(genCode.indexOf('\n')+1);
+        assertEquals(expected, code);
     }
     
     private static final String expected =

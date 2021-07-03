@@ -50,9 +50,11 @@ public class ElmStructTest {
                     getters,
                     emptyList());
         
-        val spec   = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);
-        val struct = new ElmStructBuilder(spec);
-        assertEquals(expected, struct.toElmCode());
+        val spec    = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);
+        val struct  = new ElmStructBuilder(spec);
+        val genCode = struct.toElmCode();
+        val code    = genCode.substring(genCode.indexOf('\n')+1);
+        assertEquals(expected, code);
     }
     
     private static final String expected =
