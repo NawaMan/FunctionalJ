@@ -120,7 +120,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         try {
             val elmStructSpec = new ElmStructSpec(sourceSpec, element);
             val elmStruct     = new ElmStructBuilder(elmStructSpec);
-            val baseDir       = "./generated/elm/";
+            val baseDir       = elmStructSpec.generatedDirectory();
             val folderName    = elmStructSpec.folderName();
             val fileName      = elmStructSpec.fileName();
             
@@ -159,7 +159,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         try {
             val elmChoiceSpec = new ElmChoiceSpec(sourceSpec, element);
             val elmChoice     = new ElmChoiceBuilder(elmChoiceSpec);
-            val baseDir       = "./generated/elm/";
+            val baseDir       = elmChoiceSpec.generatedDirectory();
             val folderName    = elmChoiceSpec.folderName();
             val fileName      = elmChoiceSpec.fileName();
             

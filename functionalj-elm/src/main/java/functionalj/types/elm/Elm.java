@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation for Elm -- marking that Struct or Choice types can be used as a template to generate an Elm data type..
- * The generated elm code will be in "generated/elm" folder.
+ * The generated elm code will be in `generatedDirectory` or "generated/elm" folder if not specified.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
@@ -38,8 +38,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Elm {
     
-    public static final String FROM_PACAKGE_NAME = "FROM_PACAKGE_NAME";
+    public static final String FROM_PACAKGE_NAME           = "FROM_PACAKGE_NAME";
+    public static final String DEFAULT_GENERATED_DIRECTORY = "./generated/elm/";
     
     String baseModule() default FROM_PACAKGE_NAME;
+    
+    String generatedDirectory() default DEFAULT_GENERATED_DIRECTORY;
     
 }

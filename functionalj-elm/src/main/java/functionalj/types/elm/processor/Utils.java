@@ -33,9 +33,15 @@ import lombok.val;
 public class Utils {
     
     public static String toTitleCase(String str) {
+        if ((str == null) || str.isEmpty()) {
+            return str;
+        }
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
     public static String toCamelCase(String str) {
+        if ((str == null) || str.isEmpty()) {
+            return str;
+        }
         if (str.equals(str.toUpperCase()))
             return str.toLowerCase();
         

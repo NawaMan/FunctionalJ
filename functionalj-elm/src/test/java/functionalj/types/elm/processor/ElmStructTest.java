@@ -50,7 +50,7 @@ public class ElmStructTest {
                     getters,
                     emptyList());
         
-        val spec   = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm");
+        val spec   = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);
         val struct = new ElmStructBuilder(spec);
         assertEquals(expected, struct.toElmCode());
     }

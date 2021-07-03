@@ -38,6 +38,7 @@ public class ElmChoiceSpec {
     private final SourceSpec sourceSpec;
     private final String typeName;
     private final String folderName;
+    private final String generatedDirectory;
     
     public ElmChoiceSpec(SourceSpec sourceSpec, Element element) {
         this.sourceSpec = sourceSpec;
@@ -45,11 +46,18 @@ public class ElmChoiceSpec {
         
         val baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
         this.folderName = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
+        
+        val generatedDirectory  = element.getAnnotation(Elm.class).generatedDirectory();
+        this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     ElmChoiceSpec(SourceSpec sourceSpec, String typeName, String folderName) {
-        this.sourceSpec = sourceSpec;
-        this.typeName   = typeName;
-        this.folderName = folderName;
+        this(sourceSpec, typeName, folderName, null);
+    }
+    ElmChoiceSpec(SourceSpec sourceSpec, String typeName, String folderName, String generatedDirectory) {
+        this.sourceSpec         = sourceSpec;
+        this.typeName           = typeName;
+        this.folderName         = folderName;
+        this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     
     private String elmBaseModule(Element element, SourceSpec sourceSpec) {
@@ -73,11 +81,16 @@ public class ElmChoiceSpec {
     }
     
     public String moduleName() {
-        return folderName.replace('/', '.') + "." + typeName;
+        val moduleBase = ((folderName == null) || folderName.isEmpty()) ? "" : (folderName.replace('/', '.') + ".");
+        return moduleBase + typeName;
     }
     
     public String folderName() {
         return folderName;
+    }
+    
+    public String generatedDirectory() {
+        return generatedDirectory;
     }
     
     @Override
@@ -86,7 +99,8 @@ public class ElmChoiceSpec {
                 + "typeName="   + typeName     + ", "
                 + "fileName="   + fileName()   + ", "
                 + "moduleName=" + moduleName() + ", "
-                + "folderName=" + folderName 
+                + "folderName=" + folderName + ", "
+                + "generatedDirectory=" + generatedDirectory
                 + "]";
     }
 
