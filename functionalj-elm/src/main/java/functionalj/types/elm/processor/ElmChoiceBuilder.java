@@ -206,7 +206,7 @@ public class ElmChoiceBuilder implements ElmTypeDef {
         val decoderType = isList
                         ? "(Json.Decode.list " + decoderNameOf(bareType) + ")"
                         : ( isNullable
-                            ? "(Json.Decode.nullable " + decoderNameOf(bareType) + ") Nothing"
+                            ? "(Json.Decode.maybe " + decoderNameOf(bareType) + ") Nothing"
                             : decoderNameOf(caseType));
         
         return line("|> " + reqOrOpt + " " + quotedName + " " + decoderType);

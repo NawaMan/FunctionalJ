@@ -74,7 +74,7 @@ public class Getter {
     }
     
     public boolean isRequired() {
-        return defaultTo == DefaultValue.REQUIRED;
+        return !nullable && (defaultTo == DefaultValue.REQUIRED);
     }
     
     public String getDefaultValueCode(String orElse) {

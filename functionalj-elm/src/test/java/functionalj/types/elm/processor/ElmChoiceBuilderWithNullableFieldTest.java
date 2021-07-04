@@ -13,11 +13,12 @@ import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.val;
 
 
-public class ElmChoiceBuilderTest {
+public class ElmChoiceBuilderWithNullableFieldTest {
     
     private static ElmChoiceBuilder setupBuilder() {
         val genericYear = new Generic("year", null, asList(Type.INTEGER));
         val caseParams = asList(
+                new CaseParam("id",     Type.STRING,  true),
                 new CaseParam("name",   Type.STRING,  false),
                 new CaseParam("age",    Type.INTEGER, false),
                 new CaseParam("years",  new Type("java.util", null, "List", asList(genericYear)), false),
@@ -38,7 +39,7 @@ public class ElmChoiceBuilderTest {
         val builder = setupBuilder();
         assertEquals(
                 "type LoginStatus\n" + 
-                "    = LoggedIn String Int (List Int) (Maybe Float) Functionalj.Types.Elm.User\n" + 
+                "    = LoggedIn (Maybe String) String Int (List Int) (Maybe Float) Functionalj.Types.Elm.User\n" + 
                 "    | LoggedOut",
                 builder.typeDefinition().toText());
     }
@@ -50,9 +51,10 @@ public class ElmChoiceBuilderTest {
                 "loginStatusEncoder : LoginStatus -> Json.Encode.Value\n" + 
                 "loginStatusEncoder loginStatus = \n" + 
                 "    case loginStatusEncoder of\n" + 
-                "        LoggedIn name age years wealth user ->\n" + 
+                "        LoggedIn id name age years wealth user ->\n" + 
                 "            Json.Encode.object\n" + 
-                "                [ ( \"__tagged\", Json.Encode.string \"LoggedIn\" )\n" + 
+                "                [ ( \"__tagged\", Json.Encode.string \"LoggedIn\" )\n" +
+                "                , ( \"id\", Maybe.withDefault Json.Encode.null (Maybe.map Json.Encode.string id) )\n" +
                 "                , ( \"name\", Json.Encode.string name )\n" + 
                 "                , ( \"age\", Json.Encode.int age )\n" + 
                 "                , ( \"years\", Json.Encode.list Json.Encode.int years )\n" + 
@@ -77,7 +79,8 @@ public class ElmChoiceBuilderTest {
                 "            (\\str ->\n" + 
                 "                case str of\n" + 
                 "                    \"LoggedIn\" ->\n" + 
-                "                        Json.Decode.succeed LoggedIn\n" + 
+                "                        Json.Decode.succeed LoggedIn\n" +
+                "                            |> Json.Decode.Pipeline.optional \"id\" (Json.Decode.maybe Json.Decode.string) Nothing\n" +
                 "                            |> Json.Decode.Pipeline.required \"name\" Json.Decode.string\n" + 
                 "                            |> Json.Decode.Pipeline.required \"age\" Json.Decode.int\n" + 
                 "                            |> Json.Decode.Pipeline.required \"years\" (Json.Decode.list Json.Decode.int)\n" + 

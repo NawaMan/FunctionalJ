@@ -108,7 +108,8 @@ public class ElmStructBuilder implements ElmTypeDef {
     private static String toField(Getter getter) {
         val fieldName = getter.getName();
         val emlType   = emlType(getter.getType());
-        return fieldName + " : " + emlType;
+        val maybe     = getter.isNullable() ? "Maybe " : "";
+        return fieldName + " : " + maybe + emlType;
     }
     
     private static Function<Getter, String> toFieldEncoder(String typeName) {
@@ -146,9 +147,10 @@ public class ElmStructBuilder implements ElmTypeDef {
         return getter -> toFieldDecoder(typeName, getter);
     }
     private static String toFieldDecoder(String typeName, Getter getter) {
-        val fieldName   = getter.getName();
-        val typeDecoder = decoderNameOf (getter.getType());
-        val qualifier   = getter.isRequired() ? "required" : "optional";
+        val fieldName      = getter.getName();
+        val rawTypeDecoder = decoderNameOf (getter.getType());
+        val qualifier      = getter.isRequired() ? "required" : "optional";
+        val typeDecoder    = getter.isRequired() ? rawTypeDecoder : ("(Json.Decode.maybe " + rawTypeDecoder + ") Nothing");
         return "|> Json.Decode.Pipeline." + qualifier + " \"" + fieldName + "\" " + typeDecoder;
     }
     
