@@ -2,10 +2,12 @@ package functionalj.types.choice;
 
 import static functionalj.types.choice.Command.Move;
 import static functionalj.types.choice.Command.Rotate;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.junit.Test;
@@ -36,11 +38,10 @@ public class ChoiceToMapTest {
             LocalDateTime time,
             FuncMap<String, Command> commands) {}
     
-// TODO - This is mess up now ... ListLens crap out.
-//    @Struct
-//    void DeepTimedAction(
-//            LocalDateTime time,
-//            List<List<Command>> commands) {}
+    @Struct
+    void DeepTimedAction(
+            LocalDateTime time,
+            List<List<Command>> commands) {}
     
     @Test
     public void testToMap() {
@@ -80,21 +81,21 @@ public class ChoiceToMapTest {
         assertEquals(mapTimedAction1, mapTimedAction2);
     }
     
-    // TODO - This is mess up now ... ListLens crap out.
-//    @Test
-//    public void testFromMap_deepList() {
-//        val deepTimedAction1
-//                = new DeepTimedAction(
-//                        LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34),
-//                        asList(
-//                            asList(Rotate(5),  Move(7)),
-//                            asList(Rotate(15), Move(17))
-//                        ));
-//        val map = deepTimedAction1.toMap();
-//        val deepTimedAction2 = FuncType.structFromMap(map, TimedAction.class);
-//        System.out.println("timedAction1: " + deepTimedAction1);
-//        System.out.println("timedAction2: " + deepTimedAction2);
-//        assertEquals(deepTimedAction1, deepTimedAction2);
-//    }
+    @Test
+    public void testFromMap_deepList() {
+        val deepTimedAction1
+                = new DeepTimedAction(
+                        LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34),
+                        asList(
+                            asList(Rotate(5),  Move(7)),
+                            asList(Rotate(15), Move(17))
+                        ));
+        val map = deepTimedAction1.__toMap();
+        
+        val deepTimedAction2 = DeepTimedAction.fromMap(map);
+        System.out.println("timedAction1: " + deepTimedAction1);
+        System.out.println("timedAction2: " + deepTimedAction2);
+        assertEquals(deepTimedAction1, deepTimedAction2);
+    }
     
 }

@@ -298,10 +298,12 @@ public class StructGeneratorHelper {
     
     static GenMethod getterToWitherMethodArray(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        val listName = getter.getName();
-        val name = withMethodName.apply(getter);
-        val type = sourceSpec.getTargetType();
-        val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0).toType()));
+        val listName    = getter.getName();
+        val name        = withMethodName.apply(getter);
+        val type        = sourceSpec.getTargetType();
+        val generics    = getter.getType().generics();
+        val genericType = (generics.size() >= 1) ? generics.get(0).toType() : Type.OBJECT;
+        val params = asList(new GenParam(getter.getName(), genericType));
         val isFList = getter.getType().isFuncList();
         val newArray = isFList ? "functionalj.list.ImmutableFuncList.of" : Arrays.class.getCanonicalName() + ".asList";
         val paramCall

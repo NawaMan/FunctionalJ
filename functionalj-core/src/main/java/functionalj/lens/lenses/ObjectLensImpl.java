@@ -100,6 +100,15 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         return listLens;
     }
     
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected <SUB> ListLens<HOST, Object, ObjectLens<HOST, Object>> createSubListLens(
+                Function<DATA, List<SUB>>  readSub,
+                WriteLens<DATA, List<SUB>> writeSub) {
+        Function<DATA, List<Object>>  readObject  = (Function)readSub;
+        WriteLens<DATA, List<Object>> writeObject = (WriteLens)writeSub;
+        return createSubListLens(readObject, writeObject, ObjectLens::of);
+    }
+    
     protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
             FuncListLens<HOST, SUB, SUBLENS> createSubFuncListLens(
                 Function<DATA, FuncList<SUB>>          readSub,

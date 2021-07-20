@@ -57,5 +57,9 @@ public class Generic {
                 + params.stream().collect(joining(", "))
                 + ")";
     }
+    @Override
+    public String toString() {
+        return "Generic [name=" + name + ", withBound=" + withBound + ", boundTypes=" + boundTypes + "]";
+    }
     
 }

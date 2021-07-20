@@ -14,7 +14,7 @@ import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
-public class DateTimeLens {
+public class DateTimeLensTest {
     
     private Configurations configures = new Configurations();
     {
