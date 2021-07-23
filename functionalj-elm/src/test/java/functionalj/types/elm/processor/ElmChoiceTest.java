@@ -91,7 +91,7 @@ public class ElmChoiceTest {
             "                            |> Json.Decode.Pipeline.required \"name\" Json.Decode.string\n" + 
             "                            |> Json.Decode.Pipeline.required \"age\" Json.Decode.int\n" + 
             "                            |> Json.Decode.Pipeline.required \"years\" (Json.Decode.list Json.Decode.int)\n" + 
-            "                            |> Json.Decode.Pipeline.optional \"wealth\" (Json.Decode.nullable Json.Decode.float) Nothing\n" + 
+            "                            |> Json.Decode.Pipeline.optional \"wealth\" (Json.Decode.maybe Json.Decode.float) Nothing\n" + 
             "                            |> Json.Decode.Pipeline.required \"user\" userDecoder\n" + 
             "                    \n" + 
             "                    \"LoggedOut\" ->\n" + 

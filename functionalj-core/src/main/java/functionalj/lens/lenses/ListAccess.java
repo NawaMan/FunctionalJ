@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.function.Func.f;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
+import functionalj.stream.StreamPlus;
 import lombok.val;
 
 
@@ -49,6 +52,13 @@ public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>
             }
         };
         return AccessUtils.createSubListAccess(accessParameterized, read);
+    }
+    
+    public default StreamPlusAccess<HOST, TYPE, TYPEACCESS> stream() {
+        val accessParameterized = accessParameterized();
+        return StreamPlusAccess.of(
+                        f(accessParameterized::apply).andThen(StreamPlus::from),
+                        accessParameterized::createSubAccessFromHost);
     }
     
     public default TYPEACCESS first() {

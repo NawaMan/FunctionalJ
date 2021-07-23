@@ -118,6 +118,7 @@ public interface StreamPlus<DATA>
             StreamPlusWithLimit<DATA>,
             StreamPlusWithMap<DATA>,
             StreamPlusWithMapFirst<DATA>,
+            StreamPlusWithMapFlat<DATA>,
             StreamPlusWithMapGroup<DATA>,
             StreamPlusWithMapMulti<DATA>,
             StreamPlusWithMapThen<DATA>,
@@ -182,6 +183,15 @@ public interface StreamPlus<DATA>
     /** Create a StreamPlus from the given iterator. */
     public static <TARGET> StreamPlus<TARGET> from(Iterator<TARGET> iterator) {
         return IteratorPlus.from(iterator)
+                .stream();
+    }
+    
+    /** Create a StreamPlus from the given iterator. */
+    public static <TARGET> StreamPlus<TARGET> from(Iterable<TARGET> iterable) {
+        if (iterable instanceof FuncList) {
+            return ((FuncList<TARGET>)iterable).streamPlus();
+        }
+        return IteratorPlus.from(iterable.iterator())
                 .stream();
     }
     

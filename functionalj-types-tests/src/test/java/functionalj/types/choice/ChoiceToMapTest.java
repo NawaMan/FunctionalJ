@@ -38,7 +38,7 @@ public class ChoiceToMapTest {
             LocalDateTime time,
             FuncMap<String, Command> commands) {}
     
-    @Struct
+    @Struct(specField = "spec")
     void DeepTimedAction(
             LocalDateTime time,
             List<List<Command>> commands) {}
@@ -93,8 +93,6 @@ public class ChoiceToMapTest {
         val map = deepTimedAction1.__toMap();
         
         val deepTimedAction2 = DeepTimedAction.fromMap(map);
-        System.out.println("timedAction1: " + deepTimedAction1);
-        System.out.println("timedAction2: " + deepTimedAction2);
         assertEquals(deepTimedAction1, deepTimedAction2);
     }
     

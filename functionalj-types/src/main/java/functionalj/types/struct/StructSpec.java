@@ -51,6 +51,7 @@ import functionalj.types.DefaultTo;
 import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
 import functionalj.types.Nullable;
+import functionalj.types.Required;
 import functionalj.types.Struct;
 import functionalj.types.Type;
 import functionalj.types.common;
@@ -262,12 +263,17 @@ public class StructSpec {
         val type        = getType(element, p.asType());
         val isPrimitive = type.isPrimitive();
         val isNullable  = ((p.getAnnotation(Nullable.class) != null) || (p.getAnnotation(DefaultTo.class) != null));
+        val isRequired  =  (p.getAnnotation(Required.class) != null);
         val defTo       = (p.getAnnotation(DefaultTo.class) != null)
                         ? p.getAnnotation(DefaultTo.class).value()
                         : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
         val defValue = (DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(type) : defTo;
         if (!DefaultValue.isSuitable(type, defValue)) {
             error(element, "Default value is not suitable for the type: " + type.fullName() + " -> DefaultTo " + defValue);
+            return null;
+        }
+        if (isNullable && isRequired) {
+            error(element, "Parameter cannot be both Required and Nullable: " + name);
             return null;
         }
         val getter = new Getter(name, type, isNullable, defValue);
@@ -311,12 +317,17 @@ public class StructSpec {
             val returnType  = getType(element, method.getReturnType());
             val isPrimitive = returnType.isPrimitive();
             val isNullable  = ((method.getAnnotation(Nullable.class) != null) || (method.getAnnotation(DefaultTo.class) != null));
+            val isRequired  =  (method.getAnnotation(Required.class) != null);
             val defTo       = (method.getAnnotation(DefaultTo.class) != null)
                             ? method.getAnnotation(DefaultTo.class).value()
                             : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
             val defValue = ((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo);
             if (!DefaultValue.isSuitable(returnType, defValue)) {
                 error(element, "Default value is not suitable for the type: " + returnType.fullName() + " -> DefaultTo " + defTo);
+                return null;
+            }
+            if (isNullable && isRequired) {
+                error(element, "Parameter cannot be both Required and Nullable: " + methodName);
                 return null;
             }
             val getter = new Getter(methodName, returnType, isNullable, defValue);

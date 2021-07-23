@@ -243,7 +243,7 @@ public class Type implements IRequireTypes {
         val generics = ofNullable(this.generics)
                 .filter(l -> !l.isEmpty())
                 .map   (l -> this.generics.stream())
-                .map   (s -> s.map(g -> g.name))
+                .map   (s -> s.map(this::genericToString))
                 .map   (c -> c.collect(joining(",")))
                 .map   (s -> "<" + s + ">")
                 .orElse("");
@@ -251,6 +251,12 @@ public class Type implements IRequireTypes {
                 .stream()
                 .filter(Objects::nonNull)
                 .collect(joining("."));
+    }
+    
+    private String genericToString(Generic generic) {
+        return ((generic.name != null) && !generic.name.contains(".")) 
+                        ? generic.name 
+                        : generic.toType().toString();
     }
     
     @Override
@@ -478,6 +484,15 @@ public class Type implements IRequireTypes {
             && !lensTypes.values().stream()
              .anyMatch(type -> type.simpleName() .equals(lensType.simpleName())
                             && type.packageName().equals(lensType.packageName()));
+    }
+    
+    /**
+     * Check if this type is an ObjectLens type.
+     *
+     * @return {@code true} if this lens is an object lens.
+     **/
+    public boolean isObjectLens() {
+        return this.equals(Core.ObjectLens.type());
     }
     
     /**

@@ -345,7 +345,7 @@ public interface IData {
                     return IChoice.fromMap((Map<String, Object>)obj, (Class)clazz);
             } else if (isList) {
                 if (obj instanceof List)
-                    return fromListValue((List)obj, type.generics().get(0).toType());
+                    return fromListValue((List)obj, type);
                 throw new IllegalArgumentException("Invalid list element (" + type + "): " + obj);
             } else if (isMap) {
                 if (obj instanceof Map)

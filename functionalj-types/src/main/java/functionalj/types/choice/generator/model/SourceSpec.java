@@ -52,8 +52,16 @@ public class SourceSpec {
     public final List<Method>  methods;
     public final List<String>  localTypeWithLens;
     
-    public SourceSpec(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName,
-            List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
+    public SourceSpec(
+                    String        targetName, 
+                    Type          sourceType, 
+                    String        specObjName, 
+                    boolean       publicFields, 
+                    String        tagMapKeyName,
+                    List<Generic> generics, 
+                    List<Case>    choices, 
+                    List<Method>  methods, 
+                    List<String>  localTypeWithLens) {
         this.targetName = targetName;
         this.sourceType = sourceType;
         this.specObjName = specObjName;

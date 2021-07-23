@@ -33,8 +33,10 @@ import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.NullableAccess;
 import functionalj.lens.lenses.OptionalAccess;
 import functionalj.lens.lenses.ResultAccess;
+import functionalj.lens.lenses.StreamPlusAccess;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
+import functionalj.stream.StreamPlus;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
@@ -122,6 +124,23 @@ public class AccessUtils {
         val specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS>() {
             @Override
             public FuncList<TYPE> applyUnsafe(HOST host) throws Exception {
+                return read.apply(host);
+            }
+            @Override
+            public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return accessParameterized.createSubAccessFromHost(accessToParameter);
+            }
+        };
+        return () -> specWithSub;
+    }
+    
+    public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> StreamPlusAccess<HOST, TYPE, TYPEACCESS>
+            createSubStreamPlusAccess(
+                    AccessParameterized<HOST, StreamPlus<TYPE>, TYPE, TYPEACCESS> accessParameterized,
+                    Function<HOST, StreamPlus<TYPE>>                              read) {
+        val specWithSub = new AccessParameterized<HOST, StreamPlus<TYPE>, TYPE, TYPEACCESS>() {
+            @Override
+            public StreamPlus<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
             @Override

@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.function.Func.f;
 import static functionalj.lens.core.AccessUtils.createSubFuncListAccess;
 import static functionalj.lens.lenses.FuncListAccess.__internal__.subList;
 
@@ -52,6 +53,13 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
             }
         };
         return AccessUtils.createSubFuncListAccess(accessParameterized, read);
+    }
+    
+    public default StreamPlusAccess<HOST, TYPE, TYPEACCESS> stream() {
+        val accessParameterized = accessParameterized();
+        return StreamPlusAccess.of(
+                        f(accessParameterized::apply).andThen(FuncList::streamPlus),
+                        accessParameterized::createSubAccessFromHost);
     }
     
     // :-( .. have to be duplicate

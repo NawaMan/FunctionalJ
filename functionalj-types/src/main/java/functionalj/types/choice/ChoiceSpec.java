@@ -52,6 +52,7 @@ import functionalj.types.Choice;
 import functionalj.types.DefaultTo;
 import functionalj.types.Generic;
 import functionalj.types.Nullable;
+import functionalj.types.Required;
 import functionalj.types.Type;
 import functionalj.types.common;
 import functionalj.types.choice.generator.model.Case;
@@ -288,8 +289,13 @@ public class ChoiceSpec {
             .map(p -> {
                 val name       = p.getSimpleName().toString();
                 val type       = typeOf(targetType, p.asType());
-                val isNullable = (p.getAnnotation(Nullable.class) != null) ? false : true;
+                val isNullable = (p.getAnnotation(Nullable.class) != null);
+                val isRequired = (p.getAnnotation(Required.class) != null);
                 val defValue   = (p.getAnnotation(DefaultTo.class) != null) ? p.getAnnotation(DefaultTo.class).value() : null;
+                
+                if (isNullable && isRequired) {
+                    error("Parameter cannot be both Required and Nullable: " + name);
+                }
                 return new CaseParam(name, type, isNullable, defValue);
             }).collect(toList());
         

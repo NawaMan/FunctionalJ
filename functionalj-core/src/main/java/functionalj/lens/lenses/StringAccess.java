@@ -24,6 +24,7 @@
 package functionalj.lens.lenses;
 
 import static functionalj.functions.StrFuncs.toStr;
+import static functionalj.lens.lenses.StringAccessHelper.fromString;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -71,6 +72,14 @@ class StringAccessHelper {
             return toStr(newValue);
         }
         return toStr(each);
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    static Function<String, Object> fromString(Object object) {
+        if (object instanceof AnyAccess) {
+            return str -> ((AnyAccess) object).apply(str);
+        }
+        return __ -> object;
     }
     
 }
@@ -381,25 +390,35 @@ public interface StringAccess<HOST>
         });
     }
     
-    public default StringAccess<HOST> format(String format, Object... args) {
-        return stringAccess(null, str->{
-            val eachToString = StringAccessHelper.stringFrom(str);
-            val argStrs      = Stream.of(args).map(eachToString).toArray();
-            return String.format(format, (Object[])argStrs);
+    /**
+     * Giving the format create a final string using {@link String#format(String, Object...)}.
+     * The string value from this access will be the first parameter for the formatting.
+     * The given otherArgs will be the subsequence parameters for the formatting.
+     * If any of the otherArgs is a Access, it will be applied with the string value.
+     * 
+     * Examples:
+     * <ol>
+     * <li><b>Simple:    </b>"Hello".formatWith("Word: %s"); will returns "Word: Hello"</li>
+     * <li><b>More args: </b>"Hello".formatWith("Word: %s %s.", "there"); will returns "Word: Hello there."</li>
+     * <li><b>Access: </b>"Hello".formatWith("Word: %s (%s).", $S.length()); will returns "Word: Hello (5)."</li>
+     * </ol>
+     **/
+    public default StringAccess<HOST> formatWith(String format, Object... otherArgs) {
+        return StringAccess.of(host -> {
+            val value   = (host == null) ? null : apply(host);
+            val argStrs = FuncList.of(otherArgs).map(arg -> fromString(arg).apply(value)).prepend(value).toArray();
+            return String.format(format, argStrs);
         });
     }
-    
-    public default StringAccess<HOST> formatedBy(String format) {
+    /**
+     * Similar to another formatWith method but the format is derived from the string value.
+     **/
+    public default StringAccess<HOST> formatWith(Function<HOST, String> formatFunction, Object... otherArgs) {
         return StringAccess.of(host -> {
-            val value = (host == null) ? null : apply(host);
-            return String.format(format, value);
-        });
-    }
-    public default StringAccess<HOST> formatedBy(Function<HOST, String> formatFunction) {
-        return StringAccess.of(host -> {
-            val value  = (host == null) ? null : apply(host);
-            val format = formatFunction.apply(host);
-            return String.format(format, value);
+            val value   = (host == null) ? null : apply(host);
+            val format  = formatFunction.apply(host);
+            val argStrs = FuncList.of(otherArgs).map(arg -> fromString(arg).apply(value)).prepend(value).toArray();
+            return String.format(format, argStrs);
         });
     }
     
@@ -587,7 +606,7 @@ public interface StringAccess<HOST>
             val value = apply(host);
             if (value == null) return null;
             
-            return value.toLowerCase().replaceAll(regEx, replacement);
+            return value.replaceAll(regEx, replacement);
         });
     }
     public default StringAccess<HOST> replaceAll(Function<HOST, String> regexFunction, Function<HOST, String> replacementFunction) {

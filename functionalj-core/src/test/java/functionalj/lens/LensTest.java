@@ -274,6 +274,7 @@ public class LensTest {
         }
     }
     
+    @Test
     public void testNullSafetyMethods() {
         val driverWithNoCar = new Driver(null);
         
@@ -281,6 +282,7 @@ public class LensTest {
         assertEquals("N/A", theDriver.car.color.orDefaultTo("N/A").apply(driverWithNoCar));
     }
     
+    @Test
     public void testShortHand() {
         val lists = listOf(
                     listOf("ONE", "TWO", "THREE"),
@@ -300,7 +302,7 @@ public class LensTest {
                 "" + lists
                         .map(theStrListLens
                                 .first()
-                                .changeTo(theString.format("%s (%s)", $S, $S.length()))));
+                                .changeTo(theString.formatWith("%s (%s)", $S.length()))));
     }
     
 }
