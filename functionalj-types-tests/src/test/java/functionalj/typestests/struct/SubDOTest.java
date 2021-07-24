@@ -21,36 +21,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
 import static org.junit.Assert.assertEquals;
 
-//
 import org.junit.Test;
 
 import functionalj.types.Struct;
 import lombok.val;
 
 
-public class DOFromClassTest {
+public class SubDOTest {
     
-    @Struct(name="DOFromClass")
-    public abstract static class DOFromClassDef {
+    @Struct(name="Child")
+    public static interface IChild {
         
-        public abstract String name();
-        public abstract int    count();
+        String name();
         
-        public String nameUpperCase() {
-            return name().toUpperCase();
-        }
+    }
+    @Struct(name="Parent", specField="spec")
+    public static interface IParent {
+        
+        String name();
+        Child  child();
         
     }
     
+    
     @Test
-    public void testFromClass() {
-        val obj = new DOFromClass("Obj", 5);
-        assertEquals("Obj", obj.name());
-        assertEquals("OBJ", obj.nameUpperCase());
+    public void testParentChild() {
+        val parent = new Parent("John", new Child("Greg"));
+        assertEquals("Greg", parent.child().name());
     }
     
 }

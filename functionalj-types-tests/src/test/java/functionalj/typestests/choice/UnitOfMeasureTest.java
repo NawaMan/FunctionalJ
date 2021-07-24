@@ -1,12 +1,13 @@
-package functionalj.types.choice;
+package functionalj.typestests.choice;
 
-import static functionalj.types.choice.Temperature.Celsius;
-import static functionalj.types.choice.Temperature.Fahrenheit;
+import static functionalj.typestests.choice.Temperature.Celsius;
+import static functionalj.typestests.choice.Temperature.Fahrenheit;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import functionalj.types.Choice;
+import functionalj.types.choice.Self;
 import lombok.val;
 
 

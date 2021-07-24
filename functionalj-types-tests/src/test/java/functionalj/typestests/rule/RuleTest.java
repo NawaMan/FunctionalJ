@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.rule;
+package functionalj.typestests.rule;
 
 import static org.junit.Assert.assertEquals;
 
@@ -46,7 +46,7 @@ public class RuleTest {
                 ? null
                 : ("Not a valid email address: " + emailStr);
     }
-    @Rule(extendRule="functionalj.types.rule.Email")
+    @Rule(extendRule="functionalj.typestests.rule.Email")
     static ValidationException VerifiedEmail(String email) {
         if ("name@email.com".equals(email))
             return null;
@@ -55,7 +55,7 @@ public class RuleTest {
     }
     // TODO - Unable to get the fully qualified name for a class being generated. So gotta put the full things here.
     @Rule
-    static String UsableCar(functionalj.types.struct.Car car) {
+    static String UsableCar(functionalj.typestests.struct.Car car) {
         return null;
     }
     

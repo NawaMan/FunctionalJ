@@ -21,11 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.choice;
+package functionalj.typestests.choice;
 
 import static functionalj.types.choice.ChoiceTypes.Match;
-import static functionalj.types.choice.UpOrDown.Down;
-import static functionalj.types.choice.UpOrDown.Up;
+import static functionalj.typestests.choice.UpOrDown.Down;
+import static functionalj.typestests.choice.UpOrDown.Up;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

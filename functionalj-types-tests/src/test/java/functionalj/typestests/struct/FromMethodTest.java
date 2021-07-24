@@ -21,14 +21,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
 import static functionalj.lens.Access.$I;
 import static functionalj.types.DefaultValue.EMPTY;
 import static functionalj.types.DefaultValue.NULL;
 import static functionalj.types.DefaultValue.ZERO;
-import static functionalj.types.struct.Car.theCar;
-import static functionalj.types.struct.CarForSale.theCarForSale;
+import static functionalj.typestests.struct.Car.theCar;
+import static functionalj.typestests.struct.CarForSale.theCarForSale;
 //import static functionalj.types.struct.CarForSale.theCarForSale;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;

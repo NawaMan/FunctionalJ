@@ -1,4 +1,4 @@
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
 import static org.junit.Assert.assertEquals;
 

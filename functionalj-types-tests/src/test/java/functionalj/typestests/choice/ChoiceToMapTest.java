@@ -1,7 +1,7 @@
-package functionalj.types.choice;
+package functionalj.typestests.choice;
 
-import static functionalj.types.choice.Command.Move;
-import static functionalj.types.choice.Command.Rotate;
+import static functionalj.typestests.choice.Command.Move;
+import static functionalj.typestests.choice.Command.Rotate;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 

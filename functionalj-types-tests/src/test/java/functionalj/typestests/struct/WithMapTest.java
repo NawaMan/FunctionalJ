@@ -21,20 +21,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
-import java.util.Optional;
+import java.util.Map;
 
 import functionalj.types.Struct;
-import nullablej.nullable.Nullable;
 
-public class WithNullableOptionalTest {
+public class WithMapTest {
 
-    @Struct(name="ParentWithNullableOptional")
-    public static interface IParent3 {
+    @Struct(name="ParentWithMap")
+    public static interface IParent4 {
         
-        public Nullable<String> nullableName();
-        public Optional<String> optionalName();
+        public Map<String, Child> children();
         
     }
 }

@@ -21,41 +21,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
-import static functionalj.lens.Access.theString;
-import static org.junit.Assert.assertEquals;
+import static functionalj.types.DefaultValue.NULL;
+
+import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
-import functionalj.list.FuncList;
-import functionalj.list.ImmutableFuncList;
+import functionalj.types.DefaultTo;
 import functionalj.types.Struct;
 
-public class WithFuncListTest {
-
-    @Struct(name="ParentWithFuncList")
-    public static interface IParent2 {
+public class DOConstructorTest {
+    
+    @Struct(
+            name = "DONoNoArgsConstructor",
+            generateNoArgConstructor = false
+        )
+    public static interface DONoNoArgsConstructorDef {
         
-        public FuncList<String> names();
-        public FuncList<Child>  children();
+        public String name();
         
     }
+    @Test (expected=InstantiationException.class)
+    public void testNoNoArgsConstructor() throws InstantiationException, IllegalAccessException {
+        DONoNoArgsConstructor.class.newInstance();
+    }
     
-    @Test
-    public void testAccessToLens() {
-        ParentWithFuncList parent = new ParentWithFuncList(
-                ImmutableFuncList.of("One", "Two", "Three", "Four"), 
-                ImmutableFuncList.empty());
-        assertEquals(
-                "[One, Two, Three, Four]",
-                "" + ParentWithFuncList.theParentWithFuncList
-                    .names
-                    .apply(parent));
+    @Struct(
+            name = "DONoAllArgsConstructor",
+            generateNoArgConstructor  = true,
+            generateAllArgConstructor = false
+        )
+    public static interface DONoAllArgsConstructorDef {
         
-        assertEquals(
-                "[(One,3), (Two,3), (Three,5), (Four,4)]",
-                "" + parent.names().mapToTuple(theString, theString.length()));
+        @DefaultTo(NULL)
+        public String name();
+        
+    }
+    @Test(expected=NoSuchMethodException.class)
+    public void testNoAllArgsConstructor() throws InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
+        DONoAllArgsConstructor.class.getConstructor(String.class).newInstance("Obj");
     }
     
 }

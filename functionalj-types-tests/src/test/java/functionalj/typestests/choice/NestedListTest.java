@@ -1,4 +1,4 @@
-package functionalj.types.choice;
+package functionalj.typestests.choice;
 
 import java.util.List;
 

@@ -21,47 +21,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
-import static functionalj.types.DefaultValue.NULL;
+import java.util.List;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.junit.Test;
-
-import functionalj.types.DefaultTo;
 import functionalj.types.Struct;
 
-public class DOConstructorTest {
-    
-    @Struct(
-            name = "DONoNoArgsConstructor",
-            generateNoArgConstructor = false
-        )
-    public static interface DONoNoArgsConstructorDef {
+public class WithListTest {
+
+    @Struct(name="ParentWithList")
+    public static interface IParent2 {
         
-        public String name();
+        public List<String> names();
+        public List<Child>  children();
         
     }
-    @Test (expected=InstantiationException.class)
-    public void testNoNoArgsConstructor() throws InstantiationException, IllegalAccessException {
-        DONoNoArgsConstructor.class.newInstance();
-    }
-    
-    @Struct(
-            name = "DONoAllArgsConstructor",
-            generateNoArgConstructor  = true,
-            generateAllArgConstructor = false
-        )
-    public static interface DONoAllArgsConstructorDef {
-        
-        @DefaultTo(NULL)
-        public String name();
-        
-    }
-    @Test(expected=NoSuchMethodException.class)
-    public void testNoAllArgsConstructor() throws InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
-        DONoAllArgsConstructor.class.getConstructor(String.class).newInstance("Obj");
-    }
-    
 }

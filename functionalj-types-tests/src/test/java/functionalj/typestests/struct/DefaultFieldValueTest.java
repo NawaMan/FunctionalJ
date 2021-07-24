@@ -1,4 +1,4 @@
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
 import functionalj.types.DefaultTo;
 import functionalj.types.DefaultValue;

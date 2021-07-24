@@ -21,29 +21,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
 import static org.junit.Assert.assertEquals;
 
+//
 import org.junit.Test;
 
 import functionalj.types.Struct;
 import lombok.val;
 
 
-public class DOWithSameClassName {
+public class DOFromClassTest {
     
-    @Struct
-    public static interface DOSameName {
+    @Struct(name="DOFromClass")
+    public abstract static class DOFromClassDef {
         
-        public String name();
+        public abstract String name();
+        public abstract int    count();
+        
+        public String nameUpperCase() {
+            return name().toUpperCase();
+        }
         
     }
     
     @Test
-    public void testSameName() {
-        val obj = new functionalj.types.struct.DOSameName("Obj");
+    public void testFromClass() {
+        val obj = new DOFromClass("Obj", 5);
         assertEquals("Obj", obj.name());
+        assertEquals("OBJ", obj.nameUpperCase());
     }
     
 }

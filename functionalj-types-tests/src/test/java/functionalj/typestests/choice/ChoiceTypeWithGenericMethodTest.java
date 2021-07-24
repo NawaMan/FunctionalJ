@@ -21,11 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.choice;
+package functionalj.typestests.choice;
 
 import static functionalj.types.choice.ChoiceTypes.Match;
-import static functionalj.types.choice.Option.None;
-import static functionalj.types.choice.Option.Some;
+import static functionalj.typestests.choice.Option.None;
+import static functionalj.typestests.choice.Option.Some;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -37,6 +37,7 @@ import java.util.function.Supplier;
 import org.junit.Test;
 
 import functionalj.types.Choice;
+import functionalj.types.choice.Self1;
 
 @SuppressWarnings("javadoc")
 public class ChoiceTypeWithGenericMethodTest {

@@ -21,12 +21,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.choice;
+package functionalj.typestests.choice;
 
 import static functionalj.function.Func.recusive;
 import static functionalj.types.choice.ChoiceTypes.Match;
-import static functionalj.types.choice.LinkedList.Nill;
-import static functionalj.types.choice.LinkedList.Node;
+import static functionalj.typestests.choice.LinkedList.Nill;
+import static functionalj.typestests.choice.LinkedList.Node;
 import static org.junit.Assert.assertEquals;
 
 import java.util.function.BinaryOperator;
@@ -36,6 +36,7 @@ import java.util.function.Predicate;
 import org.junit.Test;
 
 import functionalj.types.Choice;
+import functionalj.types.choice.Self;
 import lombok.val;
 
 

@@ -21,10 +21,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
 import static functionalj.types.DefaultValue.NULL;
-import static functionalj.types.struct.SimpleFromInteface.theSimpleFromInteface;
+import static functionalj.typestests.struct.SimpleFromInteface.theSimpleFromInteface;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 

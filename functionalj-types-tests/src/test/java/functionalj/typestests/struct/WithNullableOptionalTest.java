@@ -21,19 +21,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
+package functionalj.typestests.struct;
 
-import java.util.List;
+import java.util.Optional;
 
 import functionalj.types.Struct;
+import nullablej.nullable.Nullable;
 
-public class WithListTest {
+public class WithNullableOptionalTest {
 
-    @Struct(name="ParentWithList")
-    public static interface IParent2 {
+    @Struct(name="ParentWithNullableOptional")
+    public static interface IParent3 {
         
-        public List<String> names();
-        public List<Child>  children();
+        public Nullable<String> nullableName();
+        public Optional<String> optionalName();
         
     }
 }
