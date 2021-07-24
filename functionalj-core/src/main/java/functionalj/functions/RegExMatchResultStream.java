@@ -1,7 +1,5 @@
 package functionalj.functions;
 
-import static functionalj.functions.RegExMatchResult.theResults;
-
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -29,8 +27,8 @@ public interface RegExMatchResultStream extends StreamPlus<RegExMatchResult> {
     public StreamPlus<RegExMatchResult> stream();
     
     
-    public default StreamPlus<String> toTexts() {
-        return pipeTo(theResults.texts);
+    public default StreamPlus<String> texts() {
+        return stream().map(RegExMatchResult::text);
     }
     
     

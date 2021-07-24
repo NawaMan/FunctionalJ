@@ -62,6 +62,10 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
                         accessParameterized::createSubAccessFromHost);
     }
     
+    public default StreamPlusAccess<HOST, TYPE, TYPEACCESS> streamPlus() {
+        return stream();
+    }
+    
     // :-( .. have to be duplicate
     public default TYPEACCESS first() {
         return at(0);

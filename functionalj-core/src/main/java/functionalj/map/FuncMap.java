@@ -158,7 +158,11 @@ public abstract class FuncMap<KEY, VALUE>
         return ImmutableFuncMap.empty();
     }
     
+    @SuppressWarnings("unchecked")
     public static <K, V> ImmutableFuncMap<K, V> from(Map<? extends K, ? extends V> map) {
+        if (map instanceof ImmutableFuncMap)
+            return (ImmutableFuncMap<K, V>)map;
+        
         return new ImmutableFuncMap<K, V>(map);
     }
     public static <K, V> ImmutableFuncMap<K, V> from(Stream<? extends Map.Entry<? extends K, ? extends V>> stream) {

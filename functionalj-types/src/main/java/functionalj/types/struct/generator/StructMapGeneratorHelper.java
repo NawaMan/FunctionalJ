@@ -20,6 +20,8 @@ import lombok.val;
 
 public class StructMapGeneratorHelper {
     
+    public static final String METHOD_TO_MAP = "__toMap";
+    
     static GenMethod generateFromMap(SourceSpec sourceSpec) {
         val fromMapBody = ILines.line(
                 sourceSpec.getGetters()
@@ -55,7 +57,7 @@ public class StructMapGeneratorHelper {
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
                 Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.OBJECT))),
-                "__toMap",
+                METHOD_TO_MAP,
                 emptyList(),
                 ILines.linesOf(
                     line("Map<String, Object> map = new HashMap<>();"),

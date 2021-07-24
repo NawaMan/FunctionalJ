@@ -37,9 +37,13 @@ import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import functionalj.function.Func1;
+import functionalj.functions.RegExFlag;
+import functionalj.functions.StrFuncs;
+import functionalj.functions.RegExMatchResult.RegExMatchResultStreamAccess;
 import functionalj.lens.lenses.java.time.LocalDateAccess;
 import functionalj.lens.lenses.java.time.LocalDateTimeAccess;
 import functionalj.list.FuncList;
@@ -907,5 +911,76 @@ public interface StringAccess<HOST>
     }
     
     //-- TODO Add Zoned date and stuff.
+    
+    //-- RegEx --
+    
+    public default RegExMatchResultStreamAccess<HOST> matches(String regex) {
+        return matches(regex, -1);
+    }
+    public default RegExMatchResultStreamAccess<HOST> matches(String regex, RegExFlag flags) {
+        return matches(regex, flags.getIntValue());
+    }
+    public default RegExMatchResultStreamAccess<HOST> matches(String regex, int flags) {
+        return new RegExMatchResultStreamAccess<>(host -> {
+            val value = apply(host);
+            return StrFuncs.matches(value, regex, flags);
+        });
+    }
+    public default RegExMatchResultStreamAccess<HOST> matches(Pattern pattern) {
+        return new RegExMatchResultStreamAccess<>(host -> {
+            val value = apply(host);
+            return StrFuncs.matches(value, pattern);
+        });
+    }
+    
+    public default FuncListAccess<HOST, String, StringAccess<HOST>> grab(String regex) {
+        return FuncListAccess.of(host -> {
+            val value = apply(host);
+            return StrFuncs.grab(value, regex);
+        }, StringAccess::of);
+    }
+    public default FuncListAccess<HOST, String, StringAccess<HOST>> grab(String regex, RegExFlag flags) {
+        return FuncListAccess.of(host -> {
+            val value = apply(host);
+            return StrFuncs.grab(value, regex, flags);
+        }, StringAccess::of);
+    }
+    public default FuncListAccess<HOST, String, StringAccess<HOST>> grab(String regex, int flags) {
+        return FuncListAccess.of(host -> {
+            val value = apply(host);
+            return StrFuncs.grab(value, regex, flags);
+        }, StringAccess::of);
+    }
+    public default FuncListAccess<HOST, String, StringAccess<HOST>> grab(Pattern pattern) {
+        return FuncListAccess.of(host -> {
+            val value = apply(host);
+            return StrFuncs.grab(value, pattern);
+        }, StringAccess::of);
+    }
+    
+    public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(String regex) {
+        return FuncMapAccess.of(host -> {
+            val value = apply(host);
+            return StrFuncs.capture(value, regex);
+        }, StringAccess::of, StringAccess::of);
+    }
+    public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(String regex, RegExFlag flags) {
+        return FuncMapAccess.of(host -> {
+            val value = apply(host);
+            return StrFuncs.capture(value, regex, flags);
+        }, StringAccess::of, StringAccess::of);
+    }
+    public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(String regex, int flags) {
+        return FuncMapAccess.of(host -> {
+            val value = apply(host);
+            return StrFuncs.capture(value, regex, flags);
+        }, StringAccess::of, StringAccess::of);
+    }
+    public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(Pattern pattern) {
+        return FuncMapAccess.of(host -> {
+            val value = apply(host);
+            return StrFuncs.capture(value, pattern);
+        }, StringAccess::of, StringAccess::of);
+    }
     
 }

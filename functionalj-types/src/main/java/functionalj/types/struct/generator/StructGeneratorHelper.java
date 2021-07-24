@@ -31,6 +31,7 @@ import functionalj.types.Generic;
 import functionalj.types.IPostConstruct;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
+import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.model.Accessibility;
 import functionalj.types.struct.generator.model.GenConstructor;
 import functionalj.types.struct.generator.model.GenField;
@@ -49,7 +50,8 @@ public class StructGeneratorHelper {
         if (toStringTemplate != null) {
             String toStringBody = null;
             if (!toStringTemplate.isEmpty()) {
-                toStringBody = "return functionalj.functions.StrFuncs.template(" + Utils.toStringLiteral(toStringTemplate) + ",toMap()::get);";
+                val strFuncs = Core.StrFunc.packageName() + "." + Core.StrFunc.simpleName();
+                toStringBody = "return " + strFuncs + ".template(" + Utils.toStringLiteral(toStringTemplate) + "," + StructMapGeneratorHelper.METHOD_TO_MAP + "()::get);";
             } else {
                 toStringBody =
                         "return \"" + sourceSpec.getTargetClassName() + "[\" + " +

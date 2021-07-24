@@ -25,14 +25,19 @@ package functionalj.functions;
 
 import static functionalj.function.Func.itself;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import functionalj.function.Func1;
+import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.lenses.AnyAccess;
+import functionalj.lens.lenses.IntegerAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
+import functionalj.lens.lenses.StreamPlusAccess;
 import functionalj.lens.lenses.StringAccess;
+import functionalj.list.FuncList;
 import functionalj.stream.StreamPlus;
 
 public class RegExMatchResult implements MatchResult {
@@ -70,23 +75,51 @@ public class RegExMatchResult implements MatchResult {
         }
     }
     
-    public static final RegExMatchResultsAccess<StreamPlus<RegExMatchResult>> theResults = new RegExMatchResultsAccess<>(itself());
+    public static final RegExMatchResultStreamAccess<RegExMatchResultStream> theResults = new RegExMatchResultStreamAccess<>(itself());
     
-    
-    public static class RegExMatchResultsAccess<HOST>
-        implements AnyAccess<HOST, StreamPlus<RegExMatchResult>> {
+    public static class RegExMatchResultStreamAccess<HOST> implements StreamPlusAccess<HOST, RegExMatchResult, RegExMatchResultAccess<HOST>> {
         
-        public final AnyAccess<HOST, StreamPlus<String>> texts = (HOST host) -> apply(host).map(theResult.text);
+        private final Func1<HOST, RegExMatchResultStream> access;
+        private final AccessParameterized<HOST, StreamPlus<RegExMatchResult>, RegExMatchResult, RegExMatchResultAccess<HOST>> accessParameterized;
         
-        private final Func1<HOST, StreamPlus<RegExMatchResult>> access;
-        
-        public RegExMatchResultsAccess(Func1<HOST, StreamPlus<RegExMatchResult>> access) {
+        public RegExMatchResultStreamAccess(Func1<HOST, RegExMatchResultStream> access) {
             this.access = access;
+            
+            this.accessParameterized = new AccessParameterized<HOST, StreamPlus<RegExMatchResult>, RegExMatchResult, RegExMatchResultAccess<HOST>>() {
+                @Override
+                public StreamPlus<RegExMatchResult> applyUnsafe(HOST host) throws Exception {
+                    return access.apply(host);
+                }
+                @Override
+                public RegExMatchResultAccess<HOST> createSubAccessFromHost(Function<HOST, RegExMatchResult> accessToParameter) {
+                    return new RegExMatchResultAccess<>(accessToParameter::apply);
+                }
+            };
         }
         
         @Override
-        public StreamPlus<RegExMatchResult> applyUnsafe(HOST host) throws Exception {
-            return access.applyUnsafe(host);
+        public AccessParameterized<HOST, StreamPlus<RegExMatchResult>, RegExMatchResult, RegExMatchResultAccess<HOST>> accessParameterized() {
+            return accessParameterized;
+        }
+        
+        public StreamPlusAccess<HOST, String, StringAccess<HOST>> texts() {
+            return StreamPlusAccess.of(access.andThen(RegExMatchResultStream::texts), StringAccess::of);
+        }
+        
+        public StreamPlusAccess<HOST, Integer, IntegerAccess<HOST>> indexes() {
+            return StreamPlusAccess.of(access.andThen(stream -> stream.map(RegExMatchResult::index)), IntegerAccess::of);
+        }
+        
+        public StreamPlusAccess<HOST, Integer, IntegerAccess<HOST>> starts() {
+            return StreamPlusAccess.of(access.andThen(stream -> stream.map(RegExMatchResult::index)), IntegerAccess::of);
+        }
+        
+        public StreamPlusAccess<HOST, Integer, IntegerAccess<HOST>> ends() {
+            return StreamPlusAccess.of(access.andThen(stream -> stream.map(RegExMatchResult::end)), IntegerAccess::of);
+        }
+        
+        public StreamPlusAccess<HOST, Integer, IntegerAccess<HOST>> groupCounts() {
+            return StreamPlusAccess.of(access.andThen(stream -> stream.map(RegExMatchResult::groupCount)), IntegerAccess::of);
         }
     }
     

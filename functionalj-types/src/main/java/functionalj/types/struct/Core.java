@@ -107,7 +107,9 @@ public enum Core {
     ZonedIdLens                  ("ZonedIdLens",                   "functionalj.lens.lenses.java.time"),
     ZonedOffsetLens              ("ZonedOffsetLens",               "functionalj.lens.lenses.java.time"),
     ZonedOffsetTransitionLens    ("ZonedOffsetTransitionLens",     "functionalj.lens.lenses.java.time"),
-    ZonedOffsetTransitionRuleLens("ZonedOffsetTransitionRuleLens", "functionalj.lens.lenses.java.time")
+    ZonedOffsetTransitionRuleLens("ZonedOffsetTransitionRuleLens", "functionalj.lens.lenses.java.time"),
+    
+    StrFunc("StrFuncs", "functionalj.functions")
     ;
     
     private static final String LENSES_PACKAGE = "functionalj.lens.lenses";
