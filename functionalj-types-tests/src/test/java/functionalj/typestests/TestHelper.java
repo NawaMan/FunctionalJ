@@ -2,7 +2,11 @@ package functionalj.typestests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.Supplier;
 
 import lombok.val;
@@ -17,7 +21,7 @@ public class TestHelper {
      **/
     public static void assertAsString(String expected, Object actual) {
         val expectedRegEx  = "^\\Q" + expected + "\\E$";
-        val actualAsString = Objects.toString(actual);
+        val actualAsString = toString(actual);
         
         if (actualAsString.matches(expectedRegEx))
             return;
@@ -33,7 +37,7 @@ public class TestHelper {
      **/
     public static void assertAsString(String failureMessage, String expected, Object actual) {
         val expectedRegEx  = "^\\Q" + expected + "\\E$";
-        val actualAsString = Objects.toString(actual);
+        val actualAsString = toString(actual);
         
         if (actualAsString.matches(expectedRegEx))
             return;
@@ -49,7 +53,7 @@ public class TestHelper {
      **/
     public static void assertAsString(Supplier<String> failureMessage, String expected, Object actual) {
         val expectedRegEx  = "^\\Q" + expected + "\\E$";
-        val actualAsString = Objects.toString(actual);
+        val actualAsString = toString(actual);
         
         if (actualAsString.matches(expectedRegEx))
             return;
@@ -58,6 +62,21 @@ public class TestHelper {
         
         val message = failureMessage.get();
         assertEquals(message, expected, actualAsString);
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static String toString(Object actual) {
+        if (actual instanceof Map) {
+            if (!(actual instanceof TreeMap)) {
+                return new TreeMap((Map)actual).toString();
+            }
+        }
+        if (actual instanceof Set) {
+            if (!(actual instanceof TreeSet)) {
+                return new TreeSet((Set)actual).toString();
+            }
+        }
+        return Objects.toString(actual);
     }
     
 }

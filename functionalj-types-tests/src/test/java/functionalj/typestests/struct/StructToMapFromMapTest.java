@@ -13,7 +13,7 @@ import org.junit.Test;
 import functionalj.types.Struct;
 import lombok.val;
 
-public class ToMapFromMapTest {
+public class StructToMapFromMapTest {
     
     @Struct
     void MyPrimitiveStruct(
