@@ -132,9 +132,9 @@ public class LensClassBuilder {
     
     private GenField getterToLensField(Getter getter, String recordClassName, SourceSpec sourceSpec) {
         val recordName  = recordClassName;
-        val name        = getter.getName();
-        val type        = getter.getType().declaredType();
-        val isPrimitive = getter.getType().isPrimitive();
+        val name        = getter.name();
+        val type        = getter.type().declaredType();
+        val isPrimitive = getter.type().isPrimitive();
         val withName    = utils.withMethodName(getter);
         
         GenField field;

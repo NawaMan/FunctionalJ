@@ -252,7 +252,7 @@ public class StructSpec {
             return true;
         if (getters.stream().noneMatch(Getter::isRequired))
             return true;
-        val field = getters.stream().filter(Getter::isRequired).findFirst().get().getName();
+        val field = getters.stream().filter(Getter::isRequired).findFirst().get().name();
         error(element, "No arg constructor cannot be generate when at least one field is require: "
                         + packageName + "." + specTargetName + " -> field: " + field);
         return false;

@@ -106,8 +106,8 @@ public class ElmStructBuilder implements ElmTypeDef {
     
     private static Function<Getter, String> toField = ElmStructBuilder::toField;
     private static String toField(Getter getter) {
-        val fieldName = getter.getName();
-        val emlType   = emlType(getter.getType());
+        val fieldName = getter.name();
+        val emlType   = emlType(getter.type());
         val maybe     = getter.isNullable() ? "Maybe " : "";
         return fieldName + " : " + maybe + emlType;
     }
@@ -116,9 +116,9 @@ public class ElmStructBuilder implements ElmTypeDef {
         return getter -> toFieldEncoder(typeName, getter);
     }
     private static String toFieldEncoder(String typeName, Getter getter) {
-        val fieldName   = getter.getName();
+        val fieldName   = getter.name();
         val camelName   = toCamelCase   (typeName);
-        val typeEncoder = encoderNameOf (getter.getType(), camelName + "." + fieldName, getter.isNullable());
+        val typeEncoder = encoderNameOf (getter.type(), camelName + "." + fieldName, getter.isNullable());
         return "( \"" + fieldName + "\", " + typeEncoder + " )";
     }
     
@@ -147,8 +147,8 @@ public class ElmStructBuilder implements ElmTypeDef {
         return getter -> toFieldDecoder(typeName, getter);
     }
     private static String toFieldDecoder(String typeName, Getter getter) {
-        val fieldName      = getter.getName();
-        val rawTypeDecoder = decoderNameOf (getter.getType());
+        val fieldName      = getter.name();
+        val rawTypeDecoder = decoderNameOf (getter.type());
         val qualifier      = getter.isRequired() ? "required" : "optional";
         val typeDecoder    = getter.isRequired() ? rawTypeDecoder : ("(Json.Decode.maybe " + rawTypeDecoder + ") Nothing");
         return "|> Json.Decode.Pipeline." + qualifier + " \"" + fieldName + "\" " + typeDecoder;

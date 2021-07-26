@@ -308,7 +308,7 @@ public class Type implements IRequireTypes {
                     return short.class;
                 if (Type.INT.equals(t))
                     return int.class;
-                if (Type.LONG.equals(t))
+                if (Type.LNG.equals(t))
                     return long.class;
                 if (Type.FLT.equals(t))
                     return float.class;

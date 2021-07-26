@@ -34,7 +34,7 @@ public class CaseLensBuilderHelperTest {
                                        true, null)))), emptyList(), emptyList());
         String   dataObjName = "NestedCommand.Commands";
         String   name        = "commands";
-        Type     type        = sourceSpec.choices.get(1).params.get(0).type;
+        Type     type        = sourceSpec.choices.get(1).params.get(0).type();
         String   withName    = "withCommands";
         GenField genField    = createGenListLensField(sourceSpec, dataObjName, name, type, withName);
         String   generated   = genField.toDefinition(packageName).lines().collect(Collectors.joining("\n"));
@@ -63,7 +63,7 @@ public class CaseLensBuilderHelperTest {
         String   packageName = "functionalj.types.choice";
         String   dataObjName = "NestedCommand.Commands";
         String   name        = "commands";
-        Type     type        = sourceSpec.choices.get(1).params.get(0).type;
+        Type     type        = sourceSpec.choices.get(1).params.get(0).type();
         String   withName    = "withCommands";
         GenField genField    = createGenListLensField(sourceSpec, dataObjName, name, type, withName);
         String   generated   = genField.toDefinition(packageName).lines().collect(Collectors.joining("\n"));
@@ -75,34 +75,7 @@ public class CaseLensBuilderHelperTest {
                                     + "Command.CommandLens::new);", 
                 generated);
     }
-//    
-//    @Test
-//    public void testCreateGenListLensField_nested() {
-//        String     packageName = "functionalj.types.choice";
-//        SourceSpec sourceSpec 
-//                = new SourceSpec("NestedCommand", 
-//                    new Type("functionalj.types.choice", "NestedListTest", "NestedCommandModel", java.util.Collections.emptyList()), "spec", false, "__tagged", emptyList(), 
-//                    asList(
-//                        new Case("Rotate", null, asList(new CaseParam("degree", new Type(null, null, "int", emptyList()), false, null))),
-//                        new Case("Move",   null, asList(new CaseParam("distance", new Type(null, null, "int", emptyList()), false, null))), 
-//                        new Case("Commands", null, asList(new CaseParam("commands", 
-//                            new Type("java.util", null, "List", asList(
-//                                new Generic("NestedCommand", "NestedCommand", asList(
-//                                    new Type(null, null, "NestedCommand", emptyList()))))), false, null)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());;
-//        String   dataObjName = "NestedCommand.Commands";
-//        String   name        = "commands";
-//        Type     type        = sourceSpec.choices.get(1).params.get(0).type;
-//        String   withName    = "withCommands";
-//        GenField genField    = createGenListLensField(sourceSpec, dataObjName, name, type, withName);
-//        String   generated   = genField.toDefinition(packageName).lines().collect(Collectors.joining("\n"));
-//        assertAsString(
-//                "public final ListLens<HOST, Command, Command.CommandLens<HOST>> "
-//                                + "commands = createSubListLens("
-//                                    + "NestedCommand.Commands::commands, "
-//                                    + "NestedCommand.Commands::withCommands, "
-//                                    + "Command.CommandLens::new);", 
-//                generated);
-//    }
+    
     @Test
     public void testListLens_notKnownType() {
         val sourceSpec
@@ -121,7 +94,7 @@ public class CaseLensBuilderHelperTest {
         String   packageName = "functionalj.types.choice";
         String   dataObjName = "NestedCommand.Commands";
         String   name        = "commands";
-        Type     type        = sourceSpec.choices.get(2).params.get(0).type;
+        Type     type        = sourceSpec.choices.get(2).params.get(0).type();
         String   withName    = "withCommands";
         GenField genField    = createGenListLensField(sourceSpec, dataObjName, name, type, withName);
         String   generated   = genField.toDefinition(packageName).lines().collect(Collectors.joining("\n"));

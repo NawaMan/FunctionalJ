@@ -42,7 +42,7 @@ import functionalj.types.choice.Self1;
 @SuppressWarnings("javadoc")
 public class ChoiceTypeWithGenericMethodTest {
     
-    @Choice
+    @Choice(specField = "spec")
     public interface OptionSpec<T> {
         void None();
         void Some(T value);

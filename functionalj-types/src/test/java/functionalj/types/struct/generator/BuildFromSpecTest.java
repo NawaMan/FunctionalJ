@@ -19,8 +19,8 @@ public class BuildFromSpecTest {
                 "public static Birthday fromMap(Map<String, ? extends Object> map) {\n"
                 + "    Map<String, Getter> $schema = getStructSchema();\n"
                 + "    Birthday obj = new Birthday(\n"
-                + "                (String)$utils.fromMapValue(map.get(\"name\"), $schema.get(\"name\")),\n"
-                + "                (LocalDate)$utils.fromMapValue(map.get(\"date\"), $schema.get(\"date\"))\n"
+                + "                (String)$utils.extractPropertyFromMap(Birthday.class, String.class, map, $schema, \"name\"),\n"
+                + "                (LocalDate)$utils.extractPropertyFromMap(Birthday.class, LocalDate.class, map, $schema, \"date\")\n"
                 + "            );\n"
                 + "    return obj;\n"
                 + "}",

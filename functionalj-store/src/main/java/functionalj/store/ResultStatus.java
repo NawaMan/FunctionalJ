@@ -121,7 +121,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public static NotAllowed caseFromMap(java.util.Map<String, Object> map) {
             return NotAllowed(
-                $utils.propertyFromMap(map, __schema__, "reason")
+                $utils.extractPropertyFromMap(NotAllowed.class, ChangeNotAllowedException.class, map, __schema__, "reason")
             );
         }
     }
@@ -156,7 +156,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public static Accepted caseFromMap(java.util.Map<String, Object> map) {
             return Accepted(
-                $utils.propertyFromMap(map, __schema__, "newData")
+                $utils.extractPropertyFromMap(Accepted.class, Object.class, map, __schema__, "newData")
             );
         }
     }
@@ -198,8 +198,8 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public static Adjusted caseFromMap(java.util.Map<String, Object> map) {
             return Adjusted(
-                $utils.propertyFromMap(map, __schema__, "proposedData"),
-                $utils.propertyFromMap(map, __schema__, "adjustedData")
+                $utils.extractPropertyFromMap(Adjusted.class, Object.class, map, __schema__, "proposedData"),
+                $utils.extractPropertyFromMap(Adjusted.class, Object.class, map, __schema__, "adjustedData")
             );
         }
     }
@@ -248,9 +248,9 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public static Rejected caseFromMap(java.util.Map<String, Object> map) {
             return Rejected(
-                $utils.propertyFromMap(map, __schema__, "propose"),
-                $utils.propertyFromMap(map, __schema__, "rollback"),
-                $utils.propertyFromMap(map, __schema__, "reason")
+                $utils.extractPropertyFromMap(Rejected.class, Object.class,                  map, __schema__, "propose"),
+                $utils.extractPropertyFromMap(Rejected.class, Object.class,                  map, __schema__, "rollback"),
+                $utils.extractPropertyFromMap(Rejected.class, ChangeRejectedException.class, map, __schema__, "reason")
             );
         }
     }
@@ -285,7 +285,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public static Failed caseFromMap(java.util.Map<String, Object> map) {
             return Failed(
-                $utils.propertyFromMap(map, __schema__, "problem")
+                $utils.extractPropertyFromMap(Failed.class, ChangeFailException.class, map, __schema__, "problem")
             );
         }
     }

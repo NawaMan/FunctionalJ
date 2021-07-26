@@ -37,7 +37,6 @@ import functionalj.lens.lenses.IntegerAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.StreamPlusAccess;
 import functionalj.lens.lenses.StringAccess;
-import functionalj.list.FuncList;
 import functionalj.stream.StreamPlus;
 
 public class RegExMatchResult implements MatchResult {

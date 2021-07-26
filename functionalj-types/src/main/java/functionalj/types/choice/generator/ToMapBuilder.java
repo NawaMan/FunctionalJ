@@ -28,7 +28,7 @@ public class ToMapBuilder implements Lines {
         val params
                 = choice
                 .params.stream()
-                .map(param -> "    map.put(\"" + param.name + "\", this." + param.name + ");");
+                .map(param -> "    map.put(\"" + param.name() + "\", this." + param.name() + ");");
         val body = Stream.of(
                 Stream.of("    " + Map.class.getCanonicalName() + "<String, Object> map = new " + HashMap.class.getCanonicalName() + "<>();"),
                 Stream.of("    map.put(\"" + targetClass.spec.tagMapKeyName + "\", " + IData.$utils.class.getCanonicalName() + ".toMapValueObject(\"" + choice.name + "\"));"),

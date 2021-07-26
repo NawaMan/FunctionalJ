@@ -1,6 +1,7 @@
 package functionalj.types.struct.generator;
 
 import static functionalj.types.struct.generator.ILines.line;
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
@@ -23,22 +24,38 @@ public class StructMapGeneratorHelper {
     public static final String METHOD_TO_MAP = "__toMap";
     
     static GenMethod generateFromMap(SourceSpec sourceSpec) {
+        val targetType  = sourceSpec.getTargetType();
         val fromMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
-                .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")$utils.fromMapValue(map.get(\"" + g.getName() + "\"), $schema.get(\"" + g.getName() + "\"))")
+                .map(field -> {
+                    val indent        = "            ";
+                    val fieldType     = field.type();
+                    val fieldTypeName = fieldType.simpleName();
+                    val fieldTypeFull = fieldType.simpleNameWithGeneric();
+                    String extraction 
+                            = format(
+                                "%s(%s)$utils.extractPropertyFromMap(%s.class, %s.class, map, $schema, \"%s\")",
+                                indent,
+                                fieldTypeFull,
+                                targetType.simpleName(),
+                                fieldTypeName,
+                                field.name()
+                            );
+                    return extraction;
+                })
                 .collect(Collectors.joining(",\n"))
                 .split("\n"));
         val fromMap = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.STATIC,
                 Modifiability.MODIFIABLE,
-                sourceSpec.getTargetType(),
+                targetType,
                 "fromMap",
                 asList(new GenParam("map", Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic("? extends Object", "? extends Object", null))))),
                 ILines.linesOf(
                     line("Map<String, Getter> $schema = getStructSchema();"),
-                    line(sourceSpec.getTargetType().simpleName() + " obj = new " + sourceSpec.getTargetType().simpleName() + "("),
+                    line(targetType.simpleName() + " obj = new " + targetType.simpleName() + "("),
                     fromMapBody,
                     line("        );"),
                     line("return obj;")
@@ -50,7 +67,7 @@ public class StructMapGeneratorHelper {
         val toMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
-                .map(g -> "map.put(\"" + g.getName() + "\", " + IStruct.class.getCanonicalName() + ".$utils.toMapValueObject(" + g.getName() + "));")
+                .map(g -> "map.put(\"" + g.name() + "\", " + IStruct.class.getCanonicalName() + ".$utils.toMapValueObject(" + g.name() + "));")
                 .collect(Collectors.toList()));
         val toMap = new GenMethod(
                 Accessibility.PUBLIC,

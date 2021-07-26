@@ -98,7 +98,7 @@ public class TargetClass implements Lines {
         
         spec.choices.stream()
             .flatMap(c -> c.params.stream())
-            .map    (p -> p.type)
+            .map    (p -> p.type())
             .filter (t -> t.packageName() != null)
             .filter (t -> !"java.lang".equals(t.packageName()))
             .forEach(t -> imports.add(t.fullName()));

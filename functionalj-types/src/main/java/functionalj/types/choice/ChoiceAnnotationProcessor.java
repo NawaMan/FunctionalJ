@@ -95,12 +95,23 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             val input      = new ChoiceSpecInputImpl(element, elementUtils, messager);
             val choiceSpec = new ChoiceSpec(input);
             val sourceSpec = choiceSpec.sourceSpec();
-            val generator  = new Generator(sourceSpec);
-            
-            val typeElement    = (TypeElement)element;
             val packageName    = choiceSpec.packageName();
             val targetName     = choiceSpec.targetName();
             val specTargetName = choiceSpec.specTargetName();
+            
+            if (sourceSpec.choices.isEmpty()) {
+                val errMsg 
+                        = "Choice type must has at least one choice "
+                        + "(Reminder: a choice name must start with a capital letter): " 
+                        + packageName + "." + specTargetName;
+                error(element, errMsg);
+                hasError = true;
+                continue;
+            }
+            
+            val generator  = new Generator(sourceSpec);
+            
+            val typeElement    = (TypeElement)element;
             try {
                 val className      = packageName + "." + targetName;
                 val content        = generator.lines().stream().collect(joining("\n"));

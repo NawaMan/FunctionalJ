@@ -178,7 +178,7 @@ public class GenericSupportTest {
             + "        }\n"
             + "        public static Some caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
             + "            return Some(\n"
-            + "                $utils.propertyFromMap(map, __schema__, \"value\")\n"
+            + "                    (Number)$utils.extractPropertyFromMap(Some.class, Number.class, map, __schema__, \"value\")\n"
             + "            );\n"
             + "        }\n"
             + "    }\n"

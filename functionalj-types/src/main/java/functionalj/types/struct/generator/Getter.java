@@ -28,10 +28,12 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import functionalj.types.DefaultValue;
+import functionalj.types.Property;
 import functionalj.types.Type;
 import lombok.Value;
 import lombok.With;
 import lombok.val;
+import lombok.experimental.Accessors;
 
 /**
  * Getter of the input spec.
@@ -40,12 +42,13 @@ import lombok.val;
  */
 @Value
 @With
-public class Getter {
+@Accessors(fluent = true)
+public class Getter implements Property {
     
-    private String name;
-    private Type type;
-    private boolean nullable;
-    private DefaultValue defaultTo;
+    private String  name;
+    private Type    type;
+    private boolean isNullable;
+    private DefaultValue defValue;
     
     /**
      * Create a getter for the name and type.
@@ -64,31 +67,21 @@ public class Getter {
      * @param type      the getter type.
      * @param nullable  nullable flag for this getter.
      */
-    public Getter(String name, Type type, boolean nullable, DefaultValue defaultValue) {
-        this.name      = name;
-        this.type      = type;
-        this.nullable  = nullable;
-        this.defaultTo = (defaultValue != null) ? defaultValue : DefaultValue.REQUIRED;
-        if (!nullable && (defaultTo == DefaultValue.NULL))
+    public Getter(String name, Type type, boolean isNullable, DefaultValue defaultValue) {
+        this.name       = name;
+        this.type       = type;
+        this.isNullable = isNullable;
+        this.defValue   = (defaultValue != null) ? defaultValue : DefaultValue.REQUIRED;
+        if (!isNullable && (defValue == DefaultValue.NULL))
             throw new IllegalArgumentException("Non-nullable field can't have null as a default: " + name);
-    }
-    
-    public boolean isRequired() {
-        return !nullable && (defaultTo == DefaultValue.REQUIRED);
-    }
-    
-    public String getDefaultValueCode(String orElse) {
-        if (isRequired())
-            return "$utils.notNull(" + orElse + ")";
-        return DefaultValue.defaultValueCode(type, defaultTo);
     }
     
     public String toCode() {
         val params = asList(
                 toStringLiteral(name),
                 type.toCode(),
-                nullable,
-                DefaultValue.class.getCanonicalName() + "." + defaultTo
+                isNullable,
+                DefaultValue.class.getCanonicalName() + "." + defValue
         );
         return "new functionalj.types.struct.generator.Getter("
                 + params.stream().map(String::valueOf).collect(joining(", "))

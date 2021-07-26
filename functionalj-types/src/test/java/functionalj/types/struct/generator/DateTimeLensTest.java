@@ -96,7 +96,7 @@ public class DateTimeLensTest {
                 + "    public static Person fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
                 + "        Person obj = new Person(\n"
-                + "                    (LocalDate)$utils.fromMapValue(map.get(\"child\"), $schema.get(\"child\"))\n"
+                + "                    (LocalDate)$utils.extractPropertyFromMap(Person.class, LocalDate.class, map, $schema, \"child\")\n"
                 + "                );\n"
                 + "        return obj;\n"
                 + "    }\n"

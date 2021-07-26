@@ -137,7 +137,7 @@ public class ChoiceWtihOptionalParameterTest {
             + "        }\n"
             + "        public static Loggined caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
             + "            return Loggined(\n"
-            + "                $utils.propertyFromMap(map, __schema__, \"wealth\")\n"
+            + "                    (Optional<java.lang.Double>)$utils.extractPropertyFromMap(Loggined.class, Optional.class, map, __schema__, \"wealth\")\n"
             + "            );\n"
             + "        }\n"
             + "    }\n"

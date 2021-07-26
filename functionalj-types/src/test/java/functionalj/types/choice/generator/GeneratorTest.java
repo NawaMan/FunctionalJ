@@ -161,7 +161,7 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return Next(\n" + 
-                "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
+                "                (Func1<D, Coroutine<D>>)$utils.extractPropertyFromMap(Next.class, Func1.class, map, __schema__, \"next\")\n" + 
                 "        );\n" + 
                 "    }\n" + 
                 "}", lines);
@@ -258,9 +258,9 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    public static RGB caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return RGB(\n" + 
-                "            $utils.propertyFromMap(map, __schema__, \"r\"),\n" + 
-                "            $utils.propertyFromMap(map, __schema__, \"g\"),\n" + 
-                "            $utils.propertyFromMap(map, __schema__, \"b\")\n" + 
+                "                (int)$utils.extractPropertyFromMap(RGB.class, int.class, map, __schema__, \"r\"),\n" + 
+                "                (int)$utils.extractPropertyFromMap(RGB.class, int.class, map, __schema__, \"g\"),\n" + 
+                "                (int)$utils.extractPropertyFromMap(RGB.class, int.class, map, __schema__, \"b\")\n" + 
                 "        );\n" + 
                 "    }\n" + 
                 "}", lines);
@@ -308,7 +308,7 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return Next(\n" + 
-                "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
+                "                (Func1<D, Coroutine<D>>)$utils.extractPropertyFromMap(Next.class, Func1.class, map, __schema__, \"next\")\n" + 
                 "        );\n" + 
                 "    }\n" + 
                 "}", lines);
@@ -651,7 +651,7 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
                 "        return Next(\n" + 
-                "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
+                "                (Func1<D, Coroutine<D>>)$utils.extractPropertyFromMap(Next.class, Func1.class, map, __schema__, \"next\")\n" + 
                 "        );\n" + 
                 "    }\n" + 
                 "}", lines);

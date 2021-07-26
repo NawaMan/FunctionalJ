@@ -125,17 +125,17 @@ public class CaseLensBuilder {
     }
     
     static String withMethodName(CaseParam choiceCase) {
-        val name = choiceCase.name;
+        val name = choiceCase.name();
         return "with" + name.substring(0,1).toUpperCase() + name.substring(1);
     }
     private GenField getterToLensField(CaseParam param, String recordClassName, SourceSpec sourceSpec) {
         val recordName = recordClassName;
-        val paramName  = param.name;
+        val paramName  = param.name();
         val paramType  = new Type(
-                (param.type.packageName() == null) ? null : param.type.packageName(),
-                param.type.encloseName(),
-                param.type.simpleName(),
-                param.type.generics().stream().map(generic -> generic.name).collect(toList()).toArray(new String[0]));
+                (param.type().packageName() == null) ? null : param.type().packageName(),
+                param.type().encloseName(),
+                param.type().simpleName(),
+                param.type().generics().stream().map(generic -> generic.name).collect(toList()).toArray(new String[0]));
         val type        = paramType.declaredType();
         val isPrimitive = paramType.isPrimitive();
         val withName    = withMethodName(param);

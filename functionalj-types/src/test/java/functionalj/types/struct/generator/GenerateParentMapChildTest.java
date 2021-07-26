@@ -124,7 +124,7 @@ public class GenerateParentMapChildTest {
                 + "    public static Parent fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
                 + "        Parent obj = new Parent(\n"
-                + "                    (Map<String, Child>)$utils.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n"
+                + "                    (Map<String, Child>)$utils.extractPropertyFromMap(Parent.class, Map.class, map, $schema, \"children\")\n"
                 + "                );\n"
                 + "        return obj;\n"
                 + "    }\n"

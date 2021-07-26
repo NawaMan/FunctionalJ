@@ -23,6 +23,9 @@
 // ============================================================================
 package functionalj.types;
 
+import static java.lang.String.format;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
@@ -39,10 +42,12 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -50,7 +55,6 @@ import functionalj.types.choice.ChoiceTypes;
 import functionalj.types.choice.IChoice;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.struct.Core;
-import functionalj.types.struct.generator.Getter;
 import lombok.val;
 
 
@@ -64,7 +68,60 @@ public interface IData {
     }
     
     
+    // TODO - Extract this out so it can be used in other scenarios.
     public static class $utils {
+        
+        private static final Map<Class<?>, Class<?>> boxedClasses;
+        static {
+            val map = new HashMap<Class<?>, Class<?>>();
+            map.put(boolean.class, Boolean.class);
+            map.put(byte.class,    Byte.class);
+            map.put(char.class,    Character.class);
+            map.put(double.class,  Double.class);
+            map.put(float.class,   Float.class);
+            map.put(int.class,     Integer.class);
+            map.put(long.class,    Long.class);
+            map.put(short.class,   Short.class);
+            boxedClasses = unmodifiableMap(map);
+        }
+        
+        @SuppressWarnings("unused")
+        private static final Set<Class<?>> premitiveClasses;
+        static {
+            val set = new HashSet<Class<?>>();
+            set.add(boolean.class);
+            set.add(char.class);
+            set.add(byte.class);
+            set.add(short.class);
+            set.add(int.class);
+            set.add(long.class);
+            set.add(float.class);
+            set.add(double.class);
+            premitiveClasses = unmodifiableSet(set);
+        }
+        
+        private static final Set<Class<?>> premitiveLikeClasses;
+        static {
+            val set = new HashSet<Class<?>>();
+            set.add(boolean.class);
+            set.add(char.class);
+            set.add(byte.class);
+            set.add(short.class);
+            set.add(int.class);
+            set.add(long.class);
+            set.add(float.class);
+            set.add(double.class);
+            set.add(Boolean.class);
+            set.add(Character.class);
+            set.add(Byte.class);
+            set.add(Short.class);
+            set.add(Integer.class);
+            set.add(Long.class);
+            set.add(Float.class);
+            set.add(Double.class);
+            premitiveLikeClasses = unmodifiableSet(set);
+        }
+        
         
         public static Supplier<Object> defaultValueOf(Type type, DefaultValue defaultValue) {
             return ()->DefaultValue.defaultValue(type, defaultValue);
@@ -75,6 +132,50 @@ public interface IData {
         }
         
         // == To and from Map ==
+        
+        @SuppressWarnings("unchecked")
+        public static <O, D> D extractPropertyFromMap(
+                        Class<O>                        objClzz,
+                        Class<D>                        valueClzz, 
+                        Map<String, ? extends Object>   map,
+                        Map<String, ? extends Property> schema,
+                        String                          fieldName) {
+            val valueFromMap   = map.get(fieldName);
+            val getterSpec     = schema.get(fieldName);
+            val extractedValue = $utils.fromMapValue(valueFromMap, getterSpec);
+            try {
+                val boxClass   = boxedClasses.get(valueClzz);
+                val valueClass = extractedValue.getClass();
+                return (boxClass == valueClass)
+                        ? (D)extractedValue
+                        : valueClzz.cast(extractedValue);
+            } catch (Exception exception) {
+                val errMsg = prepareExtractValueErrMsg(objClzz, fieldName, valueFromMap, getterSpec, extractedValue);
+                throw new IllegalArgumentException(errMsg, exception);
+            }
+        }
+        
+        private static <O> String prepareExtractValueErrMsg(
+                        Class<O> objClzz, 
+                        String   fieldName, 
+                        Object   valueFromMap, 
+                        Property propertySpec, 
+                        Object   extractedValue) {
+            val valueFromMapClass   = (valueFromMap   != null) ? valueFromMap  .getClass().getSimpleName() : "void";
+            val extractedValueClass = (extractedValue != null) ? extractedValue.getClass().getSimpleName() : "void";
+            val errorMessage = format(
+                    "Fail to extract field value from map: "
+                    + "class=`%s`, "
+                    + "field=`%s`,"
+                    + "original value=`%s` (%s),"
+                    + "converted value=`%s` (%s),"
+                    + "field spec=`%s`.",
+                    objClzz.getSimpleName(), fieldName, 
+                    valueFromMap, valueFromMapClass,
+                    extractedValue, extractedValueClass,
+                    propertySpec);
+            return errorMessage;
+        }
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public static <D extends IData> D fromMap(Map<String, Object> map, Class<D> clazz) {
@@ -114,9 +215,24 @@ public interface IData {
                 return (T)IChoice.fromMap((Map)obj, (Class)clzz);
             
             if (obj != null) {
+                if (premitiveLikeClasses.contains(clzz)) {
+                    if ((clzz == char.class) || (clzz == Character.class)) {
+                        if (obj instanceof Integer) {
+                            obj = (char)((Integer)obj).intValue();
+                            return (T)obj;
+                        } else  if ((obj instanceof String) && (((String)obj).length() == 1)) {
+                            obj = ((String)obj).charAt(0);
+                            return (T)obj;
+                        }
+                    }
+                    if (!(obj instanceof String)) {
+                        return (T)obj;
+                    }
+                }
                 if (obj instanceof String) {
                     return extractFromStringValue(obj, clzz);
                 }
+                
                 // The value is sorted of a number so we try it as a timestamp.
                 if ((obj instanceof Byte) 
                  || (obj instanceof Short) 
@@ -182,6 +298,9 @@ public interface IData {
             }
             if (double.class.isAssignableFrom(clzz) || Double.class.isAssignableFrom(clzz)) {
                 return (T)Double.valueOf((String)obj);
+            }
+            if (boolean.class.isAssignableFrom(clzz) || Boolean.class.isAssignableFrom(clzz)) {
+                return (T)Boolean.valueOf(((String)obj).toLowerCase());
             }
             
             // BigDecimal, BigInteger
@@ -259,33 +378,24 @@ public interface IData {
             return (T)obj;
         }
         
-        public static <T> T fromMapValue(Object obj, Getter getter) {
-            val type         = getter.getType();
-            val defaultValue = getter.getDefaultTo();
+        public static <T> T fromMapValue(Object obj, Property property) {
+            val type         = property.type();
+            val defaultValue = property.defValue();
             
             return fromMapValue(obj, type, defaultValue);
         }
         
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public static <T> T fromMapValue(Object obj, CaseParam caseParam) {
-            val   type         = caseParam.type;
+            val   type         = caseParam.type();
             Class clzz         = type.toClass();
-            val   defaultValue = caseParam.defValue;
+            val   defaultValue = caseParam.defValue();
             
             if ((obj instanceof List) && type.isList()) {
                 return IStruct.$utils.fromMapValue(obj, type, defaultValue);
             }
             
             return (T)IData.$utils.fromMapValue(obj, clzz, defaultValue, ()->caseParam.defaultValue());
-        }
-        
-        public static <T> T propertyFromMap(Map<String, ? extends Object> map, Map<String, CaseParam> schema, String name) {
-            val caseParam = schema.get(name);
-            if (caseParam == null)
-                throw new IllegalArgumentException("Unknown property: " + name);
-            
-            val rawValue = map.get(name);
-            return fromMapValue(rawValue, caseParam);
         }
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -297,8 +407,9 @@ public interface IData {
                 return (T)fromMapValue((Map)obj, type);
             }
             
-            Class<T> clzz = type.toClass();
-            return IData.$utils.fromMapValue(obj, clzz, defaultValue, ()-> DefaultValue.defaultValue(type, defaultValue));
+            Class<T>         clzz                 = type.toClass();
+            Supplier<Object> defaultValueSupplier = ()-> DefaultValue.defaultValue(type, defaultValue);
+            return IData.$utils.fromMapValue(obj, clzz, defaultValue, defaultValueSupplier);
         }
         
         @SuppressWarnings({ "unchecked", "rawtypes" })

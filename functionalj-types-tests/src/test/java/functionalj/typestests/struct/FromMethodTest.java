@@ -99,7 +99,7 @@ public class FromMethodTest {
         assertEquals("[make:String, year:int, color:String]",
                 Car.spec.getGetters()
                 .stream()
-                .map(g -> g.getName() + ":" + g.getType().simpleName())
+                .map(g -> g.name() + ":" + g.type().simpleName())
                 .collect(toList())
                 .toString());
         

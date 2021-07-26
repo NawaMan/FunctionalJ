@@ -176,7 +176,7 @@ public class GenericChoiceTest {
                 + "        }\n"
                 + "        public static Just caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
                 + "            return Just(\n"
-                + "                $utils.propertyFromMap(map, __schema__, \"data\")\n"
+                + "                    (T)$utils.extractPropertyFromMap(Just.class, T.class, map, __schema__, \"data\")\n"
                 + "            );\n"
                 + "        }\n"
                 + "    }\n"
