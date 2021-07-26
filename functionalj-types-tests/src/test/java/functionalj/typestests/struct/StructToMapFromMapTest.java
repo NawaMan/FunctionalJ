@@ -158,8 +158,8 @@ public class StructToMapFromMapTest {
     }
     
     
-//    @Struct
-//    void MyTimeStruct() {}
+    @Struct
+    void MyTimeStruct() {}
     
     
     

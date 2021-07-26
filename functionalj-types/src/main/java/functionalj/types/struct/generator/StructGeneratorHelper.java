@@ -53,12 +53,8 @@ public class StructGeneratorHelper {
                 val strFuncs = Core.StrFunc.packageName() + "." + Core.StrFunc.simpleName();
                 toStringBody = "return " + strFuncs + ".template(" + Utils.toStringLiteral(toStringTemplate) + "," + StructMapGeneratorHelper.METHOD_TO_MAP + "()::get);";
             } else {
-                toStringBody =
-                        "return \"" + sourceSpec.getTargetClassName() + "[\" + " +
-                        getters.stream()
-                        .map(g -> "\""+ g.name() + ": \" + " + g.name() + "()")
-                        .collect(joining(" + \", \" + ")) +
-                        " + \"]\";";
+                val body = getters.stream().map(g -> "\""+ g.name() + ": \" + " + g.name() + "()").collect(joining(" + \", \" + "));
+                toStringBody = "return \"" + sourceSpec.getTargetClassName() + "[\" + " + (body.isEmpty() ? "\"\"" : body) + " + \"]\";";
             }
             toString =  new GenMethod(
                     Accessibility.PUBLIC,

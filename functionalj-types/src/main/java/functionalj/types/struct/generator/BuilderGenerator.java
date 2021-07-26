@@ -11,6 +11,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -241,8 +242,9 @@ public class BuilderGenerator {
         val targetClassName = sourceSpec.getTargetClassName();
         val packageName     = sourceSpec.getPackageName();
         val type            = new Type(packageName, targetClassName, "Builder", new String[0]);
-        val builderReady    = new Type(packageName, targetClassName, typeName + "Builder_ready", new String[0]);
-        val implementeds    = asList(builderReady);
+//        val builderReady    = new Type(packageName, targetClassName, typeName + "Builder_ready", new String[0]);
+//        val implementeds    = asList(builderReady);
+        val implementeds = Collections.<Type>emptyList();
         
         val buildMthd = new GenMethod(
                 PUBLIC, INSTANCE, FINAL,
