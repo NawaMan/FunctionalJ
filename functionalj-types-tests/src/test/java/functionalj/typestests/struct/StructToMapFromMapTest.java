@@ -157,12 +157,6 @@ public class StructToMapFromMapTest {
         assertAsString("C",  myStruct5.myCharacter2);
     }
     
-    
-    @Struct
-    void MyTimeStruct() {}
-    
-    
-    
     // Test optional
     
     
@@ -176,5 +170,12 @@ public class StructToMapFromMapTest {
     
     
     // Test validate
+    
+    
+//    
+//    @Struct
+//    void MyTimeStruct() {}
+//    
+//    
     
 }
