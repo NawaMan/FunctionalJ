@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.junit.Test;
 
@@ -158,6 +160,47 @@ public class StructToMapFromMapTest {
     }
     
     // Test optional
+    
+    @Struct
+    void SubData(String strValue, Integer intValue) {}
+    
+    @Struct
+    void StructWithOptional(
+            Optional<String> optStr, 
+            Optional<Integer> optInt1, 
+            OptionalInt optInt2, 
+            Optional<SubData> 
+            optSubData) {}
+    
+    @Test
+    public void testOptional() {
+        val myStruct = new StructWithOptional(Optional.of("String"), Optional.of(42), OptionalInt.of(10), Optional.of(new SubData("str", 45)));
+        assertAsString(
+                "StructWithOptional["
+                    + "optStr: Optional[String], "
+                    + "optInt1: Optional[42], "
+                    + "optInt2: OptionalInt[10], "
+                    + "optSubData: Optional["
+                        + "SubData["
+                            + "strValue: str, "
+                            + "intValue: 45"
+                        + "]"
+                    + "]"
+                + "]", myStruct);
+        
+        val myMap = myStruct.__toMap();
+        assertAsString(
+                "{"
+                    + "optInt1=42, "
+                    + "optInt2=10, "
+                    + "optStr=String, "
+                    + "optSubData={"
+                        + "intValue=45, "
+                        + "strValue=str"
+                    + "}"
+                + "}",
+                myMap);
+    }
     
     
     // Test nullable

@@ -47,6 +47,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -193,6 +196,26 @@ public interface IData {
                 return ((List)data).stream()
                         .map(IData.$utils::toMapValueObject)
                         .collect(toList());
+            }
+            
+            if (data instanceof Optional) {
+                val optional = ((Optional)data).orElse(null);
+                return IData.$utils.toMapValueObject(optional);
+            }
+            
+            if (data instanceof OptionalInt) {
+                val optional = ((OptionalInt)data);
+                return optional.isPresent() ? optional.getAsInt() : null;
+            }
+            
+            if (data instanceof OptionalLong) {
+                val optional = ((OptionalLong)data);
+                return optional.isPresent() ? optional.getAsLong() : null;
+            }
+            
+            if (data instanceof OptionalDouble) {
+                val optional = ((OptionalDouble)data);
+                return optional.isPresent() ? optional.getAsDouble() : null;
             }
             
             return (data instanceof IData)
