@@ -10,6 +10,8 @@ dependencies {
     compileOnly         'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
     
+    // Classes from this dependency cannot not take part in the annotation processing.
+    // They can only be used in the utility that are access from the "already" generated classes.
     compileOnly project (':functionalj-core')
     
     // == Test ==

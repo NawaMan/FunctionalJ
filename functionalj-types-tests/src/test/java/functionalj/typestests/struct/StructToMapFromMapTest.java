@@ -12,8 +12,10 @@ import java.util.OptionalInt;
 
 import org.junit.Test;
 
+import functionalj.result.Result;
 import functionalj.types.Struct;
 import lombok.val;
+import nullablej.nullable.Nullable;
 
 public class StructToMapFromMapTest {
     
@@ -159,10 +161,11 @@ public class StructToMapFromMapTest {
         assertAsString("C",  myStruct5.myCharacter2);
     }
     
-    // Test optional
-    
     @Struct
     void SubData(String strValue, Integer intValue) {}
+    
+    
+    // Test optional
     
     @Struct
     void StructWithOptional(
@@ -207,10 +210,9 @@ public class StructToMapFromMapTest {
                     + "optInt1: Optional[42], "
                     + "optInt2: OptionalInt[10], "
                     + "optSubData: Optional["
-                        + "{"
-                            + "intValue=45, "
-                            + "strValue=str"
-                        + "}"
+                        + "SubData["
+                            + "strValue: str, "
+                            + "intValue: 45]"
                     + "]"
                 + "]", 
                 StructWithOptional.fromMap(myMap));
@@ -220,6 +222,8 @@ public class StructToMapFromMapTest {
         // String to optional int.
         myMap.put("optInt1", "69");
         myMap.put("optInt2", "169");
+        // Value without optional
+        myMap.put("optSubData", new SubData("text", 42));
         
         assertAsString(
                 "StructWithOptional["
@@ -227,24 +231,128 @@ public class StructToMapFromMapTest {
                     + "optInt1: Optional[69], "
                     + "optInt2: OptionalInt[169], "
                     + "optSubData: Optional["
-                        + "{"
-                            + "intValue=45, "
-                            + "strValue=str"
-                        + "}"
+                        + "SubData["
+                            + "strValue: text, "
+                            + "intValue: 42"
+                        + "]"
+                    + "]"
+                + "]", 
+                StructWithOptional.fromMap(myMap));
+        
+        // String to Optional String.
+        myMap.put("optStr", Optional.of("Text"));
+        // String to optional int.
+        myMap.put("optInt1", Optional.of("75"));
+        myMap.put("optInt2", OptionalInt.of(175));
+        // Value without optional
+        myMap.put("optSubData", Optional.of(new SubData("text", 42)));
+        
+        assertAsString(
+                "StructWithOptional["
+                    + "optStr: Optional[Text], "
+                    + "optInt1: Optional[75], "
+                    + "optInt2: OptionalInt[175], "
+                    + "optSubData: Optional["
+                        + "SubData["
+                            + "strValue: text, "
+                            + "intValue: 42"
+                        + "]"
                     + "]"
                 + "]", 
                 StructWithOptional.fromMap(myMap));
     }
     
+    // Test nullable, result, promise
     
-    // Test nullable
+    @Struct
+    void StructWithNullableResult(
+            Nullable<String> optStr1, 
+            Nullable<Integer> optInt1,
+            Nullable<SubData> optSubData1,
+            Result<String> optStr2, 
+            Result<Integer> optInt2,
+            Result<SubData> optSubData2) {}
     
-    
-    // Test result
-    
-    
-    // Test promise
-    
+    @Test
+    public void testNullableResultPromise() {
+        val myStruct = new StructWithNullableResult(
+                        Nullable.of("One"),
+                        Nullable.of(10),
+                        Nullable.of(new SubData("str", 110)),
+                        Result.ofValue("One"),
+                        Result.ofValue(10),
+                        Result.ofValue(new SubData("str", 110)));
+        assertAsString(
+                "StructWithNullableResult["
+                    + "optStr1: Nullable.of(One), "
+                    + "optInt1: Nullable.of(10), "
+                    + "optSubData1: Nullable.of(SubData[strValue: str, intValue: 110]), "
+                    + "optStr2: Result:{ Value: One }, "
+                    + "optInt2: Result:{ Value: 10 }, "
+                    + "optSubData2: Result:{ Value: SubData[strValue: str, intValue: 110] }"
+                + "]", myStruct);
+        
+        val myMap = myStruct.__toMap();
+        assertAsString(
+                "{"
+                    + "optInt1=Nullable.of(10), "
+                    + "optInt2=Result:{ Value: 10 }, "
+                    + "optStr1=Nullable.of(One), "
+                    + "optStr2=Result:{ Value: One }, "
+                    + "optSubData1=Nullable.of(SubData[strValue: str, intValue: 110]), "
+                    + "optSubData2=Result:{ Value: SubData[strValue: str, intValue: 110] }"
+                + "}",
+                myMap);
+        
+        assertAsString(
+                "StructWithNullableResult["
+                    + "optStr1: Nullable.of(One), "
+                    + "optInt1: Nullable.of(10), "
+                    + "optSubData1: Nullable.of(SubData[strValue: str, intValue: 110]), "
+                    + "optStr2: Result:{ Value: One }, "
+                    + "optInt2: Result:{ Value: 10 }, "
+                    + "optSubData2: Result:{ Value: SubData[strValue: str, intValue: 110] }"
+                + "]", 
+                StructWithNullableResult.fromMap(myMap));
+        
+        // String to Optional String.
+        myMap.put("optStr", "Text");
+        // String to optional int.
+        myMap.put("optInt1", "69");
+        myMap.put("optInt2", "169");
+        // Value without optional
+        myMap.put("optSubData", new SubData("text", 42));
+        
+        assertAsString(
+                "StructWithNullableResult["
+                    + "optStr1: Nullable.of(One), "
+                    + "optInt1: Nullable.of(69), "
+                    + "optSubData1: Nullable.of(SubData[strValue: str, intValue: 110]), "
+                    + "optStr2: Result:{ Value: One }, "
+                    + "optInt2: Result:{ Value: 169 }, "
+                    + "optSubData2: Result:{ Value: SubData[strValue: str, intValue: 110] }"
+                + "]", 
+                StructWithNullableResult.fromMap(myMap));
+        
+        // String to Optional String.
+        myMap.put("optStr", Nullable.of("Text"));
+        // String to optional int.
+//        myMap.put("optInt1", Nullable.of("75"));// TODO - This one does not work yet.
+        myMap.put("optInt2", OptionalInt.of(175));
+        // Value without optional
+        myMap.put("optSubData", Nullable.of(new SubData("text", 42)));
+        
+        assertAsString(
+                "StructWithNullableResult["
+                    + "optStr1: Nullable.of(One), "
+                    + "optInt1: Nullable.of(69), "
+                    + "optSubData1: Nullable.of(SubData[strValue: str, intValue: 110]), "
+                    + "optStr2: Result:{ Value: One }, "
+                    + "optInt2: Result:{ Value: OptionalInt[175] }, "
+                    + "optSubData2: Result:{ Value: SubData[strValue: str, intValue: 110] }"
+                + "]", 
+                StructWithNullableResult.fromMap(myMap));
+    }
     
     // Test validate
     

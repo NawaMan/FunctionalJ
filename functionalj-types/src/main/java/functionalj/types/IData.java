@@ -55,11 +55,19 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import functionalj.promise.Promise;
+import functionalj.result.DerivedResult;
+import functionalj.result.Result;
+import functionalj.result.Value;
 import functionalj.types.choice.ChoiceTypes;
 import functionalj.types.choice.IChoice;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.struct.Core;
 import lombok.val;
+import nullablej.nullable.IAsNullable;
+import nullablej.nullable.LiveNullable;
+import nullablej.nullable.Nullable;
+import nullablej.nullable.NullableImpl;
 
 
 public interface IData {
@@ -73,6 +81,7 @@ public interface IData {
     
     
     // TODO - Extract this out so it can be used in other scenarios.
+    @SuppressWarnings("rawtypes")
     public static class $utils {
         
         private static final Map<Class<?>, Class<?>> boxedClasses;
@@ -126,23 +135,52 @@ public interface IData {
             premitiveLikeClasses = unmodifiableSet(set);
         }
         
-        @SuppressWarnings({ "rawtypes" })
         private static final Map<Class, Function> wrapperCreators;
         static {
-            @SuppressWarnings("rawtypes")
             val map = new HashMap<Class, Function>();
-            map.put(Optional.class,    Optional::ofNullable);
+            map.put(Optional.class,      Optional::ofNullable);
+            map.put(Nullable.class,      Nullable::of);
+            map.put(NullableImpl.class,  Nullable::of);
+            map.put(LiveNullable.class,  Nullable::of);
+            map.put(IAsNullable.class,   Nullable::of);
+            map.put(Result.class,        Result::ofValue);
+            map.put(DerivedResult.class, Result::ofValue);
+            map.put(Value.class,         Value::ofValue);
+            map.put(Promise.class,       Promise::ofValue);
             map.put(OptionalInt.class, i -> {
                 // TODO - We might want to use $utils function to do this conversion.
-                if (i instanceof String) {
-                    return OptionalInt.of(Integer.parseInt(((String)i).trim()));
-                }
-                if (i instanceof Integer) {
-                    return OptionalInt.of(((Integer)i).intValue());
-                }
+                if (i instanceof OptionalInt) return (OptionalInt)i;
+                if (i instanceof Optional)    return (int)((Optional)i).get();
+                if (i instanceof String)      return OptionalInt.of(Integer.parseInt(((String)i).trim()));
+                if (i instanceof Number)      return OptionalInt.of(((Number)i).intValue());
+                return OptionalInt.of((int)i); 
+            });
+            map.put(OptionalLong.class, i -> {
+                // TODO - We might want to use $utils function to do this conversion.
+                if (i instanceof OptionalLong) return (OptionalLong)i;
+                if (i instanceof Optional)     return (long)((Optional)i).get();
+                if (i instanceof String)       return OptionalLong.of(Long.parseLong(((String)i).trim()));
+                if (i instanceof Number)       return OptionalLong.of(((Number)i).longValue());
+                return OptionalInt.of((int)i); 
+            });
+            map.put(OptionalDouble.class, i -> {
+                // TODO - We might want to use $utils function to do this conversion.
+                if (i instanceof OptionalDouble) return (OptionalDouble)i;
+                if (i instanceof Optional)       return (double)((Optional)i).get();
+                if (i instanceof String)         return OptionalDouble.of(Double.parseDouble(((String)i).trim()));
+                if (i instanceof Number)         return OptionalDouble.of(((Number)i).longValue());
                 return OptionalInt.of((int)i); 
             });
             wrapperCreators = unmodifiableMap(map);
+        }
+        
+        private static final Map<Class, Type> wrappedTypes;
+        static {
+            val map = new HashMap<Class, Type>();
+            map.put(OptionalInt.class, Type.INT);
+            map.put(OptionalLong.class, Type.LNG);
+            map.put(OptionalDouble.class, Type.DBL);
+            wrappedTypes = unmodifiableMap(map);
         }
         
         
@@ -165,17 +203,23 @@ public interface IData {
                         String                          fieldName) {
             val valueFromMap   = map.get(fieldName);
             val getterSpec     = schema.get(fieldName);
-            val extractedValue = $utils.fromMapValue(valueFromMap, getterSpec);
+            Object extractedValue = null;
             try {
+                extractedValue = $utils.fromMapValue(valueFromMap, getterSpec);
+                if (valueClzz.isInstance(extractedValue)) {
+                    return (D)extractedValue;
+                }
+                
                 val boxClass   = boxedClasses.get(valueClzz);
                 val valueClass = extractedValue.getClass();
                 if (boxClass == valueClass) {
                     return (D)extractedValue;
                 }
-                @SuppressWarnings("rawtypes")
                 val wrapperCreator = wrapperCreators.get(valueClzz);
                 if (wrapperCreator != null) {
-                    return (D)wrapperCreator.apply(extractedValue);
+                    val wrappedType = Optional.ofNullable(wrappedTypes.get(valueClzz)).orElseGet(()-> getterSpec.type().generics().get(0).getBoundTypes().get(0));
+                    val unwrappedRxtractedValue = fromMapValue(extractedValue, wrappedType, DefaultValue.REQUIRED);
+                    return (D)wrapperCreator.apply(unwrappedRxtractedValue);
                 }
                 
                 return valueClzz.cast(extractedValue);
@@ -207,7 +251,7 @@ public interface IData {
             return errorMessage;
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         public static <D extends IData> D fromMap(Map<String, Object> map, Class<D> clazz) {
             if (IStruct.class.isAssignableFrom(clazz))
                 return (D)IStruct.fromMap(map, (Class<IStruct>)clazz);
@@ -217,7 +261,7 @@ public interface IData {
             throw new DataConversionException(clazz);
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         public static Object toMapValueObject(Object data) {
             if (data instanceof List) {
                 return ((List)data).stream()
@@ -250,7 +294,7 @@ public interface IData {
                     : data;
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         public static <T> T fromMapValue(
                 Object           obj,
                 Class<T>         clzz,
@@ -435,7 +479,7 @@ public interface IData {
             return fromMapValue(obj, type, defaultValue);
         }
         
-        @SuppressWarnings({ "rawtypes", "unchecked" })
+        @SuppressWarnings("unchecked")
         public static <T> T fromMapValue(Object obj, CaseParam caseParam) {
             val   type         = caseParam.type();
             Class clzz         = type.toClass();
@@ -448,7 +492,7 @@ public interface IData {
             return (T)IData.$utils.fromMapValue(obj, clzz, defaultValue, ()->caseParam.defaultValue());
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         public static <T> T fromMapValue(Object obj, Type type, DefaultValue defaultValue) {
             if ((obj instanceof List) && (type.isList() || type.isFuncList())) {
                 return (T)fromListValue((List)obj, type);
@@ -462,7 +506,7 @@ public interface IData {
             return IData.$utils.fromMapValue(obj, clzz, defaultValue, defaultValueSupplier);
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         private static Map fromMapValue(Map obj, Type type) {
             val keyType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
             val valType = ((type.generics().size() > 1) ? type.generics().get(1).toType() : Type.OBJECT);
@@ -487,7 +531,7 @@ public interface IData {
             return map;
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         private static Object fromValue(Object obj, Type type) {
             if (obj == null)
                 return null;
@@ -515,7 +559,7 @@ public interface IData {
             }
             return clazz.cast(obj);
         }
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         private static List fromListValue(List obj, Type type) {
             val elementType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
             List list = (List)(obj).stream()
