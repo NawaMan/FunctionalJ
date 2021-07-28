@@ -457,7 +457,7 @@ public class BuilderGeneratorTest {
                 emptyList());
         val builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
-                "public static final class Builder implements DataBuilder_ready {\n" + 
+                "public static final class Builder {\n" + 
                 "    \n" + 
                 "    public final Data build() {\n" + 
                 "        return new Data();\n" + 

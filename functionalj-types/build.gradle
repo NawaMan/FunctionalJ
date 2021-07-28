@@ -10,6 +10,8 @@ dependencies {
     compileOnly         'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
     
+    compileOnly project (':functionalj-core')
+    
     // == Test ==
     
     testCompile 'junit:junit:4.13.2'
