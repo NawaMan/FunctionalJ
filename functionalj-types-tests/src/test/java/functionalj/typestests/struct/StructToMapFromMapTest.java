@@ -200,6 +200,40 @@ public class StructToMapFromMapTest {
                     + "}"
                 + "}",
                 myMap);
+        
+        assertAsString(
+                "StructWithOptional["
+                    + "optStr: Optional[String], "
+                    + "optInt1: Optional[42], "
+                    + "optInt2: OptionalInt[10], "
+                    + "optSubData: Optional["
+                        + "{"
+                            + "intValue=45, "
+                            + "strValue=str"
+                        + "}"
+                    + "]"
+                + "]", 
+                StructWithOptional.fromMap(myMap));
+        
+        // String to Optional String.
+        myMap.put("optStr", "Text");
+        // String to optional int.
+        myMap.put("optInt1", "69");
+        myMap.put("optInt2", "169");
+        
+        assertAsString(
+                "StructWithOptional["
+                    + "optStr: Optional[Text], "
+                    + "optInt1: Optional[69], "
+                    + "optInt2: OptionalInt[169], "
+                    + "optSubData: Optional["
+                        + "{"
+                            + "intValue=45, "
+                            + "strValue=str"
+                        + "}"
+                    + "]"
+                + "]", 
+                StructWithOptional.fromMap(myMap));
     }
     
     

@@ -52,6 +52,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.types.choice.ChoiceTypes;
@@ -125,6 +126,25 @@ public interface IData {
             premitiveLikeClasses = unmodifiableSet(set);
         }
         
+        @SuppressWarnings({ "rawtypes" })
+        private static final Map<Class, Function> wrapperCreators;
+        static {
+            @SuppressWarnings("rawtypes")
+            val map = new HashMap<Class, Function>();
+            map.put(Optional.class,    Optional::ofNullable);
+            map.put(OptionalInt.class, i -> {
+                // TODO - We might want to use $utils function to do this conversion.
+                if (i instanceof String) {
+                    return OptionalInt.of(Integer.parseInt(((String)i).trim()));
+                }
+                if (i instanceof Integer) {
+                    return OptionalInt.of(((Integer)i).intValue());
+                }
+                return OptionalInt.of((int)i); 
+            });
+            wrapperCreators = unmodifiableMap(map);
+        }
+        
         
         public static Supplier<Object> defaultValueOf(Type type, DefaultValue defaultValue) {
             return ()->DefaultValue.defaultValue(type, defaultValue);
@@ -149,9 +169,16 @@ public interface IData {
             try {
                 val boxClass   = boxedClasses.get(valueClzz);
                 val valueClass = extractedValue.getClass();
-                return (boxClass == valueClass)
-                        ? (D)extractedValue
-                        : valueClzz.cast(extractedValue);
+                if (boxClass == valueClass) {
+                    return (D)extractedValue;
+                }
+                @SuppressWarnings("rawtypes")
+                val wrapperCreator = wrapperCreators.get(valueClzz);
+                if (wrapperCreator != null) {
+                    return (D)wrapperCreator.apply(extractedValue);
+                }
+                
+                return valueClzz.cast(extractedValue);
             } catch (Exception exception) {
                 val errMsg = prepareExtractValueErrMsg(objClzz, fieldName, valueFromMap, getterSpec, extractedValue);
                 throw new IllegalArgumentException(errMsg, exception);
