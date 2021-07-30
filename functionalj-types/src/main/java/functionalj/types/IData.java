@@ -56,6 +56,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.promise.Promise;
+import functionalj.result.Acceptable;
 import functionalj.result.DerivedResult;
 import functionalj.result.Result;
 import functionalj.result.Value;
@@ -222,6 +223,13 @@ public interface IData {
                     return (D)wrapperCreator.apply(unwrappedRxtractedValue);
                 }
                 
+                if (Acceptable.class.isAssignableFrom(valueClzz) && IRule.class.isAssignableFrom(valueClzz)) {
+                    // TODO - This should be cached
+                    val baseClass  = (Class)valueClzz.getMethod("___dataType").invoke(null);
+                    val acceptable = valueClzz.getMethod("from", baseClass).invoke(null, extractedValue);
+                    return (D)acceptable;
+                }
+                
                 return valueClzz.cast(extractedValue);
             } catch (Exception exception) {
                 val errMsg = prepareExtractValueErrMsg(objClzz, fieldName, valueFromMap, getterSpec, extractedValue);
@@ -287,6 +295,15 @@ public interface IData {
             if (data instanceof OptionalDouble) {
                 val optional = ((OptionalDouble)data);
                 return optional.isPresent() ? optional.getAsDouble() : null;
+            }
+            
+            if (data instanceof Value) {
+                // Invalid value cannot be serialized.
+                return ((Value)data).get();
+            }
+            if (data instanceof Nullable) {
+                // Invalid value cannot be serialized.
+                return ((Nullable)data).get();
             }
             
             return (data instanceof IData)

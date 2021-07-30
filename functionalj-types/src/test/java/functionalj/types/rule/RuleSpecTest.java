@@ -52,6 +52,7 @@ public class RuleSpecTest {
                 "    public String __dataName()  { return \"value\"; }\n" +
                 "    public java.lang.String __dataValue() { return value(); }\n" +
                 "    public Class<java.lang.String> __dataType() { return java.lang.String.class; }\n" +
+                "    public static Class<java.lang.String> ___dataType() { return java.lang.String.class; }\n" +
                 "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" +
                 "    public <R extends functionalj.types.IRule<java.lang.String>> Class<R> __superRule() { \n" +
                 "        return (Class)null;\n" +
@@ -79,6 +80,7 @@ public class RuleSpecTest {
                 "    public String __dataName()  { return \"value\"; }\n" +
                 "    public java.lang.Integer __dataValue() { return value(); }\n" +
                 "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" +
+                "    public static Class<java.lang.Integer> ___dataType() { return int.class; }\n" +
                 "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" +
                 "    public <R extends functionalj.types.IRule<java.lang.Integer>> Class<R> __superRule() { \n" +
                 "        return (Class)null;\n" +
@@ -106,6 +108,7 @@ public class RuleSpecTest {
                 "    public String __dataName()  { return \"value\"; }\n" +
                 "    public java.lang.Integer __dataValue() { return value(); }\n" +
                 "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" +
+                "    public static Class<java.lang.Integer> ___dataType() { return int.class; }\n" +
                 "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" +
                 "    public <R extends functionalj.types.IRule<java.lang.Integer>> Class<R> __superRule() { \n" +
                 "        return (Class)null;\n" +
@@ -132,7 +135,8 @@ public class RuleSpecTest {
                 "    public java.lang.Integer value() { return value(); }\n" +
                 "    public String __dataName()  { return \"value\"; }\n" +
                 "    public java.lang.Integer __dataValue() { return value(); }\n" +
-                "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" +
+                "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" + 
+                "    public static Class<java.lang.Integer> ___dataType() { return int.class; }\n" +
                 "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" +
                 "    public <R extends functionalj.types.IRule<java.lang.Integer>> Class<R> __superRule() { \n" +
                 "        return (Class)null;\n" +
@@ -160,6 +164,7 @@ public class RuleSpecTest {
                 "    public String __dataName()  { return \"value\"; }\n" +
                 "    public java.lang.String __dataValue() { return value(); }\n" +
                 "    public Class<java.lang.String> __dataType() { return java.lang.String.class; }\n" +
+                "    public static Class<java.lang.String> ___dataType() { return java.lang.String.class; }\n" +
                 "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" +
                 "    public <R extends functionalj.types.IRule<java.lang.String>> Class<R> __superRule() { \n" +
                 "        return (Class)NonNullString.class;\n" +

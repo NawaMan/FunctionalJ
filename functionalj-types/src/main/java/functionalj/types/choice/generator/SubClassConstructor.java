@@ -59,6 +59,7 @@ public class SubClassConstructor implements Lines {
             );
         }
         
+        // TODO - Allow boolean, String and exception as return type.
         val validateName = choice.validationMethod;
         val isV = (validateName != null);
         val paramDefs  = choice.mapJoinParams(p -> p.type().typeWithGenerics() + " " + p.name(), ", ");

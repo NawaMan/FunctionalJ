@@ -37,6 +37,7 @@ import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -158,6 +159,7 @@ public class StructSpec {
         if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
             return null;
         
+        // TODO - Should look for a validator method.
         val validatorName = (String)null;
         
         try {
@@ -188,7 +190,14 @@ public class StructSpec {
         val sourceName   = (String)null;
         val superPackage = packageName;
         
-        val validatorName = isBooleanStringOrValidation(method.getReturnType()) ? method.getSimpleName().toString() : null;
+        val isValidate    = isBooleanStringOrValidation(method.getReturnType());
+        val validatorName = isValidate ? method.getSimpleName().toString() : null;
+        val isStatic      = method.getModifiers().contains(Modifier.STATIC);
+        val isPrivate     = method.getModifiers().contains(Modifier.PRIVATE);
+        if (isValidate && (!isStatic || isPrivate)) {
+            error(method, "Validatable struct must come from static and non-private method.");
+            return null;
+        }
         
         val configures = extractConfigurations(element, struct);
         if (configures == null)

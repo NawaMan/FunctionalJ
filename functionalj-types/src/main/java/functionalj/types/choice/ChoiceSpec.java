@@ -38,6 +38,7 @@ import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
@@ -300,10 +301,65 @@ public class ChoiceSpec {
             }).collect(toList());
         
         val validateMethodName = "__validate" + methodName;
-        val hasValidator = elements.stream()
+        val validateMethods 
+                = elements.stream()
                 .filter(elmt -> elmt.getKind().equals(ElementKind.METHOD))
                 .map   (elmt -> ((ExecutableElement)elmt))
                 .filter(mthd -> mthd.getSimpleName().toString().equals(validateMethodName))
+                .collect(toList());
+        
+        ensureValidatorParameters(method, validateMethods, validateMethodName);
+        ensureValidatorModifier  (validateMethods, validateMethodName);
+        val hasValidator = hasValidator(method, validateMethods);
+        
+        Case choice
+                = hasValidator
+                ? new Case(methodName, validateMethodName, params)
+                : new Case(methodName, params);
+        return choice;
+    }
+    
+    private void ensureValidatorModifier(List<ExecutableElement> validateMethods, String validateMethodName) {
+        validateMethods.stream()
+        .filter(mthd -> {
+            if (!mthd.getModifiers().contains(Modifier.STATIC)) {
+                error("Validator method must be static: " + validateMethodName);
+            }
+            if (mthd.getModifiers().contains(Modifier.PRIVATE)) {
+                error("Validator method must not be private: " + validateMethodName);
+            }
+            return false;
+        })
+        .forEach(mthd -> {});
+    }
+    
+    private void ensureValidatorParameters(ExecutableElement method, List<ExecutableElement> validateMethods, String validateMethodName) {
+        validateMethods.stream()
+        .filter(mthd -> {
+            int methodParamSize = method.getTypeParameters().size();
+            int mthdParamSize   = mthd.getTypeParameters().size();
+            if (mthdParamSize != methodParamSize) {
+                val expected = "expect " + methodParamSize + " but found " + mthdParamSize;
+                error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
+                return true;
+            }
+            
+            for (int i = 0; i < mthd.getTypeParameters().size(); i++) {
+                val methodParam = method.getTypeParameters().get(i);
+                val mthdParam   = mthd.getTypeParameters().get(i);
+                if (!mthdParam.equals(methodParam)) {
+                    val expected = "parameter " + i + " expected to be " + methodParam + " but found to be " + mthdParam;
+                    error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
+                    return true;
+                }
+            }
+            return false;
+        })
+        .forEach(mthd -> {});
+    }
+    
+    private boolean hasValidator(ExecutableElement method, List<ExecutableElement> validateMethods) {
+        return validateMethods.stream()
                 .filter(mthd -> mthd.getTypeParameters().size() == method.getTypeParameters().size())
                 .filter(mthd -> {
                     for (int i = 0; i < mthd.getTypeParameters().size(); i++) {
@@ -314,12 +370,6 @@ public class ChoiceSpec {
                 })
                 .findFirst()
                 .isPresent();
-        
-        Case choice
-                = hasValidator
-                ? new Case(methodName, validateMethodName, params)
-                : new Case(methodName, params);
-        return choice;
     }
     
     private Type typeOf(Type targetType, TypeMirror typeMirror) {

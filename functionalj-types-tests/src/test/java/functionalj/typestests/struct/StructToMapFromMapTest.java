@@ -2,6 +2,7 @@ package functionalj.typestests.struct;
 
 
 import static functionalj.typestests.TestHelper.assertAsString;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -13,6 +14,8 @@ import java.util.OptionalInt;
 import org.junit.Test;
 
 import functionalj.result.Result;
+import functionalj.result.ValidationException;
+import functionalj.types.Rule;
 import functionalj.types.Struct;
 import lombok.val;
 import nullablej.nullable.Nullable;
@@ -295,12 +298,12 @@ public class StructToMapFromMapTest {
         val myMap = myStruct.__toMap();
         assertAsString(
                 "{"
-                    + "optInt1=Nullable.of(10), "
-                    + "optInt2=Result:{ Value: 10 }, "
-                    + "optStr1=Nullable.of(One), "
-                    + "optStr2=Result:{ Value: One }, "
-                    + "optSubData1=Nullable.of(SubData[strValue: str, intValue: 110]), "
-                    + "optSubData2=Result:{ Value: SubData[strValue: str, intValue: 110] }"
+                    + "optInt1=10, "
+                    + "optInt2=10, "
+                    + "optStr1=One, "
+                    + "optStr2=One, "
+                    + "optSubData1=SubData[strValue: str, intValue: 110], "
+                    + "optSubData2=SubData[strValue: str, intValue: 110]"
                 + "}",
                 myMap);
         
@@ -356,6 +359,81 @@ public class StructToMapFromMapTest {
     
     // Test validate
     
+    @Struct
+    static String StructValidate(String name, int age) {
+        if (name.trim().isEmpty())
+            return "The name cannot be blank.";
+        if (age < 0)
+            return "The age cannot be negative: " + age;
+        return null;
+    }
+    
+    @Test
+    public void testValidate() {
+        val myStruct = new StructValidate("name", 10);
+        assertAsString("StructValidate[name: name, age: 10]", myStruct);
+        
+        val myMap = myStruct.__toMap();
+        assertAsString("{age=10, name=name}", myMap);
+        
+        assertAsString("StructValidate[name: name, age: 10]", StructValidate.fromMap(myMap));
+        
+        try {
+            myMap.put("name", " ");
+            StructValidate.fromMap(myMap);
+            fail("Expect an exeption.");
+        } catch (ValidationException e) {
+            assertAsString("functionalj.result.ValidationException: The name cannot be blank.", e);
+        }
+        
+        try {
+            myMap.put("name", "name");
+            myMap.put("age", -5);
+            assertAsString("", StructValidate.fromMap(myMap));
+            fail("Expect an exeption.");
+        } catch (ValidationException e) {
+            assertAsString("functionalj.result.ValidationException: The age cannot be negative: -5", e);
+        }
+    }
+    
+    
+    // Test Acceptable
+    
+    @Rule("Int value must be positive: %s")
+    static boolean IntPositive(int intValue) { return intValue >= 0; }
+    
+    @Struct
+    void StructWithAcceptable(
+                    IntPositive myInt) {}
+    
+    @Test
+    public void testAcceptable() {
+        val myStruct =  new StructWithAcceptable(new IntPositive(42));
+        
+        assertAsString("StructWithAcceptable[myInt: IntPositive:{ Value: 42 }]", myStruct);
+        
+        val myMap = myStruct.__toMap();
+        assertAsString("{myInt=42}", myMap);
+        
+        myMap.put("myInt", 42);
+        assertAsString(
+                "StructWithAcceptable[myInt: IntPositive:{ Value: 42 }]",
+                StructWithAcceptable.fromMap(myMap));
+        
+        myMap.put("myInt", -5);
+        assertAsString(
+                "StructWithAcceptable[myInt: IntPositive:{ Invalid: Int value must be positive: -5 }]",
+                StructWithAcceptable.fromMap(myMap));
+        
+        // Unacceptable value cannot be changed to map.
+        val unacceptable = StructWithAcceptable.fromMap(myMap);
+        try {
+            unacceptable.__toMap();
+            fail("Expect an exeption.");
+        } catch (ValidationException e) {
+            assertAsString("functionalj.result.ValidationException: Int value must be positive: -5", e);
+        }
+    }
     
 //    
 //    @Struct
