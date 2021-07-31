@@ -41,9 +41,14 @@ import java.time.OffsetTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,6 +61,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.promise.Promise;
+import functionalj.ref.Ref;
 import functionalj.result.Acceptable;
 import functionalj.result.DerivedResult;
 import functionalj.result.Result;
@@ -79,6 +85,11 @@ public interface IData {
     public static <DATA extends IData> Optional<DATA> fromMap(Map<String, Object> map, Class<DATA> clazz) {
         return Optional.ofNullable(IData.$utils.fromMap(map, clazz));
     }
+    
+    public static Ref<Locale>            localeRef            = Ref.ofValue(Locale.getDefault());
+    public static Ref<DateTimeFormatter> dateTimeFormatterRef = Ref.ofValue(DateTimeFormatter.ISO_DATE_TIME);
+    public static Ref<DateTimeFormatter> dateFormatterRef     = Ref.ofValue(DateTimeFormatter.ISO_DATE);
+    public static Ref<DateTimeFormatter> timeFormatterRef     = Ref.ofValue(DateTimeFormatter.ISO_TIME);
     
     
     // TODO - Extract this out so it can be used in other scenarios.
@@ -276,6 +287,7 @@ public interface IData {
                         .map(IData.$utils::toMapValueObject)
                         .collect(toList());
             }
+            // TODO - Put some of these in a map as oppose to linear search
             
             if (data instanceof Optional) {
                 val optional = ((Optional)data).orElse(null);
@@ -304,6 +316,21 @@ public interface IData {
             if (data instanceof Nullable) {
                 // Invalid value cannot be serialized.
                 return ((Nullable)data).get();
+            }
+            if (data instanceof TemporalAccessor) {
+                val temporal = (TemporalAccessor)data;
+                // TODO - Include Locale
+                // TODO - Add more type
+                if ((data instanceof LocalDate) || (data instanceof ChronoLocalDate)) {
+                    return dateFormatterRef.get().format(temporal);
+                }
+                if ((data instanceof LocalTime) || (data instanceof OffsetTime)) {
+                    return timeFormatterRef.get().format(temporal);
+                }
+                if ((data instanceof LocalDateTime) || (data instanceof OffsetDateTime) || (data instanceof ZonedDateTime) || (data instanceof ChronoLocalDateTime)) {
+                    return dateTimeFormatterRef.get().format(temporal);
+                }
+                return dateTimeFormatterRef.get().format((TemporalAccessor)data);
             }
             
             return (data instanceof IData)
@@ -458,6 +485,7 @@ public interface IData {
                 }
             }
             
+            // TODO - Use the right pattern
             // Date time
             if (Duration.class.isAssignableFrom(clzz)) {
                 return (T)Duration.parse((String)obj);
@@ -466,25 +494,25 @@ public interface IData {
                 return (T)Instant.parse((String)obj);
             }
             if (LocalDate.class.isAssignableFrom(clzz)) {
-                return (T)LocalDate.parse((String)obj);
+                return (T)LocalDate.parse((String)obj, dateFormatterRef.get());
             }
             if (LocalDateTime.class.isAssignableFrom(clzz)) {
-                return (T)LocalDateTime.parse((String)obj);
+                return (T)LocalDateTime.parse((String)obj, dateTimeFormatterRef.get());
             }
             if (LocalTime.class.isAssignableFrom(clzz)) {
-                return (T)LocalTime.parse((String)obj);
+                return (T)LocalTime.parse((String)obj, timeFormatterRef.get());
             }
             if (OffsetDateTime.class.isAssignableFrom(clzz)) {
-                return (T)OffsetDateTime.parse((String)obj);
+                return (T)OffsetDateTime.parse((String)obj, dateTimeFormatterRef.get());
             }
             if (OffsetTime.class.isAssignableFrom(clzz)) {
-                return (T)OffsetTime.parse((String)obj);
+                return (T)OffsetTime.parse((String)obj, timeFormatterRef.get());
             }
             if (Period.class.isAssignableFrom(clzz)) {
                 return (T)Period.parse((String)obj);
             }
             if (ZonedDateTime.class.isAssignableFrom(clzz)) {
-                return (T)ZonedDateTime.parse((String)obj);
+                return (T)ZonedDateTime.parse((String)obj, dateTimeFormatterRef.get());
             }
             return (T)obj;
         }

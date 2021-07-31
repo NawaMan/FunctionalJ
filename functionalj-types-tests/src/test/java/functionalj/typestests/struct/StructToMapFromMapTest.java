@@ -6,6 +6,10 @@ import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -434,9 +438,54 @@ public class StructToMapFromMapTest {
         }
     }
     
-//    @Struct
-//    void MyTimeStruct() {}
-//    
-//    
+    @Struct
+    void StructWithTime(LocalDateTime dateTime, LocalDate date, LocalTime time) {}
+    
+    @Test
+    public void testTimeStruct() {
+        val myStruct = new StructWithTime(
+                        LocalDateTime.of(2020, Month.OCTOBER, 31, 17, 30, 5),
+                        LocalDate    .of(2020, Month.OCTOBER, 31),
+                        LocalTime    .of(17, 30, 5));
+        
+        assertAsString(
+                "StructWithTime["
+                    + "dateTime: 2020-10-31T17:30:05, "
+                    + "date: 2020-10-31, "
+                    + "time: 17:30:05"
+                + "]", 
+                myStruct);
+        
+        val myMap = myStruct.__toMap();
+        assertAsString(
+                "{"
+                    + "date=2020-10-31, "
+                    + "dateTime=2020-10-31T17:30:05, "
+                    + "time=17:30:05"
+                + "}",
+                myMap);
+        
+        myMap.put("date",     LocalDate    .of(2020, Month.DECEMBER, 25));
+        myMap.put("dateTime", LocalDateTime.of(2020, Month.DECEMBER, 25, 20, 15, 10));
+        myMap.put("time",     LocalTime    .of(20, 15, 10));
+        assertAsString(
+                "StructWithTime["
+                    + "dateTime: 2020-12-25T20:15:10, "
+                    + "date: 2020-12-25, "
+                    + "time: 20:15:10"
+                + "]",
+                StructWithTime.fromMap(myMap));
+        
+        myMap.put("date",     "2020-01-01");
+        myMap.put("dateTime", "2020-01-01T00:00:00");
+        myMap.put("time",     "00:00:00");
+        assertAsString(
+                "StructWithTime["
+                    + "dateTime: 2020-01-01T00:00, "
+                    + "date: 2020-01-01, "
+                    + "time: 00:00"
+                + "]",
+                StructWithTime.fromMap(myMap));
+    }
     
 }
