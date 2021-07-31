@@ -403,8 +403,7 @@ public class StructToMapFromMapTest {
     static boolean IntPositive(int intValue) { return intValue >= 0; }
     
     @Struct
-    void StructWithAcceptable(
-                    IntPositive myInt) {}
+    void StructWithAcceptable(IntPositive myInt) {}
     
     @Test
     public void testAcceptable() {
@@ -435,7 +434,6 @@ public class StructToMapFromMapTest {
         }
     }
     
-//    
 //    @Struct
 //    void MyTimeStruct() {}
 //    
