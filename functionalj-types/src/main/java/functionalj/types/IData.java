@@ -44,7 +44,9 @@ import java.time.ZonedDateTime;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -418,6 +420,7 @@ public interface IData {
                 return (T)((String)obj).getBytes();
             }
             
+            // TODO ... this can be done with Hashtable.
             // Byte, Short, Integer, Long, Float, Double.
             if (byte.class.isAssignableFrom(clzz) || Byte.class.isAssignableFrom(clzz)) {
                 return (T)Byte.valueOf((String)obj);
@@ -450,6 +453,7 @@ public interface IData {
             }
             
             // UUID
+            // TODO - Final
             if (UUID.class.isAssignableFrom(clzz)) {
                 return (T)UUID.fromString((String)obj);
             }
@@ -463,6 +467,8 @@ public interface IData {
                 }
             }
             
+            // String of int
+            // TODO - Improve this.
             String str = (String)obj;
             if (str.matches("^[0-9]+$")) {
                 val seconds = Long.parseLong(str);
@@ -487,32 +493,47 @@ public interface IData {
             
             // TODO - Use the right pattern
             // Date time
-            if (Duration.class.isAssignableFrom(clzz)) {
-                return (T)Duration.parse((String)obj);
+            if (TemporalAmount.class.isAssignableFrom(clzz)) {
+                // TODO - Final class can be found with HASHMAP
+                //  - Duration
+                //  - Period
+                if (Duration.class.isAssignableFrom(clzz)) {
+                    return (T)Duration.parse((String)obj);
+                }
+                if (Period.class.isAssignableFrom(clzz)) {
+                    return (T)Period.parse((String)obj);
+                }
             }
-            if (Instant.class.isAssignableFrom(clzz)) {
-                return (T)Instant.parse((String)obj);
-            }
-            if (LocalDate.class.isAssignableFrom(clzz)) {
-                return (T)LocalDate.parse((String)obj, dateFormatterRef.get());
-            }
-            if (LocalDateTime.class.isAssignableFrom(clzz)) {
-                return (T)LocalDateTime.parse((String)obj, dateTimeFormatterRef.get());
-            }
-            if (LocalTime.class.isAssignableFrom(clzz)) {
-                return (T)LocalTime.parse((String)obj, timeFormatterRef.get());
-            }
-            if (OffsetDateTime.class.isAssignableFrom(clzz)) {
-                return (T)OffsetDateTime.parse((String)obj, dateTimeFormatterRef.get());
-            }
-            if (OffsetTime.class.isAssignableFrom(clzz)) {
-                return (T)OffsetTime.parse((String)obj, timeFormatterRef.get());
-            }
-            if (Period.class.isAssignableFrom(clzz)) {
-                return (T)Period.parse((String)obj);
-            }
-            if (ZonedDateTime.class.isAssignableFrom(clzz)) {
-                return (T)ZonedDateTime.parse((String)obj, dateTimeFormatterRef.get());
+            if (Temporal.class.isAssignableFrom(clzz)) {
+                // TODO - Final class can be found with HASHMAP
+                //  - Instant
+                //  - LocalDate
+                //  - LocalDateTime
+                //  - LocalTime
+                //  - OffsetDateTime
+                //  - OffsetTime
+                //  - ZonedDateTime
+                if (Instant.class.isAssignableFrom(clzz)) {
+                    return (T)Instant.parse((String)obj);
+                }
+                if (LocalDate.class.isAssignableFrom(clzz)) {
+                    return (T)LocalDate.parse((String)obj, dateFormatterRef.get());
+                }
+                if (LocalDateTime.class.isAssignableFrom(clzz)) {
+                    return (T)LocalDateTime.parse((String)obj, dateTimeFormatterRef.get());
+                }
+                if (LocalTime.class.isAssignableFrom(clzz)) {
+                    return (T)LocalTime.parse((String)obj, timeFormatterRef.get());
+                }
+                if (OffsetDateTime.class.isAssignableFrom(clzz)) {
+                    return (T)OffsetDateTime.parse((String)obj, dateTimeFormatterRef.get());
+                }
+                if (OffsetTime.class.isAssignableFrom(clzz)) {
+                    return (T)OffsetTime.parse((String)obj, timeFormatterRef.get());
+                }
+                if (ZonedDateTime.class.isAssignableFrom(clzz)) {
+                    return (T)ZonedDateTime.parse((String)obj, dateTimeFormatterRef.get());
+                }
             }
             return (T)obj;
         }
