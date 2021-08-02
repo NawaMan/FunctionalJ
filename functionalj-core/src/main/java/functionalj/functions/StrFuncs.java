@@ -24,10 +24,12 @@
 package functionalj.functions;
 
 import static functionalj.function.Absent.__;
+import static java.util.stream.Collectors.joining;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,6 +39,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Func;
@@ -85,6 +88,36 @@ public class StrFuncs {
         return (str == null) || str.isEmpty() || str.trim().isEmpty();
     }
     
+    public static String whenEmpty(String str, String elseValue) {
+        return isEmpty(str) ? elseValue : str;
+    }
+    
+    public static String whenBlank(String str, String elseValue) {
+        return isBlank(str) ? elseValue : str;
+    }
+    
+    public static String whenEmpty(String str, Supplier<String> elseSupplier) {
+        return isEmpty(str) ? elseSupplier.get() : str;
+    }
+    
+    public static String whenBlank(String str, Supplier<String> elseSupplier) {
+        return isBlank(str) ? elseSupplier.get() : str;
+    }
+
+    public static Func1<String, String> escapeJava() {
+        return StrFuncs::escapeJava;
+    }
+    public static String escapeJava(String s) {
+        return s.replace("\\", "\\\\")
+                .replace("\t", "\\t")
+                .replace("\b", "\\b")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\f", "\\f")
+                .replace("\'", "\\'")
+                .replace("\"", "\\\"");
+    }
+    
     /**
      * Returns a function that return the string representation of the given object or null if the object is null.
      * 
@@ -126,6 +159,10 @@ public class StrFuncs {
     }
     public static <I1, I2, I3, I4, I5, I6> Func6<I1, I2, I3, I4, I5, I6, String> concat6() {
         return (i1, i2, i3, i4, i5, i6) -> toStr(i1) + toStr(i2) + toStr(i3) + toStr(i4) + toStr(i5) + toStr(i6);
+    }
+    
+    public static String joinNonNull(String delimiter, String ... parts) {
+        return Stream.of(parts).filter(Objects::nonNull).collect(joining(delimiter));
     }
     
     public static <I> Func1<AsStreamPlus<I>, String> join(Class<I> clz, String delimiter) {

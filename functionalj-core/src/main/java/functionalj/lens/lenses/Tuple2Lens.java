@@ -43,21 +43,50 @@ public interface Tuple2Lens<HOST, T1, T2, T1LENS extends AnyLens<HOST,T1>, T2LEN
         extends
             ObjectLens<HOST, Tuple2<T1, T2>>,
             Tuple2Access<HOST, T1, T2, T1LENS, T2LENS> {
-
+    
+    
+    public static class Impl<HOST, T1, T2, T1LENS extends AnyLens<HOST,T1>, T2LENS extends AnyLens<HOST,T2>> 
+                    extends ObjectLens.Impl<HOST, Tuple2<T1, T2>> implements Tuple2Lens<HOST, T1, T2, T1LENS, T2LENS> {
+        
+        private LensSpecParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1LENS, T2LENS> spec;
+        
+        public Impl(String name, LensSpecParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1LENS, T2LENS> spec) {
+            super(name, spec.getSpec());
+            this.spec = spec;
+        }
+        
+        @Override
+        public LensSpecParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1LENS, T2LENS> lensSpecParameterized2() {
+            return spec;
+        }
+        
+    }
+    
     public static <H, _1, _2, 
                    _1ACCESS extends AnyAccess<H,_1>, _2ACCESS extends AnyAccess<H,_2>, 
                    _1LENS extends AnyLens<H,_1>, _2LENS extends AnyLens<H,_2>>
             Tuple2Lens<H, _1, _2, _1LENS, _2LENS> of(
+                    String                            name,
                     Function<H,  Tuple2<_1, _2>>      read,
                     WriteLens<H, Tuple2<_1, _2>>      write,
                     LensType<H, _1, _1ACCESS, _1LENS> _1Type,
                     LensType<H, _2, _2ACCESS, _2LENS> _2Type) {
         val spec = new LensSpecParameterized2<H, Tuple2<_1, _2>, _1, _2, _1LENS, _2LENS>() {
-            @Override public LensSpec<H, Tuple2<_1, _2>> getSpec()          { return LensSpec.of(read, write); }
-            @Override public _1LENS createSubLens1(LensSpec<H, _1> subSpec) { return _1Type.newLens(subSpec); }
-            @Override public _2LENS createSubLens2(LensSpec<H, _2> subSpec) { return _2Type.newLens(subSpec); }
+            @Override public LensSpec<H, Tuple2<_1, _2>> getSpec()                          { return LensSpec.of(read, write); }
+            @Override public _1LENS createSubLens1(String subName, LensSpec<H, _1> subSpec) { return _1Type.newLens(subName, subSpec); }
+            @Override public _2LENS createSubLens2(String subName, LensSpec<H, _2> subSpec) { return _2Type.newLens(subName, subSpec); }
         };
-        return ()->spec;
+        return new Impl<>(name, spec);
+    }
+    public static <H, _1, _2, 
+                _1ACCESS extends AnyAccess<H,_1>, _2ACCESS extends AnyAccess<H,_2>, 
+                _1LENS extends AnyLens<H,_1>, _2LENS extends AnyLens<H,_2>>
+         Tuple2Lens<H, _1, _2, _1LENS, _2LENS> of(
+                 Function<H,  Tuple2<_1, _2>>      read,
+                 WriteLens<H, Tuple2<_1, _2>>      write,
+                 LensType<H, _1, _1ACCESS, _1LENS> _1Type,
+                 LensType<H, _2, _2ACCESS, _2LENS> _2Type) {
+        return of(null, read, write, _1Type, _2Type);
     }
     
     public LensSpecParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1LENS, T2LENS> lensSpecParameterized2();

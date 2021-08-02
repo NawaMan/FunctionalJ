@@ -17,13 +17,19 @@ public class PeriodLens<HOST>
     public final IntegerLens<HOST> years  = createSubLens(Period::getYears,  Period::withYears,  IntegerLens::of);
     public final IntegerLens<HOST> months = createSubLens(Period::getMonths, Period::withMonths, IntegerLens::of);
     public final IntegerLens<HOST> days   = createSubLens(Period::getDays,   Period::withDays,   IntegerLens::of);
-    
+
+    public static <H> PeriodLens<H> of(String name, LensSpec<H, Period> spec) {
+        return new PeriodLens<H>(name, spec);
+    }
     public static <H> PeriodLens<H> of(LensSpec<H, Period> spec) {
         return new PeriodLens<H>(spec);
     }
     
+    public PeriodLens(String name, LensSpec<HOST, Period> spec) {
+        super(name, spec);
+    }
     public PeriodLens(LensSpec<HOST, Period> spec) {
-        super(spec);
+        this(null, spec);
     }
     
 }

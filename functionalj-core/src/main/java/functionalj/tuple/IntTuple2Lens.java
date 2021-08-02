@@ -23,6 +23,9 @@
 // ============================================================================
 package functionalj.tuple;
 
+import static functionalj.functions.StrFuncs.joinNonNull;
+import static functionalj.functions.StrFuncs.whenBlank;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -38,6 +41,7 @@ import functionalj.lens.core.WriteLens;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ObjectLens;
+import functionalj.lens.lenses.ObjectLensImpl;
 import lombok.val;
 
 
@@ -46,17 +50,54 @@ public interface IntTuple2Lens<HOST, T2, T2LENS extends AnyLens<HOST,T2>>
         extends
             ObjectLens<HOST, IntTuple2<T2>>,
             IntTuple2Access<HOST, T2, T2LENS> {
-
+    
+    public static class Impl<HOST, T2, T2LENS extends AnyLens<HOST,T2>> 
+                    extends    ObjectLensImpl<HOST, IntTuple2<T2>> 
+                    implements IntTuple2Lens<HOST, T2, T2LENS> {
+        
+        private LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS> lensSpecParameterized;
+        
+        public Impl(String name, LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS> lensSpecParameterized) {
+            super(name, lensSpecParameterized.getSpec());
+        }
+        
+        @Override
+        public LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS> lensSpecParameterized() {
+            return lensSpecParameterized;
+        }
+    }
+    
     public static <HOST, T2, T2LENS extends AnyLens<HOST,T2>>
             IntTuple2Lens<HOST, T2, T2LENS> of(
-                    Function<HOST,  IntTuple2<T2>>      read,
-                    WriteLens<HOST, IntTuple2<T2>>      write,
-                    Function<LensSpec<HOST, T2>, T2LENS> valueLensCreator) {
+                    String                                         name,
+                    Function<HOST,  IntTuple2<T2>>                 read,
+                    WriteLens<HOST, IntTuple2<T2>>                 write,
+                    BiFunction<String, LensSpec<HOST, T2>, T2LENS> valueLensCreator) {
         val spec = new LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS>() {
-            @Override public LensSpec<HOST, IntTuple2<T2>> getSpec()          { return LensSpec.of(read, write);        }
-            @Override public T2LENS createSubLens(LensSpec<HOST, T2> subSpec) { return valueLensCreator.apply(subSpec); }
+            @Override public LensSpec<HOST, IntTuple2<T2>> getSpec() {
+                return LensSpec.of(read, write);
+            }
+            @Override
+            public T2LENS createSubLens(String subName, LensSpec<HOST, T2> subSpec) {
+                val lensName = whenBlank(joinNonNull(".", name, subName), (String)null);
+                return valueLensCreator.apply(lensName, subSpec);
+            }
         };    
-        return ()->spec;
+        return new IntTuple2Lens.Impl<HOST, T2, T2LENS>(name, spec);
+    }
+    public static <HOST, T2, T2LENS extends AnyLens<HOST,T2>>
+        IntTuple2Lens<HOST, T2, T2LENS> of(
+                Function<HOST,  IntTuple2<T2>>                 read,
+                WriteLens<HOST, IntTuple2<T2>>                 write,
+                BiFunction<String, LensSpec<HOST, T2>, T2LENS> valueLensCreator) {
+        return of(null, read, write, valueLensCreator);
+    }
+    public static <HOST, T2, T2LENS extends AnyLens<HOST,T2>>
+        IntTuple2Lens<HOST, T2, T2LENS> of(
+                Function<HOST,  IntTuple2<T2>>       read,
+                WriteLens<HOST, IntTuple2<T2>>       write,
+                Function<LensSpec<HOST, T2>, T2LENS> valueLensCreator) {
+        return of(null, read, write, (__,spec)->valueLensCreator.apply(spec));
     }
 
     public LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS> lensSpecParameterized();
@@ -79,7 +120,7 @@ public interface IntTuple2Lens<HOST, T2, T2LENS extends AnyLens<HOST,T2>>
     public default IntegerLens<HOST> _1() {
         WriteLens<IntTuple2<T2>, Integer> write = (tuple, _1) -> new IntTuple2<T2>(_1, tuple._2);
         Function <IntTuple2<T2>, Integer> read  = IntTuple2::_1;
-        return LensUtils.createSubLens(this, read, write, IntegerLens::of);
+        return LensUtils.createSubLens(this, "_1", read, write, IntegerLens::of);
     }
     
     public default T2LENS T2() {

@@ -24,11 +24,14 @@
 package functionalj.lens.lenses;
 
 import static functionalj.function.Func.alwaysTrue;
+import static functionalj.functions.StrFuncs.joinNonNull;
+import static functionalj.functions.StrFuncs.whenBlank;
 
 import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import functionalj.function.Named;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
@@ -45,6 +48,22 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
             FuncListAccess<HOST, TYPE, TYPELENS> {
     
     
+    public static class Impl<H, T, SL extends AnyLens<H, T>> extends ObjectLens.Impl<H, FuncList<T>> implements FuncListLens<H, T, SL> {
+        
+        private LensSpecParameterized<H, FuncList<T>, T, SL> spec;
+        
+        public Impl(String name, LensSpecParameterized<H, FuncList<T>, T, SL> spec) {
+            super(name, spec.getSpec());
+            this.spec = spec;
+        }
+        
+        @Override
+        public LensSpecParameterized<H, FuncList<T>, T, SL> lensSpecParameterized() {
+            return spec;
+        }
+        
+    }
+    
     public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             FuncListLens<HOST, TYPE, TYPELENS> of(
                 Function<HOST,  FuncList<TYPE>>    read,
@@ -53,8 +72,12 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         return LensUtils.createFuncListLens(read, write, subCreator);
     }
     public static <HOST,  TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
+            FuncListLens<HOST, TYPE, TYPELENS> of(String name, LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> spec) {
+        return new Impl<>(name, spec);
+    }
+    public static <HOST,  TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             FuncListLens<HOST, TYPE, TYPELENS> of(LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> spec) {
-        return ()->spec;
+        return of(null, spec);
     }
     
     // :-( Duplicate 
@@ -84,18 +107,27 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 .apply(host);
     }
     
+    public default TYPELENS createSubLens(String name, Function<FuncList<TYPE>, TYPE> readSub, WriteLens<FuncList<TYPE>, TYPE> writeSub) {
+        return LensUtils.createSubLens(this, name, readSub, writeSub, lensSpecParameterized()::createSubLens);
+    }
     public default TYPELENS createSubLens(Function<FuncList<TYPE>, TYPE> readSub, WriteLens<FuncList<TYPE>, TYPE> writeSub) {
         return LensUtils.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
     
     public default TYPELENS first() {
+        val name     = (this instanceof Named) ? ((Named)this).name() : null;
+        val lensName = whenBlank(joinNonNull(".", name, "first()"), (String)null);
         return createSubLens(
+                lensName,
                 (list)           -> list.first().get(),
                 (list, newValue) -> list.with(0, newValue));
     }
     
     public default TYPELENS last() {
+        val name     = (this instanceof Named) ? ((Named)this).name() : null;
+        val lensName = whenBlank(joinNonNull(".", name, "last()"), (String)null);
         return createSubLens(
+                lensName,
                 (list) -> {
                     if (list == null)
                         return null;
@@ -111,7 +143,10 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
     }
     
     public default TYPELENS at(int index) {
+        val name     = (this instanceof Named) ? ((Named)this).name() : null;
+        val lensName = whenBlank(joinNonNull(".", name, "at(" + index +")"), (String)null);
         return createSubLens(
+                lensName,
                 (list) -> {
                     if (list == null)
                         return null;

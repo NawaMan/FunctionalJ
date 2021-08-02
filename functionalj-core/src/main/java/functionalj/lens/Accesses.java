@@ -24,12 +24,15 @@ public class Accesses {
     public static class TheListLens implements ListLens<List<?>, Object, ObjectLens<List<?>, Object>> {
         
         private static final LensSpecParameterized<List<?>, List<?>, Object, ObjectLens<List<?>, Object>> 
-                common = LensUtils.createLensSpecParameterized(selfRead(), selfWrite(), ObjectLens::of);
+                common = LensUtils.createLensSpecParameterized("theList", selfRead(), selfWrite(), ObjectLens::of);
         
         public <T, SA extends AnyAccess<List<T>, T>, SL extends AnyLens<List<T>, T>> 
                 ListLens<List<T>, T, SL> of(LensType<List<T>, T, SA, SL> type) {
             LensSpecParameterized<List<T>, List<T>, T, SL> spec
-                    = LensUtils.createLensSpecParameterized(LensSpec.selfRead(), LensSpec.selfWrite(), s -> type.newLens(s));
+                    = LensUtils.createLensSpecParameterized(
+                            LensSpec.selfRead(), 
+                            LensSpec.selfWrite(), 
+                            s -> type.newLens(null, s));
             ListLens<List<T>, T, SL> listLens = ListLens.of(spec);
             return listLens;
         }
@@ -55,13 +58,15 @@ public class Accesses {
                     }
                     @Override
                     public ObjectLens<Tuple2<Object, Object>, Object> createSubLens1(
+                            String                                   subName,
                             LensSpec<Tuple2<Object, Object>, Object> subSpec) {
-                        return ObjectLens.of(subSpec);
+                        return ObjectLens.of(subName, subSpec);
                     }
                     @Override
                     public ObjectLens<Tuple2<Object, Object>, Object> createSubLens2(
+                            String                                   subName,
                             LensSpec<Tuple2<Object, Object>, Object> subSpec) {
-                        return ObjectLens.of(subSpec);
+                        return ObjectLens.of(subName, subSpec);
                     }
                 };
         

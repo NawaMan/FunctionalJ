@@ -20,11 +20,19 @@ public class LocalDateLens<HOST>
     public final IntegerLens<HOST> monthValue = createSubLens(LocalDate::getMonthValue, (inst, month) -> inst.withMonth(month),   IntegerLens::of);
     public final IntegerLens<HOST> dayOfYear  = createSubLens(LocalDate::getDayOfYear,  (inst, day)   -> inst.withDayOfYear(day), IntegerLens::of);
     
+    public static <H> LocalDateLens<H> of(String name, LensSpec<H, LocalDate> spec) {
+        return new LocalDateLens<H>(name, spec);
+    }
     public static <H> LocalDateLens<H> of(LensSpec<H, LocalDate> spec) {
         return new LocalDateLens<H>(spec);
     }
     
-    public LocalDateLens(LensSpec<HOST, LocalDate> spec) {
+    public LocalDateLens(String name, LensSpec<HOST, LocalDate> spec) {
         super(spec);
     }
+    
+    public LocalDateLens(LensSpec<HOST, LocalDate> spec) {
+        this(null, spec);
+    }
+    
 }

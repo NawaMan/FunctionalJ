@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.lens;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import functionalj.lens.core.AbstractLensType;
@@ -41,14 +42,14 @@ public interface LensTypes {
 	public static <H, T, TA extends AnyAccess<H, T>, TL extends AnyLens<H, T>> 
             LensType<H, T, TA, TL> of(
                     Class<T> dataClass, 
-                    Class<? extends AnyAccess> accessClass, 
-                    Class<? extends AnyLens> lensClass,
-                    Function<Function<H, T>, TA> accessCreator,
-                    Function<LensSpec<H, T>, TL> lensCreator) {
+                    Class<? extends AnyAccess>             accessClass, 
+                    Class<? extends AnyLens>               lensClass,
+                    Function<Function<H, T>, TA>           accessCreator,
+                    BiFunction<String, LensSpec<H, T>, TL> lensCreator) {
         return new AbstractLensType<H, T, TA, TL>(dataClass, accessClass, lensClass) {
             @Override
-            public TL newLens(LensSpec<H, T> spec) {
-                return lensCreator.apply(spec);
+            public TL newLens(String name, LensSpec<H, T> spec) {
+                return lensCreator.apply(name, spec);
             }
             @Override
             public TA newAccess(Function<H, T> accessToValue) {
