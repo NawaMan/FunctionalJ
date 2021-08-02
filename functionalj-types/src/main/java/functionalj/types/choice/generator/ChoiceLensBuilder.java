@@ -45,14 +45,14 @@ public class ChoiceLensBuilder {
         val targetName    = sourceSpec.targetName;
         val lensClassName = targetName + "Lens";
         val lensClassDef = asList(
-                "public static final " + lensClassName + "<" + targetName + "> the" + targetName + " = new " + lensClassName + "<>(LensSpec.of(" + targetName + ".class));",
+                "public static final " + lensClassName + "<" + targetName + "> the" + targetName + " = new " + lensClassName + "<>(\"the" + targetName + "\", LensSpec.of(" + targetName + ".class));",
                 "public static final " + lensClassName + "<" + targetName + "> each" + targetName + " = the" + targetName + ";",
                 "public static class " + lensClassName + "<HOST> extends ObjectLensImpl<HOST, " + targetName + "> {\n"
                 );
         
         val lensClassConstructor = asList(
-                "    public " + lensClassName + "(LensSpec<HOST, " + targetName + "> spec) {",
-                "        super(spec);",
+                "    public " + lensClassName + "(String name, LensSpec<HOST, " + targetName + "> spec) {",
+                "        super(name, spec);",
                 "    }"
                 );
         
@@ -63,7 +63,7 @@ public class ChoiceLensBuilder {
                 .collect(toList());
         val asMethods = sourceSpec
                 .choices.stream()
-                .map(choice -> "ResultAccess<HOST, " + choice.name + ", " + choice.name + "."+ choice.name + "Lens<HOST>> as" + choice.name + " = createSubResultLens(" + targetName +"::as" + choice.name + ", (functionalj.lens.core.WriteLens<" + targetName + ",Result<" + choice.name + ">>)null, " + choice.name + "."+ choice.name + "Lens::new);")
+                .map(choice -> "ResultLens.Impl<HOST, " + choice.name + ", " + choice.name + "."+ choice.name + "Lens<HOST>> as" + choice.name + " = createSubResultLens(\"as" + choice.name +"\", " + targetName +"::as" + choice.name + ", (functionalj.lens.core.WriteLens<" + targetName + ",Result<" + choice.name + ">>)(h,r)->r.get(), " + choice.name + "."+ choice.name + "Lens::new);")
                 .map(each   -> "    public final " + each)
                 .collect(toList());
         

@@ -246,7 +246,7 @@ public class ObjectLensImpl<HOST, DATA> extends AnyLens.Impl<HOST, DATA> impleme
     }
     
     protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
-            ResultLens<HOST, SUB, SUBLENS> createSubResultLens(
+            ResultLens.Impl<HOST, SUB, SUBLENS> createSubResultLens(
                 String                                           name,
                 Function<DATA,  Result<SUB>>                     readSub,
                 WriteLens<DATA, Result<SUB>>                     writeSub,
