@@ -90,7 +90,7 @@ public class GeneratorTest {
                 + "\n"
                 + "public class Car implements Definitions.CarDef,IStruct,Pipeable<Car> {\n"
                 + "    \n"
-                + "    public static final Car.CarLens<Car> theCar = new Car.CarLens<>(LensSpec.of(Car.class));\n"
+                + "    public static final Car.CarLens<Car> theCar = new Car.CarLens<>(\"theCar\", LensSpec.of(Car.class));\n"
                 + "    public static final Car.CarLens<Car> eachCar = theCar;\n"
                 + "    public final int anint;\n"
                 + "    public final boolean anbool;\n"
@@ -192,12 +192,12 @@ public class GeneratorTest {
                 + "    \n"
                 + "    public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {\n"
                 + "        \n"
-                + "        public final IntegerLens<HOST> anint = createSubLensInt(Car::anint, Car::withAnint);\n"
-                + "        public final BooleanLens<HOST> anbool = createSubLensBoolean(Car::anbool, Car::withAnbool);\n"
-                + "        public final StringLens<HOST> anstring = createSubLens(Car::anstring, Car::withAnstring, StringLens::of);\n"
+                + "        public final IntegerLens<HOST> anint = createSubLensInt(\"anint\", Car::anint, Car::withAnint);\n"
+                + "        public final BooleanLens<HOST> anbool = createSubLensBoolean(\"anbool\", Car::anbool, Car::withAnbool);\n"
+                + "        public final StringLens<HOST> anstring = createSubLens(\"anstring\", Car::anstring, Car::withAnstring, StringLens::of);\n"
                 + "        \n"
-                + "        public CarLens(LensSpec<HOST, Car> spec) {\n"
-                + "            super(spec);\n"
+                + "        public CarLens(String name, LensSpec<HOST, Car> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "        \n"
                 + "    }\n"
@@ -298,7 +298,7 @@ public class GeneratorTest {
         val generatedWith = generate(()->{
             configures.generateLensClass = true;
         });
-        assertTrue(generatedWith.contains("public static final Car.CarLens<Car> theCar = new Car.CarLens<>(LensSpec.of(Car.class));"));
+        assertTrue(generatedWith.contains("public static final Car.CarLens<Car> theCar = new Car.CarLens<>(\"theCar\", LensSpec.of(Car.class));"));
         assertTrue(generatedWith.contains("public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {"));
         
         val generatedWithout = generate(()->{

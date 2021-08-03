@@ -129,42 +129,42 @@ public class GeneratorTest {
                 )));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
-                "public static final class Next<D> extends Coroutine<D> {\n" + 
-                "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(LensSpec.of(Next.class));\n" + 
-                "    public static final Next.NextLens<Next> eachNext = theNext;\n" + 
-                "    private Func1<D,Coroutine<D>> next;\n" + 
-                "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
-                "        this.next = $utils.notNull(next);\n" + 
-                "    }\n" + 
-                "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
-                "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
-                "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
-                "        \n" + 
-                "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
-                "        \n" + 
-                "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
-                "            super(spec);\n" + 
-                "        }\n" + 
-                "        \n" + 
-                "    }\n" + 
-                "    public java.util.Map<String, Object> __toMap() {\n" + 
-                "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
-                "        map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Next\"));\n" + 
-                "        map.put(\"next\", this.next);\n" + 
-                "        return map;\n" + 
-                "    }\n" + 
-                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))), new functionalj.types.Generic(\"Coroutine<D>\", \"Coroutine<D>\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"Coroutine<D>\", java.util.Collections.emptyList()))))), false, null))\n" + 
-                "        .build();\n" + 
-                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
-                "        return __schema__;\n" + 
-                "    }\n" + 
-                "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
-                "        return Next(\n" + 
-                "                (Func1<D, Coroutine<D>>)$utils.extractPropertyFromMap(Next.class, Func1.class, map, __schema__, \"next\")\n" + 
-                "        );\n" + 
-                "    }\n" + 
-                "}", lines);
+                "public static final class Next<D> extends Coroutine<D> {\n"
+                + "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(\"theNext\", LensSpec.of(Next.class));\n"
+                + "    public static final Next.NextLens<Next> eachNext = theNext;\n"
+                + "    private Func1<D,Coroutine<D>> next;\n"
+                + "    private Next(Func1<D,Coroutine<D>> next) {\n"
+                + "        this.next = $utils.notNull(next);\n"
+                + "    }\n"
+                + "    public Func1<D,Coroutine<D>> next() { return next; }\n"
+                + "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n"
+                + "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n"
+                + "        \n"
+                + "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(\"next\", Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n"
+                + "        \n"
+                + "        public NextLens(String name, LensSpec<HOST, Coroutine.Next> spec) {\n"
+                + "            super(name, spec);\n"
+                + "        }\n"
+                + "        \n"
+                + "    }\n"
+                + "    public java.util.Map<String, Object> __toMap() {\n"
+                + "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
+                + "        map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Next\"));\n"
+                + "        map.put(\"next\", this.next);\n"
+                + "        return map;\n"
+                + "    }\n"
+                + "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n"
+                + "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))), new functionalj.types.Generic(\"Coroutine<D>\", \"Coroutine<D>\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"Coroutine<D>\", java.util.Collections.emptyList()))))), false, null))\n"
+                + "        .build();\n"
+                + "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n"
+                + "        return __schema__;\n"
+                + "    }\n"
+                + "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
+                + "        return Next(\n"
+                + "                (Func1<D, Coroutine<D>>)$utils.extractPropertyFromMap(Next.class, Func1.class, map, __schema__, \"next\")\n"
+                + "        );\n"
+                + "    }\n"
+                + "}", lines);
         assertEquals(
                 "new functionalj.types.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.types.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))))), \"spec\", false, \"__tagged\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList())))), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
     }
@@ -175,30 +175,30 @@ public class GeneratorTest {
         val sub    = new SubClassDefinition(target, new Case("White"));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
-                "public static final class White extends Color {\n" + 
-                "    public static final White.WhiteLens<White> theWhite = new White.WhiteLens<>(LensSpec.of(White.class));\n" + 
-                "    public static final White.WhiteLens<White> eachWhite = theWhite;\n" + 
-                "    private static final White instance = new White();\n" + 
-                "    private White() {}\n" + 
-                "    public static class WhiteLens<HOST> extends ObjectLensImpl<HOST, Color.White> {\n" + 
-                "        \n" + 
-                "        public WhiteLens(LensSpec<HOST, Color.White> spec) {\n" + 
-                "            super(spec);\n" + 
-                "        }\n" + 
-                "        \n" + 
-                "    }\n" + 
-                "    public java.util.Map<String, Object> __toMap() {\n" + 
-                "        return functionalj.map.FuncMap.empty();\n" + 
-                "    }\n" + 
-                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n" + 
-                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
-                "        return __schema__;\n" + 
-                "    }\n" + 
-                "    public static White caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
-                "        return White(\n" + 
-                "        );\n" + 
-                "    }\n" + 
-                "}", lines);
+                "public static final class White extends Color {\n"
+                + "    public static final White.WhiteLens<White> theWhite = new White.WhiteLens<>(\"theWhite\", LensSpec.of(White.class));\n"
+                + "    public static final White.WhiteLens<White> eachWhite = theWhite;\n"
+                + "    private static final White instance = new White();\n"
+                + "    private White() {}\n"
+                + "    public static class WhiteLens<HOST> extends ObjectLensImpl<HOST, Color.White> {\n"
+                + "        \n"
+                + "        public WhiteLens(String name, LensSpec<HOST, Color.White> spec) {\n"
+                + "            super(name, spec);\n"
+                + "        }\n"
+                + "        \n"
+                + "    }\n"
+                + "    public java.util.Map<String, Object> __toMap() {\n"
+                + "        return functionalj.map.FuncMap.empty();\n"
+                + "    }\n"
+                + "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n"
+                + "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n"
+                + "        return __schema__;\n"
+                + "    }\n"
+                + "    public static White caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
+                + "        return White(\n"
+                + "        );\n"
+                + "    }\n"
+                + "}", lines);
     }
     
     @Test
@@ -212,58 +212,58 @@ public class GeneratorTest {
                 )));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
-                "public static final class RGB extends Color {\n" + 
-                "    public static final RGB.RGBLens<RGB> theRGB = new RGB.RGBLens<>(LensSpec.of(RGB.class));\n" + 
-                "    public static final RGB.RGBLens<RGB> eachRGB = theRGB;\n" + 
-                "    private int r;\n" + 
-                "    private int g;\n" + 
-                "    private int b;\n" + 
-                "    private RGB(int r, int g, int b) {\n" + 
-                "        this.r = r;\n" + 
-                "        this.g = g;\n" + 
-                "        this.b = b;\n" + 
-                "    }\n" + 
-                "    public int r() { return r; }\n" + 
-                "    public int g() { return g; }\n" + 
-                "    public int b() { return b; }\n" + 
-                "    public RGB withR(int r) { return new RGB(r, g, b); }\n" + 
-                "    public RGB withG(int g) { return new RGB(r, g, b); }\n" + 
-                "    public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
-                "    public static class RGBLens<HOST> extends ObjectLensImpl<HOST, Color.RGB> {\n" + 
-                "        \n" + 
-                "        public final IntegerLens<HOST> r = createSubLensInt(Color.RGB::r, Color.RGB::withR);\n" + 
-                "        public final IntegerLens<HOST> g = createSubLensInt(Color.RGB::g, Color.RGB::withG);\n" + 
-                "        public final IntegerLens<HOST> b = createSubLensInt(Color.RGB::b, Color.RGB::withB);\n" + 
-                "        \n" + 
-                "        public RGBLens(LensSpec<HOST, Color.RGB> spec) {\n" + 
-                "            super(spec);\n" + 
-                "        }\n" + 
-                "        \n" + 
-                "    }\n" + 
-                "    public java.util.Map<String, Object> __toMap() {\n" + 
-                "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
-                "        map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"RGB\"));\n" + 
-                "        map.put(\"r\", this.r);\n" + 
-                "        map.put(\"g\", this.g);\n" + 
-                "        map.put(\"b\", this.b);\n" + 
-                "        return map;\n" + 
-                "    }\n" + 
-                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "        .with(\"r\", new functionalj.types.choice.generator.model.CaseParam(\"r\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
-                "        .with(\"g\", new functionalj.types.choice.generator.model.CaseParam(\"g\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
-                "        .with(\"b\", new functionalj.types.choice.generator.model.CaseParam(\"b\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
-                "        .build();\n" + 
-                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
-                "        return __schema__;\n" + 
-                "    }\n" + 
-                "    public static RGB caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
-                "        return RGB(\n" + 
-                "                (int)$utils.extractPropertyFromMap(RGB.class, int.class, map, __schema__, \"r\"),\n" + 
-                "                (int)$utils.extractPropertyFromMap(RGB.class, int.class, map, __schema__, \"g\"),\n" + 
-                "                (int)$utils.extractPropertyFromMap(RGB.class, int.class, map, __schema__, \"b\")\n" + 
-                "        );\n" + 
-                "    }\n" + 
-                "}", lines);
+                "public static final class RGB extends Color {\n"
+                + "    public static final RGB.RGBLens<RGB> theRGB = new RGB.RGBLens<>(\"theRGB\", LensSpec.of(RGB.class));\n"
+                + "    public static final RGB.RGBLens<RGB> eachRGB = theRGB;\n"
+                + "    private int r;\n"
+                + "    private int g;\n"
+                + "    private int b;\n"
+                + "    private RGB(int r, int g, int b) {\n"
+                + "        this.r = r;\n"
+                + "        this.g = g;\n"
+                + "        this.b = b;\n"
+                + "    }\n"
+                + "    public int r() { return r; }\n"
+                + "    public int g() { return g; }\n"
+                + "    public int b() { return b; }\n"
+                + "    public RGB withR(int r) { return new RGB(r, g, b); }\n"
+                + "    public RGB withG(int g) { return new RGB(r, g, b); }\n"
+                + "    public RGB withB(int b) { return new RGB(r, g, b); }\n"
+                + "    public static class RGBLens<HOST> extends ObjectLensImpl<HOST, Color.RGB> {\n"
+                + "        \n"
+                + "        public final IntegerLens<HOST> r = createSubLensInt(\"r\", Color.RGB::r, Color.RGB::withR);\n"
+                + "        public final IntegerLens<HOST> g = createSubLensInt(\"g\", Color.RGB::g, Color.RGB::withG);\n"
+                + "        public final IntegerLens<HOST> b = createSubLensInt(\"b\", Color.RGB::b, Color.RGB::withB);\n"
+                + "        \n"
+                + "        public RGBLens(String name, LensSpec<HOST, Color.RGB> spec) {\n"
+                + "            super(name, spec);\n"
+                + "        }\n"
+                + "        \n"
+                + "    }\n"
+                + "    public java.util.Map<String, Object> __toMap() {\n"
+                + "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
+                + "        map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"RGB\"));\n"
+                + "        map.put(\"r\", this.r);\n"
+                + "        map.put(\"g\", this.g);\n"
+                + "        map.put(\"b\", this.b);\n"
+                + "        return map;\n"
+                + "    }\n"
+                + "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n"
+                + "        .with(\"r\", new functionalj.types.choice.generator.model.CaseParam(\"r\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n"
+                + "        .with(\"g\", new functionalj.types.choice.generator.model.CaseParam(\"g\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n"
+                + "        .with(\"b\", new functionalj.types.choice.generator.model.CaseParam(\"b\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n"
+                + "        .build();\n"
+                + "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n"
+                + "        return __schema__;\n"
+                + "    }\n"
+                + "    public static RGB caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
+                + "        return RGB(\n"
+                + "                (int)$utils.extractPropertyFromMap(RGB.class, int.class, map, __schema__, \"r\"),\n"
+                + "                (int)$utils.extractPropertyFromMap(RGB.class, int.class, map, __schema__, \"g\"),\n"
+                + "                (int)$utils.extractPropertyFromMap(RGB.class, int.class, map, __schema__, \"b\")\n"
+                + "        );\n"
+                + "    }\n"
+                + "}", lines);
     }
     
     @Test
@@ -276,42 +276,42 @@ public class GeneratorTest {
                 )));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
-                "public static final class Next<D> extends Coroutine<D> {\n" + 
-                "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(LensSpec.of(Next.class));\n" + 
-                "    public static final Next.NextLens<Next> eachNext = theNext;\n" + 
-                "    private Func1<D,Coroutine<D>> next;\n" + 
-                "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
-                "        this.next = $utils.notNull(next);\n" + 
-                "    }\n" + 
-                "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
-                "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
-                "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
-                "        \n" + 
-                "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
-                "        \n" + 
-                "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
-                "            super(spec);\n" + 
-                "        }\n" + 
-                "        \n" + 
-                "    }\n" + 
-                "    public java.util.Map<String, Object> __toMap() {\n" + 
-                "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
-                "        map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Next\"));\n" + 
-                "        map.put(\"next\", this.next);\n" + 
-                "        return map;\n" + 
-                "    }\n" + 
-                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))), new functionalj.types.Generic(\"Coroutine<D>\", \"Coroutine<D>\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"Coroutine<D>\", java.util.Collections.emptyList()))))), false, null))\n" + 
-                "        .build();\n" + 
-                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
-                "        return __schema__;\n" + 
-                "    }\n" + 
-                "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
-                "        return Next(\n" + 
-                "                (Func1<D, Coroutine<D>>)$utils.extractPropertyFromMap(Next.class, Func1.class, map, __schema__, \"next\")\n" + 
-                "        );\n" + 
-                "    }\n" + 
-                "}", lines);
+                "public static final class Next<D> extends Coroutine<D> {\n"
+                + "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(\"theNext\", LensSpec.of(Next.class));\n"
+                + "    public static final Next.NextLens<Next> eachNext = theNext;\n"
+                + "    private Func1<D,Coroutine<D>> next;\n"
+                + "    private Next(Func1<D,Coroutine<D>> next) {\n"
+                + "        this.next = $utils.notNull(next);\n"
+                + "    }\n"
+                + "    public Func1<D,Coroutine<D>> next() { return next; }\n"
+                + "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n"
+                + "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n"
+                + "        \n"
+                + "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(\"next\", Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n"
+                + "        \n"
+                + "        public NextLens(String name, LensSpec<HOST, Coroutine.Next> spec) {\n"
+                + "            super(name, spec);\n"
+                + "        }\n"
+                + "        \n"
+                + "    }\n"
+                + "    public java.util.Map<String, Object> __toMap() {\n"
+                + "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
+                + "        map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Next\"));\n"
+                + "        map.put(\"next\", this.next);\n"
+                + "        return map;\n"
+                + "    }\n"
+                + "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n"
+                + "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))), new functionalj.types.Generic(\"Coroutine<D>\", \"Coroutine<D>\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"Coroutine<D>\", java.util.Collections.emptyList()))))), false, null))\n"
+                + "        .build();\n"
+                + "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n"
+                + "        return __schema__;\n"
+                + "    }\n"
+                + "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
+                + "        return Next(\n"
+                + "                (Func1<D, Coroutine<D>>)$utils.extractPropertyFromMap(Next.class, Func1.class, map, __schema__, \"next\")\n"
+                + "        );\n"
+                + "    }\n"
+                + "}", lines);
     }
     
     @Test
@@ -619,41 +619,41 @@ public class GeneratorTest {
                 )));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
-                "public static final class Next<D> extends Coroutine<D> {\n" + 
-                "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(LensSpec.of(Next.class));\n" + 
-                "    public static final Next.NextLens<Next> eachNext = theNext;\n" + 
-                "    public Func1<D,Coroutine<D>> next;\n" + 
-                "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
-                "        this.next = $utils.notNull(next);\n" + 
-                "    }\n" + 
-                "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
-                "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
-                "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
-                "        \n" + 
-                "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
-                "        \n" + 
-                "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
-                "            super(spec);\n" + 
-                "        }\n" + 
-                "        \n" + 
-                "    }\n" + 
-                "    public java.util.Map<String, Object> __toMap() {\n" + 
-                "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
-                "        map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Next\"));\n" + 
-                "        map.put(\"next\", this.next);\n" + 
-                "        return map;\n" + 
-                "    }\n" + 
-                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))), new functionalj.types.Generic(\"Coroutine<D>\", \"Coroutine<D>\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"Coroutine<D>\", java.util.Collections.emptyList()))))), false, null))\n" + 
-                "        .build();\n" + 
-                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
-                "        return __schema__;\n" + 
-                "    }\n" + 
-                "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n" + 
-                "        return Next(\n" + 
-                "                (Func1<D, Coroutine<D>>)$utils.extractPropertyFromMap(Next.class, Func1.class, map, __schema__, \"next\")\n" + 
-                "        );\n" + 
-                "    }\n" + 
-                "}", lines);
+                "public static final class Next<D> extends Coroutine<D> {\n"
+                + "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(\"theNext\", LensSpec.of(Next.class));\n"
+                + "    public static final Next.NextLens<Next> eachNext = theNext;\n"
+                + "    public Func1<D,Coroutine<D>> next;\n"
+                + "    private Next(Func1<D,Coroutine<D>> next) {\n"
+                + "        this.next = $utils.notNull(next);\n"
+                + "    }\n"
+                + "    public Func1<D,Coroutine<D>> next() { return next; }\n"
+                + "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n"
+                + "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n"
+                + "        \n"
+                + "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(\"next\", Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n"
+                + "        \n"
+                + "        public NextLens(String name, LensSpec<HOST, Coroutine.Next> spec) {\n"
+                + "            super(name, spec);\n"
+                + "        }\n"
+                + "        \n"
+                + "    }\n"
+                + "    public java.util.Map<String, Object> __toMap() {\n"
+                + "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
+                + "        map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Next\"));\n"
+                + "        map.put(\"next\", this.next);\n"
+                + "        return map;\n"
+                + "    }\n"
+                + "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n"
+                + "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))), new functionalj.types.Generic(\"Coroutine<D>\", \"Coroutine<D>\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"Coroutine<D>\", java.util.Collections.emptyList()))))), false, null))\n"
+                + "        .build();\n"
+                + "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n"
+                + "        return __schema__;\n"
+                + "    }\n"
+                + "    public static Next caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
+                + "        return Next(\n"
+                + "                (Func1<D, Coroutine<D>>)$utils.extractPropertyFromMap(Next.class, Func1.class, map, __schema__, \"next\")\n"
+                + "        );\n"
+                + "    }\n"
+                + "}", lines);
     }
 }
