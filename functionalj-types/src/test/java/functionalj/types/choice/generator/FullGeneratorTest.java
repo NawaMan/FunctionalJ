@@ -205,7 +205,7 @@ public class FullGeneratorTest {
                 + "        }\n"
                 + "        public java.util.Map<String, Object> __toMap() {\n"
                 + "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
-                + "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"RGB\"));\n"
+                + "            map.put(\"__tagged\", $utils.toMapValueObject(\"RGB\"));\n"
                 + "            map.put(\"r\", this.r);\n"
                 + "            map.put(\"g\", this.g);\n"
                 + "            map.put(\"b\", this.b);\n"

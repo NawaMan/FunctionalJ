@@ -102,7 +102,7 @@ public class DateTimeLensTest {
                 + "    }\n"
                 + "    public Map<String, Object> __toMap() {\n"
                 + "        Map<String, Object> map = new HashMap<>();\n"
-                + "        map.put(\"child\", functionalj.types.IStruct.$utils.toMapValueObject(child));\n"
+                + "        map.put(\"child\", $utils.toMapValueObject(child));\n"
                 + "        return map;\n"
                 + "    }\n"
                 + "    public Map<String, Getter> __getSchema() {\n"

@@ -166,7 +166,7 @@ public class GenericSupportTest {
             + "        }\n"
             + "        public java.util.Map<String, Object> __toMap() {\n"
             + "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
-            + "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Some\"));\n"
+            + "            map.put(\"__tagged\", $utils.toMapValueObject(\"Some\"));\n"
             + "            map.put(\"value\", this.value);\n"
             + "            return map;\n"
             + "        }\n"

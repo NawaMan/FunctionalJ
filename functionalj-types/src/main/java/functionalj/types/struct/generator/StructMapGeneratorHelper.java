@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import functionalj.types.Generic;
-import functionalj.types.IStruct;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.model.Accessibility;
 import functionalj.types.struct.generator.model.GenMethod;
@@ -67,7 +66,7 @@ public class StructMapGeneratorHelper {
         val toMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
-                .map(g -> "map.put(\"" + g.name() + "\", " + IStruct.class.getCanonicalName() + ".$utils.toMapValueObject(" + g.name() + "));")
+                .map(g -> "map.put(\"" + g.name() + "\", $utils.toMapValueObject(" + g.name() + "));")
                 .collect(Collectors.toList()));
         val toMap = new GenMethod(
                 Accessibility.PUBLIC,

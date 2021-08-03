@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import functionalj.types.IData;
 import functionalj.types.choice.generator.model.Case;
 import lombok.val;
 
@@ -31,7 +30,7 @@ public class ToMapBuilder implements Lines {
                 .map(param -> "    map.put(\"" + param.name() + "\", this." + param.name() + ");");
         val body = Stream.of(
                 Stream.of("    " + Map.class.getCanonicalName() + "<String, Object> map = new " + HashMap.class.getCanonicalName() + "<>();"),
-                Stream.of("    map.put(\"" + targetClass.spec.tagMapKeyName + "\", " + IData.$utils.class.getCanonicalName() + ".toMapValueObject(\"" + choice.name + "\"));"),
+                Stream.of("    map.put(\"" + targetClass.spec.tagMapKeyName + "\", $utils.toMapValueObject(\"" + choice.name + "\"));"),
                 params,
                 Stream.of("    return map;")
             )
