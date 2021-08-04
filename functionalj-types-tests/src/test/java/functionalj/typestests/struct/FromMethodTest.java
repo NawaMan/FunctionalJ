@@ -47,15 +47,15 @@ public class FromMethodTest {
     @Struct(specField="spec")
     static boolean Car(String make, int year, @Nullable @DefaultTo(NULL) String color) { return true; }
     
-    @Struct(specField="spec")
+    @Struct
     public void Inventory(
             @DefaultTo(EMPTY) FuncList<CarForSale> cars) {}
     
-    @Struct(specField="spec")
+    @Struct
     public void Price(int price,
             @DefaultTo(ZERO) int discountPercent) { }
     
-    @Struct(specField="spec")
+    @Struct
     public void CarForSale(Car car, Price price) { }
     
     @Test

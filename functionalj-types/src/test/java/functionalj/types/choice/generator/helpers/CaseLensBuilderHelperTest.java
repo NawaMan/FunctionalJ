@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
@@ -24,7 +25,7 @@ public class CaseLensBuilderHelperTest {
         String     packageName = "functionalj.types.choice";
         SourceSpec sourceSpec 
                             = new SourceSpec("NestedCommand", 
-                                new Type("functionalj.types.choice", "NestedListTest", "NestedCommandModel", emptyList()), "spec", false, "__tagged", emptyList(), 
+                                new Type("functionalj.types.choice", "NestedListTest", "NestedCommandModel", emptyList()), "spec", false, "__tagged", Serialize.To.NOTHING, emptyList(), 
                                 asList(
                                    new Case("Move",     null, asList(new CaseParam("distance", new Type(null, null, "int", emptyList()), true, null))), 
                                    new Case("Commands", null, asList(new CaseParam("commands", 
@@ -51,7 +52,7 @@ public class CaseLensBuilderHelperTest {
     public void testCreateGenListLensField_custom() {
         SourceSpec sourceSpec 
                 = new SourceSpec("NestedCommand", 
-                    new Type("functionalj.types.choice", "NestedListTest", "NestedCommandModel", emptyList()), "spec", false, "__tagged", emptyList(), 
+                    new Type("functionalj.types.choice", "NestedListTest", "NestedCommandModel", emptyList()), "spec", false, "__tagged", Serialize.To.NOTHING, emptyList(), 
                     asList(
                        new Case("Move",     null, asList(new CaseParam("distance", new Type(null, null, "int", emptyList()), true, null))), 
                        new Case("Commands", null, asList(new CaseParam("commands", 
@@ -80,7 +81,7 @@ public class CaseLensBuilderHelperTest {
     public void testListLens_notKnownType() {
         val sourceSpec
                 = new SourceSpec("NestedCommand", 
-                        new Type("functionalj.types.choice", "NestedListTest", "NestedCommandModel", emptyList()), null, false, "__tagged", emptyList(), 
+                        new Type("functionalj.types.choice", "NestedListTest", "NestedCommandModel", emptyList()), null, false, "__tagged", Serialize.To.NOTHING, emptyList(), 
                         asList(new Case("Rotate", null, asList(new CaseParam("degree", new functionalj.types.Type(null, null, "int", emptyList()), false, null))), 
                                new Case("Move", null, asList(new CaseParam("distance", new functionalj.types.Type(null, null, "int", emptyList()), false, null))), 
                                new Case("Commands", null, asList(new CaseParam("commands", 

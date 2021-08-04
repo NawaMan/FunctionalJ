@@ -38,7 +38,7 @@ public class ChoiceToMapTest {
             LocalDateTime time,
             FuncMap<String, Command> commands) {}
     
-    @Struct(specField = "spec")
+    @Struct
     void DeepTimedAction(
             LocalDateTime time,
             List<List<Command>> commands) {}

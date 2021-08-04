@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
@@ -79,6 +80,7 @@ public class GeneratorTest {
                     + "null, "
                     + "false, "
                     + "\"__tagged\", "
+                    + "functionalj.types.Serialize.To.NOTHING, "
                     + "java.util.Collections.emptyList(), "
                     + "java.util.Collections.emptyList(), "
                     + "java.util.Collections.emptyList(), "
@@ -112,6 +114,7 @@ public class GeneratorTest {
                 + "null, "
                 + "false, "
                 + "\"__tagged\", "
+                + "functionalj.types.Serialize.To.NOTHING, " 
                 + "java.util.Collections.emptyList(), "
                 + "java.util.Collections.emptyList(), "
                 + "java.util.Collections.emptyList(), "
@@ -121,7 +124,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassConstructor_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList());
+        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, null, Serialize.To.NOTHING, asList(new Generic("D")), emptyList(), emptyList(), emptyList());
         val target = new TargetClass(sourceSpec);
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
@@ -166,7 +169,7 @@ public class GeneratorTest {
                 + "    }\n"
                 + "}", lines);
         assertEquals(
-                "new functionalj.types.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.types.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))))), \"spec\", false, \"__tagged\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList())))), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
+                "new functionalj.types.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.types.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))))), \"spec\", false, \"__tagged\", functionalj.types.Serialize.To.NOTHING, java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList())))), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
     @Test
@@ -269,7 +272,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassDefinition_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, null, Serialize.To.NOTHING, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
                     new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)
@@ -410,7 +413,7 @@ public class GeneratorTest {
     @Test
     public void testSourceMethods() {
         val target = new TargetClass(
-                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null,
+                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null, Serialize.To.NOTHING, 
                     emptyList(),
                     emptyList(),
                     asList(
@@ -525,7 +528,7 @@ public class GeneratorTest {
     public void testTargetTypeGeneral_withMethods() {
         val colorType = new Type("p1.p2", "Color");
         val target = new TargetClass(
-                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null,
+                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null, Serialize.To.NOTHING, 
                     emptyList(),
                     emptyList(),
                     asList(
@@ -612,7 +615,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassDefinition_withPublicField() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, null, Serialize.To.NOTHING, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
                     new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)

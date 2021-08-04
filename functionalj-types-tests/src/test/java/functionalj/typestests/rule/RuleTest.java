@@ -59,7 +59,7 @@ public class RuleTest {
         return null;
     }
     
-    @Struct(specField = "spec")
+    @Struct
     void TestStruct(IntPositive positveInt) {
         
     }

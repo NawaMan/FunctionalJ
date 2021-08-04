@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
@@ -46,6 +47,7 @@ public class GenericChoiceTest {
             "spec",
             false,
             null,
+            Serialize.To.NOTHING, 
             emptyList(), 
             asList(
                     new Case("Nill", null, emptyList()), 
@@ -344,7 +346,7 @@ public class GenericChoiceTest {
                 + "        }\n"
                 + "    }\n"
                 + "    \n"
-                + "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"MayBe\", new functionalj.types.Type(\"functionalj.types.choice.generator\", \"MayBeTest\", \"MayBe\", java.util.Collections.emptyList()), \"spec\", false, \"__tagged\", java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Nill\", null, java.util.Collections.emptyList()), new functionalj.types.choice.generator.model.Case(\"Just\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"data\", new functionalj.types.Type(null, null, \"T\", java.util.Collections.emptyList()), false, null)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n"
+                + "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"MayBe\", new functionalj.types.Type(\"functionalj.types.choice.generator\", \"MayBeTest\", \"MayBe\", java.util.Collections.emptyList()), \"spec\", false, \"__tagged\", functionalj.types.Serialize.To.NOTHING, java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Nill\", null, java.util.Collections.emptyList()), new functionalj.types.choice.generator.model.Case(\"Just\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"data\", new functionalj.types.Type(null, null, \"T\", java.util.Collections.emptyList()), false, null)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n"
                 + "    \n"
                 + "}";
         assertAsString(expect, code);

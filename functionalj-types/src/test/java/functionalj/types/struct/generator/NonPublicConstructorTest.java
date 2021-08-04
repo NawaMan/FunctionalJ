@@ -27,6 +27,7 @@ import static functionalj.types.TestHelper.assertAsString;
 
 import org.junit.Test;
 
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -37,7 +38,7 @@ public class NonPublicConstructorTest {
             "example.functionalj.accesslens", "StructTypeExample", "Person", "example.functionalj.accesslens", null,
             "spec", null,
             new functionalj.types.struct.generator.SourceSpec.Configurations(
-                    true, false, true, true, true, true, true, false, ""),
+                    true, false, true, true, true, true, true, false, "", Serialize.To.NOTHING),
             java.util.Arrays.asList(
                     new functionalj.types.struct.generator.Getter("firstName",
                             new Type("java.lang", null, "String", java.util.Collections.emptyList()), false,
@@ -92,7 +93,7 @@ public class NonPublicConstructorTest {
             + "    public final String firstName;\n"
             + "    public final String midName;\n"
             + "    public final String lastName;\n"
-            + "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, false, \"\"), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Arrays.asList(\"Person\"));\n"
+            + "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, false, \"\", functionalj.types.Serialize.To.NOTHING), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Arrays.asList(\"Person\"));\n"
             + "    \n"
             + "    Person(String firstName, String lastName) {\n"
             + "        this.firstName = $utils.notNull(firstName);\n"

@@ -14,7 +14,7 @@ import lombok.val;
 
 public class ChoiceToMapFromMapTest {
     
-    @Choice(specField = "spec")
+    @Choice
     interface MyPrimitiveChoiceSpec {
         void ByteValue      (byte       myByte1,    Byte       myByte2);
         void ShortValue     (short      myShort1,   Short      myShort2);

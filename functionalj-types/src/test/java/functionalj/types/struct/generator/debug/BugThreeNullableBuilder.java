@@ -8,6 +8,7 @@ import static java.util.Collections.emptyList;
 
 import org.junit.Test;
 
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
@@ -341,7 +342,7 @@ public class BugThreeNullableBuilder {
                 false,                  // isClass
                 null,
                 null,
-                new Configurations(true, false, true, true, true, true, true, true, ""),  // Configurations
+                new Configurations(true, false, true, true, true, true, true, true, "", Serialize.To.NOTHING),  // Configurations
                 asList(
                     new Getter("id",          new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
                     new Getter("name",        new Type("java.lang", null, "String", emptyList()), false, REQUIRED),

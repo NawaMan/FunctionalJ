@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
@@ -21,7 +22,7 @@ public class ListLensTest {
     public void testListLens_custom() {
         val sourceSpec
                 = new SourceSpec("NestedCommand", 
-                        new Type("functionalj.types.choice", "NestedListTest", "NestedCommandModel", emptyList()), null, false, "__tagged", emptyList(), 
+                        new Type("functionalj.types.choice", "NestedListTest", "NestedCommandModel", emptyList()), null, false, "__tagged", Serialize.To.NOTHING, emptyList(), 
                         asList(new Case("Rotate", null, asList(new CaseParam("degree", new functionalj.types.Type(null, null, "int", emptyList()), false, null))), 
                                new Case("Move", null, asList(new CaseParam("distance", new functionalj.types.Type(null, null, "int", emptyList()), false, null))), 
                                new Case("Commands", null, asList(new CaseParam("commands", 

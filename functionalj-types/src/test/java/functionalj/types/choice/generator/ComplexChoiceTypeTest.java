@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
@@ -24,6 +25,7 @@ public class ComplexChoiceTypeTest {
             "spec", 
             false, 
             "__tagged", 
+            Serialize.To.NOTHING,
             emptyList(), 
             asList(new Case("Loggined", null, asList(
                     new CaseParam("name", new Type("java.lang", null, "String", emptyList()), true, null), 
@@ -390,7 +392,7 @@ public class ComplexChoiceTypeTest {
             + "        }\n"
             + "    }\n"
             + "    \n"
-            + "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"LoginStatus\", new functionalj.types.Type(\"example.functionalj.elm\", \"ElmExamples\", \"LoginStatus\", java.util.Collections.emptyList()), \"spec\", false, \"__tagged\", java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Loggined\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"name\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, null), new functionalj.types.choice.generator.model.CaseParam(\"age\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), true, null), new functionalj.types.choice.generator.model.CaseParam(\"wealth\", new functionalj.types.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.Double\", \"java.lang.Double\", java.util.Collections.emptyList()))), true, null), new functionalj.types.choice.generator.model.CaseParam(\"user\", new functionalj.types.Type(\"example.functionalj.elm\", null, \"User\", java.util.Collections.emptyList()), true, null))), new functionalj.types.choice.generator.model.Case(\"LoggedOut\", null, java.util.Collections.emptyList())), java.util.Collections.emptyList(), java.util.Arrays.asList(\"User\"));\n"
+            + "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"LoginStatus\", new functionalj.types.Type(\"example.functionalj.elm\", \"ElmExamples\", \"LoginStatus\", java.util.Collections.emptyList()), \"spec\", false, \"__tagged\", functionalj.types.Serialize.To.NOTHING, java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Loggined\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"name\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, null), new functionalj.types.choice.generator.model.CaseParam(\"age\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), true, null), new functionalj.types.choice.generator.model.CaseParam(\"wealth\", new functionalj.types.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.Double\", \"java.lang.Double\", java.util.Collections.emptyList()))), true, null), new functionalj.types.choice.generator.model.CaseParam(\"user\", new functionalj.types.Type(\"example.functionalj.elm\", null, \"User\", java.util.Collections.emptyList()), true, null))), new functionalj.types.choice.generator.model.Case(\"LoggedOut\", null, java.util.Collections.emptyList())), java.util.Collections.emptyList(), java.util.Arrays.asList(\"User\"));\n"
             + "    \n"
             + "}";
 }

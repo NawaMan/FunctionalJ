@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.types.Serialize;
 import functionalj.types.TestHelper;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
@@ -28,6 +29,7 @@ public class UnitOfMeasureGeneratorTest {
                     null,
                     false,
                     null,
+                    Serialize.To.NOTHING, 
                     emptyList(),
                     asList(
                             new Case(

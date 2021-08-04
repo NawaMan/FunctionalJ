@@ -145,11 +145,12 @@ public class ChoiceSpec {
         }
         
         val tagMapKeyName = choiceType.tagMapKeyName();
+        val serialize     = choiceType.serialize();
         
         val choices      = extractTypeChoices(targetType, typeElement);
         val methods      = extractTypeMethods(targetType, typeElement);
         val publicFields = choiceType.publicFields();
-        val sourceSpec   = new SourceSpec(targetName, sourceType, specField, publicFields, tagMapKeyName, generics, choices, methods, localTypeWithLens);
+        val sourceSpec   = new SourceSpec(targetName, sourceType, specField, publicFields, tagMapKeyName, serialize, generics, choices, methods, localTypeWithLens);
         return sourceSpec;
     }
     

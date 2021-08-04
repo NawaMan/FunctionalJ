@@ -32,10 +32,13 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.function.Function;
 
+import functionalj.types.Serialize;
 import functionalj.types.Type;
+import functionalj.types.Serialize.To;
 import functionalj.types.choice.generator.Utils;
 import lombok.Value;
 import lombok.With;
+import lombok.val;
 
 /**
  * Source specification of the data object.
@@ -79,6 +82,8 @@ public class SourceSpec {
         public boolean publicConstructor = true;
         /** Template for toString. null for no toString generated, "" for auto-generate toString, or template */
         public String toStringTemplate = "";
+        /** @return the target serialization type. */
+        public Serialize.To serialize = Serialize.To.NOTHING;
         
         public Configurations() {}
         public Configurations(
@@ -90,7 +95,8 @@ public class SourceSpec {
                 boolean generateBuilderClass,
                 boolean publicFields,
                 boolean publicConstructor,
-                String toStringTemplate) {
+                String toStringTemplate,
+                Serialize.To serialize) {
             this.coupleWithDefinition            = coupleWithDefinition;
             this.generateNoArgConstructor        = generateNoArgConstructor;
             this.generateRequiredOnlyConstructor = generateRequiredOnlyConstructor;
@@ -100,6 +106,7 @@ public class SourceSpec {
             this.publicFields                    = publicFields;
             this.publicConstructor               = publicConstructor;
             this.toStringTemplate                = toStringTemplate;
+            this.serialize                       = (serialize != null) ? serialize : To.NOTHING;
         }
         
         @Override
@@ -114,9 +121,11 @@ public class SourceSpec {
                     + "publicFields="                    + publicFields
                     + "publicConstructor="               + publicConstructor
                     + "toStringTemplate="                + toStringTemplate
+                    + "serialize="                       + serialize
                     + "]";
         }
         public String toCode() {
+            val serializeCode = Serialize.class.getCanonicalName() + ".To." + serialize;
             List<Object> params = asList(
                     coupleWithDefinition,
                     generateNoArgConstructor,
@@ -126,7 +135,8 @@ public class SourceSpec {
                     generateBuilderClass,
                     publicFields,
                     publicConstructor,
-                    Utils.toStringLiteral(toStringTemplate)
+                    Utils.toStringLiteral(toStringTemplate),
+                    serializeCode
             );
             return "new " + Configurations.class.getCanonicalName() + "("
                     + params.stream().map(String::valueOf).collect(joining(", "))
@@ -149,8 +159,6 @@ public class SourceSpec {
     public boolean hasSpecField() {
         return (getSpecObjName() == null) || getSpecObjName().isEmpty();
     }
-    
-    // TODO - Optimize spec by importing them.
     
     public String toCode() {
         List<Object> params = asList(

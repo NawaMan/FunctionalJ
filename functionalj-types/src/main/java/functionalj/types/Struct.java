@@ -76,4 +76,7 @@ public @interface Struct {
     /** @return the flag indicating that the toString should be generated - default to true. */
     public boolean generateToString() default true;
     
+    /** @return the target serialization type. */
+    public Serialize.To serialize() default Serialize.To.NOTHING;
+    
 }

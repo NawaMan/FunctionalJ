@@ -15,7 +15,7 @@ import lombok.val;
 
 public class FromMapTest {
     
-    @Struct(specField = "spec")
+    @Struct
     void Birthday(String name, LocalDate date) {}
     
     @Test

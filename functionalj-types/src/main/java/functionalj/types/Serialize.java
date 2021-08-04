@@ -23,35 +23,10 @@
 // ============================================================================
 package functionalj.types;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import functionalj.types.choice.generator.model.SourceSpec;
-
-/**
- * This annotation marks an interface to create a choice type.
- *
- * @author NawaMan -- nawa@nawaman.net
- */
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Choice {
+public class Serialize {
     
-    /** @return the name of the target class. */
-    public String name() default "";
-    
-    /** @return the name of the static final field for the source spec. */
-    public String specField() default "";
-    
-    /** @return the name of key in the map when do __toMap(). */
-    public String tagMapKeyName() default SourceSpec.TAG_MAP_KEY_NAME;
-    
-    /** @return the flag indicating that the fields should be made public - default to true. */
-    public boolean publicFields() default false;
-    
-    /** @return the target serialization type. */
-    public Serialize.To serialize() default Serialize.To.NOTHING;
+    public static enum To {
+        NOTHING
+    }
     
 }

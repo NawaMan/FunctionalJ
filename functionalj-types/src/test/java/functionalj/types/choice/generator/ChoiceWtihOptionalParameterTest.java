@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.TestHelper;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
@@ -23,6 +24,7 @@ public class ChoiceWtihOptionalParameterTest {
             null, 
             false, 
             "__tagged", 
+            Serialize.To.NOTHING,
             emptyList(), 
             asList(new Case("Loggined", null, asList(
                         new CaseParam(

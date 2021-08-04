@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.types.struct;
 
+
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -54,6 +55,7 @@ import functionalj.types.Generic;
 import functionalj.types.Nullable;
 import functionalj.types.Required;
 import functionalj.types.Struct;
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.common;
 import functionalj.types.struct.generator.Getter;
@@ -299,7 +301,8 @@ public class StructSpec {
         configures.generateBuilderClass            = struct.generateBuilderClass();
         configures.publicFields                    = struct.publicFields();
         configures.publicConstructor               = struct.publicConstructor();
-        configures.toStringTemplate                = !struct.generateToString() ? null : struct.toStringTemplate();
+        configures.toStringTemplate                = !struct.generateToString()   ? null : struct.toStringTemplate();
+        configures.serialize                       = (struct.serialize() != null) ? struct.serialize() : Serialize.To.NOTHING;
         
         if (!configures.generateNoArgConstructor
          && !configures.generateAllArgConstructor) {
