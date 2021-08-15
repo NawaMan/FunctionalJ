@@ -23,10 +23,12 @@
 // ============================================================================
 package functionalj.types;
 
-public class Serialize {
+public interface Serialize<T> {
     
     public static enum To {
-        NOTHING
+        NOTHING, BOOLEAN, INT, LONG, DOUBLE, STRING, LIST, MAP
     }
+    
+    public T serialize();
     
 }

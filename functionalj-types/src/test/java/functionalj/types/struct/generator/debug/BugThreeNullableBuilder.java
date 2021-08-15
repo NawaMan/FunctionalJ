@@ -350,6 +350,7 @@ public class BugThreeNullableBuilder {
                     new Getter("website",     new Type("java.lang", null, "String", emptyList()), true,  NULL),
                     new Getter("country",     new Type("java.lang", null, "String", emptyList()), true,  NULL),
                     new Getter("description", new Type("java.lang", null, "String", emptyList()), true,  NULL)),
+                emptyList(),
                 asList("Brand", "Product"));
         val dataObjSpec = new StructBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();

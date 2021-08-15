@@ -94,6 +94,9 @@ public class Type implements IRequireTypes {
     /** FuncMap AbstractType */
     public static final Type FUNC_MAP = Core.FuncMap.type();
     
+    /** Serialize AbstractType */
+    public static final Type SERIALIZE = Type.of(Serialize.class);
+    
     static public class TypeBuilder {
         
         private String        packageName;

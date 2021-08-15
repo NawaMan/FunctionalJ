@@ -208,8 +208,18 @@ public interface IData {
         
         // == To and from Map ==
         
+        public static <O, D> D extractPropertyFromMap(
+                        Class<O>                        objClzz,
+                        Class<D>                        valueClzz, 
+                        Map<String, ? extends Object>   map,
+                        Map<String, ? extends Property> schema,
+                        String                          fieldName) {
+            return extractPropertyFromMap(true, objClzz, valueClzz, map, schema, fieldName);
+        }
+        
         @SuppressWarnings("unchecked")
         public static <O, D> D extractPropertyFromMap(
+                        boolean                         nested,
                         Class<O>                        objClzz,
                         Class<D>                        valueClzz, 
                         Map<String, ? extends Object>   map,
@@ -282,8 +292,12 @@ public interface IData {
             throw new DataConversionException(clazz);
         }
         
-        @SuppressWarnings("unchecked")
         public static Object toMapValueObject(Object data) {
+            return toMapValueObject(true, data);
+        }
+        
+        @SuppressWarnings("unchecked")
+        public static Object toMapValueObject(boolean nested, Object data) {
             if (data instanceof List) {
                 return ((List)data).stream()
                         .map(IData.$utils::toMapValueObject)

@@ -33,6 +33,7 @@ import static functionalj.types.struct.generator.StructGeneratorHelper.generateT
 import static functionalj.types.struct.generator.StructGeneratorHelper.getterToField;
 import static functionalj.types.struct.generator.StructGeneratorHelper.getterToGetterMethod;
 import static functionalj.types.struct.generator.StructGeneratorHelper.getterToWitherMethods;
+import static functionalj.types.struct.generator.StructGeneratorHelper.inheriitMethods;
 import static functionalj.types.struct.generator.StructGeneratorHelper.noArgConstructor;
 import static functionalj.types.struct.generator.StructGeneratorHelper.requiredOnlyConstructor;
 import static functionalj.types.struct.generator.StructMapGeneratorHelper.generateFromMap;
@@ -105,7 +106,11 @@ public class StructBuilder {
         val pipeable      = Core.Pipeable.type().withGenerics(asList(targetGeneric));
         implementeds.add(pipeable);
         
-        val pipeMethod = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, targetType, "__data", emptyList(), ILines.line("return this;"), emptyList(), asList(Type.of(Exception.class)), false);
+//        val serialize = FeatureSerialization.serializeType(input, type, configures);
+//        implementeds.add(serialize);
+        
+        
+        val pipeMethod = new GenMethod("__data", targetType, PUBLIC, INSTANCE, MODIFIABLE, emptyList(), emptyList(), false, false, ILines.line("return this;"), emptyList(), asList(Type.of(Exception.class)));
         
         val withMethodName = (Function<Getter, String>)(utils::withMethodName);
         val getters        = sourceSpec.getGetters();
@@ -150,7 +155,8 @@ public class StructBuilder {
                     getterMethods,
                     witherMethods,
                     Stream.of(fromMap, toMap, getSchema, getStructSchema),
-                    Stream.of(toString, hashCode, equals).filter(Objects::nonNull)
+                    Stream.of(toString, hashCode, equals).filter(Objects::nonNull),
+                    inheriitMethods(sourceSpec.getSpecName(), sourceSpec.getMethods())
                  ).stream()
                 .flatMap(themAll())
                 .collect(toList());

@@ -24,15 +24,24 @@
 package functionalj.types.struct;
 
 
+import static functionalj.types.struct.AnnotationUtils.accessibilityOf;
+import static functionalj.types.struct.AnnotationUtils.concrecityOf;
+import static functionalj.types.struct.AnnotationUtils.isAbstract;
+import static functionalj.types.struct.AnnotationUtils.isPrivate;
+import static functionalj.types.struct.AnnotationUtils.isStatic;
+import static functionalj.types.struct.AnnotationUtils.modifiabilityOf;
+import static functionalj.types.struct.AnnotationUtils.scopeOf;
+import static functionalj.types.struct.features.FeatureSerialization.validateSerialization;
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.function.Function;
 
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
@@ -40,6 +49,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
@@ -54,11 +64,13 @@ import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
 import functionalj.types.Nullable;
 import functionalj.types.Required;
-import functionalj.types.Struct;
 import functionalj.types.Serialize;
+import functionalj.types.Struct;
 import functionalj.types.Type;
 import functionalj.types.common;
+import functionalj.types.struct.generator.Callable;
 import functionalj.types.struct.generator.Getter;
+import functionalj.types.struct.generator.Parameter;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import lombok.val;
@@ -127,6 +139,16 @@ public class StructSpec {
         val simpleName  = type.getSimpleName().toString();
         val isInterface = ElementKind.INTERFACE.equals(element.getKind());
         val isClass     = ElementKind.CLASS    .equals(element.getKind());
+        if (!type.getTypeParameters().isEmpty()) {
+            error(element,  "type.getTypeParameters()   : " + type.getTypeParameters().toString() + "\n" +
+                            "type.getTypeParameters()[0]: " + type.getTypeParameters().get(0) + "\n" +
+                            "type.getTypeParameters().getBounds()        : " + type.getTypeParameters().get(0).getBounds() + "\n" +
+                            "type.getTypeParameters().getGenericElement(): " + type.getTypeParameters().get(0).getGenericElement() + "\n" +
+                            "type.getTypeParameters().asType()           : " + type.getTypeParameters().get(0).asType() + "\n" +
+                            "type.getTypeParameters().getSimpleName()    : " + type.getTypeParameters().get(0).getSimpleName() + "\n"
+                            );
+        }
+        
         if (!isInterface && !isClass) {
             error(element, "Only a class or interface can be annotated with " + Struct.class.getSimpleName() + ": " + simpleName);
             return null;
@@ -135,16 +157,24 @@ public class StructSpec {
         val localTypeWithLens = common.readLocalTypeWithLens(element);
         
         List<Getter> getters = type.getEnclosedElements().stream()
-                .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
-                .map   (elmt  ->((ExecutableElement)elmt))
-                .filter(method->!method.isDefault())
-                .filter(method->!isClass || isAbstract(method))
-                .filter(method->!(method.getReturnType() instanceof NoType))
-                .filter(method->method.getParameters().isEmpty())
-                .map   (method->createGetterFromMethod(element, method))
+                .filter (elmt  ->elmt.getKind().equals(ElementKind.METHOD))
+                .map    (elmt  ->((ExecutableElement)elmt))
+                .filter (method->!method.isDefault())
+                .filter (method->!isClass || isAbstract(input, method))
+                .filter (method->!(method.getReturnType() instanceof NoType))
+                .filter (method->method.getParameters().isEmpty())
+                .map    (method->createGetterFromMethod(element, method))
                 .collect(toList());
         if (getters.stream().anyMatch(g -> g == null))
             return null;
+        
+        List<Callable> methods = type.getEnclosedElements().stream()
+                .filter (elmt -> elmt.getKind().equals(ElementKind.METHOD))
+                .map    (elmt -> ((ExecutableElement)elmt))
+                .filter (mthd -> (mthd.isDefault() || isStatic(mthd)) && !isAbstract(input, mthd) && !isPrivate(mthd))
+                .map    (mthd -> extractMethodSpec(element, mthd))
+                .filter (mthd -> mthd != null)
+                .collect(toList());
         
         val packageName    = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
         val encloseName    = element.getEnclosingElement().getSimpleName().toString();
@@ -161,11 +191,14 @@ public class StructSpec {
         if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
             return null;
         
+        if (!ensureSerializationMethodMatch(type, getters, packageName, specTargetName, configures))
+            return null;
+        
         // TODO - Should look for a validator method.
         val validatorName = (String)null;
         
         try {
-            return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, specField, validatorName, configures, getters, localTypeWithLens);
+            return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, specField, validatorName, configures, getters, methods, localTypeWithLens);
         } catch (Exception e) {
             error(element, "Problem generating the class: "
                             + packageName + "." + specTargetName
@@ -176,6 +209,40 @@ public class StructSpec {
                                 .collect(joining()));
             return null;
         }
+    }
+    
+    private Callable extractMethodSpec(Element element, ExecutableElement mthdElement) {
+        val extractType = (Function<TypeMirror, Type>)(typeMirror -> getType(element, typeMirror));
+        
+        val name          = mthdElement.getSimpleName().toString();
+        val type          = getType(element, mthdElement.getReturnType());
+        val isVarArgs     = mthdElement.isVarArgs();
+        val accessibility = accessibilityOf(mthdElement);
+        val scope         = scopeOf(mthdElement);
+        val modifiability = modifiabilityOf(mthdElement);
+        val concrecity    = concrecityOf(mthdElement);
+        
+        val generics = mthdElement.getTypeParameters().stream()
+                .map(t -> getGenericFromTypeParameter(element, t))
+                .collect(toList());
+        val parameters = mthdElement
+                .getParameters().stream()
+                .map(param -> new Parameter(param.getSimpleName().toString(), getType(element, param.asType())))
+                .collect(toList());
+        val exceptions = mthdElement
+                .getThrownTypes().stream()
+                .map(extractType)
+                .collect(toList());
+        
+        return new Callable(name, type, isVarArgs, accessibility, scope, modifiability, concrecity, parameters, generics, exceptions);
+    }
+
+    private Generic getGenericFromTypeParameter(Element element, TypeParameterElement typeParameter){
+        val name   = typeParameter.getSimpleName().toString();
+        val bounds = typeParameter.getBounds().stream()
+                    .map    (bound -> getType(element, bound))
+                    .collect(toList());
+        return new Generic(name, null, bounds);
     }
     
     private SourceSpec extractSourceSpecMethod(Element element) {
@@ -206,27 +273,29 @@ public class StructSpec {
             return null;
         
         val getters = method.getParameters().stream()
-                .map(p -> createGetterFromParameter(element, p))
-                .filter(Objects::nonNull)
+                .map    (parameter -> createGetterFromParameter(element, parameter))
+                .filter (getter    -> nonNull(getter))
                 .collect(toList());
         
         if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
             return null;
         
         try {
-            return new SourceSpec(sourceName, superPackage, encloseName, specTargetName, packageName, isClass, specField, validatorName, configures, getters, localTypeWithLens);
+            return new SourceSpec(sourceName, superPackage, encloseName, specTargetName, packageName, isClass, specField, validatorName, configures, getters, emptyList() , localTypeWithLens);
         } catch (Exception e) {
-            error(element, "Problem generating the class: "
-                            + packageName + "." + specTargetName
-                            + ": "  + e.getMessage()
-                            + ":"   + e.getClass()
-                            + stream(e.getStackTrace())
-                                .map(st -> "\n    @" + st)
-                                .collect(joining()));
+            val stacktraces 
+                    = stream(e.getStackTrace())
+                    .map    (stacktrace -> "\n    @" + stacktrace)
+                    .collect(joining());
+            val errMsg 
+                    = format(
+                        "Problem generating the class: %s.%s: %s:%s%s", 
+                        packageName, specTargetName, e.getMessage(), e.getClass(), stacktraces);
+            error(element, errMsg);
             return null;
         }
     }
-    
+
     private String extractPackageNameType(Element element) {
         val type        = (TypeElement)element;
         val packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
@@ -256,20 +325,40 @@ public class StructSpec {
         return false;
     }
     
-    private boolean ensureNoArgConstructorWhenRequireFieldExists(Element element, List<Getter> getters,
-            final java.lang.String packageName, final java.lang.String specTargetName,
-            final functionalj.types.struct.generator.SourceSpec.Configurations configures) {
+    private boolean ensureNoArgConstructorWhenRequireFieldExists(
+                    Element                   element, 
+                    List<Getter>              getters,
+                    String                    packageName, 
+                    String                    specTargetName,
+                    SourceSpec.Configurations configures) {
         if (!configures.generateNoArgConstructor)
             return true;
         if (getters.stream().noneMatch(Getter::isRequired))
             return true;
-        val field = getters.stream().filter(Getter::isRequired).findFirst().get().name();
-        error(element, "No arg constructor cannot be generate when at least one field is require: "
-                        + packageName + "." + specTargetName + " -> field: " + field);
+        val field  = getters.stream().filter(Getter::isRequired).findFirst().get().name();
+        val errMsg = format(
+                        "No arg constructor cannot be generate when at least one field is require: %s.%s -> field: %s", 
+                        packageName, specTargetName, field);
+        error(element, errMsg);
         return false;
     }
     
-    private Getter createGetterFromParameter(Element element, VariableElement p){
+    private boolean ensureSerializationMethodMatch(
+                    TypeElement    type, 
+                    List<Getter>   getters, 
+                    String         packageName,
+                    String         specTargetName, 
+                    Configurations configures) {
+        
+        val errMsg = validateSerialization(input, type, getters, packageName, specTargetName, configures);
+        if (errMsg == null)
+            return true;
+        
+        error(type, errMsg);
+        return false;
+    }
+    
+    private Getter createGetterFromParameter(Element element, VariableElement p) {
         val name        = p.getSimpleName().toString();
         val type        = getType(element, p.asType());
         val isPrimitive = type.isPrimitive();
@@ -310,17 +399,6 @@ public class StructSpec {
             return null;
         }
         return configures;
-    }
-    
-    private boolean isAbstract(ExecutableElement method) {
-        // Seriously ... no other way?
-        try (val writer = new StringWriter()) {
-            input.elementUtils().printElements(writer, method);
-            return writer.toString().contains(" abstract ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
     
     private Getter createGetterFromMethod(Element element, ExecutableElement method) {

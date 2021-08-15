@@ -46,11 +46,11 @@ public class StructMapGeneratorHelper {
                 .collect(Collectors.joining(",\n"))
                 .split("\n"));
         val fromMap = new GenMethod(
+                "fromMap",
+                targetType,
                 Accessibility.PUBLIC,
                 Scope.STATIC,
                 Modifiability.MODIFIABLE,
-                targetType,
-                "fromMap",
                 asList(new GenParam("map", Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic("? extends Object", "? extends Object", null))))),
                 ILines.linesOf(
                     line("Map<String, Getter> $schema = getStructSchema();"),
@@ -69,20 +69,21 @@ public class StructMapGeneratorHelper {
                 .map(g -> "map.put(\"" + g.name() + "\", $utils.toMapValueObject(" + g.name() + "));")
                 .collect(Collectors.toList()));
         val toMap = new GenMethod(
+                METHOD_TO_MAP,
+                Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.OBJECT))),
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
-                Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.OBJECT))),
-                METHOD_TO_MAP,
+                emptyList(), 
                 emptyList(),
+                false,
+                false,
                 ILines.linesOf(
                     line("Map<String, Object> map = new HashMap<>();"),
                     toMapBody,
                     line("return map;")
                 ),
-                asList(Type.of(Map.class), Type.of(HashMap.class)),
-                emptyList(),
-                false);
+                asList(Type.of(Map.class), Type.of(HashMap.class)), emptyList());
         return toMap;
     }
     

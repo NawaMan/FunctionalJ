@@ -71,6 +71,7 @@ public class BuilderGeneratorTest {
                 null,
                 configures,          // Configurations
                 getters,
+                emptyList(),
                 emptyList());
         val builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
@@ -162,6 +163,7 @@ public class BuilderGeneratorTest {
                 null,
                 configures,          // Configurations
                 getters,
+                emptyList(),
                 emptyList());
         val builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
@@ -241,6 +243,7 @@ public class BuilderGeneratorTest {
                 null,
                 configures,          // Configurations
                 getters,
+                emptyList(),
                 emptyList());
         val builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
@@ -366,6 +369,7 @@ public class BuilderGeneratorTest {
                 null,
                 configures,          // Configurations
                 getters,
+                emptyList(),
                 emptyList());
         val builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
@@ -409,6 +413,7 @@ public class BuilderGeneratorTest {
                 null,
                 configures,          // Configurations
                 getters,
+                emptyList(),
                 emptyList());
         val builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
@@ -454,6 +459,7 @@ public class BuilderGeneratorTest {
                 null,
                 configures,          // Configurations
                 getters,
+                emptyList(),
                 emptyList());
         val builder    = new BuilderGenerator(sourceSpec);
         assertEquals(

@@ -221,7 +221,7 @@ public class BuilderGenerator {
                 // fields
                 emptyList(),
                 // methods
-                asList(new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, sourceSpec.getTargetType(), "build", emptyList(), null)),
+                asList(new GenMethod("build", sourceSpec.getTargetType(), PUBLIC, INSTANCE, MODIFIABLE, emptyList(), null)),
                 // innerClasses
                 emptyList(),
                 // mores
@@ -247,11 +247,11 @@ public class BuilderGenerator {
         val implementeds = Collections.<Type>emptyList();
         
         val buildMthd = new GenMethod(
-                PUBLIC, INSTANCE, FINAL,
-                // type
-                sourceSpec.getTargetType(),
                 // name
-                "build",
+                "build", // type
+                sourceSpec.getTargetType(), PUBLIC,
+                INSTANCE,
+                FINAL,
                 // params
                 emptyList(),
                 // Body
@@ -291,11 +291,11 @@ public class BuilderGenerator {
         val mthdType = builderMthdType(typeName, secondBuilder, pckgName);
         
         val builderMethod = new GenMethod(
-                PUBLIC, INSTANCE, FINAL,
-                // type
-                mthdType,
                 // name
-                firstBuilder.name(),
+                firstBuilder.name(), // type
+                mthdType, PUBLIC,
+                INSTANCE,
+                FINAL,
                 // params
                 asList(new GenParam(firstBuilder.name(), firstBuilder.type())),
                 // body

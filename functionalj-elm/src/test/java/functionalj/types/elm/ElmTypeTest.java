@@ -50,6 +50,7 @@ public class ElmTypeTest {
                     new Type("java.lang", null, "String", emptyList()), 
                     false, 
                     REQUIRED)), 
+            emptyList(),
             asList("User"));
     
     

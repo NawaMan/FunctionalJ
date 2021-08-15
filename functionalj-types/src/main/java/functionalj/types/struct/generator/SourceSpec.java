@@ -59,6 +59,7 @@ public class SourceSpec {
     private String         validatorName;
     private Configurations configures;
     private List<Getter>   getters;
+    private List<Callable> methods;
     private List<String>   typeWithLens;
     
     /** Configurations */
@@ -84,7 +85,7 @@ public class SourceSpec {
         public String toStringTemplate = "";
         /** @return the target serialization type. */
         public Serialize.To serialize = Serialize.To.NOTHING;
-        
+
         public Configurations() {}
         public Configurations(
                 boolean coupleWithDefinition,
@@ -172,6 +173,7 @@ public class SourceSpec {
                 toStringLiteral(validatorName),
                 configures.toCode(),
                 toListCode(getters, Getter::toCode),
+                toListCode(methods, Callable::toCode),
                 toListCode(typeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())
         );
         return "new " + SourceSpec.class.getCanonicalName() + "("
