@@ -1,15 +1,5 @@
 package functionalj.typestests.struct;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-import java.util.function.Function;
-
-import org.junit.Test;
-
-import functionalj.result.ValidationException;
-import functionalj.types.Struct;
-
 public class MethodsTest {
 //    
 //    @Struct(specField = "spec")

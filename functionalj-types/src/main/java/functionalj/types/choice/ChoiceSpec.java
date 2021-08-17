@@ -47,6 +47,7 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
@@ -55,13 +56,12 @@ import functionalj.types.Generic;
 import functionalj.types.Nullable;
 import functionalj.types.Required;
 import functionalj.types.Type;
-import functionalj.types.common;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.Method;
-//import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.MethodParam;
 import functionalj.types.choice.generator.model.SourceSpec;
+import functionalj.types.input.Environment;
 import lombok.val;
 
 
@@ -71,15 +71,22 @@ public class ChoiceSpec {
         
         public Element  element();
         public Elements elementUtils();
+        public Types    typeUtils();
         public Messager messager();
         
     }
     
-    private final Input input;
+    private final Input       input;
+    private final Environment environment;
     private boolean hasError = false;
     
     public ChoiceSpec(ChoiceSpecInputImpl input) {
-        this.input = input;
+        this.input       = input;
+        this.environment = new Environment(
+                        input.element(), 
+                        input.elementUtils(),
+                        input.typeUtils(),
+                        input.messager());
     }
     
     private void error(String msg) {
@@ -90,27 +97,15 @@ public class ChoiceSpec {
     }
     
     public String packageName() {
-        val element      = input.element();
-        val typeElement  = (TypeElement)element;
-        val elementUtils = input.elementUtils();
-        return elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
+        return environment.packageName();
     }
     
     public String targetName() {
-        val element        = input.element();
-        val typeElement    = (TypeElement)element;
-        val choiceType     = element.getAnnotation(Choice.class);
-        val specTargetName = choiceType.name();
-        val simpleName     = typeElement.getSimpleName().toString();
-        val targetName     = common.extractTargetName(simpleName, specTargetName);
-        return targetName;
+        return environment.targetName();
     }
     
-    public String specTargetName() {
-        val element        = input.element();
-        val choiceType     = element.getAnnotation(Choice.class);
-        val specTargetName = choiceType.name();
-        return specTargetName;
+    public String specifiedTargetName() {
+        return environment.specifiedTargetName();
     }
     
     public SourceSpec sourceSpec() {
@@ -118,10 +113,9 @@ public class ChoiceSpec {
         val typeElement  = (TypeElement)element;
         val elementUtils = input.elementUtils();
         
-        val localTypeWithLens = common.readLocalTypeWithLens(element);
-        
-        val simpleName  = typeElement.getSimpleName().toString();
-        val isInterface = ElementKind.INTERFACE.equals(element.getKind());
+        val localTypeWithLens = environment.readLocalTypeWithLens();
+        val simpleName        = environment.elementSimpleName();
+        val isInterface       = ElementKind.INTERFACE.equals(element.getKind());
         if (!isInterface) {
             error("Only an interface can be annotated with " + Choice.class.getSimpleName() + ": " + simpleName);
             return null;
@@ -133,23 +127,21 @@ public class ChoiceSpec {
         val sourceName     = typeElement.getQualifiedName().toString().substring(packageName.length() + 1 );
         val enclosedClass  = extractEncloseClass(simpleName, sourceName);
         val sourceType     = new Type(packageName, enclosedClass, simpleName, generics);
-        val choiceType    = element.getAnnotation(Choice.class);
-        val specTargetName = choiceType.name();
-        val targetName     = common.extractTargetName(simpleName, specTargetName);
+        val targetName     = environment.targetName();
         val targetType     = new Type(packageName, null, targetName, generics);
         
-        val specField = emptyToNull(choiceType.specField());
+        val specField = environment.specifiedSpecField();
         if ((specField != null) && !specField.matches("^[A-Za-z_$][A-Za-z_$0-9]*$")) {
-            error("Source spec field name is not a valid identifier: " + choiceType.specField());
+            error("Source spec field name is not a valid identifier: " + specField);
             return null;
         }
         
-        val tagMapKeyName = choiceType.tagMapKeyName();
-        val serialize     = choiceType.serialize();
+        val tagMapKeyName = environment.choiceTagMapKeyName();
+        val serialize     = environment.specifiedSerialize();
         
         val choices      = extractTypeChoices(targetType, typeElement);
         val methods      = extractTypeMethods(targetType, typeElement);
-        val publicFields = choiceType.publicFields();
+        val publicFields = environment.specifiedPublicField();
         val sourceSpec   = new SourceSpec(targetName, sourceType, specField, publicFields, tagMapKeyName, serialize, generics, choices, methods, localTypeWithLens);
         return sourceSpec;
     }
@@ -164,12 +156,6 @@ public class ChoiceSpec {
         } catch (StringIndexOutOfBoundsException e) {
             return null;
         }
-    }
-    
-    private String emptyToNull(String sourceSpec) {
-        if (sourceSpec == null)
-            return null;
-        return sourceSpec.isEmpty() ? null : sourceSpec;
     }
     
     private boolean isDefaultOrStatic(ExecutableElement mthd) {

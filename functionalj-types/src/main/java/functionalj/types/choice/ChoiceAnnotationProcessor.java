@@ -44,6 +44,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
@@ -59,6 +60,7 @@ import lombok.val;
 public class ChoiceAnnotationProcessor extends AbstractProcessor {
     
     private Elements elementUtils;
+    private Types    typeUtils;
     private Filer    filer;
     private Messager messager;
     private boolean  hasError;
@@ -92,18 +94,17 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Choice.class)) {
-            val input      = new ChoiceSpecInputImpl(element, elementUtils, messager);
-            val choiceSpec = new ChoiceSpec(input);
-            val sourceSpec = choiceSpec.sourceSpec();
-            val packageName    = choiceSpec.packageName();
-            val targetName     = choiceSpec.targetName();
-            val specTargetName = choiceSpec.specTargetName();
+            val input       = new ChoiceSpecInputImpl(element, elementUtils, typeUtils, messager);
+            val choiceSpec  = new ChoiceSpec(input);
+            val sourceSpec  = choiceSpec.sourceSpec();
+            val packageName = choiceSpec.packageName();
+            val targetName  = choiceSpec.targetName();
             
             if (sourceSpec.choices.isEmpty()) {
                 val errMsg 
                         = "Choice type must has at least one choice "
                         + "(Reminder: a choice name must start with a capital letter): " 
-                        + packageName + "." + specTargetName;
+                        + packageName + "." + targetName;
                 error(element, errMsg);
                 hasError = true;
                 continue;
@@ -120,7 +121,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             } catch (Exception e) {
                 e.printStackTrace(System.err);
                 error(element, "Problem generating the class: "
-                                + packageName + "." + specTargetName
+                                + packageName + "." + targetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()
                                 + ":"   + Arrays.asList(typeElement.getTypeParameters())

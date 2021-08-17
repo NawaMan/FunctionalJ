@@ -46,6 +46,10 @@ public interface OptionalLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         
         private LensSpecParameterized<H, Optional<T>, T, SL> spec;
         
+        public final SL value() {
+            return get();
+        }
+        
         public Impl(String name, LensSpecParameterized<H, Optional<T>, T, SL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;

@@ -116,7 +116,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         val structSpec     = new StructSpec(input);
         val sourceSpec     = structSpec.sourceSpec();
         val packageName    = structSpec.packageName();
-        val specTargetName = structSpec.targetTypeName();
+        val specTargetName = structSpec.targetName();
         try {
             val elmStructSpec = new ElmStructSpec(sourceSpec, element);
             val elmStruct     = new ElmStructBuilder(elmStructSpec);
@@ -151,7 +151,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     
     private void handleChoiceType(Element element) {
         val dummyMessager  = new DummyMessager();
-        val input          = new ChoiceSpecInputImpl(element, elementUtils, dummyMessager);
+        val input          = new ChoiceSpecInputImpl(element, elementUtils, typeUtils, dummyMessager);
         val choiceSpec     = new ChoiceSpec(input);
         val sourceSpec     = choiceSpec.sourceSpec();
         val packageName    = choiceSpec.packageName();

@@ -28,18 +28,18 @@ public class NamedLensTest {
         assertAsString("theCommand.asMove",                theCommand.asMove);
         assertAsString("theCommand.asRotate",              theCommand.asRotate);
         assertAsString("theCommand.asMove.value.distance", theCommand.asMove.get().distance);
-        assertAsString("theCommand.asRotate.value.degree", theCommand.asRotate.value.degree);
+        assertAsString("theCommand.asRotate.value.degree", theCommand.asRotate.value().degree);
         
         assertAsString("Move(24)",   theCommand.changeTo(Command.Move(24))  .apply(move));
         assertAsString("Rotate(90)", theCommand.changeTo(Command.Rotate(90)).apply(move));
         
-        assertAsString("Move(24)", theCommand.asMove.value.distance.changeTo(24).apply(move));
+        assertAsString("Move(24)", theCommand.asMove.value().distance.changeTo(24).apply(move));
         // NPE - rightly so but can we do better
 //        assertAsString("Move(24)", theCommand.asRotate.value.degree.changeTo(90).apply(move));
 
         // NPE - rightly so but can we do better
 //        assertAsString("Move(24)", theCommand.asMove.value.distance.changeTo(24).apply(rotate));
-        assertAsString("Rotate(90)", theCommand.asRotate.value.degree.changeTo(90).apply(rotate));
+        assertAsString("Rotate(90)", theCommand.asRotate.value().degree.changeTo(90).apply(rotate));
         
     }
     

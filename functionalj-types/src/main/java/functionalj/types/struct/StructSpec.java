@@ -57,7 +57,6 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 
 import functionalj.types.DefaultTo;
 import functionalj.types.DefaultValue;
@@ -67,7 +66,6 @@ import functionalj.types.Required;
 import functionalj.types.Serialize;
 import functionalj.types.Struct;
 import functionalj.types.Type;
-import functionalj.types.common;
 import functionalj.types.input.Environment;
 import functionalj.types.struct.generator.Callable;
 import functionalj.types.struct.generator.Getter;
@@ -97,7 +95,6 @@ public class StructSpec {
     
     private final Input       input;
     private final Environment environment;
-    private boolean hasError = false;
     
     public StructSpec(Input input) {
         this.input       = input;
@@ -109,19 +106,19 @@ public class StructSpec {
     }
     
     public boolean hasError() {
-        return hasError;
+        return environment.hasError();
     }
     
     private void error(Element e, String msg) {
-        hasError = true;
-        input.messager().printMessage(Diagnostic.Kind.ERROR, msg, e);
+        environment.error(e, msg);
+    }
+
+    public String packageName() {
+        return environment.packageName();
     }
     
-    public String targetTypeName() {
-        val element        = input.element();
-        val struct         = element.getAnnotation(Struct.class);
-        val specTargetName = struct.name();
-        return specTargetName;
+    public String targetName() {
+        return environment.targetName();
     }
     
     public SourceSpec sourceSpec() {
@@ -137,22 +134,13 @@ public class StructSpec {
         val simpleName  = type.getSimpleName().toString();
         val isInterface = ElementKind.INTERFACE.equals(element.getKind());
         val isClass     = ElementKind.CLASS    .equals(element.getKind());
-        if (!type.getTypeParameters().isEmpty()) {
-            error(element,  "type.getTypeParameters()   : " + type.getTypeParameters().toString() + "\n" +
-                            "type.getTypeParameters()[0]: " + type.getTypeParameters().get(0) + "\n" +
-                            "type.getTypeParameters().getBounds()        : " + type.getTypeParameters().get(0).getBounds() + "\n" +
-                            "type.getTypeParameters().getGenericElement(): " + type.getTypeParameters().get(0).getGenericElement() + "\n" +
-                            "type.getTypeParameters().asType()           : " + type.getTypeParameters().get(0).asType() + "\n" +
-                            "type.getTypeParameters().getSimpleName()    : " + type.getTypeParameters().get(0).getSimpleName() + "\n"
-                            );
-        }
         
         if (!isInterface && !isClass) {
             error(element, "Only a class or interface can be annotated with " + Struct.class.getSimpleName() + ": " + simpleName);
             return null;
         }
         
-        val localTypeWithLens = common.readLocalTypeWithLens(element);
+        val localTypeWithLens = environment.readLocalTypeWithLens();
         
         List<Getter> getters = type.getEnclosedElements().stream()
                 .filter (elmt  ->elmt.getKind().equals(ElementKind.METHOD))
@@ -174,22 +162,21 @@ public class StructSpec {
                 .filter (mthd -> mthd != null)
                 .collect(toList());
         
-        val packageName    = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
-        val encloseName    = element.getEnclosingElement().getSimpleName().toString();
-        val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
-        val struct         = element.getAnnotation(Struct.class);
-        val specTargetName = struct.name();
-        val targetName     = common.extractTargetName(simpleName, struct.name());
-        val specField      = struct.specField();
+        val packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
+        val encloseName = element.getEnclosingElement().getSimpleName().toString();
+        val sourceName  = type.getQualifiedName().toString().substring(packageName.length() + 1 );
+        val struct      = element.getAnnotation(Struct.class);
+        val targetName  = targetName();
+        val specField   = struct.specField();
         
         val configures = extractConfigurations(element, struct);
         if (configures == null)
             return null;
         
-        if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
+        if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, targetName, configures))
             return null;
         
-        if (!ensureSerializationMethodMatch(type, getters, packageName, specTargetName, configures))
+        if (!ensureSerializationMethodMatch(type, getters, packageName, targetName, configures))
             return null;
         
         // TODO - Should look for a validator method.
@@ -199,7 +186,7 @@ public class StructSpec {
             return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, specField, validatorName, configures, getters, methods, localTypeWithLens);
         } catch (Exception e) {
             error(element, "Problem generating the class: "
-                            + packageName + "." + specTargetName
+                            + packageName + "." + targetName
                             + ": "  + e.getMessage()
                             + ":"   + e.getClass()
                             + stream(e.getStackTrace())
@@ -248,10 +235,10 @@ public class StructSpec {
         val packageName    = environment.packageName();
         val encloseName    = element.getEnclosingElement().getSimpleName().toString();
         val struct         = element.getAnnotation(Struct.class);
-        val specTargetName = common.extractTargetName(method.getSimpleName().toString(), struct.name());
+        val specTargetName = targetName();
         val specField      = struct.specField();
         
-        val localTypeWithLens = common.readLocalTypeWithLens(element);
+        val localTypeWithLens = environment.readLocalTypeWithLens();
         
         val isClass      = (Boolean)null;
         val sourceName   = (String)null;

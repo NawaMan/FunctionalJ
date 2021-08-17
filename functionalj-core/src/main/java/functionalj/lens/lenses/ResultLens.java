@@ -51,12 +51,13 @@ public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         
         private LensSpecParameterized<H, Result<T>, T, SL> spec;
         
-        public final SL value;
+        public final SL value() {
+            return get();
+        }
         
         public Impl(String name, LensSpecParameterized<H, Result<T>, T, SL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;
-            this.value = get();
         }
 
         @Override

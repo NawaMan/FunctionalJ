@@ -95,7 +95,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             val strucSpec = new StructSpec(input);
             
             val packageName    = strucSpec.packageName();
-            val specTargetName = strucSpec.targetTypeName();
+            val specTargetName = strucSpec.targetName();
             
             try {
                 val sourceSpec = strucSpec.sourceSpec();

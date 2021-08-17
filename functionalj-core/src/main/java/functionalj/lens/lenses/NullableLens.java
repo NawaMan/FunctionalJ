@@ -45,6 +45,10 @@ public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         
         private LensSpecParameterized<H, Nullable<T>, T, SL> spec;
         
+        public final SL value() {
+            return get();
+        }
+        
         public Impl(String name, LensSpecParameterized<H, Nullable<T>, T, SL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;

@@ -26,16 +26,19 @@ package functionalj.types.choice;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 public class ChoiceSpecInputImpl implements ChoiceSpec.Input {
     
     private final Element  element;
     private final Elements elementUtils;
+    private final Types    typeUtils;
     private final Messager messager;
     
-    public ChoiceSpecInputImpl(Element element, Elements elementUtils, Messager messager) {
+    public ChoiceSpecInputImpl(Element element, Elements elementUtils, Types typeUtils, Messager messager) {
         this.element      = element;
         this.elementUtils = elementUtils;
+        this.typeUtils    = typeUtils;
         this.messager     = messager;
     }
     
@@ -47,6 +50,11 @@ public class ChoiceSpecInputImpl implements ChoiceSpec.Input {
     @Override
     public Elements elementUtils() {
         return elementUtils;
+    }
+    
+    @Override
+    public Types typeUtils() {
+        return typeUtils;
     }
     
     @Override
