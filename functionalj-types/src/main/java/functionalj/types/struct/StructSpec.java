@@ -68,6 +68,7 @@ import functionalj.types.Serialize;
 import functionalj.types.Struct;
 import functionalj.types.Type;
 import functionalj.types.common;
+import functionalj.types.input.Environment;
 import functionalj.types.struct.generator.Callable;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.Parameter;
@@ -94,11 +95,17 @@ public class StructSpec {
             ElementKind.INTERFACE,
             ElementKind.METHOD);
     
-    private final Input input;
+    private final Input       input;
+    private final Environment environment;
     private boolean hasError = false;
     
     public StructSpec(Input input) {
-        this.input = input;
+        this.input       = input;
+        this.environment = new Environment(
+                        input.element(), 
+                        input.elementUtils(),
+                        input.typeUtils(),
+                        input.messager());
     }
     
     public boolean hasError() {
@@ -108,15 +115,6 @@ public class StructSpec {
     private void error(Element e, String msg) {
         hasError = true;
         input.messager().printMessage(Diagnostic.Kind.ERROR, msg, e);
-    }
-    
-    public String packageName() {
-        val element = input.element();
-        if (element instanceof TypeElement)
-            return extractPackageNameType(element);
-        if (element instanceof ExecutableElement)
-            return extractPackageNameMethod(element);
-        throw new IllegalArgumentException("Struct annotation is only support class or method.");
     }
     
     public String targetTypeName() {
@@ -247,7 +245,7 @@ public class StructSpec {
     
     private SourceSpec extractSourceSpecMethod(Element element) {
         val method         = (ExecutableElement)element;
-        val packageName    = packageName();
+        val packageName    = environment.packageName();
         val encloseName    = element.getEnclosingElement().getSimpleName().toString();
         val struct         = element.getAnnotation(Struct.class);
         val specTargetName = common.extractTargetName(method.getSimpleName().toString(), struct.name());
@@ -294,19 +292,6 @@ public class StructSpec {
             error(element, errMsg);
             return null;
         }
-    }
-
-    private String extractPackageNameType(Element element) {
-        val type        = (TypeElement)element;
-        val packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
-        return packageName;
-    }
-    
-    private String extractPackageNameMethod(Element element) {
-        val method      = (ExecutableElement)element;
-        val type        = (TypeElement)(method.getEnclosingElement());
-        val packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
-        return packageName;
     }
     
     private boolean isBooleanStringOrValidation(TypeMirror returnType) {
