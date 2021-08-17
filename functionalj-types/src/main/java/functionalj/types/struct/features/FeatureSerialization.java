@@ -12,7 +12,7 @@ import javax.lang.model.element.TypeElement;
 import functionalj.types.Generic;
 import functionalj.types.Serialize;
 import functionalj.types.Type;
-import functionalj.types.struct.StructSpec.Input;
+import functionalj.types.input.Environment;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import lombok.val;
@@ -20,7 +20,7 @@ import lombok.val;
 public class FeatureSerialization {
     
     public static String validateSerialization(
-                    Input          input,
+                    Environment    environment,
                     TypeElement    type, 
                     List<Getter>   getters, 
                     String         packageName,
@@ -31,7 +31,7 @@ public class FeatureSerialization {
             return null;    // Don't care about serialize method
         
         // Find the default/non-abstract method with name `serialize` with no parameter.
-        val method      = existingSerializeMethod(input, type);
+        val method      = existingSerializeMethod(environment, type);
         val returnType  = (method != null) ? method.getReturnType() + "" : null;
         String expected = null;
         if (serializeTo == Serialize.To.MAP) {
@@ -84,30 +84,30 @@ public class FeatureSerialization {
         return format(template, serializeTo, expected, returnType);
     }
     
-    public static ExecutableElement existingSerializeMethod(Input input, TypeElement type) {
+    public static ExecutableElement existingSerializeMethod(Environment environment, TypeElement type) {
         return type.getEnclosedElements().stream()
                 .filter(elmt -> elmt.getKind().equals(ElementKind.METHOD))
                 .map   (elmt -> ((ExecutableElement)elmt))
-                .filter(mthd -> mthd.isDefault() || !isAbstract(input, mthd))
+                .filter(mthd -> mthd.isDefault() || !isAbstract(environment, mthd))
                 .filter(mthd -> mthd.getParameters().isEmpty())
                 .findFirst()
                 .orElse((ExecutableElement)null);
     }
     
-    public static String existingSerializeMethodReturnType(Input input, TypeElement type) {
-        val method     = existingSerializeMethod(input, type);
+    public static String existingSerializeMethodReturnType(Environment environment, TypeElement type) {
+        val method     = existingSerializeMethod(environment, type);
         val returnType = (method != null) ? method.getReturnType() + "" : null;
         return returnType;
     }
     
     // The following methods assume that we already validate using `validateSerialization(...)`
     
-    public static Type serializeToType(Input input, TypeElement type, Configurations configures) {
+    public static Type serializeToType(Environment environment, TypeElement type, Configurations configures) {
         val serializeTo = configures.serialize;
         if (serializeTo == Serialize.To.NOTHING)
             return null;    // Don't care about serialize method
         
-        val methodType = existingSerializeMethodReturnType(input, type);
+        val methodType = existingSerializeMethodReturnType(environment, type);
         if (methodType != null) {
             val primitiveType = Type.primitiveTypes.get(methodType);
             if (primitiveType != null)
@@ -131,8 +131,8 @@ public class FeatureSerialization {
         return null;
     }
     
-    public static Type serializeType(Input input, TypeElement type, Configurations configures) {
-        val toType = serializeToType(input, type, configures);
+    public static Type serializeType(Environment environment, TypeElement type, Configurations configures) {
+        val toType = serializeToType(environment, type, configures);
         return (toType != null) ? Type.SERIALIZE.withGenerics(new Generic(toType)) : null;
     }
     

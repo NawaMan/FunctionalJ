@@ -93,11 +93,10 @@ public class StructSpec {
             ElementKind.INTERFACE,
             ElementKind.METHOD);
     
-    private final Input       input;
     private final Environment environment;
     
     public StructSpec(Input input) {
-        this.input       = input;
+//        this.input       = input;
         this.environment = new Environment(
                         input.element(), 
                         input.elementUtils(),
@@ -122,7 +121,7 @@ public class StructSpec {
     }
     
     public SourceSpec sourceSpec() {
-        val element = input.element();
+        val element = environment.element();
         if (element instanceof TypeElement)
             return extractSourceSpecType(element);
         if (element instanceof ExecutableElement)
@@ -146,7 +145,7 @@ public class StructSpec {
                 .filter (elmt  ->elmt.getKind().equals(ElementKind.METHOD))
                 .map    (elmt  ->((ExecutableElement)elmt))
                 .filter (method->!method.isDefault())
-                .filter (method->!isClass || isAbstract(input, method))
+                .filter (method->!isClass || isAbstract(environment, method))
                 .filter (method->!(method.getReturnType() instanceof NoType))
                 .filter (method->method.getParameters().isEmpty())
                 .map    (method->createGetterFromMethod(element, method))
@@ -157,12 +156,12 @@ public class StructSpec {
         List<Callable> methods = type.getEnclosedElements().stream()
                 .filter (elmt -> elmt.getKind().equals(ElementKind.METHOD))
                 .map    (elmt -> ((ExecutableElement)elmt))
-                .filter (mthd -> (mthd.isDefault() || isStatic(mthd)) && !isAbstract(input, mthd) && !isPrivate(mthd))
+                .filter (mthd -> (mthd.isDefault() || isStatic(mthd)) && !isAbstract(environment, mthd) && !isPrivate(mthd))
                 .map    (mthd -> extractMethodSpec(element, mthd))
                 .filter (mthd -> mthd != null)
                 .collect(toList());
         
-        val packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
+        val packageName = environment.elementUtils().getPackageOf(type).getQualifiedName().toString();
         val encloseName = element.getEnclosingElement().getSimpleName().toString();
         val sourceName  = type.getQualifiedName().toString().substring(packageName.length() + 1 );
         val struct      = element.getAnnotation(Struct.class);
@@ -322,7 +321,7 @@ public class StructSpec {
                     String         specTargetName, 
                     Configurations configures) {
         
-        val errMsg = validateSerialization(input, type, getters, packageName, specTargetName, configures);
+        val errMsg = validateSerialization(environment, type, getters, packageName, specTargetName, configures);
         if (errMsg == null)
             return true;
         
@@ -425,7 +424,7 @@ public class StructSpec {
     }
     
     private String getPackageName(Element element, TypeElement typeElement) {
-        val elementUtils = input.elementUtils();
+        val elementUtils = environment.elementUtils();
         val typePackage = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
         if (!typePackage.isEmpty())
             return typePackage;
