@@ -25,6 +25,7 @@ package functionalj.types.struct;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -33,7 +34,6 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
 import functionalj.types.Struct;
@@ -77,10 +77,12 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // TODO - Should find a way to warn when a field is not immutable.
         boolean hasError = false;
-        for (Element element : roundEnv.getElementsAnnotatedWith(Struct.class)) {
-            val environment = environmentBuilder.newEnvironment(element);
-            val strucSpec   = new StructSpec(environment);
-            
+        val elementsWithChoice 
+                = roundEnv.getElementsAnnotatedWith(Struct.class).stream()
+                .map(environmentBuilder::newEnvironment)
+                .collect(toList());
+        for (val environment : elementsWithChoice) {
+            val strucSpec      = new StructSpec(environment);
             val packageName    = strucSpec.packageName();
             val specTargetName = strucSpec.targetName();
             

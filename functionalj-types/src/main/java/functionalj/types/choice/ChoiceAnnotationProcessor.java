@@ -37,7 +37,6 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
 import functionalj.types.Choice;
@@ -81,8 +80,11 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         boolean hasError = false;
-        for (Element element : roundEnv.getElementsAnnotatedWith(Choice.class)) {
-            val environment = environmentBuilder.newEnvironment(element);
+        val elementsWithChoice 
+                = roundEnv.getElementsAnnotatedWith(Choice.class).stream()
+                .map(environmentBuilder::newEnvironment)
+                .collect(toList());
+        for (val environment : elementsWithChoice) {
             val choiceSpec  = new ChoiceSpec(environment);
             val sourceSpec  = choiceSpec.sourceSpec();
             val packageName = choiceSpec.packageName();
@@ -98,7 +100,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             }
             
             val generator   = new Generator(sourceSpec);
-            val typeElement = (TypeElement)element;
+            val typeElement = (TypeElement)environment.element();
             try {
                 val className = packageName + "." + targetName;
                 val content   = generator.lines().stream().collect(joining("\n"));
