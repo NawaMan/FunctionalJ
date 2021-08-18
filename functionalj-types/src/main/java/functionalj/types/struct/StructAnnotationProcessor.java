@@ -77,11 +77,11 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // TODO - Should find a way to warn when a field is not immutable.
         boolean hasError = false;
-        val elementsWithChoice 
+        val elementsWithStruct
                 = roundEnv.getElementsAnnotatedWith(Struct.class).stream()
                 .map(environmentBuilder::newEnvironment)
                 .collect(toList());
-        for (val environment : elementsWithChoice) {
+        for (val environment : elementsWithStruct) {
             val strucSpec      = new StructSpec(environment);
             val packageName    = strucSpec.packageName();
             val specTargetName = strucSpec.targetName();
