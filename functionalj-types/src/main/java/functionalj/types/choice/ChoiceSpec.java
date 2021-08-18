@@ -45,7 +45,6 @@ import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
-import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
 import functionalj.types.DefaultTo;
@@ -71,13 +70,6 @@ public class ChoiceSpec {
         this.environment = environment;
     }
     
-    private void error(String msg) {
-        hasError = true;
-        val element  = environment.element();
-        val messager = environment.messager();
-        messager.printMessage(Diagnostic.Kind.ERROR, msg, element);
-    }
-    
     public String packageName() {
         return environment.packageName();
     }
@@ -97,9 +89,9 @@ public class ChoiceSpec {
         
         val localTypeWithLens = environment.readLocalTypeWithLens();
         val simpleName        = environment.elementSimpleName();
-        val isInterface       = ElementKind.INTERFACE.equals(element.getKind());
+        val isInterface       = environment.isInterface();
         if (!isInterface) {
-            error("Only an interface can be annotated with " + Choice.class.getSimpleName() + ": " + simpleName);
+            environment.error("Only an interface can be annotated with " + Choice.class.getSimpleName() + ": " + simpleName);
             return null;
         }
         
@@ -114,7 +106,7 @@ public class ChoiceSpec {
         
         val specField = environment.specifiedSpecField();
         if ((specField != null) && !specField.matches("^[A-Za-z_$][A-Za-z_$0-9]*$")) {
-            error("Source spec field name is not a valid identifier: " + specField);
+            environment.error("Source spec field name is not a valid identifier: " + specField);
             return null;
         }
         
@@ -264,7 +256,7 @@ public class ChoiceSpec {
                 val defValue   = (p.getAnnotation(DefaultTo.class) != null) ? p.getAnnotation(DefaultTo.class).value() : null;
                 
                 if (isNullable && isRequired) {
-                    error("Parameter cannot be both Required and Nullable: " + name);
+                    environment.error("Parameter cannot be both Required and Nullable: " + name);
                 }
                 return new CaseParam(name, type, isNullable, defValue);
             }).collect(toList());
@@ -292,10 +284,10 @@ public class ChoiceSpec {
         validateMethods.stream()
         .filter(mthd -> {
             if (!mthd.getModifiers().contains(Modifier.STATIC)) {
-                error("Validator method must be static: " + validateMethodName);
+                environment.error("Validator method must be static: " + validateMethodName);
             }
             if (mthd.getModifiers().contains(Modifier.PRIVATE)) {
-                error("Validator method must not be private: " + validateMethodName);
+                environment.error("Validator method must not be private: " + validateMethodName);
             }
             return false;
         })
@@ -309,7 +301,7 @@ public class ChoiceSpec {
             int mthdParamSize   = mthd.getTypeParameters().size();
             if (mthdParamSize != methodParamSize) {
                 val expected = "expect " + methodParamSize + " but found " + mthdParamSize;
-                error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
+                environment.error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
                 return true;
             }
             
@@ -318,7 +310,7 @@ public class ChoiceSpec {
                 val mthdParam   = mthd.getTypeParameters().get(i);
                 if (!mthdParam.equals(methodParam)) {
                     val expected = "parameter " + i + " expected to be " + methodParam + " but found to be " + mthdParam;
-                    error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
+                    environment.error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
                     return true;
                 }
             }

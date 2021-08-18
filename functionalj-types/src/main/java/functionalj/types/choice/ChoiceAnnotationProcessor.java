@@ -26,8 +26,6 @@ package functionalj.types.choice;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -36,7 +34,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
@@ -56,20 +53,17 @@ import lombok.val;
  */
 public class ChoiceAnnotationProcessor extends AbstractProcessor {
     
-    private Filer filer;
-    
     private List<String> logs = new ArrayList<String>();
     
     private EnvironmentBuilder environmentBuilder = null;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        filer = processingEnv.getFiler();
-        
         val elementUtils = processingEnv.getElementUtils();
         val types        = processingEnv.getTypeUtils();
         val messager     = processingEnv.getMessager();
-        environmentBuilder = new EnvironmentBuilder(elementUtils, types, messager);
+        val filer        = processingEnv.getFiler();
+        environmentBuilder = new EnvironmentBuilder(elementUtils, types, messager, filer);
     }
     
     @Override
@@ -88,8 +82,8 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         boolean hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Choice.class)) {
-            val input       = environmentBuilder.newEnvironment(element);
-            val choiceSpec  = new ChoiceSpec(input);
+            val environment = environmentBuilder.newEnvironment(element);
+            val choiceSpec  = new ChoiceSpec(environment);
             val sourceSpec  = choiceSpec.sourceSpec();
             val packageName = choiceSpec.packageName();
             val targetName  = choiceSpec.targetName();
@@ -99,21 +93,20 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                         = "Choice type must has at least one choice "
                         + "(Reminder: a choice name must start with a capital letter): " 
                         + packageName + "." + targetName;
-                environmentBuilder.error(element, errMsg);
+                environment.error(errMsg);
                 continue;
             }
             
-            val generator  = new Generator(sourceSpec);
-            
-            val typeElement    = (TypeElement)element;
+            val generator   = new Generator(sourceSpec);
+            val typeElement = (TypeElement)element;
             try {
-                val className      = packageName + "." + targetName;
-                val content        = generator.lines().stream().collect(joining("\n"));
-                val logString      = "\n" + logs.stream().map("// "::concat).collect(joining("\n"));
-                generateCode(element, className, content + logString);
+                val className = packageName + "." + targetName;
+                val content   = generator.lines().stream().collect(joining("\n"));
+                val logString = "\n" + logs.stream().map("// "::concat).collect(joining("\n"));
+                environment.generateCode(className, content + logString);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
-                environmentBuilder.error(element, "Problem generating the class: "
+                environment.error("Problem generating the class: "
                                 + packageName + "." + targetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()
@@ -125,12 +118,6 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             }
         }
         return hasError;
-    }
-    
-    private void generateCode(Element element, String className, String content) throws IOException {
-        try (Writer writer = filer.createSourceFile(className, element).openWriter()) {
-            writer.write(content);
-        }
     }
     
 }

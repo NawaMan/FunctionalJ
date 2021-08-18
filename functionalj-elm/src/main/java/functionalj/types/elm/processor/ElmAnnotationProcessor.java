@@ -34,7 +34,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Messager;
+import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
@@ -42,7 +42,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
 import functionalj.types.Struct;
@@ -62,13 +61,12 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
 
     private Elements elementUtils;
     private Types    typeUtils;
-    private Messager messager;
-    private boolean  hasError;
+    private Filer    filer;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         elementUtils = processingEnv.getElementUtils();
-        messager     = processingEnv.getMessager();
+        filer        = processingEnv.getFiler();
     }
     
     @Override
@@ -83,41 +81,37 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
     
-    private void error(Element e, String msg) {
-        hasError = true;
-        messager.printMessage(Diagnostic.Kind.ERROR, msg, e);
-    }
-    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        hasError = false;
+        boolean hasError      = false;
+        val     dummyMessager = new DummyMessager();
         for (Element element : roundEnv.getElementsAnnotatedWith(Elm.class)) {
+            val environment = new Environment(element, elementUtils, typeUtils, dummyMessager, filer);
+            
             val struct = element.getAnnotation(Struct.class);
             if (struct != null) {
-                handleStructType(element);
+                hasError = hasError | !handleStructType(environment);
                 continue;
             }
             
             val choice = element.getAnnotation(Choice.class);
             if (choice != null) {
-                handleChoiceType(element);
+                hasError = hasError | !handleChoiceType(environment);
                 continue;
             }
             
-            error(element, "The element must either be a struct or a choice.");
+            environment.error("The element must either be a struct or a choice.");
         }
         return hasError;
     }
     
-    private void handleStructType(Element element) {
-        val dummyMessager  = new DummyMessager();
-        val input          = new Environment(element, elementUtils, typeUtils, dummyMessager);
-        val structSpec     = new StructSpec(input);
+    private boolean handleStructType(Environment environment) {
+        val structSpec     = new StructSpec(environment);
         val sourceSpec     = structSpec.sourceSpec();
         val packageName    = structSpec.packageName();
         val specTargetName = structSpec.targetName();
         try {
-            val elmStructSpec = new ElmStructSpec(sourceSpec, element);
+            val elmStructSpec = new ElmStructSpec(sourceSpec, environment.element());
             val elmStruct     = new ElmStructBuilder(elmStructSpec);
             val baseDir       = elmStructSpec.generatedDirectory();
             val folderName    = elmStructSpec.folderName();
@@ -128,16 +122,16 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
             val generatedName = generatedPath + fileName;
             
             generateElmCode(generatedPath, generatedCode, generatedName);
-        } catch (Exception e) {
-            error(element, "Problem generating the class: "
+            return true;
+        } catch (Throwable e) {
+            environment.error("Problem generating the class: "
                     + packageName + "." + specTargetName
                     + ": "  + e.getMessage()
                     + ":"   + e.getClass()
                     + stream(e.getStackTrace())
                         .map(st -> "\n    @" + st)
                         .collect(joining()));
-        } finally {
-            hasError |= structSpec.hasError();
+            return !structSpec.hasError();
         }
     }
     
@@ -148,15 +142,13 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         Files.write(generatedFile.toPath(), lines);
     }
     
-    private void handleChoiceType(Element element) {
-        val dummyMessager  = new DummyMessager();
-        val input          = new Environment(element, elementUtils, typeUtils, dummyMessager);
-        val choiceSpec     = new ChoiceSpec(input);
+    private boolean handleChoiceType(Environment environment) {
+        val choiceSpec     = new ChoiceSpec(environment);
         val sourceSpec     = choiceSpec.sourceSpec();
         val packageName    = choiceSpec.packageName();
         val specTargetName = choiceSpec.targetName();
         try {
-            val elmChoiceSpec = new ElmChoiceSpec(sourceSpec, element);
+            val elmChoiceSpec = new ElmChoiceSpec(sourceSpec, environment.element());
             val elmChoice     = new ElmChoiceBuilder(elmChoiceSpec);
             val baseDir       = elmChoiceSpec.generatedDirectory();
             val folderName    = elmChoiceSpec.folderName();
@@ -167,16 +159,16 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
             val generatedName = generatedPath + fileName;
             
             generateElmCode(generatedPath, generatedCode, generatedName);
+            return true;
         } catch (Exception e) {
-            error(element, "Problem generating the class: "
+            environment.error("Problem generating the class: "
                     + packageName + "." + specTargetName
                     + ": "  + e.getMessage()
                     + ":"   + e.getClass()
                     + stream(e.getStackTrace())
                         .map(st -> "\n    @" + st)
                         .collect(joining()));
-        } finally {
-            hasError |= choiceSpec.hasError();
+            return !choiceSpec.hasError();
         }
     }
     

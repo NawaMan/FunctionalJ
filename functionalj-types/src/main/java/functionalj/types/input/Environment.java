@@ -4,15 +4,20 @@ import static functionalj.types.Utils.blankToNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
+import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -20,20 +25,24 @@ import javax.tools.Diagnostic;
 import functionalj.types.Choice;
 import functionalj.types.Serialize;
 import functionalj.types.Struct;
-import lombok.Value;
 import lombok.val;
-import lombok.experimental.Accessors;
 
-@Value
-@Accessors(fluent = true)
 public class Environment {
     
-    private final Element  element;
-    private final Elements elementUtils;
-    private final Types    typeUtils;
-    private final Messager messager;
+    private final Element       element;
+    private final Elements      elementUtils;
+    private final Types         typeUtils;
+    private final Messager      messager;
+    private final Filer         filer;
+    private final AtomicBoolean hasError = new AtomicBoolean(false);
     
-    private AtomicBoolean hasError = new AtomicBoolean(false);
+    public Environment(Element element, Elements elementUtils, Types typeUtils, Messager messager, Filer filer) {
+        this.element      = element;
+        this.elementUtils = elementUtils;
+        this.typeUtils    = typeUtils;
+        this.messager     = messager;
+        this.filer        = filer;
+    }
     
     public boolean hasError() {
         return hasError.get();
@@ -54,7 +63,19 @@ public class Environment {
             return extractPackageNameFromType((TypeElement)element);
         if (element instanceof ExecutableElement)
             return extractPackageNameFromMethod((ExecutableElement)element);
-        throw new IllegalArgumentException("Struct annotation is only support class or method.");
+        throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
+    }
+    
+    public String sourceName() {
+        val packageName = packageName();
+        if (element instanceof TypeElement) {
+            val typeElement = (TypeElement)element;
+            return typeElement.getQualifiedName().toString().substring(packageName.length() + 1 );
+        }
+        if (element instanceof ExecutableElement) {
+            return null;
+        }
+        throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
     }
     
     private String extractPackageNameFromType(TypeElement type) {
@@ -169,6 +190,31 @@ public class Environment {
             return simpleName.replaceAll("Model$", "");
         
         return simpleName;
+    }
+    
+    public void generateCode(String className, String content) throws IOException {
+        try (Writer writer = filer.createSourceFile(className, element).openWriter()) {
+            writer.write(content);
+        }
+    }
+    
+    public boolean isInterface() {
+        return ElementKind.INTERFACE.equals(element.getKind());
+    }
+    
+    // To get rid off.
+    
+    public Element element() {
+        return element;
+    }
+    
+    public Elements elementUtils() {
+        return elementUtils;
+    }
+    
+    public List<? extends TypeParameterElement> typeParameters() {
+        val typeElement = (TypeElement)element;
+        return typeElement.getTypeParameters();
     }
     
 }

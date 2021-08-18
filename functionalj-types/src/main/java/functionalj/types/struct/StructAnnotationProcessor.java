@@ -26,25 +26,18 @@ package functionalj.types.struct;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 
 import functionalj.types.Struct;
-import functionalj.types.input.Environment;
+import functionalj.types.input.EnvironmentBuilder;
 import functionalj.types.struct.generator.StructBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -57,17 +50,15 @@ import lombok.val;
  */
 public class StructAnnotationProcessor extends AbstractProcessor {
     
-    private Elements elementUtils;
-    private Types    typeUtils;
-    private Filer    filer;
-    private Messager messager;
-    private boolean  hasError;
+    private EnvironmentBuilder environmentBuilder = null;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        elementUtils = processingEnv.getElementUtils();
-        filer        = processingEnv.getFiler();
-        messager     = processingEnv.getMessager();
+        val elementUtils = processingEnv.getElementUtils();
+        val types        = processingEnv.getTypeUtils();
+        val messager     = processingEnv.getMessager();
+        val filer        = processingEnv.getFiler();
+        environmentBuilder = new EnvironmentBuilder(elementUtils, types, messager, filer);
     }
     
     @Override
@@ -82,18 +73,13 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
     
-    private void error(Element e, String msg) {
-        hasError = true;
-        messager.printMessage(Diagnostic.Kind.ERROR, msg, e);
-    }
-    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // TODO - Should find a way to warn when a field is not immutable.
-        hasError = false;
+        boolean hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Struct.class)) {
-            val input     = new Environment(element, elementUtils, typeUtils, messager);
-            val strucSpec = new StructSpec(input);
+            val environment = environmentBuilder.newEnvironment(element);
+            val strucSpec   = new StructSpec(environment);
             
             val packageName    = strucSpec.packageName();
             val specTargetName = strucSpec.targetName();
@@ -106,9 +92,9 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 val dataObjSpec = new StructBuilder(sourceSpec).build();
                 val className   = (String)dataObjSpec.type().fullName("");
                 val content     = new GenStruct(sourceSpec, dataObjSpec).lines().collect(joining("\n"));
-                generateCode(element, className, content);
+                environment.generateCode(className, content);
             } catch (Exception e) {
-                error(element, "Problem generating the class: "
+                environment.error("Problem generating the class: "
                                 + packageName + "." + specTargetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()
@@ -120,12 +106,6 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             }
         }
         return hasError;
-    }
-    
-    private void generateCode(Element element, String className, String content) throws IOException {
-        try (Writer writer = filer.createSourceFile(className, element).openWriter()) {
-            writer.write(content);
-        }
     }
     
 }
