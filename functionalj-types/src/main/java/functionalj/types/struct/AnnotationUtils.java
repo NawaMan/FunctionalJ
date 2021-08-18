@@ -7,7 +7,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 
 import functionalj.types.input.Environment;
-import functionalj.types.struct.StructSpec.Input;
 import functionalj.types.struct.generator.model.Accessibility;
 import functionalj.types.struct.generator.model.Concrecity;
 import functionalj.types.struct.generator.model.Modifiability;
@@ -16,16 +15,6 @@ import lombok.val;
 
 public class AnnotationUtils {
     
-    public static boolean isAbstract(Input input, ExecutableElement method) {
-        // Seriously ... no other way?
-        try (val writer = new StringWriter()) {
-            input.elementUtils().printElements(writer, method);
-            return writer.toString().contains(" abstract ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
     public static boolean isAbstract(Environment environment, ExecutableElement method) {
         // Seriously ... no other way?
         try (val writer = new StringWriter()) {

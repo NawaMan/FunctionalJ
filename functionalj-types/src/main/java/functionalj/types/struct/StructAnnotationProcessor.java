@@ -44,6 +44,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import functionalj.types.Struct;
+import functionalj.types.input.Environment;
 import functionalj.types.struct.generator.StructBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -91,7 +92,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         // TODO - Should find a way to warn when a field is not immutable.
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Struct.class)) {
-            val input     = new StructSpecInputImpl(element, elementUtils, typeUtils, messager);
+            val input     = new Environment(element, elementUtils, typeUtils, messager);
             val strucSpec = new StructSpec(input);
             
             val packageName    = strucSpec.packageName();

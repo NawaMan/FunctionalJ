@@ -37,18 +37,15 @@ import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
 import functionalj.types.choice.generator.Generator;
+import functionalj.types.input.EnvironmentBuilder;
 import lombok.val;
 
 
@@ -59,18 +56,20 @@ import lombok.val;
  */
 public class ChoiceAnnotationProcessor extends AbstractProcessor {
     
-    private Elements elementUtils;
-    private Types    typeUtils;
-    private Filer    filer;
-    private Messager messager;
-    private boolean  hasError;
+    private Filer filer;
+    
     private List<String> logs = new ArrayList<String>();
+    
+    private EnvironmentBuilder environmentBuilder = null;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        elementUtils = processingEnv.getElementUtils();
-        filer        = processingEnv.getFiler();
-        messager     = processingEnv.getMessager();
+        filer = processingEnv.getFiler();
+        
+        val elementUtils = processingEnv.getElementUtils();
+        val types        = processingEnv.getTypeUtils();
+        val messager     = processingEnv.getMessager();
+        environmentBuilder = new EnvironmentBuilder(elementUtils, types, messager);
     }
     
     @Override
@@ -85,16 +84,11 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
     
-    private void error(Element e, String msg) {
-        hasError = true;
-        messager.printMessage(Diagnostic.Kind.ERROR, msg, e);
-    }
-    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        hasError = false;
+        boolean hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Choice.class)) {
-            val input       = new ChoiceSpecInputImpl(element, elementUtils, typeUtils, messager);
+            val input       = environmentBuilder.newEnvironment(element);
             val choiceSpec  = new ChoiceSpec(input);
             val sourceSpec  = choiceSpec.sourceSpec();
             val packageName = choiceSpec.packageName();
@@ -105,8 +99,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                         = "Choice type must has at least one choice "
                         + "(Reminder: a choice name must start with a capital letter): " 
                         + packageName + "." + targetName;
-                error(element, errMsg);
-                hasError = true;
+                environmentBuilder.error(element, errMsg);
                 continue;
             }
             
@@ -120,7 +113,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                 generateCode(element, className, content + logString);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
-                error(element, "Problem generating the class: "
+                environmentBuilder.error(element, "Problem generating the class: "
                                 + packageName + "." + targetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()
@@ -128,7 +121,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                                 + ":"   + generator
                                 + " @ " + Stream.of(e.getStackTrace()).map(String::valueOf).collect(toList()));
             } finally {
-                hasError |= choiceSpec.hasError();
+                hasError = hasError || choiceSpec.hasError();
             }
         }
         return hasError;

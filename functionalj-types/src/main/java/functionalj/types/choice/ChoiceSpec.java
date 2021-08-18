@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -46,8 +45,6 @@ import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
@@ -67,32 +64,17 @@ import lombok.val;
 
 public class ChoiceSpec {
     
-    static public interface Input {
-        
-        public Element  element();
-        public Elements elementUtils();
-        public Types    typeUtils();
-        public Messager messager();
-        
-    }
-    
-    private final Input       input;
     private final Environment environment;
     private boolean hasError = false;
     
-    public ChoiceSpec(ChoiceSpecInputImpl input) {
-        this.input       = input;
-        this.environment = new Environment(
-                        input.element(), 
-                        input.elementUtils(),
-                        input.typeUtils(),
-                        input.messager());
+    public ChoiceSpec(Environment environment) {
+        this.environment = environment;
     }
     
     private void error(String msg) {
         hasError = true;
-        val element  = input.element();
-        val messager = input.messager();
+        val element  = environment.element();
+        val messager = environment.messager();
         messager.printMessage(Diagnostic.Kind.ERROR, msg, element);
     }
     
@@ -109,9 +91,9 @@ public class ChoiceSpec {
     }
     
     public SourceSpec sourceSpec() {
-        val element      = input.element();
+        val element      = environment.element();
         val typeElement  = (TypeElement)element;
-        val elementUtils = input.elementUtils();
+        val elementUtils = environment.elementUtils();
         
         val localTypeWithLens = environment.readLocalTypeWithLens();
         val simpleName        = environment.elementSimpleName();
@@ -401,8 +383,8 @@ public class ChoiceSpec {
     }
     
     private String getPackageName(TypeElement typeElement) {
-        val element      = input.element();
-        val elementUtils = input.elementUtils();
+        val element      = environment.element();
+        val elementUtils = environment.elementUtils();
         val typePackage  = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
         if (!typePackage.isEmpty())
             return typePackage;

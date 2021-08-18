@@ -47,10 +47,9 @@ import javax.tools.Diagnostic;
 import functionalj.types.Choice;
 import functionalj.types.Struct;
 import functionalj.types.choice.ChoiceSpec;
-import functionalj.types.choice.ChoiceSpecInputImpl;
 import functionalj.types.elm.Elm;
+import functionalj.types.input.Environment;
 import functionalj.types.struct.StructSpec;
-import functionalj.types.struct.StructSpecInputImpl;
 import lombok.val;
 
 
@@ -112,7 +111,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     
     private void handleStructType(Element element) {
         val dummyMessager  = new DummyMessager();
-        val input          = new StructSpecInputImpl(element, elementUtils, typeUtils, dummyMessager);
+        val input          = new Environment(element, elementUtils, typeUtils, dummyMessager);
         val structSpec     = new StructSpec(input);
         val sourceSpec     = structSpec.sourceSpec();
         val packageName    = structSpec.packageName();
@@ -151,7 +150,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     
     private void handleChoiceType(Element element) {
         val dummyMessager  = new DummyMessager();
-        val input          = new ChoiceSpecInputImpl(element, elementUtils, typeUtils, dummyMessager);
+        val input          = new Environment(element, elementUtils, typeUtils, dummyMessager);
         val choiceSpec     = new ChoiceSpec(input);
         val sourceSpec     = choiceSpec.sourceSpec();
         val packageName    = choiceSpec.packageName();

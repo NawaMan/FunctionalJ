@@ -43,7 +43,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -55,8 +54,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 
 import functionalj.types.DefaultTo;
 import functionalj.types.DefaultValue;
@@ -77,15 +74,6 @@ import lombok.val;
 
 public class StructSpec {
     
-    static public interface Input {
-        
-        public Element  element();
-        public Elements elementUtils();
-        public Types    typeUtils();
-        public Messager messager();
-        
-    }
-    
     private static final EnumSet<ElementKind> typeElementKinds = EnumSet.of(
             ElementKind.ENUM,
             ElementKind.CLASS,
@@ -95,13 +83,8 @@ public class StructSpec {
     
     private final Environment environment;
     
-    public StructSpec(Input input) {
-//        this.input       = input;
-        this.environment = new Environment(
-                        input.element(), 
-                        input.elementUtils(),
-                        input.typeUtils(),
-                        input.messager());
+    public StructSpec(Environment environment) {
+        this.environment = environment;
     }
     
     public boolean hasError() {
