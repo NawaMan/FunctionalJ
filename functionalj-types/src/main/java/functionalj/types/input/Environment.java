@@ -5,7 +5,6 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -14,10 +13,6 @@ import java.util.function.Function;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -29,15 +24,17 @@ import lombok.val;
 
 public class Environment {
     
-    private final Element       element;
-    private final Elements      elementUtils;
-    private final Types         typeUtils;
-    private final Messager      messager;
-    private final Filer         filer;
+    private final SpecElement element;
+    
+    final Elements elementUtils;
+    final Types    typeUtils;
+    final Messager messager;
+    final Filer    filer;
+    
     private final AtomicBoolean hasError = new AtomicBoolean(false);
     
     public Environment(Element element, Elements elementUtils, Types typeUtils, Messager messager, Filer filer) {
-        this.element      = element;
+        this.element      = SpecElement.of(this, element);
         this.elementUtils = elementUtils;
         this.typeUtils    = typeUtils;
         this.messager     = messager;
@@ -50,7 +47,7 @@ public class Environment {
     
     public void error(String msg) {
         hasError.set(true);
-        messager.printMessage(Diagnostic.Kind.ERROR, msg, element);
+        element.error(msg);
     }
     
     public void error(Element element, String msg) {
@@ -59,33 +56,33 @@ public class Environment {
     }
     
     public String packageName() {
-        if (element instanceof TypeElement)
-            return extractPackageNameFromType((TypeElement)element);
-        if (element instanceof ExecutableElement)
-            return extractPackageNameFromMethod((ExecutableElement)element);
+        if (element.isTypeElement())
+            return extractPackageNameFromType(element.asTypeElement());
+        if (element.isMethodElement())
+            return extractPackageNameFromMethod(element.asMethodElement());
         throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
     }
     
     public String sourceName() {
         val packageName = packageName();
-        if (element instanceof TypeElement) {
-            val typeElement = (TypeElement)element;
-            return typeElement.getQualifiedName().toString().substring(packageName.length() + 1 );
+        if (element.isTypeElement()) {
+            val typeElement = element.asTypeElement();
+            return typeElement.getPackageQualifiedName().substring(packageName.length() + 1 );
         }
-        if (element instanceof ExecutableElement) {
+        if (element.isMethodElement()) {
             return null;
         }
         throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
     }
     
-    private String extractPackageNameFromType(TypeElement type) {
-        val packageName = elementUtils.getPackageOf(type).getQualifiedName().toString();
+    private String extractPackageNameFromType(SpecTypeElement type) {
+        val packageName = type.getPackageQualifiedName();
         return packageName;
     }
     
-    private String extractPackageNameFromMethod(ExecutableElement method) {
-        val type        = (TypeElement)(method.getEnclosingElement());
-        val packageName = elementUtils.getPackageOf(type).getQualifiedName().toString();
+    private String extractPackageNameFromMethod(SpecMethodElement method) {
+        val type        = method.getEnclosingElement().asTypeElement();
+        val packageName = type.getPackageQualifiedName();
         return packageName;
     }
     
@@ -102,15 +99,10 @@ public class Environment {
         return element
                 .getEnclosingElement()
                 .getEnclosedElements().stream()
-                .filter (elmt -> isStructOrChoise(elmt))
+                .filter (elmt -> elmt.isStructOrChoise())
                 .map    (elmt -> targetName(elmt))
                 .filter (name -> nonNull(name))
                 .collect(toList());
-    }
-    
-    private boolean isStructOrChoise(Element elmt) {
-        return (elmt.getAnnotation(Struct.class) != null)
-            || (elmt.getAnnotation(Choice.class) != null);
     }
     
     //== From annotation ==
@@ -119,7 +111,7 @@ public class Environment {
         return targetName(element);
     }
     
-    private String targetName(Element element) {
+    private String targetName(SpecElement element) {
         val specifiedTargetName = specifiedTargetName();
         val simpleName          = element.getSimpleName().toString();
         return extractTargetName(simpleName, specifiedTargetName);
@@ -193,18 +185,16 @@ public class Environment {
     }
     
     public void generateCode(String className, String content) throws IOException {
-        try (Writer writer = filer.createSourceFile(className, element).openWriter()) {
-            writer.write(content);
-        }
+        element.generateCode(className, content);
     }
     
     public boolean isInterface() {
-        return ElementKind.INTERFACE.equals(element.getKind());
+        return element.isInterface();
     }
     
     // To get rid off.
     
-    public Element element() {
+    public SpecElement element() {
         return element;
     }
     
@@ -212,9 +202,8 @@ public class Environment {
         return elementUtils;
     }
     
-    public List<? extends TypeParameterElement> typeParameters() {
-        val typeElement = (TypeElement)element;
-        return typeElement.getTypeParameters();
+    public List<? extends SpecTypeParameterElement> typeParameters() {
+        return element.asTypeElement().getTypeParameters();
     }
     
 }

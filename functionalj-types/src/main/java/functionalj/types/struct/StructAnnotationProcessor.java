@@ -63,7 +63,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> annotations = new LinkedHashSet<String>();
+        val annotations = new LinkedHashSet<String>();
         annotations.add(Struct.class.getCanonicalName());
         return annotations;
     }

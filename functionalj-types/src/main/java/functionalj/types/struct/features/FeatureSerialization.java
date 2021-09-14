@@ -1,18 +1,17 @@
 package functionalj.types.struct.features;
 
-import static functionalj.types.struct.AnnotationUtils.isAbstract;
 import static java.lang.String.format;
 
 import java.util.List;
 
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
 import functionalj.types.Generic;
 import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.input.Environment;
+import functionalj.types.input.SpecMethodElement;
+import functionalj.types.input.SpecTypeElement;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import lombok.val;
@@ -26,6 +25,16 @@ public class FeatureSerialization {
                     String         packageName,
                     String         specTargetName, 
                     Configurations configures) {
+        return validateSerialization(environment, SpecTypeElement.of(environment, type), getters, packageName, specTargetName, configures);
+    }
+    
+    public static String validateSerialization(
+                    Environment     environment,
+                    SpecTypeElement type, 
+                    List<Getter>    getters, 
+                    String          packageName,
+                    String          specTargetName, 
+                    Configurations  configures) {
         val serializeTo = configures.serialize;
         if (serializeTo == Serialize.To.NOTHING)
             return null;    // Don't care about serialize method
@@ -84,17 +93,17 @@ public class FeatureSerialization {
         return format(template, serializeTo, expected, returnType);
     }
     
-    public static ExecutableElement existingSerializeMethod(Environment environment, TypeElement type) {
+    public static SpecMethodElement existingSerializeMethod(Environment environment, SpecTypeElement type) {
         return type.getEnclosedElements().stream()
-                .filter(elmt -> elmt.getKind().equals(ElementKind.METHOD))
-                .map   (elmt -> ((ExecutableElement)elmt))
-                .filter(mthd -> mthd.isDefault() || !isAbstract(environment, mthd))
+                .filter(elmt -> elmt.isMethod())
+                .map   (elmt -> elmt.asMethodElement())
+                .filter(mthd -> mthd.isDefault() || !mthd.isAbstract())
                 .filter(mthd -> mthd.getParameters().isEmpty())
                 .findFirst()
-                .orElse((ExecutableElement)null);
+                .orElse((SpecMethodElement)null);
     }
     
-    public static String existingSerializeMethodReturnType(Environment environment, TypeElement type) {
+    public static String existingSerializeMethodReturnType(Environment environment, SpecTypeElement type) {
         val method     = existingSerializeMethod(environment, type);
         val returnType = (method != null) ? method.getReturnType() + "" : null;
         return returnType;
@@ -102,7 +111,7 @@ public class FeatureSerialization {
     
     // The following methods assume that we already validate using `validateSerialization(...)`
     
-    public static Type serializeToType(Environment environment, TypeElement type, Configurations configures) {
+    public static Type serializeToType(Environment environment, SpecTypeElement type, Configurations configures) {
         val serializeTo = configures.serialize;
         if (serializeTo == Serialize.To.NOTHING)
             return null;    // Don't care about serialize method
@@ -131,7 +140,7 @@ public class FeatureSerialization {
         return null;
     }
     
-    public static Type serializeType(Environment environment, TypeElement type, Configurations configures) {
+    public static Type serializeType(Environment environment, SpecTypeElement type, Configurations configures) {
         val toType = serializeToType(environment, type, configures);
         return (toType != null) ? Type.SERIALIZE.withGenerics(new Generic(toType)) : null;
     }

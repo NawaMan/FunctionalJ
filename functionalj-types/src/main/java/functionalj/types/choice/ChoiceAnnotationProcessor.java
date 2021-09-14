@@ -86,11 +86,14 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                 .collect(toList());
         for (val environment : elementsWithChoice) {
             val choiceSpec  = new ChoiceSpec(environment);
+            
             val sourceSpec  = choiceSpec.sourceSpec();
             val packageName = choiceSpec.packageName();
             val targetName  = choiceSpec.targetName();
+            System.err.println("targetName: "  + targetName);
             
             if (sourceSpec.choices.isEmpty()) {
+                System.err.println("sourceSpec.choices.isEmpty(): "  + sourceSpec.choices.isEmpty());
                 val errMsg 
                         = "Choice type must has at least one choice "
                         + "(Reminder: a choice name must start with a capital letter): " 
@@ -100,11 +103,16 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             }
             
             val generator   = new Generator(sourceSpec);
-            val typeElement = (TypeElement)environment.element();
+            System.err.println("generator: "  + generator);
+            val typeElement = environment.element().asTypeElement();
+            System.err.println("typeElement: "  + typeElement);
             try {
                 val className = packageName + "." + targetName;
+                System.err.println("className: "  + className);
                 val content   = generator.lines().stream().collect(joining("\n"));
+                System.err.println("content: "  + content.substring(0, (content.indexOf('\n') != -1) ? content.indexOf('\n') : content.length()));
                 val logString = "\n" + logs.stream().map("// "::concat).collect(joining("\n"));
+                System.err.println("logString: "  + logString.substring(0, (logString.indexOf('\n') != -1) ? logString.indexOf('\n') : logString.length()));
                 environment.generateCode(className, content + logString);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
