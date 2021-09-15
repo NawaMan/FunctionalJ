@@ -37,7 +37,8 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 
 import functionalj.types.Struct;
-import functionalj.types.input.EnvironmentBuilder;
+import functionalj.types.input.Environment;
+import functionalj.types.input.SpecElement;
 import functionalj.types.struct.generator.StructBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -50,7 +51,7 @@ import lombok.val;
  */
 public class StructAnnotationProcessor extends AbstractProcessor {
     
-    private EnvironmentBuilder environmentBuilder = null;
+    private Environment environment = null;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -58,7 +59,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         val types        = processingEnv.getTypeUtils();
         val messager     = processingEnv.getMessager();
         val filer        = processingEnv.getFiler();
-        environmentBuilder = new EnvironmentBuilder(elementUtils, types, messager, filer);
+        environment = new Environment(elementUtils, types, messager, filer);
     }
     
     @Override
@@ -79,10 +80,10 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         boolean hasError = false;
         val elementsWithStruct
                 = roundEnv.getElementsAnnotatedWith(Struct.class).stream()
-                .map(environmentBuilder::newEnvironment)
+                .map(elmt -> SpecElement.of(environment, elmt))
                 .collect(toList());
-        for (val environment : elementsWithStruct) {
-            val strucSpec      = new StructSpec(environment);
+        for (val element : elementsWithStruct) {
+            val strucSpec      = new StructSpec(element);
             val packageName    = strucSpec.packageName();
             val specTargetName = strucSpec.targetName();
             
@@ -94,9 +95,9 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 val dataObjSpec = new StructBuilder(sourceSpec).build();
                 val className   = (String)dataObjSpec.type().fullName("");
                 val content     = new GenStruct(sourceSpec, dataObjSpec).lines().collect(joining("\n"));
-                environment.generateCode(className, content);
+                element.generateCode(className, content);
             } catch (Exception e) {
-                environment.error("Problem generating the class: "
+                element.error("Problem generating the class: "
                                 + packageName + "." + specTargetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()
@@ -104,7 +105,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                                     .map(st -> "\n    @" + st)
                                     .collect(joining()));
             } finally {
-                hasError |= strucSpec.hasError();
+                hasError |= environment.hasError();
             }
         }
         return hasError;

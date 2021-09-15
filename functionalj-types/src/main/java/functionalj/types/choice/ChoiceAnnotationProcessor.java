@@ -41,7 +41,8 @@ import javax.lang.model.element.TypeElement;
 
 import functionalj.types.Choice;
 import functionalj.types.choice.generator.Generator;
-import functionalj.types.input.EnvironmentBuilder;
+import functionalj.types.input.Environment;
+import functionalj.types.input.SpecElement;
 import lombok.val;
 
 
@@ -54,7 +55,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     
     private List<String> logs = new ArrayList<String>();
     
-    private EnvironmentBuilder environmentBuilder = null;
+    private Environment environment = null;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -62,7 +63,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         val types        = processingEnv.getTypeUtils();
         val messager     = processingEnv.getMessager();
         val filer        = processingEnv.getFiler();
-        environmentBuilder = new EnvironmentBuilder(elementUtils, types, messager, filer);
+        environment = new Environment(elementUtils, types, messager, filer);
     }
     
     @Override
@@ -82,41 +83,34 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         boolean hasError = false;
         val elementsWithChoice 
                 = roundEnv.getElementsAnnotatedWith(Choice.class).stream()
-                .map(environmentBuilder::newEnvironment)
+                .map(elmt -> SpecElement.of(environment, elmt))
                 .collect(toList());
-        for (val environment : elementsWithChoice) {
-            val choiceSpec  = new ChoiceSpec(environment);
+        for (val element : elementsWithChoice) {
+            val choiceSpec  = new ChoiceSpec(element);
             
             val sourceSpec  = choiceSpec.sourceSpec();
             val packageName = choiceSpec.packageName();
             val targetName  = choiceSpec.targetName();
-            System.err.println("targetName: "  + targetName);
             
             if (sourceSpec.choices.isEmpty()) {
-                System.err.println("sourceSpec.choices.isEmpty(): "  + sourceSpec.choices.isEmpty());
                 val errMsg 
                         = "Choice type must has at least one choice "
                         + "(Reminder: a choice name must start with a capital letter): " 
                         + packageName + "." + targetName;
-                environment.error(errMsg);
+                element.error(errMsg);
                 continue;
             }
             
             val generator   = new Generator(sourceSpec);
-            System.err.println("generator: "  + generator);
-            val typeElement = environment.element().asTypeElement();
-            System.err.println("typeElement: "  + typeElement);
+            val typeElement = element.asTypeElement();
             try {
                 val className = packageName + "." + targetName;
-                System.err.println("className: "  + className);
                 val content   = generator.lines().stream().collect(joining("\n"));
-                System.err.println("content: "  + content.substring(0, (content.indexOf('\n') != -1) ? content.indexOf('\n') : content.length()));
                 val logString = "\n" + logs.stream().map("// "::concat).collect(joining("\n"));
-                System.err.println("logString: "  + logString.substring(0, (logString.indexOf('\n') != -1) ? logString.indexOf('\n') : logString.length()));
-                environment.generateCode(className, content + logString);
+                element.generateCode(className, content + logString);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
-                environment.error("Problem generating the class: "
+                element.error("Problem generating the class: "
                                 + packageName + "." + targetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()

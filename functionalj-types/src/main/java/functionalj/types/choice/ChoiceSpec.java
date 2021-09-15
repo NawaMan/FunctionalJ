@@ -43,7 +43,6 @@ import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.Method;
 import functionalj.types.choice.generator.model.MethodParam;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.input.Environment;
 import functionalj.types.input.SpecElement;
 import functionalj.types.input.SpecMethodElement;
 import functionalj.types.input.SpecTypeElement;
@@ -54,33 +53,32 @@ import lombok.val;
 
 public class ChoiceSpec {
     
-    private final Environment environment;
+    private final SpecElement element;
     private boolean hasError = false;
     
-    public ChoiceSpec(Environment environment) {
-        this.environment = environment;
+    public ChoiceSpec(SpecElement element) {
+        this.element = element;
     }
     
     public String packageName() {
-        return environment.packageName();
+        return element.packageName();
     }
     
     public String targetName() {
-        return environment.targetName();
+        return element.targetName();
     }
     
     public String specifiedTargetName() {
-        return environment.specifiedTargetName();
+        return element.specifiedTargetName();
     }
     
     public SourceSpec sourceSpec() {
-        val element           = environment.element();
         val typeElement       = element.asTypeElement();
-        val localTypeWithLens = environment.readLocalTypeWithLens();
-        val simpleName        = environment.elementSimpleName();
-        val isInterface       = environment.isInterface();
+        val localTypeWithLens = element.readLocalTypeWithLens();
+        val simpleName        = element.elementSimpleName();
+        val isInterface       = element.isInterface();
         if (!isInterface) {
-            environment.error("Only an interface can be annotated with " + Choice.class.getSimpleName() + ": " + simpleName);
+            element.error("Only an interface can be annotated with " + Choice.class.getSimpleName() + ": " + simpleName);
             return null;
         }
         
@@ -90,21 +88,21 @@ public class ChoiceSpec {
         val sourceName     = typeElement.getQualifiedName().substring(packageName.length() + 1 );
         val enclosedClass  = extractEncloseClass(simpleName, sourceName);
         val sourceType     = new Type(packageName, enclosedClass, simpleName, generics);
-        val targetName     = environment.targetName();
+        val targetName     = element.targetName();
         val targetType     = new Type(packageName, null, targetName, generics);
         
-        val specField = environment.specifiedSpecField();
+        val specField = element.specifiedSpecField();
         if ((specField != null) && !specField.matches("^[A-Za-z_$][A-Za-z_$0-9]*$")) {
-            environment.error("Source spec field name is not a valid identifier: " + specField);
+            element.error("Source spec field name is not a valid identifier: " + specField);
             return null;
         }
         
-        val tagMapKeyName = environment.choiceTagMapKeyName();
-        val serialize     = environment.specifiedSerialize();
+        val tagMapKeyName = element.choiceTagMapKeyName();
+        val serialize     = element.specifiedSerialize();
         
         val choices      = extractTypeChoices(targetType, typeElement);
         val methods      = extractTypeMethods(targetType, typeElement);
-        val publicFields = environment.specifiedPublicField();
+        val publicFields = element.specifiedPublicField();
         val sourceSpec   = new SourceSpec(targetName, sourceType, specField, publicFields, tagMapKeyName, serialize, generics, choices, methods, localTypeWithLens);
         return sourceSpec;
     }
@@ -210,7 +208,7 @@ public class ChoiceSpec {
     
     private List<Method> extractTypeMethods(Type targetType, SpecTypeElement typeElement) {
         return typeElement.getEnclosedElements().stream()
-                .filter (elmt -> elmt.isMethod())
+                .filter (elmt -> elmt.isMethodElement())
                 .map    (elmt -> elmt.asMethodElement())
                 .filter (mthd -> !mthd.getSimpleName().startsWith("__"))
                 .filter (mthd -> isPublicOrPackage(mthd))
@@ -222,7 +220,7 @@ public class ChoiceSpec {
     private List<Case> extractTypeChoices(Type targetType, SpecTypeElement typeElement) {
         try {
         return typeElement.getEnclosedElements().stream()
-                .filter(elmt -> elmt.isMethod())
+                .filter(elmt -> elmt.isMethodElement())
                 .map   (elmt -> elmt.asMethodElement())
                 .filter(mthd -> !mthd.isDefault())
                 .filter(mthd -> mthd.getSimpleName().matches("^[A-Z].*$"))
@@ -249,7 +247,7 @@ public class ChoiceSpec {
                 val defValue   = (p.getAnnotation(DefaultTo.class) != null) ? p.getAnnotation(DefaultTo.class).value() : null;
                 
                 if (isNullable && isRequired) {
-                    environment.error("Parameter cannot be both Required and Nullable: " + name);
+                    element.error("Parameter cannot be both Required and Nullable: " + name);
                 }
                 return new CaseParam(name, type, isNullable, defValue);
             }).collect(toList());
@@ -257,7 +255,7 @@ public class ChoiceSpec {
         val validateMethodName = "__validate" + methodName;
         val validateMethods 
                 = elements.stream()
-                .filter(elmt -> elmt.isMethod())
+                .filter(elmt -> elmt.isMethodElement())
                 .map   (elmt -> elmt.asMethodElement())
                 .filter(mthd -> mthd.getSimpleName().equals(validateMethodName))
                 .collect(toList());
@@ -277,10 +275,10 @@ public class ChoiceSpec {
         validateMethods.stream()
         .filter(mthd -> {
             if (!mthd.isStatic()) {
-                environment.error("Validator method must be static: " + validateMethodName);
+                element.error("Validator method must be static: " + validateMethodName);
             }
             if (mthd.isPrivate()) {
-                environment.error("Validator method must not be private: " + validateMethodName);
+                element.error("Validator method must not be private: " + validateMethodName);
             }
             return false;
         })
@@ -294,7 +292,7 @@ public class ChoiceSpec {
             int mthdParamSize   = mthd.getTypeParameters().size();
             if (mthdParamSize != methodParamSize) {
                 val expected = "expect " + methodParamSize + " but found " + mthdParamSize;
-                environment.error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
+                element.error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
                 return true;
             }
             
@@ -303,7 +301,7 @@ public class ChoiceSpec {
                 val mthdParam   = mthd.getTypeParameters().get(i);
                 if (!mthdParam.equals(methodParam)) {
                     val expected = "parameter " + i + " expected to be " + methodParam + " but found to be " + mthdParam;
-                    environment.error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
+                    element.error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
                     return true;
                 }
             }
@@ -368,7 +366,6 @@ public class ChoiceSpec {
     }
     
     private String getPackageName(SpecTypeElement typeElement) {
-        val element     = environment.element();
         val typePackage = typeElement.getPackageQualifiedName();
         if (!typePackage.isEmpty())
             return typePackage;

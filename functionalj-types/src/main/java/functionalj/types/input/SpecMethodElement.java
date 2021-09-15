@@ -64,7 +64,7 @@ public interface SpecMethodElement extends SpecElement {
         public boolean isAbstract() {
             // Seriously ... no other way?
             try (val writer = new StringWriter()) {
-                environment.elementUtils().printElements(writer, executableElement);
+                environment.elementUtils.printElements(writer, executableElement);
                 return writer.toString().contains(" abstract ");
             } catch (IOException e) {
                 e.printStackTrace();

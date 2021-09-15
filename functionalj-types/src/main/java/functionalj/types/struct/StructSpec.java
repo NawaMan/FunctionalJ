@@ -46,7 +46,6 @@ import functionalj.types.Required;
 import functionalj.types.Serialize;
 import functionalj.types.Struct;
 import functionalj.types.Type;
-import functionalj.types.input.Environment;
 import functionalj.types.input.SpecElement;
 import functionalj.types.input.SpecMethodElement;
 import functionalj.types.input.SpecTypeElement;
@@ -70,26 +69,21 @@ public class StructSpec {
             ElementKind.INTERFACE,
             ElementKind.METHOD);
     
-    private final Environment environment;
+    private final SpecElement element;
     
-    public StructSpec(Environment environment) {
-        this.environment = environment;
-    }
-    
-    public boolean hasError() {
-        return environment.hasError();
+    public StructSpec(SpecElement element) {
+        this.element = element;
     }
     
     public String packageName() {
-        return environment.packageName();
+        return element.packageName();
     }
     
     public String targetName() {
-        return environment.targetName();
+        return element.targetName();
     }
     
     public SourceSpec sourceSpec() {
-        val element = environment.element();
         if (element.isTypeElement())
             return extractSourceSpecType(element);
         if (element.isMethodElement())
@@ -109,10 +103,10 @@ public class StructSpec {
             return null;
         }
         
-        val localTypeWithLens = environment.readLocalTypeWithLens();
+        val localTypeWithLens = element.readLocalTypeWithLens();
         
         List<Getter> getters = type.getEnclosedElements().stream()
-                .filter (elmt  -> elmt.isMethod())
+                .filter (elmt  -> elmt.isMethodElement())
                 .map    (elmt  -> elmt.asMethodElement())
                 .filter (method-> !method.isDefault())
                 .filter (method-> !isClass || method.isAbstract())
@@ -124,7 +118,7 @@ public class StructSpec {
             return null;
         
         List<Callable> methods = type.getEnclosedElements().stream()
-                .filter (elmt -> elmt.isMethod())
+                .filter (elmt -> elmt.isMethodElement())
                 .map    (elmt -> elmt.asMethodElement())
                 .filter (mthd -> (mthd.isDefault() || mthd.isStatic()) && !mthd.isAbstract() && !mthd.isPrivate())
                 .map    (mthd -> extractMethodSpec(element, mthd))
@@ -201,13 +195,13 @@ public class StructSpec {
     
     private SourceSpec extractSourceSpecMethod(SpecElement element) {
         val method         = element.asMethodElement();
-        val packageName    = environment.packageName();
+        val packageName    = element.packageName();
         val encloseName    = element.getEnclosingElementSimpleName();
         val struct         = element.getAnnotation(Struct.class);
         val specTargetName = targetName();
         val specField      = struct.specField();
         
-        val localTypeWithLens = environment.readLocalTypeWithLens();
+        val localTypeWithLens = element.readLocalTypeWithLens();
         
         val isClass      = (Boolean)null;
         val sourceName   = (String)null;
@@ -291,7 +285,7 @@ public class StructSpec {
                     String          specTargetName, 
                     Configurations  configures) {
         
-        val errMsg = validateSerialization(environment, type, getters, packageName, specTargetName, configures);
+        val errMsg = validateSerialization(element, type, getters, packageName, specTargetName, configures);
         if (errMsg == null)
             return true;
         

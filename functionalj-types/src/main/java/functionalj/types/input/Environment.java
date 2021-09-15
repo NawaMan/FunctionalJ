@@ -1,30 +1,13 @@
 package functionalj.types.input;
 
-import static functionalj.types.Utils.blankToNull;
-import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
-import javax.lang.model.element.Element;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
-
-import functionalj.types.Choice;
-import functionalj.types.Serialize;
-import functionalj.types.Struct;
-import lombok.val;
 
 public class Environment {
-    
-    private final SpecElement element;
     
     final Elements elementUtils;
     final Types    typeUtils;
@@ -33,143 +16,20 @@ public class Environment {
     
     private final AtomicBoolean hasError = new AtomicBoolean(false);
     
-    public Environment(Element element, Elements elementUtils, Types typeUtils, Messager messager, Filer filer) {
-        this.element      = SpecElement.of(this, element);
+    public Environment(Elements elementUtils, Types typeUtils, Messager messager, Filer filer) {
         this.elementUtils = elementUtils;
         this.typeUtils    = typeUtils;
         this.messager     = messager;
         this.filer        = filer;
     }
     
+    public void markHasError() {
+        hasError.set(true);
+    }
+    
     public boolean hasError() {
         return hasError.get();
     }
-    
-    public void error(String msg) {
-        hasError.set(true);
-        element.error(msg);
-    }
-    
-    public void error(Element element, String msg) {
-        hasError.set(true);
-        messager.printMessage(Diagnostic.Kind.ERROR, msg, element);
-    }
-    
-    public String packageName() {
-        if (element.isTypeElement())
-            return extractPackageNameFromType(element.asTypeElement());
-        if (element.isMethodElement())
-            return extractPackageNameFromMethod(element.asMethodElement());
-        throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
-    }
-    
-    public String sourceName() {
-        val packageName = packageName();
-        if (element.isTypeElement()) {
-            val typeElement = element.asTypeElement();
-            return typeElement.getPackageQualifiedName().substring(packageName.length() + 1 );
-        }
-        if (element.isMethodElement()) {
-            return null;
-        }
-        throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
-    }
-    
-    private String extractPackageNameFromType(SpecTypeElement type) {
-        val packageName = type.getPackageQualifiedName();
-        return packageName;
-    }
-    
-    private String extractPackageNameFromMethod(SpecMethodElement method) {
-        val type        = method.getEnclosingElement().asTypeElement();
-        val packageName = type.getPackageQualifiedName();
-        return packageName;
-    }
-    
-    public <T extends Annotation, D> D useAnnotation(Class<T> annotationClass, Function<T, D> action) {
-        val annotation = element.getAnnotation(annotationClass);
-        return action.apply(annotation);
-    }
-    
-    public String elementSimpleName() {
-        return element.getSimpleName().toString();
-    }
-    
-    public List<String> readLocalTypeWithLens() {
-        return element
-                .getEnclosingElement()
-                .getEnclosedElements().stream()
-                .filter (elmt -> elmt.isStructOrChoise())
-                .map    (elmt -> targetName(elmt))
-                .filter (name -> nonNull(name))
-                .collect(toList());
-    }
-    
-    //== From annotation ==
-    
-    public String targetName() {
-        return targetName(element);
-    }
-    
-    private String targetName(SpecElement element) {
-        val specifiedTargetName = specifiedTargetName();
-        val simpleName          = element.getSimpleName().toString();
-        return extractTargetName(simpleName, specifiedTargetName);
-    }
-    
-    public String specifiedTargetName() {
-        if (element.getAnnotation(Struct.class) != null) {
-            return blankToNull(element.getAnnotation(Struct.class).name());
-            
-        }
-        if (element.getAnnotation(Choice.class) != null) {
-            return blankToNull(element.getAnnotation(Choice.class).name());
-        }
-        throw new IllegalArgumentException("Unknown element annotation type: " + element);
-    }
-    
-    public String specifiedSpecField() {
-        if (element.getAnnotation(Struct.class) != null) {
-            val specField = element.getAnnotation(Struct.class).specField();
-            return blankToNull(specField);
-        }
-        if (element.getAnnotation(Choice.class) != null) {
-            val specField = element.getAnnotation(Choice.class).specField();
-            return blankToNull(specField);
-        }
-        throw new IllegalArgumentException("Unknown element annotation type: " + element);
-    }
-    
-    public Serialize.To specifiedSerialize() {
-        if (element.getAnnotation(Struct.class) != null) {
-            return element.getAnnotation(Struct.class).serialize();
-        }
-        if (element.getAnnotation(Choice.class) != null) {
-            return element.getAnnotation(Choice.class).serialize();
-        }
-        throw new IllegalArgumentException("Unknown element annotation type: " + element);
-    }
-    
-    public String choiceTagMapKeyName() {
-        if (element.getAnnotation(Choice.class) != null) {
-            val tagMapKeyName = element.getAnnotation(Choice.class).tagMapKeyName();
-            return blankToNull(tagMapKeyName);
-        } else {
-            return null;
-        }
-    }
-    
-    public boolean specifiedPublicField() {
-        if (element.getAnnotation(Struct.class) != null) {
-            return element.getAnnotation(Struct.class).publicFields();
-        }
-        if (element.getAnnotation(Choice.class) != null) {
-            return element.getAnnotation(Choice.class).publicFields();
-        }
-        throw new IllegalArgumentException("Unknown element annotation type: " + element);
-    }
-    
-    //== Contains logics ==
     
     public String extractTargetName(String simpleName, String specTargetName) {
         if ((specTargetName != null) && !specTargetName.isEmpty())
@@ -182,28 +42,6 @@ public class Environment {
             return simpleName.replaceAll("Model$", "");
         
         return simpleName;
-    }
-    
-    public void generateCode(String className, String content) throws IOException {
-        element.generateCode(className, content);
-    }
-    
-    public boolean isInterface() {
-        return element.isInterface();
-    }
-    
-    // To get rid off.
-    
-    public SpecElement element() {
-        return element;
-    }
-    
-    public Elements elementUtils() {
-        return elementUtils;
-    }
-    
-    public List<? extends SpecTypeParameterElement> typeParameters() {
-        return element.asTypeElement().getTypeParameters();
     }
     
 }
