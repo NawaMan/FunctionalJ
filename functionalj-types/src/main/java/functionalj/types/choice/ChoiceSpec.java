@@ -75,7 +75,7 @@ public class ChoiceSpec {
     public SourceSpec sourceSpec() {
         val typeElement       = element.asTypeElement();
         val localTypeWithLens = element.readLocalTypeWithLens();
-        val simpleName        = element.elementSimpleName();
+        val simpleName        = element.simpleName();
         val isInterface       = element.isInterface();
         if (!isInterface) {
             element.error("Only an interface can be annotated with " + Choice.class.getSimpleName() + ": " + simpleName);
@@ -84,7 +84,7 @@ public class ChoiceSpec {
         
         val generics = extractTypeGenerics(null, typeElement);
         
-        val packageName    = typeElement.getPackageQualifiedName();
+        val packageName    = typeElement.packageQualifiedName();
         val sourceName     = typeElement.getQualifiedName().substring(packageName.length() + 1 );
         val enclosedClass  = extractEncloseClass(simpleName, sourceName);
         val sourceType     = new Type(packageName, enclosedClass, simpleName, generics);
@@ -126,7 +126,7 @@ public class ChoiceSpec {
     
     private Method createMethodFromMethodElement(Type targetType, SpecMethodElement mthd) {
         val kind       = mthd.isDefault() ? Method.Kind.DEFAULT : Method.Kind.STATIC;
-        val name       = mthd.getSimpleName();
+        val name       = mthd.simpleName();
         
         val type       = typeOf(targetType, mthd.getReturnType());
         val params     = extractParameters(targetType, mthd);
@@ -140,8 +140,8 @@ public class ChoiceSpec {
         return mthd
                 .getParameters().stream()
                 .map(p -> {
-                    val paramName = p.getSimpleName();
-                    val paramType = typeOf(targetType, p.asType());
+                    val paramName = p.simpleName();
+                    val paramType = typeOf(targetType, p.asTypeMirror());
                     return new MethodParam(paramName, paramType);
                 }).collect(toList());
     }
@@ -210,7 +210,7 @@ public class ChoiceSpec {
         return typeElement.getEnclosedElements().stream()
                 .filter (elmt -> elmt.isMethodElement())
                 .map    (elmt -> elmt.asMethodElement())
-                .filter (mthd -> !mthd.getSimpleName().startsWith("__"))
+                .filter (mthd -> !mthd.simpleName().startsWith("__"))
                 .filter (mthd -> isPublicOrPackage(mthd))
                 .filter (mthd -> isDefaultOrStatic(mthd))
                 .map    (mthd -> createMethodFromMethodElement(targetType, mthd))
@@ -223,7 +223,7 @@ public class ChoiceSpec {
                 .filter(elmt -> elmt.isMethodElement())
                 .map   (elmt -> elmt.asMethodElement())
                 .filter(mthd -> !mthd.isDefault())
-                .filter(mthd -> mthd.getSimpleName().matches("^[A-Z].*$"))
+                .filter(mthd -> mthd.simpleName().matches("^[A-Z].*$"))
                 .filter(mthd -> mthd.getReturnType().isNoType())
                 .map   (mthd -> createChoiceFromMethod(targetType, mthd, typeElement.getEnclosedElements()))
                 .collect(toList());
@@ -234,14 +234,14 @@ public class ChoiceSpec {
     }
     
     private Case createChoiceFromMethod(Type targetType, SpecMethodElement method, List<? extends SpecElement> elements) {
-        val methodName = method.getSimpleName().toString();
+        val methodName = method.simpleName().toString();
         
         List<CaseParam> params
             = method
             .getParameters().stream()
             .map(p -> {
-                val name       = p.getSimpleName().toString();
-                val type       = typeOf(targetType, p.asType());
+                val name       = p.simpleName().toString();
+                val type       = typeOf(targetType, p.asTypeMirror());
                 val isNullable = (p.getAnnotation(Nullable.class) != null);
                 val isRequired = (p.getAnnotation(Required.class) != null);
                 val defValue   = (p.getAnnotation(DefaultTo.class) != null) ? p.getAnnotation(DefaultTo.class).value() : null;
@@ -257,7 +257,7 @@ public class ChoiceSpec {
                 = elements.stream()
                 .filter(elmt -> elmt.isMethodElement())
                 .map   (elmt -> elmt.asMethodElement())
-                .filter(mthd -> mthd.getSimpleName().equals(validateMethodName))
+                .filter(mthd -> mthd.simpleName().equals(validateMethodName))
                 .collect(toList());
         
         ensureValidatorParameters(method, validateMethods, validateMethodName);
@@ -335,7 +335,7 @@ public class ChoiceSpec {
         if (typeMirror.isDeclaredType()) {
             val typeElement  = typeMirror.asDeclaredType();
             val packageName  = getPackageName(typeElement);
-            val typeName     = typeElement.getSimpleName().toString();
+            val typeName     = typeElement.simpleName().toString();
             val encloseClass = extractEnclosedClassName(typeElement, packageName, typeName);
             val generics     = extractGenericsFromTypeArguments(targetType, typeMirror.getTypeArguments());
             val foundType    = new Type(packageName, encloseClass, typeName, generics);
@@ -356,21 +356,21 @@ public class ChoiceSpec {
     private String extractEnclosedClassName(SpecTypeElement typeElement, String packageName, String typeName) {
         String encloseClass = null;
         val qualifiedName = typeElement.getQualifiedName().toString();
-        encloseClass  = (typeElement.getEnclosingElement().getKind() != ElementKind.PACKAGE) &&  qualifiedName.endsWith("." + typeName)
+        encloseClass  = (typeElement.enclosingElement().getKind() != ElementKind.PACKAGE) &&  qualifiedName.endsWith("." + typeName)
                       ? qualifiedName.substring(0, qualifiedName.length() - typeName.length() - 1)
                       : null;
-        encloseClass  = (typeElement.getEnclosingElement().getKind() != ElementKind.PACKAGE) && encloseClass != null && encloseClass.startsWith(packageName + ".")
+        encloseClass  = (typeElement.enclosingElement().getKind() != ElementKind.PACKAGE) && encloseClass != null && encloseClass.startsWith(packageName + ".")
                       ? encloseClass.substring(packageName.length() + 1)
                       : null;
         return encloseClass;
     }
     
     private String getPackageName(SpecTypeElement typeElement) {
-        val typePackage = typeElement.getPackageQualifiedName();
+        val typePackage = typeElement.packageQualifiedName();
         if (!typePackage.isEmpty())
             return typePackage;
         
-        val packageName = element.getPackageQualifiedName();
+        val packageName = element.packageQualifiedName();
         return packageName;
     }
     

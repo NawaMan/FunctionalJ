@@ -107,9 +107,9 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
                 continue;
             }
             
-            val targetName     = method.getSimpleName().toString();
-            val enclosingClass = method.getEnclosingElement().getSimpleName().toString();
-            val packageName    = method.getPackageQualifiedName();
+            val targetName     = method.simpleName().toString();
+            val enclosingClass = method.enclosingElement().simpleName();
+            val packageName    = method.packageQualifiedName();
             val superType      = getSuperType(method);
             val dataName       = getDataName(method);
             val dataType       = getDataType(method);
@@ -148,12 +148,12 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         return (clzz.trim().isEmpty() || clzz.equals(IRule.class.getCanonicalName())) ? null : clzz;
     }
     private String getDataName(SpecMethodElement method) {
-        val name = method.getParameters().get(0).getSimpleName().toString();
+        val name = method.getParameters().get(0).simpleName().toString();
         return name;
     }
     
     private String getDataType(SpecMethodElement method) {
-        val type = method.getParameters().get(0).asType();
+        val type = method.getParameters().get(0).asTypeMirror();
         if (type.isPrimitiveType())
             return type.asPrimitiveType().primitiveName();
         

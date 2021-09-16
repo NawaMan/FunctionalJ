@@ -37,12 +37,17 @@ import java.util.function.Function;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
 import functionalj.types.Serialize;
 import functionalj.types.Struct;
+import functionalj.types.struct.generator.model.Accessibility;
+import functionalj.types.struct.generator.model.Concrecity;
+import functionalj.types.struct.generator.model.Modifiability;
+import functionalj.types.struct.generator.model.Scope;
 import lombok.val;
 
 public interface SpecElement {
@@ -62,18 +67,13 @@ public interface SpecElement {
         }
         
         @Override
-        public String getSimpleName() {
+        public String simpleName() {
             return element.getSimpleName().toString();
         }
         
         @Override
-        public String getPackageQualifiedName() {
+        public String packageQualifiedName() {
             return environment.elementUtils.getPackageOf(element).getQualifiedName().toString();
-        }
-        
-        @Override
-        public String getEnclosingElementSimpleName() {
-            return element.getEnclosingElement().getSimpleName().toString();
         }
         
         @Override
@@ -82,7 +82,7 @@ public interface SpecElement {
         }
         
         @Override
-        public SpecElement getEnclosingElement() {
+        public SpecElement enclosingElement() {
             return SpecElement.of(environment, element.getEnclosingElement());
         }
         
@@ -161,8 +161,10 @@ public interface SpecElement {
         public String packageName() {
             if (isTypeElement())
                 return extractPackageNameFromType(asTypeElement());
+            
             if (isMethodElement())
                 return extractPackageNameFromMethod(asMethodElement());
+            
             throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
         }
         
@@ -171,7 +173,7 @@ public interface SpecElement {
             val packageName = packageName();
             if (isTypeElement()) {
                 val typeElement = asTypeElement();
-                return typeElement.getPackageQualifiedName().substring(packageName.length() + 1 );
+                return typeElement.packageQualifiedName().substring(packageName.length() + 1 );
             }
             if (isMethodElement()) {
                 return null;
@@ -180,13 +182,13 @@ public interface SpecElement {
         }
         
         private String extractPackageNameFromType(SpecTypeElement type) {
-            val packageName = type.getPackageQualifiedName();
+            val packageName = type.packageQualifiedName();
             return packageName;
         }
         
         private String extractPackageNameFromMethod(SpecMethodElement method) {
-            val type        = method.getEnclosingElement().asTypeElement();
-            val packageName = type.getPackageQualifiedName();
+            val type        = method.enclosingElement().asTypeElement();
+            val packageName = type.packageQualifiedName();
             return packageName;
         }
         
@@ -197,13 +199,8 @@ public interface SpecElement {
         }
         
         @Override
-        public String elementSimpleName() {
-            return element.getSimpleName().toString();
-        }
-        
-        @Override
         public List<String> readLocalTypeWithLens() {
-            return getEnclosingElement()
+            return enclosingElement()
                     .getEnclosedElements().stream()
                     .filter (elmt -> elmt.isStructOrChoise())
                     .map    (elmt -> targetName(elmt))
@@ -220,7 +217,7 @@ public interface SpecElement {
         
         private String targetName(SpecElement element) {
             val specifiedTargetName = specifiedTargetName();
-            val simpleName          = element.getSimpleName().toString();
+            val simpleName          = element.simpleName().toString();
             return environment.extractTargetName(simpleName, specifiedTargetName);
         }
         
@@ -297,31 +294,110 @@ public interface SpecElement {
             }
         }
         
+        @Override
+        public String getToString() {
+            return element.toString();
+        }
+        
+        @Override
+        public String toString() {
+            return element.toString();
+        }
+        
+        @Override
+        public boolean isStatic() {
+            return element.getModifiers().contains(Modifier.STATIC);
+        }
+        
+        @Override
+        public boolean isPublic() {
+            return element.getModifiers().contains(Modifier.PUBLIC);
+        }
+        
+        @Override
+        public boolean isPrivate() {
+            return element.getModifiers().contains(Modifier.PRIVATE);
+        }
+        
+        @Override
+        public boolean isProtected() {
+            return element.getModifiers().contains(Modifier.PROTECTED);
+        }
+        
+        @Override
+        public Accessibility accessibility() {
+            if (element.getModifiers().contains(Modifier.PRIVATE))
+                return Accessibility.PRIVATE;
+            if (element.getModifiers().contains(Modifier.DEFAULT))
+                return Accessibility.PACKAGE;
+            if (element.getModifiers().contains(Modifier.PROTECTED))
+                return Accessibility.PROTECTED;
+            if (element.getModifiers().contains(Modifier.PUBLIC))
+                return Accessibility.PUBLIC;
+            return Accessibility.PACKAGE;
+        }
+        
+        @Override
+        public Scope scope() {
+            return element.getModifiers().contains(Modifier.STATIC) ? Scope.STATIC : Scope.INSTANCE;
+        }
+        
+        @Override
+        public Modifiability modifiability() {
+            return element.getModifiers().contains(Modifier.FINAL) ? Modifiability.FINAL : Modifiability.MODIFIABLE;
+        }
+        
+        @Override
+        public Concrecity concrecity() {
+            return element.getModifiers().contains(Modifier.ABSTRACT) ? Concrecity.ABSTRACT : Concrecity.CONCRETE;
+        }
+        
     }
     
     public String packageName();
     
     public String sourceName();
     
-    public String elementSimpleName();
+    public String simpleName();
     
-    public List<String> readLocalTypeWithLens();
-    
-    public String getSimpleName();
-    
-    public String getPackageQualifiedName();
-    
-    public String getEnclosingElementSimpleName();
+    public String packageQualifiedName();
     
     public ElementKind getKind();
     
-    public SpecElement getEnclosingElement();
+    public SpecElement enclosingElement();
     
     public boolean isStructOrChoise();
     
     public boolean isInterface();
     
     public boolean isClass();
+    
+    public boolean isStatic();
+    
+    public boolean isPrivate();
+    
+    public boolean isPublic();
+    
+    public boolean isProtected();
+    
+    public Accessibility accessibility();
+    
+    public Scope scope();
+    
+    public Modifiability modifiability();
+    
+    public Concrecity concrecity();
+    
+    public List<? extends SpecElement> getEnclosedElements();
+    
+    public <A extends Annotation> A getAnnotation(Class<A> annotationType);
+    
+    public List<? extends SpecTypeParameterElement> typeParameters();
+    
+    public String printElement();
+    
+    public String getToString();
+    
     
     public boolean isTypeElement();
     
@@ -331,21 +407,19 @@ public interface SpecElement {
     
     public SpecMethodElement asMethodElement();
     
-    public List<? extends SpecElement> getEnclosedElements();
-    
     public void error(String msg);
     
     public void warn(String msg);
-    
-    public <A extends Annotation> A getAnnotation(Class<A> annotationType);
     
     public void generateCode(String className, String content) throws IOException;
     
     public <T extends Annotation, D> D useAnnotation(Class<T> annotationClass, Function<T, D> action);
     
+    
     public String targetName();
     
     public String specifiedTargetName();
+    
     public String specifiedSpecField();
     
     public Serialize.To specifiedSerialize();
@@ -354,8 +428,6 @@ public interface SpecElement {
     
     public boolean specifiedPublicField();
     
-    public List<? extends SpecTypeParameterElement> typeParameters();
-    
-    public String printElement();
+    public List<String> readLocalTypeWithLens();
     
 }

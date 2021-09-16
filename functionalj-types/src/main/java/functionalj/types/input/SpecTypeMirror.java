@@ -23,8 +23,9 @@
 // ============================================================================
 package functionalj.types.input;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -88,8 +89,8 @@ public interface SpecTypeMirror {
         public List<? extends SpecTypeMirror> getTypeArguments() {
             return ((DeclaredType)typeMirror)
                     .getTypeArguments().stream()
-                    .map(elmt -> SpecTypeMirror.of(environment, elmt))
-                    .collect(Collectors.toList());
+                    .map    (element -> SpecTypeMirror.of(environment, element))
+                    .collect(toList());
         }
         
         @Override
@@ -105,9 +106,9 @@ public interface SpecTypeMirror {
     }
     
     public boolean isPrimitiveType();
-//    
+    
     public SpecPrimitiveType asPrimitiveType();
-//    
+    
     public boolean isDeclaredType();
     
     public SpecTypeElement asDeclaredType();

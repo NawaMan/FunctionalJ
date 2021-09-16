@@ -53,7 +53,7 @@ public interface SpecTypeElement extends SpecElement {
         public List<? extends SpecTypeParameterElement> getTypeParameters() {
             return typeElement
                     .getTypeParameters().stream()
-                    .map(element -> SpecTypeParameterElement.of(environment, element))
+                    .map    (element -> SpecTypeParameterElement.of(environment, element))
                     .collect(toList());
         }
         

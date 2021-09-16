@@ -23,30 +23,39 @@
 // ============================================================================
 package functionalj.types.input;
 
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ReferenceType;
+import javax.lang.model.type.TypeVariable;
 
-public interface SpecVariableElement extends SpecElement {
+public interface SpecReferenceType extends SpecTypeMirror {
     
-    public static SpecVariableElement of(Environment environment, VariableElement variableElement) {
-        return new Impl(environment, variableElement);
+    public static SpecReferenceType of(Environment environment, ReferenceType referenceType) {
+        return new Impl(environment, referenceType);
     }
     
-    public static class Impl extends SpecElement.Impl implements SpecVariableElement {
+    public static class Impl extends SpecTypeMirror.Impl implements SpecReferenceType {
         
-        final VariableElement variableElement;
+        private ReferenceType referenceType;
         
-        public Impl(Environment environment, VariableElement variableElement) {
-            super(environment, variableElement);
-            this.variableElement = variableElement;
+        public Impl(Environment environment, ReferenceType referenceType) {
+            super(environment, referenceType);
+            this.referenceType = referenceType;
         }
         
         @Override
-        public SpecTypeMirror asTypeMirror() {
-            return SpecTypeMirror.of(environment, variableElement.asType());
+        public boolean isTypeVariable() {
+            return referenceType instanceof DeclaredType;
+        }
+        
+        @Override
+        public SpecTypeVariable asTypeVariable() {
+            return SpecTypeVariable.of(environment, (TypeVariable)referenceType);
         }
         
     }
     
-    public SpecTypeMirror asTypeMirror();
+    public boolean isTypeVariable();
+    
+    public SpecTypeVariable asTypeVariable();
     
 }

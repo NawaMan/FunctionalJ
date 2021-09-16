@@ -92,7 +92,7 @@ public class StructSpec {
     }
     private SourceSpec extractSourceSpecType(SpecElement element) {
         val type        = element.asTypeElement();
-        val simpleName  = element.getSimpleName();
+        val simpleName  = element.simpleName();
         val isInterface = element.isInterface();
         val isClass     = element.isClass();
         
@@ -125,8 +125,8 @@ public class StructSpec {
                 .filter (mthd -> mthd != null)
                 .collect(toList());
         
-        val packageName = type.getPackageQualifiedName();
-        val encloseName = element.getEnclosingElementSimpleName();
+        val packageName = type.packageQualifiedName();
+        val encloseName = element.enclosingElement().simpleName();
         val sourceName  = type.getQualifiedName().toString().substring(packageName.length() + 1 );
         val struct      = element.getAnnotation(Struct.class);
         val targetName  = targetName();
@@ -162,7 +162,7 @@ public class StructSpec {
     private Callable extractMethodSpec(SpecElement element, SpecMethodElement mthdElement) {
         val extractType = (Function<SpecTypeMirror, Type>)(typeMirror -> getType(element, typeMirror));
         
-        val name          = mthdElement.getSimpleName().toString();
+        val name          = mthdElement.simpleName().toString();
         val type          = getType(element, mthdElement.getReturnType());
         val isVarArgs     = mthdElement.isVarArgs();
         val accessibility = mthdElement.accessibility();
@@ -175,7 +175,7 @@ public class StructSpec {
                 .collect(toList());
         val parameters = mthdElement
                 .getParameters().stream()
-                .map(param -> new Parameter(param.getSimpleName().toString(), getType(element, param.asType())))
+                .map(param -> new Parameter(param.simpleName().toString(), getType(element, param.asTypeMirror())))
                 .collect(toList());
         val exceptions = mthdElement
                 .getThrownTypes().stream()
@@ -186,7 +186,7 @@ public class StructSpec {
     }
 
     private Generic getGenericFromTypeParameter(SpecElement element, SpecTypeParameterElement typeParameter){
-        val name   = typeParameter.getSimpleName();
+        val name   = typeParameter.simpleName();
         val bounds = typeParameter.getBounds().stream()
                     .map    (bound -> getType(element, bound))
                     .collect(toList());
@@ -196,7 +196,7 @@ public class StructSpec {
     private SourceSpec extractSourceSpecMethod(SpecElement element) {
         val method         = element.asMethodElement();
         val packageName    = element.packageName();
-        val encloseName    = element.getEnclosingElementSimpleName();
+        val encloseName    = element.enclosingElement().simpleName();
         val struct         = element.getAnnotation(Struct.class);
         val specTargetName = targetName();
         val specField      = struct.specField();
@@ -208,7 +208,7 @@ public class StructSpec {
         val superPackage = packageName;
         
         val isValidate    = isBooleanStringOrValidation(method.getReturnType());
-        val validatorName = isValidate ? method.getSimpleName() : null;
+        val validatorName = isValidate ? method.simpleName() : null;
         val isStatic      = method.isStatic();
         val isPrivate     = method.isPrivate();
         if (isValidate && (!isStatic || isPrivate)) {
@@ -294,8 +294,8 @@ public class StructSpec {
     }
     
     private Getter createGetterFromParameter(SpecElement element, SpecVariableElement p) {
-        val name        = p.getSimpleName().toString();
-        val type        = getType(element, p.asType());
+        val name        = p.simpleName().toString();
+        val type        = getType(element, p.asTypeMirror());
         val isPrimitive = type.isPrimitive();
         val isNullable  = ((p.getAnnotation(Nullable.class) != null) || (p.getAnnotation(DefaultTo.class) != null));
         val isRequired  =  (p.getAnnotation(Required.class) != null);
@@ -338,7 +338,7 @@ public class StructSpec {
     
     private Getter createGetterFromMethod(SpecElement element, SpecMethodElement method) {
         try {
-            val methodName  = method.getSimpleName().toString();
+            val methodName  = method.simpleName().toString();
             val returnType  = getType(element, method.getReturnType());
             val isPrimitive = returnType.isPrimitive();
             val isNullable  = ((method.getAnnotation(Nullable.class) != null) || (method.getAnnotation(DefaultTo.class) != null));
@@ -370,7 +370,7 @@ public class StructSpec {
         
         if (typeMirror.isDeclaredType()) {
             val typeElement = typeMirror.asDeclaredType();
-            val typeName = typeElement.getSimpleName().toString();
+            val typeName = typeElement.simpleName().toString();
             if (typeName.equals("String"))
                 return Type.STRING;
             
@@ -380,19 +380,19 @@ public class StructSpec {
                     .collect(toList());
             
             val packageName = getPackageName(element, typeElement);
-            val encloseElmt = typeElement.getEnclosingElement();
-            val encloseName = typeElementKinds.contains(encloseElmt.getKind()) ? encloseElmt.getSimpleName().toString() : null;
+            val encloseElmt = typeElement.enclosingElement();
+            val encloseName = typeElementKinds.contains(encloseElmt.getKind()) ? encloseElmt.simpleName().toString() : null;
             return new Type(packageName, encloseName, typeName, generics);
         }
         return Type.newVirtualType(typeMirror.getToString());
     }
     
     private String getPackageName(SpecElement element, SpecTypeElement typeElement) {
-        val typePackage = typeElement.getPackageQualifiedName();
+        val typePackage = typeElement.packageQualifiedName();
         if (!typePackage.isEmpty())
             return typePackage;
         
-        val packageName = element.getPackageQualifiedName();
+        val packageName = element.packageQualifiedName();
         return packageName;
     }
     

@@ -33,7 +33,7 @@ public interface SpecPrimitiveType extends SpecTypeMirror {
     
     public static class Impl extends SpecTypeMirror.Impl implements SpecPrimitiveType {
         
-        private PrimitiveType primitiveType;
+        final PrimitiveType primitiveType;
         
         public Impl(Environment environment, PrimitiveType primitiveType) {
             super(environment, primitiveType);
