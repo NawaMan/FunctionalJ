@@ -153,7 +153,7 @@ public class ChoiceSpec {
     }
     
     private List<Generic> extractTypeGenerics(Type targetType, SpecTypeElement type) {
-        List<? extends SpecTypeParameterElement> typeParameters = type.getTypeParameters();
+        val typeParameters = type.typeParameters();
         return extractGenerics(targetType, typeParameters);
     }
     
@@ -207,7 +207,7 @@ public class ChoiceSpec {
     }
     
     private List<Method> extractTypeMethods(Type targetType, SpecTypeElement typeElement) {
-        return typeElement.getEnclosedElements().stream()
+        return typeElement.enclosedElements().stream()
                 .filter (elmt -> elmt.isMethodElement())
                 .map    (elmt -> elmt.asMethodElement())
                 .filter (mthd -> !mthd.simpleName().startsWith("__"))
@@ -219,32 +219,34 @@ public class ChoiceSpec {
     
     private List<Case> extractTypeChoices(Type targetType, SpecTypeElement typeElement) {
         try {
-        return typeElement.getEnclosedElements().stream()
-                .filter(elmt -> elmt.isMethodElement())
-                .map   (elmt -> elmt.asMethodElement())
-                .filter(mthd -> !mthd.isDefault())
-                .filter(mthd -> mthd.simpleName().matches("^[A-Z].*$"))
-                .filter(mthd -> mthd.getReturnType().isNoType())
-                .map   (mthd -> createChoiceFromMethod(targetType, mthd, typeElement.getEnclosedElements()))
-                .collect(toList());
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            throw e;
+            return typeElement.enclosedElements().stream()
+                    .filter (elmt -> elmt.isMethodElement())
+                    .map    (elmt -> elmt.asMethodElement())
+                    .filter (mthd -> !mthd.isDefault())
+                    .filter (mthd -> mthd.simpleName().matches("^[A-Z].*$"))
+                    .filter (mthd -> mthd.getReturnType().isNoType())
+                    .map    (mthd -> createChoiceFromMethod(targetType, mthd, typeElement.enclosedElements()))
+                    .collect(toList());
+        } catch (RuntimeException exception) {
+            exception.printStackTrace();
+            throw exception;
         }
     }
     
     private Case createChoiceFromMethod(Type targetType, SpecMethodElement method, List<? extends SpecElement> elements) {
-        val methodName = method.simpleName().toString();
+        val methodName = method.simpleName();
         
         List<CaseParam> params
             = method
             .getParameters().stream()
-            .map(p -> {
-                val name       = p.simpleName().toString();
-                val type       = typeOf(targetType, p.asTypeMirror());
-                val isNullable = (p.getAnnotation(Nullable.class) != null);
-                val isRequired = (p.getAnnotation(Required.class) != null);
-                val defValue   = (p.getAnnotation(DefaultTo.class) != null) ? p.getAnnotation(DefaultTo.class).value() : null;
+            .map(param -> {
+                val name       = param.simpleName().toString();
+                val type       = typeOf(targetType, param.asTypeMirror());
+                val isNullable = (param.getAnnotation(Nullable.class) != null);
+                val isRequired = (param.getAnnotation(Required.class) != null);
+                val defValue   = (param.getAnnotation(DefaultTo.class) != null)
+                               ?  param.getAnnotation(DefaultTo.class).value()
+                               :  null;
                 
                 if (isNullable && isRequired) {
                     element.error("Parameter cannot be both Required and Nullable: " + name);
@@ -255,9 +257,9 @@ public class ChoiceSpec {
         val validateMethodName = "__validate" + methodName;
         val validateMethods 
                 = elements.stream()
-                .filter(elmt -> elmt.isMethodElement())
-                .map   (elmt -> elmt.asMethodElement())
-                .filter(mthd -> mthd.simpleName().equals(validateMethodName))
+                .filter (elmt -> elmt.isMethodElement())
+                .map    (elmt -> elmt.asMethodElement())
+                .filter (mthd -> mthd.simpleName().equals(validateMethodName))
                 .collect(toList());
         
         ensureValidatorParameters(method, validateMethods, validateMethodName);

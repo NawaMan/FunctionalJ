@@ -94,7 +94,7 @@ public class FeatureSerialization {
     }
     
     public static SpecMethodElement existingSerializeMethod(SpecElement element, SpecTypeElement type) {
-        return type.getEnclosedElements().stream()
+        return type.enclosedElements().stream()
                 .filter(elmt -> elmt.isMethodElement())
                 .map   (elmt -> elmt.asMethodElement())
                 .filter(mthd -> mthd.isDefault() || !mthd.isAbstract())

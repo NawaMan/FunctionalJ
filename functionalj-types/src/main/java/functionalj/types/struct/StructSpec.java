@@ -34,6 +34,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.lang.model.element.ElementKind;
@@ -105,19 +106,20 @@ public class StructSpec {
         
         val localTypeWithLens = element.readLocalTypeWithLens();
         
-        List<Getter> getters = type.getEnclosedElements().stream()
-                .filter (elmt  -> elmt.isMethodElement())
-                .map    (elmt  -> elmt.asMethodElement())
-                .filter (method-> !method.isDefault())
-                .filter (method-> !isClass || method.isAbstract())
-                .filter (method-> !(method.getReturnType().isNoType()))
-                .filter (method-> method.getParameters().isEmpty())
-                .map    (method-> createGetterFromMethod(element, method))
+        List<Getter> getters = type.enclosedElements().stream()
+                .filter (elmt -> elmt.isMethodElement())
+                .map    (elmt -> elmt.asMethodElement())
+                .filter (mthd -> !mthd.isDefault())
+                .filter (mthd -> !isClass || mthd.isAbstract())
+                .filter (mthd -> !(mthd.getReturnType().isNoType()))
+                .filter (mthd -> mthd.getParameters().isEmpty())
+                .map    (mthd -> createGetterFromMethod(element, mthd))
                 .collect(toList());
-        if (getters.stream().anyMatch(g -> g == null))
+        
+        if (getters.stream().anyMatch(Objects::isNull))
             return null;
         
-        List<Callable> methods = type.getEnclosedElements().stream()
+        List<Callable> methods = type.enclosedElements().stream()
                 .filter (elmt -> elmt.isMethodElement())
                 .map    (elmt -> elmt.asMethodElement())
                 .filter (mthd -> (mthd.isDefault() || mthd.isStatic()) && !mthd.isAbstract() && !mthd.isPrivate())

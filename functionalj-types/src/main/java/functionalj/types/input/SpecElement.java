@@ -32,7 +32,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.function.Function;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -67,6 +66,17 @@ public interface SpecElement {
         }
         
         @Override
+        public String packageName() {
+            if (isTypeElement())
+                return packageQualifiedName();
+            
+            if (isMethodElement())
+                return asMethodElement().enclosingElement().packageQualifiedName();
+            
+            throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
+        }
+        
+        @Override
         public String simpleName() {
             return element.getSimpleName().toString();
         }
@@ -79,11 +89,6 @@ public interface SpecElement {
         @Override
         public ElementKind getKind() {
             return element.getKind();
-        }
-        
-        @Override
-        public SpecElement enclosingElement() {
-            return SpecElement.of(environment, element.getEnclosingElement());
         }
         
         @Override
@@ -101,6 +106,113 @@ public interface SpecElement {
         public boolean isClass() {
             return ElementKind.CLASS.equals(element.getKind());
         }
+        
+        @Override
+        public boolean isStatic() {
+            return element.getModifiers().contains(Modifier.STATIC);
+        }
+        
+        @Override
+        public boolean isPublic() {
+            return element.getModifiers().contains(Modifier.PUBLIC);
+        }
+        
+        @Override
+        public boolean isPrivate() {
+            return element.getModifiers().contains(Modifier.PRIVATE);
+        }
+        
+        @Override
+        public boolean isProtected() {
+            return element.getModifiers().contains(Modifier.PROTECTED);
+        }
+        
+        @Override
+        public Accessibility accessibility() {
+            if (element.getModifiers().contains(Modifier.PRIVATE))
+                return Accessibility.PRIVATE;
+            if (element.getModifiers().contains(Modifier.DEFAULT))
+                return Accessibility.PACKAGE;
+            if (element.getModifiers().contains(Modifier.PROTECTED))
+                return Accessibility.PROTECTED;
+            if (element.getModifiers().contains(Modifier.PUBLIC))
+                return Accessibility.PUBLIC;
+            return Accessibility.PACKAGE;
+        }
+        
+        @Override
+        public Scope scope() {
+            return element.getModifiers().contains(Modifier.STATIC) ? Scope.STATIC : Scope.INSTANCE;
+        }
+        
+        @Override
+        public Modifiability modifiability() {
+            return element.getModifiers().contains(Modifier.FINAL) ? Modifiability.FINAL : Modifiability.MODIFIABLE;
+        }
+        
+        @Override
+        public Concrecity concrecity() {
+            return element.getModifiers().contains(Modifier.ABSTRACT) ? Concrecity.ABSTRACT : Concrecity.CONCRETE;
+        }
+        
+        @Override
+        public SpecElement enclosingElement() {
+            return SpecElement.of(environment, element.getEnclosingElement());
+        }
+        
+        @Override
+        public List<? extends SpecElement> enclosedElements() {
+            return element
+                    .getEnclosedElements().stream()
+                    .map    (element -> SpecElement.of(environment, element))
+                    .collect(toList());
+        }
+        
+        @Override
+        public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+            return element.getAnnotation(annotationType);
+        }
+        
+        @Override
+        public String printElement() {
+            try (val writer = new StringWriter()) {
+                environment.elementUtils.printElements(writer, element);
+                return writer.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        
+        @Override
+        public String getToString() {
+            return element.toString();
+        }
+        
+        @Override
+        public String toString() {
+            return element.toString();
+        }
+        
+        @Override
+        public void error(String msg) {
+            environment.messager.printMessage(Diagnostic.Kind.ERROR, msg, element);
+            environment.markHasError();
+        }
+        
+        @Override
+        public void warn(String msg) {
+            environment.messager.printMessage(Diagnostic.Kind.WARNING, msg, element);
+        }
+        
+        @Override
+        public void generateCode(String className, String content) throws IOException {
+            try (Writer writer = environment.filer.createSourceFile(className, element).openWriter()) {
+                writer.write(content);
+            }
+        }
+        
+        //== Sub typing ==
         
         @Override
         public boolean isTypeElement() {
@@ -122,93 +234,24 @@ public interface SpecElement {
         @Override
         public SpecMethodElement asMethodElement() {
             return isMethodElement() 
-                            ? SpecMethodElement.of(environment, ((ExecutableElement)element)) 
-                            : null;
-        }
-        
-        @Override
-        public List<? extends SpecElement> getEnclosedElements() {
-            return element
-                    .getEnclosedElements().stream()
-                    .map(element -> SpecElement.of(environment, element))
-                    .collect(toList());
-        }
-        
-        @Override
-        public void error(String msg) {
-            environment.messager.printMessage(Diagnostic.Kind.ERROR, msg, element);
-            environment.markHasError();
-        }
-        
-        @Override
-        public void warn(String msg) {
-            environment.messager.printMessage(Diagnostic.Kind.WARNING, msg, element);
-        }
-        
-        @Override
-        public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-            return element.getAnnotation(annotationType);
-        }
-        
-        @Override
-        public void generateCode(String className, String content) throws IOException {
-            try (Writer writer = environment.filer.createSourceFile(className, element).openWriter()) {
-                writer.write(content);
-            }
-        }
-        
-        @Override
-        public String packageName() {
-            if (isTypeElement())
-                return extractPackageNameFromType(asTypeElement());
-            
-            if (isMethodElement())
-                return extractPackageNameFromMethod(asMethodElement());
-            
-            throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
-        }
-        
-        @Override
-        public String sourceName() {
-            val packageName = packageName();
-            if (isTypeElement()) {
-                val typeElement = asTypeElement();
-                return typeElement.packageQualifiedName().substring(packageName.length() + 1 );
-            }
-            if (isMethodElement()) {
-                return null;
-            }
-            throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
-        }
-        
-        private String extractPackageNameFromType(SpecTypeElement type) {
-            val packageName = type.packageQualifiedName();
-            return packageName;
-        }
-        
-        private String extractPackageNameFromMethod(SpecMethodElement method) {
-            val type        = method.enclosingElement().asTypeElement();
-            val packageName = type.packageQualifiedName();
-            return packageName;
-        }
-        
-        @Override
-        public <T extends Annotation, D> D useAnnotation(Class<T> annotationClass, Function<T, D> action) {
-            val annotation = element.getAnnotation(annotationClass);
-            return action.apply(annotation);
-        }
-        
-        @Override
-        public List<String> readLocalTypeWithLens() {
-            return enclosingElement()
-                    .getEnclosedElements().stream()
-                    .filter (elmt -> elmt.isStructOrChoise())
-                    .map    (elmt -> targetName(elmt))
-                    .filter (name -> nonNull(name))
-                    .collect(toList());
+                    ? SpecMethodElement.of(environment, ((ExecutableElement)element)) 
+                    : null;
         }
         
         //== From annotation ==
+        
+        @Override
+        public String sourceName() {
+            if (isTypeElement()) {
+                val packageName = packageName();
+                return packageQualifiedName().substring(packageName.length() + 1 );
+            }
+            
+            if (isMethodElement())
+                return null;
+            
+            throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
+        }
         
         @Override
         public String targetName() {
@@ -279,92 +322,24 @@ public interface SpecElement {
         }
         
         @Override
-        public List<? extends SpecTypeParameterElement> typeParameters() {
-            return asTypeElement().getTypeParameters();
-        }
-        
-        @Override
-        public String printElement() {
-            try (val writer = new StringWriter()) {
-                environment.elementUtils.printElements(writer, element);
-                return writer.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        
-        @Override
-        public String getToString() {
-            return element.toString();
-        }
-        
-        @Override
-        public String toString() {
-            return element.toString();
-        }
-        
-        @Override
-        public boolean isStatic() {
-            return element.getModifiers().contains(Modifier.STATIC);
-        }
-        
-        @Override
-        public boolean isPublic() {
-            return element.getModifiers().contains(Modifier.PUBLIC);
-        }
-        
-        @Override
-        public boolean isPrivate() {
-            return element.getModifiers().contains(Modifier.PRIVATE);
-        }
-        
-        @Override
-        public boolean isProtected() {
-            return element.getModifiers().contains(Modifier.PROTECTED);
-        }
-        
-        @Override
-        public Accessibility accessibility() {
-            if (element.getModifiers().contains(Modifier.PRIVATE))
-                return Accessibility.PRIVATE;
-            if (element.getModifiers().contains(Modifier.DEFAULT))
-                return Accessibility.PACKAGE;
-            if (element.getModifiers().contains(Modifier.PROTECTED))
-                return Accessibility.PROTECTED;
-            if (element.getModifiers().contains(Modifier.PUBLIC))
-                return Accessibility.PUBLIC;
-            return Accessibility.PACKAGE;
-        }
-        
-        @Override
-        public Scope scope() {
-            return element.getModifiers().contains(Modifier.STATIC) ? Scope.STATIC : Scope.INSTANCE;
-        }
-        
-        @Override
-        public Modifiability modifiability() {
-            return element.getModifiers().contains(Modifier.FINAL) ? Modifiability.FINAL : Modifiability.MODIFIABLE;
-        }
-        
-        @Override
-        public Concrecity concrecity() {
-            return element.getModifiers().contains(Modifier.ABSTRACT) ? Concrecity.ABSTRACT : Concrecity.CONCRETE;
+        public List<String> readLocalTypeWithLens() {
+            return enclosingElement()
+                    .enclosedElements().stream()
+                    .filter (elmt -> elmt.isStructOrChoise())
+                    .map    (elmt -> targetName(elmt))
+                    .filter (name -> nonNull(name))
+                    .collect(toList());
         }
         
     }
     
     public String packageName();
     
-    public String sourceName();
-    
     public String simpleName();
     
     public String packageQualifiedName();
     
     public ElementKind getKind();
-    
-    public SpecElement enclosingElement();
     
     public boolean isStructOrChoise();
     
@@ -374,9 +349,9 @@ public interface SpecElement {
     
     public boolean isStatic();
     
-    public boolean isPrivate();
-    
     public boolean isPublic();
+    
+    public boolean isPrivate();
     
     public boolean isProtected();
     
@@ -388,16 +363,23 @@ public interface SpecElement {
     
     public Concrecity concrecity();
     
-    public List<? extends SpecElement> getEnclosedElements();
+    public SpecElement enclosingElement();
+    
+    public List<? extends SpecElement> enclosedElements();
     
     public <A extends Annotation> A getAnnotation(Class<A> annotationType);
-    
-    public List<? extends SpecTypeParameterElement> typeParameters();
     
     public String printElement();
     
     public String getToString();
     
+    public void error(String msg);
+    
+    public void warn(String msg);
+    
+    public void generateCode(String className, String content) throws IOException;
+    
+    //== Sub typing ==
     
     public boolean isTypeElement();
     
@@ -407,14 +389,9 @@ public interface SpecElement {
     
     public SpecMethodElement asMethodElement();
     
-    public void error(String msg);
+    //== From annotation ==
     
-    public void warn(String msg);
-    
-    public void generateCode(String className, String content) throws IOException;
-    
-    public <T extends Annotation, D> D useAnnotation(Class<T> annotationClass, Function<T, D> action);
-    
+    public String sourceName();
     
     public String targetName();
     

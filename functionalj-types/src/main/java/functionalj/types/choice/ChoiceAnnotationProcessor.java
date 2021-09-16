@@ -111,7 +111,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                 val template   = "Problem generating the class: %s: %s:%s:%s:%s @ %s";
                 val excMsg     = exception.getMessage();
                 val excClass   = exception.getClass();
-                val typeParams = asList(element.asTypeElement().getTypeParameters());
+                val typeParams = asList(element.asTypeElement().typeParameters());
                 val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
                 val errMsg     = format(template, className, excMsg, excClass, typeParams, generator, stacktrace);
                 

@@ -50,7 +50,7 @@ public interface SpecTypeElement extends SpecElement {
         }
         
         @Override
-        public List<? extends SpecTypeParameterElement> getTypeParameters() {
+        public List<? extends SpecTypeParameterElement> typeParameters() {
             return typeElement
                     .getTypeParameters().stream()
                     .map    (element -> SpecTypeParameterElement.of(environment, element))
@@ -61,6 +61,6 @@ public interface SpecTypeElement extends SpecElement {
     
     public String getQualifiedName();
 
-    public List<? extends SpecTypeParameterElement> getTypeParameters();
+    public List<? extends SpecTypeParameterElement> typeParameters();
     
 }
