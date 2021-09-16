@@ -23,43 +23,30 @@
 // ============================================================================
 package functionalj.types.input;
 
-import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.PrimitiveType;
 
-public interface SpecTypeVariable {
+public interface SpecPrimitiveType extends SpecTypeMirror {
     
-    public static SpecTypeVariable of(Environment environment, TypeVariable typeVariable) {
-        return new Impl(environment, typeVariable);
+    public static SpecPrimitiveType of(Environment environment, PrimitiveType primitiveType) {
+        return new Impl(environment, primitiveType);
     }
     
-    public static class Impl implements SpecTypeVariable {
+    public static class Impl extends SpecTypeMirror.Impl implements SpecPrimitiveType {
         
-        final Environment  environment;
-        final TypeVariable typeVariable;
+        private PrimitiveType primitiveType;
         
-        Impl(Environment environment, TypeVariable typeVariable) {
-            this.environment   = environment;
-            this.typeVariable  = typeVariable;
+        public Impl(Environment environment, PrimitiveType primitiveType) {
+            super(environment, primitiveType);
+            this.primitiveType = primitiveType;
         }
         
         @Override
-        public SpecTypeMirror getLowerBound() {
-            return SpecTypeMirror.of(environment, typeVariable.getLowerBound());
-        }
-        
-        @Override
-        public SpecTypeMirror getUpperBound() {
-            return SpecTypeMirror.of(environment, typeVariable.getUpperBound());
-        }
-        
-        @Override
-        public String toString() {
-            return typeVariable.toString();
+        public String primitiveName() {
+            return primitiveType.toString();
         }
         
     }
     
-    public SpecTypeMirror getLowerBound();
-    
-    public SpecTypeMirror getUpperBound();
+    public String primitiveName();
     
 }

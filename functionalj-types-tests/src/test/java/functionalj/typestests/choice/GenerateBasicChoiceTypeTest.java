@@ -47,7 +47,6 @@ interface UpOrDownSpec {
     void Down();
 }
 
-@SuppressWarnings("javadoc")
 public class GenerateBasicChoiceTypeTest {
 
     @Choice(specField="spec")

@@ -106,6 +106,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 val excClass   = exception.getClass();
                 val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
                 val errMsg   = format(template, packageName, specTargetName, excMsg, excClass, stacktrace);
+                exception.printStackTrace(System.err);
                 element.error(errMsg);
             } finally {
                 hasError |= environment.hasError();

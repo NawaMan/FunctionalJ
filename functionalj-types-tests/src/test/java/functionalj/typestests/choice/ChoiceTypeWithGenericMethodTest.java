@@ -39,7 +39,6 @@ import org.junit.Test;
 import functionalj.types.Choice;
 import functionalj.types.choice.Self1;
 
-@SuppressWarnings("javadoc")
 public class ChoiceTypeWithGenericMethodTest {
     
     @Choice

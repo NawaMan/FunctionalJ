@@ -40,7 +40,6 @@ import functionalj.types.choice.Self;
 import lombok.val;
 
 
-@SuppressWarnings("javadoc")
 public class ChioceTypeLinkedListTest {
     
     @Choice
