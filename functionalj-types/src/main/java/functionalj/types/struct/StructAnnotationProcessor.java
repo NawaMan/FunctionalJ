@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.types.struct;
 
+import static functionalj.types.choice.generator.Lines.string;
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -78,11 +80,12 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // TODO - Should find a way to warn when a field is not immutable.
         boolean hasError = false;
-        val elementsWithStruct
-                = roundEnv.getElementsAnnotatedWith(Struct.class).stream()
-                .map(elmt -> SpecElement.of(environment, elmt))
+        val elements
+                = roundEnv
+                .getElementsAnnotatedWith(Struct.class).stream()
+                .map    (element -> SpecElement.of(environment, element))
                 .collect(toList());
-        for (val element : elementsWithStruct) {
+        for (val element : elements) {
             val strucSpec      = new StructSpec(element);
             val packageName    = strucSpec.packageName();
             val specTargetName = strucSpec.targetName();
@@ -94,16 +97,16 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 
                 val dataObjSpec = new StructBuilder(sourceSpec).build();
                 val className   = (String)dataObjSpec.type().fullName("");
-                val content     = new GenStruct(sourceSpec, dataObjSpec).lines().collect(joining("\n"));
+                val generator   = new GenStruct(sourceSpec, dataObjSpec);
+                val content     = string(generator.lines());
                 element.generateCode(className, content);
-            } catch (Exception e) {
-                element.error("Problem generating the class: "
-                                + packageName + "." + specTargetName
-                                + ": "  + e.getMessage()
-                                + ":"   + e.getClass()
-                                + stream(e.getStackTrace())
-                                    .map(st -> "\n    @" + st)
-                                    .collect(joining()));
+            } catch (Exception exception) {
+                val template = "Problem generating the class: %s.%s: %s:%s%s";
+                val excMsg     = exception.getMessage();
+                val excClass   = exception.getClass();
+                val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
+                val errMsg   = format(template, packageName, specTargetName, excMsg, excClass, stacktrace);
+                element.error(errMsg);
             } finally {
                 hasError |= environment.hasError();
             }

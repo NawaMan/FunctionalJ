@@ -23,15 +23,17 @@
 // ============================================================================
 package functionalj.types.choice;
 
+import static functionalj.types.choice.generator.Lines.string;
+import static java.lang.String.format;
+import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -68,7 +70,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> annotations = new LinkedHashSet<String>();
+        val annotations = new LinkedHashSet<String>();
         annotations.add(Choice.class.getCanonicalName());
         return annotations;
     }
@@ -81,44 +83,42 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         boolean hasError = false;
-        val elementsWithChoice 
-                = roundEnv.getElementsAnnotatedWith(Choice.class).stream()
-                .map(elmt -> SpecElement.of(environment, elmt))
+        val elements 
+                = roundEnv
+                .getElementsAnnotatedWith(Choice.class).stream()
+                .map    (element -> SpecElement.of(environment, element))
                 .collect(toList());
-        for (val element : elementsWithChoice) {
+        for (val element : elements) {
             val choiceSpec  = new ChoiceSpec(element);
-            
             val sourceSpec  = choiceSpec.sourceSpec();
             val packageName = choiceSpec.packageName();
             val targetName  = choiceSpec.targetName();
+            val className   = packageName + "." + targetName;
             
             if (sourceSpec.choices.isEmpty()) {
-                val errMsg 
-                        = "Choice type must has at least one choice "
-                        + "(Reminder: a choice name must start with a capital letter): " 
-                        + packageName + "." + targetName;
+                val template = "Choice type must has at least one choice with name starts with a capital letter): %s";
+                val errMsg   = format(template, className);
                 element.error(errMsg);
                 continue;
             }
             
-            val generator   = new Generator(sourceSpec);
-            val typeElement = element.asTypeElement();
+            val generator = new Generator(sourceSpec);
             try {
-                val className = packageName + "." + targetName;
-                val content   = generator.lines().stream().collect(joining("\n"));
-                val logString = "\n" + logs.stream().map("// "::concat).collect(joining("\n"));
-                element.generateCode(className, content + logString);
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-                element.error("Problem generating the class: "
-                                + packageName + "." + targetName
-                                + ": "  + e.getMessage()
-                                + ":"   + e.getClass()
-                                + ":"   + Arrays.asList(typeElement.getTypeParameters())
-                                + ":"   + generator
-                                + " @ " + Stream.of(e.getStackTrace()).map(String::valueOf).collect(toList()));
+                val content   = string(generator.lines());
+                val logString = logs.stream().map("// "::concat).collect(joining("\n"));
+                element.generateCode(className, content + "\n" + logString);
+            } catch (Exception exception) {
+                val template   = "Problem generating the class: %s: %s:%s:%s:%s @ %s";
+                val excMsg     = exception.getMessage();
+                val excClass   = exception.getClass();
+                val typeParams = asList(element.asTypeElement().getTypeParameters());
+                val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
+                val errMsg     = format(template, className, excMsg, excClass, typeParams, generator, stacktrace);
+                
+                exception.printStackTrace(System.err);
+                element.error(errMsg);
             } finally {
-                hasError = hasError || choiceSpec.hasError();
+                hasError |= choiceSpec.hasError();
             }
         }
         return hasError;
