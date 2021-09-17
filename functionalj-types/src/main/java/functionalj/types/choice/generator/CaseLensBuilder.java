@@ -23,9 +23,9 @@
 // ============================================================================
 package functionalj.types.choice.generator;
 
+import static functionalj.types.Core.ObjectLensImpl;
 import static functionalj.types.choice.generator.helpers.CaseLensBuilderHelper.createGenFuncListLensField;
 import static functionalj.types.choice.generator.helpers.CaseLensBuilderHelper.createGenListLensField;
-import static functionalj.types.struct.Core.ObjectLensImpl;
 import static functionalj.types.struct.generator.ILines.line;
 import static functionalj.types.struct.generator.model.Accessibility.PUBLIC;
 import static functionalj.types.struct.generator.model.Modifiability.FINAL;
@@ -40,12 +40,12 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import functionalj.types.Core;
 import functionalj.types.Generic;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.model.GenClass;
 import functionalj.types.struct.generator.model.GenConstructor;
 import functionalj.types.struct.generator.model.GenField;

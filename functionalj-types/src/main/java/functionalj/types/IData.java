@@ -71,7 +71,6 @@ import functionalj.result.Value;
 import functionalj.types.choice.ChoiceTypes;
 import functionalj.types.choice.IChoice;
 import functionalj.types.choice.generator.model.CaseParam;
-import functionalj.types.struct.Core;
 import lombok.val;
 import nullablej.nullable.IAsNullable;
 import nullablej.nullable.LiveNullable;

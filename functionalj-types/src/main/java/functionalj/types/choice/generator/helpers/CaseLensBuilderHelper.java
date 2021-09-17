@@ -8,10 +8,10 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
+import functionalj.types.Core;
 import functionalj.types.Generic;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.model.GenField;
 import lombok.val;
 

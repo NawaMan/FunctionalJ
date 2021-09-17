@@ -21,9 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
-
-import functionalj.types.Type;
+package functionalj.types;
 
 /**
  * This class purpose is to allow decoupling of the annotation projects and the core project.

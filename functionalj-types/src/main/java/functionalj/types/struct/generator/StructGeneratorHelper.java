@@ -26,12 +26,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.types.Core;
 import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
 import functionalj.types.IPostConstruct;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
-import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.model.Accessibility;
 import functionalj.types.struct.generator.model.GenConstructor;
 import functionalj.types.struct.generator.model.GenField;

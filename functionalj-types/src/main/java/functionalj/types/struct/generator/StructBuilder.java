@@ -53,10 +53,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import functionalj.types.Core;
 import functionalj.types.Generic;
 import functionalj.types.IStruct;
 import functionalj.types.Type;
-import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.model.GenClass;
 import functionalj.types.struct.generator.model.GenField;
 import functionalj.types.struct.generator.model.GenMethod;
