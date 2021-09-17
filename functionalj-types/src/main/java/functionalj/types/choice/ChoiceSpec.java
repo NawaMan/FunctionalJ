@@ -358,10 +358,10 @@ public class ChoiceSpec {
     private String extractEnclosedClassName(SpecTypeElement typeElement, String packageName, String typeName) {
         String encloseClass = null;
         val qualifiedName = typeElement.getQualifiedName().toString();
-        encloseClass  = (typeElement.enclosingElement().getKind() != ElementKind.PACKAGE) &&  qualifiedName.endsWith("." + typeName)
+        encloseClass  = (typeElement.enclosingElement().kind() != ElementKind.PACKAGE) &&  qualifiedName.endsWith("." + typeName)
                       ? qualifiedName.substring(0, qualifiedName.length() - typeName.length() - 1)
                       : null;
-        encloseClass  = (typeElement.enclosingElement().getKind() != ElementKind.PACKAGE) && encloseClass != null && encloseClass.startsWith(packageName + ".")
+        encloseClass  = (typeElement.enclosingElement().kind() != ElementKind.PACKAGE) && encloseClass != null && encloseClass.startsWith(packageName + ".")
                       ? encloseClass.substring(packageName.length() + 1)
                       : null;
         return encloseClass;

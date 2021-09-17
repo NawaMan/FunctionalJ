@@ -87,7 +87,7 @@ public interface SpecElement {
         }
         
         @Override
-        public ElementKind getKind() {
+        public ElementKind kind() {
             return element.getKind();
         }
         
@@ -352,7 +352,7 @@ public interface SpecElement {
     
     public String packageQualifiedName();
     
-    public ElementKind getKind();
+    public ElementKind kind();
     
     public boolean isStructOrChoise();
     
