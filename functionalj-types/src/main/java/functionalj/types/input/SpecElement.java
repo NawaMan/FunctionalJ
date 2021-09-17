@@ -216,14 +216,14 @@ public interface SpecElement {
         
         @Override
         public SpecTypeElement asTypeElement() {
-            return (element instanceof TypeElement) 
+            return (element instanceof TypeElement)
                     ? SpecTypeElement.of(environment, ((TypeElement)element)) 
                     : null;
         }
         
         @Override
         public SpecMethodElement asMethodElement() {
-            return (element instanceof ExecutableElement) 
+            return (element instanceof ExecutableElement)
                     ? SpecMethodElement.of(environment, ((ExecutableElement)element)) 
                     : null;
         }
