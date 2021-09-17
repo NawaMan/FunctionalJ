@@ -261,7 +261,20 @@ public interface SpecElement {
         private String targetName(SpecElement element) {
             val specifiedTargetName = specifiedTargetName();
             val simpleName          = element.simpleName().toString();
-            return environment.extractTargetName(simpleName, specifiedTargetName);
+            return extractTargetName(simpleName, specifiedTargetName);
+        }
+        
+        public String extractTargetName(String simpleName, String specTargetName) {
+            if ((specTargetName != null) && !specTargetName.isEmpty())
+                return specTargetName;
+            
+            if (simpleName.matches("^.*Spec$"))
+                return simpleName.replaceAll("Spec$", "");
+            
+            if (simpleName.matches("^.*Model$"))
+                return simpleName.replaceAll("Model$", "");
+            
+            return simpleName;
         }
         
         @Override

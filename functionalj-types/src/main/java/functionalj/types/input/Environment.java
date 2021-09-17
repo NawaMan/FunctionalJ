@@ -54,17 +54,4 @@ public class Environment {
         return hasError.get();
     }
     
-    public String extractTargetName(String simpleName, String specTargetName) {
-        if ((specTargetName != null) && !specTargetName.isEmpty())
-            return specTargetName;
-        
-        if (simpleName.matches("^.*Spec$"))
-            return simpleName.replaceAll("Spec$", "");
-        
-        if (simpleName.matches("^.*Model$"))
-            return simpleName.replaceAll("Model$", "");
-        
-        return simpleName;
-    }
-    
 }
