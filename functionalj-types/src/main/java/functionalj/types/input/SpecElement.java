@@ -243,17 +243,6 @@ public interface SpecElement {
             throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
         }
         
-        @Override
-        public String targetName() {
-            return targetName(this);
-        }
-        
-        private String targetName(SpecElement element) {
-            val specifiedTargetName = specifiedTargetName();
-            val simpleName          = element.simpleName().toString();
-            return extractTargetName(simpleName, specifiedTargetName);
-        }
-        
         public String extractTargetName(String simpleName, String specTargetName) {
             if ((specTargetName != null) && !specTargetName.isEmpty())
                 return specTargetName;
@@ -400,7 +389,9 @@ public interface SpecElement {
     
     public String sourceName();
     
-    public String targetName();
+    public default String targetName() {
+        return targetName(this);
+    }
     
     public String specifiedTargetName();
     
@@ -413,5 +404,20 @@ public interface SpecElement {
     public boolean specifiedPublicField();
     
     public List<String> readLocalTypeWithLens();
+    
+    public default String targetName(SpecElement element) {
+        val specTargetName = specifiedTargetName();
+        val simpleName     = element.simpleName().toString();
+        if ((specTargetName != null) && !specTargetName.isEmpty())
+            return specTargetName;
+        
+        if (simpleName.matches("^.*Spec$"))
+            return simpleName.replaceAll("Spec$", "");
+        
+        if (simpleName.matches("^.*Model$"))
+            return simpleName.replaceAll("Model$", "");
+        
+        return simpleName;
+    }
     
 }
