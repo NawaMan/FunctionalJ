@@ -215,25 +215,15 @@ public interface SpecElement {
         //== Sub typing ==
         
         @Override
-        public boolean isTypeElement() {
-            return (element instanceof TypeElement);
-        }
-        
-        @Override
         public SpecTypeElement asTypeElement() {
-            return isTypeElement() 
+            return (element instanceof TypeElement) 
                     ? SpecTypeElement.of(environment, ((TypeElement)element)) 
                     : null;
         }
         
         @Override
-        public boolean isMethodElement() {
-            return (element instanceof ExecutableElement);
-        }
-        
-        @Override
         public SpecMethodElement asMethodElement() {
-            return isMethodElement() 
+            return (element instanceof ExecutableElement) 
                     ? SpecMethodElement.of(environment, ((ExecutableElement)element)) 
                     : null;
         }
@@ -394,13 +384,17 @@ public interface SpecElement {
     
     //== Sub typing ==
     
-    public boolean isTypeElement();
-    
     public SpecTypeElement asTypeElement();
     
-    public boolean isMethodElement();
-    
     public SpecMethodElement asMethodElement();
+    
+    public default boolean isTypeElement() {
+        return asTypeElement() != null;
+    }
+    
+    public default boolean isMethodElement() {
+        return asMethodElement() != null;
+    }
     
     //== From annotation ==
     
