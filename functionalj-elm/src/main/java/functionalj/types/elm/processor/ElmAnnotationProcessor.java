@@ -90,13 +90,13 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
             val environment = new Environment(elementUtils, typeUtils, dummyMessager, filer);
             val element     = SpecElement.of(environment, rawElement);
             
-            val struct = element.getAnnotation(Struct.class);
+            val struct = element.annotation(Struct.class);
             if (struct != null) {
                 hasError = hasError | !handleStructType(environment, element);
                 continue;
             }
             
-            val choice = element.getAnnotation(Choice.class);
+            val choice = element.annotation(Choice.class);
             if (choice != null) {
                 hasError = hasError | !handleChoiceType(element);
                 continue;

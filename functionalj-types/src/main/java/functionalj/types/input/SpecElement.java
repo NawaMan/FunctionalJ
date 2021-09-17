@@ -169,7 +169,7 @@ public interface SpecElement {
         }
         
         @Override
-        public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+        public <A extends Annotation> A annotation(Class<A> annotationType) {
             return element.getAnnotation(annotationType);
         }
         
@@ -279,11 +279,11 @@ public interface SpecElement {
         
         @Override
         public String specifiedTargetName() {
-            if (getAnnotation(Struct.class) != null) {
+            if (annotation(Struct.class) != null) {
                 return blankToNull(element.getAnnotation(Struct.class).name());
                 
             }
-            if (getAnnotation(Choice.class) != null) {
+            if (annotation(Choice.class) != null) {
                 return blankToNull(element.getAnnotation(Choice.class).name());
             }
             throw new IllegalArgumentException("Unknown element annotation type: " + element);
@@ -291,11 +291,11 @@ public interface SpecElement {
         
         @Override
         public String specifiedSpecField() {
-            if (getAnnotation(Struct.class) != null) {
-                val specField = getAnnotation(Struct.class).specField();
+            if (annotation(Struct.class) != null) {
+                val specField = annotation(Struct.class).specField();
                 return blankToNull(specField);
             }
-            if (getAnnotation(Choice.class) != null) {
+            if (annotation(Choice.class) != null) {
                 val specField = element.getAnnotation(Choice.class).specField();
                 return blankToNull(specField);
             }
@@ -304,18 +304,18 @@ public interface SpecElement {
         
         @Override
         public Serialize.To specifiedSerialize() {
-            if (getAnnotation(Struct.class) != null) {
-                return getAnnotation(Struct.class).serialize();
+            if (annotation(Struct.class) != null) {
+                return annotation(Struct.class).serialize();
             }
-            if (getAnnotation(Choice.class) != null) {
-                return getAnnotation(Choice.class).serialize();
+            if (annotation(Choice.class) != null) {
+                return annotation(Choice.class).serialize();
             }
             throw new IllegalArgumentException("Unknown element annotation type: " + element);
         }
         
         @Override
         public String choiceTagMapKeyName() {
-            if (getAnnotation(Choice.class) != null) {
+            if (annotation(Choice.class) != null) {
                 val tagMapKeyName = element.getAnnotation(Choice.class).tagMapKeyName();
                 return blankToNull(tagMapKeyName);
             } else {
@@ -325,11 +325,11 @@ public interface SpecElement {
         
         @Override
         public boolean specifiedPublicField() {
-            if (getAnnotation(Struct.class) != null) {
-                return getAnnotation(Struct.class).publicFields();
+            if (annotation(Struct.class) != null) {
+                return annotation(Struct.class).publicFields();
             }
-            if (getAnnotation(Choice.class) != null) {
-                return getAnnotation(Choice.class).publicFields();
+            if (annotation(Choice.class) != null) {
+                return annotation(Choice.class).publicFields();
             }
             throw new IllegalArgumentException("Unknown element annotation type: " + element);
         }
@@ -380,7 +380,7 @@ public interface SpecElement {
     
     public List<? extends SpecElement> enclosedElements();
     
-    public <A extends Annotation> A getAnnotation(Class<A> annotationType);
+    public <A extends Annotation> A annotation(Class<A> annotationType);
     
     public String printElement();
     

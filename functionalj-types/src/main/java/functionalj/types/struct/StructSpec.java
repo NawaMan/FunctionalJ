@@ -130,7 +130,7 @@ public class StructSpec {
         val packageName = type.packageQualifiedName();
         val encloseName = element.enclosingElement().simpleName();
         val sourceName  = type.getQualifiedName().toString().substring(packageName.length() + 1 );
-        val struct      = element.getAnnotation(Struct.class);
+        val struct      = element.annotation(Struct.class);
         val targetName  = targetName();
         val specField   = struct.specField();
         
@@ -199,7 +199,7 @@ public class StructSpec {
         val method         = element.asMethodElement();
         val packageName    = element.packageName();
         val encloseName    = element.enclosingElement().simpleName();
-        val struct         = element.getAnnotation(Struct.class);
+        val struct         = element.annotation(Struct.class);
         val specTargetName = targetName();
         val specField      = struct.specField();
         
@@ -299,10 +299,10 @@ public class StructSpec {
         val name        = p.simpleName().toString();
         val type        = getType(element, p.asTypeMirror());
         val isPrimitive = type.isPrimitive();
-        val isNullable  = ((p.getAnnotation(Nullable.class) != null) || (p.getAnnotation(DefaultTo.class) != null));
-        val isRequired  =  (p.getAnnotation(Required.class) != null);
-        val defTo       = (p.getAnnotation(DefaultTo.class) != null)
-                        ? p.getAnnotation(DefaultTo.class).value()
+        val isNullable  = ((p.annotation(Nullable.class) != null) || (p.annotation(DefaultTo.class) != null));
+        val isRequired  =  (p.annotation(Required.class) != null);
+        val defTo       = (p.annotation(DefaultTo.class) != null)
+                        ? p.annotation(DefaultTo.class).value()
                         : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
         val defValue = (DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(type) : defTo;
         if (!DefaultValue.isSuitable(type, defValue)) {
@@ -343,10 +343,10 @@ public class StructSpec {
             val methodName  = method.simpleName().toString();
             val returnType  = getType(element, method.getReturnType());
             val isPrimitive = returnType.isPrimitive();
-            val isNullable  = ((method.getAnnotation(Nullable.class) != null) || (method.getAnnotation(DefaultTo.class) != null));
-            val isRequired  =  (method.getAnnotation(Required.class) != null);
-            val defTo       = (method.getAnnotation(DefaultTo.class) != null)
-                            ? method.getAnnotation(DefaultTo.class).value()
+            val isNullable  = ((method.annotation(Nullable.class) != null) || (method.annotation(DefaultTo.class) != null));
+            val isRequired  =  (method.annotation(Required.class) != null);
+            val defTo       = (method.annotation(DefaultTo.class) != null)
+                            ? method.annotation(DefaultTo.class).value()
                             : ((isNullable && !isPrimitive)     ? DefaultValue.NULL : DefaultValue.REQUIRED);
             val defValue = ((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo);
             if (!DefaultValue.isSuitable(returnType, defValue)) {

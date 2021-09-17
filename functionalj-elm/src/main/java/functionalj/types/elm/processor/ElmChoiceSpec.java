@@ -46,7 +46,7 @@ public class ElmChoiceSpec {
         val baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
         this.folderName = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
         
-        val generatedDirectory  = element.getAnnotation(Elm.class).generatedDirectory();
+        val generatedDirectory  = element.annotation(Elm.class).generatedDirectory();
         this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     ElmChoiceSpec(SourceSpec sourceSpec, String typeName, String folderName) {
@@ -60,7 +60,7 @@ public class ElmChoiceSpec {
     }
     
     private String elmBaseModule(SpecElement element, SourceSpec sourceSpec) {
-        val baseModule  = element.getAnnotation(Elm.class).baseModule();
+        val baseModule  = element.annotation(Elm.class).baseModule();
         val elmtPackage = sourceSpec.sourceType.packageName();
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 
                 ? elmtPackage

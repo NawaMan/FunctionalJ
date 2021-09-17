@@ -242,10 +242,10 @@ public class ChoiceSpec {
             .map(param -> {
                 val name       = param.simpleName().toString();
                 val type       = typeOf(targetType, param.asTypeMirror());
-                val isNullable = (param.getAnnotation(Nullable.class) != null);
-                val isRequired = (param.getAnnotation(Required.class) != null);
-                val defValue   = (param.getAnnotation(DefaultTo.class) != null)
-                               ?  param.getAnnotation(DefaultTo.class).value()
+                val isNullable = (param.annotation(Nullable.class) != null);
+                val isRequired = (param.annotation(Required.class) != null);
+                val defValue   = (param.annotation(DefaultTo.class) != null)
+                               ?  param.annotation(DefaultTo.class).value()
                                :  null;
                 
                 if (isNullable && isRequired) {

@@ -87,7 +87,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
                 .collect(toList());
         for (val element : elements) {
             val method = element.asMethodElement();
-            val rule   = method.getAnnotation(Rule.class);
+            val rule   = method.annotation(Rule.class);
             val msg    = rule.value();
             val hasMsg = (msg != null) && !"".equals(msg);
             val isBool = method.getReturnType().isPrimitiveType()
@@ -137,7 +137,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     }
     
     private String getSuperType(SpecMethodElement method) {
-        val rule = method.getAnnotation(Rule.class);
+        val rule = method.annotation(Rule.class);
         if (rule == null)
             return null;
         
