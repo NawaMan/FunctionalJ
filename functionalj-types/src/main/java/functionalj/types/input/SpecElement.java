@@ -87,21 +87,6 @@ public interface SpecElement {
         }
         
         @Override
-        public Scope scope() {
-            return element.getModifiers().contains(Modifier.STATIC) ? Scope.STATIC : Scope.INSTANCE;
-        }
-        
-        @Override
-        public Modifiability modifiability() {
-            return element.getModifiers().contains(Modifier.FINAL) ? Modifiability.FINAL : Modifiability.MODIFIABLE;
-        }
-        
-        @Override
-        public Concrecity concrecity() {
-            return element.getModifiers().contains(Modifier.ABSTRACT) ? Concrecity.ABSTRACT : Concrecity.CONCRETE;
-        }
-        
-        @Override
         public SpecElement enclosingElement() {
             return SpecElement.of(environment, element.getEnclosingElement());
         }
@@ -235,11 +220,17 @@ public interface SpecElement {
         return Accessibility.PACKAGE;
     }
     
-    public Scope scope();
+    public default Scope scope() {
+        return modifiers().contains(Modifier.STATIC) ? Scope.STATIC : Scope.INSTANCE;
+    }
     
-    public Modifiability modifiability();
+    public default Modifiability modifiability() {
+        return modifiers().contains(Modifier.FINAL) ? Modifiability.FINAL : Modifiability.MODIFIABLE;
+    }
     
-    public Concrecity concrecity();
+    public default Concrecity concrecity() {
+        return modifiers().contains(Modifier.ABSTRACT) ? Concrecity.ABSTRACT : Concrecity.CONCRETE;
+    }
     
     public SpecElement enclosingElement();
     
