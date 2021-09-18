@@ -40,7 +40,6 @@ import javax.lang.model.element.TypeElement;
 
 import functionalj.types.Struct;
 import functionalj.types.input.Environment;
-import functionalj.types.input.SpecElement;
 import functionalj.types.struct.generator.StructBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -83,7 +82,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         val elements
                 = roundEnv
                 .getElementsAnnotatedWith(Struct.class).stream()
-                .map    (element -> SpecElement.of(environment, element))
+                .map    (environment::element)
                 .collect(toList());
         for (val element : elements) {
             val strucSpec      = new StructSpec(element);
@@ -95,17 +94,18 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 if (sourceSpec == null)
                     continue;
                 
-                val dataObjSpec = new StructBuilder(sourceSpec).build();
-                val className   = (String)dataObjSpec.type().fullName("");
-                val generator   = new GenStruct(sourceSpec, dataObjSpec);
-                val content     = string(generator.lines());
+                val structSpec = new StructBuilder(sourceSpec).build();
+                val className  = structSpec.targetClassName();
+                val generator  = new GenStruct(sourceSpec, structSpec);
+                val content    = string(generator.lines());
                 element.generateCode(className, content);
             } catch (Exception exception) {
                 val template = "Problem generating the class: %s.%s: %s:%s%s";
                 val excMsg     = exception.getMessage();
                 val excClass   = exception.getClass();
                 val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
-                val errMsg   = format(template, packageName, specTargetName, excMsg, excClass, stacktrace);
+                val errMsg     = format(template, packageName, specTargetName, excMsg, excClass, stacktrace);
+                
                 exception.printStackTrace(System.err);
                 element.error(errMsg);
             } finally {

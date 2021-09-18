@@ -35,14 +35,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 
 import functionalj.types.Choice;
 import functionalj.types.Struct;
@@ -60,15 +57,16 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class ElmAnnotationProcessor extends AbstractProcessor {
-
-    private Elements elementUtils;
-    private Types    typeUtils;
-    private Filer    filer;
+    
+    private Environment environment = null;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        elementUtils = processingEnv.getElementUtils();
-        filer        = processingEnv.getFiler();
+        val elementUtils = processingEnv.getElementUtils();
+        val typeUtils    = processingEnv.getTypeUtils();
+        val messager     = processingEnv.getMessager();
+        val filer        = processingEnv.getFiler();
+        environment = new Environment(elementUtils, typeUtils, messager, filer);
     }
     
     @Override
@@ -85,15 +83,13 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        boolean hasError      = false;
-        val     dummyMessager = new DummyMessager();
-        for (Element rawElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
-            val environment = new Environment(elementUtils, typeUtils, dummyMessager, filer);
-            val element     = SpecElement.of(environment, rawElement);
+        boolean hasError = false;
+        for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
+            val element = environment.element(javaElement);
             
             val struct = element.annotation(Struct.class);
             if (struct != null) {
-                hasError = hasError | !handleStructType(environment, element);
+                hasError = hasError | !handleStructType(element);
                 continue;
             }
             
@@ -108,7 +104,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
-    private boolean handleStructType(Environment environment, SpecElement element) {
+    private boolean handleStructType(SpecElement element) {
         val structSpec     = new StructSpec(element);
         val sourceSpec     = structSpec.sourceSpec();
         val packageName    = structSpec.packageName();
@@ -134,7 +130,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
                     + stream(e.getStackTrace())
                         .map(st -> "\n    @" + st)
                         .collect(joining()));
-            return !environment.hasError();
+            return !element.hasError();
         }
     }
     

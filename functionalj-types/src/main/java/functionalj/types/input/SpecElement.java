@@ -88,14 +88,14 @@ public interface SpecElement {
         
         @Override
         public SpecElement enclosingElement() {
-            return SpecElement.of(environment, element.getEnclosingElement());
+            return environment.element(element.getEnclosingElement());
         }
         
         @Override
         public List<? extends SpecElement> enclosedElements() {
             return element
                     .getEnclosedElements().stream()
-                    .map    (element -> SpecElement.of(environment, element))
+                    .map    (environment::element)
                     .collect(toList());
         }
         

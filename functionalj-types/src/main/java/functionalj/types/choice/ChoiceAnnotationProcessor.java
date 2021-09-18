@@ -44,7 +44,6 @@ import javax.lang.model.element.TypeElement;
 import functionalj.types.Choice;
 import functionalj.types.choice.generator.Generator;
 import functionalj.types.input.Environment;
-import functionalj.types.input.SpecElement;
 import lombok.val;
 
 
@@ -86,7 +85,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         val elements 
                 = roundEnv
                 .getElementsAnnotatedWith(Choice.class).stream()
-                .map    (element -> SpecElement.of(environment, element))
+                .map    (environment::element)
                 .collect(toList());
         for (val element : elements) {
             val choiceSpec  = new ChoiceSpec(element);

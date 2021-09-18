@@ -85,6 +85,10 @@ public class StructSpec {
         this.sourcePackageName = sourcePackageName;
     }
     
+    public String targetClassName() {
+        return (String)type().fullName("");
+    }
+    
     /**
      * Returns the lens type of this class.
      *

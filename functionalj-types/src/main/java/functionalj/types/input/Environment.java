@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
+import javax.lang.model.element.Element;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -52,6 +53,10 @@ public class Environment {
     
     public boolean hasError() {
         return hasError.get();
+    }
+    
+    public SpecElement element(Element element) {
+        return SpecElement.of(this, element);
     }
     
 }

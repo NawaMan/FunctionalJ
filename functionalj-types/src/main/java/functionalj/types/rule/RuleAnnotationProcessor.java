@@ -42,7 +42,6 @@ import javax.lang.model.element.TypeElement;
 import functionalj.types.IRule;
 import functionalj.types.Rule;
 import functionalj.types.input.Environment;
-import functionalj.types.input.SpecElement;
 import functionalj.types.input.SpecMethodElement;
 import functionalj.types.input.SpecTypeMirror;
 import functionalj.types.rule.RuleSpec.RuleType;
@@ -83,7 +82,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         val elements
                 = roundEnv
                 .getElementsAnnotatedWith(Rule.class).stream()
-                .map    (element -> SpecElement.of(environment, element))
+                .map    (environment::element)
                 .collect(toList());
         for (val element : elements) {
             val method = element.asMethodElement();
@@ -129,6 +128,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
                 val excClass   = exception.getClass();
                 val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
                 val errMsg     = format(template, className, excMsg, excClass, stacktrace);
+                
                 exception.printStackTrace(System.err);
                 element.error(errMsg);
             } finally {
