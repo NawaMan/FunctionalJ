@@ -87,19 +87,6 @@ public interface SpecElement {
         }
         
         @Override
-        public Accessibility accessibility() {
-            if (element.getModifiers().contains(Modifier.PRIVATE))
-                return Accessibility.PRIVATE;
-            if (element.getModifiers().contains(Modifier.DEFAULT))
-                return Accessibility.PACKAGE;
-            if (element.getModifiers().contains(Modifier.PROTECTED))
-                return Accessibility.PROTECTED;
-            if (element.getModifiers().contains(Modifier.PUBLIC))
-                return Accessibility.PUBLIC;
-            return Accessibility.PACKAGE;
-        }
-        
-        @Override
         public Scope scope() {
             return element.getModifiers().contains(Modifier.STATIC) ? Scope.STATIC : Scope.INSTANCE;
         }
@@ -187,101 +174,6 @@ public interface SpecElement {
                     : null;
         }
         
-        //== From annotation ==
-        
-        @Override
-        public String sourceName() {
-            if (isTypeElement()) {
-                val packageName = packageName();
-                return packageQualifiedName().substring(packageName.length() + 1 );
-            }
-            
-            if (isMethodElement())
-                return null;
-            
-            throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
-        }
-        
-        public String extractTargetName(String simpleName, String specTargetName) {
-            if ((specTargetName != null) && !specTargetName.isEmpty())
-                return specTargetName;
-            
-            if (simpleName.matches("^.*Spec$"))
-                return simpleName.replaceAll("Spec$", "");
-            
-            if (simpleName.matches("^.*Model$"))
-                return simpleName.replaceAll("Model$", "");
-            
-            return simpleName;
-        }
-        
-        @Override
-        public String specifiedTargetName() {
-            if (annotation(Struct.class) != null) {
-                return blankToNull(element.getAnnotation(Struct.class).name());
-                
-            }
-            if (annotation(Choice.class) != null) {
-                return blankToNull(element.getAnnotation(Choice.class).name());
-            }
-            throw new IllegalArgumentException("Unknown element annotation type: " + element);
-        }
-        
-        @Override
-        public String specifiedSpecField() {
-            if (annotation(Struct.class) != null) {
-                val specField = annotation(Struct.class).specField();
-                return blankToNull(specField);
-            }
-            if (annotation(Choice.class) != null) {
-                val specField = element.getAnnotation(Choice.class).specField();
-                return blankToNull(specField);
-            }
-            throw new IllegalArgumentException("Unknown element annotation type: " + element);
-        }
-        
-        @Override
-        public Serialize.To specifiedSerialize() {
-            if (annotation(Struct.class) != null) {
-                return annotation(Struct.class).serialize();
-            }
-            if (annotation(Choice.class) != null) {
-                return annotation(Choice.class).serialize();
-            }
-            throw new IllegalArgumentException("Unknown element annotation type: " + element);
-        }
-        
-        @Override
-        public String choiceTagMapKeyName() {
-            if (annotation(Choice.class) != null) {
-                val tagMapKeyName = element.getAnnotation(Choice.class).tagMapKeyName();
-                return blankToNull(tagMapKeyName);
-            } else {
-                return null;
-            }
-        }
-        
-        @Override
-        public boolean specifiedPublicField() {
-            if (annotation(Struct.class) != null) {
-                return annotation(Struct.class).publicFields();
-            }
-            if (annotation(Choice.class) != null) {
-                return annotation(Choice.class).publicFields();
-            }
-            throw new IllegalArgumentException("Unknown element annotation type: " + element);
-        }
-        
-        @Override
-        public List<String> readLocalTypeWithLens() {
-            return enclosingElement()
-                    .enclosedElements().stream()
-                    .filter (elmt -> elmt.isStructOrChoise())
-                    .map    (elmt -> targetName(elmt))
-                    .filter (name -> nonNull(name))
-                    .collect(toList());
-        }
-        
     }
     
     public default String packageName() {
@@ -302,7 +194,7 @@ public interface SpecElement {
     
     public Set<Modifier> modifiers();
     
-    public default boolean isStructOrChoise() {
+    public default boolean isStructOrChoice() {
         return (annotation(Struct.class) != null)
             || (annotation(Choice.class) != null);
     }
@@ -331,7 +223,17 @@ public interface SpecElement {
         return modifiers().contains(Modifier.PROTECTED);
     }
     
-    public Accessibility accessibility();
+    public default Accessibility accessibility() {
+        if (modifiers().contains(Modifier.PRIVATE))
+            return Accessibility.PRIVATE;
+        if (modifiers().contains(Modifier.DEFAULT))
+            return Accessibility.PACKAGE;
+        if (modifiers().contains(Modifier.PROTECTED))
+            return Accessibility.PROTECTED;
+        if (modifiers().contains(Modifier.PUBLIC))
+            return Accessibility.PUBLIC;
+        return Accessibility.PACKAGE;
+    }
     
     public Scope scope();
     
@@ -371,23 +273,21 @@ public interface SpecElement {
     
     //== From annotation ==
     
-    public String sourceName();
+    public default String sourceName() {
+        if (isTypeElement()) {
+            val packageName = packageName();
+            return packageQualifiedName().substring(packageName.length() + 1 );
+        }
+        
+        if (isMethodElement())
+            return null;
+        
+        throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
+    }
     
     public default String targetName() {
         return targetName(this);
     }
-    
-    public String specifiedTargetName();
-    
-    public String specifiedSpecField();
-    
-    public Serialize.To specifiedSerialize();
-    
-    public String choiceTagMapKeyName();
-    
-    public boolean specifiedPublicField();
-    
-    public List<String> readLocalTypeWithLens();
     
     public default String targetName(SpecElement element) {
         val specTargetName = specifiedTargetName();
@@ -402,6 +302,67 @@ public interface SpecElement {
             return simpleName.replaceAll("Model$", "");
         
         return simpleName;
+    }
+    
+    public default String specifiedTargetName() {
+        if (annotation(Struct.class) != null) {
+            return blankToNull(annotation(Struct.class).name());
+            
+        }
+        if (annotation(Choice.class) != null) {
+            return blankToNull(annotation(Choice.class).name());
+        }
+        throw new IllegalArgumentException("Unknown element annotation type: " + this);
+    }
+    
+    public default String specifiedSpecField() {
+        if (annotation(Struct.class) != null) {
+            val specField = annotation(Struct.class).specField();
+            return blankToNull(specField);
+        }
+        if (annotation(Choice.class) != null) {
+            val specField = annotation(Choice.class).specField();
+            return blankToNull(specField);
+        }
+        throw new IllegalArgumentException("Unknown element annotation type: " + this);
+    }
+    
+    public default Serialize.To specifiedSerialize() {
+        if (annotation(Struct.class) != null) {
+            return annotation(Struct.class).serialize();
+        }
+        if (annotation(Choice.class) != null) {
+            return annotation(Choice.class).serialize();
+        }
+        throw new IllegalArgumentException("Unknown element annotation type: " + this);
+    }
+    
+    public default String choiceTagMapKeyName() {
+        if (annotation(Choice.class) != null) {
+            val tagMapKeyName = annotation(Choice.class).tagMapKeyName();
+            return blankToNull(tagMapKeyName);
+        } else {
+            return null;
+        }
+    }
+    
+    public default boolean specifiedPublicField() {
+        if (annotation(Struct.class) != null) {
+            return annotation(Struct.class).publicFields();
+        }
+        if (annotation(Choice.class) != null) {
+            return annotation(Choice.class).publicFields();
+        }
+        throw new IllegalArgumentException("Unknown element annotation type: " + this);
+    }
+    
+    public default List<String> readLocalTypeWithLens() {
+        return enclosingElement()
+                .enclosedElements().stream()
+                .filter (elmt -> elmt.isStructOrChoice())
+                .map    (elmt -> targetName(elmt))
+                .filter (name -> nonNull(name))
+                .collect(toList());
     }
     
 }
