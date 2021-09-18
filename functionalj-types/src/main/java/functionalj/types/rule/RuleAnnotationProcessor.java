@@ -131,6 +131,8 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
                 val errMsg     = format(template, className, excMsg, excClass, stacktrace);
                 exception.printStackTrace(System.err);
                 element.error(errMsg);
+            } finally {
+                hasError |= element.hasError();
             }
         }
         return hasError;

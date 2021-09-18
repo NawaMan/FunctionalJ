@@ -137,6 +137,11 @@ public interface SpecElement {
         }
         
         @Override
+        public boolean hasError() {
+            return environment.hasError();
+        }
+        
+        @Override
         public void generateCode(String className, String content) throws IOException {
             try (Writer writer = environment.filer.createSourceFile(className, element).openWriter()) {
                 writer.write(content);
@@ -184,6 +189,8 @@ public interface SpecElement {
     public void error(String msg);
     
     public void warn(String msg);
+    
+    public boolean hasError();
     
     public void generateCode(String className, String content) throws IOException;
     

@@ -109,7 +109,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 exception.printStackTrace(System.err);
                 element.error(errMsg);
             } finally {
-                hasError |= environment.hasError();
+                hasError |= element.hasError();
             }
         }
         return hasError;

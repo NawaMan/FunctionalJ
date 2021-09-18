@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
@@ -162,15 +163,16 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
             
             generateElmCode(generatedPath, generatedCode, generatedName);
             return true;
-        } catch (Exception e) {
-            element.error("Problem generating the class: "
-                    + packageName + "." + specTargetName
-                    + ": "  + e.getMessage()
-                    + ":"   + e.getClass()
-                    + stream(e.getStackTrace())
-                        .map(st -> "\n    @" + st)
-                        .collect(joining()));
-            return !choiceSpec.hasError();
+        } catch (Exception exception) {
+            val template = "Problem generating the class: %s.%s: %s:%s%s";
+            val excMsg     = exception.getMessage();
+            val excClass   = exception.getClass();
+            val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
+            val errMsg   = format(template, packageName, specTargetName, excMsg, excClass, stacktrace);
+            exception.printStackTrace(System.err);
+            element.error(errMsg);
+            
+            return !element.hasError();
         }
     }
     

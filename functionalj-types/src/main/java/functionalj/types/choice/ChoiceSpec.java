@@ -54,7 +54,6 @@ import lombok.val;
 public class ChoiceSpec {
     
     private final SpecElement element;
-    private boolean hasError = false;
     
     public ChoiceSpec(SpecElement element) {
         this.element = element;
@@ -105,10 +104,6 @@ public class ChoiceSpec {
         val publicFields = element.specifiedPublicField();
         val sourceSpec   = new SourceSpec(targetName, sourceType, specField, publicFields, tagMapKeyName, serialize, generics, choices, methods, localTypeWithLens);
         return sourceSpec;
-    }
-    
-    public boolean hasError() {
-        return hasError;
     }
     
     private String extractEncloseClass(String simpleName, String sourceName) {

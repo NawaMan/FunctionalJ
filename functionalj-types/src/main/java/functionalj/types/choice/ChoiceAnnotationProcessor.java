@@ -118,7 +118,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                 exception.printStackTrace(System.err);
                 element.error(errMsg);
             } finally {
-                hasError |= choiceSpec.hasError();
+                hasError |= element.hasError();
             }
         }
         return hasError;
