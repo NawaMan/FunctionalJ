@@ -32,6 +32,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -92,39 +93,14 @@ public interface SpecElement {
         }
         
         @Override
+        public Set<Modifier> modifiers() {
+            return element.getModifiers();
+        }
+        
+        @Override
         public boolean isStructOrChoise() {
             return (element.getAnnotation(Struct.class) != null)
                 || (element.getAnnotation(Choice.class) != null);
-        }
-        
-        @Override
-        public boolean isInterface() {
-            return ElementKind.INTERFACE.equals(element.getKind());
-        }
-        
-        @Override
-        public boolean isClass() {
-            return ElementKind.CLASS.equals(element.getKind());
-        }
-        
-        @Override
-        public boolean isStatic() {
-            return element.getModifiers().contains(Modifier.STATIC);
-        }
-        
-        @Override
-        public boolean isPublic() {
-            return element.getModifiers().contains(Modifier.PUBLIC);
-        }
-        
-        @Override
-        public boolean isPrivate() {
-            return element.getModifiers().contains(Modifier.PRIVATE);
-        }
-        
-        @Override
-        public boolean isProtected() {
-            return element.getModifiers().contains(Modifier.PROTECTED);
         }
         
         @Override
@@ -333,19 +309,33 @@ public interface SpecElement {
     
     public ElementKind kind();
     
+    public Set<Modifier> modifiers();
+    
     public boolean isStructOrChoise();
     
-    public boolean isInterface();
+    public default boolean isInterface() {
+        return ElementKind.INTERFACE.equals(kind());
+    }
     
-    public boolean isClass();
+    public default boolean isClass() {
+        return ElementKind.CLASS.equals(kind());
+    }
     
-    public boolean isStatic();
+    public default boolean isStatic() {
+        return modifiers().contains(Modifier.STATIC);
+    }
     
-    public boolean isPublic();
+    public default boolean isPublic() {
+        return modifiers().contains(Modifier.PUBLIC);
+    }
     
-    public boolean isPrivate();
+    public default boolean isPrivate() {
+        return modifiers().contains(Modifier.PRIVATE);
+    }
     
-    public boolean isProtected();
+    public default boolean isProtected() {
+        return modifiers().contains(Modifier.PROTECTED);
+    }
     
     public Accessibility accessibility();
     
