@@ -13,7 +13,7 @@ import functionalj.types.Type;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
-import functionalj.types.struct.generator.StructBuilder;
+import functionalj.types.struct.generator.StructSpecBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
@@ -352,7 +352,7 @@ public class BugThreeNullableBuilder {
                     new Getter("description", new Type("java.lang", null, "String", emptyList()), true,  NULL)),
                 emptyList(),
                 asList("Brand", "Product"));
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

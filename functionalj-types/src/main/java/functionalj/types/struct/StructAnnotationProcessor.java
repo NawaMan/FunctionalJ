@@ -40,7 +40,7 @@ import javax.lang.model.element.TypeElement;
 
 import functionalj.types.Struct;
 import functionalj.types.input.Environment;
-import functionalj.types.struct.generator.StructBuilder;
+import functionalj.types.struct.generator.StructSpecBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
@@ -85,16 +85,16 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 .map    (environment::element)
                 .collect(toList());
         for (val element : elements) {
-            val strucSpec      = new StructSpec(element);
-            val packageName    = strucSpec.packageName();
-            val specTargetName = strucSpec.targetName();
+            val sourceSpecBuilder = new SourceSpecBuilder(element);
+            val packageName       = sourceSpecBuilder.packageName();
+            val specTargetName    = sourceSpecBuilder.targetName();
             
             try {
-                val sourceSpec = strucSpec.sourceSpec();
+                val sourceSpec = sourceSpecBuilder.sourceSpec();
                 if (sourceSpec == null)
                     continue;
                 
-                val structSpec = new StructBuilder(sourceSpec).build();
+                val structSpec = new StructSpecBuilder(sourceSpec).build();
                 val className  = structSpec.targetClassName();
                 val generator  = new GenStruct(sourceSpec, structSpec);
                 val content    = string(generator.lines());

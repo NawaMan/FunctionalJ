@@ -47,7 +47,7 @@ import functionalj.types.choice.ChoiceSpec;
 import functionalj.types.elm.Elm;
 import functionalj.types.input.Environment;
 import functionalj.types.input.SpecElement;
-import functionalj.types.struct.StructSpec;
+import functionalj.types.struct.SourceSpecBuilder;
 import lombok.val;
 
 
@@ -105,7 +105,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     }
     
     private boolean handleStructType(SpecElement element) {
-        val structSpec     = new StructSpec(element);
+        val structSpec     = new SourceSpecBuilder(element);
         val sourceSpec     = structSpec.sourceSpec();
         val packageName    = structSpec.packageName();
         val specTargetName = structSpec.targetName();

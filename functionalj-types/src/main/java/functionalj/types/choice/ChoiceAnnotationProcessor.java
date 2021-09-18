@@ -30,9 +30,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -53,8 +51,6 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class ChoiceAnnotationProcessor extends AbstractProcessor {
-    
-    private List<String> logs = new ArrayList<String>();
     
     private Environment environment = null;
     
@@ -89,11 +85,11 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                 .collect(toList());
         for (val element : elements) {
             val choiceSpec  = new ChoiceSpec(element);
-            val sourceSpec  = choiceSpec.sourceSpec();
             val packageName = choiceSpec.packageName();
             val targetName  = choiceSpec.targetName();
             val className   = packageName + "." + targetName;
             
+            val sourceSpec  = choiceSpec.sourceSpec();
             if (sourceSpec.choices.isEmpty()) {
                 val template = "Choice type must has at least one choice with name starts with a capital letter): %s";
                 val errMsg   = format(template, className);
@@ -103,9 +99,8 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             
             val generator = new Generator(sourceSpec);
             try {
-                val content   = string(generator.lines());
-                val logString = logs.stream().map("// "::concat).collect(joining("\n"));
-                element.generateCode(className, content + "\n" + logString);
+                val content = string(generator.lines());
+                element.generateCode(className, content);
             } catch (Exception exception) {
                 val template   = "Problem generating the class: %s: %s:%s:%s:%s @ %s";
                 val excMsg     = exception.getMessage();

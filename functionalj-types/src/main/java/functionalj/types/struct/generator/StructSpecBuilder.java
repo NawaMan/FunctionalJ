@@ -68,7 +68,7 @@ import lombok.val;
  *
  * @author NawaMan -- nawa@nawaman.net
  */
-public class StructBuilder {
+public class StructSpecBuilder {
     
     public final SourceSpec sourceSpec;
     
@@ -77,7 +77,7 @@ public class StructBuilder {
      *
      * @param sourceSpec  the source spec.
      */
-    public StructBuilder(SourceSpec sourceSpec) {
+    public StructSpecBuilder(SourceSpec sourceSpec) {
         this.sourceSpec = sourceSpec;
     }
     

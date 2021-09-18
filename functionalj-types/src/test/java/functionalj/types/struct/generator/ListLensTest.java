@@ -427,7 +427,7 @@ public class ListLensTest {
                     getters,
                     emptyList(),
                     emptyList());
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

@@ -61,7 +61,7 @@ import functionalj.types.struct.generator.SourceSpec.Configurations;
 import lombok.val;
 
 
-public class StructSpec {
+public class SourceSpecBuilder {
     
     private static final EnumSet<ElementKind> typeElementKinds = EnumSet.of(
             ElementKind.ENUM,
@@ -72,7 +72,7 @@ public class StructSpec {
     
     private final SpecElement element;
     
-    public StructSpec(SpecElement element) {
+    public SourceSpecBuilder(SpecElement element) {
         this.element = element;
     }
     

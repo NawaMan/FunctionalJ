@@ -54,7 +54,7 @@ public class RequiredConstructorTest {
             java.util.Arrays.asList("Person"));
     
     private String generate() {
-        val dataObjSpec = new StructBuilder(spec).build();
+        val dataObjSpec = new StructSpecBuilder(spec).build();
         val generated   = new GenStruct(spec, dataObjSpec).toText();
         return generated;
     }

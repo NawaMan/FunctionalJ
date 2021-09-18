@@ -246,7 +246,7 @@ public class GenerateParentListChildTest {
                     getters,
                     emptyList(),
                     asList("Child"));
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

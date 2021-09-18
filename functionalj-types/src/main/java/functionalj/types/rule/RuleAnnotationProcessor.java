@@ -28,9 +28,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -52,8 +50,6 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     private Environment environment = null;
     
     private boolean  hasError;
-    
-    private List<String> logs = new ArrayList<String>();
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -117,11 +113,8 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
             val className      = packageName + "." + targetName;
             
             try {
-                val content    = "// " + spec.toString() + "\n"
-                               + "// " + logs.toString() + "\n"
-                               + spec.toCode();
-                val logString  = logs.stream().map("// "::concat).collect(joining("\n"));
-                element.generateCode(className, content + "\n" + logString);
+                val content = spec.toCode();
+                element.generateCode(className, content);
             } catch (Exception exception) {
                 val template   = "Problem generating the class: %s: %s:%s @ %s";
                 val excMsg     = exception.getMessage();
