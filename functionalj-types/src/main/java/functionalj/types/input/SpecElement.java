@@ -67,17 +67,6 @@ public interface SpecElement {
         }
         
         @Override
-        public String packageName() {
-            if (isTypeElement())
-                return packageQualifiedName();
-            
-            if (isMethodElement())
-                return asMethodElement().enclosingElement().packageQualifiedName();
-            
-            throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
-        }
-        
-        @Override
         public String simpleName() {
             return element.getSimpleName().toString();
         }
@@ -95,12 +84,6 @@ public interface SpecElement {
         @Override
         public Set<Modifier> modifiers() {
             return element.getModifiers();
-        }
-        
-        @Override
-        public boolean isStructOrChoise() {
-            return (element.getAnnotation(Struct.class) != null)
-                || (element.getAnnotation(Choice.class) != null);
         }
         
         @Override
@@ -301,7 +284,15 @@ public interface SpecElement {
         
     }
     
-    public String packageName();
+    public default String packageName() {
+        if (isTypeElement())
+            return packageQualifiedName();
+        
+        if (isMethodElement())
+            return asMethodElement().enclosingElement().packageQualifiedName();
+        
+        throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
+    }
     
     public String simpleName();
     
@@ -311,7 +302,10 @@ public interface SpecElement {
     
     public Set<Modifier> modifiers();
     
-    public boolean isStructOrChoise();
+    public default boolean isStructOrChoise() {
+        return (annotation(Struct.class) != null)
+            || (annotation(Choice.class) != null);
+    }
     
     public default boolean isInterface() {
         return ElementKind.INTERFACE.equals(kind());
