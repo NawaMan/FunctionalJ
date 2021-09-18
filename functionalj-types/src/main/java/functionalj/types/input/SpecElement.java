@@ -161,6 +161,38 @@ public interface SpecElement {
         
     }
     
+    //== Fundamental methods ==
+    
+    public String simpleName();
+    
+    public String packageQualifiedName();
+    
+    public ElementKind kind();
+    
+    public Set<Modifier> modifiers();
+    
+    public SpecElement enclosingElement();
+    
+    public List<? extends SpecElement> enclosedElements();
+    
+    public <A extends Annotation> A annotation(Class<A> annotationType);
+    
+    public String printElement();
+    
+    public String getToString();
+    
+    public void error(String msg);
+    
+    public void warn(String msg);
+    
+    public void generateCode(String className, String content) throws IOException;
+    
+    public SpecTypeElement asTypeElement();
+    
+    public SpecMethodElement asMethodElement();
+    
+    //== Derived methods ==
+    
     public default String packageName() {
         if (isTypeElement())
             return packageQualifiedName();
@@ -170,14 +202,6 @@ public interface SpecElement {
         
         throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
     }
-    
-    public String simpleName();
-    
-    public String packageQualifiedName();
-    
-    public ElementKind kind();
-    
-    public Set<Modifier> modifiers();
     
     public default boolean isStructOrChoice() {
         return (annotation(Struct.class) != null)
@@ -232,27 +256,7 @@ public interface SpecElement {
         return modifiers().contains(Modifier.ABSTRACT) ? Concrecity.ABSTRACT : Concrecity.CONCRETE;
     }
     
-    public SpecElement enclosingElement();
-    
-    public List<? extends SpecElement> enclosedElements();
-    
-    public <A extends Annotation> A annotation(Class<A> annotationType);
-    
-    public String printElement();
-    
-    public String getToString();
-    
-    public void error(String msg);
-    
-    public void warn(String msg);
-    
-    public void generateCode(String className, String content) throws IOException;
-    
     //== Sub typing ==
-    
-    public SpecTypeElement asTypeElement();
-    
-    public SpecMethodElement asMethodElement();
     
     public default boolean isTypeElement() {
         return asTypeElement() != null;
