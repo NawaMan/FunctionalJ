@@ -31,10 +31,6 @@ import javax.lang.model.element.TypeElement;
 
 public interface SpecTypeElement extends SpecElement {
     
-    public static SpecTypeElement of(Environment environment, TypeElement typeElement) {
-        return new Impl(environment, typeElement);
-    }
-    
     public static class Impl extends SpecElement.Impl implements SpecTypeElement {
         
         final TypeElement typeElement;
@@ -59,8 +55,16 @@ public interface SpecTypeElement extends SpecElement {
         
     }
     
+    public default SpecTypeElement asTypeElement() {
+        return this;
+    }
+    
+    public default SpecMethodElement asMethodElement() {
+        return null;
+    }
+    
     public String getQualifiedName();
-
+    
     public List<? extends SpecTypeParameterElement> typeParameters();
     
 }

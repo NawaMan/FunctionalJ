@@ -47,6 +47,18 @@ public interface SpecPrimitiveType extends SpecTypeMirror {
         
     }
     
+    public default SpecPrimitiveType asPrimitiveType() {
+        return this;
+    }
+    
+    public default SpecTypeElement asDeclaredType() {
+        return null;
+    }
+    
+    public default SpecTypeVariable asTypeVariable() {
+        return null;
+    }
+    
     public String primitiveName();
     
 }

@@ -37,10 +37,6 @@ import lombok.val;
 
 public interface SpecMethodElement extends SpecElement {
     
-    public static SpecMethodElement of(Environment environment, ExecutableElement executableElement) {
-        return new Impl(environment, executableElement);
-    }
-    
     public static class Impl extends SpecElement.Impl implements SpecMethodElement {
         
         final ExecutableElement executableElement;
@@ -109,6 +105,14 @@ public interface SpecMethodElement extends SpecElement {
                     .collect(Collectors.toList());
         }
         
+    }
+    
+    public default SpecTypeElement asTypeElement() {
+        return null;
+    }
+    
+    public default SpecMethodElement asMethodElement() {
+        return this;
     }
     
     public boolean isDefault();

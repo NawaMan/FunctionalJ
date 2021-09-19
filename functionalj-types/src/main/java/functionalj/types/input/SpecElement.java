@@ -52,10 +52,6 @@ import lombok.val;
 
 public interface SpecElement {
     
-    public static SpecElement of(Environment environment, Element element) {
-        return new Impl(environment, element);
-    }
-    
     public static class Impl implements SpecElement {
         
         final Environment environment;
@@ -73,7 +69,11 @@ public interface SpecElement {
         
         @Override
         public String packageQualifiedName() {
-            return environment.elementUtils.getPackageOf(element).getQualifiedName().toString();
+            return environment
+                    .elementUtils
+                    .getPackageOf(element)
+                    .getQualifiedName()
+                    .toString();
         }
         
         @Override
@@ -88,7 +88,8 @@ public interface SpecElement {
         
         @Override
         public SpecElement enclosingElement() {
-            return environment.element(element.getEnclosingElement());
+            return environment
+                    .element(element.getEnclosingElement());
         }
         
         @Override
@@ -143,7 +144,8 @@ public interface SpecElement {
         
         @Override
         public void generateCode(String className, String content) throws IOException {
-            try (Writer writer = environment.filer.createSourceFile(className, element).openWriter()) {
+            val sourceFile = environment.filer.createSourceFile(className, element);
+            try (Writer writer = sourceFile.openWriter()) {
                 writer.write(content);
             }
         }
@@ -153,14 +155,14 @@ public interface SpecElement {
         @Override
         public SpecTypeElement asTypeElement() {
             return (element instanceof TypeElement)
-                    ? SpecTypeElement.of(environment, ((TypeElement)element)) 
+                    ? environment.element(((TypeElement)element)) 
                     : null;
         }
         
         @Override
         public SpecMethodElement asMethodElement() {
             return (element instanceof ExecutableElement)
-                    ? SpecMethodElement.of(environment, ((ExecutableElement)element)) 
+                    ? environment.element(((ExecutableElement)element)) 
                     : null;
         }
         

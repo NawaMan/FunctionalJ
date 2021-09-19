@@ -51,33 +51,23 @@ public interface SpecTypeMirror {
         }
         
         @Override
-        public boolean isPrimitiveType() {
-            return (typeMirror instanceof PrimitiveType);
-        }
-        
-        @Override
         public SpecPrimitiveType asPrimitiveType() {
-            return isPrimitiveType()
+            return (typeMirror instanceof PrimitiveType)
                     ? SpecPrimitiveType.of(environment, ((PrimitiveType)typeMirror))
                     : null;
         }
         
         @Override
-        public boolean isDeclaredType() {
-            return (typeMirror instanceof DeclaredType);
-        }
-        
-        @Override
         public SpecTypeElement asDeclaredType() {
-            return SpecTypeElement.of(environment, ((TypeElement)((DeclaredType)typeMirror).asElement()));
-        }
-        
-        public boolean isTypeVariable() {
-            return (typeMirror instanceof TypeVariable);
+            return (typeMirror instanceof DeclaredType)
+                    ? environment.element(((TypeElement)((DeclaredType)typeMirror).asElement()))
+                    : null;
         }
         
         public SpecTypeVariable asTypeVariable() {
-            return SpecTypeVariable.of(environment, (TypeVariable)typeMirror);
+            return (typeMirror instanceof TypeVariable)
+                    ? SpecTypeVariable.of(environment, (TypeVariable)typeMirror)
+                    : null;
         }
         
         @Override
@@ -105,15 +95,21 @@ public interface SpecTypeMirror {
         
     }
     
-    public boolean isPrimitiveType();
+    public default boolean isPrimitiveType() {
+        return (asPrimitiveType() != null);
+    }
+    
+    public default boolean isDeclaredType() {
+        return (asDeclaredType() != null);
+    }
+    
+    public default boolean isTypeVariable() {
+        return (asTypeVariable() != null);
+    }
     
     public SpecPrimitiveType asPrimitiveType();
     
-    public boolean isDeclaredType();
-    
     public SpecTypeElement asDeclaredType();
-    
-    public boolean isTypeVariable();
     
     public SpecTypeVariable asTypeVariable();
     

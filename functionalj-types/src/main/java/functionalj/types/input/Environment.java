@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -56,7 +58,15 @@ public class Environment {
     }
     
     public SpecElement element(Element element) {
-        return SpecElement.of(this, element);
+        return new SpecElement.Impl(this, element);
+    }
+    
+    public SpecMethodElement element(ExecutableElement element) {
+        return new SpecMethodElement.Impl(this, element);
+    }
+    
+    public SpecTypeElement element(TypeElement element) {
+        return new SpecTypeElement.Impl(this, element);
     }
     
 }
