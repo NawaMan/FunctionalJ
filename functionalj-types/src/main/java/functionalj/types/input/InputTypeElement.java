@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 
 public interface InputTypeElement extends InputElement {
@@ -43,6 +44,24 @@ public interface InputTypeElement extends InputElement {
         @Override
         public String getQualifiedName() {
             return typeElement.getQualifiedName().toString();
+        }
+        
+        @Override
+        public NestingKind nestingKind() {
+            return typeElement.getNestingKind();
+        }
+        
+        @Override
+        public InputType superclass() {
+            return InputType.of(environment, typeElement.getSuperclass());
+        }
+        
+        @Override
+        public List<? extends InputType> interfaces() {
+            return typeElement
+                    .getInterfaces().stream()
+                    .map    (element -> InputType.of(environment, element))
+                    .collect(toList());
         }
         
         @Override
@@ -64,6 +83,12 @@ public interface InputTypeElement extends InputElement {
     }
     
     public String getQualifiedName();
+    
+    public NestingKind nestingKind();
+    
+    public InputType superclass();
+    
+    public List<? extends InputType> interfaces();
     
     public List<? extends InputTypeParameterElement> typeParameters();
     

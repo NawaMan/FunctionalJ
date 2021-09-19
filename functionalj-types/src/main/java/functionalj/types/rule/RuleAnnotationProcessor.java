@@ -85,19 +85,19 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
             val rule   = method.annotation(Rule.class);
             val msg    = rule.value();
             val hasMsg = (msg != null) && !"".equals(msg);
-            val isBool = method.getReturnType().isPrimitiveType()
-                      && "boolean".equals(method.getReturnType().asPrimitiveType().primitiveName());
+            val isBool = method.returnType().isPrimitiveType()
+                      && "boolean".equals(method.returnType().asPrimitiveType().primitiveName());
             
             if (!isBool && hasMsg) {
                 method.warn("The error message is only used with a boolean checker.");
             }
             
-            val ruleType = getRuleType(method.getReturnType());
+            val ruleType = getRuleType(method.returnType());
             if (ruleType == null) {
                 method.error("Invalid return type: only boolean, String and functionalj.result.ValidationException is allowed.");
                 continue;
             }
-            if (method.getParameters().size() != 1) {
+            if (method.parameters().size() != 1) {
                 method.error("Rule spec method MUST have one parameter.");
                 continue;
             }
@@ -143,12 +143,12 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         return (clzz.trim().isEmpty() || clzz.equals(IRule.class.getCanonicalName())) ? null : clzz;
     }
     private String getDataName(InputMethodElement method) {
-        val name = method.getParameters().get(0).simpleName().toString();
+        val name = method.parameters().get(0).simpleName().toString();
         return name;
     }
     
     private String getDataType(InputMethodElement method) {
-        val type = method.getParameters().get(0).asTypeMirror();
+        val type = method.parameters().get(0).asType();
         if (type.isPrimitiveType())
             return type.asPrimitiveType().primitiveName();
         

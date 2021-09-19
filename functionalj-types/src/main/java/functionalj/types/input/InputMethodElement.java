@@ -77,13 +77,19 @@ public interface InputMethodElement extends InputElement {
         }
         
         @Override
-        public InputType getReturnType() {
+        public InputType receiverType() {
+            val receiverType = executableElement.getReceiverType();
+            return InputType.of(environment, receiverType);
+        }
+        
+        @Override
+        public InputType returnType() {
             val returnType = executableElement.getReturnType();
             return InputType.of(environment, returnType);
         }
         
         @Override
-        public List<? extends InputElement> getParameters() {
+        public List<? extends InputElement> parameters() {
             return executableElement
                     .getParameters().stream()
                     .map    (element -> environment.element(element))
@@ -91,14 +97,14 @@ public interface InputMethodElement extends InputElement {
         }
         
         @Override
-        public List<? extends InputTypeParameterElement> getTypeParameters() {
+        public List<? extends InputTypeParameterElement> typeParameters() {
             return executableElement
                     .getTypeParameters().stream()
                     .map    (element -> InputTypeParameterElement.of(environment, element))
                     .collect(toList());
         }
         
-        public List<? extends InputType> getThrownTypes() {
+        public List<? extends InputType> thrownTypes() {
             return executableElement
                     .getThrownTypes().stream()
                     .map    (element -> InputType.of(environment, element))
@@ -121,12 +127,14 @@ public interface InputMethodElement extends InputElement {
     
     public boolean isVarArgs();
     
-    public InputType getReturnType();
+    public InputType receiverType();
     
-    public List<? extends InputElement> getParameters();
+    public InputType returnType();
     
-    public List<? extends InputTypeParameterElement> getTypeParameters();
+    public List<? extends InputElement> parameters();
     
-    public List<? extends InputType> getThrownTypes();
+    public List<? extends InputTypeParameterElement> typeParameters();
+    
+    public List<? extends InputType> thrownTypes();
     
 }

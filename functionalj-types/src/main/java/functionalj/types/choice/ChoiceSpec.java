@@ -123,20 +123,20 @@ public class ChoiceSpec {
         val kind       = mthd.isDefault() ? Method.Kind.DEFAULT : Method.Kind.STATIC;
         val name       = mthd.simpleName();
         
-        val type       = typeOf(targetType, mthd.getReturnType());
+        val type       = typeOf(targetType, mthd.returnType());
         val params     = extractParameters(targetType, mthd);
-        val generics   = extractGenerics(targetType, mthd.getTypeParameters());
-        val exceptions = mthd.getThrownTypes().stream().map(t -> typeOf(targetType, t)).collect(toList());
+        val generics   = extractGenerics(targetType, mthd.typeParameters());
+        val exceptions = mthd.thrownTypes().stream().map(t -> typeOf(targetType, t)).collect(toList());
         val method = new Method(kind, name, type, params, generics, exceptions);
         return method;
     }
     
     private List<MethodParam> extractParameters(Type targetType, InputMethodElement mthd) {
         return mthd
-                .getParameters().stream()
+                .parameters().stream()
                 .map(p -> {
                     val paramName = p.simpleName();
-                    val paramType = typeOf(targetType, p.asTypeMirror());
+                    val paramType = typeOf(targetType, p.asType());
                     return new MethodParam(paramName, paramType);
                 }).collect(toList());
     }
@@ -219,7 +219,7 @@ public class ChoiceSpec {
                     .map    (elmt -> elmt.asMethodElement())
                     .filter (mthd -> !mthd.isDefault())
                     .filter (mthd -> mthd.simpleName().matches("^[A-Z].*$"))
-                    .filter (mthd -> mthd.getReturnType().isNoType())
+                    .filter (mthd -> mthd.returnType().isNoType())
                     .map    (mthd -> createChoiceFromMethod(targetType, mthd, typeElement.enclosedElements()))
                     .collect(toList());
         } catch (RuntimeException exception) {
@@ -233,10 +233,10 @@ public class ChoiceSpec {
         
         List<CaseParam> params
             = method
-            .getParameters().stream()
+            .parameters().stream()
             .map(param -> {
                 val name       = param.simpleName().toString();
-                val type       = typeOf(targetType, param.asTypeMirror());
+                val type       = typeOf(targetType, param.asType());
                 val isNullable = (param.annotation(Nullable.class) != null);
                 val isRequired = (param.annotation(Required.class) != null);
                 val defValue   = (param.annotation(DefaultTo.class) != null)
@@ -285,17 +285,17 @@ public class ChoiceSpec {
     private void ensureValidatorParameters(InputMethodElement method, List<InputMethodElement> validateMethods, String validateMethodName) {
         validateMethods.stream()
         .filter(mthd -> {
-            int methodParamSize = method.getTypeParameters().size();
-            int mthdParamSize   = mthd.getTypeParameters().size();
+            int methodParamSize = method.typeParameters().size();
+            int mthdParamSize   = mthd.typeParameters().size();
             if (mthdParamSize != methodParamSize) {
                 val expected = "expect " + methodParamSize + " but found " + mthdParamSize;
                 element.error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
                 return true;
             }
             
-            for (int i = 0; i < mthd.getTypeParameters().size(); i++) {
-                val methodParam = method.getTypeParameters().get(i);
-                val mthdParam   = mthd.getTypeParameters().get(i);
+            for (int i = 0; i < mthd.typeParameters().size(); i++) {
+                val methodParam = method.typeParameters().get(i);
+                val mthdParam   = mthd.typeParameters().get(i);
                 if (!mthdParam.equals(methodParam)) {
                     val expected = "parameter " + i + " expected to be " + methodParam + " but found to be " + mthdParam;
                     element.error("Validator method must have the same parameters as the case: " + validateMethodName + ": " + expected);
@@ -309,10 +309,10 @@ public class ChoiceSpec {
     
     private boolean hasValidator(InputMethodElement method, List<InputMethodElement> validateMethods) {
         return validateMethods.stream()
-                .filter(mthd -> mthd.getTypeParameters().size() == method.getTypeParameters().size())
+                .filter(mthd -> mthd.typeParameters().size() == method.typeParameters().size())
                 .filter(mthd -> {
-                    for (int i = 0; i < mthd.getTypeParameters().size(); i++) {
-                        if (!mthd.getTypeParameters().get(i).equals(method.getTypeParameters().get(i)))
+                    for (int i = 0; i < mthd.typeParameters().size(); i++) {
+                        if (!mthd.typeParameters().get(i).equals(method.typeParameters().get(i)))
                             return false;
                     }
                     return true;

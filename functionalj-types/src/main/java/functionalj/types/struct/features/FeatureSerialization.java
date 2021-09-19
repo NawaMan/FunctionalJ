@@ -41,7 +41,7 @@ public class FeatureSerialization {
         
         // Find the default/non-abstract method with name `serialize` with no parameter.
         val method      = existingSerializeMethod(element, type);
-        val returnType  = (method != null) ? method.getReturnType() + "" : null;
+        val returnType  = (method != null) ? method.returnType() + "" : null;
         String expected = null;
         if (serializeTo == Serialize.To.MAP) {
             if ("java.util.Map<java.lang.String,java.lang.Object>"          .equals(returnType)
@@ -98,14 +98,14 @@ public class FeatureSerialization {
                 .filter(elmt -> elmt.isMethodElement())
                 .map   (elmt -> elmt.asMethodElement())
                 .filter(mthd -> mthd.isDefault() || !mthd.isAbstract())
-                .filter(mthd -> mthd.getParameters().isEmpty())
+                .filter(mthd -> mthd.parameters().isEmpty())
                 .findFirst()
                 .orElse((InputMethodElement)null);
     }
     
     public static String existingSerializeMethodReturnType(InputElement element, InputTypeElement type) {
         val method     = existingSerializeMethod(element, type);
-        val returnType = (method != null) ? method.getReturnType() + "" : null;
+        val returnType = (method != null) ? method.returnType() + "" : null;
         return returnType;
     }
     

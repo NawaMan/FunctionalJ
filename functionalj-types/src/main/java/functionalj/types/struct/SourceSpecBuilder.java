@@ -110,8 +110,8 @@ public class SourceSpecBuilder {
                 .map    (elmt -> elmt.asMethodElement())
                 .filter (mthd -> !mthd.isDefault())
                 .filter (mthd -> !isClass || mthd.isAbstract())
-                .filter (mthd -> !(mthd.getReturnType().isNoType()))
-                .filter (mthd -> mthd.getParameters().isEmpty())
+                .filter (mthd -> !(mthd.returnType().isNoType()))
+                .filter (mthd -> mthd.parameters().isEmpty())
                 .map    (mthd -> createGetterFromMethod(element, mthd))
                 .collect(toList());
         
@@ -164,22 +164,22 @@ public class SourceSpecBuilder {
         val extractType = (Function<InputType, Type>)(typeMirror -> getType(element, typeMirror));
         
         val name          = mthdElement.simpleName().toString();
-        val type          = getType(element, mthdElement.getReturnType());
+        val type          = getType(element, mthdElement.returnType());
         val isVarArgs     = mthdElement.isVarArgs();
         val accessibility = mthdElement.accessibility();
         val scope         = mthdElement.scope();
         val modifiability = mthdElement.modifiability();
         val concrecity    = mthdElement.concrecity();
         
-        val generics = mthdElement.getTypeParameters().stream()
+        val generics = mthdElement.typeParameters().stream()
                 .map(t -> getGenericFromTypeParameter(element, t))
                 .collect(toList());
         val parameters = mthdElement
-                .getParameters().stream()
-                .map(param -> new Parameter(param.simpleName().toString(), getType(element, param.asTypeMirror())))
+                .parameters().stream()
+                .map(param -> new Parameter(param.simpleName().toString(), getType(element, param.asType())))
                 .collect(toList());
         val exceptions = mthdElement
-                .getThrownTypes().stream()
+                .thrownTypes().stream()
                 .map(extractType)
                 .collect(toList());
         
@@ -208,7 +208,7 @@ public class SourceSpecBuilder {
         val sourceName   = (String)null;
         val superPackage = packageName;
         
-        val isValidate    = isBooleanStringOrValidation(method.getReturnType());
+        val isValidate    = isBooleanStringOrValidation(method.returnType());
         val validatorName = isValidate ? method.simpleName() : null;
         val isStatic      = method.isStatic();
         val isPrivate     = method.isPrivate();
@@ -221,7 +221,7 @@ public class SourceSpecBuilder {
         if (configures == null)
             return null;
         
-        val getters = method.getParameters().stream()
+        val getters = method.parameters().stream()
                 .map    (parameter -> createGetterFromParameter(element, parameter))
                 .filter (getter    -> nonNull(getter))
                 .collect(toList());
@@ -296,7 +296,7 @@ public class SourceSpecBuilder {
     
     private Getter createGetterFromParameter(InputElement element, InputElement p) {
         val name        = p.simpleName().toString();
-        val type        = getType(element, p.asTypeMirror());
+        val type        = getType(element, p.asType());
         val isPrimitive = type.isPrimitive();
         val isNullable  = ((p.annotation(Nullable.class) != null) || (p.annotation(DefaultTo.class) != null));
         val isRequired  =  (p.annotation(Required.class) != null);
@@ -340,7 +340,7 @@ public class SourceSpecBuilder {
     private Getter createGetterFromMethod(InputElement element, InputMethodElement method) {
         try {
             val methodName  = method.simpleName().toString();
-            val returnType  = getType(element, method.getReturnType());
+            val returnType  = getType(element, method.returnType());
             val isPrimitive = returnType.isPrimitive();
             val isNullable  = ((method.annotation(Nullable.class) != null) || (method.annotation(DefaultTo.class) != null));
             val isRequired  =  (method.annotation(Required.class) != null);
