@@ -31,6 +31,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
@@ -76,6 +77,11 @@ public interface SpecTypeMirror {
         }
         
         @Override
+        public TypeKind typeKind() {
+            return typeMirror.getKind();
+        }
+        
+        @Override
         public List<? extends SpecTypeMirror> getTypeArguments() {
             return ((DeclaredType)typeMirror)
                     .getTypeArguments().stream()
@@ -114,6 +120,8 @@ public interface SpecTypeMirror {
     public SpecTypeVariable asTypeVariable();
     
     public boolean isNoType();
+    
+    public TypeKind typeKind();
     
     public List<? extends SpecTypeMirror> getTypeArguments();
     
