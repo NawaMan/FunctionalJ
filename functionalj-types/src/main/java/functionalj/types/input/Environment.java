@@ -57,16 +57,16 @@ public class Environment {
         return hasError.get();
     }
     
-    public SpecElement element(Element element) {
-        return new SpecElement.Impl(this, element);
+    public InputElement element(Element element) {
+        return new InputElement.Impl(this, element);
     }
     
-    public SpecMethodElement element(ExecutableElement element) {
-        return new SpecMethodElement.Impl(this, element);
+    public InputMethodElement element(ExecutableElement element) {
+        return new InputMethodElement.Impl(this, element);
     }
     
-    public SpecTypeElement element(TypeElement element) {
-        return new SpecTypeElement.Impl(this, element);
+    public InputTypeElement element(TypeElement element) {
+        return new InputTypeElement.Impl(this, element);
     }
     
 }

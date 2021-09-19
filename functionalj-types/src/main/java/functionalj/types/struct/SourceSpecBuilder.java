@@ -47,11 +47,11 @@ import functionalj.types.Required;
 import functionalj.types.Serialize;
 import functionalj.types.Struct;
 import functionalj.types.Type;
-import functionalj.types.input.SpecElement;
-import functionalj.types.input.SpecMethodElement;
-import functionalj.types.input.SpecTypeElement;
-import functionalj.types.input.SpecTypeMirror;
-import functionalj.types.input.SpecTypeParameterElement;
+import functionalj.types.input.InputElement;
+import functionalj.types.input.InputMethodElement;
+import functionalj.types.input.InputTypeElement;
+import functionalj.types.input.InputTypeMirror;
+import functionalj.types.input.InputTypeParameterElement;
 import functionalj.types.struct.generator.Callable;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.Parameter;
@@ -69,9 +69,9 @@ public class SourceSpecBuilder {
             ElementKind.INTERFACE,
             ElementKind.METHOD);
     
-    private final SpecElement element;
+    private final InputElement element;
     
-    public SourceSpecBuilder(SpecElement element) {
+    public SourceSpecBuilder(InputElement element) {
         this.element = element;
     }
     
@@ -90,7 +90,7 @@ public class SourceSpecBuilder {
             return extractSourceSpecMethod(element);
         throw new IllegalArgumentException("Record annotation is only support class or method.");
     }
-    private SourceSpec extractSourceSpecType(SpecElement element) {
+    private SourceSpec extractSourceSpecType(InputElement element) {
         val type        = element.asTypeElement();
         val simpleName  = element.simpleName();
         val isInterface = element.isInterface();
@@ -160,8 +160,8 @@ public class SourceSpecBuilder {
         }
     }
     
-    private Callable extractMethodSpec(SpecElement element, SpecMethodElement mthdElement) {
-        val extractType = (Function<SpecTypeMirror, Type>)(typeMirror -> getType(element, typeMirror));
+    private Callable extractMethodSpec(InputElement element, InputMethodElement mthdElement) {
+        val extractType = (Function<InputTypeMirror, Type>)(typeMirror -> getType(element, typeMirror));
         
         val name          = mthdElement.simpleName().toString();
         val type          = getType(element, mthdElement.getReturnType());
@@ -186,7 +186,7 @@ public class SourceSpecBuilder {
         return new Callable(name, type, isVarArgs, accessibility, scope, modifiability, concrecity, parameters, generics, exceptions);
     }
 
-    private Generic getGenericFromTypeParameter(SpecElement element, SpecTypeParameterElement typeParameter){
+    private Generic getGenericFromTypeParameter(InputElement element, InputTypeParameterElement typeParameter){
         val name   = typeParameter.simpleName();
         val bounds = typeParameter.getBounds().stream()
                     .map    (bound -> getType(element, bound))
@@ -194,7 +194,7 @@ public class SourceSpecBuilder {
         return new Generic(name, null, bounds);
     }
     
-    private SourceSpec extractSourceSpecMethod(SpecElement element) {
+    private SourceSpec extractSourceSpecMethod(InputElement element) {
         val method         = element.asMethodElement();
         val packageName    = element.packageName();
         val encloseName    = element.enclosingElement().simpleName();
@@ -245,7 +245,7 @@ public class SourceSpecBuilder {
         }
     }
     
-    private boolean isBooleanStringOrValidation(SpecTypeMirror returnType) {
+    private boolean isBooleanStringOrValidation(InputTypeMirror returnType) {
         if (returnType.isPrimitiveType()) {
             if ("boolean".equals(returnType.getToString()))
                 return true;
@@ -262,7 +262,7 @@ public class SourceSpecBuilder {
     }
     
     private boolean ensureNoArgConstructorWhenRequireFieldExists(
-                    SpecElement               element, 
+                    InputElement               element, 
                     List<Getter>              getters,
                     String                    packageName, 
                     String                    specTargetName,
@@ -280,7 +280,7 @@ public class SourceSpecBuilder {
     }
     
     private boolean ensureSerializationMethodMatch(
-                    SpecTypeElement type, 
+                    InputTypeElement type, 
                     List<Getter>    getters, 
                     String          packageName,
                     String          specTargetName, 
@@ -294,7 +294,7 @@ public class SourceSpecBuilder {
         return false;
     }
     
-    private Getter createGetterFromParameter(SpecElement element, SpecElement p) {
+    private Getter createGetterFromParameter(InputElement element, InputElement p) {
         val name        = p.simpleName().toString();
         val type        = getType(element, p.asTypeMirror());
         val isPrimitive = type.isPrimitive();
@@ -316,7 +316,7 @@ public class SourceSpecBuilder {
         return getter;
     }
     
-    private Configurations extractConfigurations(SpecElement element, Struct struct) {
+    private Configurations extractConfigurations(InputElement element, Struct struct) {
         val configures = new Configurations();
         configures.coupleWithDefinition            = struct.coupleWithDefinition();
         configures.generateNoArgConstructor        = struct.generateNoArgConstructor();
@@ -337,7 +337,7 @@ public class SourceSpecBuilder {
         return configures;
     }
     
-    private Getter createGetterFromMethod(SpecElement element, SpecMethodElement method) {
+    private Getter createGetterFromMethod(InputElement element, InputMethodElement method) {
         try {
             val methodName  = method.simpleName().toString();
             val returnType  = getType(element, method.getReturnType());
@@ -364,7 +364,7 @@ public class SourceSpecBuilder {
         }
     }
     
-    private Type getType(SpecElement element, SpecTypeMirror typeMirror) {
+    private Type getType(InputElement element, InputTypeMirror typeMirror) {
         val typeStr = typeMirror.getToString();
         if (typeMirror.isPrimitiveType())
             return Type.primitiveTypes.get(typeStr);
@@ -388,7 +388,7 @@ public class SourceSpecBuilder {
         return Type.newVirtualType(typeMirror.getToString());
     }
     
-    private String getPackageName(SpecElement element, SpecTypeElement typeElement) {
+    private String getPackageName(InputElement element, InputTypeElement typeElement) {
         val typePackage = typeElement.packageQualifiedName();
         if (!typePackage.isEmpty())
             return typePackage;

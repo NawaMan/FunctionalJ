@@ -9,9 +9,9 @@ import javax.lang.model.element.TypeElement;
 import functionalj.types.Generic;
 import functionalj.types.Serialize;
 import functionalj.types.Type;
-import functionalj.types.input.SpecElement;
-import functionalj.types.input.SpecMethodElement;
-import functionalj.types.input.SpecTypeElement;
+import functionalj.types.input.InputElement;
+import functionalj.types.input.InputMethodElement;
+import functionalj.types.input.InputTypeElement;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import lombok.val;
@@ -19,7 +19,7 @@ import lombok.val;
 public class FeatureSerialization {
     
     public static String validateSerialization(
-                    SpecElement    element,
+                    InputElement    element,
                     TypeElement    type, 
                     List<Getter>   getters, 
                     String         packageName,
@@ -29,8 +29,8 @@ public class FeatureSerialization {
     }
     
     public static String validateSerialization(
-                    SpecElement     element,
-                    SpecTypeElement type, 
+                    InputElement     element,
+                    InputTypeElement type, 
                     List<Getter>    getters, 
                     String          packageName,
                     String          specTargetName, 
@@ -93,17 +93,17 @@ public class FeatureSerialization {
         return format(template, serializeTo, expected, returnType);
     }
     
-    public static SpecMethodElement existingSerializeMethod(SpecElement element, SpecTypeElement type) {
+    public static InputMethodElement existingSerializeMethod(InputElement element, InputTypeElement type) {
         return type.enclosedElements().stream()
                 .filter(elmt -> elmt.isMethodElement())
                 .map   (elmt -> elmt.asMethodElement())
                 .filter(mthd -> mthd.isDefault() || !mthd.isAbstract())
                 .filter(mthd -> mthd.getParameters().isEmpty())
                 .findFirst()
-                .orElse((SpecMethodElement)null);
+                .orElse((InputMethodElement)null);
     }
     
-    public static String existingSerializeMethodReturnType(SpecElement element, SpecTypeElement type) {
+    public static String existingSerializeMethodReturnType(InputElement element, InputTypeElement type) {
         val method     = existingSerializeMethod(element, type);
         val returnType = (method != null) ? method.getReturnType() + "" : null;
         return returnType;
@@ -111,7 +111,7 @@ public class FeatureSerialization {
     
     // The following methods assume that we already validate using `validateSerialization(...)`
     
-    public static Type serializeToType(SpecElement element, SpecTypeElement type, Configurations configures) {
+    public static Type serializeToType(InputElement element, InputTypeElement type, Configurations configures) {
         val serializeTo = configures.serialize;
         if (serializeTo == Serialize.To.NOTHING)
             return null;    // Don't care about serialize method
@@ -140,7 +140,7 @@ public class FeatureSerialization {
         return null;
     }
     
-    public static Type serializeType(SpecElement element, SpecTypeElement type, Configurations configures) {
+    public static Type serializeType(InputElement element, InputTypeElement type, Configurations configures) {
         val toType = serializeToType(element, type, configures);
         return (toType != null) ? Type.SERIALIZE.withGenerics(new Generic(toType)) : null;
     }

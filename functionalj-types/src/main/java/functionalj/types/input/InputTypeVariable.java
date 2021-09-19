@@ -23,42 +23,37 @@
 // ============================================================================
 package functionalj.types.input;
 
-import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeVariable;
 
-public interface SpecPrimitiveType extends SpecTypeMirror {
+public interface InputTypeVariable extends InputReferenceType {
     
-    public static SpecPrimitiveType of(Environment environment, PrimitiveType primitiveType) {
-        return new Impl(environment, primitiveType);
+    public static InputTypeVariable of(Environment environment, TypeVariable typeVariable) {
+        return new Impl(environment, typeVariable);
     }
     
-    public static class Impl extends SpecTypeMirror.Impl implements SpecPrimitiveType {
+    public static class Impl extends InputReferenceType.Impl implements InputTypeVariable {
         
-        final PrimitiveType primitiveType;
+        final TypeVariable typeVariable;
         
-        public Impl(Environment environment, PrimitiveType primitiveType) {
-            super(environment, primitiveType);
-            this.primitiveType = primitiveType;
+        Impl(Environment environment, TypeVariable typeVariable) {
+            super(environment, typeVariable);
+            this.typeVariable  = typeVariable;
         }
         
         @Override
-        public String primitiveName() {
-            return primitiveType.toString();
+        public InputTypeMirror getLowerBound() {
+            return InputTypeMirror.of(environment, typeVariable.getLowerBound());
+        }
+        
+        @Override
+        public InputTypeMirror getUpperBound() {
+            return InputTypeMirror.of(environment, typeVariable.getUpperBound());
         }
         
     }
     
-    public default SpecPrimitiveType asPrimitiveType() {
-        return this;
-    }
+    public InputTypeMirror getLowerBound();
     
-    public default SpecTypeElement asDeclaredType() {
-        return null;
-    }
-    
-    public default SpecTypeVariable asTypeVariable() {
-        return null;
-    }
-    
-    public String primitiveName();
+    public InputTypeMirror getUpperBound();
     
 }

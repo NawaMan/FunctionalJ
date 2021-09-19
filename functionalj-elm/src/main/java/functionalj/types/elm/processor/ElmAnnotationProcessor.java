@@ -46,7 +46,7 @@ import functionalj.types.Struct;
 import functionalj.types.choice.ChoiceSpec;
 import functionalj.types.elm.Elm;
 import functionalj.types.input.Environment;
-import functionalj.types.input.SpecElement;
+import functionalj.types.input.InputElement;
 import functionalj.types.struct.SourceSpecBuilder;
 import lombok.val;
 
@@ -104,7 +104,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
-    private boolean handleStructType(SpecElement element) {
+    private boolean handleStructType(InputElement element) {
         val structSpec     = new SourceSpecBuilder(element);
         val sourceSpec     = structSpec.sourceSpec();
         val packageName    = structSpec.packageName();
@@ -141,7 +141,7 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         Files.write(generatedFile.toPath(), lines);
     }
     
-    private boolean handleChoiceType(SpecElement element) {
+    private boolean handleChoiceType(InputElement element) {
         val choiceSpec     = new ChoiceSpec(element);
         val sourceSpec     = choiceSpec.sourceSpec();
         val packageName    = choiceSpec.packageName();

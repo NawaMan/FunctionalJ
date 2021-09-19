@@ -43,19 +43,19 @@ import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.Method;
 import functionalj.types.choice.generator.model.MethodParam;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.input.SpecElement;
-import functionalj.types.input.SpecMethodElement;
-import functionalj.types.input.SpecTypeElement;
-import functionalj.types.input.SpecTypeMirror;
-import functionalj.types.input.SpecTypeParameterElement;
+import functionalj.types.input.InputElement;
+import functionalj.types.input.InputMethodElement;
+import functionalj.types.input.InputTypeElement;
+import functionalj.types.input.InputTypeMirror;
+import functionalj.types.input.InputTypeParameterElement;
 import lombok.val;
 
 
 public class ChoiceSpec {
     
-    private final SpecElement element;
+    private final InputElement element;
     
-    public ChoiceSpec(SpecElement element) {
+    public ChoiceSpec(InputElement element) {
         this.element = element;
     }
     
@@ -114,12 +114,12 @@ public class ChoiceSpec {
         }
     }
     
-    private boolean isDefaultOrStatic(SpecMethodElement mthd) {
+    private boolean isDefaultOrStatic(InputMethodElement mthd) {
         return mthd.isDefault()
             || mthd.isStatic();
     }
     
-    private Method createMethodFromMethodElement(Type targetType, SpecMethodElement mthd) {
+    private Method createMethodFromMethodElement(Type targetType, InputMethodElement mthd) {
         val kind       = mthd.isDefault() ? Method.Kind.DEFAULT : Method.Kind.STATIC;
         val name       = mthd.simpleName();
         
@@ -131,7 +131,7 @@ public class ChoiceSpec {
         return method;
     }
     
-    private List<MethodParam> extractParameters(Type targetType, SpecMethodElement mthd) {
+    private List<MethodParam> extractParameters(Type targetType, InputMethodElement mthd) {
         return mthd
                 .getParameters().stream()
                 .map(p -> {
@@ -141,24 +141,24 @@ public class ChoiceSpec {
                 }).collect(toList());
     }
     
-    private boolean isPublicOrPackage(SpecMethodElement mthd) {
+    private boolean isPublicOrPackage(InputMethodElement mthd) {
         return mthd.isPublic()
           || !(mthd.isPrivate()
             && mthd.isProtected());
     }
     
-    private List<Generic> extractTypeGenerics(Type targetType, SpecTypeElement type) {
+    private List<Generic> extractTypeGenerics(Type targetType, InputTypeElement type) {
         val typeParameters = type.typeParameters();
         return extractGenerics(targetType, typeParameters);
     }
     
-    private List<Generic> extractGenerics(Type targetType, List<? extends SpecTypeParameterElement> typeParameters) {
+    private List<Generic> extractGenerics(Type targetType, List<? extends InputTypeParameterElement> typeParameters) {
         return typeParameters.stream()
                 .map(t -> parameterGeneric(targetType, t))
                 .collect(toList());
     }
     
-    private Generic parameterGeneric(Type targetType, SpecTypeParameterElement t) {
+    private Generic parameterGeneric(Type targetType, InputTypeParameterElement t) {
         val boundTypes = t.getBounds().stream()
                 .map(tm -> typeOf(targetType, tm))
                 .collect(toList());
@@ -176,7 +176,7 @@ public class ChoiceSpec {
                 boundTypes);
     }
     
-    private List<Generic> extractGenericsFromTypeArguments(Type targetType, List<? extends SpecTypeMirror> typeParameters) {
+    private List<Generic> extractGenericsFromTypeArguments(Type targetType, List<? extends InputTypeMirror> typeParameters) {
         return typeParameters.stream()
                 .map(p -> {
                     val paramName = p.toString();
@@ -201,7 +201,7 @@ public class ChoiceSpec {
                 .collect(toList());
     }
     
-    private List<Method> extractTypeMethods(Type targetType, SpecTypeElement typeElement) {
+    private List<Method> extractTypeMethods(Type targetType, InputTypeElement typeElement) {
         return typeElement.enclosedElements().stream()
                 .filter (elmt -> elmt.isMethodElement())
                 .map    (elmt -> elmt.asMethodElement())
@@ -212,7 +212,7 @@ public class ChoiceSpec {
                 .collect(toList());
     }
     
-    private List<Case> extractTypeChoices(Type targetType, SpecTypeElement typeElement) {
+    private List<Case> extractTypeChoices(Type targetType, InputTypeElement typeElement) {
         try {
             return typeElement.enclosedElements().stream()
                     .filter (elmt -> elmt.isMethodElement())
@@ -228,7 +228,7 @@ public class ChoiceSpec {
         }
     }
     
-    private Case createChoiceFromMethod(Type targetType, SpecMethodElement method, List<? extends SpecElement> elements) {
+    private Case createChoiceFromMethod(Type targetType, InputMethodElement method, List<? extends InputElement> elements) {
         val methodName = method.simpleName();
         
         List<CaseParam> params
@@ -268,7 +268,7 @@ public class ChoiceSpec {
         return choice;
     }
     
-    private void ensureValidatorModifier(List<SpecMethodElement> validateMethods, String validateMethodName) {
+    private void ensureValidatorModifier(List<InputMethodElement> validateMethods, String validateMethodName) {
         validateMethods.stream()
         .filter(mthd -> {
             if (!mthd.isStatic()) {
@@ -282,7 +282,7 @@ public class ChoiceSpec {
         .forEach(mthd -> {});
     }
     
-    private void ensureValidatorParameters(SpecMethodElement method, List<SpecMethodElement> validateMethods, String validateMethodName) {
+    private void ensureValidatorParameters(InputMethodElement method, List<InputMethodElement> validateMethods, String validateMethodName) {
         validateMethods.stream()
         .filter(mthd -> {
             int methodParamSize = method.getTypeParameters().size();
@@ -307,7 +307,7 @@ public class ChoiceSpec {
         .forEach(mthd -> {});
     }
     
-    private boolean hasValidator(SpecMethodElement method, List<SpecMethodElement> validateMethods) {
+    private boolean hasValidator(InputMethodElement method, List<InputMethodElement> validateMethods) {
         return validateMethods.stream()
                 .filter(mthd -> mthd.getTypeParameters().size() == method.getTypeParameters().size())
                 .filter(mthd -> {
@@ -321,7 +321,7 @@ public class ChoiceSpec {
                 .isPresent();
     }
     
-    private Type typeOf(Type targetType, SpecTypeMirror typeMirror) {
+    private Type typeOf(Type targetType, InputTypeMirror typeMirror) {
         if (typeMirror == null)
             return null;
         
@@ -350,7 +350,7 @@ public class ChoiceSpec {
         return null;
     }
     
-    private String extractEnclosedClassName(SpecTypeElement typeElement, String packageName, String typeName) {
+    private String extractEnclosedClassName(InputTypeElement typeElement, String packageName, String typeName) {
         String encloseClass = null;
         val qualifiedName = typeElement.getQualifiedName().toString();
         encloseClass  = (typeElement.enclosingElement().kind() != ElementKind.PACKAGE) &&  qualifiedName.endsWith("." + typeName)
@@ -362,7 +362,7 @@ public class ChoiceSpec {
         return encloseClass;
     }
     
-    private String getPackageName(SpecTypeElement typeElement) {
+    private String getPackageName(InputTypeElement typeElement) {
         val typePackage = typeElement.packageQualifiedName();
         if (!typePackage.isEmpty())
             return typePackage;

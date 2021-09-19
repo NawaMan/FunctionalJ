@@ -40,8 +40,8 @@ import javax.lang.model.element.TypeElement;
 import functionalj.types.IRule;
 import functionalj.types.Rule;
 import functionalj.types.input.Environment;
-import functionalj.types.input.SpecMethodElement;
-import functionalj.types.input.SpecTypeMirror;
+import functionalj.types.input.InputMethodElement;
+import functionalj.types.input.InputTypeMirror;
 import functionalj.types.rule.RuleSpec.RuleType;
 import lombok.val;
 
@@ -131,7 +131,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
-    private String getSuperType(SpecMethodElement method) {
+    private String getSuperType(InputMethodElement method) {
         val rule = method.annotation(Rule.class);
         if (rule == null)
             return null;
@@ -142,12 +142,12 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         
         return (clzz.trim().isEmpty() || clzz.equals(IRule.class.getCanonicalName())) ? null : clzz;
     }
-    private String getDataName(SpecMethodElement method) {
+    private String getDataName(InputMethodElement method) {
         val name = method.getParameters().get(0).simpleName().toString();
         return name;
     }
     
-    private String getDataType(SpecMethodElement method) {
+    private String getDataType(InputMethodElement method) {
         val type = method.getParameters().get(0).asTypeMirror();
         if (type.isPrimitiveType())
             return type.asPrimitiveType().primitiveName();
@@ -160,7 +160,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         return null;
     }
     
-    private RuleType getRuleType(SpecTypeMirror returnType) {
+    private RuleType getRuleType(InputTypeMirror returnType) {
         if (returnType.isPrimitiveType()) {
             if ("boolean".equals(returnType.asPrimitiveType().primitiveName()))
                 return RuleType.Bool;

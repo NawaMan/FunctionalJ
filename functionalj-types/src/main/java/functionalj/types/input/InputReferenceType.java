@@ -23,48 +23,39 @@
 // ============================================================================
 package functionalj.types.input;
 
-import static java.util.stream.Collectors.toList;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ReferenceType;
+import javax.lang.model.type.TypeVariable;
 
-import java.util.List;
-
-import javax.lang.model.element.TypeElement;
-
-public interface SpecTypeElement extends SpecElement {
+public interface InputReferenceType extends InputTypeMirror {
     
-    public static class Impl extends SpecElement.Impl implements SpecTypeElement {
+    public static InputReferenceType of(Environment environment, ReferenceType referenceType) {
+        return new Impl(environment, referenceType);
+    }
+    
+    public static class Impl extends InputTypeMirror.Impl implements InputReferenceType {
         
-        final TypeElement typeElement;
+        private ReferenceType referenceType;
         
-        Impl(Environment environment, TypeElement typeElement) {
-            super(environment, typeElement);
-            this.typeElement = typeElement;
+        public Impl(Environment environment, ReferenceType referenceType) {
+            super(environment, referenceType);
+            this.referenceType = referenceType;
         }
         
         @Override
-        public String getQualifiedName() {
-            return typeElement.getQualifiedName().toString();
+        public boolean isTypeVariable() {
+            return referenceType instanceof DeclaredType;
         }
         
         @Override
-        public List<? extends SpecTypeParameterElement> typeParameters() {
-            return typeElement
-                    .getTypeParameters().stream()
-                    .map    (element -> SpecTypeParameterElement.of(environment, element))
-                    .collect(toList());
+        public InputTypeVariable asTypeVariable() {
+            return InputTypeVariable.of(environment, (TypeVariable)referenceType);
         }
         
     }
     
-    public default SpecTypeElement asTypeElement() {
-        return this;
-    }
+    public boolean isTypeVariable();
     
-    public default SpecMethodElement asMethodElement() {
-        return null;
-    }
-    
-    public String getQualifiedName();
-    
-    public List<? extends SpecTypeParameterElement> typeParameters();
+    public InputTypeVariable asTypeVariable();
     
 }

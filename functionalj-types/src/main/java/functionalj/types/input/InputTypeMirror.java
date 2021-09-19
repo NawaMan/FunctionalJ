@@ -35,13 +35,13 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-public interface SpecTypeMirror {
+public interface InputTypeMirror {
     
-    public static SpecTypeMirror of(Environment environment, TypeMirror typeMirror) {
+    public static InputTypeMirror of(Environment environment, TypeMirror typeMirror) {
         return new Impl(environment, typeMirror);
     }
     
-    public static class Impl implements SpecTypeMirror {
+    public static class Impl implements InputTypeMirror {
         
         final Environment environment;
         final TypeMirror  typeMirror;
@@ -52,22 +52,22 @@ public interface SpecTypeMirror {
         }
         
         @Override
-        public SpecPrimitiveType asPrimitiveType() {
+        public InputPrimitiveType asPrimitiveType() {
             return (typeMirror instanceof PrimitiveType)
-                    ? SpecPrimitiveType.of(environment, ((PrimitiveType)typeMirror))
+                    ? InputPrimitiveType.of(environment, ((PrimitiveType)typeMirror))
                     : null;
         }
         
         @Override
-        public SpecTypeElement asDeclaredType() {
+        public InputTypeElement asDeclaredType() {
             return (typeMirror instanceof DeclaredType)
                     ? environment.element(((TypeElement)((DeclaredType)typeMirror).asElement()))
                     : null;
         }
         
-        public SpecTypeVariable asTypeVariable() {
+        public InputTypeVariable asTypeVariable() {
             return (typeMirror instanceof TypeVariable)
-                    ? SpecTypeVariable.of(environment, (TypeVariable)typeMirror)
+                    ? InputTypeVariable.of(environment, (TypeVariable)typeMirror)
                     : null;
         }
         
@@ -82,10 +82,10 @@ public interface SpecTypeMirror {
         }
         
         @Override
-        public List<? extends SpecTypeMirror> getTypeArguments() {
+        public List<? extends InputTypeMirror> getTypeArguments() {
             return ((DeclaredType)typeMirror)
                     .getTypeArguments().stream()
-                    .map    (element -> SpecTypeMirror.of(environment, element))
+                    .map    (element -> InputTypeMirror.of(environment, element))
                     .collect(toList());
         }
         
@@ -113,17 +113,17 @@ public interface SpecTypeMirror {
         return (asTypeVariable() != null);
     }
     
-    public SpecPrimitiveType asPrimitiveType();
+    public InputPrimitiveType asPrimitiveType();
     
-    public SpecTypeElement asDeclaredType();
+    public InputTypeElement asDeclaredType();
     
-    public SpecTypeVariable asTypeVariable();
+    public InputTypeVariable asTypeVariable();
     
     public boolean isNoType();
     
     public TypeKind typeKind();
     
-    public List<? extends SpecTypeMirror> getTypeArguments();
+    public List<? extends InputTypeMirror> getTypeArguments();
     
     public String getToString();
     

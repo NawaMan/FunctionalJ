@@ -28,7 +28,7 @@ import static java.util.stream.Collectors.joining;
 
 import functionalj.types.choice.generator.model.SourceSpec;
 import functionalj.types.elm.Elm;
-import functionalj.types.input.SpecElement;
+import functionalj.types.input.InputElement;
 import lombok.val;
 
 
@@ -39,7 +39,7 @@ public class ElmChoiceSpec {
     private final String folderName;
     private final String generatedDirectory;
     
-    public ElmChoiceSpec(SourceSpec sourceSpec, SpecElement element) {
+    public ElmChoiceSpec(SourceSpec sourceSpec, InputElement element) {
         this.sourceSpec = sourceSpec;
         this.typeName   = sourceSpec.targetName;
         
@@ -59,7 +59,7 @@ public class ElmChoiceSpec {
         this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     
-    private String elmBaseModule(SpecElement element, SourceSpec sourceSpec) {
+    private String elmBaseModule(InputElement element, SourceSpec sourceSpec) {
         val baseModule  = element.annotation(Elm.class).baseModule();
         val elmtPackage = sourceSpec.sourceType.packageName();
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 

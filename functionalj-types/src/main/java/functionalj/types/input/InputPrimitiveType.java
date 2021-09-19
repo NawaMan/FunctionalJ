@@ -23,39 +23,42 @@
 // ============================================================================
 package functionalj.types.input;
 
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.ReferenceType;
-import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.PrimitiveType;
 
-public interface SpecReferenceType extends SpecTypeMirror {
+public interface InputPrimitiveType extends InputTypeMirror {
     
-    public static SpecReferenceType of(Environment environment, ReferenceType referenceType) {
-        return new Impl(environment, referenceType);
+    public static InputPrimitiveType of(Environment environment, PrimitiveType primitiveType) {
+        return new Impl(environment, primitiveType);
     }
     
-    public static class Impl extends SpecTypeMirror.Impl implements SpecReferenceType {
+    public static class Impl extends InputTypeMirror.Impl implements InputPrimitiveType {
         
-        private ReferenceType referenceType;
+        final PrimitiveType primitiveType;
         
-        public Impl(Environment environment, ReferenceType referenceType) {
-            super(environment, referenceType);
-            this.referenceType = referenceType;
+        public Impl(Environment environment, PrimitiveType primitiveType) {
+            super(environment, primitiveType);
+            this.primitiveType = primitiveType;
         }
         
         @Override
-        public boolean isTypeVariable() {
-            return referenceType instanceof DeclaredType;
-        }
-        
-        @Override
-        public SpecTypeVariable asTypeVariable() {
-            return SpecTypeVariable.of(environment, (TypeVariable)referenceType);
+        public String primitiveName() {
+            return primitiveType.toString();
         }
         
     }
     
-    public boolean isTypeVariable();
+    public default InputPrimitiveType asPrimitiveType() {
+        return this;
+    }
     
-    public SpecTypeVariable asTypeVariable();
+    public default InputTypeElement asDeclaredType() {
+        return null;
+    }
+    
+    public default InputTypeVariable asTypeVariable() {
+        return null;
+    }
+    
+    public String primitiveName();
     
 }

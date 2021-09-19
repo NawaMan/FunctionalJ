@@ -51,9 +51,9 @@ import functionalj.types.struct.generator.model.Modifiability;
 import functionalj.types.struct.generator.model.Scope;
 import lombok.val;
 
-public interface SpecElement {
+public interface InputElement {
     
-    public static class Impl implements SpecElement {
+    public static class Impl implements InputElement {
         
         final Environment environment;
         final Element     element;
@@ -88,13 +88,13 @@ public interface SpecElement {
         }
         
         @Override
-        public SpecElement enclosingElement() {
+        public InputElement enclosingElement() {
             return environment
                     .element(element.getEnclosingElement());
         }
         
         @Override
-        public List<? extends SpecElement> enclosedElements() {
+        public List<? extends InputElement> enclosedElements() {
             return element
                     .getEnclosedElements().stream()
                     .map    (environment::element)
@@ -107,8 +107,8 @@ public interface SpecElement {
         }
         
         @Override
-        public SpecTypeMirror asTypeMirror() {
-            return SpecTypeMirror.of(environment, element.asType());
+        public InputTypeMirror asTypeMirror() {
+            return InputTypeMirror.of(environment, element.asType());
         }
         
         @Override
@@ -161,14 +161,14 @@ public interface SpecElement {
         //== Sub typing ==
         
         @Override
-        public SpecTypeElement asTypeElement() {
+        public InputTypeElement asTypeElement() {
             return (element instanceof TypeElement)
                     ? environment.element(((TypeElement)element)) 
                     : null;
         }
         
         @Override
-        public SpecMethodElement asMethodElement() {
+        public InputMethodElement asMethodElement() {
             return (element instanceof ExecutableElement)
                     ? environment.element(((ExecutableElement)element)) 
                     : null;
@@ -186,9 +186,9 @@ public interface SpecElement {
     
     public Set<Modifier> modifiers();
     
-    public SpecElement enclosingElement();
+    public InputElement enclosingElement();
     
-    public List<? extends SpecElement> enclosedElements();
+    public List<? extends InputElement> enclosedElements();
     
     public <A extends Annotation> A annotation(Class<A> annotationType);
     
@@ -209,7 +209,7 @@ public interface SpecElement {
      *
      * @return the type defined by this element
      */
-    public SpecTypeMirror asTypeMirror();
+    public InputTypeMirror asTypeMirror();
     
     //== Action ==
     
@@ -227,9 +227,9 @@ public interface SpecElement {
     
     //== Sub typing == 
     
-    public SpecTypeElement asTypeElement();
+    public InputTypeElement asTypeElement();
     
-    public SpecMethodElement asMethodElement();
+    public InputMethodElement asMethodElement();
     
     //== Derived methods ==
     
@@ -324,7 +324,7 @@ public interface SpecElement {
         return targetName(this);
     }
     
-    public default String targetName(SpecElement element) {
+    public default String targetName(InputElement element) {
         val specTargetName = specifiedTargetName();
         val simpleName     = element.simpleName().toString();
         if ((specTargetName != null) && !specTargetName.isEmpty())

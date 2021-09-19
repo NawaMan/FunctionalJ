@@ -27,33 +27,44 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
-import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.element.TypeElement;
 
-public interface SpecTypeParameterElement extends SpecElement {
+public interface InputTypeElement extends InputElement {
     
-    public static SpecTypeParameterElement of(Environment environment, TypeParameterElement typeParameterElement) {
-        return new Impl(environment, typeParameterElement);
-    }
-    
-    public static class Impl extends SpecElement.Impl implements SpecTypeParameterElement {
+    public static class Impl extends InputElement.Impl implements InputTypeElement {
         
-        final TypeParameterElement typeParameterElement;
+        final TypeElement typeElement;
         
-        Impl(Environment environment, TypeParameterElement typeParameterElement) {
-            super(environment, typeParameterElement);
-            this.typeParameterElement = typeParameterElement;
+        Impl(Environment environment, TypeElement typeElement) {
+            super(environment, typeElement);
+            this.typeElement = typeElement;
         }
         
         @Override
-        public List<? extends SpecTypeMirror> getBounds() {
-            return typeParameterElement
-                    .getBounds().stream()
-                    .map    (element -> SpecTypeMirror.of(environment, element))
+        public String getQualifiedName() {
+            return typeElement.getQualifiedName().toString();
+        }
+        
+        @Override
+        public List<? extends InputTypeParameterElement> typeParameters() {
+            return typeElement
+                    .getTypeParameters().stream()
+                    .map    (element -> InputTypeParameterElement.of(environment, element))
                     .collect(toList());
         }
         
     }
     
-    public List<? extends SpecTypeMirror> getBounds();
+    public default InputTypeElement asTypeElement() {
+        return this;
+    }
+    
+    public default InputMethodElement asMethodElement() {
+        return null;
+    }
+    
+    public String getQualifiedName();
+    
+    public List<? extends InputTypeParameterElement> typeParameters();
     
 }

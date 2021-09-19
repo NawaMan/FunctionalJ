@@ -35,9 +35,9 @@ import javax.lang.model.element.ExecutableElement;
 import functionalj.types.struct.generator.model.Concrecity;
 import lombok.val;
 
-public interface SpecMethodElement extends SpecElement {
+public interface InputMethodElement extends InputElement {
     
-    public static class Impl extends SpecElement.Impl implements SpecMethodElement {
+    public static class Impl extends InputElement.Impl implements InputMethodElement {
         
         final ExecutableElement executableElement;
         
@@ -77,13 +77,13 @@ public interface SpecMethodElement extends SpecElement {
         }
         
         @Override
-        public SpecTypeMirror getReturnType() {
+        public InputTypeMirror getReturnType() {
             val returnType = executableElement.getReturnType();
-            return SpecTypeMirror.of(environment, returnType);
+            return InputTypeMirror.of(environment, returnType);
         }
         
         @Override
-        public List<? extends SpecElement> getParameters() {
+        public List<? extends InputElement> getParameters() {
             return executableElement
                     .getParameters().stream()
                     .map    (element -> environment.element(element))
@@ -91,27 +91,27 @@ public interface SpecMethodElement extends SpecElement {
         }
         
         @Override
-        public List<? extends SpecTypeParameterElement> getTypeParameters() {
+        public List<? extends InputTypeParameterElement> getTypeParameters() {
             return executableElement
                     .getTypeParameters().stream()
-                    .map    (element -> SpecTypeParameterElement.of(environment, element))
+                    .map    (element -> InputTypeParameterElement.of(environment, element))
                     .collect(toList());
         }
         
-        public List<? extends SpecTypeMirror> getThrownTypes() {
+        public List<? extends InputTypeMirror> getThrownTypes() {
             return executableElement
                     .getThrownTypes().stream()
-                    .map    (element -> SpecTypeMirror.of(environment, element))
+                    .map    (element -> InputTypeMirror.of(environment, element))
                     .collect(Collectors.toList());
         }
         
     }
     
-    public default SpecTypeElement asTypeElement() {
+    public default InputTypeElement asTypeElement() {
         return null;
     }
     
-    public default SpecMethodElement asMethodElement() {
+    public default InputMethodElement asMethodElement() {
         return this;
     }
     
@@ -121,12 +121,12 @@ public interface SpecMethodElement extends SpecElement {
     
     public boolean isVarArgs();
     
-    public SpecTypeMirror getReturnType();
+    public InputTypeMirror getReturnType();
     
-    public List<? extends SpecElement> getParameters();
+    public List<? extends InputElement> getParameters();
     
-    public List<? extends SpecTypeParameterElement> getTypeParameters();
+    public List<? extends InputTypeParameterElement> getTypeParameters();
     
-    public List<? extends SpecTypeMirror> getThrownTypes();
+    public List<? extends InputTypeMirror> getThrownTypes();
     
 }

@@ -27,7 +27,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import functionalj.types.elm.Elm;
-import functionalj.types.input.SpecElement;
+import functionalj.types.input.InputElement;
 import functionalj.types.struct.generator.SourceSpec;
 import lombok.val;
 
@@ -44,7 +44,7 @@ public class ElmStructSpec {
     private final String folderName;
     private final String generatedDirectory;
     
-    public ElmStructSpec(SourceSpec sourceSpec, SpecElement element) {
+    public ElmStructSpec(SourceSpec sourceSpec, InputElement element) {
         this.sourceSpec = sourceSpec;
         this.typeName   = sourceSpec.getTargetClassName();
         
@@ -61,7 +61,7 @@ public class ElmStructSpec {
         this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     
-    private String elmBaseModule(SpecElement element, SourceSpec sourceSpec) {
+    private String elmBaseModule(InputElement element, SourceSpec sourceSpec) {
         val baseModule  = element.annotation(Elm.class).baseModule();
         val elmtPackage = sourceSpec.getPackageName();
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 

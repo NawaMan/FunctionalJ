@@ -23,37 +23,37 @@
 // ============================================================================
 package functionalj.types.input;
 
-import javax.lang.model.type.TypeVariable;
+import static java.util.stream.Collectors.toList;
 
-public interface SpecTypeVariable extends SpecReferenceType {
+import java.util.List;
+
+import javax.lang.model.element.TypeParameterElement;
+
+public interface InputTypeParameterElement extends InputElement {
     
-    public static SpecTypeVariable of(Environment environment, TypeVariable typeVariable) {
-        return new Impl(environment, typeVariable);
+    public static InputTypeParameterElement of(Environment environment, TypeParameterElement typeParameterElement) {
+        return new Impl(environment, typeParameterElement);
     }
     
-    public static class Impl extends SpecReferenceType.Impl implements SpecTypeVariable {
+    public static class Impl extends InputElement.Impl implements InputTypeParameterElement {
         
-        final TypeVariable typeVariable;
+        final TypeParameterElement typeParameterElement;
         
-        Impl(Environment environment, TypeVariable typeVariable) {
-            super(environment, typeVariable);
-            this.typeVariable  = typeVariable;
+        Impl(Environment environment, TypeParameterElement typeParameterElement) {
+            super(environment, typeParameterElement);
+            this.typeParameterElement = typeParameterElement;
         }
         
         @Override
-        public SpecTypeMirror getLowerBound() {
-            return SpecTypeMirror.of(environment, typeVariable.getLowerBound());
-        }
-        
-        @Override
-        public SpecTypeMirror getUpperBound() {
-            return SpecTypeMirror.of(environment, typeVariable.getUpperBound());
+        public List<? extends InputTypeMirror> getBounds() {
+            return typeParameterElement
+                    .getBounds().stream()
+                    .map    (element -> InputTypeMirror.of(environment, element))
+                    .collect(toList());
         }
         
     }
     
-    public SpecTypeMirror getLowerBound();
-    
-    public SpecTypeMirror getUpperBound();
+    public List<? extends InputTypeMirror> getBounds();
     
 }
