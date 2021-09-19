@@ -83,10 +83,10 @@ public interface SpecMethodElement extends SpecElement {
         }
         
         @Override
-        public List<? extends SpecVariableElement> getParameters() {
+        public List<? extends SpecElement> getParameters() {
             return executableElement
                     .getParameters().stream()
-                    .map    (element -> SpecVariableElement.of(environment, element))
+                    .map    (element -> environment.element(element))
                     .collect(toList());
         }
         
@@ -123,7 +123,7 @@ public interface SpecMethodElement extends SpecElement {
     
     public SpecTypeMirror getReturnType();
     
-    public List<? extends SpecVariableElement> getParameters();
+    public List<? extends SpecElement> getParameters();
     
     public List<? extends SpecTypeParameterElement> getTypeParameters();
     

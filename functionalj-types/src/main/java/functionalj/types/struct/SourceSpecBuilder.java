@@ -52,7 +52,6 @@ import functionalj.types.input.SpecMethodElement;
 import functionalj.types.input.SpecTypeElement;
 import functionalj.types.input.SpecTypeMirror;
 import functionalj.types.input.SpecTypeParameterElement;
-import functionalj.types.input.SpecVariableElement;
 import functionalj.types.struct.generator.Callable;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.Parameter;
@@ -295,7 +294,7 @@ public class SourceSpecBuilder {
         return false;
     }
     
-    private Getter createGetterFromParameter(SpecElement element, SpecVariableElement p) {
+    private Getter createGetterFromParameter(SpecElement element, SpecElement p) {
         val name        = p.simpleName().toString();
         val type        = getType(element, p.asTypeMirror());
         val isPrimitive = type.isPrimitive();

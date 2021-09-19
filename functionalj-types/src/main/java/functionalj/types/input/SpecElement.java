@@ -39,6 +39,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
@@ -106,14 +107,8 @@ public interface SpecElement {
         }
         
         @Override
-        public String printElement() {
-            try (val writer = new StringWriter()) {
-                environment.elementUtils.printElements(writer, element);
-                return writer.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
+        public SpecTypeMirror asTypeMirror() {
+            return SpecTypeMirror.of(environment, element.asType());
         }
         
         @Override
@@ -124,6 +119,19 @@ public interface SpecElement {
         @Override
         public String toString() {
             return element.toString();
+        }
+        
+        //== Actions ==
+        
+        @Override
+        public String printElement() {
+            try (val writer = new StringWriter()) {
+                environment.elementUtils.printElements(writer, element);
+                return writer.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         
         @Override
@@ -184,6 +192,27 @@ public interface SpecElement {
     
     public <A extends Annotation> A annotation(Class<A> annotationType);
     
+    /**
+     * Returns the type defined by this element.
+     *
+     * <p> A generic element defines a family of types, not just one.
+     * If this is a generic element, a <i>prototypical</i> type is
+     * returned.  This is the element's invocation on the
+     * type variables corresponding to its own formal type parameters.
+     * For example,
+     * for the generic class element {@code C<N extends Number>},
+     * the parameterized type {@code C<N>} is returned.
+     * The {@link Types} utility interface has more general methods
+     * for obtaining the full range of types defined by an element.
+     *
+     * @see Types
+     *
+     * @return the type defined by this element
+     */
+    public SpecTypeMirror asTypeMirror();
+    
+    //== Action ==
+    
     public String printElement();
     
     public String getToString();
@@ -195,6 +224,8 @@ public interface SpecElement {
     public boolean hasError();
     
     public void generateCode(String className, String content) throws IOException;
+    
+    //== Sub typing == 
     
     public SpecTypeElement asTypeElement();
     
