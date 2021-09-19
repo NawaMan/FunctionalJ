@@ -77,9 +77,9 @@ public interface InputMethodElement extends InputElement {
         }
         
         @Override
-        public InputTypeMirror getReturnType() {
+        public InputType getReturnType() {
             val returnType = executableElement.getReturnType();
-            return InputTypeMirror.of(environment, returnType);
+            return InputType.of(environment, returnType);
         }
         
         @Override
@@ -98,10 +98,10 @@ public interface InputMethodElement extends InputElement {
                     .collect(toList());
         }
         
-        public List<? extends InputTypeMirror> getThrownTypes() {
+        public List<? extends InputType> getThrownTypes() {
             return executableElement
                     .getThrownTypes().stream()
-                    .map    (element -> InputTypeMirror.of(environment, element))
+                    .map    (element -> InputType.of(environment, element))
                     .collect(Collectors.toList());
         }
         
@@ -121,12 +121,12 @@ public interface InputMethodElement extends InputElement {
     
     public boolean isVarArgs();
     
-    public InputTypeMirror getReturnType();
+    public InputType getReturnType();
     
     public List<? extends InputElement> getParameters();
     
     public List<? extends InputTypeParameterElement> getTypeParameters();
     
-    public List<? extends InputTypeMirror> getThrownTypes();
+    public List<? extends InputType> getThrownTypes();
     
 }

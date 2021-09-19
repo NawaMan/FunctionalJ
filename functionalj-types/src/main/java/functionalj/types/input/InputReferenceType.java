@@ -23,17 +23,16 @@
 // ============================================================================
 package functionalj.types.input;
 
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ReferenceType;
 import javax.lang.model.type.TypeVariable;
 
-public interface InputReferenceType extends InputTypeMirror {
+public interface InputReferenceType extends InputType {
     
     public static InputReferenceType of(Environment environment, ReferenceType referenceType) {
         return new Impl(environment, referenceType);
     }
     
-    public static class Impl extends InputTypeMirror.Impl implements InputReferenceType {
+    public static class Impl extends InputType.Impl implements InputReferenceType {
         
         private ReferenceType referenceType;
         
@@ -44,7 +43,7 @@ public interface InputReferenceType extends InputTypeMirror {
         
         @Override
         public boolean isTypeVariable() {
-            return referenceType instanceof DeclaredType;
+            return referenceType instanceof TypeVariable;
         }
         
         @Override

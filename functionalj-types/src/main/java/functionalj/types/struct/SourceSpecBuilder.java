@@ -50,7 +50,7 @@ import functionalj.types.Type;
 import functionalj.types.input.InputElement;
 import functionalj.types.input.InputMethodElement;
 import functionalj.types.input.InputTypeElement;
-import functionalj.types.input.InputTypeMirror;
+import functionalj.types.input.InputType;
 import functionalj.types.input.InputTypeParameterElement;
 import functionalj.types.struct.generator.Callable;
 import functionalj.types.struct.generator.Getter;
@@ -161,7 +161,7 @@ public class SourceSpecBuilder {
     }
     
     private Callable extractMethodSpec(InputElement element, InputMethodElement mthdElement) {
-        val extractType = (Function<InputTypeMirror, Type>)(typeMirror -> getType(element, typeMirror));
+        val extractType = (Function<InputType, Type>)(typeMirror -> getType(element, typeMirror));
         
         val name          = mthdElement.simpleName().toString();
         val type          = getType(element, mthdElement.getReturnType());
@@ -245,13 +245,13 @@ public class SourceSpecBuilder {
         }
     }
     
-    private boolean isBooleanStringOrValidation(InputTypeMirror returnType) {
+    private boolean isBooleanStringOrValidation(InputType returnType) {
         if (returnType.isPrimitiveType()) {
             if ("boolean".equals(returnType.getToString()))
                 return true;
         }
         if (returnType.isDeclaredType()) {
-            val typeElement = returnType.asDeclaredType();
+            val typeElement = returnType.asDeclaredType().asTypeElement();
             val fullName    = typeElement.getQualifiedName();
             if ("java.lang.String".equals(fullName))
                 return true;
@@ -364,18 +364,18 @@ public class SourceSpecBuilder {
         }
     }
     
-    private Type getType(InputElement element, InputTypeMirror typeMirror) {
+    private Type getType(InputElement element, InputType typeMirror) {
         val typeStr = typeMirror.getToString();
         if (typeMirror.isPrimitiveType())
             return Type.primitiveTypes.get(typeStr);
         
         if (typeMirror.isDeclaredType()) {
-            val typeElement = typeMirror.asDeclaredType();
-            val typeName = typeElement.simpleName().toString();
+            val typeElement = typeMirror.asDeclaredType().asTypeElement();
+            val typeName = typeElement.simpleName();
             if (typeName.equals("String"))
                 return Type.STRING;
             
-            val generics = typeMirror.getTypeArguments().stream()
+            val generics = typeMirror.asDeclaredType().typeArguments().stream()
                     .map(typeArg -> getType(element, typeArg))
                     .map(type    -> new Generic(type))
                     .collect(toList());

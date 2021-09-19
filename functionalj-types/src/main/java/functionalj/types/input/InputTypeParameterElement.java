@@ -45,15 +45,15 @@ public interface InputTypeParameterElement extends InputElement {
         }
         
         @Override
-        public List<? extends InputTypeMirror> getBounds() {
+        public List<? extends InputType> getBounds() {
             return typeParameterElement
                     .getBounds().stream()
-                    .map    (element -> InputTypeMirror.of(environment, element))
+                    .map    (element -> InputType.of(environment, element))
                     .collect(toList());
         }
         
     }
     
-    public List<? extends InputTypeMirror> getBounds();
+    public List<? extends InputType> getBounds();
     
 }

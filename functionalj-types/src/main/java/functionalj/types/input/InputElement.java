@@ -107,8 +107,8 @@ public interface InputElement {
         }
         
         @Override
-        public InputTypeMirror asTypeMirror() {
-            return InputTypeMirror.of(environment, element.asType());
+        public InputType asTypeMirror() {
+            return InputType.of(environment, element.asType());
         }
         
         @Override
@@ -209,7 +209,7 @@ public interface InputElement {
      *
      * @return the type defined by this element
      */
-    public InputTypeMirror asTypeMirror();
+    public InputType asTypeMirror();
     
     //== Action ==
     

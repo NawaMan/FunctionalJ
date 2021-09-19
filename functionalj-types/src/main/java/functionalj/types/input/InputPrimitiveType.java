@@ -25,13 +25,13 @@ package functionalj.types.input;
 
 import javax.lang.model.type.PrimitiveType;
 
-public interface InputPrimitiveType extends InputTypeMirror {
+public interface InputPrimitiveType extends InputType {
     
     public static InputPrimitiveType of(Environment environment, PrimitiveType primitiveType) {
         return new Impl(environment, primitiveType);
     }
     
-    public static class Impl extends InputTypeMirror.Impl implements InputPrimitiveType {
+    public static class Impl extends InputType.Impl implements InputPrimitiveType {
         
         final PrimitiveType primitiveType;
         
@@ -51,7 +51,7 @@ public interface InputPrimitiveType extends InputTypeMirror {
         return this;
     }
     
-    public default InputTypeElement asDeclaredType() {
+    public default InputDeclaredType asDeclaredType() {
         return null;
     }
     

@@ -23,37 +23,45 @@
 // ============================================================================
 package functionalj.types.input;
 
-import javax.lang.model.type.TypeVariable;
+import static java.util.stream.Collectors.toList;
 
-public interface InputTypeVariable extends InputReferenceType {
+import java.util.List;
+
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+
+public interface InputDeclaredType extends InputReferenceType {
     
-    public static InputTypeVariable of(Environment environment, TypeVariable typeVariable) {
-        return new Impl(environment, typeVariable);
+    public static InputDeclaredType of(Environment environment, DeclaredType declaredType) {
+        return new Impl(environment, declaredType);
     }
     
-    public static class Impl extends InputReferenceType.Impl implements InputTypeVariable {
+    public static class Impl extends InputReferenceType.Impl implements InputDeclaredType {
         
-        final TypeVariable typeVariable;
+        private final DeclaredType declaredType;
         
-        Impl(Environment environment, TypeVariable typeVariable) {
-            super(environment, typeVariable);
-            this.typeVariable  = typeVariable;
+        Impl(Environment environment, DeclaredType declaredType) {
+            super(environment, declaredType);
+            this.declaredType = declaredType;
         }
         
         @Override
-        public InputType getLowerBound() {
-            return InputType.of(environment, typeVariable.getLowerBound());
+        public InputTypeElement asTypeElement() {
+            return environment.element((TypeElement)declaredType.asElement());
         }
         
         @Override
-        public InputType getUpperBound() {
-            return InputType.of(environment, typeVariable.getUpperBound());
+        public List<? extends InputType> typeArguments() {
+            return declaredType
+                    .getTypeArguments().stream()
+                    .map    (element -> InputType.of(environment, element))
+                    .collect(toList());
         }
         
     }
     
-    public InputType getLowerBound();
+    public InputTypeElement asTypeElement();
     
-    public InputType getUpperBound();
+    public List<? extends InputType> typeArguments();
     
 }

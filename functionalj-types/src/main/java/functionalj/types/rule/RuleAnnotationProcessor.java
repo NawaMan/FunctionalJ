@@ -41,7 +41,7 @@ import functionalj.types.IRule;
 import functionalj.types.Rule;
 import functionalj.types.input.Environment;
 import functionalj.types.input.InputMethodElement;
-import functionalj.types.input.InputTypeMirror;
+import functionalj.types.input.InputType;
 import functionalj.types.rule.RuleSpec.RuleType;
 import lombok.val;
 
@@ -160,13 +160,13 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         return null;
     }
     
-    private RuleType getRuleType(InputTypeMirror returnType) {
+    private RuleType getRuleType(InputType returnType) {
         if (returnType.isPrimitiveType()) {
             if ("boolean".equals(returnType.asPrimitiveType().primitiveName()))
                 return RuleType.Bool;
         }
         if (returnType.isDeclaredType()) {
-            val typeElement = returnType.asDeclaredType();
+            val typeElement = returnType.asDeclaredType().asTypeElement();
             val fullName    = typeElement.getQualifiedName();
             if ("java.lang.String".equals(fullName))
                 return RuleType.ErrMsg;

@@ -23,11 +23,6 @@
 // ============================================================================
 package functionalj.types.input;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.List;
-
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
@@ -35,13 +30,13 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-public interface InputTypeMirror {
+public interface InputType {
     
-    public static InputTypeMirror of(Environment environment, TypeMirror typeMirror) {
+    public static InputType of(Environment environment, TypeMirror typeMirror) {
         return new Impl(environment, typeMirror);
     }
     
-    public static class Impl implements InputTypeMirror {
+    public static class Impl implements InputType {
         
         final Environment environment;
         final TypeMirror  typeMirror;
@@ -59,9 +54,9 @@ public interface InputTypeMirror {
         }
         
         @Override
-        public InputTypeElement asDeclaredType() {
+        public InputDeclaredType asDeclaredType() {
             return (typeMirror instanceof DeclaredType)
-                    ? environment.element(((TypeElement)((DeclaredType)typeMirror).asElement()))
+                    ? InputDeclaredType.of(environment, (DeclaredType)typeMirror)
                     : null;
         }
         
@@ -79,14 +74,6 @@ public interface InputTypeMirror {
         @Override
         public TypeKind typeKind() {
             return typeMirror.getKind();
-        }
-        
-        @Override
-        public List<? extends InputTypeMirror> getTypeArguments() {
-            return ((DeclaredType)typeMirror)
-                    .getTypeArguments().stream()
-                    .map    (element -> InputTypeMirror.of(environment, element))
-                    .collect(toList());
         }
         
         @Override
@@ -115,15 +102,13 @@ public interface InputTypeMirror {
     
     public InputPrimitiveType asPrimitiveType();
     
-    public InputTypeElement asDeclaredType();
+    public InputDeclaredType asDeclaredType();
     
     public InputTypeVariable asTypeVariable();
     
     public boolean isNoType();
     
     public TypeKind typeKind();
-    
-    public List<? extends InputTypeMirror> getTypeArguments();
     
     public String getToString();
     

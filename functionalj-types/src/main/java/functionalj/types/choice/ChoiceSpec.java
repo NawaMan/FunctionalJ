@@ -46,7 +46,7 @@ import functionalj.types.choice.generator.model.SourceSpec;
 import functionalj.types.input.InputElement;
 import functionalj.types.input.InputMethodElement;
 import functionalj.types.input.InputTypeElement;
-import functionalj.types.input.InputTypeMirror;
+import functionalj.types.input.InputType;
 import functionalj.types.input.InputTypeParameterElement;
 import lombok.val;
 
@@ -176,7 +176,7 @@ public class ChoiceSpec {
                 boundTypes);
     }
     
-    private List<Generic> extractGenericsFromTypeArguments(Type targetType, List<? extends InputTypeMirror> typeParameters) {
+    private List<Generic> extractGenericsFromTypeArguments(Type targetType, List<? extends InputType> typeParameters) {
         return typeParameters.stream()
                 .map(p -> {
                     val paramName = p.toString();
@@ -321,7 +321,7 @@ public class ChoiceSpec {
                 .isPresent();
     }
     
-    private Type typeOf(Type targetType, InputTypeMirror typeMirror) {
+    private Type typeOf(Type targetType, InputType typeMirror) {
         if (typeMirror == null)
             return null;
         
@@ -330,11 +330,11 @@ public class ChoiceSpec {
             return new Type(typeStr);
         
         if (typeMirror.isDeclaredType()) {
-            val typeElement  = typeMirror.asDeclaredType();
+            val typeElement  = typeMirror.asDeclaredType().asTypeElement();
             val packageName  = getPackageName(typeElement);
-            val typeName     = typeElement.simpleName().toString();
+            val typeName     = typeElement.simpleName();
             val encloseClass = extractEnclosedClassName(typeElement, packageName, typeName);
-            val generics     = extractGenericsFromTypeArguments(targetType, typeMirror.getTypeArguments());
+            val generics     = extractGenericsFromTypeArguments(targetType, typeMirror.asDeclaredType().typeArguments());
             val foundType    = new Type(packageName, encloseClass, typeName, generics);
             if (packageName.equals(Self.class.getPackage().getName()) && typeName.matches("^Self[0-9]?$"))
                 return new Type(targetType.packageName(), targetType.encloseName(), targetType.simpleName(), generics);
