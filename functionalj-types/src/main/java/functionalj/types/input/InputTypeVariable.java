@@ -33,7 +33,7 @@ public interface InputTypeVariable extends InputReferenceType {
     
     public static class Impl extends InputReferenceType.Impl implements InputTypeVariable {
         
-        final TypeVariable typeVariable;
+        private final TypeVariable typeVariable;
         
         Impl(Environment environment, TypeVariable typeVariable) {
             super(environment, typeVariable);
@@ -50,6 +50,30 @@ public interface InputTypeVariable extends InputReferenceType {
             return InputType.of(environment, typeVariable.getUpperBound());
         }
         
+    }
+    
+    public default boolean isPrimitiveType() {
+        return false;
+    }
+    
+    public default boolean isDeclaredType() {
+        return false;
+    }
+    
+    public default boolean isTypeVariable() {
+        return true;
+    }
+    
+    public default InputPrimitiveType asPrimitiveType() {
+        return null;
+    }
+    
+    public default InputDeclaredType asDeclaredType() {
+        return null;
+    }
+    
+    public default InputTypeVariable asTypeVariable() {
+        return this;
     }
     
     public InputType getLowerBound();

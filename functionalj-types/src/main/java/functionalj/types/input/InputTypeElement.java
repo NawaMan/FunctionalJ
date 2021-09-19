@@ -33,7 +33,7 @@ public interface InputTypeElement extends InputElement {
     
     public static class Impl extends InputElement.Impl implements InputTypeElement {
         
-        final TypeElement typeElement;
+        private final TypeElement typeElement;
         
         Impl(Environment environment, TypeElement typeElement) {
             super(environment, typeElement);

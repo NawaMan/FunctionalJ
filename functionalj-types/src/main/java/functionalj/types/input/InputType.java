@@ -39,7 +39,8 @@ public interface InputType {
     public static class Impl implements InputType {
         
         final Environment environment;
-        final TypeMirror  typeMirror;
+        
+        private final TypeMirror typeMirror;
         
         Impl(Environment environment, TypeMirror typeMirror) {
             this.environment = environment;

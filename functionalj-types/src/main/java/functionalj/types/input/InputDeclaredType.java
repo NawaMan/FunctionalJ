@@ -60,6 +60,30 @@ public interface InputDeclaredType extends InputReferenceType {
         
     }
     
+    public default boolean isPrimitiveType() {
+        return false;
+    }
+    
+    public default boolean isDeclaredType() {
+        return true;
+    }
+    
+    public default boolean isTypeVariable() {
+        return false;
+    }
+    
+    public default InputPrimitiveType asPrimitiveType() {
+        return null;
+    }
+    
+    public default InputDeclaredType asDeclaredType() {
+        return this;
+    }
+    
+    public default InputTypeVariable asTypeVariable() {
+        return null;
+    }
+    
     public InputTypeElement asTypeElement();
     
     public List<? extends InputType> typeArguments();

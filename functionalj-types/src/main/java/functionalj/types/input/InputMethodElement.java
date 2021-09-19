@@ -39,7 +39,7 @@ public interface InputMethodElement extends InputElement {
     
     public static class Impl extends InputElement.Impl implements InputMethodElement {
         
-        final ExecutableElement executableElement;
+        private final ExecutableElement executableElement;
         
         Impl(Environment environment, ExecutableElement executableElement) {
             super(environment, executableElement);

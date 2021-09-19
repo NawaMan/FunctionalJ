@@ -33,7 +33,7 @@ public interface InputPrimitiveType extends InputType {
     
     public static class Impl extends InputType.Impl implements InputPrimitiveType {
         
-        final PrimitiveType primitiveType;
+        private final PrimitiveType primitiveType;
         
         public Impl(Environment environment, PrimitiveType primitiveType) {
             super(environment, primitiveType);
@@ -45,6 +45,18 @@ public interface InputPrimitiveType extends InputType {
             return primitiveType.toString();
         }
         
+    }
+    
+    public default boolean isPrimitiveType() {
+        return true;
+    }
+    
+    public default boolean isDeclaredType() {
+        return false;
+    }
+    
+    public default boolean isTypeVariable() {
+        return false;
     }
     
     public default InputPrimitiveType asPrimitiveType() {

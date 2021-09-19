@@ -37,7 +37,7 @@ public interface InputTypeParameterElement extends InputElement {
     
     public static class Impl extends InputElement.Impl implements InputTypeParameterElement {
         
-        final TypeParameterElement typeParameterElement;
+        private final TypeParameterElement typeParameterElement;
         
         Impl(Environment environment, TypeParameterElement typeParameterElement) {
             super(environment, typeParameterElement);

@@ -56,7 +56,8 @@ public interface InputElement {
     public static class Impl implements InputElement {
         
         final Environment environment;
-        final Element     element;
+        
+        private final Element element;
         
         Impl(Environment environment, Element element) {
             this.environment = environment;
