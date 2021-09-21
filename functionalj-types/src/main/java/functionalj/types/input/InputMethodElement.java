@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 
 import functionalj.types.struct.generator.model.Concrecity;
 import lombok.val;
@@ -89,9 +90,10 @@ public interface InputMethodElement extends InputElement {
         }
         
         @Override
-        public List<? extends InputElement> parameters() {
+        public List<? extends InputVariableElement> parameters() {
             return executableElement
                     .getParameters().stream()
+                    .map    (element -> (VariableElement)element)
                     .map    (element -> environment.element(element))
                     .collect(toList());
         }

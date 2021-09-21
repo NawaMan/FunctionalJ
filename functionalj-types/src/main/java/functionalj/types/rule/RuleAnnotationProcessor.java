@@ -154,7 +154,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         
         if (type.isDeclaredType()) {
             val typeElement = type.asDeclaredType().asTypeElement();
-            return typeElement.getQualifiedName();
+            return typeElement.qualifiedName();
         }
         method.error("The method parameter type is not supported.");
         return null;
@@ -167,7 +167,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         }
         if (returnType.isDeclaredType()) {
             val typeElement = returnType.asDeclaredType().asTypeElement();
-            val fullName    = typeElement.getQualifiedName();
+            val fullName    = typeElement.qualifiedName();
             if ("java.lang.String".equals(fullName))
                 return RuleType.ErrMsg;
             if ("functionalj.result.ValidationException".equals(fullName))

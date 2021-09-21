@@ -42,7 +42,7 @@ public interface InputTypeElement extends InputElement {
         }
         
         @Override
-        public String getQualifiedName() {
+        public String qualifiedName() {
             return typeElement.getQualifiedName().toString();
         }
         
@@ -82,7 +82,7 @@ public interface InputTypeElement extends InputElement {
         return null;
     }
     
-    public String getQualifiedName();
+    public String qualifiedName();
     
     public NestingKind nestingKind();
     

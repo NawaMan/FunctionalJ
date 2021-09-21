@@ -39,6 +39,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
@@ -122,6 +123,10 @@ public interface InputElement {
             return element.toString();
         }
         
+        public String insight() {
+            return "class=[" + element.getClass() + "]";
+        }
+        
         //== Actions ==
         
         @Override
@@ -172,6 +177,13 @@ public interface InputElement {
         public InputMethodElement asMethodElement() {
             return (element instanceof ExecutableElement)
                     ? environment.element(((ExecutableElement)element)) 
+                    : null;
+        }
+        
+        @Override
+        public InputVariableElement asVariableElement() {
+            return (element instanceof VariableElement)
+                    ? environment.element(((VariableElement)element)) 
                     : null;
         }
         
@@ -231,6 +243,8 @@ public interface InputElement {
     public InputTypeElement asTypeElement();
     
     public InputMethodElement asMethodElement();
+    
+    public InputVariableElement asVariableElement();
     
     //== Derived methods ==
     
@@ -305,6 +319,10 @@ public interface InputElement {
     
     public default boolean isMethodElement() {
         return asMethodElement() != null;
+    }
+    
+    public default boolean isVariableElement() {
+        return asVariableElement() != null;
     }
     
     //== From annotation ==

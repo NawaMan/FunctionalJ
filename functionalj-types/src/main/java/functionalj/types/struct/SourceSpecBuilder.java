@@ -128,7 +128,7 @@ public class SourceSpecBuilder {
         
         val packageName = type.packageQualifiedName();
         val encloseName = element.enclosingElement().simpleName();
-        val sourceName  = type.getQualifiedName().toString().substring(packageName.length() + 1 );
+        val sourceName  = type.qualifiedName().toString().substring(packageName.length() + 1 );
         val struct      = element.annotation(Struct.class);
         val targetName  = targetName();
         val specField   = struct.specField();
@@ -252,7 +252,7 @@ public class SourceSpecBuilder {
         }
         if (returnType.isDeclaredType()) {
             val typeElement = returnType.asDeclaredType().asTypeElement();
-            val fullName    = typeElement.getQualifiedName();
+            val fullName    = typeElement.qualifiedName();
             if ("java.lang.String".equals(fullName))
                 return true;
             if ("functionalj.result.ValidationException".equals(fullName))
@@ -295,7 +295,7 @@ public class SourceSpecBuilder {
     }
     
     private Getter createGetterFromParameter(InputElement element, InputElement p) {
-        val name        = p.simpleName().toString();
+        val name        = p.simpleName();
         val type        = getType(element, p.asType());
         val isPrimitive = type.isPrimitive();
         val isNullable  = ((p.annotation(Nullable.class) != null) || (p.annotation(DefaultTo.class) != null));

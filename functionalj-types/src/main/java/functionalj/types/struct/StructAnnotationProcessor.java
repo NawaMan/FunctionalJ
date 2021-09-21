@@ -29,8 +29,11 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -40,6 +43,8 @@ import javax.lang.model.element.TypeElement;
 
 import functionalj.types.Struct;
 import functionalj.types.input.Environment;
+import functionalj.types.input.InputElement;
+import functionalj.types.input.InputType;
 import functionalj.types.struct.generator.StructSpecBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -75,6 +80,8 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
     
+    private final List<String> logs = new ArrayList<>();
+    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // TODO - Should find a way to warn when a field is not immutable.
@@ -89,6 +96,8 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             val packageName       = sourceSpecBuilder.packageName();
             val specTargetName    = sourceSpecBuilder.targetName();
             
+            prepareLogs(element);
+            
             try {
                 val sourceSpec = sourceSpecBuilder.sourceSpec();
                 if (sourceSpec == null)
@@ -98,7 +107,8 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 val className  = structSpec.targetClassName();
                 val generator  = new GenStruct(sourceSpec, structSpec);
                 val content    = string(generator.lines());
-                element.generateCode(className, content);
+                val logStrings = logs.stream().map("//  "::concat).collect(Collectors.joining("\n"));
+                element.generateCode(className, content + "\n\n" + logStrings);
             } catch (Exception exception) {
                 val template = "Problem generating the class: %s.%s: %s:%s%s";
                 val excMsg     = exception.getMessage();
@@ -113,6 +123,31 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             }
         }
         return hasError;
+    }
+    
+    private void prepareLogs(InputElement element) {
+        if (element.isTypeElement()) {
+            logs.add("Element is a type: " + element);
+            return;
+        }
+        
+        val method = element.asMethodElement();
+        for (val parameter : method.parameters()) {
+            logs.add("  - Parameter [" + parameter.simpleName() + "] is a type element: " + parameter.isTypeElement());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] toString         : " + parameter);
+            logs.add("  - Parameter [" + parameter.simpleName() + "] simple name      : " + parameter.simpleName());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] asType.toString  : " + parameter.asType());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] asType.kind      : " + parameter.asType().typeKind());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] asType.class     : " + ((InputType.Impl)parameter.asType()).insight());
+            
+            if (parameter.asType().isDeclaredType()) {
+                val type = parameter.asType().asDeclaredType();
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement              : " + type.asTypeElement());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.qualifiedName: " + type.asTypeElement().qualifiedName());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments              : " + type.typeArguments());
+            }
+            
+        }
     }
     
 }

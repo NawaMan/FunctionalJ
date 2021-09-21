@@ -24,6 +24,7 @@
 package functionalj.types.input;
 
 import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
 
 public interface InputPrimitiveType extends InputType {
     
@@ -45,6 +46,40 @@ public interface InputPrimitiveType extends InputType {
             return primitiveType.toString();
         }
         
+        @Override
+        public String toString() {
+            return "Q_PRIMITIVE.toString()";
+        }
+        
+    }
+    
+    public static class Mock extends InputType.Mock implements InputPrimitiveType {
+        
+        private final TypeKind kind;
+        
+        Mock(TypeKind kind) {
+            this.kind = kind;
+        }
+        
+        @Override
+        public boolean isNoType() {
+            return kind == TypeKind.NONE;
+        }
+        
+        @Override
+        public TypeKind typeKind() {
+            return kind;
+        }
+        
+        @Override
+        public String primitiveName() {
+            return kind.name().toLowerCase();
+        }
+        
+        @Override
+        public String getToString() {
+            return "Q_PRIMITIVE";
+        }
     }
     
     public default boolean isPrimitiveType() {

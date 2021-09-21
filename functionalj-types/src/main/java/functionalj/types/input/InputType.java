@@ -87,6 +87,26 @@ public interface InputType {
             return typeMirror.toString();
         }
         
+        public String insight() {
+            return "class=[" + typeMirror.getClass() + "]";
+        }
+        
+    }
+    
+    public static abstract class Mock implements InputType {
+        
+        //-- Primitives --
+        
+        public static final InputPrimitiveType P_boolean = new InputPrimitiveType.Mock(TypeKind.BOOLEAN);
+        public static final InputPrimitiveType P_byte    = new InputPrimitiveType.Mock(TypeKind.BYTE);
+        public static final InputPrimitiveType P_short   = new InputPrimitiveType.Mock(TypeKind.SHORT);
+        public static final InputPrimitiveType P_int     = new InputPrimitiveType.Mock(TypeKind.INT);
+        public static final InputPrimitiveType P_long    = new InputPrimitiveType.Mock(TypeKind.LONG);
+        public static final InputPrimitiveType P_char    = new InputPrimitiveType.Mock(TypeKind.CHAR);
+        public static final InputPrimitiveType P_float   = new InputPrimitiveType.Mock(TypeKind.FLOAT);
+        public static final InputPrimitiveType P_double  = new InputPrimitiveType.Mock(TypeKind.DOUBLE);
+        public static final InputPrimitiveType P_void    = new InputPrimitiveType.Mock(TypeKind.VOID);
+        
     }
     
     public default boolean isPrimitiveType() {

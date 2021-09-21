@@ -84,7 +84,7 @@ public class ChoiceSpec {
         val generics = extractTypeGenerics(null, typeElement);
         
         val packageName    = typeElement.packageQualifiedName();
-        val sourceName     = typeElement.getQualifiedName().substring(packageName.length() + 1 );
+        val sourceName     = typeElement.qualifiedName().substring(packageName.length() + 1 );
         val enclosedClass  = extractEncloseClass(simpleName, sourceName);
         val sourceType     = new Type(packageName, enclosedClass, simpleName, generics);
         val targetName     = element.targetName();
@@ -352,7 +352,7 @@ public class ChoiceSpec {
     
     private String extractEnclosedClassName(InputTypeElement typeElement, String packageName, String typeName) {
         String encloseClass = null;
-        val qualifiedName = typeElement.getQualifiedName().toString();
+        val qualifiedName = typeElement.qualifiedName().toString();
         encloseClass  = (typeElement.enclosingElement().kind() != ElementKind.PACKAGE) &&  qualifiedName.endsWith("." + typeName)
                       ? qualifiedName.substring(0, qualifiedName.length() - typeName.length() - 1)
                       : null;
