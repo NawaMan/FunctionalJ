@@ -24,6 +24,7 @@
 package functionalj.types.input;
 
 import static functionalj.types.Utils.blankToNull;
+import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -31,7 +32,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.lang.model.element.Element;
@@ -185,6 +191,192 @@ public interface InputElement {
             return (element instanceof VariableElement)
                     ? environment.element(((VariableElement)element)) 
                     : null;
+        }
+        
+    }
+    
+    @SuppressWarnings("rawtypes") 
+    public static abstract class Mock implements InputElement {
+        
+        private final String                 simpleName;
+        private final String                 packageQualifiedName;
+        private final ElementKind            kind;
+        private final Set<Modifier>          modifiers;
+        private final InputElement           enclosingElement;
+        private final List<InputElement>     enclosedElements;
+        private final Map<Class, Annotation> annotations;
+        private final String                 printElement;
+        private final String                 toString;
+        private final List<String>           logs = new ArrayList<>();
+        private final List<String>           code = new ArrayList<>();
+        
+        public Mock(
+                String                 simpleName, 
+                String                 packageQualifiedName, 
+                ElementKind            kind, 
+                Set<Modifier>          modifiers,
+                InputElement           enclosingElement, 
+                List<InputElement>     enclosedElements, 
+                Map<Class, Annotation> annotations,
+                String                 printElement, 
+                String                 toString) {
+            this.simpleName           = simpleName;
+            this.packageQualifiedName = packageQualifiedName;
+            this.kind                 = kind;
+            this.modifiers            = modifiers;
+            this.enclosingElement     = enclosingElement;
+            this.enclosedElements     = enclosedElements;
+            this.annotations          = annotations;
+            this.printElement         = printElement;
+            this.toString             = toString;
+        }
+        
+        @Override
+        public String simpleName() {
+            return simpleName;
+        }
+        
+        @Override
+        public String packageQualifiedName() {
+            return packageQualifiedName;
+        }
+        
+        @Override
+        public ElementKind kind() {
+            return kind;
+        }
+        
+        @Override
+        public Set<Modifier> modifiers() {
+            return modifiers;
+        }
+        
+        @Override
+        public InputElement enclosingElement() {
+            return enclosingElement;
+        }
+        
+        @Override
+        public List<? extends InputElement> enclosedElements() {
+            return enclosedElements;
+        }
+        
+        @SuppressWarnings("unchecked")
+        @Override
+        public <A extends Annotation> A annotation(Class<A> annotationType) {
+            return (A)annotations.get(annotationType);
+        }
+        
+        @Override
+        public String printElement() {
+            return printElement;
+        }
+        
+        @Override
+        public String getToString() {
+            return toString;
+        }
+        
+        @Override
+        public void error(String msg) {
+            logs.add("ERROR: " + msg);
+        }
+        
+        @Override
+        public void warn(String msg) {
+            logs.add("WARN: " + msg);
+        }
+        
+        @Override
+        public boolean hasError() {
+            return logs.stream().filter(s -> s.startsWith("ERROR: ")).findFirst().isPresent();
+        }
+        
+        @Override
+        public void generateCode(String className, String content) throws IOException {
+            code.add("-|" + className + "|-----------------");
+            for (val line : content.split("\n")) {
+                code.add(line);
+            }
+            code.add("-------------------------------------");
+        }
+        
+        @Override
+        public String toString() {
+            return toString;
+        }
+        
+        //== Builder ==
+        
+        public static abstract class Builder implements InputElement {
+            
+            protected String                 simpleName;
+            protected String                 packageQualifiedName;
+            protected ElementKind            kind;
+            protected Set<Modifier>          modifiers;
+            protected InputElement           enclosingElement;
+            protected List<InputElement>     enclosedElements;
+            protected Map<Class, Annotation> annotations = new HashMap<>();
+            protected String                 printElement;
+            protected String                 toString;
+            
+            public Builder simpleName(String simpleName) {
+                this.simpleName = simpleName;
+                return this;
+            }
+            
+            public Builder packageQualifiedName(String packageQualifiedName) {
+                this.packageQualifiedName = packageQualifiedName;
+                return this;
+            }
+            
+            public Builder kind(ElementKind kind) {
+                this.kind = kind;
+                return this;
+            }
+            
+            public Builder modifiers(Modifier ... modifiers) {
+                return modifiers(new HashSet<>(asList(modifiers)));
+            }
+            
+            public Builder modifiers(Set<Modifier> modifiers) {
+                this.modifiers = modifiers;
+                return this;
+            }
+            
+            public Builder enclosingElement(InputElement enclosingElement) {
+                this.enclosingElement = enclosingElement;
+                return this;
+            }
+            
+            public Builder enclosedElements(InputElement ... enclosedElements) {
+                return enclosedElements(asList(enclosedElements));
+            }
+            
+            public Builder enclosedElements(List<InputElement> enclosedElements) {
+                this.enclosedElements = enclosedElements;
+                return this;
+            }
+            
+            public Builder annotations(Class clzz, Annotation annotation) {
+                annotations.put(clzz, annotation);
+                return this;
+            }
+            
+            public Builder annotations(Map<Class, Annotation> annotations) {
+                this.annotations.putAll(annotations);
+                return this;
+            }
+            
+            public Builder printElement(String printElement) {
+                this.printElement = printElement;
+                return this;
+            }
+            
+            public Builder toString(String toString) {
+                this.toString = toString;
+                return this;
+            }
         }
         
     }
