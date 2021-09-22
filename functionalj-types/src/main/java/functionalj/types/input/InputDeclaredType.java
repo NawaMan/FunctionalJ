@@ -25,10 +25,12 @@ package functionalj.types.input;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 
 public interface InputDeclaredType extends InputReferenceType {
     
@@ -58,6 +60,86 @@ public interface InputDeclaredType extends InputReferenceType {
                     .collect(toList());
         }
         
+    }
+    
+    public static class Mock extends InputType.Mock implements InputDeclaredType {
+        
+        private final TypeKind                  kind;
+        private final String                    toString;
+        private final InputTypeElement          asTypeElement;
+        private final List<? extends InputType> typeArguments;
+        
+        
+        Mock(TypeKind         kind,
+             String           toString,
+             InputTypeElement asTypeElement,
+             List<InputType>  typeArguments) {
+            this.kind          = kind;
+            this.toString      = toString;
+            this.asTypeElement = asTypeElement;
+            this.typeArguments = typeArguments;
+        }
+        
+        @Override
+        public boolean isNoType() {
+            return false;
+        }
+        
+        @Override
+        public TypeKind typeKind() {
+            return kind;
+        }
+        
+        @Override
+        public String getToString() {
+            return toString;
+//            return "Q_DECLARED";
+        }
+
+        @Override
+        public InputTypeElement asTypeElement() {
+            return asTypeElement;
+        }
+
+        @Override
+        public List<? extends InputType> typeArguments() {
+            return typeArguments;
+        }
+        
+        //== Builder ==
+        
+        public static class Builder extends InputElement.Mock.Builder {
+            
+            protected TypeKind         kind;
+            protected String           toString;
+            protected InputTypeElement asTypeElement;
+            protected List<InputType>  typeArguments;
+            
+            public Builder kind(TypeKind kind) {
+                this.kind = kind;
+                return this;
+            }
+            
+            public Builder toString(String toString) {
+                this.toString = toString;
+                return this;
+            }
+            
+            public Builder asTypeElement(InputTypeElement asTypeElement) {
+                this.asTypeElement = asTypeElement;
+                return this;
+            }
+            
+            public Builder typeArguments(InputType ... typeArguments) {
+                return typeArguments(Arrays.asList(typeArguments));
+            }
+            
+            public Builder typeArguments(List<InputType> typeArguments) {
+                this.typeArguments = typeArguments;
+                return this;
+            }
+            
+        }
     }
     
     public default boolean isPrimitiveType() {
