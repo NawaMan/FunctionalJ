@@ -150,17 +150,77 @@ public interface InputTypeElement extends InputElement {
         
         //== Builder ==
         
-        public static abstract class Builder implements InputElement {
+        @SuppressWarnings("rawtypes")
+        public static class Builder extends InputElement.Mock.Builder {
             
-            protected InputType                       asType;
             protected String                          qualifiedName;
             protected NestingKind                     nestingKind;
             protected InputType                       superClass;
             protected List<InputType>                 interfaces;
             protected List<InputTypeParameterElement> typeParameters;
             
+            public Builder simpleName(String simpleName) {
+                super.simpleName(simpleName);
+                return this;
+            }
+            
+            public Builder packageQualifiedName(String packageQualifiedName) {
+                super.packageQualifiedName(packageQualifiedName);
+                return this;
+            }
+            
+            public Builder kind(ElementKind kind) {
+                super.kind(kind);
+                return this;
+            }
+            
+            public Builder modifiers(Modifier ... modifiers) {
+                super.modifiers(modifiers);
+                return this;
+            }
+            
+            public Builder modifiers(Set<Modifier> modifiers) {
+                super.modifiers(modifiers);
+                return this;
+            }
+            
+            public Builder enclosingElement(InputElement enclosingElement) {
+                super.enclosingElement(enclosingElement);
+                return this;
+            }
+            
+            public Builder enclosedElements(InputElement ... enclosedElements) {
+                super.enclosedElements(enclosedElements);
+                return this;
+            }
+            
+            public Builder enclosedElements(List<InputElement> enclosedElements) {
+                super.enclosedElements(enclosedElements);
+                return this;
+            }
+            
+            public Builder annotations(Class clzz, Annotation annotation) {
+                super.annotations(clzz, annotation);
+                return this;
+            }
+            
+            public Builder annotations(Map<Class, Annotation> annotations) {
+                super.annotations(annotations);
+                return this;
+            }
+            
             public Builder asType(InputType asType) {
-                this.asType = asType;
+                super.asType(asType);
+                return this;
+            }
+            
+            public Builder printElement(String printElement) {
+                super.printElement(printElement);
+                return this;
+            }
+            
+            public Builder toString(String toString) {
+                super.toString(toString);
                 return this;
             }
             

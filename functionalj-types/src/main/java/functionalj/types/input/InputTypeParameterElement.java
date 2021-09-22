@@ -177,7 +177,7 @@ public interface InputTypeParameterElement extends InputElement {
             }
             
             public InputVariableElement build() {
-                return new  InputVariableElement.Mock(
+                return new InputVariableElement.Mock(
                                 simpleName,
                                 packageQualifiedName,
                                 kind,
