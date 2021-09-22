@@ -33,7 +33,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +44,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -193,6 +193,12 @@ public interface InputElement {
                     : null;
         }
         
+        @Override
+        public InputTypeParameterElement asTypeParameterElement() {
+            return (element instanceof TypeParameterElement)
+                    ? environment.element(((TypeParameterElement)element)) 
+                    : null;
+        }
     }
     
     @SuppressWarnings("rawtypes") 
@@ -205,6 +211,7 @@ public interface InputElement {
         private final InputElement           enclosingElement;
         private final List<InputElement>     enclosedElements;
         private final Map<Class, Annotation> annotations;
+        private final InputType              asType;
         private final String                 printElement;
         private final String                 toString;
         private final List<String>           logs = new ArrayList<>();
@@ -218,6 +225,7 @@ public interface InputElement {
                 InputElement           enclosingElement, 
                 List<InputElement>     enclosedElements, 
                 Map<Class, Annotation> annotations,
+                InputType              asType,
                 String                 printElement, 
                 String                 toString) {
             this.simpleName           = simpleName;
@@ -227,6 +235,7 @@ public interface InputElement {
             this.enclosingElement     = enclosingElement;
             this.enclosedElements     = enclosedElements;
             this.annotations          = annotations;
+            this.asType               = asType;
             this.printElement         = printElement;
             this.toString             = toString;
         }
@@ -265,6 +274,11 @@ public interface InputElement {
         @Override
         public <A extends Annotation> A annotation(Class<A> annotationType) {
             return (A)annotations.get(annotationType);
+        }
+        
+        @Override
+        public InputType asType() {
+            return asType;
         }
         
         @Override
@@ -308,7 +322,7 @@ public interface InputElement {
         
         //== Builder ==
         
-        public static abstract class Builder implements InputElement {
+        public static abstract class Builder {
             
             protected String                 simpleName;
             protected String                 packageQualifiedName;
@@ -317,6 +331,7 @@ public interface InputElement {
             protected InputElement           enclosingElement;
             protected List<InputElement>     enclosedElements;
             protected Map<Class, Annotation> annotations = new HashMap<>();
+            protected InputType              asType;
             protected String                 printElement;
             protected String                 toString;
             
@@ -365,6 +380,11 @@ public interface InputElement {
             
             public Builder annotations(Map<Class, Annotation> annotations) {
                 this.annotations.putAll(annotations);
+                return this;
+            }
+            
+            public Builder asType(InputType asType) {
+                this.asType = asType;
                 return this;
             }
             
@@ -437,6 +457,8 @@ public interface InputElement {
     public InputMethodElement asMethodElement();
     
     public InputVariableElement asVariableElement();
+    
+    public InputTypeParameterElement asTypeParameterElement();
     
     //== Derived methods ==
     
@@ -515,6 +537,10 @@ public interface InputElement {
     
     public default boolean isVariableElement() {
         return asVariableElement() != null;
+    }
+    
+    public default boolean isTypeParameterElement() {
+        return asTypeParameterElement() != null;
     }
     
     //== From annotation ==

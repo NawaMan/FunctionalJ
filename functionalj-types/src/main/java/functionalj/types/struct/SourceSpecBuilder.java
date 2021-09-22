@@ -188,7 +188,7 @@ public class SourceSpecBuilder {
 
     private Generic getGenericFromTypeParameter(InputElement element, InputTypeParameterElement typeParameter){
         val name   = typeParameter.simpleName();
-        val bounds = typeParameter.getBounds().stream()
+        val bounds = typeParameter.bounds().stream()
                     .map    (bound -> getType(element, bound))
                     .collect(toList());
         return new Generic(name, null, bounds);

@@ -23,10 +23,17 @@
 // ============================================================================
 package functionalj.types.input;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 
@@ -74,11 +81,138 @@ public interface InputTypeElement extends InputElement {
         
     }
     
+    public static class Mock extends InputElement.Mock implements InputTypeElement {
+        
+        private final String                          qualifiedName;
+        private final NestingKind                     nestingKind;
+        private final InputType                       superClass;
+        private final List<InputType>                 interfaces;
+        private final List<InputTypeParameterElement> typeParameters;
+        
+        @SuppressWarnings("rawtypes")
+        public Mock(
+                String                          simpleName,
+                String                          packageQualifiedName,
+                ElementKind                     kind,
+                Set<Modifier>                   modifiers,
+                InputElement                    enclosingElement,
+                List<InputElement>              enclosedElements,
+                Map<Class, Annotation>          annotations,
+                InputType                       asType,
+                String                          printElement,
+                String                          toString,
+                String                          qualifiedName,
+                NestingKind                     nestingKind,
+                InputType                       superClass,
+                List<InputType>                 interfaces,
+                List<InputTypeParameterElement> typeParameters) {
+            super(simpleName,
+                  packageQualifiedName,
+                  kind,
+                  modifiers,
+                  enclosingElement,
+                  enclosedElements,
+                  annotations,
+                  asType,
+                  printElement,
+                  toString);
+            this.qualifiedName  = qualifiedName;
+            this.nestingKind    = nestingKind;
+            this.superClass     = superClass;
+            this.interfaces     = interfaces;
+            this.typeParameters = typeParameters;
+        }
+        
+        @Override
+        public String qualifiedName() {
+            return qualifiedName;
+        }
+        
+        @Override
+        public NestingKind nestingKind() {
+            return nestingKind;
+        }
+        
+        @Override
+        public InputType superclass() {
+            return superClass;
+        }
+        
+        @Override
+        public List<? extends InputType> interfaces() {
+            return interfaces;
+        }
+        
+        @Override
+        public List<? extends InputTypeParameterElement> typeParameters() {
+            return typeParameters;
+        }
+        
+        //== Builder ==
+        
+        public static abstract class Builder implements InputElement {
+            
+            protected InputType                       asType;
+            protected String                          qualifiedName;
+            protected NestingKind                     nestingKind;
+            protected InputType                       superClass;
+            protected List<InputType>                 interfaces;
+            protected List<InputTypeParameterElement> typeParameters;
+            
+            public Builder asType(InputType asType) {
+                this.asType = asType;
+                return this;
+            }
+            
+            public Builder qualifiedName(String qualifiedName) {
+                this.qualifiedName = qualifiedName;
+                return this;
+            }
+            
+            public Builder nestingKind(NestingKind nestingKind) {
+                this.nestingKind = nestingKind;
+                return this;
+            }
+            
+            public Builder superClass(InputType superClass) {
+                this.superClass = superClass;
+                return this;
+            }
+            
+            public Builder interfaces(InputType ... interfaces) {
+                return interfaces(Arrays.asList(interfaces));
+            }
+            
+            public Builder interfaces(List<InputType> interfaces) {
+                this.interfaces = interfaces;
+                return this;
+            }
+            
+            public Builder typeParameters(InputTypeParameterElement ... typeParameters) {
+                return typeParameters(asList(typeParameters));
+            }
+            
+            public Builder typeParameters(List<InputTypeParameterElement> typeParameters) {
+                this.typeParameters = typeParameters;
+                return this;
+            }
+        }
+        
+    }
+    
     public default InputTypeElement asTypeElement() {
         return this;
     }
     
     public default InputMethodElement asMethodElement() {
+        return null;
+    }
+    
+    public default InputVariableElement asVariableElement() {
+        return null;
+    }
+    
+    public default InputTypeParameterElement asTypeParameterElement() {
         return null;
     }
     

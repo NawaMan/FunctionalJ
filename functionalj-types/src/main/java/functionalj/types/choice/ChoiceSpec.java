@@ -159,11 +159,11 @@ public class ChoiceSpec {
     }
     
     private Generic parameterGeneric(Type targetType, InputTypeParameterElement t) {
-        val boundTypes = t.getBounds().stream()
+        val boundTypes = t.bounds().stream()
                 .map(tm -> typeOf(targetType, tm))
                 .collect(toList());
         val paramName = t.toString();
-        val bounds    = t.getBounds().stream()
+        val bounds    = t.bounds().stream()
                         .map(bount -> {
                             val typeOf     = typeOf(targetType, bount);
                             val typeNameOf = typeOf.simpleName();
