@@ -256,6 +256,25 @@ public interface InputTypeElement extends InputElement {
                 this.typeParameters = typeParameters;
                 return this;
             }
+            
+            public InputTypeElement build() {
+                return new InputTypeElement.Mock(
+                                simpleName,
+                                packageQualifiedName,
+                                kind,
+                                modifiers,
+                                enclosingElement,
+                                enclosedElements,
+                                annotations,
+                                asType,
+                                printElement,
+                                toString,
+                                qualifiedName,
+                                nestingKind,
+                                superClass,
+                                interfaces,
+                                typeParameters);
+            }
         }
         
     }

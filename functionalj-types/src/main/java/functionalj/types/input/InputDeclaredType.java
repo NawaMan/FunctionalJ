@@ -95,12 +95,12 @@ public interface InputDeclaredType extends InputReferenceType {
             return toString;
 //            return "Q_DECLARED";
         }
-
+        
         @Override
         public InputTypeElement asTypeElement() {
             return asTypeElement;
         }
-
+        
         @Override
         public List<? extends InputType> typeArguments() {
             return typeArguments;
@@ -108,7 +108,7 @@ public interface InputDeclaredType extends InputReferenceType {
         
         //== Builder ==
         
-        public static class Builder extends InputElement.Mock.Builder {
+        public static class Builder {
             
             protected TypeKind         kind;
             protected String           toString;
@@ -137,6 +137,10 @@ public interface InputDeclaredType extends InputReferenceType {
             public Builder typeArguments(List<InputType> typeArguments) {
                 this.typeArguments = typeArguments;
                 return this;
+            }
+            
+            public InputDeclaredType.Mock build() {
+                return new InputDeclaredType.Mock(TypeKind.DECLARED, toString, asTypeElement, typeArguments);
             }
             
         }

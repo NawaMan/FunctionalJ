@@ -23,12 +23,26 @@
 // ============================================================================
 package functionalj.types.input;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+
+import lombok.val;
 
 public interface InputType {
     
@@ -95,17 +109,81 @@ public interface InputType {
     
     public static abstract class Mock implements InputType {
         
+        @SuppressWarnings("rawtypes")
+        private static Map<Class, InputDeclaredType> declaredTypes = new HashMap<>();
+        
+        @SuppressWarnings("rawtypes")
+        public static final InputDeclaredType fromClass(Class clazz) {
+            if (declaredTypes.containsKey(clazz)) {
+                return declaredTypes.get(clazz);
+            }
+            
+            val modifiers = new HashSet<Modifier>();
+            if (java.lang.reflect.Modifier.isPublic      (clazz.getModifiers())) modifiers.add(Modifier.PUBLIC);
+            if (java.lang.reflect.Modifier.isProtected   (clazz.getModifiers())) modifiers.add(Modifier.PROTECTED);
+            if (java.lang.reflect.Modifier.isPrivate     (clazz.getModifiers())) modifiers.add(Modifier.PRIVATE);
+            if (java.lang.reflect.Modifier.isAbstract    (clazz.getModifiers())) modifiers.add(Modifier.ABSTRACT);
+            // Default?
+            if (java.lang.reflect.Modifier.isStatic      (clazz.getModifiers())) modifiers.add(Modifier.STATIC);
+            if (java.lang.reflect.Modifier.isFinal       (clazz.getModifiers())) modifiers.add(Modifier.FINAL);
+            if (java.lang.reflect.Modifier.isTransient   (clazz.getModifiers())) modifiers.add(Modifier.TRANSIENT);
+            if (java.lang.reflect.Modifier.isVolatile    (clazz.getModifiers())) modifiers.add(Modifier.VOLATILE);
+            if (java.lang.reflect.Modifier.isSynchronized(clazz.getModifiers())) modifiers.add(Modifier.SYNCHRONIZED);
+            if (java.lang.reflect.Modifier.isNative      (clazz.getModifiers())) modifiers.add(Modifier.NATIVE);
+            if (java.lang.reflect.Modifier.isStrict      (clazz.getModifiers())) modifiers.add(Modifier.STRICTFP);
+            
+            boolean isInterface  = clazz.isInterface();
+            boolean isEnum       = clazz.isEnum();
+            boolean isAnnotation = clazz.isAnnotation();
+            val kind = isInterface  ? ElementKind.INTERFACE
+                     : isEnum       ? ElementKind.ENUM
+                     : isAnnotation ? ElementKind.ANNOTATION_TYPE
+                     :                ElementKind.CLASS;
+            
+            val className   = clazz.getCanonicalName();
+            val typeElement = new InputTypeElement.Mock.Builder()
+                    .toString     (className)
+                    .kind         (kind)
+                    .qualifiedName(className)
+                    .superClass   (fromClass(clazz.getSuperclass()))
+                    .interfaces   (Stream.of(clazz.getInterfaces()).map(Mock::fromClass).collect(toList()))
+                    .modifiers    (modifiers)
+                    .build();
+            val declaredType = new InputDeclaredType.Mock.Builder()
+                    .kind         (TypeKind.DECLARED)
+                    .toString     (className)
+                    .asTypeElement(typeElement)
+                    .typeArguments()
+                    .build();
+            declaredTypes.put(clazz, declaredType);
+            return declaredType;
+        }
+        
         //-- Primitives --
         
-        public static final InputPrimitiveType P_boolean = new InputPrimitiveType.Mock(TypeKind.BOOLEAN);
-        public static final InputPrimitiveType P_byte    = new InputPrimitiveType.Mock(TypeKind.BYTE);
-        public static final InputPrimitiveType P_short   = new InputPrimitiveType.Mock(TypeKind.SHORT);
-        public static final InputPrimitiveType P_int     = new InputPrimitiveType.Mock(TypeKind.INT);
-        public static final InputPrimitiveType P_long    = new InputPrimitiveType.Mock(TypeKind.LONG);
-        public static final InputPrimitiveType P_char    = new InputPrimitiveType.Mock(TypeKind.CHAR);
-        public static final InputPrimitiveType P_float   = new InputPrimitiveType.Mock(TypeKind.FLOAT);
-        public static final InputPrimitiveType P_double  = new InputPrimitiveType.Mock(TypeKind.DOUBLE);
-        public static final InputPrimitiveType P_void    = new InputPrimitiveType.Mock(TypeKind.VOID);
+        public static final InputPrimitiveType primaryBoolean = new InputPrimitiveType.Mock(TypeKind.BOOLEAN);
+        public static final InputPrimitiveType primaryByte    = new InputPrimitiveType.Mock(TypeKind.BYTE);
+        public static final InputPrimitiveType primaryShort   = new InputPrimitiveType.Mock(TypeKind.SHORT);
+        public static final InputPrimitiveType primaryInt     = new InputPrimitiveType.Mock(TypeKind.INT);
+        public static final InputPrimitiveType primaryLong    = new InputPrimitiveType.Mock(TypeKind.LONG);
+        public static final InputPrimitiveType primaryChar    = new InputPrimitiveType.Mock(TypeKind.CHAR);
+        public static final InputPrimitiveType primaryFloat   = new InputPrimitiveType.Mock(TypeKind.FLOAT);
+        public static final InputPrimitiveType primaryDouble  = new InputPrimitiveType.Mock(TypeKind.DOUBLE);
+        public static final InputPrimitiveType primaryVoid    = new InputPrimitiveType.Mock(TypeKind.VOID);
+        
+        //-- Boxed --
+        
+        public static final InputDeclaredType boxedBoolean = fromClass(Boolean.class);
+        public static final InputDeclaredType boxedByte    = fromClass(Byte.class);
+        public static final InputDeclaredType boxedShort   = fromClass(Short.class);
+        public static final InputDeclaredType boxedInt     = fromClass(Integer.class);
+        public static final InputDeclaredType boxedLong    = fromClass(Long.class);
+        public static final InputDeclaredType boxedChar    = fromClass(Character.class);
+        public static final InputDeclaredType boxedFloat   = fromClass(Float.class);
+        public static final InputDeclaredType boxedDouble  = fromClass(Double.class);
+        public static final InputDeclaredType boxedVoid    = fromClass(Void.class);
+        
+        public static final InputDeclaredType string = fromClass(String.class);
         
     }
     
