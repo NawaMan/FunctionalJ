@@ -30,8 +30,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.lang.model.element.ElementKind;
@@ -173,12 +174,17 @@ public interface InputMethodElement extends InputElement {
                 return this;
             }
             
+            public Builder enclosedElements(Supplier<List<InputElement>> enclosedElementsSupplier) {
+                super.enclosedElements(enclosedElementsSupplier);
+                return this;
+            }
+            
             public Builder annotations(Class clzz, Annotation annotation) {
                 super.annotations(clzz, annotation);
                 return this;
             }
             
-            public Builder annotations(Map<Class, Annotation> annotations) {
+            public Builder annotations(Function<Class, Annotation> annotations) {
                 super.annotations(annotations);
                 return this;
             }

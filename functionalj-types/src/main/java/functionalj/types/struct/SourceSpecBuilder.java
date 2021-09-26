@@ -376,8 +376,11 @@ public class SourceSpecBuilder {
                 return Type.STRING;
             
             val generics = typeMirror.asDeclaredType().typeArguments().stream()
-                    .map(typeArg -> getType(element, typeArg))
-                    .map(type    -> new Generic(type))
+                    .map(typeArg -> {
+                        val type = getType(element, typeArg.inputType());
+                        // TODO - Take care of the bound.
+                        return new Generic(type);
+                    })
                     .collect(toList());
             
             val packageName = getPackageName(element, typeElement);

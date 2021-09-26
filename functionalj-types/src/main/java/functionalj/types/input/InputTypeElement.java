@@ -29,8 +29,9 @@ import static java.util.stream.Collectors.toList;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -96,8 +97,8 @@ public interface InputTypeElement extends InputElement {
                 ElementKind                     kind,
                 Set<Modifier>                   modifiers,
                 InputElement                    enclosingElement,
-                List<InputElement>              enclosedElements,
-                Map<Class, Annotation>          annotations,
+                Supplier<List<InputElement>>    enclosedElementsSupplier,
+                Function<Class, Annotation>     annotations,
                 InputType                       asType,
                 String                          printElement,
                 String                          toString,
@@ -111,7 +112,7 @@ public interface InputTypeElement extends InputElement {
                   kind,
                   modifiers,
                   enclosingElement,
-                  enclosedElements,
+                  enclosedElementsSupplier,
                   annotations,
                   asType,
                   printElement,
@@ -204,7 +205,7 @@ public interface InputTypeElement extends InputElement {
                 return this;
             }
             
-            public Builder annotations(Map<Class, Annotation> annotations) {
+            public Builder annotations(Function<Class, Annotation> annotations) {
                 super.annotations(annotations);
                 return this;
             }
@@ -264,7 +265,7 @@ public interface InputTypeElement extends InputElement {
                                 kind,
                                 modifiers,
                                 enclosingElement,
-                                enclosedElements,
+                                enclosedElementsSupplier,
                                 annotations,
                                 asType,
                                 printElement,

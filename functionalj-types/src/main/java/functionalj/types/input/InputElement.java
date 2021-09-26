@@ -33,11 +33,12 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -204,40 +205,42 @@ public interface InputElement {
     @SuppressWarnings("rawtypes") 
     public static abstract class Mock implements InputElement {
         
-        private final String                 simpleName;
-        private final String                 packageQualifiedName;
-        private final ElementKind            kind;
-        private final Set<Modifier>          modifiers;
-        private final InputElement           enclosingElement;
-        private final List<InputElement>     enclosedElements;
-        private final Map<Class, Annotation> annotations;
-        private final InputType              asType;
-        private final String                 printElement;
-        private final String                 toString;
-        private final List<String>           logs = new ArrayList<>();
-        private final List<String>           code = new ArrayList<>();
+        private final String                       simpleName;
+        private final String                       packageQualifiedName;
+        private final ElementKind                  kind;
+        private final Set<Modifier>                modifiers;
+        private final InputElement                 enclosingElement;
+        private final Supplier<List<InputElement>> enclosedElementsSupplier;
+        private final Function<Class, Annotation>  annotations;
+        private final InputType                    asType;
+        private final String                       printElement;
+        private final String                       toString;
+        private final List<String>                 logs = new ArrayList<>();
+        private final List<String>                 code = new ArrayList<>();
+        
+        private AtomicReference<List<InputElement>> enclosedElements = new AtomicReference<>(null);
         
         public Mock(
-                String                 simpleName, 
-                String                 packageQualifiedName, 
-                ElementKind            kind, 
-                Set<Modifier>          modifiers,
-                InputElement           enclosingElement, 
-                List<InputElement>     enclosedElements, 
-                Map<Class, Annotation> annotations,
-                InputType              asType,
-                String                 printElement, 
-                String                 toString) {
-            this.simpleName           = simpleName;
-            this.packageQualifiedName = packageQualifiedName;
-            this.kind                 = kind;
-            this.modifiers            = modifiers;
-            this.enclosingElement     = enclosingElement;
-            this.enclosedElements     = enclosedElements;
-            this.annotations          = annotations;
-            this.asType               = asType;
-            this.printElement         = printElement;
-            this.toString             = toString;
+                String                       simpleName, 
+                String                       packageQualifiedName, 
+                ElementKind                  kind, 
+                Set<Modifier>                modifiers,
+                InputElement                 enclosingElement, 
+                Supplier<List<InputElement>> enclosedElementsSupplier, 
+                Function<Class, Annotation>  annotations,
+                InputType                    asType,
+                String                       printElement, 
+                String                       toString) {
+            this.simpleName               = simpleName;
+            this.packageQualifiedName     = packageQualifiedName;
+            this.kind                     = kind;
+            this.modifiers                = modifiers;
+            this.enclosingElement         = enclosingElement;
+            this.enclosedElementsSupplier = enclosedElementsSupplier;
+            this.annotations              = annotations;
+            this.asType                   = asType;
+            this.printElement             = printElement;
+            this.toString                 = toString;
         }
         
         @Override
@@ -267,13 +270,17 @@ public interface InputElement {
         
         @Override
         public List<? extends InputElement> enclosedElements() {
-            return enclosedElements;
+            return enclosedElements.updateAndGet(old -> {
+                if (old != null)
+                    return old;
+                return enclosedElementsSupplier.get();
+            });
         }
         
         @SuppressWarnings("unchecked")
         @Override
         public <A extends Annotation> A annotation(Class<A> annotationType) {
-            return (A)annotations.get(annotationType);
+            return (A)annotations.apply(annotationType);
         }
         
         @Override
@@ -324,16 +331,16 @@ public interface InputElement {
         
         public static abstract class Builder {
             
-            protected String                 simpleName;
-            protected String                 packageQualifiedName;
-            protected ElementKind            kind;
-            protected Set<Modifier>          modifiers;
-            protected InputElement           enclosingElement;
-            protected List<InputElement>     enclosedElements;
-            protected Map<Class, Annotation> annotations = new HashMap<>();
-            protected InputType              asType;
-            protected String                 printElement;
-            protected String                 toString;
+            protected String                       simpleName;
+            protected String                       packageQualifiedName;
+            protected ElementKind                  kind;
+            protected Set<Modifier>                modifiers;
+            protected InputElement                 enclosingElement;
+            protected Supplier<List<InputElement>> enclosedElementsSupplier;
+            protected Function<Class, Annotation>  annotations = __ -> null;
+            protected InputType                    asType;
+            protected String                       printElement;
+            protected String                       toString;
             
             public Builder simpleName(String simpleName) {
                 this.simpleName = simpleName;
@@ -365,21 +372,30 @@ public interface InputElement {
             }
             
             public Builder enclosedElements(InputElement ... enclosedElements) {
-                return enclosedElements(asList(enclosedElements));
+                return enclosedElements(() -> asList(enclosedElements));
+            }
+            public Builder enclosedElements(List<InputElement> enclosedElements) {
+                return enclosedElements(() -> enclosedElements);
             }
             
-            public Builder enclosedElements(List<InputElement> enclosedElements) {
-                this.enclosedElements = enclosedElements;
+            public Builder enclosedElements(Supplier<List<InputElement>> enclosedElementsSupplier) {
+                this.enclosedElementsSupplier = enclosedElementsSupplier;
                 return this;
             }
             
             public Builder annotations(Class clzz, Annotation annotation) {
-                annotations.put(clzz, annotation);
+                val oldAnnotations = annotations;
+                annotations = czz -> {
+                    if (czz.equals(clzz)) {
+                        return annotation;
+                    }
+                    return oldAnnotations.apply(clzz);
+                };
                 return this;
             }
             
-            public Builder annotations(Map<Class, Annotation> annotations) {
-                this.annotations.putAll(annotations);
+            public Builder annotations(Function<Class, Annotation> annotations) {
+                this.annotations = annotations;
                 return this;
             }
             

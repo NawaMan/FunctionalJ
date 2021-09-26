@@ -23,16 +23,12 @@
 // ============================================================================
 package functionalj.types.struct;
 
-import static functionalj.types.Utils.blankToNull;
 import static functionalj.types.choice.generator.Lines.string;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -43,27 +39,14 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Types;
 
-import functionalj.types.Choice;
-import functionalj.types.Serialize;
 import functionalj.types.Struct;
 import functionalj.types.input.Environment;
 import functionalj.types.input.InputElement;
-import functionalj.types.input.InputMethodElement;
 import functionalj.types.input.InputType;
-import functionalj.types.input.InputTypeElement;
-import functionalj.types.input.InputTypeParameterElement;
-import functionalj.types.input.InputVariableElement;
 import functionalj.types.struct.generator.StructSpecBuilder;
-import functionalj.types.struct.generator.model.Accessibility;
-import functionalj.types.struct.generator.model.Concrecity;
 import functionalj.types.struct.generator.model.GenStruct;
-import functionalj.types.struct.generator.model.Modifiability;
-import functionalj.types.struct.generator.model.Scope;
 import lombok.val;
 
 
@@ -175,6 +158,16 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeKind                          : " + type.typeKind());
                 logs.add("  - Parameter [" + parameter.simpleName() + "] asType.getToString                       : " + type.getToString());
                 logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments                     : " + type.typeArguments());
+                
+                for (int i = 0; i < type.typeArguments().size(); i++) {
+                    val inputType = type.typeArguments().get(i);
+                    if (inputType instanceof InputType.Impl) {
+                        logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments[" + i + "]               : " + ((InputType.Impl)inputType).insight() + ": " + inputType.getClass());
+                    } else {
+                        logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments[" + i + "]: inputType=   : " + inputType.getClass());
+                    }
+                }
+                logs.add("------------------------------------------------");
             }
             
         }

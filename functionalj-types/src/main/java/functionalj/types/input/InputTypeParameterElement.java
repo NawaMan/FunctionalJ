@@ -27,8 +27,9 @@ import static java.util.stream.Collectors.toList;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -71,17 +72,17 @@ public interface InputTypeParameterElement extends InputElement {
         private final List<InputType> bounds;
         
         public Mock(
-                String                 simpleName,
-                String                 packageQualifiedName,
-                ElementKind            kind,
-                Set<Modifier>          modifiers,
-                InputElement           enclosingElement,
-                List<InputElement>     enclosedElements,
-                Map<Class, Annotation> annotations,
-                InputType              asType,
-                String                 printElement,
-                String                 toString,
-                List<InputType>        bounds) {
+                String                       simpleName,
+                String                       packageQualifiedName,
+                ElementKind                  kind,
+                Set<Modifier>                modifiers,
+                InputElement                 enclosingElement,
+                Supplier<List<InputElement>> enclosedElements,
+                Function<Class, Annotation>  annotations,
+                InputType                    asType,
+                String                       printElement,
+                String                       toString,
+                List<InputType>              bounds) {
             super(simpleName,
                   packageQualifiedName,
                   kind,
@@ -151,7 +152,7 @@ public interface InputTypeParameterElement extends InputElement {
                 return this;
             }
             
-            public Builder annotations(Map<Class, Annotation> annotations) {
+            public Builder annotations(Function<Class, Annotation> annotations) {
                 super.annotations(annotations);
                 return this;
             }
@@ -183,7 +184,7 @@ public interface InputTypeParameterElement extends InputElement {
                                 kind,
                                 modifiers,
                                 enclosingElement,
-                                enclosedElements,
+                                enclosedElementsSupplier,
                                 annotations,
                                 asType,
                                 printElement,

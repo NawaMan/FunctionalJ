@@ -47,6 +47,7 @@ import functionalj.types.input.InputElement;
 import functionalj.types.input.InputMethodElement;
 import functionalj.types.input.InputTypeElement;
 import functionalj.types.input.InputType;
+import functionalj.types.input.InputTypeArgument;
 import functionalj.types.input.InputTypeParameterElement;
 import lombok.val;
 
@@ -176,9 +177,11 @@ public class ChoiceSpec {
                 boundTypes);
     }
     
-    private List<Generic> extractGenericsFromTypeArguments(Type targetType, List<? extends InputType> typeParameters) {
+    private List<Generic> extractGenericsFromTypeArguments(Type targetType, List<InputTypeArgument> typeParameters) {
         return typeParameters.stream()
-                .map(p -> {
+                .map(typeArgument -> {
+                    // TODO - Take care of the bound
+                    val p         = typeArgument.inputType();
                     val paramName = p.toString();
                     if (p.isTypeVariable()) {
                         val param = p.asTypeVariable();

@@ -28,11 +28,8 @@ import static java.util.stream.Collectors.toList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
@@ -41,12 +38,16 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.WildcardType;
 
 import lombok.val;
 
 public interface InputType {
     
     public static InputType of(Environment environment, TypeMirror typeMirror) {
+        if (typeMirror == null)
+            return null;
+        
         return new Impl(environment, typeMirror);
     }
     
@@ -102,7 +103,13 @@ public interface InputType {
         }
         
         public String insight() {
-            return "class=[" + typeMirror.getClass() + "]";
+            String insight = "class=[" + typeMirror.getClass() + "]";
+            if (typeMirror instanceof WildcardType) {
+                val wcType = (WildcardType)typeMirror;
+                insight += ", extends " + wcType.getExtendsBound();
+                insight += ", supers " + wcType.getSuperBound();
+            }
+            return insight;
         }
         
     }
@@ -112,12 +119,9 @@ public interface InputType {
         @SuppressWarnings("rawtypes")
         private static Map<Class, InputDeclaredType> declaredTypes = new HashMap<>();
         
+
         @SuppressWarnings("rawtypes")
-        public static final InputDeclaredType fromClass(Class clazz) {
-            if (declaredTypes.containsKey(clazz)) {
-                return declaredTypes.get(clazz);
-            }
-            
+        static final InputDeclaredType.Mock.Builder builderFromClass(Class clazz) {
             val modifiers = new HashSet<Modifier>();
             if (java.lang.reflect.Modifier.isPublic      (clazz.getModifiers())) modifiers.add(Modifier.PUBLIC);
             if (java.lang.reflect.Modifier.isProtected   (clazz.getModifiers())) modifiers.add(Modifier.PROTECTED);
@@ -152,9 +156,18 @@ public interface InputType {
             val declaredType = new InputDeclaredType.Mock.Builder()
                     .kind         (TypeKind.DECLARED)
                     .toString     (className)
-                    .asTypeElement(typeElement)
-                    .typeArguments()
-                    .build();
+                    .asTypeElement(typeElement);
+            return declaredType;
+        }
+        
+        @SuppressWarnings("rawtypes")
+        public static final InputDeclaredType fromClass(Class clazz) {
+            if (declaredTypes.containsKey(clazz)) {
+                return declaredTypes.get(clazz);
+            }
+            
+            val declaredTypeBuilder = builderFromClass(clazz);
+            val declaredType = declaredTypeBuilder.build();
             declaredTypes.put(clazz, declaredType);
             return declaredType;
         }
