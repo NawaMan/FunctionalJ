@@ -256,6 +256,12 @@ public interface InputMethodElement extends InputElement {
             }
             
         }
+//        
+//        public static InputMethodElement fromMethod(Method method) {
+//            val name = method.getName();
+//            val type = method.getReturnType();
+//            val params = method.getParameters()
+//        }
         
     }
     

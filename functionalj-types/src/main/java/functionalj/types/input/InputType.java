@@ -136,9 +136,9 @@ public interface InputType {
             if (java.lang.reflect.Modifier.isNative      (clazz.getModifiers())) modifiers.add(Modifier.NATIVE);
             if (java.lang.reflect.Modifier.isStrict      (clazz.getModifiers())) modifiers.add(Modifier.STRICTFP);
             
-            boolean isInterface  = clazz.isInterface();
-            boolean isEnum       = clazz.isEnum();
-            boolean isAnnotation = clazz.isAnnotation();
+            val isInterface  = clazz.isInterface();
+            val isEnum       = clazz.isEnum();
+            val isAnnotation = clazz.isAnnotation();
             val kind = isInterface  ? ElementKind.INTERFACE
                      : isEnum       ? ElementKind.ENUM
                      : isAnnotation ? ElementKind.ANNOTATION_TYPE
@@ -161,13 +161,15 @@ public interface InputType {
         }
         
         @SuppressWarnings("rawtypes")
-        public static final InputDeclaredType fromClass(Class clazz) {
+        public static final InputDeclaredType fromClass(Class clazz, InputTypeArgument ... typeArguments) {
             if (declaredTypes.containsKey(clazz)) {
                 return declaredTypes.get(clazz);
             }
             
             val declaredTypeBuilder = builderFromClass(clazz);
-            val declaredType = declaredTypeBuilder.build();
+            val declaredType = declaredTypeBuilder
+                    .typeArguments(typeArguments)
+                    .build();
             declaredTypes.put(clazz, declaredType);
             return declaredType;
         }
@@ -223,5 +225,17 @@ public interface InputType {
     public TypeKind typeKind();
     
     public String getToString();
+    
+    public default InputTypeArgument toTypeArgument() {
+        return new InputTypeArgument.Impl(this);
+    }
+    
+    public default InputTypeArgument toTypeArgument(boolean asExtends) {
+        return new InputTypeArgument.Impl(this, asExtends);
+    }
+    
+    public default InputTypeArgument toTypeArgument(boolean asExtends, boolean asSuper) {
+        return new InputTypeArgument.Impl(this, asExtends, asSuper);
+    }
     
 }
