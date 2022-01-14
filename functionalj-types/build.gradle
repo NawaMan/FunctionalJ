@@ -7,8 +7,10 @@ repositories {
 
 dependencies {
     
-    compileOnly         'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compileOnly         'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    
+    compileOnly 'io.nullablej:nullablej:4.0.1.0'
     
     // Classes from this dependency cannot not take part in the annotation processing.
     // They can only be used in the utility that are access from the "already" generated classes.
@@ -16,9 +18,9 @@ dependencies {
     
     // == Test ==
     
-    testCompile 'junit:junit:4.13.2'
+    testCompileOnly 'junit:junit:4.13.2'
     
-    testCompile             'org.projectlombok:lombok:1.18.20'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testCompileOnly         'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
     
 }

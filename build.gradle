@@ -5,7 +5,6 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'idea'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     
     sourceCompatibility = theSourceCompatibility
@@ -108,7 +107,7 @@ subprojects {
                     }
                     
                     // Sign POM
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                    // beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
                     
                     // Destination
                     repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
@@ -164,5 +163,6 @@ subprojects {
         classpath      = sourceSets.main.compileClasspath
     }
     
-    compileJava.dependsOn compileAnnotationProcessor
+    compileJava.dependsOn                             compileAnnotationProcessor
+    publishMavenJavaPublicationToMavenLocal.dependsOn javadocJar
 }

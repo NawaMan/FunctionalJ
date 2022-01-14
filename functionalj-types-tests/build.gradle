@@ -6,23 +6,25 @@ repositories {
 }
 
 dependencies {
-    compile             project(':functionalj-core')
-    compile             project(':functionalj-types')
+    compileOnly         project(':functionalj-core')
+    compileOnly         project(':functionalj-types')
     annotationProcessor project(':functionalj-types')
     
-    compileOnly         'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compileOnly 'io.nullablej:nullablej:4.0.1.0'
+    
+    compileOnly         'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
     
     
     // == Test ==
     
-    testCompile             project(':functionalj-core')
-    testCompile             project(':functionalj-types')
+    testCompileOnly         project(':functionalj-core')
+    testCompileOnly         project(':functionalj-types')
     testAnnotationProcessor project(':functionalj-types')
     
-    testCompile 'junit:junit:4.13.2'
+    testCompileOnly 'junit:junit:4.13.2'
     
-    testCompile             'org.projectlombok:lombok:1.18.20'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testCompileOnly         'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
     
 }
