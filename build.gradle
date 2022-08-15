@@ -17,7 +17,7 @@ subprojects {
     
     // Gradle
     task wrapper(type: Wrapper) {
-        gradleVersion = '5.4.1'
+        gradleVersion = '7.5'
     }
     
     // IDE
@@ -91,7 +91,7 @@ subprojects {
     }
     
     archivesBaseName = "${project.name}"
-    version = "${project.version}"
+    version          = "${project.version}"
     
     if (project.gradle.startParameter.taskNames.contains('uploadArchives')) {
         
@@ -105,9 +105,6 @@ subprojects {
                     signing {
                         sign configurations.archives
                     }
-                    
-                    // Sign POM
-                    // beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
                     
                     // Destination
                     repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
@@ -158,9 +155,9 @@ subprojects {
         options.compilerArgs << "-proc:none"
         options.incremental = true
         
-        source         = file("src/main/annotationprocessor")
-        destinationDir = file('build/classes/java/main')
-        classpath      = sourceSets.main.compileClasspath
+        source               = file("src/main/annotationprocessor")
+        destinationDirectory = file('build/classes/java/main')
+        classpath            = sourceSets.main.compileClasspath
     }
     
     compileJava.dependsOn                             compileAnnotationProcessor

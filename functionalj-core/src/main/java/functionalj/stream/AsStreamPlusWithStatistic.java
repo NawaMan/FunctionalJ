@@ -26,14 +26,29 @@ package functionalj.stream;
 import static functionalj.function.Func.alwaysTrue;
 import static functionalj.stream.StreamPlusHelper.dummy;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
+import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
 
 import functionalj.function.aggregator.Aggregation;
 import functionalj.function.aggregator.AggregationToBoolean;
+import functionalj.result.Result;
+import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.Tuple;
@@ -346,6 +361,160 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val filter = aggregationFilter.newAggregator();
         val mapper = aggregationMapper.newAggregator();
         return maxIndexBy(filter, mapper);
+    }
+    
+    //== Sum ==
+    
+    /**
+     * Map each element to int and return the sum.
+     * 
+     * @param mapperToInt  the mapper to int.
+     * @return             the sum of all the int value.
+     */
+    public default int sumToInt(ToIntFunction<DATA> mapperToInt) {
+        return streamPlus().mapToInt(mapperToInt).sum();
+    }
+    
+    /**
+     * Map each element to long and return the sum.
+     * 
+     * @param mapperToInt  the mapper to long.
+     * @return             the sum of all the long value.
+     */
+    public default long sumToLong(ToLongFunction<DATA> mapperToLong) {
+        return streamPlus().mapToLong(mapperToLong).sum();
+    }
+    
+    /**
+     * Map each element to double and return the sum.
+     * 
+     * @param mapperToInt  the mapper to double.
+     * @return             the sum of all the double value.
+     */
+    public default double sumToDouble(ToDoubleFunction<DATA> mapperToDouble) {
+        return streamPlus().mapToDouble(mapperToDouble).sum();
+    }
+    
+    /**
+     * Map each element to BigInteger and return the sum.
+     * 
+     * @param mapperToInt  the mapper to BigInteger.
+     * @return             the sum of all the BigInteger value.
+     */
+    public default BigInteger sumToBigInteger(Function<DATA, BigInteger> mapperToBigInteger) {
+        return streamPlus().map(mapperToBigInteger).reduce(BigInteger::add).orElse(BigInteger.ZERO);
+    }
+    
+    /**
+     * Map each element to BigDecimal and return the sum.
+     * 
+     * @param mapperToInt  the mapper to BigDecimal.
+     * @return             the sum of all the BigDecimal value.
+     */
+    public default BigDecimal sumToBigDecimal(Function<DATA, BigDecimal> mapperToBigDecimal) {
+        return streamPlus().map(mapperToBigDecimal).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+    }
+    
+    // TODO - Add the primitive ones
+    
+    /**
+     * Map each element to BigDecimal and return the sum.
+     * 
+     * @param mapperToInt  the mapper to BigDecimal.
+     * @return             the sum of all the BigDecimal value.
+     */
+    public default Result<BigDecimal> sum(Function<DATA, BigDecimal> mapperToBigDecimal) {
+        val sum = streamPlus()
+                .map   (mapperToBigDecimal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        return Result.valueOf(sum);
+    }
+    
+    //== Average ==
+    
+    /**
+     * Map each element to int and return the average.
+     * 
+     * @param mapperToInt  the mapper to int.
+     * @return             the sum of all the int value.
+     */
+    public default OptionalDouble average(ToIntFunction<DATA> mapperToInt) {
+        return streamPlus().mapToInt(mapperToInt).average();
+    }
+    
+    /**
+     * Map each element to long and return the average.
+     * 
+     * @param mapperToInt  the mapper to long.
+     * @return             the sum of all the long value.
+     */
+    public default OptionalDouble average(ToLongFunction<DATA> mapperToLong) {
+        return streamPlus().mapToLong(mapperToLong).average();
+    }
+    
+    /**
+     * Map each element to double and return the average.
+     * 
+     * @param mapperToInt  the mapper to double.
+     * @return             the sum of all the double value.
+     */
+    public default OptionalDouble average(ToDoubleFunction<DATA> mapperToDouble) {
+        return streamPlus().mapToDouble(mapperToDouble).average();
+    }
+    
+    /**
+     * Map each element to BigDecimal and return the average.
+     * 
+     * @param mapperToInt  the mapper to BigDecimal.
+     * @return             the sum of all the BigDecimal value.
+     */
+    public default Result<BigDecimal> average(Function<DATA, BigDecimal> mapperToBigDecimal) {
+        class RunningData {
+            BigDecimal sum   = BigDecimal.ZERO;
+            int        count = 0;
+        }
+        
+        val characteristics = EnumSet.of(Characteristics.CONCURRENT, Characteristics.UNORDERED);
+        val collector       = new Collector<DATA, RunningData, Result<BigDecimal>>() {
+            @Override
+            public Supplier<RunningData> supplier() {
+                return RunningData::new;
+            }
+            @Override
+            public BiConsumer<RunningData, DATA> accumulator() {
+                return (running, data) -> {
+                    val value   = mapperToBigDecimal.apply(data);
+                    running.sum = running.sum.add(value);
+                    running.count++;
+                };
+            }
+            @Override
+            public BinaryOperator<RunningData> combiner() {
+                return (running1, running2) -> {
+                    val running = new RunningData();
+                    running.sum   = running1.sum.add(running1.sum);
+                    running.count = 1;
+                    return running;
+                };
+            }
+            @Override
+            public Function<RunningData, Result<BigDecimal>> finisher() {
+                return running -> {
+                    int count = running.count;
+                    return (count == 0)
+                            ? Result.ofNull()
+                            : Result.valueOf(running.sum.divide(BigDecimal.valueOf(count)));
+                };
+            }
+            @Override
+            public Set<Characteristics> characteristics() {
+                return characteristics;
+            }
+        };
+        
+        val aggregation = Aggregation.from(CollectorPlus.from(collector));
+        return streamPlus().aggregate(aggregation);
     }
     
 }

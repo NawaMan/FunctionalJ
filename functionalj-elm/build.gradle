@@ -1,3 +1,8 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
 version="${theVersion}.0"
 
 repositories {
@@ -6,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly project(':functionalj-types')
+    api                 project(':functionalj-types')
     annotationProcessor project(':functionalj-types')
     
     compileOnly         'org.projectlombok:lombok:1.18.22'

@@ -1,3 +1,8 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
 version="${theVersion}.0"
 
 repositories {
@@ -7,10 +12,10 @@ repositories {
 
 dependencies {
     
+    api 'io.nullablej:nullablej:4.0.1.0'
+    
     compileOnly         'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    
-    compileOnly 'io.nullablej:nullablej:4.0.1.0'
     
     // Classes from this dependency cannot not take part in the annotation processing.
     // They can only be used in the utility that are access from the "already" generated classes.
