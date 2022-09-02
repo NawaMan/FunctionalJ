@@ -479,7 +479,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val collector       = new Collector<DATA, RunningData, Result<BigDecimal>>() {
             @Override
             public Supplier<RunningData> supplier() {
-                return RunningData::new;
+                return () -> new RunningData();
             }
             @Override
             public BiConsumer<RunningData, DATA> accumulator() {
