@@ -23,13 +23,23 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
 public interface ComparableLens<HOST, TYPE extends Comparable<TYPE>> extends AnyLens<HOST, TYPE> {
     
+    public static class Impl<H, D extends Comparable<D>> extends AnyLens.Impl<H, D> implements Named, ComparableLens<H, D> {
+        public Impl(String name, LensSpec<H, D> spec) {
+            super(name, spec);
+        }
+    }
+    
+    static <T extends Comparable<T>> ComparableLens<T, T> of(String name, LensSpec<T, T> spec) {
+        return new Impl<>(name, spec);
+    }
     static <T extends Comparable<T>> ComparableLens<T, T> of(LensSpec<T, T> spec) {
-        return () -> spec;
+        return of(null, spec);
     }
     
     

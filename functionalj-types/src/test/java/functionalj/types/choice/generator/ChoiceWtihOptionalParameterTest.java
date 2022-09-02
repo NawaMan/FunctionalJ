@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.TestHelper;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
@@ -23,6 +24,7 @@ public class ChoiceWtihOptionalParameterTest {
             null, 
             false, 
             "__tagged", 
+            Serialize.To.NOTHING,
             emptyList(), 
             asList(new Case("Loggined", null, asList(
                         new CaseParam(
@@ -71,16 +73,16 @@ public class ChoiceWtihOptionalParameterTest {
             + "    }\n"
             + "    \n"
             + "    \n"
-            + "    public static final LoginStatusLens<LoginStatus> theLoginStatus = new LoginStatusLens<>(LensSpec.of(LoginStatus.class));\n"
+            + "    public static final LoginStatusLens<LoginStatus> theLoginStatus = new LoginStatusLens<>(\"theLoginStatus\", LensSpec.of(LoginStatus.class));\n"
             + "    public static final LoginStatusLens<LoginStatus> eachLoginStatus = theLoginStatus;\n"
             + "    public static class LoginStatusLens<HOST> extends ObjectLensImpl<HOST, LoginStatus> {\n"
             + "\n"
             + "        public final BooleanAccessPrimitive<LoginStatus> isLoggined = LoginStatus::isLoggined;\n"
             + "        public final BooleanAccessPrimitive<LoginStatus> isLoggedOut = LoginStatus::isLoggedOut;\n"
-            + "        public final ResultAccess<HOST, Loggined, Loggined.LogginedLens<HOST>> asLoggined = createSubResultLens(LoginStatus::asLoggined, (functionalj.lens.core.WriteLens<LoginStatus,Result<Loggined>>)null, Loggined.LogginedLens::new);\n"
-            + "        public final ResultAccess<HOST, LoggedOut, LoggedOut.LoggedOutLens<HOST>> asLoggedOut = createSubResultLens(LoginStatus::asLoggedOut, (functionalj.lens.core.WriteLens<LoginStatus,Result<LoggedOut>>)null, LoggedOut.LoggedOutLens::new);\n"
-            + "        public LoginStatusLens(LensSpec<HOST, LoginStatus> spec) {\n"
-            + "            super(spec);\n"
+            + "        public final ResultLens.Impl<HOST, Loggined, Loggined.LogginedLens<HOST>> asLoggined = createSubResultLens(\"asLoggined\", LoginStatus::asLoggined, (functionalj.lens.core.WriteLens<LoginStatus,Result<Loggined>>)(h,r)->r.get(), Loggined.LogginedLens::new);\n"
+            + "        public final ResultLens.Impl<HOST, LoggedOut, LoggedOut.LoggedOutLens<HOST>> asLoggedOut = createSubResultLens(\"asLoggedOut\", LoginStatus::asLoggedOut, (functionalj.lens.core.WriteLens<LoginStatus,Result<LoggedOut>>)(h,r)->r.get(), LoggedOut.LoggedOutLens::new);\n"
+            + "        public LoginStatusLens(String name, LensSpec<HOST, LoginStatus> spec) {\n"
+            + "            super(name, spec);\n"
             + "        }\n"
             + "    }\n"
             + "    \n"
@@ -106,7 +108,7 @@ public class ChoiceWtihOptionalParameterTest {
             + "    }\n"
             + "    \n"
             + "    public static final class Loggined extends LoginStatus {\n"
-            + "        public static final Loggined.LogginedLens<Loggined> theLoggined = new Loggined.LogginedLens<>(LensSpec.of(Loggined.class));\n"
+            + "        public static final Loggined.LogginedLens<Loggined> theLoggined = new Loggined.LogginedLens<>(\"theLoggined\", LensSpec.of(Loggined.class));\n"
             + "        public static final Loggined.LogginedLens<Loggined> eachLoggined = theLoggined;\n"
             + "        private Optional<java.lang.Double> wealth;\n"
             + "        private Loggined(Optional<java.lang.Double> wealth) {\n"
@@ -116,16 +118,16 @@ public class ChoiceWtihOptionalParameterTest {
             + "        public Loggined withWealth(Optional<java.lang.Double> wealth) { return new Loggined(wealth); }\n"
             + "        public static class LogginedLens<HOST> extends ObjectLensImpl<HOST, LoginStatus.Loggined> {\n"
             + "            \n"
-            + "            public final OptionalLens<HOST, java.lang.Double, DoubleLens<HOST>> wealth = createSubOptionalLens(LoginStatus.Loggined::wealth, LoginStatus.Loggined::withWealth, DoubleLens::of);\n"
+            + "            public final OptionalLens<HOST, java.lang.Double, DoubleLens<HOST>> wealth = createSubOptionalLens(\"wealth\", LoginStatus.Loggined::wealth, LoginStatus.Loggined::withWealth, DoubleLens::of);\n"
             + "            \n"
-            + "            public LogginedLens(LensSpec<HOST, LoginStatus.Loggined> spec) {\n"
-            + "                super(spec);\n"
+            + "            public LogginedLens(String name, LensSpec<HOST, LoginStatus.Loggined> spec) {\n"
+            + "                super(name, spec);\n"
             + "            }\n"
             + "            \n"
             + "        }\n"
             + "        public java.util.Map<String, Object> __toMap() {\n"
             + "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
-            + "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Loggined\"));\n"
+            + "            map.put(\"__tagged\", $utils.toMapValueObject(\"Loggined\"));\n"
             + "            map.put(\"wealth\", this.wealth);\n"
             + "            return map;\n"
             + "        }\n"
@@ -137,19 +139,19 @@ public class ChoiceWtihOptionalParameterTest {
             + "        }\n"
             + "        public static Loggined caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
             + "            return Loggined(\n"
-            + "                $utils.propertyFromMap(map, __schema__, \"wealth\")\n"
+            + "                    (Optional<java.lang.Double>)$utils.extractPropertyFromMap(Loggined.class, Optional.class, map, __schema__, \"wealth\")\n"
             + "            );\n"
             + "        }\n"
             + "    }\n"
             + "    public static final class LoggedOut extends LoginStatus {\n"
-            + "        public static final LoggedOut.LoggedOutLens<LoggedOut> theLoggedOut = new LoggedOut.LoggedOutLens<>(LensSpec.of(LoggedOut.class));\n"
+            + "        public static final LoggedOut.LoggedOutLens<LoggedOut> theLoggedOut = new LoggedOut.LoggedOutLens<>(\"theLoggedOut\", LensSpec.of(LoggedOut.class));\n"
             + "        public static final LoggedOut.LoggedOutLens<LoggedOut> eachLoggedOut = theLoggedOut;\n"
             + "        private static final LoggedOut instance = new LoggedOut();\n"
             + "        private LoggedOut() {}\n"
             + "        public static class LoggedOutLens<HOST> extends ObjectLensImpl<HOST, LoginStatus.LoggedOut> {\n"
             + "            \n"
-            + "            public LoggedOutLens(LensSpec<HOST, LoginStatus.LoggedOut> spec) {\n"
-            + "                super(spec);\n"
+            + "            public LoggedOutLens(String name, LensSpec<HOST, LoginStatus.LoggedOut> spec) {\n"
+            + "                super(name, spec);\n"
             + "            }\n"
             + "            \n"
             + "        }\n"

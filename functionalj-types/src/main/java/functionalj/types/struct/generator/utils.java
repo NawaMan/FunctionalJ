@@ -78,7 +78,7 @@ class utils {
     }
     
     static String withMethodName(Getter getter) {
-        val name = getter.getName();
+        val name = getter.name();
         return "with" + name.substring(0,1).toUpperCase() + name.substring(1);
     }
     

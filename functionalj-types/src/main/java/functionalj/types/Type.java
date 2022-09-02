@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import functionalj.types.struct.Core;
 import lombok.val;
 
 
@@ -93,6 +92,9 @@ public class Type implements IRequireTypes {
     public static final Type FUNC_LIST = Core.FuncList.type();
     /** FuncMap AbstractType */
     public static final Type FUNC_MAP = Core.FuncMap.type();
+    
+    /** Serialize AbstractType */
+    public static final Type SERIALIZE = Type.of(Serialize.class);
     
     static public class TypeBuilder {
         
@@ -308,7 +310,7 @@ public class Type implements IRequireTypes {
                     return short.class;
                 if (Type.INT.equals(t))
                     return int.class;
-                if (Type.LONG.equals(t))
+                if (Type.LNG.equals(t))
                     return long.class;
                 if (Type.FLT.equals(t))
                     return float.class;

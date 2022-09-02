@@ -33,7 +33,7 @@ public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<
             extends AccessParameterized<HOST, TYPE, SUB, SUBLENS> {
     
     public LensSpec<HOST, TYPE> getSpec();
-    public SUBLENS              createSubLens(LensSpec<HOST, SUB> subSpec);
+    public SUBLENS              createSubLens(String subName, LensSpec<HOST, SUB> subSpec);
     
     @Override
     public default TYPE applyUnsafe(HOST host) throws Exception {
@@ -44,11 +44,11 @@ public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<
     public default SUBLENS createSubAccess(Function<TYPE, SUB> accessToSub) {
         val read = getSpec().getRead().andThen(accessToSub);
         val spec = LensSpec.of(read);
-        return createSubLens(spec);
+        return createSubLens(null, spec);
     }
     
     @Override
     public default SUBLENS createSubAccessFromHost(Function<HOST, SUB> accessToParameter) {
-        return createSubLens(LensSpec.of(accessToParameter));
+        return createSubLens(null, LensSpec.of(accessToParameter));
     }
 }

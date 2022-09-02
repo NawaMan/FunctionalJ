@@ -24,10 +24,12 @@
 package functionalj.functions;
 
 import static functionalj.function.Absent.__;
+import static java.util.stream.Collectors.joining;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,6 +39,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Func;
@@ -46,7 +49,12 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.functions.RegExMatchResult.RegExMatchResultStreamAccess;
+import functionalj.lens.lenses.FuncListAccess;
+import functionalj.lens.lenses.FuncMapAccess;
+import functionalj.lens.lenses.StringAccess;
 import functionalj.list.FuncList;
+import functionalj.map.FuncMap;
 import functionalj.stream.AsStreamPlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
@@ -56,6 +64,8 @@ import lombok.val;
 // TODO - Should only contains methods that return functions or constance of functions
 
 public class StrFuncs {
+    
+    public static Pattern GROUP_NAME_PATTERN = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
     
     @SuppressWarnings("unused")
     private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
@@ -76,6 +86,36 @@ public class StrFuncs {
     
     public static boolean isBlank(String str) {
         return (str == null) || str.isEmpty() || str.trim().isEmpty();
+    }
+    
+    public static String whenEmpty(String str, String elseValue) {
+        return isEmpty(str) ? elseValue : str;
+    }
+    
+    public static String whenBlank(String str, String elseValue) {
+        return isBlank(str) ? elseValue : str;
+    }
+    
+    public static String whenEmpty(String str, Supplier<String> elseSupplier) {
+        return isEmpty(str) ? elseSupplier.get() : str;
+    }
+    
+    public static String whenBlank(String str, Supplier<String> elseSupplier) {
+        return isBlank(str) ? elseSupplier.get() : str;
+    }
+
+    public static Func1<String, String> escapeJava() {
+        return StrFuncs::escapeJava;
+    }
+    public static String escapeJava(String s) {
+        return s.replace("\\", "\\\\")
+                .replace("\t", "\\t")
+                .replace("\b", "\\b")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\f", "\\f")
+                .replace("\'", "\\'")
+                .replace("\"", "\\\"");
     }
     
     /**
@@ -119,6 +159,10 @@ public class StrFuncs {
     }
     public static <I1, I2, I3, I4, I5, I6> Func6<I1, I2, I3, I4, I5, I6, String> concat6() {
         return (i1, i2, i3, i4, i5, i6) -> toStr(i1) + toStr(i2) + toStr(i3) + toStr(i4) + toStr(i5) + toStr(i6);
+    }
+    
+    public static String joinNonNull(String delimiter, String ... parts) {
+        return Stream.of(parts).filter(Objects::nonNull).collect(joining(delimiter));
     }
     
     public static <I> Func1<AsStreamPlus<I>, String> join(Class<I> clz, String delimiter) {
@@ -409,16 +453,20 @@ public class StrFuncs {
         return repeat(prefix, width - str.length()) + str;
     }
     
-    public static <T extends CharSequence> Func1<T, FuncList<String>> grab(String regex) {
-        return strValue -> grab(strValue, regex, 0);
+    public static <TEXT extends CharSequence> FuncListAccess<TEXT, String, StringAccess<TEXT>> grab(String regex) {
+        return grab(regex, -1);
     }
     
-    public static <T extends CharSequence> Func1<T, FuncList<String>> grab(String regex, RegExFlag flags) {
-        return strValue -> grab(strValue, regex, flags);
+    public static <TEXT extends CharSequence> FuncListAccess<TEXT, String, StringAccess<TEXT>> grab(String regex, RegExFlag flags) {
+        return grab(regex, flags);
     }
     
-    public static <T extends CharSequence> Func1<T, FuncList<String>> grab(String regex, int patternFlags) {
-        return strValue -> grab(strValue, regex, patternFlags);
+    public static <TEXT extends CharSequence> FuncListAccess<TEXT, String, StringAccess<TEXT>> grab(String regex, int patternFlags) {
+        return FuncListAccess.of(strValue -> grab(strValue, regex, patternFlags), StringAccess::of);
+    }
+    
+    public static <TEXT extends CharSequence> FuncListAccess<TEXT, String, StringAccess<TEXT>> grab(Pattern pattern) {
+        return FuncListAccess.of(strValue -> grab(strValue, pattern), StringAccess::of);
     }
     
     public static FuncList<String> grab(CharSequence strValue, String regex) {
@@ -429,8 +477,12 @@ public class StrFuncs {
         return grab(strValue, regex, flags.getIntValue());
     }
     
-    public static FuncList<String> grab(CharSequence strValue, String regex, int patternFlags) {
-        val pattern  = Pattern.compile(regex, patternFlags);
+    public static FuncList<String> grab(CharSequence strValue, String regex, int flags) {
+        val pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
+        return grab(strValue, pattern);
+    }
+    
+    public static FuncList<String> grab(CharSequence strValue, Pattern pattern) {
         return FuncList.from(FuncList.from(()->{
             val matcher  = pattern.matcher(strValue);
             try (val iterator = createMatchIterator(matcher)) {
@@ -457,14 +509,17 @@ public class StrFuncs {
         };
     }
     
-    public static Func1<CharSequence, RegExMatchResultStream> matches(String regex) {
-        return str -> matches(str, regex, -1);
+    public static <TEXT extends CharSequence> RegExMatchResultStreamAccess<TEXT> matches(String regex) {
+        return matches(regex, -1);
     }
-    public static Func1<CharSequence, RegExMatchResultStream> matches(String regex, RegExFlag flags) {
-        return str -> matches(str, regex, flags.getIntValue());
+    public static <TEXT extends CharSequence> RegExMatchResultStreamAccess<TEXT> matches(String regex, RegExFlag flags) {
+        return matches(regex, flags.getIntValue());
     }
-    public static Func1<CharSequence, RegExMatchResultStream> matches(String regex, int flags) {
-        return str -> matches(str, regex, flags);
+    public static <TEXT extends CharSequence> RegExMatchResultStreamAccess<TEXT> matches(String regex, int flags) {
+        return new RegExMatchResultStreamAccess<>(str -> matches(str, regex, -1));
+    }
+    public static <TEXT extends CharSequence> RegExMatchResultStreamAccess<TEXT> matches(Pattern pattern) {
+        return new RegExMatchResultStreamAccess<>(str -> matches(str, pattern));
     }
     public static RegExMatchResultStream matches(CharSequence str, String regex) {
         return matches(str, regex, -1);
@@ -477,6 +532,12 @@ public class StrFuncs {
             return RegExMatchResultStream.empty;
         
         val pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
+        return matches(str, pattern);
+    }
+    public static RegExMatchResultStream matches(CharSequence str, Pattern pattern) {
+        if (str == null || (str.length() == 0))
+            return RegExMatchResultStream.empty;
+        
         val matcher = pattern.matcher(str);
         val source  = Func.lazy(()->str.toString());
         val index   = new AtomicInteger();
@@ -491,34 +552,98 @@ public class StrFuncs {
                     }
                     @Override
                     public RegExMatchResult next() {
-                        return new RegExMatchResult(source, pattern, index.get(), matcher.toMatchResult());
+                        return new RegExMatchResult(source, pattern, index.getAndIncrement(), matcher.toMatchResult());
                     }
                 };
             }
         };
         return RegExMatchResultStream.from(StreamSupport.stream(iterable.spliterator(), false));
     }
+    
+    /**
+     * Create a string using the given template and the replacer.
+     * 
+     * The replacement will be done by the name of the capture group denotated by -- "$" for example "$name". 
+     * 
+     * Examples:
+     * <ol>
+     * <li>assertEquals("--hello--there-$SS-",  template("--$Hello--$There-$$SS-",  str -> str.toLowerCase()));</li>
+     * <li>assertEquals("--hello--there-$$SS-", template("--$Hello--$There-$$$SS-", str -> str.toLowerCase()));</li>
+     * <li>assertEquals("--hello--there-$0S-",  template("--$Hello--$There-$0S-",   str -> str.toLowerCase()))</li>
+     * </ol>
+     **/
     public static String template(String str, Func1<String, Object> replacer) {
         return template((CharSequence)str, replacer);
     }
+    
     public static String template(CharSequence str, Func1<String, Object> replacer) {
-        if (str == null)
-            return null;
         if (str == null || (str.length() == 0))
             return "";
         
         StringBuffer buffer = new StringBuffer();
-        val flags   = 0;
-        val pattern = Pattern.compile("\\$[a-zA-Z0-9_]++", flags);
+        val pattern = Pattern.compile("(?<!\\$)\\$\\{(?<capture>[a-zA-Z][a-zA-Z0-9_]+[ ]*)\\}");
         val matcher = pattern.matcher(str);
         while (matcher.find()) {
-            val group       = matcher.group();
-            val name        = group.substring(1, group.length());
+            val capture     = matcher.group("capture");
+            val name        = capture.trim();
             val replacement = String.valueOf(replacer.apply(name));
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);
-        return buffer.toString();
+        return buffer.toString()
+                    .replace("$$", "$");
+    }
+    
+    
+    public static <TEXT extends CharSequence> 
+            FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>> capture(String regex) {
+        return capture(regex, -1);
+    }
+    
+    public static <TEXT extends CharSequence> 
+            FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>> capture(String regex, RegExFlag flags) {
+        return capture(regex, flags.getIntValue());
+    }
+    
+    public static <TEXT extends CharSequence> 
+            FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>> capture(String regex, int flags) {
+        val pattern = (flags < 0) ? Pattern.compile(regex.toString()) : Pattern.compile(regex.toString(), flags);
+        return capture(pattern);
+    }
+    
+    public static <TEXT extends CharSequence> 
+            FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>> capture(Pattern pattern) {
+        return FuncMapAccess.of(strValue -> capture(strValue, pattern), StringAccess::of, StringAccess::of);
+    }
+    
+    public static Map<String, String> capture(CharSequence text, String regex) {
+        return capture(text, regex, -1);
+    }
+    
+    public static Map<String, String> capture(CharSequence text, String regex, RegExFlag flags) {
+        return capture(text, regex, flags.getIntValue());
+    }
+    
+    public static Map<String, String> capture(CharSequence text, String regex, int flags) {
+        if (text == null || (text.length() == 0))
+            return FuncMap.empty();
+        
+        val pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
+        return capture(text, pattern);
+    }
+    
+    public static Map<String, String> capture(CharSequence text, Pattern pattern) {
+        if (text == null || (text.length() == 0))
+            return FuncMap.empty();
+        
+        val matcher = pattern.matcher(text);
+        if (!matcher.find())
+            return FuncMap.empty();
+        
+        return grab(pattern.pattern(), GROUP_NAME_PATTERN)
+                .map  (each -> each.substring(3, each.length() - 1))
+                .toMap(name -> name,
+                       name -> matcher.group(name));
     }
     
 }

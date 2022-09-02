@@ -90,7 +90,7 @@ public class NonRequireFieldTest {
                 + "\n"
                 + "public class Data implements Definitions.DataDef,IStruct,Pipeable<Data> {\n"
                 + "    \n"
-                + "    public static final Data.DataLens<Data> theData = new Data.DataLens<>(LensSpec.of(Data.class));\n"
+                + "    public static final Data.DataLens<Data> theData = new Data.DataLens<>(\"theData\", LensSpec.of(Data.class));\n"
                 + "    public static final Data.DataLens<Data> eachData = theData;\n"
                 + "    public final int a;\n"
                 + "    public final boolean b;\n"
@@ -199,21 +199,21 @@ public class NonRequireFieldTest {
                 + "    public static Data fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
                 + "        Data obj = new Data(\n"
-                + "                    (int)$utils.fromMapValue(map.get(\"a\"), $schema.get(\"a\")),\n"
-                + "                    (boolean)$utils.fromMapValue(map.get(\"b\"), $schema.get(\"b\")),\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"c\"), $schema.get(\"c\")),\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"d\"), $schema.get(\"d\")),\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"e\"), $schema.get(\"e\"))\n"
+                + "                    (int)$utils.extractPropertyFromMap(Data.class, int.class, map, $schema, \"a\"),\n"
+                + "                    (boolean)$utils.extractPropertyFromMap(Data.class, boolean.class, map, $schema, \"b\"),\n"
+                + "                    (String)$utils.extractPropertyFromMap(Data.class, String.class, map, $schema, \"c\"),\n"
+                + "                    (String)$utils.extractPropertyFromMap(Data.class, String.class, map, $schema, \"d\"),\n"
+                + "                    (String)$utils.extractPropertyFromMap(Data.class, String.class, map, $schema, \"e\")\n"
                 + "                );\n"
                 + "        return obj;\n"
                 + "    }\n"
                 + "    public Map<String, Object> __toMap() {\n"
                 + "        Map<String, Object> map = new HashMap<>();\n"
-                + "        map.put(\"a\", functionalj.types.IStruct.$utils.toMapValueObject(a));\n"
-                + "        map.put(\"b\", functionalj.types.IStruct.$utils.toMapValueObject(b));\n"
-                + "        map.put(\"c\", functionalj.types.IStruct.$utils.toMapValueObject(c));\n"
-                + "        map.put(\"d\", functionalj.types.IStruct.$utils.toMapValueObject(d));\n"
-                + "        map.put(\"e\", functionalj.types.IStruct.$utils.toMapValueObject(e));\n"
+                + "        map.put(\"a\", $utils.toMapValueObject(a));\n"
+                + "        map.put(\"b\", $utils.toMapValueObject(b));\n"
+                + "        map.put(\"c\", $utils.toMapValueObject(c));\n"
+                + "        map.put(\"d\", $utils.toMapValueObject(d));\n"
+                + "        map.put(\"e\", $utils.toMapValueObject(e));\n"
                 + "        return map;\n"
                 + "    }\n"
                 + "    public Map<String, Getter> __getSchema() {\n"
@@ -240,14 +240,14 @@ public class NonRequireFieldTest {
                 + "    \n"
                 + "    public static class DataLens<HOST> extends ObjectLensImpl<HOST, Data> {\n"
                 + "        \n"
-                + "        public final IntegerLens<HOST> a = createSubLensInt(Data::a, Data::withA);\n"
-                + "        public final BooleanLens<HOST> b = createSubLensBoolean(Data::b, Data::withB);\n"
-                + "        public final StringLens<HOST> c = createSubLens(Data::c, Data::withC, StringLens::of);\n"
-                + "        public final StringLens<HOST> d = createSubLens(Data::d, Data::withD, StringLens::of);\n"
-                + "        public final StringLens<HOST> e = createSubLens(Data::e, Data::withE, StringLens::of);\n"
+                + "        public final IntegerLens<HOST> a = createSubLensInt(\"a\", Data::a, Data::withA);\n"
+                + "        public final BooleanLens<HOST> b = createSubLensBoolean(\"b\", Data::b, Data::withB);\n"
+                + "        public final StringLens<HOST> c = createSubLens(\"c\", Data::c, Data::withC, StringLens::of);\n"
+                + "        public final StringLens<HOST> d = createSubLens(\"d\", Data::d, Data::withD, StringLens::of);\n"
+                + "        public final StringLens<HOST> e = createSubLens(\"e\", Data::e, Data::withE, StringLens::of);\n"
                 + "        \n"
-                + "        public DataLens(LensSpec<HOST, Data> spec) {\n"
-                + "            super(spec);\n"
+                + "        public DataLens(String name, LensSpec<HOST, Data> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "        \n"
                 + "    }\n"
@@ -336,8 +336,9 @@ public class NonRequireFieldTest {
                     null,
                     configures,          // Configurations
                     getters,
+                    emptyList(),
                     emptyList());
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

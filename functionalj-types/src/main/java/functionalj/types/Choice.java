@@ -51,4 +51,7 @@ public @interface Choice {
     /** @return the flag indicating that the fields should be made public - default to true. */
     public boolean publicFields() default false;
     
+    /** @return the target serialization type. */
+    public Serialize.To serialize() default Serialize.To.NOTHING;
+    
 }

@@ -11,6 +11,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -84,14 +85,14 @@ public class BuilderGenerator {
     private GenClass generateGetterInterface(String typeName, List<BuilderInterface> builderInterfaces, int i) {
         val builderInterface = builderInterfaces.get(i);
         val getter           = ((BuilderInterface.BuilderGetter) builderInterface).getter();
-        val getterName       = getter.getName();
-        val getterType       = getter.getType().simpleNameWithGeneric();
+        val getterName       = getter.name();
+        val getterType       = getter.type().simpleNameWithGeneric();
         
         val interfaceName = format("%1$sBuilder_without%2$s", typeName, capitalize(getterName));
         val packageName = sourceSpec.getPackageName();
         val methodType
                 = getterAt(builderInterfaces, i + 1)
-                .map      (nextGetter -> typeName + "Builder_without" + capitalize(nextGetter.getName()))
+                .map      (nextGetter -> typeName + "Builder_without" + capitalize(nextGetter.name()))
                 .orElseGet(()         -> typeName + "Builder_ready");
         
         val param = new GenParam(getterName, new Type(packageName, getterType));
@@ -143,12 +144,12 @@ public class BuilderGenerator {
                 BuilderInterface bc = builderInterfaces.get(n);
                 if (bc instanceof BuilderInterface.BuilderGetter) {
                     val bg = ((BuilderInterface.BuilderGetter) bc).getter();
-                    val bgName = bg.getName();
-                    val bgType = bg.getType().simpleNameWithGeneric();
+                    val bgName = bg.name();
+                    val bgType = bg.type().simpleNameWithGeneric();
                     
                     val methodType
                             = getterAt(builderInterfaces, n + 1)
-                            .map      (nextGetter -> typeName + "Builder_without" + capitalize(nextGetter.getName()))
+                            .map      (nextGetter -> typeName + "Builder_without" + capitalize(nextGetter.name()))
                             .orElseGet(()         -> typeName + "Builder_ready");
                     
                     val mthDef = format("%1$s(%2$s %1$s)", bgName, bgType);
@@ -160,14 +161,14 @@ public class BuilderGenerator {
                         BuilderInterface bcc = builderInterfaces.get(c);
                         if (bcc instanceof BuilderInterface.BuilderGetter) {
                             Getter bgc  = ((BuilderInterface.BuilderGetter)bcc).getter();
-                            String call = bgc.getName() + "(" + bgc.getDefaultValueCode("null") + ").";
+                            String call = bgc.name() + "(" + bgc.getDefaultValueCode("null") + ").";
                             returnLine.append(call);
                         }
                     }
                     val bcc = builderInterfaces.get(n);
                     if (bcc instanceof BuilderInterface.BuilderGetter) {
                         val bgc  = ((BuilderInterface.BuilderGetter)bcc).getter();
-                        val call = bgc.getName() + "(" + bgc.getName() + ")";
+                        val call = bgc.name() + "(" + bgc.name() + ")";
                         returnLine.append(call);
                     } else {
                         returnLine.append("");
@@ -189,7 +190,7 @@ public class BuilderGenerator {
                         val bcc = builderInterfaces.get(c);
                         if (bcc instanceof BuilderInterface.BuilderGetter) {
                             Getter bgc = ((BuilderInterface.BuilderGetter)bcc).getter();
-                            returnLine.append(bgc.getName() + "(");
+                            returnLine.append(bgc.name() + "(");
                             returnLine.append(bgc.getDefaultValueCode("null"));
                             returnLine.append(").");
                         }
@@ -220,7 +221,7 @@ public class BuilderGenerator {
                 // fields
                 emptyList(),
                 // methods
-                asList(new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, sourceSpec.getTargetType(), "build", emptyList(), null)),
+                asList(new GenMethod("build", sourceSpec.getTargetType(), PUBLIC, INSTANCE, MODIFIABLE, emptyList(), null)),
                 // innerClasses
                 emptyList(),
                 // mores
@@ -241,15 +242,16 @@ public class BuilderGenerator {
         val targetClassName = sourceSpec.getTargetClassName();
         val packageName     = sourceSpec.getPackageName();
         val type            = new Type(packageName, targetClassName, "Builder", new String[0]);
-        val builderReady    = new Type(packageName, targetClassName, typeName + "Builder_ready", new String[0]);
-        val implementeds    = asList(builderReady);
+//        val builderReady    = new Type(packageName, targetClassName, typeName + "Builder_ready", new String[0]);
+//        val implementeds    = asList(builderReady);
+        val implementeds = Collections.<Type>emptyList();
         
         val buildMthd = new GenMethod(
-                PUBLIC, INSTANCE, FINAL,
-                // type
-                sourceSpec.getTargetType(),
                 // name
-                "build",
+                "build", // type
+                sourceSpec.getTargetType(), PUBLIC,
+                INSTANCE,
+                FINAL,
                 // params
                 emptyList(),
                 // Body
@@ -289,13 +291,13 @@ public class BuilderGenerator {
         val mthdType = builderMthdType(typeName, secondBuilder, pckgName);
         
         val builderMethod = new GenMethod(
-                PUBLIC, INSTANCE, FINAL,
-                // type
-                mthdType,
                 // name
-                firstBuilder.getName(),
+                firstBuilder.name(), // type
+                mthdType, PUBLIC,
+                INSTANCE,
+                FINAL,
                 // params
-                asList(new GenParam(firstBuilder.getName(), firstBuilder.getType())),
+                asList(new GenParam(firstBuilder.name(), firstBuilder.type())),
                 // body
                 ILines.line(mthdBody));
         
@@ -335,8 +337,8 @@ public class BuilderGenerator {
                     if (builderClass instanceof BuilderInterface.BuilderGetter) {
                         BuilderInterface.BuilderGetter builder = (BuilderInterface.BuilderGetter)builderClass;
                         String line = String.format("return (%1$s %2$s)->{",
-                                builder.getter().getType().simpleNameWithGeneric(packageName),
-                                builder.getter().getName()
+                                builder.getter().type().simpleNameWithGeneric(packageName),
+                                builder.getter().name()
                         );
                         return line;
                     } else {
@@ -348,7 +350,7 @@ public class BuilderGenerator {
         
         val paramList = builderInterfaces.stream()
                 .filter (b -> b instanceof BuilderInterface.BuilderGetter)
-                .map    (b -> ((BuilderInterface.BuilderGetter)b).getter().getName())
+                .map    (b -> ((BuilderInterface.BuilderGetter)b).getter().name())
                 .map    (n -> "        " + n)
                 .collect(toList());
         val params = Stream.concat(
@@ -378,7 +380,7 @@ public class BuilderGenerator {
         Type builderType = null;
         if (secondBuilder instanceof BuilderInterface.BuilderGetter) {
             BuilderInterface.BuilderGetter secondB = (BuilderInterface.BuilderGetter)secondBuilder;
-            builderType = new Type(packageName, typeName + "Builder_without" + capitalize(secondB.getter().getName()));
+            builderType = new Type(packageName, typeName + "Builder_without" + capitalize(secondB.getter().name()));
         } else {
             builderType = new Type(packageName, typeName + "Builder_ready");
         }

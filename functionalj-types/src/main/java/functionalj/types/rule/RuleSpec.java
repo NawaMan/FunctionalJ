@@ -97,6 +97,7 @@ public class RuleSpec {
                 "    public String __dataName()  { return " + toStringLiteral(dataName) + "; }\n" +
                 "    public " + dataTypeGeneric + " __dataValue() { return value(); }\n" +
                 "    public Class<" + dataTypeGeneric + "> __dataType() { return " + dataType + ".class; }\n" +
+                "    public static Class<" + dataTypeGeneric + "> ___dataType() { return " + dataType + ".class; }\n" +
                 "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" +
                 "    public <R extends functionalj.types.IRule<" + dataTypeGeneric + ">> Class<R> __superRule() { \n" +
                 "        return (Class)" + ((superRule == null) ? null : superClass + ".class") + ";\n" +

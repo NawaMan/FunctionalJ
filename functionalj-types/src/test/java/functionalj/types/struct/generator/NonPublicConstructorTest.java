@@ -24,9 +24,11 @@
 package functionalj.types.struct.generator;
 
 import static functionalj.types.TestHelper.assertAsString;
+import static java.util.Collections.emptyList;
 
 import org.junit.Test;
 
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -37,7 +39,7 @@ public class NonPublicConstructorTest {
             "example.functionalj.accesslens", "StructTypeExample", "Person", "example.functionalj.accesslens", null,
             "spec", null,
             new functionalj.types.struct.generator.SourceSpec.Configurations(
-                    true, false, true, true, true, true, true, false, ""),
+                    true, false, true, true, true, true, true, false, "", Serialize.To.NOTHING),
             java.util.Arrays.asList(
                     new functionalj.types.struct.generator.Getter("firstName",
                             new Type("java.lang", null, "String", java.util.Collections.emptyList()), false,
@@ -48,10 +50,11 @@ public class NonPublicConstructorTest {
                     new functionalj.types.struct.generator.Getter("lastName",
                             new Type("java.lang", null, "String", java.util.Collections.emptyList()), false,
                             functionalj.types.DefaultValue.REQUIRED)),
+            emptyList(),
             java.util.Arrays.asList("Person"));
     
     private String generate() {
-        val dataObjSpec = new StructBuilder(spec).build();
+        val dataObjSpec = new StructSpecBuilder(spec).build();
         val generated   = new GenStruct(spec, dataObjSpec).toText();
         return generated;
     }
@@ -87,12 +90,12 @@ public class NonPublicConstructorTest {
             + "\n"
             + "public class Person implements IStruct,Pipeable<Person> {\n"
             + "    \n"
-            + "    public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(LensSpec.of(Person.class));\n"
+            + "    public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(\"thePerson\", LensSpec.of(Person.class));\n"
             + "    public static final Person.PersonLens<Person> eachPerson = thePerson;\n"
             + "    public final String firstName;\n"
             + "    public final String midName;\n"
             + "    public final String lastName;\n"
-            + "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, false, \"\"), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Arrays.asList(\"Person\"));\n"
+            + "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, false, \"\", functionalj.types.Serialize.To.NOTHING), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Collections.emptyList(), java.util.Arrays.asList(\"Person\"));\n"
             + "    \n"
             + "    Person(String firstName, String lastName) {\n"
             + "        this.firstName = $utils.notNull(firstName);\n"
@@ -158,17 +161,17 @@ public class NonPublicConstructorTest {
             + "    public static Person fromMap(Map<String, ? extends Object> map) {\n"
             + "        Map<String, Getter> $schema = getStructSchema();\n"
             + "        Person obj = new Person(\n"
-            + "                    (String)$utils.fromMapValue(map.get(\"firstName\"), $schema.get(\"firstName\")),\n"
-            + "                    (String)$utils.fromMapValue(map.get(\"midName\"), $schema.get(\"midName\")),\n"
-            + "                    (String)$utils.fromMapValue(map.get(\"lastName\"), $schema.get(\"lastName\"))\n"
+            + "                    (String)$utils.extractPropertyFromMap(Person.class, String.class, map, $schema, \"firstName\"),\n"
+            + "                    (String)$utils.extractPropertyFromMap(Person.class, String.class, map, $schema, \"midName\"),\n"
+            + "                    (String)$utils.extractPropertyFromMap(Person.class, String.class, map, $schema, \"lastName\")\n"
             + "                );\n"
             + "        return obj;\n"
             + "    }\n"
             + "    public Map<String, Object> __toMap() {\n"
             + "        Map<String, Object> map = new HashMap<>();\n"
-            + "        map.put(\"firstName\", functionalj.types.IStruct.$utils.toMapValueObject(firstName));\n"
-            + "        map.put(\"midName\", functionalj.types.IStruct.$utils.toMapValueObject(midName));\n"
-            + "        map.put(\"lastName\", functionalj.types.IStruct.$utils.toMapValueObject(lastName));\n"
+            + "        map.put(\"firstName\", $utils.toMapValueObject(firstName));\n"
+            + "        map.put(\"midName\", $utils.toMapValueObject(midName));\n"
+            + "        map.put(\"lastName\", $utils.toMapValueObject(lastName));\n"
             + "        return map;\n"
             + "    }\n"
             + "    public Map<String, Getter> __getSchema() {\n"
@@ -193,12 +196,12 @@ public class NonPublicConstructorTest {
             + "    \n"
             + "    public static class PersonLens<HOST> extends ObjectLensImpl<HOST, Person> {\n"
             + "        \n"
-            + "        public final StringLens<HOST> firstName = createSubLens(Person::firstName, Person::withFirstName, StringLens::of);\n"
-            + "        public final StringLens<HOST> midName = createSubLens(Person::midName, Person::withMidName, StringLens::of);\n"
-            + "        public final StringLens<HOST> lastName = createSubLens(Person::lastName, Person::withLastName, StringLens::of);\n"
+            + "        public final StringLens<HOST> firstName = createSubLens(\"firstName\", Person::firstName, Person::withFirstName, StringLens::of);\n"
+            + "        public final StringLens<HOST> midName = createSubLens(\"midName\", Person::midName, Person::withMidName, StringLens::of);\n"
+            + "        public final StringLens<HOST> lastName = createSubLens(\"lastName\", Person::lastName, Person::withLastName, StringLens::of);\n"
             + "        \n"
-            + "        public PersonLens(LensSpec<HOST, Person> spec) {\n"
-            + "            super(spec);\n"
+            + "        public PersonLens(String name, LensSpec<HOST, Person> spec) {\n"
+            + "            super(name, spec);\n"
             + "        }\n"
             + "        \n"
             + "    }\n"

@@ -23,6 +23,9 @@
 // ============================================================================
 package functionalj.types;
 
+import static java.lang.String.format;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
@@ -38,20 +41,41 @@ import java.time.OffsetTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import functionalj.promise.Promise;
+import functionalj.ref.Ref;
+import functionalj.result.Acceptable;
+import functionalj.result.DerivedResult;
+import functionalj.result.Result;
+import functionalj.result.Value;
 import functionalj.types.choice.ChoiceTypes;
 import functionalj.types.choice.IChoice;
 import functionalj.types.choice.generator.model.CaseParam;
-import functionalj.types.struct.Core;
-import functionalj.types.struct.generator.Getter;
 import lombok.val;
+import nullablej.nullable.IAsNullable;
+import nullablej.nullable.LiveNullable;
+import nullablej.nullable.Nullable;
+import nullablej.nullable.NullableImpl;
 
 
 public interface IData {
@@ -63,8 +87,115 @@ public interface IData {
         return Optional.ofNullable(IData.$utils.fromMap(map, clazz));
     }
     
+    public static Ref<Locale>            localeRef            = Ref.ofValue(Locale.getDefault());
+    public static Ref<DateTimeFormatter> dateTimeFormatterRef = Ref.ofValue(DateTimeFormatter.ISO_DATE_TIME);
+    public static Ref<DateTimeFormatter> dateFormatterRef     = Ref.ofValue(DateTimeFormatter.ISO_DATE);
+    public static Ref<DateTimeFormatter> timeFormatterRef     = Ref.ofValue(DateTimeFormatter.ISO_TIME);
     
+    
+    // TODO - Extract this out so it can be used in other scenarios.
+    @SuppressWarnings("rawtypes")
     public static class $utils {
+        
+        private static final Map<Class<?>, Class<?>> boxedClasses;
+        static {
+            val map = new HashMap<Class<?>, Class<?>>();
+            map.put(boolean.class, Boolean.class);
+            map.put(byte.class,    Byte.class);
+            map.put(char.class,    Character.class);
+            map.put(double.class,  Double.class);
+            map.put(float.class,   Float.class);
+            map.put(int.class,     Integer.class);
+            map.put(long.class,    Long.class);
+            map.put(short.class,   Short.class);
+            boxedClasses = unmodifiableMap(map);
+        }
+        
+        @SuppressWarnings("unused")
+        private static final Set<Class<?>> premitiveClasses;
+        static {
+            val set = new HashSet<Class<?>>();
+            set.add(boolean.class);
+            set.add(char.class);
+            set.add(byte.class);
+            set.add(short.class);
+            set.add(int.class);
+            set.add(long.class);
+            set.add(float.class);
+            set.add(double.class);
+            premitiveClasses = unmodifiableSet(set);
+        }
+        
+        private static final Set<Class<?>> premitiveLikeClasses;
+        static {
+            val set = new HashSet<Class<?>>();
+            set.add(boolean.class);
+            set.add(char.class);
+            set.add(byte.class);
+            set.add(short.class);
+            set.add(int.class);
+            set.add(long.class);
+            set.add(float.class);
+            set.add(double.class);
+            set.add(Boolean.class);
+            set.add(Character.class);
+            set.add(Byte.class);
+            set.add(Short.class);
+            set.add(Integer.class);
+            set.add(Long.class);
+            set.add(Float.class);
+            set.add(Double.class);
+            premitiveLikeClasses = unmodifiableSet(set);
+        }
+        
+        private static final Map<Class, Function> wrapperCreators;
+        static {
+            val map = new HashMap<Class, Function>();
+            map.put(Optional.class,      Optional::ofNullable);
+            map.put(Nullable.class,      Nullable::of);
+            map.put(NullableImpl.class,  Nullable::of);
+            map.put(LiveNullable.class,  Nullable::of);
+            map.put(IAsNullable.class,   Nullable::of);
+            map.put(Result.class,        Result::ofValue);
+            map.put(DerivedResult.class, Result::ofValue);
+            map.put(Value.class,         Value::ofValue);
+            map.put(Promise.class,       Promise::ofValue);
+            map.put(OptionalInt.class, i -> {
+                // TODO - We might want to use $utils function to do this conversion.
+                if (i instanceof OptionalInt) return (OptionalInt)i;
+                if (i instanceof Optional)    return (int)((Optional)i).get();
+                if (i instanceof String)      return OptionalInt.of(Integer.parseInt(((String)i).trim()));
+                if (i instanceof Number)      return OptionalInt.of(((Number)i).intValue());
+                return OptionalInt.of((int)i); 
+            });
+            map.put(OptionalLong.class, i -> {
+                // TODO - We might want to use $utils function to do this conversion.
+                if (i instanceof OptionalLong) return (OptionalLong)i;
+                if (i instanceof Optional)     return (long)((Optional)i).get();
+                if (i instanceof String)       return OptionalLong.of(Long.parseLong(((String)i).trim()));
+                if (i instanceof Number)       return OptionalLong.of(((Number)i).longValue());
+                return OptionalInt.of((int)i); 
+            });
+            map.put(OptionalDouble.class, i -> {
+                // TODO - We might want to use $utils function to do this conversion.
+                if (i instanceof OptionalDouble) return (OptionalDouble)i;
+                if (i instanceof Optional)       return (double)((Optional)i).get();
+                if (i instanceof String)         return OptionalDouble.of(Double.parseDouble(((String)i).trim()));
+                if (i instanceof Number)         return OptionalDouble.of(((Number)i).longValue());
+                return OptionalInt.of((int)i); 
+            });
+            wrapperCreators = unmodifiableMap(map);
+        }
+        
+        private static final Map<Class, Type> wrappedTypes;
+        static {
+            val map = new HashMap<Class, Type>();
+            map.put(OptionalInt.class, Type.INT);
+            map.put(OptionalLong.class, Type.LNG);
+            map.put(OptionalDouble.class, Type.DBL);
+            wrappedTypes = unmodifiableMap(map);
+        }
+        
         
         public static Supplier<Object> defaultValueOf(Type type, DefaultValue defaultValue) {
             return ()->DefaultValue.defaultValue(type, defaultValue);
@@ -76,7 +207,81 @@ public interface IData {
         
         // == To and from Map ==
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        public static <O, D> D extractPropertyFromMap(
+                        Class<O>                        objClzz,
+                        Class<D>                        valueClzz, 
+                        Map<String, ? extends Object>   map,
+                        Map<String, ? extends Property> schema,
+                        String                          fieldName) {
+            return extractPropertyFromMap(true, objClzz, valueClzz, map, schema, fieldName);
+        }
+        
+        @SuppressWarnings("unchecked")
+        public static <O, D> D extractPropertyFromMap(
+                        boolean                         nested,
+                        Class<O>                        objClzz,
+                        Class<D>                        valueClzz, 
+                        Map<String, ? extends Object>   map,
+                        Map<String, ? extends Property> schema,
+                        String                          fieldName) {
+            val valueFromMap   = map.get(fieldName);
+            val getterSpec     = schema.get(fieldName);
+            Object extractedValue = null;
+            try {
+                extractedValue = $utils.fromMapValue(valueFromMap, getterSpec);
+                if (valueClzz.isInstance(extractedValue)) {
+                    return (D)extractedValue;
+                }
+                
+                val boxClass   = boxedClasses.get(valueClzz);
+                val valueClass = extractedValue.getClass();
+                if (boxClass == valueClass) {
+                    return (D)extractedValue;
+                }
+                val wrapperCreator = wrapperCreators.get(valueClzz);
+                if (wrapperCreator != null) {
+                    val wrappedType = Optional.ofNullable(wrappedTypes.get(valueClzz)).orElseGet(()-> getterSpec.type().generics().get(0).getBoundTypes().get(0));
+                    val unwrappedRxtractedValue = fromMapValue(extractedValue, wrappedType, DefaultValue.REQUIRED);
+                    return (D)wrapperCreator.apply(unwrappedRxtractedValue);
+                }
+                
+                if (Acceptable.class.isAssignableFrom(valueClzz) && IRule.class.isAssignableFrom(valueClzz)) {
+                    // TODO - This should be cached
+                    val baseClass  = (Class)valueClzz.getMethod("___dataType").invoke(null);
+                    val acceptable = valueClzz.getMethod("from", baseClass).invoke(null, extractedValue);
+                    return (D)acceptable;
+                }
+                
+                return valueClzz.cast(extractedValue);
+            } catch (Exception exception) {
+                val errMsg = prepareExtractValueErrMsg(objClzz, fieldName, valueFromMap, getterSpec, extractedValue);
+                throw new IllegalArgumentException(errMsg, exception);
+            }
+        }
+        
+        private static <O> String prepareExtractValueErrMsg(
+                        Class<O> objClzz, 
+                        String   fieldName, 
+                        Object   valueFromMap, 
+                        Property propertySpec, 
+                        Object   extractedValue) {
+            val valueFromMapClass   = (valueFromMap   != null) ? valueFromMap  .getClass().getSimpleName() : "void";
+            val extractedValueClass = (extractedValue != null) ? extractedValue.getClass().getSimpleName() : "void";
+            val errorMessage = format(
+                    "Fail to extract field value from map: "
+                    + "class=`%s`, "
+                    + "field=`%s`,"
+                    + "original value=`%s` (%s),"
+                    + "converted value=`%s` (%s),"
+                    + "field spec=`%s`.",
+                    objClzz.getSimpleName(), fieldName, 
+                    valueFromMap, valueFromMapClass,
+                    extractedValue, extractedValueClass,
+                    propertySpec);
+            return errorMessage;
+        }
+        
+        @SuppressWarnings("unchecked")
         public static <D extends IData> D fromMap(Map<String, Object> map, Class<D> clazz) {
             if (IStruct.class.isAssignableFrom(clazz))
                 return (D)IStruct.fromMap(map, (Class<IStruct>)clazz);
@@ -86,12 +291,61 @@ public interface IData {
             throw new DataConversionException(clazz);
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
         public static Object toMapValueObject(Object data) {
+            return toMapValueObject(true, data);
+        }
+        
+        @SuppressWarnings("unchecked")
+        public static Object toMapValueObject(boolean nested, Object data) {
             if (data instanceof List) {
                 return ((List)data).stream()
                         .map(IData.$utils::toMapValueObject)
                         .collect(toList());
+            }
+            // TODO - Put some of these in a map as oppose to linear search
+            
+            if (data instanceof Optional) {
+                val optional = ((Optional)data).orElse(null);
+                return IData.$utils.toMapValueObject(optional);
+            }
+            
+            if (data instanceof OptionalInt) {
+                val optional = ((OptionalInt)data);
+                return optional.isPresent() ? optional.getAsInt() : null;
+            }
+            
+            if (data instanceof OptionalLong) {
+                val optional = ((OptionalLong)data);
+                return optional.isPresent() ? optional.getAsLong() : null;
+            }
+            
+            if (data instanceof OptionalDouble) {
+                val optional = ((OptionalDouble)data);
+                return optional.isPresent() ? optional.getAsDouble() : null;
+            }
+            
+            if (data instanceof Value) {
+                // Invalid value cannot be serialized.
+                return ((Value)data).get();
+            }
+            if (data instanceof Nullable) {
+                // Invalid value cannot be serialized.
+                return ((Nullable)data).get();
+            }
+            if (data instanceof TemporalAccessor) {
+                val temporal = (TemporalAccessor)data;
+                // TODO - Include Locale
+                // TODO - Add more type
+                if ((data instanceof LocalDate) || (data instanceof ChronoLocalDate)) {
+                    return dateFormatterRef.get().format(temporal);
+                }
+                if ((data instanceof LocalTime) || (data instanceof OffsetTime)) {
+                    return timeFormatterRef.get().format(temporal);
+                }
+                if ((data instanceof LocalDateTime) || (data instanceof OffsetDateTime) || (data instanceof ZonedDateTime) || (data instanceof ChronoLocalDateTime)) {
+                    return dateTimeFormatterRef.get().format(temporal);
+                }
+                return dateTimeFormatterRef.get().format((TemporalAccessor)data);
             }
             
             return (data instanceof IData)
@@ -99,7 +353,7 @@ public interface IData {
                     : data;
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         public static <T> T fromMapValue(
                 Object           obj,
                 Class<T>         clzz,
@@ -114,9 +368,24 @@ public interface IData {
                 return (T)IChoice.fromMap((Map)obj, (Class)clzz);
             
             if (obj != null) {
+                if (premitiveLikeClasses.contains(clzz)) {
+                    if ((clzz == char.class) || (clzz == Character.class)) {
+                        if (obj instanceof Integer) {
+                            obj = (char)((Integer)obj).intValue();
+                            return (T)obj;
+                        } else  if ((obj instanceof String) && (((String)obj).length() == 1)) {
+                            obj = ((String)obj).charAt(0);
+                            return (T)obj;
+                        }
+                    }
+                    if (!(obj instanceof String)) {
+                        return (T)obj;
+                    }
+                }
                 if (obj instanceof String) {
                     return extractFromStringValue(obj, clzz);
                 }
+                
                 // The value is sorted of a number so we try it as a timestamp.
                 if ((obj instanceof Byte) 
                  || (obj instanceof Short) 
@@ -164,6 +433,7 @@ public interface IData {
                 return (T)((String)obj).getBytes();
             }
             
+            // TODO ... this can be done with Hashtable.
             // Byte, Short, Integer, Long, Float, Double.
             if (byte.class.isAssignableFrom(clzz) || Byte.class.isAssignableFrom(clzz)) {
                 return (T)Byte.valueOf((String)obj);
@@ -183,6 +453,9 @@ public interface IData {
             if (double.class.isAssignableFrom(clzz) || Double.class.isAssignableFrom(clzz)) {
                 return (T)Double.valueOf((String)obj);
             }
+            if (boolean.class.isAssignableFrom(clzz) || Boolean.class.isAssignableFrom(clzz)) {
+                return (T)Boolean.valueOf(((String)obj).toLowerCase());
+            }
             
             // BigDecimal, BigInteger
             if (BigDecimal.class.isAssignableFrom(clzz)) {
@@ -193,6 +466,7 @@ public interface IData {
             }
             
             // UUID
+            // TODO - Final
             if (UUID.class.isAssignableFrom(clzz)) {
                 return (T)UUID.fromString((String)obj);
             }
@@ -206,6 +480,8 @@ public interface IData {
                 }
             }
             
+            // String of int
+            // TODO - Improve this.
             String str = (String)obj;
             if (str.matches("^[0-9]+$")) {
                 val seconds = Long.parseLong(str);
@@ -228,49 +504,65 @@ public interface IData {
                 }
             }
             
+            // TODO - Use the right pattern
             // Date time
-            if (Duration.class.isAssignableFrom(clzz)) {
-                return (T)Duration.parse((String)obj);
+            if (TemporalAmount.class.isAssignableFrom(clzz)) {
+                // TODO - Final class can be found with HASHMAP
+                //  - Duration
+                //  - Period
+                if (Duration.class.isAssignableFrom(clzz)) {
+                    return (T)Duration.parse((String)obj);
+                }
+                if (Period.class.isAssignableFrom(clzz)) {
+                    return (T)Period.parse((String)obj);
+                }
             }
-            if (Instant.class.isAssignableFrom(clzz)) {
-                return (T)Instant.parse((String)obj);
-            }
-            if (LocalDate.class.isAssignableFrom(clzz)) {
-                return (T)LocalDate.parse((String)obj);
-            }
-            if (LocalDateTime.class.isAssignableFrom(clzz)) {
-                return (T)LocalDateTime.parse((String)obj);
-            }
-            if (LocalTime.class.isAssignableFrom(clzz)) {
-                return (T)LocalTime.parse((String)obj);
-            }
-            if (OffsetDateTime.class.isAssignableFrom(clzz)) {
-                return (T)OffsetDateTime.parse((String)obj);
-            }
-            if (OffsetTime.class.isAssignableFrom(clzz)) {
-                return (T)OffsetTime.parse((String)obj);
-            }
-            if (Period.class.isAssignableFrom(clzz)) {
-                return (T)Period.parse((String)obj);
-            }
-            if (ZonedDateTime.class.isAssignableFrom(clzz)) {
-                return (T)ZonedDateTime.parse((String)obj);
+            if (Temporal.class.isAssignableFrom(clzz)) {
+                // TODO - Final class can be found with HASHMAP
+                //  - Instant
+                //  - LocalDate
+                //  - LocalDateTime
+                //  - LocalTime
+                //  - OffsetDateTime
+                //  - OffsetTime
+                //  - ZonedDateTime
+                if (Instant.class.isAssignableFrom(clzz)) {
+                    return (T)Instant.parse((String)obj);
+                }
+                if (LocalDate.class.isAssignableFrom(clzz)) {
+                    return (T)LocalDate.parse((String)obj, dateFormatterRef.get());
+                }
+                if (LocalDateTime.class.isAssignableFrom(clzz)) {
+                    return (T)LocalDateTime.parse((String)obj, dateTimeFormatterRef.get());
+                }
+                if (LocalTime.class.isAssignableFrom(clzz)) {
+                    return (T)LocalTime.parse((String)obj, timeFormatterRef.get());
+                }
+                if (OffsetDateTime.class.isAssignableFrom(clzz)) {
+                    return (T)OffsetDateTime.parse((String)obj, dateTimeFormatterRef.get());
+                }
+                if (OffsetTime.class.isAssignableFrom(clzz)) {
+                    return (T)OffsetTime.parse((String)obj, timeFormatterRef.get());
+                }
+                if (ZonedDateTime.class.isAssignableFrom(clzz)) {
+                    return (T)ZonedDateTime.parse((String)obj, dateTimeFormatterRef.get());
+                }
             }
             return (T)obj;
         }
         
-        public static <T> T fromMapValue(Object obj, Getter getter) {
-            val type         = getter.getType();
-            val defaultValue = getter.getDefaultTo();
+        public static <T> T fromMapValue(Object obj, Property property) {
+            val type         = property.type();
+            val defaultValue = property.defValue();
             
             return fromMapValue(obj, type, defaultValue);
         }
         
-        @SuppressWarnings({ "rawtypes", "unchecked" })
+        @SuppressWarnings("unchecked")
         public static <T> T fromMapValue(Object obj, CaseParam caseParam) {
-            val   type         = caseParam.type;
+            val   type         = caseParam.type();
             Class clzz         = type.toClass();
-            val   defaultValue = caseParam.defValue;
+            val   defaultValue = caseParam.defValue();
             
             if ((obj instanceof List) && type.isList()) {
                 return IStruct.$utils.fromMapValue(obj, type, defaultValue);
@@ -279,16 +571,7 @@ public interface IData {
             return (T)IData.$utils.fromMapValue(obj, clzz, defaultValue, ()->caseParam.defaultValue());
         }
         
-        public static <T> T propertyFromMap(Map<String, ? extends Object> map, Map<String, CaseParam> schema, String name) {
-            val caseParam = schema.get(name);
-            if (caseParam == null)
-                throw new IllegalArgumentException("Unknown property: " + name);
-            
-            val rawValue = map.get(name);
-            return fromMapValue(rawValue, caseParam);
-        }
-        
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         public static <T> T fromMapValue(Object obj, Type type, DefaultValue defaultValue) {
             if ((obj instanceof List) && (type.isList() || type.isFuncList())) {
                 return (T)fromListValue((List)obj, type);
@@ -297,11 +580,12 @@ public interface IData {
                 return (T)fromMapValue((Map)obj, type);
             }
             
-            Class<T> clzz = type.toClass();
-            return IData.$utils.fromMapValue(obj, clzz, defaultValue, ()-> DefaultValue.defaultValue(type, defaultValue));
+            Class<T>         clzz                 = type.toClass();
+            Supplier<Object> defaultValueSupplier = ()-> DefaultValue.defaultValue(type, defaultValue);
+            return IData.$utils.fromMapValue(obj, clzz, defaultValue, defaultValueSupplier);
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         private static Map fromMapValue(Map obj, Type type) {
             val keyType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
             val valType = ((type.generics().size() > 1) ? type.generics().get(1).toType() : Type.OBJECT);
@@ -326,7 +610,7 @@ public interface IData {
             return map;
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         private static Object fromValue(Object obj, Type type) {
             if (obj == null)
                 return null;
@@ -354,7 +638,7 @@ public interface IData {
             }
             return clazz.cast(obj);
         }
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings("unchecked")
         private static List fromListValue(List obj, Type type) {
             val elementType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
             List list = (List)(obj).stream()

@@ -66,6 +66,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
+import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
@@ -3946,6 +3947,25 @@ public class FuncListTest {
                     + "}",
                     toString);
         });
+    }
+    
+    // == Test String RegEx ==
+    
+    @Test
+    public void testMatch() {
+        assertAsString("[#{Hello}, #{Here}, #{Hello}, #{There}]",
+                        FuncList.of("--#{Hello}--#{Here}--", "--#{Hello}--#{There}--")
+                            .flatMap(theString.matches("#\\{[a-zA-Z0-9$_]+\\}").texts().toList()));
+    }
+    @Test
+    public void testGrab() {
+        assertAsString("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]",
+                        FuncList.of("1 2 3 4 5 6 7 8 9 10 11").flatMap(theString.grab("[0-9]+")));
+    }
+    @Test
+    public void testCapture() {
+        val pattern = Pattern.compile("(?<key>[^:]+): (?<value>.*)");
+        assertAsString("[{value:Nawa, key:name}]", FuncList.of("name: Nawa").map(theString.capture(pattern)));
     }
     
 }

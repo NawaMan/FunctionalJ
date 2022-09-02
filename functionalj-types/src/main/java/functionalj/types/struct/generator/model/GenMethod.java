@@ -31,9 +31,10 @@ import static java.util.stream.Collectors.joining;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
+import functionalj.types.Generic;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.IGenerateDefinition;
 import functionalj.types.struct.generator.ILines;
@@ -55,30 +56,38 @@ import lombok.val;
 @EqualsAndHashCode(callSuper=false)
 public class GenMethod implements IGenerateDefinition {
     
-    private Accessibility  accessibility;
-    private Scope          scope;
-    private Modifiability  modifiability;
-    private Type           type;
-    private String         name;
-    private List<GenParam> params;
-    private ILines         body;
-    private List<Type>     usedTypes;
-    private List<Type>     exceptions;
-    private boolean        isVarAgrs;
+    private final String         name;
+    private final Type           type;
+    private final Accessibility  accessibility;
+    private final Scope          scope;
+    private final Modifiability  modifiability;
+    private final List<GenParam> params;
+    private final List<Generic>  generics;
+    private final boolean        isAbstract;
+    private final boolean        isVarAgrs;
+    private final ILines         body;
+    private final List<Type>     usedTypes;
+    private final List<Type>     exceptions;
     
     /**
      * Constructor a GenMethod.
+     * @param name           the name of the method.
+     * @param type           the method return type.
      * @param accessibility  the method  accessibility.
      * @param scope          the method score.
      * @param modifiability  the method score.
-     * @param type           the method return type.
-     * @param name           the name of the method.
      * @param params         the parameters if the method.
      * @param body           the method body.
      */
-    public GenMethod(Accessibility accessibility, Scope scope, Modifiability modifiability, Type type, String name,
-            List<GenParam> params, ILines body) {
-        this(accessibility, scope, modifiability, type, name, params, body, emptyList(), emptyList(), false);
+    public GenMethod(
+                String         name, 
+                Type           type, 
+                Accessibility  accessibility, 
+                Scope          scope, 
+                Modifiability  modifiability, 
+                List<GenParam> params, 
+                ILines         body) {
+        this(name, type, accessibility, scope, modifiability, params, emptyList(), false, false, body, emptyList(), emptyList());
     }
     
     @Override
@@ -117,13 +126,18 @@ public class GenMethod implements IGenerateDefinition {
             = isVarAgrs
             ? paramDefs.replaceAll("([^ ]+)$", "... $1")
             : paramDefs;
+        val toGeneric = (Function<Generic, String>)(generic -> {
+            val bounds = generic.boundTypes.stream().map(Type::fullName).collect(joining(" & "));
+            return generic.name + ((bounds.isEmpty() || bounds.equals(Type.OBJECT.fullName())) ? "" : (" extends " + bounds));
+        });
+        val genericDef = generics.stream().map(toGeneric).collect(joining(","));
         val throwing = (exceptions == null || exceptions.isEmpty())
                      ? ""
-                     : (" throws " + exceptions.stream().map(type -> type.simpleName()).collect(Collectors.joining(", ")) + " ");
+                     : (" throws " + exceptions.stream().map(type -> type.simpleName()).collect(joining(", ")) + " ");
         val lineEnd = throwing + ((body == null) ? ";" : " {");
         val definition
                 = ILines.oneLineOf(
-                    accessibility, modifiability, scope,
+                    accessibility, modifiability, scope, (genericDef.length() == 0) ? "" : ("<" + genericDef + ">"),
                     type.simpleNameWithGeneric(""), name + "(" + paramDefsToText + ")" + lineEnd);
         return ILines.flatenLines(
                 line(definition),

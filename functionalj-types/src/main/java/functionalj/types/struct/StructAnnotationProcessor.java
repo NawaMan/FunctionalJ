@@ -23,28 +23,29 @@
 // ============================================================================
 package functionalj.types.struct;
 
+import static functionalj.types.choice.generator.Lines.string;
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 
 import functionalj.types.Struct;
-import functionalj.types.struct.generator.StructBuilder;
+import functionalj.types.input.Environment;
+import functionalj.types.input.InputElement;
+import functionalj.types.input.InputType;
+import functionalj.types.struct.generator.StructSpecBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
@@ -56,22 +57,20 @@ import lombok.val;
  */
 public class StructAnnotationProcessor extends AbstractProcessor {
     
-    private Elements elementUtils;
-    private Types    typeUtils;
-    private Filer    filer;
-    private Messager messager;
-    private boolean  hasError;
+    private Environment environment = null;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        elementUtils = processingEnv.getElementUtils();
-        filer        = processingEnv.getFiler();
-        messager     = processingEnv.getMessager();
+        val elementUtils = processingEnv.getElementUtils();
+        val types        = processingEnv.getTypeUtils();
+        val messager     = processingEnv.getMessager();
+        val filer        = processingEnv.getFiler();
+        environment = new Environment(elementUtils, types, messager, filer);
     }
     
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> annotations = new LinkedHashSet<String>();
+        val annotations = new LinkedHashSet<String>();
         annotations.add(Struct.class.getCanonicalName());
         return annotations;
     }
@@ -81,49 +80,96 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
     
-    private void error(Element e, String msg) {
-        hasError = true;
-        messager.printMessage(Diagnostic.Kind.ERROR, msg, e);
-    }
+    private final List<String> logs = new ArrayList<>();
     
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // TODO - Should find a way to warn when a field is not immutable.
-        hasError = false;
-        for (Element element : roundEnv.getElementsAnnotatedWith(Struct.class)) {
-            val input     = new StructSpecInputImpl(element, elementUtils, typeUtils, messager);
-            val strucSpec = new StructSpec(input);
+        boolean hasError = false;
+        val elements
+                = roundEnv
+                .getElementsAnnotatedWith(Struct.class).stream()
+                .map    (environment::element)
+                .collect(toList());
+        for (val element : elements) {
+            val sourceSpecBuilder = new SourceSpecBuilder(element);
+            val packageName       = sourceSpecBuilder.packageName();
+            val specTargetName    = sourceSpecBuilder.targetName();
             
-            val packageName    = strucSpec.packageName();
-            val specTargetName = strucSpec.targetTypeName();
+            prepareLogs(element);
             
             try {
-                val sourceSpec = strucSpec.sourceSpec();
+                val sourceSpec = sourceSpecBuilder.sourceSpec();
                 if (sourceSpec == null)
                     continue;
                 
-                val dataObjSpec = new StructBuilder(sourceSpec).build();
-                val className   = (String)dataObjSpec.type().fullName("");
-                val content     = new GenStruct(sourceSpec, dataObjSpec).lines().collect(joining("\n"));
-                generateCode(element, className, content);
-            } catch (Exception e) {
-                error(element, "Problem generating the class: "
-                                + packageName + "." + specTargetName
-                                + ": "  + e.getMessage()
-                                + ":"   + e.getClass()
-                                + stream(e.getStackTrace())
-                                    .map(st -> "\n    @" + st)
-                                    .collect(joining()));
+                val structSpec = new StructSpecBuilder(sourceSpec).build();
+                val className  = structSpec.targetClassName();
+                val generator  = new GenStruct(sourceSpec, structSpec);
+                val content    = string(generator.lines());
+                val logStrings = logs.stream().map("//  "::concat).collect(Collectors.joining("\n"));
+                element.generateCode(className, content + "\n\n" + logStrings);
+            } catch (Exception exception) {
+                val template = "Problem generating the class: %s.%s: %s:%s%s";
+                val excMsg     = exception.getMessage();
+                val excClass   = exception.getClass();
+                val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
+                val errMsg     = format(template, packageName, specTargetName, excMsg, excClass, stacktrace);
+                
+                exception.printStackTrace(System.err);
+                element.error(errMsg);
             } finally {
-                hasError |= strucSpec.hasError();
+                hasError |= element.hasError();
             }
         }
         return hasError;
     }
     
-    private void generateCode(Element element, String className, String content) throws IOException {
-        try (Writer writer = filer.createSourceFile(className, element).openWriter()) {
-            writer.write(content);
+    private void prepareLogs(InputElement element) {
+        if (element.isTypeElement()) {
+            logs.add("Element is a type: " + element);
+            return;
+        }
+        
+        val method = element.asMethodElement();
+        for (val parameter : method.parameters()) {
+            logs.add("  - Parameter [" + parameter.simpleName() + "] is a type element: " + parameter.isTypeElement());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] toString         : " + parameter);
+            logs.add("  - Parameter [" + parameter.simpleName() + "] simple name      : " + parameter.simpleName());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] asType.toString  : " + parameter.asType());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] asType.kind      : " + parameter.asType().typeKind());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] asType.class     : " + ((InputType.Impl)parameter.asType()).insight());
+            
+            if (parameter.asType().isDeclaredType()) {
+                val type = parameter.asType().asDeclaredType();
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement                     : " + type.asTypeElement());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.simpleName          : " + type.asTypeElement().simpleName());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.packageQualifiedName: " + type.asTypeElement().packageQualifiedName());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.kind                : " + type.asTypeElement().kind());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.modifiers           : " + type.asTypeElement().modifiers());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.enclosingElement    : " + type.asTypeElement().enclosingElement());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.enclosedElements    : " + type.asTypeElement().enclosedElements());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.qualifiedName       : " + type.asTypeElement().qualifiedName());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.packageName         : " + type.asTypeElement().packageName());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.asType              : " + type.asTypeElement().asType());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.getToString         : " + type.asTypeElement().getToString());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.isDeclaredType                    : " + type.isDeclaredType());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.isNoType                          : " + type.isNoType());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeKind                          : " + type.typeKind());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.getToString                       : " + type.getToString());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments                     : " + type.typeArguments());
+                
+                for (int i = 0; i < type.typeArguments().size(); i++) {
+                    val inputType = type.typeArguments().get(i);
+                    if (inputType instanceof InputType.Impl) {
+                        logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments[" + i + "]               : " + ((InputType.Impl)inputType).insight() + ": " + inputType.getClass());
+                    } else {
+                        logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments[" + i + "]: inputType=   : " + inputType.getClass());
+                    }
+                }
+                logs.add("------------------------------------------------");
+            }
+            
         }
     }
     

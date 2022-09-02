@@ -30,12 +30,18 @@ public class LocalDateTimeLens<HOST>
     public final IntegerLens<HOST> second = createSubLens(LocalDateTime::getSecond, LocalDateTime::withSecond, IntegerLens::of);
     public final IntegerLens<HOST> nano   = createSubLens(LocalDateTime::getNano,   LocalDateTime::withNano,   IntegerLens::of);
     
+    public static <H> LocalDateTimeLens<H> of(String name, LensSpec<H, LocalDateTime> spec) {
+        return new LocalDateTimeLens<H>(name, spec);
+    }
     public static <H> LocalDateTimeLens<H> of(LensSpec<H, LocalDateTime> spec) {
         return new LocalDateTimeLens<H>(spec);
     }
     
+    public LocalDateTimeLens(String name, LensSpec<HOST, LocalDateTime> spec) {
+        super(name, spec);
+    }
     public LocalDateTimeLens(LensSpec<HOST, LocalDateTime> spec) {
-        super(spec);
+        this(null, spec);
     }
     
 }

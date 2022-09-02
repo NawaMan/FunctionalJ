@@ -28,6 +28,7 @@ import java.util.function.Function;
 
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
+import functionalj.list.FuncList;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
@@ -68,6 +69,22 @@ public interface StreamPlusAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST,
         val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, TYPEACCESS>() {
             @Override
             public List<TYPE> applyUnsafe(HOST host) throws Exception{
+                val streamPlus = spec.apply(host);
+                return streamPlus.toList();
+            }
+            @Override
+            public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return spec.createSubAccessFromHost(accessToParameter);
+            }
+        };
+        return () -> specWithSub;
+    }
+    
+    public default FuncListAccess<HOST, TYPE, TYPEACCESS> toFuncList() {
+        val spec        = accessParameterized();
+        val specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS>() {
+            @Override
+            public FuncList<TYPE> applyUnsafe(HOST host) throws Exception{
                 val streamPlus = spec.apply(host);
                 return streamPlus.toList();
             }

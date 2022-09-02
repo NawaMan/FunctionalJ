@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import lombok.val;
 
@@ -47,6 +48,7 @@ public class SourceSpec {
     public final String        specObjName;
     public final boolean       publicFields;
     public final String        tagMapKeyName;
+    public final Serialize.To  serialize;
     public final List<Generic> generics;
     public final List<Case>    choices;
     public final List<Method>  methods;
@@ -58,6 +60,7 @@ public class SourceSpec {
                     String        specObjName, 
                     boolean       publicFields, 
                     String        tagMapKeyName,
+                    Serialize.To  serialize,
                     List<Generic> generics, 
                     List<Case>    choices, 
                     List<Method>  methods, 
@@ -67,6 +70,7 @@ public class SourceSpec {
         this.specObjName = specObjName;
         this.publicFields = publicFields;
         this.tagMapKeyName = (tagMapKeyName != null) ? tagMapKeyName : TAG_MAP_KEY_NAME;
+        this.serialize     = (serialize     != null) ? serialize     : Serialize.To.NOTHING;
         this.generics = generics;
         this.choices = choices;
         this.methods = methods;
@@ -74,16 +78,18 @@ public class SourceSpec {
     }
     
     public SourceSpec(String targetName, Type sourceType, List<Case> choices) {
-        this(targetName, sourceType, null, false, null, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
+        this(targetName, sourceType, null, false, null, null, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
     }
     
     public String toCode() {
+        val serializeCode = Serialize.class.getCanonicalName() + ".To." + serialize;
         val params = asList(
                 toStringLiteral(targetName),
                 sourceType.toCode(),
                 toStringLiteral(specObjName),
                 "" + publicFields,
                 toStringLiteral(tagMapKeyName),
+                serializeCode,
                 toListCode     (generics, Generic::toCode),
                 toListCode     (choices,  Case::toCode),
                 toListCode     (methods,  Method::toCode),

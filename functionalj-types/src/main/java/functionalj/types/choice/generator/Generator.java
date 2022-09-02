@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.Method;
@@ -48,7 +49,7 @@ public class Generator implements Lines {
     }
     
     public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
-        this(new SourceSpec(targetName, sourceType, specObjName, publicFields, tagMapKeyName, generics, choices, methods, localTypeWithLens));
+        this(new SourceSpec(targetName, sourceType, specObjName, publicFields, tagMapKeyName, Serialize.To.NOTHING, generics, choices, methods, localTypeWithLens));
     }
     
     public Generator(SourceSpec sourceSpec) {

@@ -111,7 +111,7 @@ public class TargetTypeGeneral implements Lines {
                     return format("            .%1$s(__ -> \"%2$s\")", camelName, choice.name);
                 } else {
                     val template       = templateRange(1, paramCount + 1, ",");
-                    val templateParams = choice.params.stream().map(p -> camelName + "." + p.name).collect(joining(","));
+                    val templateParams = choice.params.stream().map(p -> camelName + "." + p.name()).collect(joining(","));
                     return format("            .%1$s(%1$s -> \"%2$s(\" + String.format(\"%3$s\", %4$s) + \")\")",
                                       camelName, choice.name, template, templateParams);
                 }

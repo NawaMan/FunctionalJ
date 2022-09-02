@@ -25,6 +25,7 @@ package functionalj.lens.lenses;
 
 import java.util.function.ToDoubleFunction;
 
+import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 import lombok.val;
 
@@ -36,8 +37,18 @@ public interface DoubleLens<HOST>
             ToDoubleFunction<HOST>,
             ComparableLens<HOST, Double> {
     
+    
+    public static class Impl<H> extends ComparableLens.Impl<H, Double> implements Named, DoubleLens<H> {
+        public Impl(String name, LensSpec<H, Double> spec) {
+            super(name, spec);
+        }
+    }
+    
+    public static <HOST> DoubleLens<HOST> of(String name, LensSpec<HOST, Double> spec) {
+        return new Impl<>(name, spec);
+    }
     public static <HOST> DoubleLens<HOST> of(LensSpec<HOST, Double> spec) {
-        return () -> spec;
+        return of(null, spec);
     }
     
     @Override

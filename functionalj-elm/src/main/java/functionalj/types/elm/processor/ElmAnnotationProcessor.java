@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
@@ -34,23 +35,19 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
 import functionalj.types.Struct;
 import functionalj.types.choice.ChoiceSpec;
-import functionalj.types.choice.ChoiceSpecInputImpl;
 import functionalj.types.elm.Elm;
-import functionalj.types.struct.StructSpec;
-import functionalj.types.struct.StructSpecInputImpl;
+import functionalj.types.input.Environment;
+import functionalj.types.input.InputElement;
+import functionalj.types.struct.SourceSpecBuilder;
 import lombok.val;
 
 
@@ -60,16 +57,16 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class ElmAnnotationProcessor extends AbstractProcessor {
-
-    private Elements elementUtils;
-    private Types    typeUtils;
-    private Messager messager;
-    private boolean  hasError;
+    
+    private Environment environment = null;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        elementUtils = processingEnv.getElementUtils();
-        messager     = processingEnv.getMessager();
+        val elementUtils = processingEnv.getElementUtils();
+        val typeUtils    = processingEnv.getTypeUtils();
+        val messager     = processingEnv.getMessager();
+        val filer        = processingEnv.getFiler();
+        environment = new Environment(elementUtils, typeUtils, messager, filer);
     }
     
     @Override
@@ -84,39 +81,34 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
     
-    private void error(Element e, String msg) {
-        hasError = true;
-        messager.printMessage(Diagnostic.Kind.ERROR, msg, e);
-    }
-    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        hasError = false;
-        for (Element element : roundEnv.getElementsAnnotatedWith(Elm.class)) {
-            val struct = element.getAnnotation(Struct.class);
+        boolean hasError = false;
+        for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
+            val element = environment.element(javaElement);
+            
+            val struct = element.annotation(Struct.class);
             if (struct != null) {
-                handleStructType(element);
+                hasError = hasError | !handleStructType(element);
                 continue;
             }
             
-            val choice = element.getAnnotation(Choice.class);
+            val choice = element.annotation(Choice.class);
             if (choice != null) {
-                handleChoiceType(element);
+                hasError = hasError | !handleChoiceType(element);
                 continue;
             }
             
-            error(element, "The element must either be a struct or a choice.");
+            element.error("The element must either be a struct or a choice.");
         }
         return hasError;
     }
     
-    private void handleStructType(Element element) {
-        val dummyMessager  = new DummyMessager();
-        val input          = new StructSpecInputImpl(element, elementUtils, typeUtils, dummyMessager);
-        val structSpec     = new StructSpec(input);
+    private boolean handleStructType(InputElement element) {
+        val structSpec     = new SourceSpecBuilder(element);
         val sourceSpec     = structSpec.sourceSpec();
         val packageName    = structSpec.packageName();
-        val specTargetName = structSpec.targetTypeName();
+        val specTargetName = structSpec.targetName();
         try {
             val elmStructSpec = new ElmStructSpec(sourceSpec, element);
             val elmStruct     = new ElmStructBuilder(elmStructSpec);
@@ -129,16 +121,16 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
             val generatedName = generatedPath + fileName;
             
             generateElmCode(generatedPath, generatedCode, generatedName);
-        } catch (Exception e) {
-            error(element, "Problem generating the class: "
+            return true;
+        } catch (Throwable e) {
+            element.error("Problem generating the class: "
                     + packageName + "." + specTargetName
                     + ": "  + e.getMessage()
                     + ":"   + e.getClass()
                     + stream(e.getStackTrace())
                         .map(st -> "\n    @" + st)
                         .collect(joining()));
-        } finally {
-            hasError |= structSpec.hasError();
+            return !element.hasError();
         }
     }
     
@@ -149,10 +141,8 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         Files.write(generatedFile.toPath(), lines);
     }
     
-    private void handleChoiceType(Element element) {
-        val dummyMessager  = new DummyMessager();
-        val input          = new ChoiceSpecInputImpl(element, elementUtils, dummyMessager);
-        val choiceSpec     = new ChoiceSpec(input);
+    private boolean handleChoiceType(InputElement element) {
+        val choiceSpec     = new ChoiceSpec(element);
         val sourceSpec     = choiceSpec.sourceSpec();
         val packageName    = choiceSpec.packageName();
         val specTargetName = choiceSpec.targetName();
@@ -168,16 +158,17 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
             val generatedName = generatedPath + fileName;
             
             generateElmCode(generatedPath, generatedCode, generatedName);
-        } catch (Exception e) {
-            error(element, "Problem generating the class: "
-                    + packageName + "." + specTargetName
-                    + ": "  + e.getMessage()
-                    + ":"   + e.getClass()
-                    + stream(e.getStackTrace())
-                        .map(st -> "\n    @" + st)
-                        .collect(joining()));
-        } finally {
-            hasError |= choiceSpec.hasError();
+            return true;
+        } catch (Exception exception) {
+            val template = "Problem generating the class: %s.%s: %s:%s%s";
+            val excMsg     = exception.getMessage();
+            val excClass   = exception.getClass();
+            val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
+            val errMsg   = format(template, packageName, specTargetName, excMsg, excClass, stacktrace);
+            exception.printStackTrace(System.err);
+            element.error(errMsg);
+            
+            return !element.hasError();
         }
     }
     

@@ -25,6 +25,7 @@ package functionalj.types.struct.generator;
 
 import static functionalj.types.TestHelper.assertAsString;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 import java.util.List;
 
@@ -95,7 +96,7 @@ public class GenerateParentListChildTest {
                 + "\n"
                 + "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n"
                 + "    \n"
-                + "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n"
+                + "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(\"theParent\", LensSpec.of(Parent.class));\n"
                 + "    public static final Parent.ParentLens<Parent> eachParent = theParent;\n"
                 + "    public final List<String> names;\n"
                 + "    public final List<Child> children;\n"
@@ -151,15 +152,15 @@ public class GenerateParentListChildTest {
                 + "    public static Parent fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
                 + "        Parent obj = new Parent(\n"
-                + "                    (List<String>)$utils.fromMapValue(map.get(\"names\"), $schema.get(\"names\")),\n"
-                + "                    (List<Child>)$utils.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n"
+                + "                    (List<String>)$utils.extractPropertyFromMap(Parent.class, List.class, map, $schema, \"names\"),\n"
+                + "                    (List<Child>)$utils.extractPropertyFromMap(Parent.class, List.class, map, $schema, \"children\")\n"
                 + "                );\n"
                 + "        return obj;\n"
                 + "    }\n"
                 + "    public Map<String, Object> __toMap() {\n"
                 + "        Map<String, Object> map = new HashMap<>();\n"
-                + "        map.put(\"names\", functionalj.types.IStruct.$utils.toMapValueObject(names));\n"
-                + "        map.put(\"children\", functionalj.types.IStruct.$utils.toMapValueObject(children));\n"
+                + "        map.put(\"names\", $utils.toMapValueObject(names));\n"
+                + "        map.put(\"children\", $utils.toMapValueObject(children));\n"
                 + "        return map;\n"
                 + "    }\n"
                 + "    public Map<String, Getter> __getSchema() {\n"
@@ -183,11 +184,11 @@ public class GenerateParentListChildTest {
                 + "    \n"
                 + "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n"
                 + "        \n"
-                + "        public final ListLens<HOST, String, StringLens<HOST>> names = createSubListLens(Parent::names, Parent::withNames, StringLens::of);\n"
-                + "        public final ListLens<HOST, Child, Child.ChildLens<HOST>> children = createSubListLens(Parent::children, Parent::withChildren, Child.ChildLens::new);\n"
+                + "        public final ListLens<HOST, String, StringLens<HOST>> names = createSubListLens(\"names\", Parent::names, Parent::withNames, StringLens::of);\n"
+                + "        public final ListLens<HOST, Child, Child.ChildLens<HOST>> children = createSubListLens(\"children\", Parent::children, Parent::withChildren, Child.ChildLens::new);\n"
                 + "        \n"
-                + "        public ParentLens(LensSpec<HOST, Parent> spec) {\n"
-                + "            super(spec);\n"
+                + "        public ParentLens(String name, LensSpec<HOST, Parent> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "        \n"
                 + "    }\n"
@@ -243,8 +244,9 @@ public class GenerateParentListChildTest {
                     null,
                     configures,          // Configurations
                     getters,
+                    emptyList(),
                     asList("Child"));
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

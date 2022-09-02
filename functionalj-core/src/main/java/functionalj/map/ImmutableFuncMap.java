@@ -31,6 +31,7 @@ import java.util.TreeMap;
 import lombok.val;
 
 
+// TODO - Make Native-map-backed ImmutableFuncMap.
 
 public final class ImmutableFuncMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, VALUE> {
     

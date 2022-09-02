@@ -28,16 +28,23 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import functionalj.types.DefaultValue;
+import functionalj.types.Property;
 import functionalj.types.Type;
+import lombok.Value;
+import lombok.With;
 import lombok.val;
+import lombok.experimental.Accessors;
 
 
-public class CaseParam {
+@Value
+@With
+@Accessors(fluent = true)
+public class CaseParam implements Property {
     
-    public final String  name;
-    public final Type    type;
-    public final boolean isNullable;
-    public final DefaultValue defValue;
+    private String       name;
+    private Type         type;
+    private boolean      isNullable;
+    private DefaultValue defValue;
     
     public CaseParam(String name, Type type, boolean isNullable) {
         this(name, type, isNullable, null);
@@ -48,14 +55,6 @@ public class CaseParam {
         this.type = type;
         this.isNullable = isNullable;
         this.defValue = defValue;
-    }
-    
-    public String defaultValueCode() {
-        return (defValue == null) ? "null" : DefaultValue.defaultValueCode(type, defValue);
-    }
-    
-    public Object defaultValue() {
-        return (defValue == null) ? "null" : DefaultValue.defaultValue(type, defValue);
     }
     
     public String toCode() {

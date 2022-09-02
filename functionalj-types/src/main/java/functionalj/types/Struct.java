@@ -70,10 +70,13 @@ public @interface Struct {
     /** @return the flag indicating that the constructor should be made public - default to true -- or package level accessibility will be used. */
     public boolean publicConstructor() default true;
     
-    /** @return the flag indicating that the fields should be made public - default to true. */
+    /** @return the String template for toString or "" (use standard toString generation) - default to "". */
     public String toStringTemplate() default "";
     
-    /** @return the flag indicating that the fields should be made public - default to true. */
+    /** @return the flag indicating that the toString should be generated - default to true. */
     public boolean generateToString() default true;
+    
+    /** @return the target serialization type. */
+    public Serialize.To serialize() default Serialize.To.NOTHING;
     
 }

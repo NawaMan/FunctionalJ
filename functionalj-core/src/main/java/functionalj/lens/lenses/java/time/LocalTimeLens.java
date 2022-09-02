@@ -17,12 +17,18 @@ public class LocalTimeLens<HOST>
     public final IntegerLens<HOST> second = createSubLens(LocalTime::getSecond, LocalTime::withSecond, IntegerLens::of);
     public final IntegerLens<HOST> nano   = createSubLens(LocalTime::getNano,   LocalTime::withNano,   IntegerLens::of);
     
+    public static <H> LocalTimeLens<H> of(String name, LensSpec<H, LocalTime> spec) {
+        return new LocalTimeLens<H>(name, spec);
+    }
     public static <H> LocalTimeLens<H> of(LensSpec<H, LocalTime> spec) {
         return new LocalTimeLens<H>(spec);
     }
     
+    public LocalTimeLens(String name, LensSpec<HOST, LocalTime> spec) {
+        super(name, spec);
+    }
     public LocalTimeLens(LensSpec<HOST, LocalTime> spec) {
-        super(spec);
+        this(null, spec);
     }
     
 }

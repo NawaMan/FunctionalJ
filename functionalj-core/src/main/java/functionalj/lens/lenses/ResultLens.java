@@ -23,10 +23,15 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.functions.StrFuncs.whenBlank;
 import static functionalj.lens.core.LensUtils.createLensSpecParameterized;
+import static java.util.stream.Collectors.joining;
 
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
+import functionalj.function.Named;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
@@ -41,15 +46,48 @@ public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
             ObjectLens<HOST, Result<TYPE>>,
             ResultAccess<HOST, TYPE, SUBLENS> {
     
+    
+    public static class Impl<H, T, SL extends AnyLens<H, T>> extends ObjectLens.Impl<H, Result<T>> implements ResultLens<H, T, SL> {
+        
+        private LensSpecParameterized<H, Result<T>, T, SL> spec;
+        
+        public final SL value() {
+            return get();
+        }
+        
+        public Impl(String name, LensSpecParameterized<H, Result<T>, T, SL> spec) {
+            super(name, spec.getSpec());
+            this.spec = spec;
+        }
+
+        @Override
+        public LensSpecParameterized<H, Result<T>, T, SL> lensSpecWithSub() {
+            return spec;
+        }
+        
+    }
+    
     public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
-        ResultLens<HOST, TYPE, SUBLENS> of(
-            LensSpec<HOST, Result<TYPE>> resultLensSpec,
+        ResultLens.Impl<HOST, TYPE, SUBLENS> of(
+            String                                                   name,
+            LensSpecParameterized<HOST, Result<TYPE>, TYPE, SUBLENS> spec) {
+        return new Impl<>(name, spec);
+    }
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+        ResultLens.Impl<HOST, TYPE, SUBLENS> of(
+            String                                  name,
+            LensSpec<HOST, Result<TYPE>>            resultLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val read  = resultLensSpec.getRead();
         val write = resultLensSpec.getWrite();
         val spec  = createLensSpecParameterized(read, write, subCreator);
-        val nullableLens = (ResultLens<HOST, TYPE, SUBLENS>)()->spec;
-        return nullableLens;
+        return of(name, spec);
+    }
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+        ResultLens.Impl<HOST, TYPE, SUBLENS> of(
+            LensSpec<HOST, Result<TYPE>>            resultLensSpec,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        return of(null, resultLensSpec, subCreator);
     }
     
     
@@ -76,19 +114,18 @@ public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     }
     
     public default SUBLENS get() {
+        Function<HOST, TYPE> read = lensSpec().getRead().andThen(Result::get);
         WriteLens<HOST, TYPE> write = (HOST host, TYPE newValue)->{
             return lensSpec().getWrite().apply(host, Result.valueOf(newValue));
         };
-        LensSpec<HOST, TYPE> subSpec = LensSpec.of(lensSpec().getRead().andThen(Result::get), write);
-        return lensSpecWithSub().createSubLens(subSpec);
+        LensSpec<HOST, TYPE> subSpec = LensSpec.of(read, write);
+        val thisName = (this instanceof Named) ? ((Named)this).name() : null;
+        val lensName = whenBlank(Stream.of(thisName, "value").filter(Objects::nonNull).collect(joining(".")), (String)null);
+        return lensSpecWithSub().createSubLens(lensName, subSpec);
     }
     
     public default SUBLENS value() {
-        WriteLens<HOST, TYPE> write = (HOST host, TYPE newValue)->{
-            return lensSpec().getWrite().apply(host, Result.valueOf(newValue));
-        };
-        LensSpec<HOST, TYPE> subSpec = LensSpec.of(lensSpec().getRead().andThen(Result::get), write);
-        return lensSpecWithSub().createSubLens(subSpec);
+        return get();
     }
 
 }
