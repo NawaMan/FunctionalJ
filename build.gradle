@@ -6,6 +6,7 @@ subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'idea'
     apply plugin: 'maven-publish'
+    apply plugin: 'signing'
     
     sourceCompatibility = theSourceCompatibility
     targetCompatibility = theTargetCompatibility
@@ -37,20 +38,19 @@ subprojects {
     
     // Add Javadoc JAR and sources JAR to artifact
     task javadocJar(type: Jar) {
-        classifier = 'javadoc'
         from javadoc
+        classifier = 'javadoc'
     }
     task sourceJar(type: Jar) {
-        classifier = 'sources'
         from sourceSets.main.allSource
-    }
-    
-    task packageJavadoc(type: Jar) {
-        from javadoc
-        classifier = 'javadoc'
+        classifier = 'sources'
     }
     
     // Building/Publishing
+    
+    ext {
+        isSnapshotVersion = project.version.endsWith("-SNAPSHOT")
+    }
     
     publishing {
         publications {
@@ -58,9 +58,52 @@ subprojects {
                 from components.java
                 
                 artifact sourceJar
-                artifact packageJavadoc
+                artifact javadocJar
+                
+                pom {
+                    name        = 'FunctionalJ.io'
+                    description = 'Brining functional goodies to Java'
+                    url         = 'https://github.com/NawaMan/FunctionalJ'
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url  = 'http://www.opensource.org/licenses/MIT'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id    = 'NawaMan'
+                            name  = 'Nawapunth Manusitthipol'
+                            email = 'nawa@nawaman.net'
+                        }
+                    }
+                    scm {
+                        connection          = 'scm:git:git://github.com/NawaMan/FunctionalJ.git'
+                        developerConnection = 'scm:git:ssh://github.com/NawaMan/FunctionalJ.git'
+                        url                 = 'http://github.com/NawaMan/FunctionalJ/tree/master'
+                    }
+                }
             }
         }
+        
+        repositories {
+            maven {
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
+                }
+                
+                if (isSnapshotVersion) {
+                    url "https://oss.sonatype.org/content/repositories/snapshots/"
+                } else {
+                    url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                }
+            }
+        }
+    }
+    
+    signing {
+        sign publishing.publications.mavenJava
     }
     
     javadoc {
@@ -93,62 +136,6 @@ subprojects {
     archivesBaseName = "${project.name}"
     version          = "${project.version}"
     
-    if (project.gradle.startParameter.taskNames.contains('uploadArchives')) {
-        
-        // Build, sign, and upload
-        uploadArchives {
-            repositories {
-                mavenDeployer {
-                    
-                    // Signing
-                    apply plugin: 'signing'
-                    signing {
-                        sign configurations.archives
-                    }
-                    
-                    // Destination
-                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                        authentication(userName: ossrhUsername, password: ossrhPassword)
-                    }
-                    snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                        authentication(userName: ossrhUsername, password: ossrhPassword)
-                    }
-                    
-                    // Add required metadata to POM
-                    pom.project {
-                        name project.name
-                        packaging 'jar'
-                        description 'Brining functional goodies to Java: ' + project.name
-                        url 'https://github.com/NawaMan/FunctionalJ'
-                        
-                        scm {
-                            connection 'scm:git:git://github.com/NawaMan/FunctionalJ.git'
-                                developerConnection 'scm:git:ssh://github.com/NawaMan/FunctionalJ.git'
-                                url 'http://github.com/NawaMan/FunctionalJ/tree/master'
-                        }
-                        
-                        licenses {
-                            license {
-                                name 'MIT License'
-                                url 'http://www.opensource.org/licenses/MIT'
-                            }
-                        }
-                        
-                        developers {
-                            developer {
-                                id 'NawaMan'
-                                name 'Nawapunth Manusitthipol'
-                                email 'nawa@nawaman.net'
-                                organization 'NawaMan'
-                                organizationUrl 'http://nawaman.net'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
     // == Annotation processor
     
     task compileAnnotationProcessor (type: JavaCompile) {
@@ -160,6 +147,7 @@ subprojects {
         classpath            = sourceSets.main.compileClasspath
     }
     
-    compileJava.dependsOn                             compileAnnotationProcessor
-    publishMavenJavaPublicationToMavenLocal.dependsOn javadocJar
+    compileJava.dependsOn                                  compileAnnotationProcessor
+    publishMavenJavaPublicationToMavenLocal.dependsOn      javadocJar
+    publishMavenJavaPublicationToMavenRepository.dependsOn javadocJar
 }
