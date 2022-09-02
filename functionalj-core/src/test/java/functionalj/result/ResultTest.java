@@ -23,8 +23,8 @@
 // ============================================================================
 package functionalj.result;
 
-import static functionalj.function.Func.f;import static functionalj.TestHelper.assertAsString;
-
+import static functionalj.TestHelper.assertAsString;
+import static functionalj.function.Func.f;
 import static functionalj.result.Result.Do;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,6 +32,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.junit.Test;
 
@@ -126,7 +127,8 @@ public class ResultTest {
         val validator1 = Validator.of((String s) -> s.toUpperCase().equals(s), "Not upper case");
         val validator2 = Validator.of((String s) -> s.matches("^.*[A-Z].*$"),  "No upper case");
         val validator3 = Validator.of((String s) -> !s.isEmpty(),              "Empty");
-        assertEquals("Result:{ Value: (VALUE,[]) }", "" + Result.valueOf("VALUE").validate(validator1, validator2));
+        assertEquals("Result:{ Value: (VALUE,[]) }",
+                     "" + Result.valueOf("VALUE").validate(validator1, validator2));
         assertEquals("Result:{ Value: (value,["
                 +   "functionalj.result.ValidationException: Not upper case, "
                 +   "functionalj.result.ValidationException: No upper case"
@@ -199,6 +201,16 @@ public class ResultTest {
     
     @Test
     public void testResultPeek() {
+        val logs = new ArrayList<String>();
+        Result.valueOf ("One")
+              .peek    (logs::add)
+              .forValue(logs::add);
+        // Two of them are logged ... one from `peek` and another from `forValue`.
+        assertAsString("[One, One]", logs);
+    }
+    
+    @Test
+    public void testResultPipeTo() {
         assertAsString("Result:{ Value: 3 }", 
                 Result.valueOf("One")
                 .pipeTo(
@@ -256,6 +268,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_Exception() {
+        // An exception is threaded as a return null -- or next case.
         val nums = IntFuncList.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
@@ -294,6 +307,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_AllException() {
+        // The first one is used.
         val nums = IntFuncList.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
@@ -358,107 +372,5 @@ public class ResultTest {
         val result = Result.ofNull().whenAbsentGet(() -> { throw new IndexOutOfBoundsException();  });
         assertEquals("Result:{ Exception: java.lang.IndexOutOfBoundsException }", "" + result);
     }
-    
-    // TODO - Fail gradle build - Put this back.
-//    @Test
-//    public void testResultMapFirst_Mix() {
-//        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
-//        val guess
-//                = nums
-//                .map(num -> Result.value(num)
-//                    .mapFirst(
-//                        i -> ((i < 10)   ? i             : null),
-//                        i -> ((i < 100)  ? (i + " TENS") : null)
-//                    ).orElse("UNKNOWN"))
-//                .toList();
-//        assertEquals(
-//                "[0, 1, 8, 27 TENS, 64 TENS, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN]",
-//                guess.toString());
-//    }
-    
-//    
-//    // TODO - Don't know why when we have multiple layer of flatMap, Eclipse hangs. Let deal with this later.
-//    //        Seems to goes away after upgrade Eclipse to 2018-12 ... but no time to deal with it now.
-//    @Test
-//    public void testResultFor() {
-//        val res1 = FuncList.of(1, 2, 3, 4);
-//        
-//        System.out.println(res1.flatMap(s1 -> {
-//            return StreamPlus.infiniteInt().limit(s1).toList().flatMap(s2 -> {
-//                return Result.value(s1 + " + " + s2 + " = " + (s1 + s2)).toList();
-//            });
-//        }));
-//        
-//        System.out.println(For(
-//                                StreamPlus.infiniteInt().limit(3).toList(), 
-//                (s1)         -> StreamPlus.infiniteInt().limit(3).toList(),
-//                (s1, s2)     -> StreamPlus.infiniteInt().limit(3).toList(),
-//                (s1, s2, s3) -> Result.value(s1 + "-" + s2 + "-" + s3).toList()
-//        ));
-//        
-//        System.out.println(For(
-//                StreamPlus.infiniteInt().limit(3).toList(), 
-//                StreamPlus.infiniteInt().limit(3).toList(),
-//                StreamPlus.infiniteInt().limit(3).toList(),
-//                (s1, s2, s3) -> Result.value(s1 + "-" + s2 + "-" + s3).toList()
-//        ));
-//    }
-//    
-//    // -- 2 --
-//    
-//    public static <I1, I2, O> FuncList<O> For(
-//            FuncList<I1>               l1,
-//            Func1<I1, FuncList<I2>>    next1,
-//            Func2<I1, I2, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply(e1).flatMap(e2 -> {
-//                return yield.apply(e1, e2);
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, O> FuncList<O> For(
-//            FuncList<I1>               l1,
-//            FuncList<I2>               next1,
-//            Func2<I1, I2, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.flatMap(e2 -> {
-//                return yield.apply(e1, e2);
-//            });
-//        });
-//    }
-//    
-//    // -- 3 --
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                l1,
-//            Func1<I1, FuncList<I2>>     next1,
-//            Func2<I1, I2, FuncList<I3>> next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply(e1).flatMap(e2 -> {
-//                return next2.apply(e1, e2).flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                   l1,
-//            FuncList<I2>                   next1,
-//            FuncList<I3>                   next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.flatMap(e2 -> {
-//                return next2.flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    
-//    
     
 }

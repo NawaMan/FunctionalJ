@@ -23,12 +23,15 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.functions.StrFuncs.whenBlank;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.function.Func1;
+import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.WriteLens;
 import lombok.val;
@@ -37,8 +40,39 @@ import lombok.val;
 @FunctionalInterface
 public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HOST, DATA> {
     
+    
+    public static class Impl<H, D> implements Named, AnyLens<H, D> {
+        
+        private final String         name;
+        private final LensSpec<H, D> spec;
+        
+        public Impl(String name, LensSpec<H, D> spec) {
+            this.name = name;
+            this.spec = spec;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        @Override
+        public LensSpec<H, D> lensSpec() {
+            return spec;
+        }
+        
+        @Override
+        public String toString() {
+            return whenBlank(name, () -> super.toString());
+        }
+        
+    }
+    
+    
+    public static <T> AnyLens<T, T> of(String name, LensSpec<T, T> spec) {
+        return new Impl<>(name, spec);
+    }
     public static <T> AnyLens<T, T> of(LensSpec<T, T> spec) {
-        return () -> spec;
+        return of(null, spec);
     }
     
     

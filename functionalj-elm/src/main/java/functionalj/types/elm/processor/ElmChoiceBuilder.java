@@ -84,8 +84,8 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private static Function<CaseParam, String> toParamType = ElmChoiceBuilder::toParamType;
     private static String toParamType(CaseParam caseParam) {
-        val paramType    = caseParam.type;
-        val elmParamType = caseParam.isNullable 
+        val paramType    = caseParam.type();
+        val elmParamType = caseParam.isNullable() 
                 ? elmParamType(elmMayBeOfType(paramType))
                 : elmParamType(paramType);
         return elmParamType;
@@ -118,7 +118,7 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private static Function<Case, ILines> toCaseField = ElmChoiceBuilder::toCaseField;
     private static ILines toCaseField(Case choice) {
-        val paramNameList = choice.params.stream().map(param -> param.name).collect(joining(" "));
+        val paramNameList = choice.params.stream().map(param -> param.name()).collect(joining(" "));
         val matchCase     = ILines.line(choice.name + " " + paramNameList + " ->");
         val targetFunc    = ILines.line("Json.Encode.object");
         
@@ -140,8 +140,8 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     private static Function<CaseParam, String> toCaseParam = ElmChoiceBuilder::toCaseParam;
     
     private static String toCaseParam(CaseParam caseParam) {
-        val encoder = encoderNameOf(caseParam.type, caseParam.name, caseParam.isNullable);
-        val name    = caseParam.name;
+        val encoder = encoderNameOf(caseParam.type(), caseParam.name(), caseParam.isNullable());
+        val name    = caseParam.name();
         return "( \"" + name + "\", " + encoder + " )";
     }
     
@@ -190,19 +190,19 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private static Function<CaseParam, ILines> toChoiceParamDecoder = ElmChoiceBuilder::toChoiceParamDecoder;
     private static ILines toChoiceParamDecoder(CaseParam caseParam) {
-        val caseType = caseParam.type;
+        val caseType = caseParam.type();
         val isList   = caseType.isList()
                     || caseType.isFuncList();
         val bareType = (caseType.isNullable() || caseType.isOptional() || isList)
                      ? caseType.generics().get(0).toType()
                      : caseType;
-        val isNullable = caseParam.isNullable
+        val isNullable = caseParam.isNullable()
                       || caseType.isNullable()
                       || caseType.isOptional();
         val reqOrOpt = isNullable
                      ? "Json.Decode.Pipeline.optional"
                      : "Json.Decode.Pipeline.required";
-        val quotedName = "\"" + caseParam.name + "\"";
+        val quotedName = "\"" + caseParam.name() + "\"";
         val decoderType = isList
                         ? "(Json.Decode.list " + decoderNameOf(bareType) + ")"
                         : ( isNullable

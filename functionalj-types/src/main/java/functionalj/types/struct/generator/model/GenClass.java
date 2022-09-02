@@ -36,6 +36,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import functionalj.types.IRequireTypes;
@@ -114,8 +115,8 @@ public class GenClass implements IGenerateDefinition {
         
         this.type         = type;
         this.generic      = generic;
-        this.extendeds    = extendeds;
-        this.implementeds = implementeds;
+        this.extendeds    = extendeds.stream().filter(Objects::nonNull).collect(toList());
+        this.implementeds = implementeds.stream().filter(Objects::nonNull).collect(toList());
         this.constructors = constructors;
         this.fields       = fields;
         this.methods      = methods;

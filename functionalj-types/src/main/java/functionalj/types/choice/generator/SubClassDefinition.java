@@ -59,31 +59,31 @@ public class SubClassDefinition implements Lines {
                     lens.build().stream().map(l -> "    " + l).collect(Collectors.toList()),
                     toMapMethod.lines().stream().map(line -> "    " + line).collect(toList()),
                     new SubSchemaBuilder(choice) .lines().stream().map(line -> "    " + line).collect(toList()),
-                    new SubFromMapBuilder(choice).lines().stream().map(line -> "    " + line).collect(toList()),
+                    new SubFromMapBuilder(targetClass, choice).lines().stream().map(line -> "    " + line).collect(toList()),
                     asList(format("}"))
             ).stream()
             .flatMap(List::stream)
             .collect(toList());
         }
         
-        val paramDefs   = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
-        val paramCalls  = choice.mapJoinParams(p ->                                   p.name, ", ");
+        val paramDefs   = choice.mapJoinParams(p -> p.type().typeWithGenerics() + " " + p.name(), ", ");
+        val paramCalls  = choice.mapJoinParams(p ->                                   p.name(), ", ");
         val fieldAccss  = targetClass.spec.publicFields ? "public" : "private";
         return asList(
                 asList(               format("public static final class %1$s%2$s extends %3$s {", name, targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics())),
                 asList(               format("    " + lensTheInstance)),
                 asList(               format("    " + lensEachInstance)),
-                choice.mapParams(p -> format("    %1$s %2$s %3$s;",                               fieldAccss, p.type.typeWithGenerics(), p.name)),
-                asList(               format("    private %1$s(%2$s) {",                          name, paramDefs)),
+                choice.mapParams(p -> format("    %1$s %2$s %3$s;",      fieldAccss, p.type().typeWithGenerics(), p.name())),
+                asList(               format("    private %1$s(%2$s) {", name, paramDefs)),
                 choice.mapParams(this::fieldAssignment),
                 asList(               format("    }")),
-                choice.mapParams(p -> format("    public %1$s %2$s() { return %2$s; }",           p.type.typeWithGenerics(), p.name)),
+                choice.mapParams(p -> format("    public %1$s %2$s() { return %2$s; }", p.type().typeWithGenerics(), p.name())),
                 choice.mapParams(p -> format("    public %1$s with%2$s(%3$s %4$s) { return new %5$s(%6$s); }",
-                                                      name + targetClass.getType().genericsString(), toTitleCase(p.name), p.type.typeWithGenerics(), p.name, name + targetClass.getType().genericsString(), paramCalls)),
+                                                      name + targetClass.getType().genericsString(), toTitleCase(p.name()), p.type().typeWithGenerics(), p.name(), name + targetClass.getType().genericsString(), paramCalls)),
                 lens       .build().stream().map(line -> "    " + line).collect(toList()),
                 toMapMethod.lines().stream().map(line -> "    " + line).collect(toList()),
                 new SubSchemaBuilder(choice) .lines().stream().map(line -> "    " + line).collect(toList()),
-                new SubFromMapBuilder(choice).lines().stream().map(line -> "    " + line).collect(toList()),
+                new SubFromMapBuilder(targetClass, choice).lines().stream().map(line -> "    " + line).collect(toList()),
                 asList(               format("}"))
             ).stream()
             .flatMap(List::stream)
@@ -91,11 +91,11 @@ public class SubClassDefinition implements Lines {
     }
     
     private String fieldAssignment(CaseParam p) {
-        if (!p.type.isPrimitive() && (p.defValue != null))
-             return format("        this.%1$s = (%1$s != null) ? %1$s : %2$s;", p.name, p.defaultValueCode());
-        else if (p.type.isPrimitive() || p.isNullable)
-             return format("        this.%1$s = %1$s;",                 p.name);
-        else return format("        this.%1$s = $utils.notNull(%1$s);", p.name);
+        if (!p.type().isPrimitive() && (p.defValue() != null))
+             return format("        this.%1$s = (%1$s != null) ? %1$s : %2$s;", p.name(), p.defaultValueCode());
+        else if (p.type().isPrimitive() || p.isNullable())
+             return format("        this.%1$s = %1$s;",                 p.name());
+        else return format("        this.%1$s = $utils.notNull(%1$s);", p.name());
     }
     
 }

@@ -48,6 +48,7 @@ public class ElmStructTest {
                     null,
                     configures,          // Configurations
                     getters,
+                    emptyList(),
                     emptyList());
         
         val spec    = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);

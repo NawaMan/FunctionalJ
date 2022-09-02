@@ -90,7 +90,7 @@ public class GeneratorTest {
                 + "\n"
                 + "public class Car implements Definitions.CarDef,IStruct,Pipeable<Car> {\n"
                 + "    \n"
-                + "    public static final Car.CarLens<Car> theCar = new Car.CarLens<>(LensSpec.of(Car.class));\n"
+                + "    public static final Car.CarLens<Car> theCar = new Car.CarLens<>(\"theCar\", LensSpec.of(Car.class));\n"
                 + "    public static final Car.CarLens<Car> eachCar = theCar;\n"
                 + "    public final int anint;\n"
                 + "    public final boolean anbool;\n"
@@ -157,17 +157,17 @@ public class GeneratorTest {
                 + "    public static Car fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
                 + "        Car obj = new Car(\n"
-                + "                    (int)$utils.fromMapValue(map.get(\"anint\"), $schema.get(\"anint\")),\n"
-                + "                    (boolean)$utils.fromMapValue(map.get(\"anbool\"), $schema.get(\"anbool\")),\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"anstring\"), $schema.get(\"anstring\"))\n"
+                + "                    (int)$utils.extractPropertyFromMap(Car.class, int.class, map, $schema, \"anint\"),\n"
+                + "                    (boolean)$utils.extractPropertyFromMap(Car.class, boolean.class, map, $schema, \"anbool\"),\n"
+                + "                    (String)$utils.extractPropertyFromMap(Car.class, String.class, map, $schema, \"anstring\")\n"
                 + "                );\n"
                 + "        return obj;\n"
                 + "    }\n"
                 + "    public Map<String, Object> __toMap() {\n"
                 + "        Map<String, Object> map = new HashMap<>();\n"
-                + "        map.put(\"anint\", functionalj.types.IStruct.$utils.toMapValueObject(anint));\n"
-                + "        map.put(\"anbool\", functionalj.types.IStruct.$utils.toMapValueObject(anbool));\n"
-                + "        map.put(\"anstring\", functionalj.types.IStruct.$utils.toMapValueObject(anstring));\n"
+                + "        map.put(\"anint\", $utils.toMapValueObject(anint));\n"
+                + "        map.put(\"anbool\", $utils.toMapValueObject(anbool));\n"
+                + "        map.put(\"anstring\", $utils.toMapValueObject(anstring));\n"
                 + "        return map;\n"
                 + "    }\n"
                 + "    public Map<String, Getter> __getSchema() {\n"
@@ -192,12 +192,12 @@ public class GeneratorTest {
                 + "    \n"
                 + "    public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {\n"
                 + "        \n"
-                + "        public final IntegerLens<HOST> anint = createSubLensInt(Car::anint, Car::withAnint);\n"
-                + "        public final BooleanLens<HOST> anbool = createSubLensBoolean(Car::anbool, Car::withAnbool);\n"
-                + "        public final StringLens<HOST> anstring = createSubLens(Car::anstring, Car::withAnstring, StringLens::of);\n"
+                + "        public final IntegerLens<HOST> anint = createSubLensInt(\"anint\", Car::anint, Car::withAnint);\n"
+                + "        public final BooleanLens<HOST> anbool = createSubLensBoolean(\"anbool\", Car::anbool, Car::withAnbool);\n"
+                + "        public final StringLens<HOST> anstring = createSubLens(\"anstring\", Car::anstring, Car::withAnstring, StringLens::of);\n"
                 + "        \n"
-                + "        public CarLens(LensSpec<HOST, Car> spec) {\n"
-                + "            super(spec);\n"
+                + "        public CarLens(String name, LensSpec<HOST, Car> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "        \n"
                 + "    }\n"
@@ -298,7 +298,7 @@ public class GeneratorTest {
         val generatedWith = generate(()->{
             configures.generateLensClass = true;
         });
-        assertTrue(generatedWith.contains("public static final Car.CarLens<Car> theCar = new Car.CarLens<>(LensSpec.of(Car.class));"));
+        assertTrue(generatedWith.contains("public static final Car.CarLens<Car> theCar = new Car.CarLens<>(\"theCar\", LensSpec.of(Car.class));"));
         assertTrue(generatedWith.contains("public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {"));
         
         val generatedWithout = generate(()->{
@@ -327,8 +327,9 @@ public class GeneratorTest {
                     null,
                     configures,          // Configurations
                     getters,
+                    emptyList(),
                     emptyList());
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

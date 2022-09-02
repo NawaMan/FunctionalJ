@@ -25,6 +25,7 @@ package functionalj.lens.lenses;
 
 import java.math.BigInteger;
 
+import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
@@ -33,8 +34,18 @@ public interface BigIntegerLens<HOST>
             BigIntegerAccess<HOST>,
             ComparableLens<HOST, BigInteger> {
     
+    
+    public static class Impl<H> extends ComparableLens.Impl<H, BigInteger> implements Named, BigIntegerLens<H> {
+        public Impl(String name, LensSpec<H, BigInteger> spec) {
+            super(name, spec);
+        }
+    }
+    
+    public static <HOST> BigIntegerLens<HOST> of(String name, LensSpec<HOST, BigInteger> spec) {
+        return new Impl<>(name, spec);
+    }
     public static <HOST> BigIntegerLens<HOST> of(LensSpec<HOST, BigInteger> spec) {
-        return () -> spec;
+        return of(null, spec);
     }
     
     @Override

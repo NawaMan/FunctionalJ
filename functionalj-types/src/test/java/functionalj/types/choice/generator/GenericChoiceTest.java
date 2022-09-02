@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
@@ -46,6 +47,7 @@ public class GenericChoiceTest {
             "spec",
             false,
             null,
+            Serialize.To.NOTHING, 
             emptyList(), 
             asList(
                     new Case("Nill", null, emptyList()), 
@@ -86,16 +88,16 @@ public class GenericChoiceTest {
                 + "    }\n"
                 + "    \n"
                 + "    \n"
-                + "    public static final MayBeLens<MayBe> theMayBe = new MayBeLens<>(LensSpec.of(MayBe.class));\n"
+                + "    public static final MayBeLens<MayBe> theMayBe = new MayBeLens<>(\"theMayBe\", LensSpec.of(MayBe.class));\n"
                 + "    public static final MayBeLens<MayBe> eachMayBe = theMayBe;\n"
                 + "    public static class MayBeLens<HOST> extends ObjectLensImpl<HOST, MayBe> {\n"
                 + "\n"
                 + "        public final BooleanAccessPrimitive<MayBe> isNill = MayBe::isNill;\n"
                 + "        public final BooleanAccessPrimitive<MayBe> isJust = MayBe::isJust;\n"
-                + "        public final ResultAccess<HOST, Nill, Nill.NillLens<HOST>> asNill = createSubResultLens(MayBe::asNill, (functionalj.lens.core.WriteLens<MayBe,Result<Nill>>)null, Nill.NillLens::new);\n"
-                + "        public final ResultAccess<HOST, Just, Just.JustLens<HOST>> asJust = createSubResultLens(MayBe::asJust, (functionalj.lens.core.WriteLens<MayBe,Result<Just>>)null, Just.JustLens::new);\n"
-                + "        public MayBeLens(LensSpec<HOST, MayBe> spec) {\n"
-                + "            super(spec);\n"
+                + "        public final ResultLens.Impl<HOST, Nill, Nill.NillLens<HOST>> asNill = createSubResultLens(\"asNill\", MayBe::asNill, (functionalj.lens.core.WriteLens<MayBe,Result<Nill>>)(h,r)->r.get(), Nill.NillLens::new);\n"
+                + "        public final ResultLens.Impl<HOST, Just, Just.JustLens<HOST>> asJust = createSubResultLens(\"asJust\", MayBe::asJust, (functionalj.lens.core.WriteLens<MayBe,Result<Just>>)(h,r)->r.get(), Just.JustLens::new);\n"
+                + "        public MayBeLens(String name, LensSpec<HOST, MayBe> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "    }\n"
                 + "    \n"
@@ -121,14 +123,14 @@ public class GenericChoiceTest {
                 + "    }\n"
                 + "    \n"
                 + "    public static final class Nill extends MayBe {\n"
-                + "        public static final Nill.NillLens<Nill> theNill = new Nill.NillLens<>(LensSpec.of(Nill.class));\n"
+                + "        public static final Nill.NillLens<Nill> theNill = new Nill.NillLens<>(\"theNill\", LensSpec.of(Nill.class));\n"
                 + "        public static final Nill.NillLens<Nill> eachNill = theNill;\n"
                 + "        private static final Nill instance = new Nill();\n"
                 + "        private Nill() {}\n"
                 + "        public static class NillLens<HOST> extends ObjectLensImpl<HOST, MayBe.Nill> {\n"
                 + "            \n"
-                + "            public NillLens(LensSpec<HOST, MayBe.Nill> spec) {\n"
-                + "                super(spec);\n"
+                + "            public NillLens(String name, LensSpec<HOST, MayBe.Nill> spec) {\n"
+                + "                super(name, spec);\n"
                 + "            }\n"
                 + "            \n"
                 + "        }\n"
@@ -145,7 +147,7 @@ public class GenericChoiceTest {
                 + "        }\n"
                 + "    }\n"
                 + "    public static final class Just extends MayBe {\n"
-                + "        public static final Just.JustLens<Just> theJust = new Just.JustLens<>(LensSpec.of(Just.class));\n"
+                + "        public static final Just.JustLens<Just> theJust = new Just.JustLens<>(\"theJust\", LensSpec.of(Just.class));\n"
                 + "        public static final Just.JustLens<Just> eachJust = theJust;\n"
                 + "        private T data;\n"
                 + "        private Just(T data) {\n"
@@ -155,16 +157,16 @@ public class GenericChoiceTest {
                 + "        public Just withData(T data) { return new Just(data); }\n"
                 + "        public static class JustLens<HOST> extends ObjectLensImpl<HOST, MayBe.Just> {\n"
                 + "            \n"
-                + "            public final ObjectLens<HOST, Object> data = (ObjectLens)createSubLens(MayBe.Just::data, MayBe.Just::withData, ObjectLens::of);\n"
+                + "            public final ObjectLens<HOST, Object> data = (ObjectLens)createSubLens(\"data\", MayBe.Just::data, MayBe.Just::withData, ObjectLens::of);\n"
                 + "            \n"
-                + "            public JustLens(LensSpec<HOST, MayBe.Just> spec) {\n"
-                + "                super(spec);\n"
+                + "            public JustLens(String name, LensSpec<HOST, MayBe.Just> spec) {\n"
+                + "                super(name, spec);\n"
                 + "            }\n"
                 + "            \n"
                 + "        }\n"
                 + "        public java.util.Map<String, Object> __toMap() {\n"
                 + "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
-                + "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Just\"));\n"
+                + "            map.put(\"__tagged\", $utils.toMapValueObject(\"Just\"));\n"
                 + "            map.put(\"data\", this.data);\n"
                 + "            return map;\n"
                 + "        }\n"
@@ -176,7 +178,7 @@ public class GenericChoiceTest {
                 + "        }\n"
                 + "        public static Just caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
                 + "            return Just(\n"
-                + "                $utils.propertyFromMap(map, __schema__, \"data\")\n"
+                + "                    (T)$utils.extractPropertyFromMap(Just.class, T.class, map, __schema__, \"data\")\n"
                 + "            );\n"
                 + "        }\n"
                 + "    }\n"
@@ -344,7 +346,7 @@ public class GenericChoiceTest {
                 + "        }\n"
                 + "    }\n"
                 + "    \n"
-                + "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"MayBe\", new functionalj.types.Type(\"functionalj.types.choice.generator\", \"MayBeTest\", \"MayBe\", java.util.Collections.emptyList()), \"spec\", false, \"__tagged\", java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Nill\", null, java.util.Collections.emptyList()), new functionalj.types.choice.generator.model.Case(\"Just\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"data\", new functionalj.types.Type(null, null, \"T\", java.util.Collections.emptyList()), false, null)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n"
+                + "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"MayBe\", new functionalj.types.Type(\"functionalj.types.choice.generator\", \"MayBeTest\", \"MayBe\", java.util.Collections.emptyList()), \"spec\", false, \"__tagged\", functionalj.types.Serialize.To.NOTHING, java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Nill\", null, java.util.Collections.emptyList()), new functionalj.types.choice.generator.model.Case(\"Just\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"data\", new functionalj.types.Type(null, null, \"T\", java.util.Collections.emptyList()), false, null)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n"
                 + "    \n"
                 + "}";
         assertAsString(expect, code);

@@ -8,11 +8,12 @@ import static java.util.Collections.emptyList;
 
 import org.junit.Test;
 
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
-import functionalj.types.struct.generator.StructBuilder;
+import functionalj.types.struct.generator.StructSpecBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
@@ -46,7 +47,7 @@ public class BugThreeNullableBuilder {
                 + "\n"
                 + "public class Brand implements DataModels.BrandSpec,IStruct,Pipeable<Brand> {\n"
                 + "    \n"
-                + "    public static final Brand.BrandLens<Brand> theBrand = new Brand.BrandLens<>(LensSpec.of(Brand.class));\n"
+                + "    public static final Brand.BrandLens<Brand> theBrand = new Brand.BrandLens<>(\"theBrand\", LensSpec.of(Brand.class));\n"
                 + "    public static final Brand.BrandLens<Brand> eachBrand = theBrand;\n"
                 + "    public final String id;\n"
                 + "    public final String name;\n"
@@ -170,23 +171,23 @@ public class BugThreeNullableBuilder {
                 + "    public static Brand fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
                 + "        Brand obj = new Brand(\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"id\"), $schema.get(\"id\")),\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"name\"), $schema.get(\"name\")),\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"owner\"), $schema.get(\"owner\")),\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"website\"), $schema.get(\"website\")),\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"country\"), $schema.get(\"country\")),\n"
-                + "                    (String)$utils.fromMapValue(map.get(\"description\"), $schema.get(\"description\"))\n"
+                + "                    (String)$utils.extractPropertyFromMap(Brand.class, String.class, map, $schema, \"id\"),\n"
+                + "                    (String)$utils.extractPropertyFromMap(Brand.class, String.class, map, $schema, \"name\"),\n"
+                + "                    (String)$utils.extractPropertyFromMap(Brand.class, String.class, map, $schema, \"owner\"),\n"
+                + "                    (String)$utils.extractPropertyFromMap(Brand.class, String.class, map, $schema, \"website\"),\n"
+                + "                    (String)$utils.extractPropertyFromMap(Brand.class, String.class, map, $schema, \"country\"),\n"
+                + "                    (String)$utils.extractPropertyFromMap(Brand.class, String.class, map, $schema, \"description\")\n"
                 + "                );\n"
                 + "        return obj;\n"
                 + "    }\n"
                 + "    public Map<String, Object> __toMap() {\n"
                 + "        Map<String, Object> map = new HashMap<>();\n"
-                + "        map.put(\"id\", functionalj.types.IStruct.$utils.toMapValueObject(id));\n"
-                + "        map.put(\"name\", functionalj.types.IStruct.$utils.toMapValueObject(name));\n"
-                + "        map.put(\"owner\", functionalj.types.IStruct.$utils.toMapValueObject(owner));\n"
-                + "        map.put(\"website\", functionalj.types.IStruct.$utils.toMapValueObject(website));\n"
-                + "        map.put(\"country\", functionalj.types.IStruct.$utils.toMapValueObject(country));\n"
-                + "        map.put(\"description\", functionalj.types.IStruct.$utils.toMapValueObject(description));\n"
+                + "        map.put(\"id\", $utils.toMapValueObject(id));\n"
+                + "        map.put(\"name\", $utils.toMapValueObject(name));\n"
+                + "        map.put(\"owner\", $utils.toMapValueObject(owner));\n"
+                + "        map.put(\"website\", $utils.toMapValueObject(website));\n"
+                + "        map.put(\"country\", $utils.toMapValueObject(country));\n"
+                + "        map.put(\"description\", $utils.toMapValueObject(description));\n"
                 + "        return map;\n"
                 + "    }\n"
                 + "    public Map<String, Getter> __getSchema() {\n"
@@ -214,15 +215,15 @@ public class BugThreeNullableBuilder {
                 + "    \n"
                 + "    public static class BrandLens<HOST> extends ObjectLensImpl<HOST, Brand> {\n"
                 + "        \n"
-                + "        public final StringLens<HOST> id = createSubLens(Brand::id, Brand::withId, StringLens::of);\n"
-                + "        public final StringLens<HOST> name = createSubLens(Brand::name, Brand::withName, StringLens::of);\n"
-                + "        public final StringLens<HOST> owner = createSubLens(Brand::owner, Brand::withOwner, StringLens::of);\n"
-                + "        public final StringLens<HOST> website = createSubLens(Brand::website, Brand::withWebsite, StringLens::of);\n"
-                + "        public final StringLens<HOST> country = createSubLens(Brand::country, Brand::withCountry, StringLens::of);\n"
-                + "        public final StringLens<HOST> description = createSubLens(Brand::description, Brand::withDescription, StringLens::of);\n"
+                + "        public final StringLens<HOST> id = createSubLens(\"id\", Brand::id, Brand::withId, StringLens::of);\n"
+                + "        public final StringLens<HOST> name = createSubLens(\"name\", Brand::name, Brand::withName, StringLens::of);\n"
+                + "        public final StringLens<HOST> owner = createSubLens(\"owner\", Brand::owner, Brand::withOwner, StringLens::of);\n"
+                + "        public final StringLens<HOST> website = createSubLens(\"website\", Brand::website, Brand::withWebsite, StringLens::of);\n"
+                + "        public final StringLens<HOST> country = createSubLens(\"country\", Brand::country, Brand::withCountry, StringLens::of);\n"
+                + "        public final StringLens<HOST> description = createSubLens(\"description\", Brand::description, Brand::withDescription, StringLens::of);\n"
                 + "        \n"
-                + "        public BrandLens(LensSpec<HOST, Brand> spec) {\n"
-                + "            super(spec);\n"
+                + "        public BrandLens(String name, LensSpec<HOST, Brand> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "        \n"
                 + "    }\n"
@@ -341,7 +342,7 @@ public class BugThreeNullableBuilder {
                 false,                  // isClass
                 null,
                 null,
-                new Configurations(true, false, true, true, true, true, true, true, ""),  // Configurations
+                new Configurations(true, false, true, true, true, true, true, true, "", Serialize.To.NOTHING),  // Configurations
                 asList(
                     new Getter("id",          new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
                     new Getter("name",        new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
@@ -349,8 +350,9 @@ public class BugThreeNullableBuilder {
                     new Getter("website",     new Type("java.lang", null, "String", emptyList()), true,  NULL),
                     new Getter("country",     new Type("java.lang", null, "String", emptyList()), true,  NULL),
                     new Getter("description", new Type("java.lang", null, "String", emptyList()), true,  NULL)),
+                emptyList(),
                 asList("Brand", "Product"));
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

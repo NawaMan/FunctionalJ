@@ -11,13 +11,19 @@ public class ZoneOffsetTransitionRuleLens<HOST>
     
     public static final ZoneOffsetTransitionRuleLens<ZoneOffsetTransitionRule> theZoneOffsetTransitionRule
                         = new ZoneOffsetTransitionRuleLens<ZoneOffsetTransitionRule>(LensSpec.of(ZoneOffsetTransitionRule.class));
-
+    
+    public static <H> ZoneOffsetTransitionRuleLens<H> of(String name, LensSpec<H, ZoneOffsetTransitionRule> spec) {
+        return new ZoneOffsetTransitionRuleLens<H>(name, spec);
+    }
     public static <H> ZoneOffsetTransitionRuleLens<H> of(LensSpec<H, ZoneOffsetTransitionRule> spec) {
         return new ZoneOffsetTransitionRuleLens<H>(spec);
     }
     
+    public ZoneOffsetTransitionRuleLens(String name, LensSpec<HOST, ZoneOffsetTransitionRule> spec) {
+        super(name, spec);
+    }
     public ZoneOffsetTransitionRuleLens(LensSpec<HOST, ZoneOffsetTransitionRule> spec) {
-        super(spec);
+        this(null, spec);
     }
     
     // TODO - Really don't think we need these ...

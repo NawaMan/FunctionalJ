@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 import lombok.val;
 
@@ -33,8 +34,18 @@ public interface LongLens<HOST>
             LongAccess<HOST>,
             ComparableLens<HOST, Long> {
     
+    
+    public static class Impl<H> extends ComparableLens.Impl<H, Long> implements Named, LongLens<H> {
+        public Impl(String name, LensSpec<H, Long> spec) {
+            super(name, spec);
+        }
+    }
+    
+    public static <HOST> LongLens<HOST> of(String name, LensSpec<HOST, Long> spec) {
+        return new Impl<>(name, spec);
+    }
     public static <HOST> LongLens<HOST> of(LensSpec<HOST, Long> spec) {
-        return () -> spec;
+        return of(null, spec);
     }
     
     @Override

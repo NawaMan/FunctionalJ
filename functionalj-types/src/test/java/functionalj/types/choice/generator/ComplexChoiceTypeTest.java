@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
@@ -24,6 +25,7 @@ public class ComplexChoiceTypeTest {
             "spec", 
             false, 
             "__tagged", 
+            Serialize.To.NOTHING,
             emptyList(), 
             asList(new Case("Loggined", null, asList(
                     new CaseParam("name", new Type("java.lang", null, "String", emptyList()), true, null), 
@@ -70,16 +72,16 @@ public class ComplexChoiceTypeTest {
             + "    }\n"
             + "    \n"
             + "    \n"
-            + "    public static final LoginStatusLens<LoginStatus> theLoginStatus = new LoginStatusLens<>(LensSpec.of(LoginStatus.class));\n"
+            + "    public static final LoginStatusLens<LoginStatus> theLoginStatus = new LoginStatusLens<>(\"theLoginStatus\", LensSpec.of(LoginStatus.class));\n"
             + "    public static final LoginStatusLens<LoginStatus> eachLoginStatus = theLoginStatus;\n"
             + "    public static class LoginStatusLens<HOST> extends ObjectLensImpl<HOST, LoginStatus> {\n"
             + "\n"
             + "        public final BooleanAccessPrimitive<LoginStatus> isLoggined = LoginStatus::isLoggined;\n"
             + "        public final BooleanAccessPrimitive<LoginStatus> isLoggedOut = LoginStatus::isLoggedOut;\n"
-            + "        public final ResultAccess<HOST, Loggined, Loggined.LogginedLens<HOST>> asLoggined = createSubResultLens(LoginStatus::asLoggined, (functionalj.lens.core.WriteLens<LoginStatus,Result<Loggined>>)null, Loggined.LogginedLens::new);\n"
-            + "        public final ResultAccess<HOST, LoggedOut, LoggedOut.LoggedOutLens<HOST>> asLoggedOut = createSubResultLens(LoginStatus::asLoggedOut, (functionalj.lens.core.WriteLens<LoginStatus,Result<LoggedOut>>)null, LoggedOut.LoggedOutLens::new);\n"
-            + "        public LoginStatusLens(LensSpec<HOST, LoginStatus> spec) {\n"
-            + "            super(spec);\n"
+            + "        public final ResultLens.Impl<HOST, Loggined, Loggined.LogginedLens<HOST>> asLoggined = createSubResultLens(\"asLoggined\", LoginStatus::asLoggined, (functionalj.lens.core.WriteLens<LoginStatus,Result<Loggined>>)(h,r)->r.get(), Loggined.LogginedLens::new);\n"
+            + "        public final ResultLens.Impl<HOST, LoggedOut, LoggedOut.LoggedOutLens<HOST>> asLoggedOut = createSubResultLens(\"asLoggedOut\", LoginStatus::asLoggedOut, (functionalj.lens.core.WriteLens<LoginStatus,Result<LoggedOut>>)(h,r)->r.get(), LoggedOut.LoggedOutLens::new);\n"
+            + "        public LoginStatusLens(String name, LensSpec<HOST, LoginStatus> spec) {\n"
+            + "            super(name, spec);\n"
             + "        }\n"
             + "    }\n"
             + "    \n"
@@ -105,7 +107,7 @@ public class ComplexChoiceTypeTest {
             + "    }\n"
             + "    \n"
             + "    public static final class Loggined extends LoginStatus {\n"
-            + "        public static final Loggined.LogginedLens<Loggined> theLoggined = new Loggined.LogginedLens<>(LensSpec.of(Loggined.class));\n"
+            + "        public static final Loggined.LogginedLens<Loggined> theLoggined = new Loggined.LogginedLens<>(\"theLoggined\", LensSpec.of(Loggined.class));\n"
             + "        public static final Loggined.LogginedLens<Loggined> eachLoggined = theLoggined;\n"
             + "        private String name;\n"
             + "        private int age;\n"
@@ -127,19 +129,19 @@ public class ComplexChoiceTypeTest {
             + "        public Loggined withUser(User user) { return new Loggined(name, age, wealth, user); }\n"
             + "        public static class LogginedLens<HOST> extends ObjectLensImpl<HOST, LoginStatus.Loggined> {\n"
             + "            \n"
-            + "            public final StringLens<HOST> name = (StringLens<HOST>)createSubLens(LoginStatus.Loggined::name, LoginStatus.Loggined::withName, StringLens::of);\n"
-            + "            public final IntegerLens<HOST> age = createSubLensInt(LoginStatus.Loggined::age, LoginStatus.Loggined::withAge);\n"
-            + "            public final OptionalLens<HOST, java.lang.Double, DoubleLens<HOST>> wealth = createSubOptionalLens(LoginStatus.Loggined::wealth, LoginStatus.Loggined::withWealth, DoubleLens::of);\n"
-            + "            public final User.UserLens<HOST> user = (User.UserLens<HOST>)createSubLens(LoginStatus.Loggined::user, LoginStatus.Loggined::withUser, User.UserLens::new);\n"
+            + "            public final StringLens<HOST> name = (StringLens<HOST>)createSubLens(\"name\", LoginStatus.Loggined::name, LoginStatus.Loggined::withName, StringLens::of);\n"
+            + "            public final IntegerLens<HOST> age = createSubLensInt(\"age\", LoginStatus.Loggined::age, LoginStatus.Loggined::withAge);\n"
+            + "            public final OptionalLens<HOST, java.lang.Double, DoubleLens<HOST>> wealth = createSubOptionalLens(\"wealth\", LoginStatus.Loggined::wealth, LoginStatus.Loggined::withWealth, DoubleLens::of);\n"
+            + "            public final User.UserLens<HOST> user = (User.UserLens<HOST>)createSubLens(\"user\", LoginStatus.Loggined::user, LoginStatus.Loggined::withUser, User.UserLens::new);\n"
             + "            \n"
-            + "            public LogginedLens(LensSpec<HOST, LoginStatus.Loggined> spec) {\n"
-            + "                super(spec);\n"
+            + "            public LogginedLens(String name, LensSpec<HOST, LoginStatus.Loggined> spec) {\n"
+            + "                super(name, spec);\n"
             + "            }\n"
             + "            \n"
             + "        }\n"
             + "        public java.util.Map<String, Object> __toMap() {\n"
             + "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
-            + "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Loggined\"));\n"
+            + "            map.put(\"__tagged\", $utils.toMapValueObject(\"Loggined\"));\n"
             + "            map.put(\"name\", this.name);\n"
             + "            map.put(\"age\", this.age);\n"
             + "            map.put(\"wealth\", this.wealth);\n"
@@ -157,22 +159,22 @@ public class ComplexChoiceTypeTest {
             + "        }\n"
             + "        public static Loggined caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
             + "            return Loggined(\n"
-            + "                $utils.propertyFromMap(map, __schema__, \"name\"),\n"
-            + "                $utils.propertyFromMap(map, __schema__, \"age\"),\n"
-            + "                $utils.propertyFromMap(map, __schema__, \"wealth\"),\n"
-            + "                $utils.propertyFromMap(map, __schema__, \"user\")\n"
+            + "                    (String)$utils.extractPropertyFromMap(Loggined.class, String.class, map, __schema__, \"name\"),\n"
+            + "                    (int)$utils.extractPropertyFromMap(Loggined.class, int.class, map, __schema__, \"age\"),\n"
+            + "                    (Optional<java.lang.Double>)$utils.extractPropertyFromMap(Loggined.class, Optional.class, map, __schema__, \"wealth\"),\n"
+            + "                    (User)$utils.extractPropertyFromMap(Loggined.class, User.class, map, __schema__, \"user\")\n"
             + "            );\n"
             + "        }\n"
             + "    }\n"
             + "    public static final class LoggedOut extends LoginStatus {\n"
-            + "        public static final LoggedOut.LoggedOutLens<LoggedOut> theLoggedOut = new LoggedOut.LoggedOutLens<>(LensSpec.of(LoggedOut.class));\n"
+            + "        public static final LoggedOut.LoggedOutLens<LoggedOut> theLoggedOut = new LoggedOut.LoggedOutLens<>(\"theLoggedOut\", LensSpec.of(LoggedOut.class));\n"
             + "        public static final LoggedOut.LoggedOutLens<LoggedOut> eachLoggedOut = theLoggedOut;\n"
             + "        private static final LoggedOut instance = new LoggedOut();\n"
             + "        private LoggedOut() {}\n"
             + "        public static class LoggedOutLens<HOST> extends ObjectLensImpl<HOST, LoginStatus.LoggedOut> {\n"
             + "            \n"
-            + "            public LoggedOutLens(LensSpec<HOST, LoginStatus.LoggedOut> spec) {\n"
-            + "                super(spec);\n"
+            + "            public LoggedOutLens(String name, LensSpec<HOST, LoginStatus.LoggedOut> spec) {\n"
+            + "                super(name, spec);\n"
             + "            }\n"
             + "            \n"
             + "        }\n"
@@ -390,7 +392,7 @@ public class ComplexChoiceTypeTest {
             + "        }\n"
             + "    }\n"
             + "    \n"
-            + "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"LoginStatus\", new functionalj.types.Type(\"example.functionalj.elm\", \"ElmExamples\", \"LoginStatus\", java.util.Collections.emptyList()), \"spec\", false, \"__tagged\", java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Loggined\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"name\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, null), new functionalj.types.choice.generator.model.CaseParam(\"age\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), true, null), new functionalj.types.choice.generator.model.CaseParam(\"wealth\", new functionalj.types.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.Double\", \"java.lang.Double\", java.util.Collections.emptyList()))), true, null), new functionalj.types.choice.generator.model.CaseParam(\"user\", new functionalj.types.Type(\"example.functionalj.elm\", null, \"User\", java.util.Collections.emptyList()), true, null))), new functionalj.types.choice.generator.model.Case(\"LoggedOut\", null, java.util.Collections.emptyList())), java.util.Collections.emptyList(), java.util.Arrays.asList(\"User\"));\n"
+            + "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"LoginStatus\", new functionalj.types.Type(\"example.functionalj.elm\", \"ElmExamples\", \"LoginStatus\", java.util.Collections.emptyList()), \"spec\", false, \"__tagged\", functionalj.types.Serialize.To.NOTHING, java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Loggined\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"name\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, null), new functionalj.types.choice.generator.model.CaseParam(\"age\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), true, null), new functionalj.types.choice.generator.model.CaseParam(\"wealth\", new functionalj.types.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.Double\", \"java.lang.Double\", java.util.Collections.emptyList()))), true, null), new functionalj.types.choice.generator.model.CaseParam(\"user\", new functionalj.types.Type(\"example.functionalj.elm\", null, \"User\", java.util.Collections.emptyList()), true, null))), new functionalj.types.choice.generator.model.Case(\"LoggedOut\", null, java.util.Collections.emptyList())), java.util.Collections.emptyList(), java.util.Arrays.asList(\"User\"));\n"
             + "    \n"
             + "}";
 }

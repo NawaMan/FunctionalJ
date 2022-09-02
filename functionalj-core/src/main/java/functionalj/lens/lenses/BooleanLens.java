@@ -25,6 +25,7 @@ package functionalj.lens.lenses;
 
 import java.util.function.Predicate;
 
+import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 import lombok.val;
 
@@ -35,8 +36,18 @@ public interface BooleanLens<HOST>
             BooleanAccess<HOST>,
             AnyLens<HOST, Boolean> , Predicate<HOST> {
     
+    
+    public static class Impl<H> extends AnyLens.Impl<H, Boolean> implements Named, BooleanLens<H> {
+        public Impl(String name, LensSpec<H, Boolean> spec) {
+            super(name, spec);
+        }
+    }
+    
+    public static <HOST> BooleanLens<HOST> of(String name, LensSpec<HOST, Boolean> spec) {
+        return new Impl<>(name, spec);
+    }
     public static <HOST> BooleanLens<HOST> of(LensSpec<HOST, Boolean> spec) {
-        return () -> spec;
+        return of(null, spec);
     }
     
     @Override

@@ -16,8 +16,11 @@ public class ZoneIdLens<HOST>
         return new ZoneIdLens<H>(spec);
     }
     
+    public ZoneIdLens(String name, LensSpec<HOST, ZoneId> spec) {
+        super(name, spec);
+    }
     public ZoneIdLens(LensSpec<HOST, ZoneId> spec) {
-        super(spec);
+        this(null, spec);
     }
 
 }

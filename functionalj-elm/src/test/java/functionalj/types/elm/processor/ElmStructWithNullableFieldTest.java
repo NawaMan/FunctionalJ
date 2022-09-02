@@ -49,6 +49,7 @@ public class ElmStructWithNullableFieldTest {
                     null,
                     configures,          // Configurations
                     getters,
+                    emptyList(),
                     emptyList());
         
         val spec    = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);

@@ -12,12 +12,18 @@ public class DayOfWeekLens<HOST>
             
     public static final DayOfWeekLens<DayOfWeek> theDayOfWeek = new DayOfWeekLens<DayOfWeek>(LensSpec.of(DayOfWeek.class));
     
+    public static <H> DayOfWeekLens<H> of(String name, LensSpec<H, DayOfWeek> spec) {
+        return new DayOfWeekLens<H>(name, spec);
+    }
     public static <H> DayOfWeekLens<H> of(LensSpec<H, DayOfWeek> spec) {
         return new DayOfWeekLens<H>(spec);
     }
     
+    public DayOfWeekLens(String name, LensSpec<HOST, DayOfWeek> spec) {
+        super(name, spec);
+    }
     public DayOfWeekLens(LensSpec<HOST, DayOfWeek> spec) {
-        super(spec);
+        this(null, spec);
     }
     
     public final Func1<HOST, HOST> toSunday    = changeTo(DayOfWeek.SUNDAY);

@@ -25,6 +25,7 @@ package functionalj.types.struct.generator;
 
 import static functionalj.types.TestHelper.assertAsString;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class GenerateParentChildTest {
                 + "\n"
                 + "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n"
                 + "    \n"
-                + "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n"
+                + "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(\"theParent\", LensSpec.of(Parent.class));\n"
                 + "    public static final Parent.ParentLens<Parent> eachParent = theParent;\n"
                 + "    public final Child child;\n"
                 + "    \n"
@@ -118,13 +119,13 @@ public class GenerateParentChildTest {
                 + "    public static Parent fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
                 + "        Parent obj = new Parent(\n"
-                + "                    (Child)$utils.fromMapValue(map.get(\"child\"), $schema.get(\"child\"))\n"
+                + "                    (Child)$utils.extractPropertyFromMap(Parent.class, Child.class, map, $schema, \"child\")\n"
                 + "                );\n"
                 + "        return obj;\n"
                 + "    }\n"
                 + "    public Map<String, Object> __toMap() {\n"
                 + "        Map<String, Object> map = new HashMap<>();\n"
-                + "        map.put(\"child\", functionalj.types.IStruct.$utils.toMapValueObject(child));\n"
+                + "        map.put(\"child\", $utils.toMapValueObject(child));\n"
                 + "        return map;\n"
                 + "    }\n"
                 + "    public Map<String, Getter> __getSchema() {\n"
@@ -147,10 +148,10 @@ public class GenerateParentChildTest {
                 + "    \n"
                 + "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n"
                 + "        \n"
-                + "        public final Child.ChildLens<HOST> child = createSubLens(Parent::child, Parent::withChild, Child.ChildLens::new);\n"
+                + "        public final Child.ChildLens<HOST> child = createSubLens(\"child\", Parent::child, Parent::withChild, Child.ChildLens::new);\n"
                 + "        \n"
-                + "        public ParentLens(LensSpec<HOST, Parent> spec) {\n"
-                + "            super(spec);\n"
+                + "        public ParentLens(String name, LensSpec<HOST, Parent> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "        \n"
                 + "    }\n"
@@ -197,8 +198,9 @@ public class GenerateParentChildTest {
                     null,
                     configures,          // Configurations
                     getters,
+                    emptyList(),
                     asList("Child"));
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

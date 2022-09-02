@@ -57,31 +57,31 @@ public class CaseLensGeneratorTest {
         assertEquals(
                 "public static class WhiteLens<HOST> extends ObjectLensImpl<HOST, BasicColor.White> {\n" + 
                 "    \n" + 
-                "    public WhiteLens(LensSpec<HOST, BasicColor.White> spec) {\n" + 
-                "        super(spec);\n" + 
+                "    public WhiteLens(String name, LensSpec<HOST, BasicColor.White> spec) {\n" + 
+                "        super(name, spec);\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "}", new CaseLensBuilder(spec, white).build().stream().collect(joining("\n")).toString());
         assertEquals(
                 "public static class BlackLens<HOST> extends ObjectLensImpl<HOST, BasicColor.Black> {\n" + 
                 "    \n" + 
-                "    public BlackLens(LensSpec<HOST, BasicColor.Black> spec) {\n" + 
-                "        super(spec);\n" + 
+                "    public BlackLens(String name, LensSpec<HOST, BasicColor.Black> spec) {\n" + 
+                "        super(name, spec);\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "}", new CaseLensBuilder(spec, black).build().stream().collect(joining("\n")).toString());
         assertEquals(
-                "public static class RGBLens<HOST> extends ObjectLensImpl<HOST, BasicColor.RGB> {\n" + 
-                "    \n" + 
-                "    public final IntegerLens<HOST> r = createSubLensInt(BasicColor.RGB::r, BasicColor.RGB::withR);\n" + 
-                "    public final IntegerLens<HOST> g = createSubLensInt(BasicColor.RGB::g, BasicColor.RGB::withG);\n" + 
-                "    public final IntegerLens<HOST> b = createSubLensInt(BasicColor.RGB::b, BasicColor.RGB::withB);\n" + 
-                "    \n" + 
-                "    public RGBLens(LensSpec<HOST, BasicColor.RGB> spec) {\n" + 
-                "        super(spec);\n" + 
-                "    }\n" + 
-                "    \n" + 
-                "}", new CaseLensBuilder(spec, rgb).build().stream().collect(joining("\n")).toString());
+                "public static class RGBLens<HOST> extends ObjectLensImpl<HOST, BasicColor.RGB> {\n"
+                + "    \n"
+                + "    public final IntegerLens<HOST> r = createSubLensInt(\"r\", BasicColor.RGB::r, BasicColor.RGB::withR);\n"
+                + "    public final IntegerLens<HOST> g = createSubLensInt(\"g\", BasicColor.RGB::g, BasicColor.RGB::withG);\n"
+                + "    public final IntegerLens<HOST> b = createSubLensInt(\"b\", BasicColor.RGB::b, BasicColor.RGB::withB);\n"
+                + "    \n"
+                + "    public RGBLens(String name, LensSpec<HOST, BasicColor.RGB> spec) {\n"
+                + "        super(name, spec);\n"
+                + "    }\n"
+                + "    \n"
+                + "}", new CaseLensBuilder(spec, rgb).build().stream().collect(joining("\n")).toString());
     }
 
 }

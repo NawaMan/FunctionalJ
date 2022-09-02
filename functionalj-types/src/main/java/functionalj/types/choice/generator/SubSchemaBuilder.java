@@ -30,7 +30,7 @@ public class SubSchemaBuilder implements Lines {
         val params
                 = choice
                 .params.stream()
-                .map(param -> "    .with(\"" + param.name + "\", " + param.toCode() + ")");
+                .map(param -> "    .with(\"" + param.name() + "\", " + param.toCode() + ")");
         val def = Stream.of(
                 Stream.of("static private functionalj.map.FuncMap<String, " + valueType + "> __schema__ = functionalj.map.FuncMap.<String, " + valueType + ">newMap()"),
                 params,

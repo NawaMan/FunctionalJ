@@ -37,7 +37,7 @@ public interface LensType<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>, 
     
     public Class<TYPELENS> getLensClass();
     
-    public TYPELENS newLens(LensSpec<HOST, TYPE> spec);
+    public TYPELENS newLens(String name, LensSpec<HOST, TYPE> spec);
     
     @Override
     public TYPEACCESS newAccess(Function<HOST, TYPE> accessToValue);

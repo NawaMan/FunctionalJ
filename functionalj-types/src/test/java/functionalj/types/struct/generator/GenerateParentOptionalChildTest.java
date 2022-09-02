@@ -25,6 +25,7 @@ package functionalj.types.struct.generator;
 
 import static functionalj.types.TestHelper.assertAsString;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 import java.util.List;
 
@@ -96,7 +97,7 @@ public class GenerateParentOptionalChildTest {
                 + "\n"
                 + "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n"
                 + "    \n"
-                + "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n"
+                + "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(\"theParent\", LensSpec.of(Parent.class));\n"
                 + "    public static final Parent.ParentLens<Parent> eachParent = theParent;\n"
                 + "    public final Optional<String> optionalName;\n"
                 + "    public final Optional<Child> optionalChild;\n"
@@ -146,15 +147,15 @@ public class GenerateParentOptionalChildTest {
                 + "    public static Parent fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
                 + "        Parent obj = new Parent(\n"
-                + "                    (Optional<String>)$utils.fromMapValue(map.get(\"optionalName\"), $schema.get(\"optionalName\")),\n"
-                + "                    (Optional<Child>)$utils.fromMapValue(map.get(\"optionalChild\"), $schema.get(\"optionalChild\"))\n"
+                + "                    (Optional<String>)$utils.extractPropertyFromMap(Parent.class, Optional.class, map, $schema, \"optionalName\"),\n"
+                + "                    (Optional<Child>)$utils.extractPropertyFromMap(Parent.class, Optional.class, map, $schema, \"optionalChild\")\n"
                 + "                );\n"
                 + "        return obj;\n"
                 + "    }\n"
                 + "    public Map<String, Object> __toMap() {\n"
                 + "        Map<String, Object> map = new HashMap<>();\n"
-                + "        map.put(\"optionalName\", functionalj.types.IStruct.$utils.toMapValueObject(optionalName));\n"
-                + "        map.put(\"optionalChild\", functionalj.types.IStruct.$utils.toMapValueObject(optionalChild));\n"
+                + "        map.put(\"optionalName\", $utils.toMapValueObject(optionalName));\n"
+                + "        map.put(\"optionalChild\", $utils.toMapValueObject(optionalChild));\n"
                 + "        return map;\n"
                 + "    }\n"
                 + "    public Map<String, Getter> __getSchema() {\n"
@@ -178,11 +179,11 @@ public class GenerateParentOptionalChildTest {
                 + "    \n"
                 + "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n"
                 + "        \n"
-                + "        public final OptionalLens<HOST, String, StringLens<HOST>> optionalName = createSubOptionalLens(Parent::optionalName, Parent::withOptionalName, StringLens::of);\n"
-                + "        public final OptionalLens<HOST, Child, Child.ChildLens<HOST>> optionalChild = createSubOptionalLens(Parent::optionalChild, Parent::withOptionalChild, Child.ChildLens::new);\n"
+                + "        public final OptionalLens<HOST, String, StringLens<HOST>> optionalName = createSubOptionalLens(\"optionalName\", Parent::optionalName, Parent::withOptionalName, StringLens::of);\n"
+                + "        public final OptionalLens<HOST, Child, Child.ChildLens<HOST>> optionalChild = createSubOptionalLens(\"optionalChild\", Parent::optionalChild, Parent::withOptionalChild, Child.ChildLens::new);\n"
                 + "        \n"
-                + "        public ParentLens(LensSpec<HOST, Parent> spec) {\n"
-                + "            super(spec);\n"
+                + "        public ParentLens(String name, LensSpec<HOST, Parent> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "        \n"
                 + "    }\n"
@@ -238,8 +239,9 @@ public class GenerateParentOptionalChildTest {
                     null,                // Validate
                     configures,          // Configurations
                     getters,
+                    emptyList(),
                     asList("Child"));
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

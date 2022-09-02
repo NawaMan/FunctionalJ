@@ -63,7 +63,7 @@ public class DateTimeLensTest {
                 + "\n"
                 + "public class Person implements Definitions.PersonDef,IStruct,Pipeable<Person> {\n"
                 + "    \n"
-                + "    public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(LensSpec.of(Person.class));\n"
+                + "    public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(\"thePerson\", LensSpec.of(Person.class));\n"
                 + "    public static final Person.PersonLens<Person> eachPerson = thePerson;\n"
                 + "    public final LocalDate child;\n"
                 + "    \n"
@@ -96,13 +96,13 @@ public class DateTimeLensTest {
                 + "    public static Person fromMap(Map<String, ? extends Object> map) {\n"
                 + "        Map<String, Getter> $schema = getStructSchema();\n"
                 + "        Person obj = new Person(\n"
-                + "                    (LocalDate)$utils.fromMapValue(map.get(\"child\"), $schema.get(\"child\"))\n"
+                + "                    (LocalDate)$utils.extractPropertyFromMap(Person.class, LocalDate.class, map, $schema, \"child\")\n"
                 + "                );\n"
                 + "        return obj;\n"
                 + "    }\n"
                 + "    public Map<String, Object> __toMap() {\n"
                 + "        Map<String, Object> map = new HashMap<>();\n"
-                + "        map.put(\"child\", functionalj.types.IStruct.$utils.toMapValueObject(child));\n"
+                + "        map.put(\"child\", $utils.toMapValueObject(child));\n"
                 + "        return map;\n"
                 + "    }\n"
                 + "    public Map<String, Getter> __getSchema() {\n"
@@ -125,10 +125,10 @@ public class DateTimeLensTest {
                 + "    \n"
                 + "    public static class PersonLens<HOST> extends ObjectLensImpl<HOST, Person> {\n"
                 + "        \n"
-                + "        public final LocalDateLens<HOST> child = createSubLens(Person::child, Person::withChild, LocalDateLens::of);\n"
+                + "        public final LocalDateLens<HOST> child = createSubLens(\"child\", Person::child, Person::withChild, LocalDateLens::of);\n"
                 + "        \n"
-                + "        public PersonLens(LensSpec<HOST, Person> spec) {\n"
-                + "            super(spec);\n"
+                + "        public PersonLens(String name, LensSpec<HOST, Person> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "        \n"
                 + "    }\n"
@@ -175,8 +175,9 @@ public class DateTimeLensTest {
                     null,
                     configures,          // Configurations
                     getters,
+                    emptyList(),
                     emptyList());
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
+        val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }

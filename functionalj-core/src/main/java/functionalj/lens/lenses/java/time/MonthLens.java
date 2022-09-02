@@ -25,12 +25,18 @@ public class MonthLens<HOST>
             
     public static final MonthLens<Month> theMonth = new MonthLens<Month>(LensSpec.of(Month.class));
     
+    public static <H> MonthLens<H> of(String name, LensSpec<H, Month> spec) {
+        return new MonthLens<H>(name, spec);
+    }
     public static <H> MonthLens<H> of(LensSpec<H, Month> spec) {
         return new MonthLens<H>(spec);
     }
     
+    public MonthLens(String name, LensSpec<HOST, Month> spec) {
+        super(name, spec);
+    }
     public MonthLens(LensSpec<HOST, Month> spec) {
-        super(spec);
+        this(null, spec);
     }
     
     public final Func1<HOST, HOST> toJanuary   = changeTo(JANUARY);

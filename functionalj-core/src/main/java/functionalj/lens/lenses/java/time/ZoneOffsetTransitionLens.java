@@ -12,12 +12,18 @@ public class ZoneOffsetTransitionLens<HOST>
     public static final ZoneOffsetTransitionLens<ZoneOffsetTransition> theZoneOffsetTransition
                     = new ZoneOffsetTransitionLens<ZoneOffsetTransition>(LensSpec.of(ZoneOffsetTransition.class));
     
+    public static <H> ZoneOffsetTransitionLens<H> of(String name, LensSpec<H, ZoneOffsetTransition> spec) {
+        return new ZoneOffsetTransitionLens<H>(name, spec);
+    }
     public static <H> ZoneOffsetTransitionLens<H> of(LensSpec<H, ZoneOffsetTransition> spec) {
         return new ZoneOffsetTransitionLens<H>(spec);
     }
     
+    public ZoneOffsetTransitionLens(String name, LensSpec<HOST, ZoneOffsetTransition> spec) {
+        super(name, spec);
+    }
     public ZoneOffsetTransitionLens(LensSpec<HOST, ZoneOffsetTransition> spec) {
-        super(spec);
+        this(null, spec);
     }
     
     // TODO - Really don't think we will need this.

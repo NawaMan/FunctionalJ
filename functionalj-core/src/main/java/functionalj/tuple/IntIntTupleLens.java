@@ -60,14 +60,14 @@ public interface IntIntTupleLens<HOST>
     public default IntegerLens<HOST> _1() {
         WriteLens<IntIntTuple, Integer> write = (tuple, _1) -> new IntIntTuple(_1, tuple._2);
         Function <IntIntTuple, Integer> read  = IntIntTuple::_1;
-        return LensUtils.createSubLens(this, read, write, IntegerLens::of);
+        return LensUtils.createSubLens(this, "_1", read, write, IntegerLens::of);
     }
     
     @Override
     public default IntegerLens<HOST> _2() {
         WriteLens<IntIntTuple, Integer> write = (tuple, _2) -> new IntIntTuple(tuple._1, _2);
         Function <IntIntTuple, Integer> read  = IntIntTuple::_1;
-        return LensUtils.createSubLens(this, read, write, IntegerLens::of);
+        return LensUtils.createSubLens(this, "_2", read, write, IntegerLens::of);
     }
     
     public default Function<HOST, HOST> change1To(int _1value) {

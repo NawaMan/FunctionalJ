@@ -26,9 +26,8 @@ package functionalj.types.elm.processor;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
-import javax.lang.model.element.Element;
-
 import functionalj.types.elm.Elm;
+import functionalj.types.input.InputElement;
 import functionalj.types.struct.generator.SourceSpec;
 import lombok.val;
 
@@ -45,14 +44,14 @@ public class ElmStructSpec {
     private final String folderName;
     private final String generatedDirectory;
     
-    public ElmStructSpec(SourceSpec sourceSpec, Element element) {
+    public ElmStructSpec(SourceSpec sourceSpec, InputElement element) {
         this.sourceSpec = sourceSpec;
         this.typeName   = sourceSpec.getTargetClassName();
         
         val baseModule  = asList(elmBaseModule(element, sourceSpec).split("\\."));
         this.folderName = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
         
-        val generatedDirectory  = element.getAnnotation(Elm.class).generatedDirectory();
+        val generatedDirectory  = element.annotation(Elm.class).generatedDirectory();
         this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     ElmStructSpec(SourceSpec sourceSpec, String typeName, String folderName, String generatedDirectory) {
@@ -62,8 +61,8 @@ public class ElmStructSpec {
         this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     
-    private String elmBaseModule(Element element, SourceSpec sourceSpec) {
-        val baseModule  = element.getAnnotation(Elm.class).baseModule();
+    private String elmBaseModule(InputElement element, SourceSpec sourceSpec) {
+        val baseModule  = element.annotation(Elm.class).baseModule();
         val elmtPackage = sourceSpec.getPackageName();
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 
                 ? elmtPackage

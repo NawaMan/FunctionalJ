@@ -23,55 +23,41 @@
 // ============================================================================
 package functionalj.types.rule;
 
+import static java.lang.String.format;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.PrimitiveType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 
 import functionalj.types.IRule;
 import functionalj.types.Rule;
+import functionalj.types.input.Environment;
+import functionalj.types.input.InputMethodElement;
+import functionalj.types.input.InputType;
 import functionalj.types.rule.RuleSpec.RuleType;
 import lombok.val;
 
-
 public class RuleAnnotationProcessor extends AbstractProcessor {
     
-    private Elements elementUtils;
-    @SuppressWarnings("unused")
-    private Types    typeUtils;
-    private Filer    filer;
-    private Messager messager;
-    private boolean  hasError;
+    private Environment environment = null;
     
-    private List<String> logs = new ArrayList<String>();
+    private boolean  hasError;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        elementUtils = processingEnv.getElementUtils();
-        typeUtils    = processingEnv.getTypeUtils();
-        filer        = processingEnv.getFiler();
-        messager     = processingEnv.getMessager();
+        val elementUtils = processingEnv.getElementUtils();
+        val types        = processingEnv.getTypeUtils();
+        val filer        = processingEnv.getFiler();
+        val messager     = processingEnv.getMessager();
+        environment = new Environment(elementUtils, types, messager, filer);
     }
     
     @Override
@@ -86,77 +72,67 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
     
-    private void warn(Element e, String msg) {
-        messager.printMessage(Diagnostic.Kind.WARNING, msg, e);
-    }
-    
-    private void error(Element e, String msg) {
-        hasError = true;
-        messager.printMessage(Diagnostic.Kind.ERROR, msg, e);
-    }
-    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
-        for (Element element : roundEnv.getElementsAnnotatedWith(Rule.class)) {
-            val method = (ExecutableElement)element;
-            val rule   = method.getAnnotation(Rule.class);
+        val elements
+                = roundEnv
+                .getElementsAnnotatedWith(Rule.class).stream()
+                .map    (environment::element)
+                .collect(toList());
+        for (val element : elements) {
+            val method = element.asMethodElement();
+            val rule   = method.annotation(Rule.class);
             val msg    = rule.value();
             val hasMsg = (msg != null) && !"".equals(msg);
-            val isBool = (method.getReturnType() instanceof PrimitiveType)
-                      && "boolean".equals(((PrimitiveType)method.getReturnType()).toString());
+            val isBool = method.returnType().isPrimitiveType()
+                      && "boolean".equals(method.returnType().asPrimitiveType().primitiveName());
             
             if (!isBool && hasMsg) {
-                warn(method, "The error message is only used with a boolean checker.");
+                method.warn("The error message is only used with a boolean checker.");
             }
             
-            val ruleType = getRuleType(method.getReturnType());
+            val ruleType = getRuleType(method.returnType());
             if (ruleType == null) {
-                error(method, "Invalid return type: only boolean, String and functionalj.result.ValidationException is allowed.");
+                method.error("Invalid return type: only boolean, String and functionalj.result.ValidationException is allowed.");
                 continue;
             }
-            if (method.getParameters().size() != 1) {
-                error(method, "Rule spec method MUST have one parameter.");
+            if (method.parameters().size() != 1) {
+                method.error("Rule spec method MUST have one parameter.");
                 continue;
             }
             
-            val targetName     = method.getSimpleName().toString();
-            val enclosingClass = method.getEnclosingElement().getSimpleName().toString();
-            val packageName    = elementUtils.getPackageOf(method).getQualifiedName().toString();
+            val targetName     = method.simpleName().toString();
+            val enclosingClass = method.enclosingElement().simpleName();
+            val packageName    = method.packageQualifiedName();
             val superType      = getSuperType(method);
             val dataName       = getDataName(method);
             val dataType       = getDataType(method);
             val errorMsg       = isBool ? msg : null;
             val spec           = new RuleSpec(targetName, enclosingClass, packageName, superType, dataName, dataType, errorMsg, ruleType);
+            val className      = packageName + "." + targetName;
             
             try {
-                val className  = packageName + "." + targetName;
-                val content    = "// " + spec.toString() + "\n"
-                               + "// " + logs.toString() + "\n"
-                               +
-                               spec.toCode();
-                val logString  = "";//"\n" + logs.stream().map("// "::concat).collect(joining("\n"));
-                generateCode(element, className, content + logString);
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-                error(element, "Problem generating the class: "
-                                + packageName + "." + enclosingClass
-                                + ": "  + e.getMessage()
-                                + ":"   + e.getClass()
-                                + " @ " + Stream.of(e.getStackTrace()).map(String::valueOf).collect(toList()));
+                val content = spec.toCode();
+                element.generateCode(className, content);
+            } catch (Exception exception) {
+                val template   = "Problem generating the class: %s: %s:%s @ %s";
+                val excMsg     = exception.getMessage();
+                val excClass   = exception.getClass();
+                val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
+                val errMsg     = format(template, className, excMsg, excClass, stacktrace);
+                
+                exception.printStackTrace(System.err);
+                element.error(errMsg);
+            } finally {
+                hasError |= element.hasError();
             }
         }
         return hasError;
     }
     
-    private void generateCode(Element element, String className, String content) throws IOException {
-        try (Writer writer = filer.createSourceFile(className, element).openWriter()) {
-            writer.write(content);
-        }
-    }
-    
-    private String getSuperType(ExecutableElement method) {
-        val rule = method.getAnnotation(Rule.class);
+    private String getSuperType(InputMethodElement method) {
+        val rule = method.annotation(Rule.class);
         if (rule == null)
             return null;
         
@@ -166,32 +142,32 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         
         return (clzz.trim().isEmpty() || clzz.equals(IRule.class.getCanonicalName())) ? null : clzz;
     }
-    private String getDataName(ExecutableElement method) {
-        val name = method.getParameters().get(0).getSimpleName().toString();
+    private String getDataName(InputMethodElement method) {
+        val name = method.parameters().get(0).simpleName().toString();
         return name;
     }
     
-    private String getDataType(ExecutableElement method) {
-        val type = method.getParameters().get(0).asType();
-        if (type instanceof PrimitiveType)
-            return type.toString();
+    private String getDataType(InputMethodElement method) {
+        val type = method.parameters().get(0).asType();
+        if (type.isPrimitiveType())
+            return type.asPrimitiveType().primitiveName();
         
-        if (type instanceof DeclaredType) {
-            val typeElement = ((TypeElement)((DeclaredType)type).asElement());
-            return typeElement.getQualifiedName().toString();
+        if (type.isDeclaredType()) {
+            val typeElement = type.asDeclaredType().asTypeElement();
+            return typeElement.qualifiedName();
         }
-        error(method, "The method parameter type is not supported.");
+        method.error("The method parameter type is not supported.");
         return null;
     }
     
-    private RuleType getRuleType(TypeMirror returnType) {
-        if (returnType instanceof PrimitiveType) {
-            if ("boolean".equals(((PrimitiveType)returnType).toString()))
+    private RuleType getRuleType(InputType returnType) {
+        if (returnType.isPrimitiveType()) {
+            if ("boolean".equals(returnType.asPrimitiveType().primitiveName()))
                 return RuleType.Bool;
         }
-        if (returnType instanceof DeclaredType) {
-            val typeElement = ((TypeElement)((DeclaredType)returnType).asElement());
-            val fullName    = typeElement.getQualifiedName().toString();
+        if (returnType.isDeclaredType()) {
+            val typeElement = returnType.asDeclaredType().asTypeElement();
+            val fullName    = typeElement.qualifiedName();
             if ("java.lang.String".equals(fullName))
                 return RuleType.ErrMsg;
             if ("functionalj.result.ValidationException".equals(fullName))

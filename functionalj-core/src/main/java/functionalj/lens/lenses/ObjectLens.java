@@ -38,8 +38,18 @@ class ObjectLensHelper {
 @FunctionalInterface
 public interface ObjectLens<HOST, DATA> extends AnyLens<HOST, DATA>, ObjectAccess<HOST, DATA> {
     
+    
+    public static class Impl<H, D> extends ObjectLensImpl<H, D> {
+        public Impl(String name, LensSpec<H, D> spec) {
+            super(name, spec);
+        }
+    }
+    
+    public static <H, D> ObjectLens<H, D> of(String name, LensSpec<H, D> spec) {
+        return new Impl<>(name, spec);
+    }
     public static <H, D> ObjectLens<H, D> of(LensSpec<H, D> spec) {
-        return () -> spec;
+        return of(null, spec);
     }
     
     

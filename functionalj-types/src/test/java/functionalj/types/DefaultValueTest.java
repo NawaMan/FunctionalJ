@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import functionalj.types.struct.Core;
-
 public class DefaultValueTest {
 
     @Test

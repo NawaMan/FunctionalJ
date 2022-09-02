@@ -40,6 +40,15 @@ public interface Named {
     public String getName();
     
     /**
+     * Returns the name. 
+     * 
+     * @return the name.
+     **/
+    public default String name() {
+        return getName();
+    }
+    
+    /**
      * Add name to the given predicate. 
      * 
      * @param name 

@@ -860,12 +860,12 @@ public interface FuncList<DATA>
     //-- FlatMap --
     
     /** Map a value into a list and then flatten that list */
-    public default <TARGET> FuncList<TARGET> flatMap(Function<? super DATA, ? extends FuncList<? extends TARGET>> mapper) {
+    public default <TARGET> FuncList<TARGET> flatMap(Function<? super DATA, ? extends Collection<? extends TARGET>> mapper) {
         return deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).stream()));
     }
     
     /** Map a value into a list and then flatten that list */
-    public default <TARGET> FuncList<TARGET> flatMap(Aggregation<? super DATA, ? extends FuncList<? extends TARGET>> aggregation) {
+    public default <TARGET> FuncList<TARGET> flatMap(Aggregation<? super DATA, ? extends Collection<? extends TARGET>> aggregation) {
         val mapper = aggregation.newAggregator();
         return flatMap(mapper);
     }
@@ -904,12 +904,12 @@ public interface FuncList<DATA>
     }
     
     /** Map a value into a list and then flatten that list */
-    public default <TARGET> FuncList<TARGET> flatMapToObj(Function<? super DATA, ? extends FuncList<? extends TARGET>> mapper) {
+    public default <TARGET> FuncList<TARGET> flatMapToObj(Function<? super DATA, ? extends Collection<? extends TARGET>> mapper) {
         return deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).stream()));
     }
     
     /** Map a value into a list and then flatten that list */
-    public default <TARGET> FuncList<TARGET> flatMapToObj(Aggregation<? super DATA, ? extends FuncList<? extends TARGET>> aggregation) {
+    public default <TARGET> FuncList<TARGET> flatMapToObj(Aggregation<? super DATA, ? extends Collection<? extends TARGET>> aggregation) {
         val mapper = aggregation.newAggregator();
         return flatMap(mapper);
     }

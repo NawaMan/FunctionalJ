@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.types.Core;
 import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
 import functionalj.types.IPostConstruct;
@@ -49,21 +50,18 @@ public class StructGeneratorHelper {
         if (toStringTemplate != null) {
             String toStringBody = null;
             if (!toStringTemplate.isEmpty()) {
-                toStringBody = "return functionalj.functions.StrFuncs.template(" + Utils.toStringLiteral(toStringTemplate) + ",toMap()::get);";
+                val strFuncs = Core.StrFunc.packageName() + "." + Core.StrFunc.simpleName();
+                toStringBody = "return " + strFuncs + ".template(" + Utils.toStringLiteral(toStringTemplate) + "," + StructMapGeneratorHelper.METHOD_TO_MAP + "()::get);";
             } else {
-                toStringBody =
-                        "return \"" + sourceSpec.getTargetClassName() + "[\" + " +
-                        getters.stream()
-                        .map(g -> "\""+ g.getName() + ": \" + " + g.getName() + "()")
-                        .collect(joining(" + \", \" + ")) +
-                        " + \"]\";";
+                val body = getters.stream().map(g -> "\""+ g.name() + ": \" + " + g.name() + "()").collect(joining(" + \", \" + "));
+                toStringBody = "return \"" + sourceSpec.getTargetClassName() + "[\" + " + (body.isEmpty() ? "\"\"" : body) + " + \"]\";";
             }
             toString =  new GenMethod(
+                    "toString",
+                    Type.STRING,
                     Accessibility.PUBLIC,
                     Scope.INSTANCE,
                     Modifiability.MODIFIABLE,
-                    Type.STRING,
-                    "toString",
                     Collections.emptyList(),
                     line(toStringBody));
         }
@@ -72,11 +70,11 @@ public class StructGeneratorHelper {
     
     static GenMethod generateHashCode(SourceSpec sourceSpec) {
         val hashCode = new GenMethod(
+                "hashCode",
+                Type.INT,
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
-                Type.INT,
-                "hashCode",
                 Collections.emptyList(),
                 line("return toString().hashCode();"));
         return hashCode;
@@ -84,11 +82,11 @@ public class StructGeneratorHelper {
     
     static GenMethod generateEquals(SourceSpec sourceSpec) {
         val equals = new GenMethod(
+                "equals",
+                Type.BOOL,
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
-                Type.BOOL,
-                "equals",
                 asList(new GenParam("another", Type.of(Object.class))),
                 line("return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));"));
         return equals;
@@ -98,38 +96,40 @@ public class StructGeneratorHelper {
        val getStructSchemaBody = ILines.line(
                sourceSpec.getGetters()
                .stream()
-               .map(g -> "map.put(\"" + g.getName() + "\", " + g.toCode() + ");")
+               .map(g -> "map.put(\"" + g.name() + "\", " + g.toCode() + ");")
                .collect(Collectors.toList()));
        val getStructSchema = new GenMethod(
+               "getStructSchema",
+               Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.of(Getter.class)))),
                Accessibility.PUBLIC,
                Scope.STATIC,
                Modifiability.MODIFIABLE,
-               Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.of(Getter.class)))),
-               "getStructSchema",
                emptyList(),
+               emptyList(),
+               false,
+               false,
                ILines.linesOf(
                    line("java.util.Map<String, functionalj.types.struct.generator.Getter> map = new java.util.HashMap<>();"),
                    getStructSchemaBody,
                    line("return map;")
                ),
-               emptyList(),
-               emptyList(),
-               false);
+               emptyList(), emptyList());
         return getStructSchema;
     }
     
     static GenMethod generateGetSchema(SourceSpec sourceSpec) {
         val getSchema = new GenMethod(
+                "__getSchema",
+                Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.of(Getter.class)))),
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
-                Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.of(Getter.class)))),
-                "__getSchema",
                 emptyList(),
+                emptyList(),
+                false,
+                false,
                 ILines.linesOf(line("return getStructSchema();")),
-                asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Getter.class)),
-                emptyList(),
-                false);
+                asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Getter.class)), emptyList());
         return getSchema;
     }
     
@@ -153,7 +153,7 @@ public class StructGeneratorHelper {
         
         val name        = sourceSpec.getTargetClassName();
         val paramString = sourceSpec.getGetters().stream()
-                .map    (getter -> getter.getType().defaultValue())
+                .map    (getter -> getter.type().defaultValue())
                 .map    (String::valueOf)
                 .collect(joining(", "));
         val body = "this(" + paramString + ");";
@@ -182,9 +182,9 @@ public class StructGeneratorHelper {
         val pkgName      = sourceSpec.getPackageName();
         val eclName      = sourceSpec.getEncloseName();
         val valName      = sourceSpec.getValidatorName();
-        val getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getDefaultValueCode(getter.getName())).collect(joining(","));
+        val getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getDefaultValueCode(getter.name())).collect(joining(","));
         
-        val assignGetters  = sourceSpec.getGetters().stream().map(getter -> "this." + getter.getName() + " = " + getter.getDefaultValueCode(getter.getName()) + ";");
+        val assignGetters  = sourceSpec.getGetters().stream().map(getter -> "this." + getter.name() + " = " + getter.getDefaultValueCode(getter.name()) + ";");
         val validate       = (Stream<String>)((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
         val ipostConstruct = Type.of(IPostConstruct.class).simpleName();
         val postConstruct  = Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();");
@@ -210,7 +210,7 @@ public class StructGeneratorHelper {
             val pkgName         = sourceSpec.getPackageName();
             val eclName         = sourceSpec.getEncloseName();
             val valName         = sourceSpec.getValidatorName();
-            String getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getName()).collect(Collectors.joining(","));
+            String getterParams = sourceSpec.getGetters().stream().map(getter -> getter.name()).collect(Collectors.joining(","));
             
             val assignGetters  = spec.getGetters().stream().map(StructGeneratorHelper::initGetterField);
             val validate       = (Stream<String>)((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
@@ -232,8 +232,8 @@ public class StructGeneratorHelper {
     
     static String initGetterField(Getter getter) {
         // TODO - some of these should be pushed to $utils
-        val    getterName = getter.getName();
-        val    getterType = getter.getType();
+        val    getterName = getter.name();
+        val    getterType = getter.type();
         String initValue  = null;
         if (getterType.isList()) {
             initValue = String.format("functionalj.list.ImmutableFuncList.from(%1$s)", getterName);
@@ -252,7 +252,7 @@ public class StructGeneratorHelper {
         }
         
         if (!getter.isRequired()) {
-            val defaultValue = DefaultValue.defaultValueCode(getterType, getter.getDefaultTo());
+            val defaultValue = DefaultValue.defaultValueCode(getterType, getter.defValue());
             initValue = String.format("java.util.Optional.ofNullable(%1$s).orElseGet(()->%2$s)", getterName, defaultValue);
         }
         
@@ -261,16 +261,16 @@ public class StructGeneratorHelper {
     
     static GenField getterToField(SourceSpec sourceSpec, Getter getter) {
         // It should be good to convert this to tuple2 and apply to the method.
-        val name  = getter.getName();
-        val type  = getter.getType();
+        val name  = getter.name();
+        val type  = getter.type();
         val accss = sourceSpec.getConfigures().publicFields ? PUBLIC : PRIVATE;
         val field = new GenField(accss, FINAL, INSTANCE, name, type, null);
         return field;
     }
     
     static GenParam getterToGenParam(Getter getter) {
-        val paramName = getter.getName();
-        val paramType = getter.getType();
+        val paramName = getter.name();
+        val paramType = getter.type();
         return new GenParam(paramName, paramType);
     }
     
@@ -285,8 +285,8 @@ public class StructGeneratorHelper {
                     getterToWitherMethodBiFunction(sourceSpec, withMethodName, getter)
                 );
         val isList
-                =  getter.getType().isList()
-                || getter.getType().isFuncList();
+                =  getter.type().isList()
+                || getter.type().isFuncList();
         if (!isList)
             return stream;
         
@@ -298,85 +298,111 @@ public class StructGeneratorHelper {
     
     static GenMethod getterToWitherMethodArray(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        val listName    = getter.getName();
+        val listName    = getter.name();
         val name        = withMethodName.apply(getter);
         val type        = sourceSpec.getTargetType();
-        val generics    = getter.getType().generics();
+        val generics    = getter.type().generics();
         val genericType = (generics.size() >= 1) ? generics.get(0).toType() : Type.OBJECT;
-        val params = asList(new GenParam(getter.getName(), genericType));
-        val isFList = getter.getType().isFuncList();
+        val params = asList(new GenParam(getter.name(), genericType));
+        val isFList = getter.type().isFuncList();
         val newArray = isFList ? "functionalj.list.ImmutableFuncList.of" : Arrays.class.getCanonicalName() + ".asList";
         val paramCall
                 = sourceSpec
                 .getGetters()
                 .stream()
-                .map(g -> listName.equals(g.getName())
-                        ? newArray + "(" + g.getName() + ")"
-                        : g.getName())
+                .map(g -> listName.equals(g.name())
+                        ? newArray + "(" + g.name() + ")"
+                        : g.name())
                 .collect(joining(", "));
-//        val usedTypes = isFList ? asList(Type.FUNC_LIST) : Collections.<Type>emptyList();
         val usedTypes = Collections.<Type>emptyList();
         val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
-        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine), usedTypes, emptyList(),true);
+        return new GenMethod(name, type, PUBLIC, INSTANCE, MODIFIABLE, params, emptyList(), false, true, line(returnLine),usedTypes, emptyList());
     }
     static GenMethod getterToWitherMethodValue(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
         val name = withMethodName.apply(getter);
         val type = sourceSpec.getTargetType();
-        val params = asList(new GenParam(getter.getName(), getter.getType()));
-        val paramCall = sourceSpec.getGetters().stream().map(Getter::getName).collect(joining(", "));
+        val params = asList(new GenParam(getter.name(), getter.type()));
+        val paramCall = sourceSpec.getGetters().stream().map(Getter::name).collect(joining(", "));
         val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
-        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
+        return new GenMethod(name, type, PUBLIC, INSTANCE, MODIFIABLE, params, line(returnLine));
     }
     static GenMethod getterToWitherMethodSupplier(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
         val name       = withMethodName.apply(getter);
         val type       = sourceSpec.getTargetType();
-        val getterName = getter.getName();
-        val getterType = getter.getType().declaredType();
-        val params     = asList(new GenParam(getter.getName(), Type.of(Supplier.class, new Generic(getterType))));
+        val getterName = getter.name();
+        val getterType = getter.type().declaredType();
+        val params     = asList(new GenParam(getter.name(), Type.of(Supplier.class, new Generic(getterType))));
         val paramCall  = sourceSpec.getGetters().stream()
-                            .map    (Getter::getName)
+                            .map    (Getter::name)
                             .map    (gName -> gName.equals(getterName) ? gName + ".get()" : gName)
                             .collect(joining(", "));
         val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
-        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
+        return new GenMethod(name, type, PUBLIC, INSTANCE, MODIFIABLE, params, line(returnLine));
     }
     static GenMethod getterToWitherMethodFunction(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
         val name       = withMethodName.apply(getter);
         val type       = sourceSpec.getTargetType();
-        val getterName = getter.getName();
-        val getterType = getter.getType().declaredType();
+        val getterName = getter.name();
+        val getterType = getter.type().declaredType();
         val params     = asList(new GenParam(getterName, Type.of(Function.class, new Generic(getterType), new Generic(getterType))));
         val paramCall  = sourceSpec.getGetters().stream()
-                        .map    (Getter::getName)
+                        .map    (Getter::name)
                         .map    (gName -> gName.equals(getterName) ? gName + ".apply(this." + gName + ")" : gName)
                         .collect(joining(", "));
         val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
-        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
+        return new GenMethod(name, type, PUBLIC, INSTANCE, MODIFIABLE, params, line(returnLine));
     }
     static GenMethod getterToWitherMethodBiFunction(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
         val name       = withMethodName.apply(getter);
         val type       = sourceSpec.getTargetType();
-        val getterName = getter.getName();
-        val getterType = getter.getType().declaredType();
+        val getterName = getter.name();
+        val getterType = getter.type().declaredType();
         val params     = asList(new GenParam(getterName, Type.of(BiFunction.class, new Generic(type), new Generic(getterType), new Generic(getterType))));
         val paramCall  = sourceSpec.getGetters().stream()
-                .map    (Getter::getName)
+                .map    (Getter::name)
                 .map    (gName -> gName.equals(getterName) ? gName + ".apply(this, this." + gName + ")" : gName)
                 .collect(joining(", "));
         val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
-        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
+        return new GenMethod(name, type, PUBLIC, INSTANCE, MODIFIABLE, params, line(returnLine));
     }
     
     static GenMethod getterToGetterMethod(Getter getter) {
-        val name = getter.getName();
-        val type = getter.getType();
+        val name = getter.name();
+        val type = getter.type();
         val params = new ArrayList<GenParam>();
-        val body   = "return " + getter.getName() + ";";
-        val method = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(body));
+        val body   = "return " + getter.name() + ";";
+        val method = new GenMethod(name, type, PUBLIC, INSTANCE, MODIFIABLE, params, line(body));
         return method;
+    }
+    
+    static GenMethod inheriitMethod(String targetClassName, Callable callable) {
+        // - Accessibility, Modifibility, exception, isVarAgrs
+        
+        val accessibility = PUBLIC;
+        val scope         = callable.scope();
+        val modifiability = MODIFIABLE;
+        val type          = callable.type();
+        val name          = callable.name();
+        val params        = callable.parameters().stream().map(param -> generateParam(param)).collect(toList());
+        val paramNames    = callable.parameters().stream().map(param -> param.getName())     .collect(joining(", "));
+        val generics      = callable.generics();
+        val call          = String.format("%s.super.%s(%s);", targetClassName, name, paramNames);
+        val body          = (ILines)(type.toString().toLowerCase().equals("void") ? line(call) : line("return " + call));
+        val usedTypes     = Collections.<Type>emptyList();
+        val exceptions    = callable.exceptions();
+        val isVarAgrs     = false;
+        return new GenMethod(name, type, accessibility, scope, modifiability, params, generics, false, isVarAgrs, body, usedTypes, exceptions);
+    }
+    
+    static GenParam generateParam(Parameter param) {
+        return new GenParam(param.getName(), param.getType());
+    }
+    
+    static Stream<GenMethod> inheriitMethods(String targetClassName, List<Callable> callables) {
+        return callables.stream().map(callable -> inheriitMethod(targetClassName, callable)).filter(Objects::nonNull);
     }
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.types.Serialize;
 import functionalj.types.TestHelper;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
@@ -28,6 +29,7 @@ public class UnitOfMeasureGeneratorTest {
                     null,
                     false,
                     null,
+                    Serialize.To.NOTHING, 
                     emptyList(),
                     asList(
                             new Case(
@@ -107,16 +109,16 @@ public class UnitOfMeasureGeneratorTest {
                 + "    }\n"
                 + "    \n"
                 + "    \n"
-                + "    public static final TemperatureLens<Temperature> theTemperature = new TemperatureLens<>(LensSpec.of(Temperature.class));\n"
+                + "    public static final TemperatureLens<Temperature> theTemperature = new TemperatureLens<>(\"theTemperature\", LensSpec.of(Temperature.class));\n"
                 + "    public static final TemperatureLens<Temperature> eachTemperature = theTemperature;\n"
                 + "    public static class TemperatureLens<HOST> extends ObjectLensImpl<HOST, Temperature> {\n"
                 + "\n"
                 + "        public final BooleanAccessPrimitive<Temperature> isCelsius = Temperature::isCelsius;\n"
                 + "        public final BooleanAccessPrimitive<Temperature> isFahrenheit = Temperature::isFahrenheit;\n"
-                + "        public final ResultAccess<HOST, Celsius, Celsius.CelsiusLens<HOST>> asCelsius = createSubResultLens(Temperature::asCelsius, (functionalj.lens.core.WriteLens<Temperature,Result<Celsius>>)null, Celsius.CelsiusLens::new);\n"
-                + "        public final ResultAccess<HOST, Fahrenheit, Fahrenheit.FahrenheitLens<HOST>> asFahrenheit = createSubResultLens(Temperature::asFahrenheit, (functionalj.lens.core.WriteLens<Temperature,Result<Fahrenheit>>)null, Fahrenheit.FahrenheitLens::new);\n"
-                + "        public TemperatureLens(LensSpec<HOST, Temperature> spec) {\n"
-                + "            super(spec);\n"
+                + "        public final ResultLens.Impl<HOST, Celsius, Celsius.CelsiusLens<HOST>> asCelsius = createSubResultLens(\"asCelsius\", Temperature::asCelsius, (functionalj.lens.core.WriteLens<Temperature,Result<Celsius>>)(h,r)->r.get(), Celsius.CelsiusLens::new);\n"
+                + "        public final ResultLens.Impl<HOST, Fahrenheit, Fahrenheit.FahrenheitLens<HOST>> asFahrenheit = createSubResultLens(\"asFahrenheit\", Temperature::asFahrenheit, (functionalj.lens.core.WriteLens<Temperature,Result<Fahrenheit>>)(h,r)->r.get(), Fahrenheit.FahrenheitLens::new);\n"
+                + "        public TemperatureLens(String name, LensSpec<HOST, Temperature> spec) {\n"
+                + "            super(name, spec);\n"
                 + "        }\n"
                 + "    }\n"
                 + "    \n"
@@ -142,7 +144,7 @@ public class UnitOfMeasureGeneratorTest {
                 + "    }\n"
                 + "    \n"
                 + "    public static final class Celsius extends Temperature {\n"
-                + "        public static final Celsius.CelsiusLens<Celsius> theCelsius = new Celsius.CelsiusLens<>(LensSpec.of(Celsius.class));\n"
+                + "        public static final Celsius.CelsiusLens<Celsius> theCelsius = new Celsius.CelsiusLens<>(\"theCelsius\", LensSpec.of(Celsius.class));\n"
                 + "        public static final Celsius.CelsiusLens<Celsius> eachCelsius = theCelsius;\n"
                 + "        private double celsius;\n"
                 + "        private Celsius(double celsius) {\n"
@@ -152,16 +154,16 @@ public class UnitOfMeasureGeneratorTest {
                 + "        public Celsius withCelsius(double celsius) { return new Celsius(celsius); }\n"
                 + "        public static class CelsiusLens<HOST> extends ObjectLensImpl<HOST, Temperature.Celsius> {\n"
                 + "            \n"
-                + "            public final DoubleLens<HOST> celsius = createSubLensDouble(Temperature.Celsius::celsius, Temperature.Celsius::withCelsius);\n"
+                + "            public final DoubleLens<HOST> celsius = createSubLensDouble(\"celsius\", Temperature.Celsius::celsius, Temperature.Celsius::withCelsius);\n"
                 + "            \n"
-                + "            public CelsiusLens(LensSpec<HOST, Temperature.Celsius> spec) {\n"
-                + "                super(spec);\n"
+                + "            public CelsiusLens(String name, LensSpec<HOST, Temperature.Celsius> spec) {\n"
+                + "                super(name, spec);\n"
                 + "            }\n"
                 + "            \n"
                 + "        }\n"
                 + "        public java.util.Map<String, Object> __toMap() {\n"
                 + "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
-                + "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Celsius\"));\n"
+                + "            map.put(\"__tagged\", $utils.toMapValueObject(\"Celsius\"));\n"
                 + "            map.put(\"celsius\", this.celsius);\n"
                 + "            return map;\n"
                 + "        }\n"
@@ -173,12 +175,12 @@ public class UnitOfMeasureGeneratorTest {
                 + "        }\n"
                 + "        public static Celsius caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
                 + "            return Celsius(\n"
-                + "                $utils.propertyFromMap(map, __schema__, \"celsius\")\n"
+                + "                    (double)$utils.extractPropertyFromMap(Celsius.class, double.class, map, __schema__, \"celsius\")\n"
                 + "            );\n"
                 + "        }\n"
                 + "    }\n"
                 + "    public static final class Fahrenheit extends Temperature {\n"
-                + "        public static final Fahrenheit.FahrenheitLens<Fahrenheit> theFahrenheit = new Fahrenheit.FahrenheitLens<>(LensSpec.of(Fahrenheit.class));\n"
+                + "        public static final Fahrenheit.FahrenheitLens<Fahrenheit> theFahrenheit = new Fahrenheit.FahrenheitLens<>(\"theFahrenheit\", LensSpec.of(Fahrenheit.class));\n"
                 + "        public static final Fahrenheit.FahrenheitLens<Fahrenheit> eachFahrenheit = theFahrenheit;\n"
                 + "        private double fahrenheit;\n"
                 + "        private Fahrenheit(double fahrenheit) {\n"
@@ -188,16 +190,16 @@ public class UnitOfMeasureGeneratorTest {
                 + "        public Fahrenheit withFahrenheit(double fahrenheit) { return new Fahrenheit(fahrenheit); }\n"
                 + "        public static class FahrenheitLens<HOST> extends ObjectLensImpl<HOST, Temperature.Fahrenheit> {\n"
                 + "            \n"
-                + "            public final DoubleLens<HOST> fahrenheit = createSubLensDouble(Temperature.Fahrenheit::fahrenheit, Temperature.Fahrenheit::withFahrenheit);\n"
+                + "            public final DoubleLens<HOST> fahrenheit = createSubLensDouble(\"fahrenheit\", Temperature.Fahrenheit::fahrenheit, Temperature.Fahrenheit::withFahrenheit);\n"
                 + "            \n"
-                + "            public FahrenheitLens(LensSpec<HOST, Temperature.Fahrenheit> spec) {\n"
-                + "                super(spec);\n"
+                + "            public FahrenheitLens(String name, LensSpec<HOST, Temperature.Fahrenheit> spec) {\n"
+                + "                super(name, spec);\n"
                 + "            }\n"
                 + "            \n"
                 + "        }\n"
                 + "        public java.util.Map<String, Object> __toMap() {\n"
                 + "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n"
-                + "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Fahrenheit\"));\n"
+                + "            map.put(\"__tagged\", $utils.toMapValueObject(\"Fahrenheit\"));\n"
                 + "            map.put(\"fahrenheit\", this.fahrenheit);\n"
                 + "            return map;\n"
                 + "        }\n"
@@ -209,7 +211,7 @@ public class UnitOfMeasureGeneratorTest {
                 + "        }\n"
                 + "        public static Fahrenheit caseFromMap(java.util.Map<String, ? extends Object> map) {\n"
                 + "            return Fahrenheit(\n"
-                + "                $utils.propertyFromMap(map, __schema__, \"fahrenheit\")\n"
+                + "                    (double)$utils.extractPropertyFromMap(Fahrenheit.class, double.class, map, __schema__, \"fahrenheit\")\n"
                 + "            );\n"
                 + "        }\n"
                 + "    }\n"

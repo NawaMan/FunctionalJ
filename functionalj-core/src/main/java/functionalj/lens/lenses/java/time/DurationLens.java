@@ -17,12 +17,18 @@ public class DurationLens<HOST>
     public final LongLens<HOST>    seconds = createSubLens(Duration::getSeconds, Duration::withSeconds, LongLens::of);
     public final IntegerLens<HOST> nanos   = createSubLens(Duration::getNano,    Duration::withNanos,   IntegerLens::of);
     
+    public static <H> DayOfWeekLens<H> of(String name, LensSpec<H, DayOfWeek> spec) {
+        return new DayOfWeekLens<H>(name, spec);
+    }
     public static <H> DayOfWeekLens<H> of(LensSpec<H, DayOfWeek> spec) {
         return new DayOfWeekLens<H>(spec);
     }
     
+    public DurationLens(String name, LensSpec<HOST, Duration> spec) {
+        super(name, spec);
+    }
     public DurationLens(LensSpec<HOST, Duration> spec) {
-        super(spec);
+        this(null, spec);
     }
     
 }

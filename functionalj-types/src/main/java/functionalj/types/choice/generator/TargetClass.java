@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
 
+import functionalj.types.Core;
 import functionalj.types.Type;
 import functionalj.types.choice.ChoiceTypeSwitch;
 import functionalj.types.choice.IChoice;
@@ -41,7 +42,6 @@ import functionalj.types.choice.Self;
 import functionalj.types.choice.generator.model.Method;
 //import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.struct.Core;
 import lombok.Value;
 import lombok.val;
 
@@ -98,7 +98,7 @@ public class TargetClass implements Lines {
         
         spec.choices.stream()
             .flatMap(c -> c.params.stream())
-            .map    (p -> p.type)
+            .map    (p -> p.type())
             .filter (t -> t.packageName() != null)
             .filter (t -> !"java.lang".equals(t.packageName()))
             .forEach(t -> imports.add(t.fullName()));

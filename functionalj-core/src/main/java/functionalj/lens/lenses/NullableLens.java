@@ -40,15 +40,54 @@ public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
                         ObjectLens<HOST, Nullable<TYPE>>,
                         NullableAccess<HOST, TYPE, SUBLENS> {
     
+    
+    public static class Impl<H, T, SL extends AnyLens<H, T>> extends ObjectLens.Impl<H, Nullable<T>> implements NullableLens<H, T, SL> {
+        
+        private LensSpecParameterized<H, Nullable<T>, T, SL> spec;
+        
+        public final SL value() {
+            return get();
+        }
+        
+        public Impl(String name, LensSpecParameterized<H, Nullable<T>, T, SL> spec) {
+            super(name, spec.getSpec());
+            this.spec = spec;
+        }
+
+        @Override
+        public LensSpecParameterized<H, Nullable<T>, T, SL> lensSpecWithSub() {
+            return spec;
+        }
+        
+    }
+    
     public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         NullableLens<HOST, TYPE, SUBLENS> of(
-            LensSpec<HOST, Nullable<TYPE>> nullableLensSpec,
+            String                                  name,
+            LensSpec<HOST, Nullable<TYPE>>          nullableLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val read  = nullableLensSpec.getRead();
         val write = nullableLensSpec.getWrite();
         val spec  = createLensSpecParameterized(read, write, subCreator);
-        val nullableLens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
-        return nullableLens;
+        return new Impl<>(name, spec);
+    }
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+        NullableLens<HOST, TYPE, SUBLENS> of(
+            LensSpec<HOST, Nullable<TYPE>>          nullableLensSpec,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        return of(null, nullableLensSpec, subCreator);
+    }
+    
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+        NullableLens<HOST, TYPE, SUBLENS> of(
+            String                                                     name,
+            LensSpecParameterized<HOST, Nullable<TYPE>, TYPE, SUBLENS> spec) {
+        return new Impl<>(name, spec);
+    }
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+        NullableLens<HOST, TYPE, SUBLENS> of(
+            LensSpecParameterized<HOST, Nullable<TYPE>, TYPE, SUBLENS> spec) {
+        return of(null, spec);
     }
     
     
@@ -79,7 +118,7 @@ public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
             return lensSpec().getWrite().apply(host, Nullable.of(newValue));
         };
         LensSpec<HOST, TYPE> subSpec = LensSpec.of(lensSpec().getRead().andThen(Nullable::get), write);
-        return lensSpecWithSub().createSubLens(subSpec);
+        return lensSpecWithSub().createSubLens("value", subSpec);
     }
     
 }

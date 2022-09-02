@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.types.Generic;
+import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
@@ -36,7 +37,8 @@ public class ElmTypeTest {
                 true, 
                 true, 
                 true, 
-                ""), 
+                "",
+                Serialize.To.NOTHING), 
             asList(
                 new Getter(
                     "firstName", 
@@ -48,6 +50,7 @@ public class ElmTypeTest {
                     new Type("java.lang", null, "String", emptyList()), 
                     false, 
                     REQUIRED)), 
+            emptyList(),
             asList("User"));
     
     
@@ -62,6 +65,7 @@ public class ElmTypeTest {
                     "spec", 
                     false, 
                     "__tagged", 
+                    Serialize.To.NOTHING, 
                     emptyList(), 
                     asList(
                             new Case("Login", null, 
