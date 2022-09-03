@@ -25,7 +25,9 @@ dependencies {
     
     // == Test ==
     
-    testCompileOnly 'junit:junit:4.13.2'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.hamcrest:hamcrest-all:1.3'
+    testImplementation 'org.hamcrest:hamcrest-core:1.3'
     
     testCompileOnly         'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
