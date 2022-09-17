@@ -205,7 +205,7 @@ public abstract class Validation<D extends Object> implements Pipeable<Validatio
         }
         
         public <TARGET> ValidationSwitchToMessageToException<TARGET, D> toBoolean(Function<? super ToBoolean<D>, TARGET> theAction) {
-            Function<Validation<D>, TARGET> $action = null;
+            Function<Validation<D>, TARGET> $action = nullValue();
             Function<Validation<D>, TARGET> oldAction = (Function<Validation<D>, TARGET>)$action;
             Function<Validation<D>, TARGET> newAction =
                 ($action != null)
@@ -216,6 +216,9 @@ public abstract class Validation<D extends Object> implements Pipeable<Validatio
             
             return new ValidationSwitchToMessageToException<TARGET, D>($value, newAction);
         }
+        private <T> T nullValue() {
+            return (T)null;
+        }
         public <TARGET> ValidationSwitchToMessageToException<TARGET, D> toBoolean(Supplier<TARGET> theSupplier) {
             return toBoolean(d->theSupplier.get());
         }
@@ -224,7 +227,7 @@ public abstract class Validation<D extends Object> implements Pipeable<Validatio
         }
         
         public <TARGET> ValidationSwitchToBooleanToMessageToException<TARGET, D> toBoolean(Predicate<ToBoolean<D>> check, Function<? super ToBoolean<D>, TARGET> theAction) {
-            Function<Validation<D>, TARGET> $action = null;
+            Function<Validation<D>, TARGET> $action = nullValue();
             Function<Validation<D>, TARGET> oldAction = (Function<Validation<D>, TARGET>)$action;
             Function<Validation<D>, TARGET> newAction =
                 ($action != null)
@@ -321,13 +324,14 @@ public abstract class Validation<D extends Object> implements Pipeable<Validatio
         public <TARGET> ValidationSwitchToBooleanToMessageToException<TARGET, D> toBooleanOf(Predicate<Function> checkerCheck, Predicate<String> messageTemplateCheck, TARGET theValue) {
             return toBoolean(toBoolean -> checkerCheck.test(toBoolean.checker) && messageTemplateCheck.test(toBoolean.messageTemplate), theValue);
         }
+        
     }
     public static class ValidationFirstSwitchTyped<TARGET, D extends Object> {
         private Validation<D> $value;
         private ValidationFirstSwitchTyped(Validation<D> theValue) { this.$value = theValue; }
         
         public ValidationSwitchToMessageToException<TARGET, D> toBoolean(Function<? super ToBoolean<D>, TARGET> theAction) {
-            Function<Validation<D>, TARGET> $action = null;
+            Function<Validation<D>, TARGET> $action = nullValue();
             Function<Validation<D>, TARGET> oldAction = (Function<Validation<D>, TARGET>)$action;
             Function<Validation<D>, TARGET> newAction =
                 ($action != null)
@@ -346,7 +350,7 @@ public abstract class Validation<D extends Object> implements Pipeable<Validatio
         }
         
         public ValidationSwitchToBooleanToMessageToException<TARGET, D> toBoolean(Predicate<ToBoolean<D>> check, Function<? super ToBoolean<D>, TARGET> theAction) {
-            Function<Validation<D>, TARGET> $action = null;
+            Function<Validation<D>, TARGET> $action   = nullValue();
             Function<Validation<D>, TARGET> oldAction = (Function<Validation<D>, TARGET>)$action;
             Function<Validation<D>, TARGET> newAction =
                 ($action != null)
@@ -442,6 +446,10 @@ public abstract class Validation<D extends Object> implements Pipeable<Validatio
         }
         public ValidationSwitchToBooleanToMessageToException<TARGET, D> toBooleanOf(Predicate<Function> checkerCheck, Predicate<String> messageTemplateCheck, TARGET theValue) {
             return toBoolean(toBoolean -> checkerCheck.test(toBoolean.checker) && messageTemplateCheck.test(toBoolean.messageTemplate), theValue);
+        }
+        
+        private <T> T nullValue() {
+            return (T)null;
         }
     }
     public static class ValidationSwitchToBooleanToMessageToException<TARGET, D extends Object> extends ChoiceTypeSwitch<Validation<D>, TARGET> {
