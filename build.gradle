@@ -62,7 +62,7 @@ subprojects {
                 
                 pom {
                     name        = 'FunctionalJ.io'
-                    description = 'Brining functional goodies to Java'
+                    description = 'Bringing functional goodies to Java.'
                     url         = 'https://github.com/NawaMan/FunctionalJ'
                     licenses {
                         license {

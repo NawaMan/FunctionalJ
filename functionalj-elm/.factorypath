@@ -1,3 +1,5 @@
 <factorypath>
-    <factorypathentry kind="VARJAR" id="M2_REPO/io/functionalj/functionalj-types/0.5.7-DEV.0/functionalj-types-0.5.7-DEV.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="/Users/nawa/.m2/repository/io/nullablej/nullablej/4.0.1.0/nullablej-4.0.1.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="/Users/nawa/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.22/9c08ea24c6eb714e2d6170e8122c069a0ba9aacf/lombok-1.18.22.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="/Users/nawa/dev/git/FunctionalJ/functionalj-types/build/libs/functionalj-types-0.5.7-DEV.0.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>
