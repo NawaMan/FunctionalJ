@@ -83,39 +83,39 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
     }
     
     /** Accept any value while the condition is true. */
-    public default FuncList<DATA> takeWhile(Predicate<? super DATA> condition) {
+    public default FuncList<DATA> acceptWhile(Predicate<? super DATA> condition) {
         val funcList = funcListOf(this);
-        return deriveFrom(funcList, stream -> stream.takeWhile(condition));
+        return deriveFrom(funcList, stream -> stream.acceptWhile(condition));
     }
     
     /** Accept any value while the condition is true. */
-    public default FuncList<DATA> takeWhile(AggregationToBoolean<? super DATA> aggregationCondition) {
+    public default FuncList<DATA> acceptWhile(AggregationToBoolean<? super DATA> aggregationCondition) {
         val funcList = funcListOf(this);
-        return deriveFrom(funcList, stream -> stream.takeWhile(aggregationCondition));
+        return deriveFrom(funcList, stream -> stream.acceptWhile(aggregationCondition));
     }
     
     /** Accept any value while the condition is true. */
-    public default FuncList<DATA> takeWhile(BiPredicate<? super DATA, ? super DATA> condition) {
+    public default FuncList<DATA> acceptWhile(BiPredicate<? super DATA, ? super DATA> condition) {
         val funcList = funcListOf(this);
-        return deriveFrom(funcList, stream -> stream.takeWhile(condition));
+        return deriveFrom(funcList, stream -> stream.acceptWhile(condition));
     }
     
     /** Accept any value until the condition is true. */
-    public default FuncList<DATA> takeUntil(Predicate<? super DATA> condition) {
+    public default FuncList<DATA> acceptUntil(Predicate<? super DATA> condition) {
         val funcList = funcListOf(this);
-        return deriveFrom(funcList, stream -> stream.takeUntil(condition));
+        return deriveFrom(funcList, stream -> stream.acceptUntil(condition));
     }
     
     /** Accept any value until the condition is true. */
-    public default FuncList<DATA> takeUntil(AggregationToBoolean<? super DATA> aggregationCondition) {
+    public default FuncList<DATA> acceptUntil(AggregationToBoolean<? super DATA> aggregationCondition) {
         val funcList = funcListOf(this);
-        return deriveFrom(funcList, stream -> stream.takeUntil(aggregationCondition));
+        return deriveFrom(funcList, stream -> stream.acceptUntil(aggregationCondition));
     }
     
     /** Accept any value until the condition is true. */
-    public default FuncList<DATA> takeUntil(BiPredicate<? super DATA, ? super DATA> condition) {
+    public default FuncList<DATA> acceptUntil(BiPredicate<? super DATA, ? super DATA> condition) {
         val funcList = funcListOf(this);
-        return deriveFrom(funcList, stream -> stream.takeUntil(condition));
+        return deriveFrom(funcList, stream -> stream.acceptUntil(condition));
     }
     
     /** Accept any value until the condition is false - include the item that the condition is false. */

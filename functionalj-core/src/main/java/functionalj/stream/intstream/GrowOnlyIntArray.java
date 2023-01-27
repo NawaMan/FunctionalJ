@@ -127,7 +127,7 @@ public final class GrowOnlyIntArray {
     }
     
     public boolean equals(GrowOnlyIntArray array) {
-        val score = stream().zipWith(array.stream(), (a,b) -> a == b ? 1 : 0).takeUntil(i -> i == 0).sum();
+        val score = stream().zipWith(array.stream(), (a,b) -> a == b ? 1 : 0).acceptUntil(i -> i == 0).sum();
         return score == length;
     }
     

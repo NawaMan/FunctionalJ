@@ -38,13 +38,13 @@ public class ElmFunctionBuilder implements ILines {
     
     private final String name;
     private final String declaration;
-    private final String params;
+    private final String camelName;
     private final ILines body;
     
-    public ElmFunctionBuilder(String name, String declaration, String params, ILines body) {
+    public ElmFunctionBuilder(String name, String declaration, String camelName, ILines body) {
         this.name        = name;
         this.declaration = declaration;
-        this.params      = params;
+        this.camelName   = camelName;
         this.body        = body;
     }
     
@@ -56,8 +56,8 @@ public class ElmFunctionBuilder implements ILines {
         return declaration;
     }
     
-    public String params() {
-        return params;
+    public String camelName() {
+        return camelName;
     }
     
     public ILines body() {
@@ -67,7 +67,7 @@ public class ElmFunctionBuilder implements ILines {
     @Override
     public Stream<String> lines() {
         return ILines.line(name + " : " + declaration)
-            .append(name + " " + (params + " =").trim() + " ")
+            .append(name + " " + (camelName + " =").trim() + " ")
             .append(body().indent(1).lines().collect(joining("\n")))
             .lines();
     }

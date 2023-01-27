@@ -196,7 +196,7 @@ public interface StreamPlusWithLimit<DATA> {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
+    public default StreamPlus<DATA> acceptWhile(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
@@ -225,14 +225,14 @@ public interface StreamPlusWithLimit<DATA> {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default StreamPlus<DATA> takeWhile(AggregationToBoolean<? super DATA> aggregationCondition) {
+    public default StreamPlus<DATA> acceptWhile(AggregationToBoolean<? super DATA> aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
-        return takeWhile(condition);
+        return acceptWhile(condition);
     }
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default StreamPlus<DATA> takeWhile(BiPredicate<? super DATA, ? super DATA> condition) {
+    public default StreamPlus<DATA> acceptWhile(BiPredicate<? super DATA, ? super DATA> condition) {
         val streamPlus = streamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
@@ -269,7 +269,7 @@ public interface StreamPlusWithLimit<DATA> {
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
+    public default StreamPlus<DATA> acceptUntil(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
@@ -298,14 +298,14 @@ public interface StreamPlusWithLimit<DATA> {
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default StreamPlus<DATA> takeUntil(AggregationToBoolean<? super DATA> aggregationCondition) {
+    public default StreamPlus<DATA> acceptUntil(AggregationToBoolean<? super DATA> aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
-        return takeWhile(condition);
+        return acceptWhile(condition);
     }
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default StreamPlus<DATA> takeUntil(BiPredicate<? super DATA, ? super DATA> condition) {
+    public default StreamPlus<DATA> acceptUntil(BiPredicate<? super DATA, ? super DATA> condition) {
         val streamPlus = streamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();

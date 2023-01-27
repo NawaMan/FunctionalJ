@@ -19,7 +19,7 @@ public class Parameter {
                 toStringLiteral(name),
                 type.toCode()
         );
-        return "new functionalj.types.struct.generator.ParameterSpec("
+        return "new functionalj.types.struct.generator.Parameter("
                 + params.stream().map(String::valueOf).collect(joining(", "))
                 + ")";
     }

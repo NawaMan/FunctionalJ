@@ -379,7 +379,7 @@ public class StructGeneratorHelper {
         return method;
     }
     
-    static GenMethod inheriitMethod(String targetClassName, Callable callable) {
+    static GenMethod inheritMethod(String targetClassName, Callable callable) {
         // - Accessibility, Modifibility, exception, isVarAgrs
         
         val accessibility = PUBLIC;
@@ -394,7 +394,7 @@ public class StructGeneratorHelper {
         val body          = (ILines)(type.toString().toLowerCase().equals("void") ? line(call) : line("return " + call));
         val usedTypes     = Collections.<Type>emptyList();
         val exceptions    = callable.exceptions();
-        val isVarAgrs     = false;
+        val isVarAgrs     = callable.isVarAgrs();
         return new GenMethod(name, type, accessibility, scope, modifiability, params, generics, false, isVarAgrs, body, usedTypes, exceptions);
     }
     
@@ -403,6 +403,6 @@ public class StructGeneratorHelper {
     }
     
     static Stream<GenMethod> inheriitMethods(String targetClassName, List<Callable> callables) {
-        return callables.stream().map(callable -> inheriitMethod(targetClassName, callable)).filter(Objects::nonNull);
+        return callables.stream().map(callable -> inheritMethod(targetClassName, callable)).filter(Objects::nonNull);
     }
 }

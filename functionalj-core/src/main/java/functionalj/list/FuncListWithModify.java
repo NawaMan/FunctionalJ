@@ -106,10 +106,10 @@ public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
         });
         val seed = Tuple2.of((DATA)null, this.toFuncList());
         return FuncList
-                .iterate  (seed, func)
-                .takeUntil(t -> t == null)
-                .skip     (1)
-                .map      (t -> t._1());
+                .iterate    (seed, func)
+                .acceptUntil(t -> t == null)
+                .skip       (1)
+                .map        (t -> t._1());
     }
     
     //== Spawn ==

@@ -31,6 +31,7 @@ import static java.util.stream.Collectors.joining;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -118,14 +119,12 @@ public class GenMethod implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
+        val length     = params.size();
+        val paramIndex = new AtomicInteger(0);
         val paramDefs
             = params.stream()
-                .map(param -> param.toTerm(currentPackage))
+                .map(param -> paramToTerm(currentPackage, param, isVarAgrs && (paramIndex.getAndIncrement() == (length - 1))))
                 .collect(joining(", "));
-        val paramDefsToText
-            = isVarAgrs
-            ? paramDefs.replaceAll("([^ ]+)$", "... $1")
-            : paramDefs;
         val toGeneric = (Function<Generic, String>)(generic -> {
             val bounds = generic.boundTypes.stream().map(Type::fullName).collect(joining(" & "));
             return generic.name + ((bounds.isEmpty() || bounds.equals(Type.OBJECT.fullName())) ? "" : (" extends " + bounds));
@@ -138,11 +137,19 @@ public class GenMethod implements IGenerateDefinition {
         val definition
                 = ILines.oneLineOf(
                     accessibility, modifiability, scope, (genericDef.length() == 0) ? "" : ("<" + genericDef + ">"),
-                    type.simpleNameWithGeneric(""), name + "(" + paramDefsToText + ")" + lineEnd);
+                    type.simpleNameWithGeneric(""), name + "(" + paramDefs + ")" + lineEnd);
         return ILines.flatenLines(
                 line(definition),
                 (body == null) ? line("") : indent(body),
                 (body == null) ? line("") : line("}"));
+    }
+    
+    private String paramToTerm(String currentPackage, GenParam param, boolean isVarAgrs) {
+        String term = param.toTerm(currentPackage);
+        if (isVarAgrs) {
+            term = term.replaceAll("(\\[\\])? ", " ... ");
+        }
+        return term;
     }
     
 }

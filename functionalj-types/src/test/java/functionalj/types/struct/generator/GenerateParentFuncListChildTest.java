@@ -34,7 +34,11 @@ import org.junit.Test;
 import functionalj.types.Generic;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
+import functionalj.types.struct.generator.model.Accessibility;
+import functionalj.types.struct.generator.model.Concrecity;
 import functionalj.types.struct.generator.model.GenStruct;
+import functionalj.types.struct.generator.model.Modifiability;
+import functionalj.types.struct.generator.model.Scope;
 import lombok.val;
 
 public class GenerateParentFuncListChildTest {
@@ -63,6 +67,20 @@ public class GenerateParentFuncListChildTest {
                                 .generics(asList(new Generic(new Type("me.test", "Child"))))
                                 .packageName("functionalj.list")
                                 .build())
+    );
+    
+    private List<Callable> callables = asList(
+            new Callable("name1",
+                         new Type("java.lang", "String"), 
+                         true, // isVarArgs
+                         Accessibility.PUBLIC,
+                         Scope.INSTANCE,
+                         Modifiability.MODIFIABLE,
+                         Concrecity.CONCRETE,
+                         asList(new Parameter("param1", new Type("java.lang", "String")),
+                                new Parameter("param2", new Type(null, null, "java.lang.String[]", emptyList()))),
+                         emptyList(),
+                         emptyList())
     );
     
     @Test
@@ -181,6 +199,9 @@ public class GenerateParentFuncListChildTest {
                 + "    public boolean equals(Object another) {\n"
                 + "        return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));\n"
                 + "    }\n"
+                + "    public String name1(String param1, java.lang.String ... param2) {\n"
+                + "        return Definitions.ParentDef.super.name1(param1, param2);\n"
+                + "    }\n"
                 + "    \n"
                 + "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n"
                 + "        \n"
@@ -244,7 +265,7 @@ public class GenerateParentFuncListChildTest {
                     null,
                     configures,          // Configurations
                     getters,
-                    emptyList(),
+                    callables,
                     asList("Child"));
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();

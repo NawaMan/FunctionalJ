@@ -246,7 +246,7 @@ public interface DoubleStreamPlus
     public static DoubleStreamPlus range(double startInclusive, double endExclusive) {
         return DoubleStreamPlus
                 .iterate(startInclusive, d -> d + 1)
-                .takeUntil(d -> d >= endExclusive);
+                .acceptUntil(d -> d >= endExclusive);
     }
     
     /** Create a StreamPlus that for a loop from the start value inclusively by the given step. */

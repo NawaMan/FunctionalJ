@@ -206,12 +206,6 @@ public class Type implements IRequireTypes {
         this.packageName = null;
         this.isVirtual   = isVirtual;
         this.generics    = emptyList();
-        
-        if ("LocalDateTime.java.time".equals(fullName())) {
-            System.err.println("Quinn: " + fullName());
-            Stream.of(Thread.currentThread().getStackTrace())
-                .forEach(line -> System.err.println("    " + line));
-        }
     }
     
     public static Type newVirtualType(String name) {
@@ -364,7 +358,7 @@ public class Type implements IRequireTypes {
      * @return  the full name.
      */
     public String fullName(String currentPackage) {
-        return asList(packageName, encloseName, simpleName)
+        return asList(packageName, encloseName, simpleName.replaceAll("\\[\\]$", ""))
                 .stream()
                 .filter(Objects::nonNull)
                 .collect(joining("."));

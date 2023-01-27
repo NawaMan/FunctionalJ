@@ -13,11 +13,13 @@ import functionalj.types.struct.generator.model.Accessibility;
 import functionalj.types.struct.generator.model.Concrecity;
 import functionalj.types.struct.generator.model.Modifiability;
 import functionalj.types.struct.generator.model.Scope;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Accessors;
 
 @Value
+@RequiredArgsConstructor
 @Accessors(fluent = true)
 public class Callable {
     
@@ -37,10 +39,10 @@ public class Callable {
                 toStringLiteral(name),
                 type.toCode(),
                 isVarAgrs,
-                Accessibility.class.getCanonicalName() + "." + accessibility,
-                Scope        .class.getCanonicalName() + "." + scope,
-                Modifiability.class.getCanonicalName() + "." + modifiability,
-                Concrecity   .class.getCanonicalName() + "." + concrecity,
+                (accessibility == null) ? "null" : (Accessibility.class.getCanonicalName() + "." + accessibility.name().toUpperCase()),
+                (scope         == null) ? "null" : (Scope        .class.getCanonicalName() + "." + scope        .name().toUpperCase()),
+                (modifiability == null) ? "null" : (Modifiability.class.getCanonicalName() + "." + modifiability.name().toUpperCase()),
+                (concrecity    == null) ? "null" : (Concrecity   .class.getCanonicalName() + "." + concrecity   .name().toUpperCase()),
                 toListCode(parameters, Parameter::toCode),
                 toListCode(generics,   Generic::toCode),
                 toListCode(exceptions, Type::toCode)
