@@ -1,6 +1,7 @@
 package functionalj.types.elm.processor;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class ElmChoiceTest {
         val cases      = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
         val choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
         val spec       = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
-        val choice     = new ElmChoiceBuilder(spec);
+        val choice     = new ElmChoiceBuilder(spec, emptyList(), emptyList());
         val genCode    = choice.toElmCode();
         val code       = genCode.substring(genCode.indexOf('\n')+1);
         assertEquals(expected, code);
@@ -38,7 +39,7 @@ public class ElmChoiceTest {
     
     private static final String expected =
             "module Example.Functionalj.Elm.LoginStatus exposing\n" + 
-            "    ( LoginStatus\n" + 
+            "    ( LoginStatus(..)\n" + 
             "    , loginStatusEncoder\n" + 
             "    , loginStatusDecoder\n" + 
             "    , encodeLoginStatus\n" + 
@@ -54,6 +55,8 @@ public class ElmChoiceTest {
             "import Json.Encode\n" + 
             "\n" + 
             "\n" + 
+            "\n" + 
+            "\n" + 
             "-- elm install elm/json\n" + 
             "-- elm install NoRedInk/elm-json-decode-pipeline\n" + 
             "\n" + 
@@ -64,7 +67,7 @@ public class ElmChoiceTest {
             "\n" + 
             "loginStatusEncoder : LoginStatus -> Json.Encode.Value\n" + 
             "loginStatusEncoder loginStatus = \n" + 
-            "    case loginStatusEncoder of\n" + 
+            "    case loginStatus of\n" + 
             "        LoggedIn name age years wealth user ->\n" + 
             "            Json.Encode.object\n" + 
             "                [ ( \"__tagged\", Json.Encode.string \"LoggedIn\" )\n" + 

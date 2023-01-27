@@ -1,6 +1,7 @@
 package functionalj.types.elm.processor;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class ElmChoiceBuilderTest {
         val cases      = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
         val choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
         val spec       = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
-        val builder    = new ElmChoiceBuilder(spec);
+        val builder    = new ElmChoiceBuilder(spec, emptyList(), emptyList());
         return builder;
     }
     
@@ -49,7 +50,7 @@ public class ElmChoiceBuilderTest {
         assertEquals(
                 "loginStatusEncoder : LoginStatus -> Json.Encode.Value\n" + 
                 "loginStatusEncoder loginStatus = \n" + 
-                "    case loginStatusEncoder of\n" + 
+                "    case loginStatus of\n" + 
                 "        LoggedIn name age years wealth user ->\n" + 
                 "            Json.Encode.object\n" + 
                 "                [ ( \"__tagged\", Json.Encode.string \"LoggedIn\" )\n" + 

@@ -165,7 +165,7 @@ public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSw
             return white(d->action.get());
         }
         public <T> BasicColorSwitchBlackRGB<T> white(Function<? super White, T> theAction) {
-            Function<BasicColor, T> action = null;
+            Function<BasicColor, T> action = nullValue();
             Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;
             Function<BasicColor, T> newAction =
                 (action != null)
@@ -175,6 +175,10 @@ public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSw
                     : oldAction;
             
             return new BasicColorSwitchBlackRGB <T>(value, newAction);
+        }
+
+        private <T> Function<BasicColor, T> nullValue() {
+            return (Function<BasicColor, T>)null;
         }
     }
     
@@ -189,7 +193,7 @@ public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSw
             return white(d->action.get());
         }
         public BasicColorSwitchBlackRGB<T> white(Function<? super White, T> theAction) {
-            Function<BasicColor, T> action = null;
+            Function<BasicColor, T> action = nullValue();
             Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;
             Function<BasicColor, T> newAction =
                 (action != null)
@@ -199,6 +203,10 @@ public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSw
                     : oldAction;
             
             return new BasicColorSwitchBlackRGB <T>(value, newAction);
+        }
+        
+        private Function<BasicColor, T> nullValue() {
+            return (Function<BasicColor, T>)null;
         }
     }
     public static class BasicColorSwitchWhiteBlackRGB<T> extends ChoiceTypeSwitch<BasicColor, T> {

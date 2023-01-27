@@ -362,7 +362,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         
         public <TARGET> ResultStatusSwitchAcceptedAdjustedRejectedFailed<TARGET, D> notAllowed(Function<? super NotAllowed<D>, ? extends TARGET> theAction) {
-            Function<ResultStatus<D>, TARGET> $action = null;
+            Function<ResultStatus<D>, TARGET> $action = nullValue();
             Function<ResultStatus<D>, TARGET> oldAction = (Function<ResultStatus<D>, TARGET>)$action;
             Function<ResultStatus<D>, TARGET> newAction =
                 ($action != null)
@@ -381,7 +381,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         
         public <TARGET> ResultStatusSwitchNotAllowedAcceptedAdjustedRejectedFailed<TARGET, D> notAllowed(Predicate<NotAllowed<D>> check, Function<? super NotAllowed<D>, ? extends TARGET> theAction) {
-            Function<ResultStatus<D>, TARGET> $action = null;
+            Function<ResultStatus<D>, TARGET> $action = nullValue();
             Function<ResultStatus<D>, TARGET> oldAction = (Function<ResultStatus<D>, TARGET>)$action;
             Function<ResultStatus<D>, TARGET> newAction =
                 ($action != null)
@@ -391,6 +391,9 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
                     : oldAction;
             
             return new ResultStatusSwitchNotAllowedAcceptedAdjustedRejectedFailed<TARGET, D>($value, newAction);
+        }
+        private <T> T nullValue() {
+            return (T)null;
         }
         public <TARGET> ResultStatusSwitchNotAllowedAcceptedAdjustedRejectedFailed<TARGET, D> notAllowed(Predicate<NotAllowed<D>> check, Supplier<? extends TARGET> theSupplier) {
             return notAllowed(check, d->theSupplier.get());
@@ -404,7 +407,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         private ResultStatusFirstSwitchTyped(ResultStatus<D> theValue) { this.$value = theValue; }
         
         public ResultStatusSwitchAcceptedAdjustedRejectedFailed<TARGET, D> notAllowed(Function<? super NotAllowed<D>, ? extends TARGET> theAction) {
-            Function<ResultStatus<D>, TARGET> $action = null;
+            Function<ResultStatus<D>, TARGET> $action = nullValue();
             Function<ResultStatus<D>, TARGET> oldAction = (Function<ResultStatus<D>, TARGET>)$action;
             Function<ResultStatus<D>, TARGET> newAction =
                 ($action != null)
@@ -423,7 +426,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         
         public ResultStatusSwitchNotAllowedAcceptedAdjustedRejectedFailed<TARGET, D> notAllowed(Predicate<NotAllowed<D>> check, Function<? super NotAllowed<D>, ? extends TARGET> theAction) {
-            Function<ResultStatus<D>, TARGET> $action = null;
+            Function<ResultStatus<D>, TARGET> $action = nullValue();
             Function<ResultStatus<D>, TARGET> oldAction = (Function<ResultStatus<D>, TARGET>)$action;
             Function<ResultStatus<D>, TARGET> newAction =
                 ($action != null)
@@ -439,6 +442,10 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public ResultStatusSwitchNotAllowedAcceptedAdjustedRejectedFailed<TARGET, D> notAllowed(Predicate<NotAllowed<D>> check, TARGET theValue) {
             return notAllowed(check, d->theValue);
+        }
+        
+        private <T> T nullValue() {
+            return (T)null;
         }
     }
     public static class ResultStatusSwitchNotAllowedAcceptedAdjustedRejectedFailed<TARGET, D extends Object> extends ChoiceTypeSwitch<ResultStatus<D>, TARGET> {

@@ -2463,24 +2463,24 @@ public class LongFuncListTest {
     }
     
     @Test
-    public void testTakeWhile() {
+    public void testacceptWhile() {
         run(LongFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
             val logs = new ArrayList<Long>();
-            assertAsString("[1, 2, 3]",    list.peek(logs::add).takeWhile(i -> i < 4));
+            assertAsString("[1, 2, 3]",    list.peek(logs::add).acceptWhile(i -> i < 4));
             assertAsString("[1, 2, 3, 4]", logs);
-            //                       ^--- Because it needs 4 to do the check in `takeWhile`
+            //                       ^--- Because it needs 4 to do the check in `acceptWhile`
             
             logs.clear();
-            assertAsString("[]", list.peek(logs::add).takeWhile(i -> i > 4));
+            assertAsString("[]", list.peek(logs::add).acceptWhile(i -> i > 4));
             assertAsString("[1]", logs);
-            //              ^--- Because it needs 1 to do the check in `takeWhile`
+            //              ^--- Because it needs 1 to do the check in `acceptWhile`
         });
     }
     
     @Test
-    public void testTakeWhile_previous() {
+    public void testacceptWhile_previous() {
         run(LongFuncList.of(1, 2, 3, 4, 6, 4, 3, 2, 1), list -> {
-            assertAsString("[1, 2, 3, 4]", list.takeWhile((a, b) -> b == a + 1));
+            assertAsString("[1, 2, 3, 4]", list.acceptWhile((a, b) -> b == a + 1));
         });
     }
     
@@ -2488,21 +2488,21 @@ public class LongFuncListTest {
     public void testTakeUtil() {
         run(LongFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
             val logs = new ArrayList<Long>();
-            assertAsString("[1, 2, 3, 4]", list.peek(logs::add).takeUntil(i -> i > 4));
+            assertAsString("[1, 2, 3, 4]", list.peek(logs::add).acceptUntil(i -> i > 4));
             assertAsString("[1, 2, 3, 4, 5]", logs);
-            //                          ^--- Because it needs 5 to do the check in `takeUntil`
+            //                          ^--- Because it needs 5 to do the check in `acceptUntil`
             
             logs.clear();
-            assertAsString("[]",  list.peek(logs::add).takeUntil(i -> i < 4));
+            assertAsString("[]",  list.peek(logs::add).acceptUntil(i -> i < 4));
             assertAsString("[1]", logs);
-            //              ^--- Because it needs 1 to do the check in `takeUntil`
+            //              ^--- Because it needs 1 to do the check in `acceptUntil`
         });
     }
     
     @Test
-    public void testTakeUntil_previous() {
+    public void testacceptUntil_previous() {
         run(LongFuncList.of(1, 2, 3, 4, 6, 4, 3, 2, 1), list -> {
-            assertAsString("[1, 2, 3, 4]", list.takeUntil((a, b) -> b > a + 1));
+            assertAsString("[1, 2, 3, 4]", list.acceptUntil((a, b) -> b > a + 1));
         });
     }
     
@@ -2526,9 +2526,9 @@ public class LongFuncListTest {
     public void testSkipTake() {
         run(LongFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
             val logs = new ArrayList<Long>();
-            assertAsString("[3, 4, 5, 4, 3]", list.peek(logs::add).skipWhile(i -> i < 3).takeUntil(i -> i < 3));
+            assertAsString("[3, 4, 5, 4, 3]", list.peek(logs::add).skipWhile(i -> i < 3).acceptUntil(i -> i < 3));
             assertAsString("[1, 2, 3, 4, 5, 4, 3, 2]", logs);
-            //              ^--^-----------------^--- Because it needs these number to do the check in `skipWhile` and `takeWhile`
+            //              ^--^-----------------^--- Because it needs these number to do the check in `skipWhile` and `acceptWhile`
         });
     }
     

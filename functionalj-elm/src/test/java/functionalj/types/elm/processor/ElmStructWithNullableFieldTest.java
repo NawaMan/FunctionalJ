@@ -53,7 +53,7 @@ public class ElmStructWithNullableFieldTest {
                     emptyList());
         
         val spec    = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);
-        val struct  = new ElmStructBuilder(spec);
+        val struct  = new ElmStructBuilder(spec, emptyList(), emptyList());
         val genCode = struct.toElmCode();
         val code    = genCode.substring(genCode.indexOf('\n')+1);
         assertEquals(expected, code);
@@ -75,6 +75,8 @@ public class ElmStructWithNullableFieldTest {
             + "import Json.Decode\n"
             + "import Json.Decode.Pipeline\n"
             + "import Json.Encode\n"
+            + "\n"
+            + "\n"
             + "\n"
             + "\n"
             + "-- elm install elm/json\n"

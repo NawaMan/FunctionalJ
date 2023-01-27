@@ -127,7 +127,7 @@ public final class GrowOnlyDoubleArray {
     }
     
     public boolean equals(GrowOnlyDoubleArray array) {
-        int score = (int)stream().zipWith(array.stream(), (a,b) -> a == b ? 1 : 0).takeUntil(i -> i == 0).sum();
+        int score = (int)stream().zipWith(array.stream(), (a,b) -> a == b ? 1 : 0).acceptUntil(i -> i == 0).sum();
         return score == length;
     }
     

@@ -71,18 +71,18 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         
         public IntStreamPlus inclusive() {
             if (distancePositive) {
-                return intStreamPlus.takeUntil(i -> i > end);
+                return intStreamPlus.acceptUntil(i -> i > end);
             } else {
-                return intStreamPlus.takeUntil(i -> i < end);
+                return intStreamPlus.acceptUntil(i -> i < end);
             }
         }
         
         @Override
         public IntStream intStream() {
             if (distancePositive) {
-                return intStreamPlus.takeUntil(i -> i >= end);
+                return intStreamPlus.acceptUntil(i -> i >= end);
             } else {
-                return intStreamPlus.takeUntil(i -> i <= end);
+                return intStreamPlus.acceptUntil(i -> i <= end);
             }
         }
     }

@@ -195,7 +195,7 @@ public interface LongStreamPlusWithLimit {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default LongStreamPlus takeWhile(LongPredicate condition) {
+    public default LongStreamPlus acceptWhile(LongPredicate condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
@@ -224,14 +224,14 @@ public interface LongStreamPlusWithLimit {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default LongStreamPlus takeWhile(LongAggregationToBoolean aggregationCondition) {
+    public default LongStreamPlus acceptWhile(LongAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
-        return takeWhile(condition);
+        return acceptWhile(condition);
     }
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default LongStreamPlus takeWhile(LongBiPredicatePrimitive condition) {
+    public default LongStreamPlus acceptWhile(LongBiPredicatePrimitive condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
@@ -268,7 +268,7 @@ public interface LongStreamPlusWithLimit {
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default LongStreamPlus takeUntil(LongPredicate condition) {
+    public default LongStreamPlus acceptUntil(LongPredicate condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
@@ -297,14 +297,14 @@ public interface LongStreamPlusWithLimit {
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default LongStreamPlus takeUntil(LongAggregationToBoolean aggregationCondition) {
+    public default LongStreamPlus acceptUntil(LongAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
-        return takeWhile(condition);
+        return acceptWhile(condition);
     }
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default LongStreamPlus takeUntil(LongBiPredicatePrimitive condition) {
+    public default LongStreamPlus acceptUntil(LongBiPredicatePrimitive condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();

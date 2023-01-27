@@ -196,7 +196,7 @@ public interface IntStreamPlusWithLimit {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default IntStreamPlus takeWhile(IntPredicate condition) {
+    public default IntStreamPlus acceptWhile(IntPredicate condition) {
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
@@ -225,14 +225,14 @@ public interface IntStreamPlusWithLimit {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default IntStreamPlus takeWhile(IntAggregationToBoolean aggregationCondition) {
+    public default IntStreamPlus acceptWhile(IntAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
-        return takeWhile(condition);
+        return acceptWhile(condition);
     }
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default IntStreamPlus takeWhile(IntBiPredicatePrimitive condition) {
+    public default IntStreamPlus acceptWhile(IntBiPredicatePrimitive condition) {
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
@@ -269,7 +269,7 @@ public interface IntStreamPlusWithLimit {
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default IntStreamPlus takeUntil(IntPredicate condition) {
+    public default IntStreamPlus acceptUntil(IntPredicate condition) {
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
@@ -298,14 +298,14 @@ public interface IntStreamPlusWithLimit {
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default IntStreamPlus takeUntil(IntAggregationToBoolean aggregationCondition) {
+    public default IntStreamPlus acceptUntil(IntAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
-        return takeWhile(condition);
+        return acceptWhile(condition);
     }
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default IntStreamPlus takeUntil(IntBiPredicatePrimitive condition) {
+    public default IntStreamPlus acceptUntil(IntBiPredicatePrimitive condition) {
         val streamPlus = intStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();

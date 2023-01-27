@@ -27,6 +27,7 @@ import static java.lang.String.format;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -85,6 +86,14 @@ public interface IData {
     
     public static <DATA extends IData> Optional<DATA> fromMap(Map<String, Object> map, Class<DATA> clazz) {
         return Optional.ofNullable(IData.$utils.fromMap(map, clazz));
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <DATA extends IData> List<Map<String, Object>> toMap(Iterable<DATA> iterable) {
+        return (List<Map<String, Object>>)(List)
+                stream   (iterable.spliterator(), false)
+                .map    (each -> (each != null) ? each.__toMap() : each)
+                .collect(toList());
     }
     
     public static Ref<Locale>            localeRef            = Ref.ofValue(Locale.getDefault());
@@ -229,6 +238,10 @@ public interface IData {
             Object extractedValue = null;
             try {
                 extractedValue = $utils.fromMapValue(valueFromMap, getterSpec);
+                if (extractedValue == null) {
+                    return null;
+                }
+                
                 if (valueClzz.isInstance(extractedValue)) {
                     return (D)extractedValue;
                 }
