@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.environments.Time;
@@ -312,7 +311,7 @@ public class RefTest {
     }
     
     // TODO - Fix this. :-(
-    @Ignore("Fail test, need fix first.")
+//    @Ignore("Fail test, need fix first.")
     @Test
     public void testRetain_localThread() throws InterruptedException {
         val state    = new ThreadLocal<Integer>();
@@ -335,29 +334,34 @@ public class RefTest {
         assertEquals(1, ref.value().intValue());
         assertEquals(1, ref.value().intValue());
         
-        
-        val resultRef = new AtomicReference<Result<String>>();
+        val asyncResultRef = new AtomicReference<Result<String>>();
         Run.async(()->{
             state.set(42);
             return IntStreamPlus.infinite()
-            .limit(5)
-            .peek (i -> Time.sleep(40))
-            .map  (i -> ref.value())
-            .join (" - ");
+                    .limit(5)
+                    .peek (i -> Time.sleep(40))
+                    .map  (i -> ref.value())
+                    .join (" - ");
         })
-        .onComplete(r -> resultRef.set(r));
+        .onComplete(r -> asyncResultRef.set(r));
         
         Time.sleep(100);
         
         for (int i = 0; i < 5; i++) {
-            Time.sleep(10);
+            // value in the local thread change as we change the state ... but retained when the value stay.
+            Time.sleep(40);
             state.set(state.get() + 1);
             assertEquals(44 + i, state.get().intValue());
-            assertEquals( 2 + i, ref.value().intValue());
+            assertEquals( 3 + i, ref.value().intValue());
+            assertEquals( 3 + i, ref.value().intValue());
+            
+            Time.sleep(10);
+            assertEquals( 3 + i, ref.value().intValue());
+            assertEquals( 3 + i, ref.value().intValue());
         }
-        Time.sleep(200);
         
-//        assertEquals("2 - 2 - 2 - 2 - 2", resultRef.get().value());
+        // Async result stay the same the whole time
+        assertEquals("2 - 2 - 2 - 2 - 2", asyncResultRef.get().value());
     }
     
     @Test

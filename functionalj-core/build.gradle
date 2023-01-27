@@ -19,12 +19,12 @@ dependencies {
     
     // == Test ==
     
-    testCompileOnly 'io.defaultj:defaultj-api:2.0.0.0'
-    testCompileOnly 'io.defaultj:defaultj-core:2.0.0.0'
+    testImplementation 'io.defaultj:defaultj-api:2.0.0.0'
+    testImplementation 'io.defaultj:defaultj-core:2.0.0.0'
     
-    testCompileOnly 'junit:junit:4.13.2'
-    testCompileOnly 'org.hamcrest:hamcrest-core:1.3'
-    
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.hamcrest:hamcrest-all:1.3'
+    testImplementation 'org.hamcrest:hamcrest-core:1.3'
     
     testCompileOnly         'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'

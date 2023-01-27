@@ -63,10 +63,9 @@ public class PipeableTest {
                 ));
     }
     
-    @SuppressWarnings("null")
     @Test
     public void testRuntimeException() {
-        val src1 = (String)null;
+        val src1 = nullString();
         val str1 = (Pipeable<String>)()->src1.toUpperCase();
         try {
             assertEquals(4, str1.pipeTo(String::length).intValue());
@@ -74,6 +73,10 @@ public class PipeableTest {
         } catch (NullPointerException e) {
             // Expected
         }
+    }
+    
+    private String nullString() {
+        return (String)null;
     }
     
     @Test
@@ -123,7 +126,7 @@ public class PipeableTest {
     @Test
     public void testOrElse() {
         assertEquals("Test",          StartBy(f(()->        "Test"              )).__orElse("This the test"));
-        assertEquals("This the test", StartBy(f(()->(String)null                )).__orElse("This the test"));
+        assertEquals("This the test", StartBy(f(()->nullString()                )).__orElse("This the test"));
         assertEquals("This the test", StartBy(f(()->{ throw new IOException(); })).__orElse("This the test"));
     }
     

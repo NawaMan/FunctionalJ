@@ -359,7 +359,7 @@ public class TaskTest {
         }));
         val counter2 = new AtomicInteger(0);
         val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
-            Thread.sleep(10);
+            Thread.sleep(50);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
@@ -438,7 +438,7 @@ public class TaskTest {
         }));
         val counter2 = new AtomicInteger(0);
         val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
-            Thread.sleep(10);
+            Thread.sleep(50);
             logs.add("Action2 runs!");
             int currentCount = counter2.getAndIncrement();
             if (currentCount >= 1)

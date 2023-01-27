@@ -26,7 +26,7 @@ public class InputMethodElementTest {
         
         assertAsString("method1",                               method.getName());
         assertAsString("class java.lang.String",                method.getReturnType());
-        assertAsString("[java.lang.String arg0]",               asList(method.getParameters()));
+        assertAsString("[java.lang.String \\E(arg0|name)\\Q]",  asList(method.getParameters()));
         assertAsString("[class java.lang.RuntimeException]",    method.getExceptionTypes());
         assertAsString("[@functionalj.types.Struct(\\E.*\\Q)]", method.getAnnotations());
         assertAsString("[]",                                    method.getTypeParameters());
@@ -42,16 +42,16 @@ public class InputMethodElementTest {
         
         assertAsString("method2",                            method.getName());
         assertAsString("class java.lang.String",             method.getReturnType());
-        assertAsString("[T arg0]",                           asList(method.getParameters()));
+        assertAsString("[T \\E(arg0|name)\\Q]",              asList(method.getParameters()));
         assertAsString("[class java.lang.RuntimeException]", method.getExceptionTypes());
         assertAsString("[]",                                 method.getAnnotations());
         assertAsString("[T]",                                method.getTypeParameters());
         
         val parameter0 = method.getParameters()[0];
-        assertAsString("T arg0",                 parameter0.toString());
+        assertAsString("T \\E(arg0|name)\\Q",    parameter0.toString());
         assertAsString("T",                      parameter0.getParameterizedType());
         assertAsString("T",                      parameter0.getParameterizedType().getTypeName());
-        assertAsString("arg0",                   parameter0.getName());
+        assertAsString("\\E(arg0|name)\\Q",      parameter0.getName());
         assertAsString("class java.lang.Object", parameter0.getType());
         
         val typeParameter0 = method.getTypeParameters()[0];
@@ -71,16 +71,16 @@ public class InputMethodElementTest {
         
         assertAsString("method3",                method.getName());
         assertAsString("class java.lang.String", method.getReturnType());
-        assertAsString("[T arg0]",               asList(method.getParameters()));
+        assertAsString("[T \\E(arg0|name)\\Q]",  asList(method.getParameters()));
         assertAsString("[]",                     method.getExceptionTypes());
         assertAsString("[]",                     method.getAnnotations());
         assertAsString("[T]",                    method.getTypeParameters());
         
         val parameter0 = method.getParameters()[0];
-        assertAsString("T arg0",                 parameter0.toString());
+        assertAsString("T \\E(arg0|name)\\Q",    parameter0.toString());
         assertAsString("T",                      parameter0.getParameterizedType());
         assertAsString("T",                      parameter0.getParameterizedType().getTypeName());
-        assertAsString("arg0",                   parameter0.getName());
+        assertAsString("\\E(arg0|name)\\Q",                   parameter0.getName());
         assertAsString("class java.lang.Number", parameter0.getType());
         
         val typeParameter0 = method.getTypeParameters()[0];
@@ -98,19 +98,19 @@ public class InputMethodElementTest {
     public void test4() throws Exception {
         val method = this.getClass().getMethod("method4", List.class);
         
-        assertAsString("method4",                  method.getName());
-        assertAsString("class java.lang.String",   method.getReturnType());
-        assertAsString("[java.util.List<T> arg0]", asList(method.getParameters()));
-        assertAsString("[]",                       method.getExceptionTypes());
-        assertAsString("[]",                       method.getAnnotations());
-        assertAsString("[T]",                      method.getTypeParameters());
+        assertAsString("method4",                               method.getName());
+        assertAsString("class java.lang.String",                method.getReturnType());
+        assertAsString("[java.util.List<T> \\E(arg0|name)\\Q]", asList(method.getParameters()));
+        assertAsString("[]",                                    method.getExceptionTypes());
+        assertAsString("[]",                                    method.getAnnotations());
+        assertAsString("[T]",                                   method.getTypeParameters());
         
         val parameter0 = method.getParameters()[0];
-        assertAsString("java.util.List<T> arg0",   parameter0.toString());
-        assertAsString("java.util.List<T>",        parameter0.getParameterizedType());
-        assertAsString("java.util.List<T>",        parameter0.getParameterizedType().getTypeName());
-        assertAsString("arg0",                     parameter0.getName());
-        assertAsString("interface java.util.List", parameter0.getType());
+        assertAsString("java.util.List<T> \\E(arg0|name)\\Q",   parameter0.toString());
+        assertAsString("java.util.List<T>",                     parameter0.getParameterizedType());
+        assertAsString("java.util.List<T>",                     parameter0.getParameterizedType().getTypeName());
+        assertAsString("\\E(arg0|name)\\Q",                     parameter0.getName());
+        assertAsString("interface java.util.List",              parameter0.getType());
         
         val typeParameter0 = method.getTypeParameters()[0];
         assertAsString("T",                        typeParameter0.toString());
@@ -127,18 +127,18 @@ public class InputMethodElementTest {
     public void test5() throws Exception {
         val method = this.getClass().getMethod("method5", List.class);
         
-        assertAsString("method5",                                           method.getName());
-        assertAsString("class java.lang.String",                            method.getReturnType());
-        assertAsString("[java.util.List<? extends java.lang.Number> arg0]", asList(method.getParameters()));
-        assertAsString("[]",                                                method.getExceptionTypes());
-        assertAsString("[]",                                                method.getAnnotations());
-        assertAsString("[]",                                                method.getTypeParameters());
+        assertAsString("method5",                                                        method.getName());
+        assertAsString("class java.lang.String",                                         method.getReturnType());
+        assertAsString("[java.util.List<? extends java.lang.Number> \\E(arg0|name)\\Q]", asList(method.getParameters()));
+        assertAsString("[]",                                                             method.getExceptionTypes());
+        assertAsString("[]",                                                             method.getAnnotations());
+        assertAsString("[]",                                                             method.getTypeParameters());
         
         val parameter0 = method.getParameters()[0];
-        assertAsString("java.util.List<? extends java.lang.Number> arg0", parameter0.toString());
-        assertAsString("java.util.List<? extends java.lang.Number>",      parameter0.getParameterizedType());
-        assertAsString("java.util.List<? extends java.lang.Number>",      parameter0.getParameterizedType().getTypeName());
-        assertAsString("arg0",                                            parameter0.getName());
+        assertAsString("java.util.List<? extends java.lang.Number> \\E(arg0|name)\\Q", parameter0.toString());
+        assertAsString("java.util.List<? extends java.lang.Number>",                   parameter0.getParameterizedType());
+        assertAsString("java.util.List<? extends java.lang.Number>",                   parameter0.getParameterizedType().getTypeName());
+        assertAsString("\\E(arg0|name)\\Q",                                            parameter0.getName());
         assertAsString("interface java.util.List",                        parameter0.getType());
     }
     
@@ -158,11 +158,11 @@ public class InputMethodElementTest {
         assertAsString("[]",                                         method.getTypeParameters());
         
         val parameter0 = method.getParameters()[0];
-        assertAsString("java.util.List<? super java.lang.Number> arg0", parameter0.toString());
-        assertAsString("java.util.List<? super java.lang.Number>",      parameter0.getParameterizedType());
-        assertAsString("java.util.List<? super java.lang.Number>",      parameter0.getParameterizedType().getTypeName());
-        assertAsString("arg0",                                          parameter0.getName());
-        assertAsString("interface java.util.List",                      parameter0.getType());
+        assertAsString("java.util.List<? super java.lang.Number> \\E(arg0|name)\\Q", parameter0.toString());
+        assertAsString("java.util.List<? super java.lang.Number>",                   parameter0.getParameterizedType());
+        assertAsString("java.util.List<? super java.lang.Number>",                   parameter0.getParameterizedType().getTypeName());
+        assertAsString("\\E(arg0|name)\\Q",                                          parameter0.getName());
+        assertAsString("interface java.util.List",                                   parameter0.getType());
         
         assertAsString("java.util.List<? super java.lang.Number>", method.getGenericParameterTypes()[0]);
         
@@ -198,11 +198,11 @@ public class InputMethodElementTest {
         assertAsString("[]",                                           method.getTypeParameters());
         
         val parameter0 = method.getParameters()[0];
-        assertAsString("java.util.List<? extends java.lang.Number> arg0", parameter0.toString());
-        assertAsString("java.util.List<? extends java.lang.Number>",      parameter0.getParameterizedType());
-        assertAsString("java.util.List<? extends java.lang.Number>",      parameter0.getParameterizedType().getTypeName());
-        assertAsString("arg0",                                            parameter0.getName());
-        assertAsString("interface java.util.List",                        parameter0.getType());
+        assertAsString("java.util.List<? extends java.lang.Number> \\E(arg0|name)\\Q", parameter0.toString());
+        assertAsString("java.util.List<? extends java.lang.Number>",                   parameter0.getParameterizedType());
+        assertAsString("java.util.List<? extends java.lang.Number>",                   parameter0.getParameterizedType().getTypeName());
+        assertAsString("\\E(arg0|name)\\Q",                                            parameter0.getName());
+        assertAsString("interface java.util.List",                                     parameter0.getType());
         
         assertAsString("java.util.List<? extends java.lang.Number>", method.getGenericParameterTypes()[0]);
         
@@ -238,11 +238,11 @@ public class InputMethodElementTest {
         assertAsString("[]",                     method.getTypeParameters());
         
         val parameter0 = method.getParameters()[0];
-        assertAsString("java.util.List<?> arg0",   parameter0.toString());
-        assertAsString("java.util.List<?>",        parameter0.getParameterizedType());
-        assertAsString("java.util.List<?>",        parameter0.getParameterizedType().getTypeName());
-        assertAsString("arg0",                     parameter0.getName());
-        assertAsString("interface java.util.List", parameter0.getType());
+        assertAsString("java.util.List<?> \\E(arg0|name)\\Q",   parameter0.toString());
+        assertAsString("java.util.List<?>",                     parameter0.getParameterizedType());
+        assertAsString("java.util.List<?>",                     parameter0.getParameterizedType().getTypeName());
+        assertAsString("\\E(arg0|name)\\Q",                     parameter0.getName());
+        assertAsString("interface java.util.List",              parameter0.getType());
         
         assertAsString("java.util.List<?>", method.getGenericParameterTypes()[0]);
         
@@ -287,11 +287,11 @@ public class InputMethodElementTest {
         }
         
         val parameter0 = method.getParameters()[0];
-        assertAsString("java.util.List<? super T> arg0", parameter0.toString());
-        assertAsString("java.util.List<? super T>",      parameter0.getParameterizedType());
-        assertAsString("java.util.List<? super T>",      parameter0.getParameterizedType().getTypeName());
-        assertAsString("arg0",                           parameter0.getName());
-        assertAsString("interface java.util.List",       parameter0.getType());
+        assertAsString("java.util.List<? super T> \\E(arg0|name)\\Q", parameter0.toString());
+        assertAsString("java.util.List<? super T>",                   parameter0.getParameterizedType());
+        assertAsString("java.util.List<? super T>",                   parameter0.getParameterizedType().getTypeName());
+        assertAsString("\\E(arg0|name)\\Q",                           parameter0.getName());
+        assertAsString("interface java.util.List",                    parameter0.getType());
         
         assertAsString("java.util.List<? super T>", method.getGenericParameterTypes()[0]);
         
@@ -346,11 +346,11 @@ public class InputMethodElementTest {
         }
         
         val parameter0 = method.getParameters()[0];
-        assertAsString("java.util.List<? super T> arg0", parameter0.toString());
-        assertAsString("java.util.List<? super T>",      parameter0.getParameterizedType());
-        assertAsString("java.util.List<? super T>",      parameter0.getParameterizedType().getTypeName());
-        assertAsString("arg0",                           parameter0.getName());
-        assertAsString("interface java.util.List",       parameter0.getType());
+        assertAsString("java.util.List<? super T> \\E(arg0|name)\\Q", parameter0.toString());
+        assertAsString("java.util.List<? super T>",                   parameter0.getParameterizedType());
+        assertAsString("java.util.List<? super T>",                   parameter0.getParameterizedType().getTypeName());
+        assertAsString("\\E(arg0|name)\\Q",                           parameter0.getName());
+        assertAsString("interface java.util.List",                    parameter0.getType());
         
         assertAsString("java.util.List<? super T>", method.getGenericParameterTypes()[0]);
         
@@ -371,10 +371,10 @@ public class InputMethodElementTest {
         }
         
         val parameter1 = method.getParameters()[1];
-        assertAsString("D arg1",                           parameter1.toString());
+        assertAsString("D \\E(arg1|value)\\Q",             parameter1.toString());
         assertAsString("D",                                parameter1.getParameterizedType());
         assertAsString("D",                                parameter1.getParameterizedType().getTypeName());
-        assertAsString("arg1",                             parameter1.getName());
+        assertAsString("\\E(arg1|value)\\Q",               parameter1.getName());
         assertAsString("interface java.lang.CharSequence", parameter1.getType());
         
         assertAsString("D",     method.getGenericParameterTypes()[1]);

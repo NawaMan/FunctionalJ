@@ -80,18 +80,18 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
         
         public DoubleStreamPlus inclusive() {
             if (distancePositive) {
-                return doubleStreamPlus.takeUntil(i -> i > end);
+                return doubleStreamPlus.acceptUntil(i -> i > end);
             } else {
-                return doubleStreamPlus.takeUntil(i -> i < end);
+                return doubleStreamPlus.acceptUntil(i -> i < end);
             }
         }
         
         @Override
         public DoubleStream doubleStream() {
             if (distancePositive) {
-                return doubleStreamPlus.takeUntil(i -> i >= end);
+                return doubleStreamPlus.acceptUntil(i -> i >= end);
             } else {
-                return doubleStreamPlus.takeUntil(i -> i <= end);
+                return doubleStreamPlus.acceptUntil(i -> i <= end);
             }
         }
     }

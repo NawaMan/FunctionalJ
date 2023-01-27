@@ -125,10 +125,10 @@ public interface StreamPlusWithModify<DATA> {
         val seed = Tuple2.of((DATA)null, this.streamPlus());
         
         return StreamPlus
-                .iterate  (seed, func)
-                .takeUntil(t -> t == null)
-                .skip     (1)
-                .map      (t -> t._1());
+                .iterate    (seed, func)
+                .acceptUntil(t -> t == null)
+                .skip       (1)
+                .map        (t -> t._1());
     }
     
     /**

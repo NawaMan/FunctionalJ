@@ -2,6 +2,7 @@ package functionalj.types.choice.generator;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class ToMapBuilder implements Lines {
     
     private Stream<String> body() {
         if (choice.params.isEmpty())
-            return Stream.of("    return functionalj.map.FuncMap.empty();");
+            return Stream.of("    return " + Collections.class.getCanonicalName() + ".singletonMap(\"__tagged\", $utils.toMapValueObject(\"" + choice.name + "\"));");
         
         val params
                 = choice

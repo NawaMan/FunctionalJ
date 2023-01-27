@@ -168,10 +168,10 @@ public interface IntStreamPlusWithModify {
         val seed = IntTuple2.of(0, this.intStreamPlus());
         
         return StreamPlus
-                .iterate  (seed, func)
-                .takeUntil(t -> t == null)
-                .skip     (1)
-                .mapToInt (t -> t._1());
+                .iterate    (seed, func)
+                .acceptUntil(t -> t == null)
+                .skip       (1)
+                .mapToInt   (t -> t._1());
     }
     
     /**

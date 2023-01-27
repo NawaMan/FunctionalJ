@@ -131,7 +131,7 @@ public interface DoubleStreamPlusWithModify {
         
         return StreamPlus
                 .iterate    (seed, func)
-                .takeUntil  (t -> t == null)
+                .acceptUntil(t -> t == null)
                 .skip       (1)
                 .mapToDouble(t -> t._1());
     }

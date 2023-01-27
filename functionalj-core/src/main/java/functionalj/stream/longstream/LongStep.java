@@ -70,18 +70,18 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
         
         public LongStreamPlus inclusive() {
             if (distancePositive) {
-                return longStreamPlus.takeUntil(i -> i > end);
+                return longStreamPlus.acceptUntil(i -> i > end);
             } else {
-                return longStreamPlus.takeUntil(i -> i < end);
+                return longStreamPlus.acceptUntil(i -> i < end);
             }
         }
         
         @Override
         public LongStreamPlus longStream() {
             if (distancePositive) {
-                return longStreamPlus.takeUntil(i -> i >= end);
+                return longStreamPlus.acceptUntil(i -> i >= end);
             } else {
-                return longStreamPlus.takeUntil(i -> i <= end);
+                return longStreamPlus.acceptUntil(i -> i <= end);
             }
         }
     }

@@ -63,23 +63,23 @@ public interface DoubleFuncListWithLimit extends AsDoubleFuncList {
     }
     
     /** Accept any value while the condition is true. */
-    public default DoubleFuncList takeWhile(DoublePredicate condition) {
-        return deriveToDouble(this, stream -> stream.takeWhile(condition));
+    public default DoubleFuncList acceptWhile(DoublePredicate condition) {
+        return deriveToDouble(this, stream -> stream.acceptWhile(condition));
     }
     
     /** Accept any value while the condition is true. */
-    public default DoubleFuncList takeWhile(DoubleDoublePredicatePrimitive condition) {
-        return deriveToDouble(this, stream -> stream.takeWhile(condition));
+    public default DoubleFuncList acceptWhile(DoubleDoublePredicatePrimitive condition) {
+        return deriveToDouble(this, stream -> stream.acceptWhile(condition));
     }
     
     /** Accept any value until the condition is true. */
-    public default DoubleFuncList takeUntil(DoublePredicate condition) {
-        return deriveToDouble(this, stream -> stream.takeUntil(condition));
+    public default DoubleFuncList acceptUntil(DoublePredicate condition) {
+        return deriveToDouble(this, stream -> stream.acceptUntil(condition));
     }
     
     /** Accept any value until the condition is true. */
-    public default DoubleFuncList takeUntil(DoubleDoublePredicatePrimitive condition) {
-        return deriveToDouble(this, stream -> stream.takeUntil(condition));
+    public default DoubleFuncList acceptUntil(DoubleDoublePredicatePrimitive condition) {
+        return deriveToDouble(this, stream -> stream.acceptUntil(condition));
     }
     
     /** Accept any value while the condition is true. */

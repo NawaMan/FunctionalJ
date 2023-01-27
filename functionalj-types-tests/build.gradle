@@ -15,14 +15,15 @@ dependencies {
     compileOnly         'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     
-    
     // == Test ==
     
-    testCompileOnly         project(':functionalj-core')
-    testCompileOnly         project(':functionalj-types')
+    testImplementation      project(':functionalj-core')
+    testImplementation      project(':functionalj-types')
     testAnnotationProcessor project(':functionalj-types')
     
-    testCompileOnly 'junit:junit:4.13.2'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.hamcrest:hamcrest-all:1.3'
+    testImplementation 'org.hamcrest:hamcrest-core:1.3'
     
     testCompileOnly         'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'

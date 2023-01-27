@@ -130,10 +130,10 @@ public interface LongStreamPlusWithModify {
         val seed = LongTuple2.of(0, this.longStreamPlus());
         
         return StreamPlus
-                .iterate  (seed, func)
-                .takeUntil(t -> t == null)
-                .skip     (1)
-                .mapToLong(t -> t._1());
+                .iterate    (seed, func)
+                .acceptUntil(t -> t == null)
+                .skip       (1)
+                .mapToLong  (t -> t._1());
     }
     
     /**

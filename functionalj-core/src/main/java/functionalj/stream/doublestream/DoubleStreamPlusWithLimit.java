@@ -196,7 +196,7 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default DoubleStreamPlus takeWhile(DoublePredicate condition) {
+    public default DoubleStreamPlus acceptWhile(DoublePredicate condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
@@ -225,14 +225,14 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default DoubleStreamPlus takeWhile(DoubleAggregationToBoolean aggregationCondition) {
+    public default DoubleStreamPlus acceptWhile(DoubleAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
-        return takeWhile(condition);
+        return acceptWhile(condition);
     }
     
     /** Accept any value while the condition is true. */
     @Sequential
-    public default DoubleStreamPlus takeWhile(DoubleDoublePredicatePrimitive condition) {
+    public default DoubleStreamPlus acceptWhile(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
@@ -269,7 +269,7 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default DoubleStreamPlus takeUntil(DoublePredicate condition) {
+    public default DoubleStreamPlus acceptUntil(DoublePredicate condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
@@ -298,14 +298,14 @@ public interface DoubleStreamPlusWithLimit {
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default DoubleStreamPlus takeUntil(DoubleAggregationToBoolean aggregationCondition) {
+    public default DoubleStreamPlus acceptUntil(DoubleAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
-        return takeWhile(condition);
+        return acceptWhile(condition);
     }
     
     /** Accept any value until the condition is true. */
     @Sequential
-    public default DoubleStreamPlus takeUntil(DoubleDoublePredicatePrimitive condition) {
+    public default DoubleStreamPlus acceptUntil(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();

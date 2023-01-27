@@ -31,7 +31,9 @@ import static java.util.stream.Collectors.joining;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -84,18 +86,21 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         boolean hasError = false;
+        
+        val structTypes = collectAllStructTypes(roundEnv);
+        val choiceTypes = collectAllChoiceTypes(roundEnv);
         for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
             val element = environment.element(javaElement);
             
             val struct = element.annotation(Struct.class);
             if (struct != null) {
-                hasError = hasError | !handleStructType(element);
+                hasError = hasError | !handleStructType(element, structTypes, choiceTypes);
                 continue;
             }
             
             val choice = element.annotation(Choice.class);
             if (choice != null) {
-                hasError = hasError | !handleChoiceType(element);
+                hasError = hasError | !handleChoiceType(element, structTypes, choiceTypes);
                 continue;
             }
             
@@ -104,14 +109,40 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
-    private boolean handleStructType(InputElement element) {
+    private List<String> collectAllStructTypes(RoundEnvironment roundEnv) {
+        val allTypes = new ArrayList<String>();
+        for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
+            val element = environment.element(javaElement);
+            val struct  = element.annotation(Struct.class);
+            if (struct != null) {
+                val name = element.simpleName();
+                allTypes.add(name);
+            }
+        }
+        return allTypes;
+    }
+    
+    private List<String> collectAllChoiceTypes(RoundEnvironment roundEnv) {
+        val allTypes = new ArrayList<String>();
+        for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
+            val element = environment.element(javaElement);
+            val choice = element.annotation(Choice.class);
+            if (choice != null) {
+                val name = element.simpleName();
+                allTypes.add(name);
+            }
+        }
+        return allTypes;
+    }
+    
+    private boolean handleStructType(InputElement element, List<String> structTypes, List<String> choiceTypes) {
         val structSpec     = new SourceSpecBuilder(element);
         val sourceSpec     = structSpec.sourceSpec();
         val packageName    = structSpec.packageName();
         val specTargetName = structSpec.targetName();
         try {
             val elmStructSpec = new ElmStructSpec(sourceSpec, element);
-            val elmStruct     = new ElmStructBuilder(elmStructSpec);
+            val elmStruct     = new ElmStructBuilder(elmStructSpec, structTypes, choiceTypes);
             val baseDir       = elmStructSpec.generatedDirectory();
             val folderName    = elmStructSpec.folderName();
             val fileName      = elmStructSpec.fileName();
@@ -141,14 +172,14 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         Files.write(generatedFile.toPath(), lines);
     }
     
-    private boolean handleChoiceType(InputElement element) {
+    private boolean handleChoiceType(InputElement element, List<String> structTypes, List<String> choiceTypes) {
         val choiceSpec     = new ChoiceSpec(element);
         val sourceSpec     = choiceSpec.sourceSpec();
         val packageName    = choiceSpec.packageName();
         val specTargetName = choiceSpec.targetName();
         try {
             val elmChoiceSpec = new ElmChoiceSpec(sourceSpec, element);
-            val elmChoice     = new ElmChoiceBuilder(elmChoiceSpec);
+            val elmChoice     = new ElmChoiceBuilder(elmChoiceSpec, structTypes, choiceTypes);
             val baseDir       = elmChoiceSpec.generatedDirectory();
             val folderName    = elmChoiceSpec.folderName();
             val fileName      = elmChoiceSpec.fileName();

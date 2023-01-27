@@ -1268,37 +1268,37 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testTakeWhile() {
+    public void testacceptWhile() {
         val list = new ArrayList<Integer>();
-        assertAsString("[1, 2, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeWhile(i -> i < 4).toList());
+        assertAsString("[1, 2, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).acceptWhile(i -> i < 4).toList());
         assertAsString("[1, 2, 3, 4]", list);
-        //                       ^--- Because it needs 4 to do the check in `takeWhile`
+        //                       ^--- Because it needs 4 to do the check in `acceptWhile`
         
         list.clear();
-        assertAsString("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeWhile(i -> i > 4).toList());
+        assertAsString("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).acceptWhile(i -> i > 4).toList());
         assertAsString("[1]", list);
-        //              ^--- Because it needs 1 to do the check in `takeWhile`
+        //              ^--- Because it needs 1 to do the check in `acceptWhile`
     }
     
     @Test
     public void testTakeUtil() {
         val list = new ArrayList<Integer>();
-        assertAsString("[1, 2, 3, 4]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeUntil(i -> i > 4).toList());
+        assertAsString("[1, 2, 3, 4]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).acceptUntil(i -> i > 4).toList());
         assertAsString("[1, 2, 3, 4, 5]", list);
-        //                          ^--- Because it needs 5 to do the check in `takeUntil`
+        //                          ^--- Because it needs 5 to do the check in `acceptUntil`
         
         list.clear();
-        assertAsString("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeUntil(i -> i < 4).toList());
+        assertAsString("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).acceptUntil(i -> i < 4).toList());
         assertAsString("[1]", list);
-        //              ^--- Because it needs 1 to do the check in `takeUntil`
+        //              ^--- Because it needs 1 to do the check in `acceptUntil`
     }
     
     @Test
     public void testSkipTake() {
         val list = new ArrayList<Integer>();
-        assertAsString("[3, 4, 5, 4, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).skipWhile(i -> i < 3).takeUntil(i -> i < 3).toList());
+        assertAsString("[3, 4, 5, 4, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).skipWhile(i -> i < 3).acceptUntil(i -> i < 3).toList());
         assertAsString("[1, 2, 3, 4, 5, 4, 3, 2]", list);
-        //              ^--^-----------------^--- Because it needs these number to do the check in `skipWhile` and `takeWhile`
+        //              ^--^-----------------^--- Because it needs these number to do the check in `skipWhile` and `acceptWhile`
     }
     
     //-- StreamPlusWithMap --

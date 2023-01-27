@@ -63,23 +63,23 @@ public interface LongFuncListWithLimit extends AsLongFuncList {
     }
     
     /** Accept any value while the condition is true. */
-    public default LongFuncList takeWhile(LongPredicate condition) {
-        return deriveToLong(this, stream -> stream.takeWhile(condition));
+    public default LongFuncList acceptWhile(LongPredicate condition) {
+        return deriveToLong(this, stream -> stream.acceptWhile(condition));
     }
     
     /** Accept any value while the condition is true. */
-    public default LongFuncList takeWhile(LongBiPredicatePrimitive condition) {
-        return deriveToLong(this, stream -> stream.takeWhile(condition));
+    public default LongFuncList acceptWhile(LongBiPredicatePrimitive condition) {
+        return deriveToLong(this, stream -> stream.acceptWhile(condition));
     }
     
     /** Accept any value until the condition is true. */
-    public default LongFuncList takeUntil(LongPredicate condition) {
-        return deriveToLong(this, stream -> stream.takeUntil(condition));
+    public default LongFuncList acceptUntil(LongPredicate condition) {
+        return deriveToLong(this, stream -> stream.acceptUntil(condition));
     }
     
     /** Accept any value until the condition is true. */
-    public default LongFuncList takeUntil(LongBiPredicatePrimitive condition) {
-        return deriveToLong(this, stream -> stream.takeUntil(condition));
+    public default LongFuncList acceptUntil(LongBiPredicatePrimitive condition) {
+        return deriveToLong(this, stream -> stream.acceptUntil(condition));
     }
     
     /** Accept any value while the condition is true. */
