@@ -191,7 +191,7 @@ public class GeneratorTest {
                 + "        \n"
                 + "    }\n"
                 + "    public java.util.Map<String, Object> __toMap() {\n"
-                + "        return functionalj.map.FuncMap.empty();\n"
+                + "        return java.util.Collections.singletonMap(\"__tagged\", $utils.toMapValueObject(\"White\"));\n"
                 + "    }\n"
                 + "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n"
                 + "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n"
@@ -482,7 +482,7 @@ public class GeneratorTest {
                 "    return getChoiceSchema();\n" + 
                 "}\n" + 
                 "\n" + 
-                "private final ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
+                "private final transient ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
                 "@Override public ColorFirstSwitch match() {\n" + 
                 "     return __switch;\n" + 
                 "}\n" + 
@@ -579,7 +579,7 @@ public class GeneratorTest {
                 "    return getChoiceSchema();\n" + 
                 "}\n" + 
                 "\n" + 
-                "private final ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
+                "private final transient ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
                 "@Override public ColorFirstSwitch match() {\n" + 
                 "     return __switch;\n" + 
                 "}\n" + 
