@@ -33,5 +33,4 @@ public interface IntToCharFunction {
      * @return the function result
      */
     char applyAsChar(int value);
-    
 }

@@ -28,13 +28,15 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class EnumerationBackedIterator<DATA> implements Iterator<DATA> {
-    
-    private final Enumeration<DATA>  enumeration;
+
+    private final Enumeration<DATA> enumeration;
+
     private DATA next;
-    
+
     public EnumerationBackedIterator(Enumeration<DATA> enumeration) {
         this.enumeration = enumeration;
     }
+
     @Override
     public boolean hasNext() {
         try {
@@ -44,9 +46,9 @@ public class EnumerationBackedIterator<DATA> implements Iterator<DATA> {
             return false;
         }
     }
+
     @Override
     public DATA next() {
         return next;
     }
-    
 }

@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,7 +25,6 @@ package functionalj.types.input;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
@@ -34,14 +33,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 import functionalj.types.struct.generator.model.Concrecity;
-import lombok.val;
 
 public interface InputMethodElement extends InputElement {
     
@@ -58,7 +56,6 @@ public interface InputMethodElement extends InputElement {
         public Concrecity concrecity() {
             if (isDefault())
                 return Concrecity.DEFAULT;
-            
             return super.concrecity();
         }
         
@@ -70,7 +67,7 @@ public interface InputMethodElement extends InputElement {
         @Override
         public boolean isAbstract() {
             // Seriously ... no other way?
-            try (val writer = new StringWriter()) {
+            try (StringWriter writer = new StringWriter()) {
                 environment.elementUtils.printElements(writer, executableElement);
                 return writer.toString().contains(" abstract ");
             } catch (IOException exception) {
@@ -86,53 +83,49 @@ public interface InputMethodElement extends InputElement {
         
         @Override
         public InputType receiverType() {
-            val receiverType = executableElement.getReceiverType();
+            TypeMirror receiverType = executableElement.getReceiverType();
             return InputType.of(environment, receiverType);
         }
         
         @Override
         public InputType returnType() {
-            val returnType = executableElement.getReturnType();
+            TypeMirror returnType = executableElement.getReturnType();
             return InputType.of(environment, returnType);
         }
         
         @Override
         public List<? extends InputVariableElement> parameters() {
-            return executableElement
-                    .getParameters().stream()
-                    .map    (element -> (VariableElement)element)
-                    .map    (element -> environment.element(element))
-                    .collect(toList());
+            return executableElement.getParameters().stream().map(element -> (VariableElement) element).map(element -> environment.element(element)).collect(toList());
         }
         
         @Override
         public List<? extends InputTypeParameterElement> typeParameters() {
-            return executableElement
-                    .getTypeParameters().stream()
-                    .map    (element -> InputTypeParameterElement.of(environment, element))
-                    .collect(toList());
+            return executableElement.getTypeParameters().stream().map(element -> InputTypeParameterElement.of(environment, element)).collect(toList());
         }
         
         public List<? extends InputType> thrownTypes() {
-            return executableElement
-                    .getThrownTypes().stream()
-                    .map    (element -> InputType.of(environment, element))
-                    .collect(Collectors.toList());
+            return executableElement.getThrownTypes().stream().map(element -> InputType.of(environment, element)).collect(Collectors.toList());
         }
         
-        //== Builder ==
-        
+        // == Builder ==
         @SuppressWarnings("rawtypes")
         public static class Builder extends InputElement.Mock.Builder {
             
-            protected boolean                                   isDefault;
-            protected boolean                                   isAbstract;
-            protected boolean                                   isVarArgs;
-            protected InputType                                 receiverType;
-            protected InputType                                 returnType;
-            protected List<? extends InputElement>              parameters;
+            protected boolean isDefault;
+            
+            protected boolean isAbstract;
+            
+            protected boolean isVarArgs;
+            
+            protected InputType receiverType;
+            
+            protected InputType returnType;
+            
+            protected List<? extends InputElement> parameters;
+            
             protected List<? extends InputTypeParameterElement> typeParameters;
-            protected List<? extends InputType>                 thrownTypes;
+            
+            protected List<? extends InputType> thrownTypes;
             
             public Builder simpleName(String simpleName) {
                 super.simpleName(simpleName);
@@ -149,7 +142,7 @@ public interface InputMethodElement extends InputElement {
                 return this;
             }
             
-            public Builder modifiers(Modifier ... modifiers) {
+            public Builder modifiers(Modifier... modifiers) {
                 super.modifiers(modifiers);
                 return this;
             }
@@ -164,7 +157,7 @@ public interface InputMethodElement extends InputElement {
                 return this;
             }
             
-            public Builder enclosedElements(InputElement ... enclosedElements) {
+            public Builder enclosedElements(InputElement... enclosedElements) {
                 super.enclosedElements(enclosedElements);
                 return this;
             }
@@ -228,7 +221,7 @@ public interface InputMethodElement extends InputElement {
                 return this;
             }
             
-            public Builder parameters(InputElement ... parameters) {
+            public Builder parameters(InputElement... parameters) {
                 return parameters(asList(parameters));
             }
             
@@ -237,7 +230,7 @@ public interface InputMethodElement extends InputElement {
                 return this;
             }
             
-            public Builder typeParameters(InputTypeParameterElement ... typeParameters) {
+            public Builder typeParameters(InputTypeParameterElement... typeParameters) {
                 return typeParameters(asList(typeParameters));
             }
             
@@ -246,7 +239,7 @@ public interface InputMethodElement extends InputElement {
                 return this;
             }
             
-            public Builder thrownTypes(InputType ... thrownTypes) {
+            public Builder thrownTypes(InputType... thrownTypes) {
                 return thrownTypes(asList(thrownTypes));
             }
             
@@ -254,15 +247,7 @@ public interface InputMethodElement extends InputElement {
                 this.thrownTypes = thrownTypes;
                 return this;
             }
-            
         }
-//        
-//        public static InputMethodElement fromMethod(Method method) {
-//            val name = method.getName();
-//            val type = method.getReturnType();
-//            val params = method.getParameters()
-//        }
-        
     }
     
     public default InputTypeElement asTypeElement() {
@@ -296,5 +281,4 @@ public interface InputMethodElement extends InputElement {
     public List<? extends InputTypeParameterElement> typeParameters();
     
     public List<? extends InputType> thrownTypes();
-    
 }

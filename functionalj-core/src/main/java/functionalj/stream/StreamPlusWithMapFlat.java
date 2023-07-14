@@ -24,7 +24,6 @@
 package functionalj.stream;
 
 import java.util.function.Function;
-
 import functionalj.function.aggregator.Aggregation;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
@@ -34,59 +33,57 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
-
 public interface StreamPlusWithMapFlat<DATA> {
-    
+
     public StreamPlus<DATA> streamPlus();
-    
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public default <T> StreamPlus<T> mapFlat(Function<? super DATA, ? extends Iterable<? extends T>> mapper) {
-        return streamPlus().flatMap(item -> (StreamPlus)StreamPlus.from(mapper.apply(item)));
+        return streamPlus().flatMap(item -> (StreamPlus) StreamPlus.from(mapper.apply(item)));
     }
-    
+
     public default IntStreamPlus mapFlatToInt(Function<? super DATA, ? extends IntFuncList> mapper) {
         return streamPlus().map(mapper).flatMapToInt(list -> list.intStreamPlus());
     }
-    
+
     public default LongStreamPlus mapFlatToLong(Function<? super DATA, ? extends LongFuncList> mapper) {
         return streamPlus().map(mapper).flatMapToLong(list -> list.longStreamPlus());
     }
-    
+
     public default DoubleStreamPlus mapFlatToDouble(Function<? super DATA, ? extends DoubleFuncList> mapper) {
         return streamPlus().map(mapper).flatMapToDouble(list -> list.doubleStreamPlus());
     }
-    
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public default <T> StreamPlus<T> mapFlatToObj(Function<? super DATA, ? extends Iterable<? extends T>> mapper) {
         val streamPlus = streamPlus();
-        return streamPlus.flatMap(item -> (StreamPlus)StreamPlus.from(mapper.apply(item)));
+        return streamPlus.flatMap(item -> (StreamPlus) StreamPlus.from(mapper.apply(item)));
     }
-    
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public default <T> StreamPlus<T> mapFlat(Aggregation<? super DATA, ? extends Iterable<? extends T>> aggregation) {
         val mapper = aggregation.newAggregator();
-        return streamPlus().flatMap(item -> (StreamPlus)StreamPlus.from(mapper.apply(item)));
+        return streamPlus().flatMap(item -> (StreamPlus) StreamPlus.from(mapper.apply(item)));
     }
-    
+
     public default IntStreamPlus mapFlatToInt(Aggregation<? super DATA, ? extends IntFuncList> aggregation) {
         val mapper = aggregation.newAggregator();
         return streamPlus().map(mapper).flatMapToInt(list -> list.intStreamPlus());
     }
-    
+
     public default LongStreamPlus mapFlatToLong(Aggregation<? super DATA, ? extends LongFuncList> aggregation) {
         val mapper = aggregation.newAggregator();
         return streamPlus().map(mapper).flatMapToLong(list -> list.longStreamPlus());
     }
-    
+
     public default DoubleStreamPlus mapFlatToDouble(Aggregation<? super DATA, ? extends DoubleFuncList> aggregation) {
         val mapper = aggregation.newAggregator();
         return streamPlus().map(mapper).flatMapToDouble(list -> list.doubleStreamPlus());
     }
-    
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public default <T> StreamPlus<T> mapFlatToObj(Aggregation<? super DATA, ? extends Iterable<? extends T>> aggregation) {
         val mapper = aggregation.newAggregator();
-        return streamPlus().flatMap(item -> (StreamPlus)StreamPlus.from(mapper.apply(item)));
+        return streamPlus().flatMap(item -> (StreamPlus) StreamPlus.from(mapper.apply(item)));
     }
-    
 }

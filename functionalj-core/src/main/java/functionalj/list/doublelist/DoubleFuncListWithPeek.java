@@ -24,7 +24,6 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.DoubleFuncList.deriveFrom;
-
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
@@ -32,39 +31,34 @@ import java.util.function.DoublePredicate;
 import java.util.function.Predicate;
 
 public interface DoubleFuncListWithPeek extends AsDoubleFuncList {
-    
-    /** Peek only the value that is selected with selector. */
-    public default DoubleFuncList peekBy(
-            DoublePredicate selector,
-            DoubleConsumer  theConsumer) {
+
+    /**
+     * Peek only the value that is selected with selector.
+     */
+    public default DoubleFuncList peekBy(DoublePredicate selector, DoubleConsumer theConsumer) {
         return DoubleFuncList.from(() -> doubleStreamPlus().peekBy(selector, theConsumer));
     }
-    
+
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
-    
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
-    
-    /** Peek the mapped value using the mapper. */
-    public default <T> DoubleFuncList peekAs(
-            DoubleFunction<T>   mapper,
-            Consumer<? super T> theConsumer) {
+    /**
+     * Peek the mapped value using the mapper.
+     */
+    public default <T> DoubleFuncList peekAs(DoubleFunction<T> mapper, Consumer<? super T> theConsumer) {
         return deriveFrom(this, stream -> stream.peekAs(mapper, theConsumer));
     }
-    
-    /** Peek only the mapped value using the mapper. */
-    public default <T> DoubleFuncList peekBy(
-            DoubleFunction<T>    mapper,
-            Predicate<? super T> selector,
-            DoubleConsumer       theConsumer) {
+
+    /**
+     * Peek only the mapped value using the mapper.
+     */
+    public default <T> DoubleFuncList peekBy(DoubleFunction<T> mapper, Predicate<? super T> selector, DoubleConsumer theConsumer) {
         return deriveFrom(this, stream -> stream.peekBy(mapper, selector, theConsumer));
     }
-    
-    /** Peek only the mapped value using the mapper that is selected by the selector. */
-    public default <T> DoubleFuncList peekAs(
-            DoubleFunction<T>    mapper,
-            Predicate<? super T> selector,
-            Consumer<? super T>  theConsumer) {
+
+    /**
+     * Peek only the mapped value using the mapper that is selected by the selector.
+     */
+    public default <T> DoubleFuncList peekAs(DoubleFunction<T> mapper, Predicate<? super T> selector, Consumer<? super T> theConsumer) {
         return deriveFrom(this, stream -> stream.peekAs(mapper, selector, theConsumer));
     }
-    
 }

@@ -24,28 +24,26 @@
 package functionalj.types.struct.generator;
 
 import java.util.stream.Stream;
-
 import functionalj.types.IRequireTypes;
 import functionalj.types.Type;
 
 /**
  * Classes implementing this interface as a term in code.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface IGenerateTerm extends IRequireTypes {
-    
+
     @Override
     public default Stream<Type> requiredTypes() {
         return Stream.empty();
     }
-    
+
     /**
      * Generate term.
-     * 
+     *
      * @param  currentPackage  the current package.
      * @return  the term.
      */
     public String toTerm(String currentPackage);
-    
 }

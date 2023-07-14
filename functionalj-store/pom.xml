@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>io.functionalj</groupId>
+        <artifactId>functionalj</artifactId>
+        <version>0.5.9.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <artifactId>functionalj-store</artifactId>
+    <name>functionalj-store</name>
+    <description>
+        The module for FunctionalJ Store.
+    </description>
+    
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>io.nullablej</groupId>
+            <artifactId>nullablej</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.defaultj</groupId>
+            <artifactId>defaultj-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.defaultj</groupId>
+            <artifactId>defaultj-core</artifactId>
+        </dependency>
+            
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <compilerArgument>-proc:none</compilerArgument>
+                            <includes>
+                                <include>defaultj/annotations/processor/DefaultAnnotationValidator.java</include>
+                                <include>defaultj/annotations/processor/DefaultInterfaceAnnotationValidator.java</include>
+                                <include>defaultj/annotations/processor/ImplementedByAnnotationValidator.java</include>
+                                <include>defaultj/annotations/processor/PostConstructoAnnotationValidator.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-project</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

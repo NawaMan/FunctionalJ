@@ -31,55 +31,56 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
-
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import lombok.val;
 
-
 @FunctionalInterface
-public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoCloseable, Pipeable<DoubleIteratorPlus>  {
-    
-    public static DoubleIteratorPlus of(double ... ds) {
+public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoCloseable, Pipeable<DoubleIteratorPlus> {
+
+    public static DoubleIteratorPlus of(double... ds) {
         return DoubleIteratorPlus.from(DoubleStreamPlus.of(ds));
     }
+
     public static DoubleIteratorPlus from(DoubleStream stream) {
         if (stream instanceof DoubleStreamPlus) {
-            return new StreamBackedDoubleIteratorPlus(((DoubleStreamPlus)stream).doubleStream());
+            return new StreamBackedDoubleIteratorPlus(((DoubleStreamPlus) stream).doubleStream());
         }
         return DoubleIteratorPlus.from(stream.iterator());
     }
+
     public static DoubleIteratorPlus from(PrimitiveIterator.OfDouble iterator) {
         if (iterator instanceof DoubleIteratorPlus)
-             return (DoubleIteratorPlus)iterator;
-        else return new DoubleIteratorPlus() {
-            @Override
-            public OfDouble asIterator() {
-                return iterator;
-            }
-        };
+            return (DoubleIteratorPlus) iterator;
+        else
+            return new DoubleIteratorPlus() {
+
+                @Override
+                public OfDouble asIterator() {
+                    return iterator;
+                }
+            };
     }
-    
+
     public default DoubleIteratorPlus __data() throws Exception {
         return this;
     }
-    
+
     public default void close() {
-        
     }
-    
+
     public default DoubleIteratorPlus onClose(Runnable closeHandler) {
         return this;
     }
-    
+
     public PrimitiveIterator.OfDouble asIterator();
-    
+
     public default DoubleIteratorPlus iterator() {
         return DoubleIteratorPlus.from(asIterator());
     }
-    
+
     @Override
     public default boolean hasNext() {
         val hasNext = asIterator().hasNext();
@@ -88,81 +89,77 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
         }
         return hasNext;
     }
-    
+
     @Override
     public default double nextDouble() {
         return asIterator().nextDouble();
     }
-    
+
     @Override
     public default Double next() {
         return asIterator().next();
     }
-    
+
     public default DoubleStreamPlus stream() {
-        val iterable = (DoubleIterable)()->this;
+        val iterable = (DoubleIterable) () -> this;
         return DoubleStreamPlus.from(StreamSupport.doubleStream(iterable.spliterator(), false));
     }
-    
+
     public default DoubleFuncList toList() {
         return stream().toImmutableList();
     }
 
     public default OptionalDouble pullNext() {
         if (hasNext())
-             return OptionalDouble.of(nextDouble());
-        else return OptionalDouble.empty();
+            return OptionalDouble.of(nextDouble());
+        else
+            return OptionalDouble.empty();
     }
-    
+
     public default AutoCloseableResult<DoubleIteratorPlus> pullNext(int count) {
         double[] array = stream().limit(count).toArray();
         if ((array.length == 0) && count != 0)
             return AutoCloseableResult.from(Result.ofNoMore());
-        
         val iterator = new ArrayBackedDoubleIteratorPlus(array);
         return AutoCloseableResult.valueOf(iterator);
     }
-    
+
     public default DoubleIteratorPlus useNext(DoubleConsumer usage) {
         if (hasNext()) {
             val next = nextDouble();
             usage.accept(next);
         }
-        
         return this;
     }
-    
+
     public default DoubleIteratorPlus useNext(int count, Consumer<DoubleStreamPlus> usage) {
         double[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
             try (val iterator = new ArrayBackedDoubleIteratorPlus(array)) {
-                val stream   = iterator.stream();
+                val stream = iterator.stream();
                 usage.accept(stream);
             }
         }
-        
         return this;
     }
-    
+
     public default <TARGET> Result<TARGET> mapNext(DoubleFunction<TARGET> mapper) {
         if (hasNext()) {
-            val next  = nextDouble();
+            val next = nextDouble();
             val value = mapper.apply(next);
             return Result.valueOf(value);
         } else {
             return Result.ofNoMore();
         }
     }
-    
+
     public default <TARGET> Result<TARGET> mapNext(int count, Function<DoubleStreamPlus, TARGET> mapper) {
         val array = stream().limit(count).toArray();
         if ((array.length == 0) && (count != 0))
             return Result.ofNoMore();
-        
-        val input  = ArrayBackedDoubleIteratorPlus.from(array);
+        val input = ArrayBackedDoubleIteratorPlus.from(array);
         val stream = input.stream();
         val value = mapper.apply(stream);
         return Result.valueOf(value);
     }
-    
 }

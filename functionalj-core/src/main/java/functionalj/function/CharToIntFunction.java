@@ -33,5 +33,4 @@ public interface CharToIntFunction {
      * @return the function result
      */
     int applyAsInt(char value);
-    
 }

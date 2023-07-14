@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="functionalj.stream.StreamPlusTest" time="0.856" tests="192" errors="0" skipped="3" failures="0">
+  <properties>
+    <property name="sun.desktop" value="gnome"/>
+    <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="java.specification.version" value="1.8"/>
+    <property name="sun.cpu.isalist" value=""/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/test-classes:/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/classes:/home/nawaman/.m2/repository/io/nullablej/nullablej/4.0.6.0/nullablej-4.0.6.0.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-api/2.2.0.5/defaultj-api-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-core/2.2.0.5/defaultj-core-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-annotations/2.2.0.5/defaultj-annotations-2.2.0.5.jar:/home/nawaman/.m2/repository/org/projectlombok/lombok/1.18.28/lombok-1.18.28.jar:/home/nawaman/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/nawaman/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:"/>
+    <property name="java.vm.vendor" value="Homebrew"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="user.timezone" value=""/>
+    <property name="java.vm.specification.version" value="1.8"/>
+    <property name="os.name" value="Linux"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.boot.library.path" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/amd64"/>
+    <property name="sun.java.command" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/surefire/surefirebooter-20230714013047780_3.jar /home/nawaman/dev/git/FunctionalJ/functionalj-core/target/surefire 2023-07-14T01-30-47_751-jvmRun1 surefire-20230714013047780_1tmp surefire_0-20230714013047780_2tmp"/>
+    <property name="surefire.test.class.path" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/test-classes:/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/classes:/home/nawaman/.m2/repository/io/nullablej/nullablej/4.0.6.0/nullablej-4.0.6.0.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-api/2.2.0.5/defaultj-api-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-core/2.2.0.5/defaultj-core-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-annotations/2.2.0.5/defaultj-annotations-2.2.0.5.jar:/home/nawaman/.m2/repository/org/projectlombok/lombok/1.18.28/lombok-1.18.28.jar:/home/nawaman/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/nawaman/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/home/nawaman"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.home" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre"/>
+    <property name="basedir" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core"/>
+    <property name="file.separator" value="/"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="surefire.real.class.path" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/surefire/surefirebooter-20230714013047780_3.jar"/>
+    <property name="sun.boot.class.path" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/resources.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/rt.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/sunrsasign.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/jsse.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/jce.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/charsets.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/jfr.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/classes"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="1.8.0_372-linuxbre_2023_04_25_03_07-b00"/>
+    <property name="user.name" value="nawaman"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="6.2.0-25-generic"/>
+    <property name="java.endorsed.dirs" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/endorsed"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="localRepository" value="/home/nawaman/.m2/repository"/>
+    <property name="java.vendor.url.bug" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="java.version" value="1.8.0_372"/>
+    <property name="user.dir" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.library.path" value="/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.vendor" value="Homebrew"/>
+    <property name="java.vm.version" value="25.372-b00"/>
+    <property name="java.specification.maintenance.version" value="4"/>
+    <property name="java.ext.dirs" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="52.0"/>
+  </properties>
+  <testcase name="testZipOf_merge_int" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testGroupByKey_collector" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFillNull_getter_setter_supplier" classname="functionalj.stream.StreamPlusTest" time="0.005"/>
+  <testcase name="testMinBy_withMapper" classname="functionalj.stream.StreamPlusTest" time="0.015"/>
+  <testcase name="testSortedBy" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMaxBy_withMapper" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testCalculate2" classname="functionalj.stream.StreamPlusTest" time="0.002"/>
+  <testcase name="testCalculate3" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testCalculate4" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testCalculate5" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testCalculate6" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testAllMatch" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testStreamOf" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testGenerate" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapToMap_1" classname="functionalj.stream.StreamPlusTest" time="0.002"/>
+  <testcase name="testMapToMap_2" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToMap_3" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapToMap_4" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToMap_5" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapToMap_6" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToMap_7" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapToMap_8" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapToMap_9" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToObjIf" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testCalculate4_combine" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testExclude" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testacceptWhile" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testPeekClass" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFilterIn_collection" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFillNull_lens_function" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFilterAsLong" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testSkipLimitLong" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSegmentSize" classname="functionalj.stream.StreamPlusTest" time="0.0">
+    <skipped message="Tested wiht FuncListTest"/>
+  </testcase>
+  <testcase name="testFilterAsInt" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFilterClass" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToArray" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testSkipUntil" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSkipWhile" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testZipOf_merge" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapToTuple_2" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToTuple_3" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToTuple_4" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToTuple_5" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapToTuple_6" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapFirst_2" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapFirst_3" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapFirst_4" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapFirst_5" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapFirst_6" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToMap_withMergedValue" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSkipTake" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMap" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToJavaList" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFindAny" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFilterWithIndex" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testClose" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testCount" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testEmpty" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testLimit" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapIf" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMaxBy" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMerge" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMinBy" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSpawn" classname="functionalj.stream.StreamPlusTest" time="0.616"/>
+  <testcase name="testToMap" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToSet" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFlatMap" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testJoin" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testPeek" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testPipe" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSize" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSkip" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapWithIndex_combine" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testCalculate6_combine" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToIntClosed" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testForEach" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testPeekAs_map" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testPopulateArray_withOffsetLength" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToObjWithIndex_combine" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testPeekBy_map" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapGroupCount_notEnough" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testFilterNonNull" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testOf" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFindAny_withPredicate" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToMutableList" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToListString" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testZipWith" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMinMaxBy" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapWithPrevCount" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testExcludeNull_withMapper" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testCalculate" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSkipLimitLongMinus" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testForEachWithIndex" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testAccumulate1" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testAccumulate2" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testForEachOrdered" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFlatMapIf" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFromEnumerator" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testFillNull_lens_supplier" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFilterClass_withPredicate" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFlatMapToInt" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFindAny_withMapper_withPredicate" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testSkipLimitLongNull" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFindFirst_withMapper_withPredicate" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSortedByComparator" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFromIterator" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToIntArray" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testExcludeIn_collection" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFillNull" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapWithPrevCombiner" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testExcludeAny" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testCalculate3_combine" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testTakeUtil" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testCompound" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testChoose_AllowUnpaired" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testJoin_withDelimiter" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFlatMapOnly" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMinMaxBy_withMapper" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToMap_withMappedMergedValue" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testPipeable" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testAnyMatch" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapGroup_combine" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testRestate1" classname="functionalj.stream.StreamPlusTest" time="0.006"/>
+  <testcase name="testRestate2" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMapOnly" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToIterator" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testGroupByKey_aggregate" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testEmptyStream" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testGroupByKey" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testExcludeNull" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testCollect" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testCombine" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testZipOf_toTuple" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testPopulateArray_withOffset" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToFuncList" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFindFirst_withPredicate" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testCalculate5_combine" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapMulti" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToInt" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToObj" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFillNull_lens" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testFilterNonNull_withMapper" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToByteArray" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToMap_10" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapToMap_11" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testFillNull_getter_setter" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testDistinct" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFillNull_getter_setter_function" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFindFirst" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testMinMaxBy_withMapper_withComparator" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFilterAsDouble" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToMap_withValue" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testChoose" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testClosed" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testConcat" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testEquals" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFilter" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testNoneMatch" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFilterAsObject" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testAppendWith" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFromStream" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testPrependWith" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMinMax" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToArrayList" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapThen_2" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapThen_3" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapThen_4" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapThen_5" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapThen_6" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testPeekAs" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testPeekBy" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSegmentSize_function" classname="functionalj.stream.StreamPlusTest" time="0.0">
+    <skipped message="Tested wiht FuncListTest"/>
+  </testcase>
+  <testcase name="testSplit_map_2" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSplit_map_3" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testSplit_map_4" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testSplit_map_5" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testSplit_map_6" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testReduce" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSorted" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testIterate" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToList" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testFrom_range" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testCalculate2_combine" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testIterator" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSplit_1" classname="functionalj.stream.StreamPlusTest" time="0.001"/>
+  <testcase name="testSpawn_limit" classname="functionalj.stream.StreamPlusTest" time="0.156"/>
+  <testcase name="testMapWithPrev" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testSegmentStartCondition" classname="functionalj.stream.StreamPlusTest" time="0.0">
+    <skipped message="Tested wiht FuncListTest"/>
+  </testcase>
+  <testcase name="testFilterOnly" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testToImmutableList" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testMapWithIndex" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+  <testcase name="testPopulateArray" classname="functionalj.stream.StreamPlusTest" time="0.0"/>
+</testsuite>

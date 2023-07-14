@@ -1,0 +1,230 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>io.functionalj</groupId>
+    <artifactId>functionalj</artifactId>
+    <version>0.5.9.0</version>
+    <packaging>pom</packaging>
+    
+    <name>functionalj</name>
+    
+    <url>https://github.com/NawaMan/FunctionJ</url>
+    <description>
+        FunctionalJ.io is a library for writing functional style code in Java.
+        It aims be a practical expansion to functional programming added in Java 8.
+        FunctionalJ.io is a pure Java library with all code written in Java 
+          so its usages will be just like other Java library.
+        No additional build steps or tools are required outside of adding dependencies.
+        FuncionalJ.io works with Java 8 and up. 
+    </description>
+    
+    <properties>
+        <!--==== JAVA+SOURCE ====-->
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <!--==== SECRET ====-->
+        <gpg.executable>/usr/bin/gpg</gpg.executable>
+        <gpg.keyname>${env.FUNCIONALJ_KEYNAME}</gpg.keyname>
+        <gpg.passphrase>${env.NAWAMAN_SIGNING_PASSWORD}</gpg.passphrase>
+        
+        <!--==== VERSIONS ====-->
+        
+        <!-- PLUGINS -->
+        <build-helper-plugin.version>3.4.0</build-helper-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
+        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <nexus-staging-plugin.version>1.6.8</nexus-staging-plugin.version>
+        
+        <!-- DEPENDENCY -->
+        <lombok.version>1.18.28</lombok.version>
+        <defaultj.version>2.2.0.5</defaultj.version>
+        <nullablej.version>4.0.6.0</nullablej.version>
+        
+        <!-- TEST -->
+        <junit.version>4.13.2</junit.version>
+    </properties>
+    
+    <scm>
+        <connection>scm:git:git://github.com/NawaMan/FunctionJ.git</connection>
+        <developerConnection>scm:git:ssh://github.com/NawaMan/FunctionJ.git</developerConnection>
+        <url>http://github.com/NawaMan/FunctionJ/tree/master</url>
+    </scm>
+    
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <id>NawaMan</id>
+            <name>Nawapunth Manusitthipol</name>
+            <email>nawa@nawaman.net</email>
+            <organization>NawaMan</organization>
+            <organizationUrl>http://nawaman.net</organizationUrl>
+        </developer>
+    </developers>
+    
+    <modules>
+        <module>functionalj-core</module>
+        <module>functionalj-types</module>
+        <!--module>functionalj-store</module>
+        <module>functionalj-elm</module>
+        <module>functionalj-all</module>
+        <module>functionalj-types-tests</module-->
+    </modules>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.functionalj</groupId>
+                <artifactId>functionalj-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.functionalj</groupId>
+                <artifactId>functionalj-store</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.functionalj</groupId>
+                <artifactId>functionalj-types</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.functionalj</groupId>
+                <artifactId>functionalj-elm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.functionalj</groupId>
+                <artifactId>functionalj-all</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.functionalj</groupId>
+                <artifactId>functionalj-types-tests</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>io.defaultj</groupId>
+                <artifactId>defaultj-api</artifactId>
+                <version>${defaultj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.defaultj</groupId>
+                <artifactId>defaultj-core</artifactId>
+                <version>${defaultj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.nullablej</groupId>
+                <artifactId>nullablej</artifactId>
+                <version>${nullablej.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- PUBLISH -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${nexus-staging-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <skipNexusStagingDeployMojo>${nexus.staging.skip}</skipNexusStagingDeployMojo>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <keyname>${gpg.keyname}</keyname>
+                            <passphrase>${gpg.passphrase}</passphrase>
+                            <skip>${gpg.signing.skip}</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

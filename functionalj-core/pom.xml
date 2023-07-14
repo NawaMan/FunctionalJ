@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>io.functionalj</groupId>
+        <artifactId>functionalj</artifactId>
+        <version>0.5.9.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <artifactId>functionalj-core</artifactId>
+    <name>functionalj-core</name>
+    <description>
+        The module for FunctionalJ Core.
+    </description>
+    
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>io.nullablej</groupId>
+            <artifactId>nullablej</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.defaultj</groupId>
+            <artifactId>defaultj-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.defaultj</groupId>
+            <artifactId>defaultj-core</artifactId>
+        </dependency>
+            
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

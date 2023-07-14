@@ -33,5 +33,4 @@ public interface ToCharFunction<T> {
      * @return the function result
      */
     char applyAsChar(T value);
-    
 }

@@ -26,19 +26,17 @@ package functionalj.function;
 import java.util.function.BiPredicate;
 
 public interface LongObjBiPredicate<DATA> extends Func2<Long, DATA, Boolean>, BiPredicate<Long, DATA> {
-    
+
     public boolean testAsLong(long input1, DATA input2);
-    
+
     public default Boolean applyUnsafe(Long input1, DATA input2) throws Exception {
         return testAsLong(input1, input2);
     }
-    
-    
+
     public static <D> boolean test(BiPredicate<Long, D> function, long input1, D input2) {
         if (function instanceof LongObjBiPredicate) {
-            return ((LongObjBiPredicate<D>)function).testAsLong(input1, input2);
+            return ((LongObjBiPredicate<D>) function).testAsLong(input1, input2);
         }
         return function.test(input1, input2);
     }
-    
 }

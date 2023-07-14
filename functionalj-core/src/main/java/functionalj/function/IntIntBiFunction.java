@@ -27,17 +27,17 @@ import functionalj.functions.ThrowFuncs;
 
 @FunctionalInterface
 public interface IntIntBiFunction<TARGET> extends Func2<Integer, Integer, TARGET> {
-    
+
     public TARGET applyIntUnsafe(int input1, int input2) throws Exception;
-    
+
     public default TARGET applyInt(int input1, int input2) {
         try {
             return applyIntUnsafe(input1, input2);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
-    
+
     @Override
     public default TARGET applyUnsafe(Integer input1, Integer input2) throws Exception {
         return applyIntUnsafe(input1, input2);

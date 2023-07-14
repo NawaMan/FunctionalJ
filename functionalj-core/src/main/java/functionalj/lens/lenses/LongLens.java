@@ -27,27 +27,24 @@ import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 import lombok.val;
 
-
 @FunctionalInterface
-public interface LongLens<HOST> 
-        extends
-            LongAccess<HOST>,
-            ComparableLens<HOST, Long> {
-    
-    
+public interface LongLens<HOST> extends LongAccess<HOST>, ComparableLens<HOST, Long> {
+
     public static class Impl<H> extends ComparableLens.Impl<H, Long> implements Named, LongLens<H> {
+
         public Impl(String name, LensSpec<H, Long> spec) {
             super(name, spec);
         }
     }
-    
+
     public static <HOST> LongLens<HOST> of(String name, LensSpec<HOST, Long> spec) {
         return new Impl<>(name, spec);
     }
+
     public static <HOST> LongLens<HOST> of(LensSpec<HOST, Long> spec) {
         return of(null, spec);
     }
-    
+
     @Override
     default Long apply(HOST host) {
         LensSpec<HOST, Long> lensSpec = lensSpec();
@@ -59,11 +56,10 @@ public interface LongLens<HOST>
     public default long applyAsLong(HOST host) {
         LensSpec<HOST, Long> lensSpec = lensSpec();
         if (lensSpec instanceof PrimitiveLensSpecs.LongLensSpecPrimitive) {
-            val spec  = (PrimitiveLensSpecs.LongLensSpecPrimitive)lensSpec;
+            val spec = (PrimitiveLensSpecs.LongLensSpecPrimitive) lensSpec;
             val value = spec.applyAsLong(host);
             return value;
         }
-        
         val value = lensSpec.apply(host);
         return value;
     }
@@ -73,5 +69,4 @@ public interface LongLens<HOST>
         LensSpec<HOST, Long> lensSpec = lensSpec();
         return lensSpec.apply(host);
     }
-    
 }

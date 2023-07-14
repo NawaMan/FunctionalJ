@@ -25,45 +25,38 @@ package functionalj.function;
 
 import java.util.function.BiFunction;
 import java.util.function.IntBinaryOperator;
-
 import lombok.val;
-
-
 
 @FunctionalInterface
 public interface IntBiFunctionPrimitive extends ToIntBiIntFunction<Integer> {
-    
+
     public static IntBiFunctionPrimitive of(BiFunction<Integer, Integer, Integer> function) {
         if (function instanceof IntBiFunctionPrimitive)
-            return (IntBiFunctionPrimitive)function;
-        
+            return (IntBiFunctionPrimitive) function;
         return (i, j) -> function.apply(i, j);
     }
+
     public static IntBiFunctionPrimitive intFunction(BiFunction<Integer, Integer, Integer> function) {
         if (function instanceof IntBiFunctionPrimitive)
-            return (IntBiFunctionPrimitive)function;
-        
+            return (IntBiFunctionPrimitive) function;
         return (i, j) -> function.apply(i, j);
     }
+
     public static IntBiFunctionPrimitive intFunction(IntBinaryOperator function) {
         if (function instanceof IntBiFunctionPrimitive)
-            return (IntBiFunctionPrimitive)function;
-        
+            return (IntBiFunctionPrimitive) function;
         return (i, j) -> function.applyAsInt(i, j);
     }
-    
-    
+
     public int applyAsIntAndInt(int data, int intValue);
-    
+
     public default int applyAsInt(Integer data, int intValue) {
         return applyAsIntAndInt(data, intValue);
     }
-    
-    
+
     public static int apply(ToIntBiIntFunction<Integer> function, int value, int anotherValue) {
         if (function instanceof IntBiFunctionPrimitive)
-            return ((IntBiFunctionPrimitive)function).applyAsIntAndInt(value, anotherValue);
-        
+            return ((IntBiFunctionPrimitive) function).applyAsIntAndInt(value, anotherValue);
         val resValue = function.applyAsInt(value, anotherValue);
         return resValue;
     }

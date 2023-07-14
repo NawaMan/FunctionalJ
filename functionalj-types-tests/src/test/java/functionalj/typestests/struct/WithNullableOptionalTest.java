@@ -24,17 +24,16 @@
 package functionalj.typestests.struct;
 
 import java.util.Optional;
-
 import functionalj.types.Struct;
 import nullablej.nullable.Nullable;
 
 public class WithNullableOptionalTest {
 
-    @Struct(name="ParentWithNullableOptional")
+    @Struct(name = "ParentWithNullableOptional")
     public static interface IParent3 {
-        
+
         public Nullable<String> nullableName();
+
         public Optional<String> optionalName();
-        
     }
 }

@@ -32,42 +32,43 @@ import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorToLongPlus;
 import functionalj.stream.intstream.collect.IntCollectorToLongPlus;
 import functionalj.stream.longstream.collect.LongCollectorToLongPlus;
 import lombok.val;
 
-public interface CollectorToLongPlus<DATA, ACCUMULATED> 
-                    extends CollectorPlus<DATA, ACCUMULATED, Long> {
-    
-    public Supplier<ACCUMULATED>         supplier();
+public interface CollectorToLongPlus<DATA, ACCUMULATED> extends CollectorPlus<DATA, ACCUMULATED, Long> {
+
+    public Supplier<ACCUMULATED> supplier();
+
     public BiConsumer<ACCUMULATED, DATA> accumulator();
-    public BinaryOperator<ACCUMULATED>   combiner();
-    public ToLongFunction<ACCUMULATED>   finisherToLong();
-    public Set<Characteristics>          characteristics();
-    
+
+    public BinaryOperator<ACCUMULATED> combiner();
+
+    public ToLongFunction<ACCUMULATED> finisherToLong();
+
+    public Set<Characteristics> characteristics();
+
     public default Function<ACCUMULATED, Long> finisher() {
         val finisher = finisherToLong();
         return accumulated -> {
             return finisher.applyAsLong(accumulated);
         };
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public default <SOURCE> CollectorToLongPlus<SOURCE, ACCUMULATED> of(Function<SOURCE, DATA> mapper) {
         return new DerivedCollectorToLongPlus.FromObj<>(this, mapper);
     }
-    
+
     public default IntCollectorToLongPlus<ACCUMULATED> of(IntFunction<DATA> mapper) {
         return new DerivedCollectorToLongPlus.FromInt<>(this, mapper);
     }
-    
+
     public default LongCollectorToLongPlus<ACCUMULATED> of(LongFunction<DATA> mapper) {
         return new DerivedCollectorToLongPlus.FromLong<>(this, mapper);
     }
-    
+
     public default DoubleCollectorToLongPlus<ACCUMULATED> of(DoubleFunction<DATA> mapper) {
         return new DerivedCollectorToLongPlus.FromDouble<>(this, mapper);
     }

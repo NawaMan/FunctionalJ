@@ -28,29 +28,26 @@ import functionalj.stream.collect.Collected;
 import functionalj.stream.collect.CollectorPlus;
 
 public interface Aggregator<SOURCE, TARGET> extends Func1<SOURCE, TARGET> {
-    
+
     public Collected<SOURCE, ?, TARGET> asCollected();
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl<SOURCE, TARGET> implements Aggregator<SOURCE, TARGET> {
-    
+
         private final Collected<SOURCE, ?, TARGET> collected;
-        
+
         public Impl(CollectorPlus<SOURCE, ?, TARGET> collector) {
             this.collected = Collected.collectedOf(collector);
         }
-        
+
         @Override
         public TARGET applyUnsafe(SOURCE input) throws Exception {
             collected.accumulate(input);
             return collected.finish();
         }
-        
+
         public Collected<SOURCE, ?, TARGET> asCollected() {
             return collected;
         }
-        
     }
-    
 }

@@ -30,20 +30,21 @@ import java.lang.annotation.Target;
 
 /**
  * Method with this marker is a terminal operation and that the stream will closed and any listener to onClose will be notified.e
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Terminal {
-    
+
     /**
      * This flag indicates that the implementation is know to NOT be terminal for some reason
      *   and it is planned to be fixed at later point.
-     **/
+     */
     boolean knownIssue() default false;
-    
-    /** Any comment for the marker */
+
+    /**
+     * Any comment for the marker
+     */
     String comment() default "";
-    
 }

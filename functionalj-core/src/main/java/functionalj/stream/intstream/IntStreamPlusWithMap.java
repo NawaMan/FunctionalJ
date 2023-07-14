@@ -26,67 +26,54 @@ package functionalj.stream.intstream;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
-
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
-
 public interface IntStreamPlusWithMap {
-    
+
     public IntStreamPlus intStreamPlus();
-    
-    
-    /** Map the value using the mapper. */
+
+    /**
+     * Map the value using the mapper.
+     */
     public default <T> StreamPlus<T> mapToObj(IntFunction<? extends T> mapper) {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(mapper);
     }
-    
-    /** Map the value using the mapper only when the condition is true. */
-    public default IntStreamPlus mapOnly(
-            IntPredicate     condition, 
-            IntUnaryOperator mapper) {
+
+    /**
+     * Map the value using the mapper only when the condition is true.
+     */
+    public default IntStreamPlus mapOnly(IntPredicate condition, IntUnaryOperator mapper) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .map(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
-                            ? mapper.applyAsInt(value)
-                            : value;
-                    return mapped;
-                });
+        return streamPlus.map(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.applyAsInt(value) : value;
+            return mapped;
+        });
     }
-    
-    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
-    public default IntStreamPlus mapIf(
-            IntPredicate     condition, 
-            IntUnaryOperator mapper, 
-            IntUnaryOperator elseMapper) {
+
+    /**
+     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
+     */
+    public default IntStreamPlus mapIf(IntPredicate condition, IntUnaryOperator mapper, IntUnaryOperator elseMapper) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .map(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue 
-                            ? mapper    .applyAsInt(value) 
-                            : elseMapper.applyAsInt(value);
-                    return mapped;
-                });
+        return streamPlus.map(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.applyAsInt(value) : elseMapper.applyAsInt(value);
+            return mapped;
+        });
     }
-    
-    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
-    public default <T> StreamPlus<T> mapToObjIf(
-            IntPredicate   condition, 
-            IntFunction<T> mapper, 
-            IntFunction<T> elseMapper) {
+
+    /**
+     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
+     */
+    public default <T> StreamPlus<T> mapToObjIf(IntPredicate condition, IntFunction<T> mapper, IntFunction<T> elseMapper) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .mapToObj(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue 
-                            ? mapper    .apply(value) 
-                            : elseMapper.apply(value);
-                    return mapped;
-                });
+        return streamPlus.mapToObj(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.apply(value) : elseMapper.apply(value);
+            return mapped;
+        });
     }
-    
 }

@@ -27,70 +27,62 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import lombok.val;
 
-
 public abstract class DoubleAggregation<TARGET> extends Aggregation<Double, TARGET> {
-    
+
     public static <A, T> DoubleAggregation<T> from(DoubleCollectorPlus<A, T> collector) {
         return new DoubleAggregation.Impl<T>(collector);
     }
-    
-    //== Instance == 
-    
+
+    // == Instance ==
     public abstract DoubleCollectorPlus<?, TARGET> doubleCollectorPlus();
-    
-    
+
     @Override
     public CollectorPlus<Double, ?, TARGET> collectorPlus() {
         return doubleCollectorPlus();
     }
-    
+
     public DoubleAggregator<TARGET> newAggregator() {
         val collector = doubleCollectorPlus();
         return new DoubleAggregator.Impl<>(collector);
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public <INPUT> Aggregation<INPUT, TARGET> of(ToDoubleFunction<INPUT> mapper) {
         val newCollector = doubleCollectorPlus().of(mapper);
         return new Aggregation.Impl<>(newCollector);
     }
-    
+
     public IntAggregation<TARGET> of(IntToDoubleFunction mapper) {
         val newCollector = doubleCollectorPlus().of(mapper);
         return new IntAggregation.Impl<>(newCollector);
     }
-    
+
     public LongAggregation<TARGET> of(LongToDoubleFunction mapper) {
         val newCollector = doubleCollectorPlus().of(mapper);
         return new LongAggregation.Impl<>(newCollector);
     }
-    
+
     public DoubleAggregation<TARGET> of(DoubleUnaryOperator mapper) {
         val newCollector = doubleCollectorPlus().of(mapper);
         return new DoubleAggregation.Impl<>(newCollector);
     }
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl<TRG> extends DoubleAggregation<TRG> {
-        
+
         private final DoubleCollectorPlus<?, TRG> collector;
-        
+
         public Impl(DoubleCollectorPlus<?, TRG> collector) {
             this.collector = collector;
         }
-        
+
         @Override
         public DoubleCollectorPlus<?, TRG> doubleCollectorPlus() {
             return collector;
         }
-        
     }
-    
 }

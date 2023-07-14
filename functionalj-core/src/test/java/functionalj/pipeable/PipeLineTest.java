@@ -29,75 +29,46 @@ import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
 import static functionalj.pipeable.WhenNull.defaultTo;
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
-
 import lombok.val;
 
-
-
 public class PipeLineTest {
-    
+
     @Test
     public void testBasic() {
-        val pipeLine = PipeLine
-                .from(theString.length())
-                .then(theInteger.time(2))
-                .then(theInteger.asString())
-                .thenReturn();
-        val pipeLine2 = PipeLine
-                .from(theString.toUpperCase())
-                .thenReturn();
-        
+        val pipeLine = PipeLine.from(theString.length()).then(theInteger.time(2)).then(theInteger.asString()).thenReturn();
+        val pipeLine2 = PipeLine.from(theString.toUpperCase()).thenReturn();
         val str = Pipeable.of("Test");
-        assertEquals("8",    pipeLine.apply("Test"));
+        assertEquals("8", pipeLine.apply("Test"));
         assertEquals("TEST", pipeLine2.apply("Test"));
-        assertEquals("8",    str.pipeTo(pipeLine));
+        assertEquals("8", str.pipeTo(pipeLine));
         assertEquals("TEST", str.pipeTo(pipeLine2));
-        assertEquals("8",    str.pipeTo(pipeLine, pipeLine2));
-        
-        val strNull = Pipeable.of((String)null);
+        assertEquals("8", str.pipeTo(pipeLine, pipeLine2));
+        val strNull = Pipeable.of((String) null);
         assertEquals(null, pipeLine.applyToNull());
         assertEquals(null, pipeLine2.applyToNull());
         assertEquals(null, strNull.pipeTo(pipeLine));
         assertEquals(null, strNull.pipeTo(pipeLine2));
         assertEquals(null, strNull.pipeTo(pipeLine, pipeLine2));
     }
-    
+
     @Test
     public void testHandlingNull() {
-        val pipeLine = PipeLine.ofNullable(String.class)
-                .then(theString.length())
-                .then(theInteger.time(2))
-                .then(theInteger.asString())
-                .thenReturnOrElse("<none>");
-        val pipeLine2 = PipeLine
-                .from(theString.toUpperCase())
-                .thenReturn();
-        
+        val pipeLine = PipeLine.ofNullable(String.class).then(theString.length()).then(theInteger.time(2)).then(theInteger.asString()).thenReturnOrElse("<none>");
+        val pipeLine2 = PipeLine.from(theString.toUpperCase()).thenReturn();
         assertEquals("<none>", pipeLine.applyToNull());
-        assertEquals(null,     pipeLine2.applyToNull());
-        
-        val str = Pipeable.of((String)null);
+        assertEquals(null, pipeLine2.applyToNull());
+        val str = Pipeable.of((String) null);
         assertEquals("<none>", str.pipeTo(pipeLine));
-        assertEquals(null,     str.pipeTo(pipeLine2));
+        assertEquals(null, str.pipeTo(pipeLine2));
         assertEquals("<NONE>", str.pipeTo(pipeLine, pipeLine2));
     }
-    
+
     @Test
     public void testHandlingNullCombine() {
-        val pipeLine = PipeLine.ofNullable(String.class)
-                .then($S.length())
-                .then($I.time(2))
-                .then($I.asString())
-                .then(defaultTo("<none>"))
-                .then($S.toUpperCase())
-                .thenReturn();
-        
+        val pipeLine = PipeLine.ofNullable(String.class).then($S.length()).then($I.time(2)).then($I.asString()).then(defaultTo("<none>")).then($S.toUpperCase()).thenReturn();
         assertEquals("<NONE>", pipeLine.applyToNull());
-        
-        val str = Pipeable.of((String)null);
+        val str = Pipeable.of((String) null);
         assertEquals("<NONE>", str.pipeTo(pipeLine));
     }
-    
 }

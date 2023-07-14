@@ -25,21 +25,17 @@ package functionalj.function;
 
 import java.util.function.ToIntBiFunction;
 
-
 @FunctionalInterface
 public interface DoubleIntegerToIntegerFunction extends ToIntBiFunction<Double, Integer> {
-    
+
     public int applyAsDoubleAndInteger(double doubleValue, int intValue);
-    
+
     @Override
     public default int applyAsInt(Double doubleValue, Integer intValue) {
         return applyAsDoubleAndInteger(doubleValue, intValue);
     }
-    
+
     public static int apply(ToIntBiFunction<Double, Integer> function, double doubleValue, Integer intValue) {
-        return (function instanceof DoubleDoubleToIntFunctionPrimitive)
-                ? ((DoubleDoubleToIntFunctionPrimitive)function).applyAsDoubleAndDouble(doubleValue, intValue)
-                : function.applyAsInt(doubleValue, intValue);
+        return (function instanceof DoubleDoubleToIntFunctionPrimitive) ? ((DoubleDoubleToIntFunctionPrimitive) function).applyAsDoubleAndDouble(doubleValue, intValue) : function.applyAsInt(doubleValue, intValue);
     }
-    
 }

@@ -26,28 +26,24 @@ package functionalj.list.doublelist;
 import functionalj.stream.doublestream.AsDoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 
-
 class AsDoubleFuncListHelper {
-    
+
     static DoubleFuncList funcListOf(AsDoubleFuncList asFuncList) {
         return asFuncList.asDoubleFuncList();
     }
-    
+
     static DoubleStreamPlus streamPlusOf(AsDoubleFuncList asFuncList) {
         return asFuncList.asDoubleFuncList().doubleStreamPlus();
     }
-    
 }
 
 @FunctionalInterface
 public interface AsDoubleFuncList extends AsDoubleStreamPlus {
-    
+
     public DoubleFuncList asDoubleFuncList();
-    
-    
+
     @Override
     public default DoubleStreamPlus doubleStreamPlus() {
         return asDoubleFuncList().doubleStreamPlus();
     }
-    
 }

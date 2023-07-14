@@ -29,82 +29,87 @@ import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 
 public class IntLongTuple implements Tuple2<Integer, Long>, Map.Entry<Integer, Long> {
-    
-    public static  IntLongTuple of(int i1, long i2) {
+
+    public static IntLongTuple of(int i1, long i2) {
         return new IntLongTuple(i1, i2);
     }
-    public static  IntLongTuple tuple(int i1, long i2) {
+
+    public static IntLongTuple tuple(int i1, long i2) {
         return new IntLongTuple(i1, i2);
     }
-    
+
     public final int _1;
+
     public final long _2;
-    
+
     public IntLongTuple(int _1, long _2) {
         this._1 = _1;
         this._2 = _2;
     }
-    
+
     public int _int1() {
         return _1;
     }
+
     public long _long2() {
         return _2;
     }
-    
+
     public Integer _1() {
         return _1;
     }
+
     public Long _2() {
         return _2;
     }
-    
+
     @Override
     public Integer getKey() {
         return _1();
     }
-    
+
     @Override
     public Long getValue() {
         return _2();
     }
-    
+
     public IntLongTuple mapToInt(IntUnaryOperator mapper1, LongUnaryOperator mapper2) {
         return IntLongTuple.of(mapper1.applyAsInt(_1), mapper2.applyAsLong(_2));
     }
-    
+
     public IntLongTuple map1ToInt(IntUnaryOperator mapper) {
         return IntLongTuple.of(mapper.applyAsInt(_1), _2);
     }
-    
+
     public IntLongTuple map2ToLong(LongUnaryOperator mapper) {
         return IntLongTuple.of(_1, mapper.applyAsLong(_2));
     }
-    
+
     public IntLongTuple mapKeyToInt(IntUnaryOperator mapper) {
         return IntLongTuple.of(mapper.applyAsInt(_1), _2);
     }
-    
+
     public IntLongTuple mapValueToInt(LongToIntFunction mapper) {
         return IntLongTuple.of(_1, mapper.applyAsInt(_2));
     }
-    
+
     @Override
     public Long setValue(Long value) {
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
     public String toString() {
         return Tuple.toString(this);
     }
+
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
+
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);
     }
-    
 }

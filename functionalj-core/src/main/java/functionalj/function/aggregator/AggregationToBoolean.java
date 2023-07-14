@@ -27,68 +27,61 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
-
 import functionalj.stream.collect.CollectorToBooleanPlus;
 import lombok.val;
 
-public abstract class  AggregationToBoolean<SOURCE> extends Aggregation<SOURCE, Boolean> {
-    
+public abstract class AggregationToBoolean<SOURCE> extends Aggregation<SOURCE, Boolean> {
+
     public static <S, A> AggregationToBoolean<S> from(CollectorToBooleanPlus<S, A> collector) {
         return new AggregationToBoolean.Impl<>(collector);
     }
-    
-    //== Instance == 
-    
+
+    // == Instance ==
     public abstract CollectorToBooleanPlus<SOURCE, ?> collectorToBooleanPlus();
-    
-    
+
     @Override
     public CollectorToBooleanPlus<SOURCE, ?> collectorPlus() {
         return collectorToBooleanPlus();
     }
-    
+
     public AggregatorToBoolean<SOURCE> newAggregator() {
         val collector = collectorToBooleanPlus();
         return new AggregatorToBoolean.Impl<>(collector);
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public <INPUT> AggregationToBoolean<INPUT> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorToBooleanPlus().of(mapper);
         return new AggregationToBoolean.Impl<>(newCollector);
     }
-    
+
     public IntAggregationToBoolean ofInt(IntFunction<SOURCE> mapper) {
         val newCollector = collectorToBooleanPlus().of(mapper);
         return new IntAggregationToBoolean.Impl(newCollector);
     }
-    
+
     public LongAggregationToBoolean ofLong(LongFunction<SOURCE> mapper) {
         val newCollector = collectorToBooleanPlus().of(mapper);
         return new LongAggregationToBoolean.Impl(newCollector);
     }
-    
+
     public DoubleAggregationToBoolean ofDouble(DoubleFunction<SOURCE> mapper) {
         val newCollector = collectorToBooleanPlus().of(mapper);
         return new DoubleAggregationToBoolean.Impl(newCollector);
     }
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl<SRC> extends AggregationToBoolean<SRC> {
-        
+
         private final CollectorToBooleanPlus<SRC, ?> collector;
-        
+
         public Impl(CollectorToBooleanPlus<SRC, ?> collector) {
             this.collector = collector;
         }
-        
+
         @Override
         public CollectorToBooleanPlus<SRC, ?> collectorToBooleanPlus() {
             return collector;
         }
-        
     }
-    
 }

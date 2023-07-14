@@ -27,17 +27,17 @@ import functionalj.functions.ThrowFuncs;
 
 @FunctionalInterface
 public interface LongLongBiFunction<TARGET> extends Func2<Long, Long, TARGET> {
-    
+
     public TARGET applyLongUnsafe(long input1, long input2) throws Exception;
-    
+
     public default TARGET applyLong(long input1, long input2) {
         try {
             return applyLongUnsafe(input1, input2);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
-    
+
     @Override
     public default TARGET applyUnsafe(Long input1, Long input2) throws Exception {
         return applyLongUnsafe(input1, input2);

@@ -26,98 +26,104 @@ package functionalj.lens.lenses;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
-
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import nullablej.nullable.Nullable;
 
 class BigDecimalAccessConstants {
+
     public static final BigDecimal MINUS_ONE = BigDecimal.ZERO.subtract(BigDecimal.ONE);
 }
 
-
 @FunctionalInterface
-public interface BigDecimalAccess<HOST> 
-                    extends 
-                        NumberAccess<HOST, BigDecimal, BigDecimalAccess<HOST>>, 
-                        ConcreteAccess<HOST, BigDecimal, BigDecimalAccess<HOST>> {
+public interface BigDecimalAccess<HOST> extends NumberAccess<HOST, BigDecimal, BigDecimalAccess<HOST>>, ConcreteAccess<HOST, BigDecimal, BigDecimalAccess<HOST>> {
 
     @Override
     public default BigDecimalAccess<HOST> newAccess(Function<HOST, BigDecimal> access) {
         return access::apply;
     }
-    
-    
+
     public default MathOperators<BigDecimal> __mathOperators() {
         return __BigDecimalMathOperators;
     }
-    
+
     public static MathOperators<BigDecimal> __BigDecimalMathOperators = new MathOperators<BigDecimal>() {
-        
+
         @Override
         public BigDecimal zero() {
             return BigDecimal.ZERO;
         }
+
         @Override
         public BigDecimal one() {
             return BigDecimal.ONE;
         }
+
         @Override
         public BigDecimal minusOne() {
             return BigDecimalAccessConstants.MINUS_ONE;
         }
+
         @Override
         public Integer asInteger(BigDecimal number) {
             return asBigDecimal(number).intValue();
         }
+
         @Override
         public Long asLong(BigDecimal number) {
             return asBigDecimal(number).longValue();
         }
+
         @Override
         public Double asDouble(BigDecimal number) {
             return asBigDecimal(number).doubleValue();
         }
+
         @Override
         public BigInteger asBigInteger(BigDecimal number) {
             return asBigDecimal(number).toBigInteger();
         }
+
         @Override
         public BigDecimal asBigDecimal(BigDecimal number) {
             return Nullable.of(number).orElse(BigDecimal.ZERO);
         }
-        
+
         @Override
         public BigDecimal add(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.add(v2);
         }
+
         @Override
         public BigDecimal subtract(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.subtract(v2);
         }
+
         @Override
         public BigDecimal multiply(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.multiply(v2);
         }
+
         @Override
         public BigDecimal divide(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.divide(v2);
         }
+
         @Override
         public BigDecimal remainder(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.remainder(v2);
         }
-        
+
         @Override
         public Tuple2<BigDecimal, BigDecimal> divideAndRemainder(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
@@ -125,59 +131,58 @@ public interface BigDecimalAccess<HOST>
             BigDecimal[] rs = v1.divideAndRemainder(v2);
             return Tuple.of(rs[0], rs[1]);
         }
-        
+
         @Override
         public BigDecimal pow(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.pow(v2.intValue());
         }
-        
+
         @Override
         public BigDecimal abs(BigDecimal number) {
             BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
             return v.abs();
         }
+
         @Override
         public BigDecimal negate(BigDecimal number) {
             BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
             return v.negate();
         }
+
         @Override
         public BigDecimal signum(BigDecimal number) {
             BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
             return BigDecimal.valueOf(v.signum());
         }
-        
+
         @Override
         public BigDecimal min(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.min(v2);
         }
+
         @Override
         public BigDecimal max(BigDecimal number1, BigDecimal number2) {
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.max(v2);
         }
-        
     };
-    
     // TODO - Add more.
-    
-//    Math.acos(doubleValue)
-//    Math.asin(doubleValue)
-//    Math.tan(doubleValue)
-//    Math.tan2(doubleValue)
-//    Math.cos(doubleValue)
-//    Math.cosh(doubleValue)
-//    Math.sin(doubleValue)
-//    Math.sinh(doubleValue)
-//    Math.tan(doubleValue)
-//    Math.tanh(doubleValue)
-//    
-//    Math.toDegrees(doubleValue)
-//    Math.toRadians(doubleValue)
-    
+    // Math.acos(doubleValue)
+    // Math.asin(doubleValue)
+    // Math.tan(doubleValue)
+    // Math.tan2(doubleValue)
+    // Math.cos(doubleValue)
+    // Math.cosh(doubleValue)
+    // Math.sin(doubleValue)
+    // Math.sinh(doubleValue)
+    // Math.tan(doubleValue)
+    // Math.tanh(doubleValue)
+    // 
+    // Math.toDegrees(doubleValue)
+    // Math.toRadians(doubleValue)
 }

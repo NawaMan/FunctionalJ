@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,42 +24,39 @@
 package functionalj.stream.longstream;
 
 import static functionalj.stream.longstream.LongStreamPlusHelper.sequential;
-
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
 import java.util.stream.StreamSupport;
-
 import functionalj.function.LongBiPredicatePrimitive;
 import functionalj.function.aggregator.LongAggregationToBoolean;
 import functionalj.stream.markers.Sequential;
 import lombok.val;
 
-
 public interface LongStreamPlusWithLimit {
-    
+
     public LongStreamPlus longStreamPlus();
-    
-    /** Limit the size of the stream to the given size. */
+
+    /**
+     * Limit the size of the stream to the given size.
+     */
     public default LongStreamPlus limit(Long maxSize) {
         val streamPlus = longStreamPlus();
-        return ((maxSize == null) || (maxSize.longValue() < 0))
-                ? streamPlus
-                : streamPlus
-                    .limit((long)maxSize);
+        return ((maxSize == null) || (maxSize.longValue() < 0)) ? streamPlus : streamPlus.limit((long) maxSize);
     }
-    
-    /** Skip to the given offset position. */
+
+    /**
+     * Skip to the given offset position.
+     */
     public default LongStreamPlus skip(Long offset) {
         val streamPlus = longStreamPlus();
-        return ((offset == null) || (offset.longValue() < 0))
-                ? streamPlus
-                : streamPlus
-                    .skip((long)offset);
+        return ((offset == null) || (offset.longValue() < 0)) ? streamPlus : streamPlus.skip((long) offset);
     }
-    
-    /** Skip any value while the condition is true. */
+
+    /**
+     * Skip any value while the condition is true.
+     */
     @Sequential
     public default LongStreamPlus skipWhile(LongPredicate condition) {
         val streamPlus = longStreamPlus();
@@ -68,32 +65,38 @@ public interface LongStreamPlusWithLimit {
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
-                
                 if (!condition.test(e))
                     isStillTrue.set(false);
-                
                 return !isStillTrue.get();
             });
         });
     }
-    
-    /** Skip any value while the condition is true. */
+
+    /**
+     * Skip any value while the condition is true.
+     */
     @Sequential
     public default LongStreamPlus skipWhile(LongAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return skipWhile(condition);
     }
-    
-    /** Skip any value while the condition is true. */
+
+    /**
+     * Skip any value while the condition is true.
+     */
     @Sequential
     public default LongStreamPlus skipWhile(LongBiPredicatePrimitive condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
+
                 boolean isStillSkipping = true;
-                boolean isFirst         = true;
-                long    prevValue       = Long.MIN_VALUE;
+
+                boolean isFirst = true;
+
+                long prevValue = Long.MIN_VALUE;
+
                 @Override
                 public boolean tryAdvance(LongConsumer consumer) {
                     LongConsumer action = elem -> {
@@ -125,8 +128,10 @@ public interface LongStreamPlusWithLimit {
             return LongStreamPlus.from(newStream);
         });
     }
-    
-    /** Skip any value until the condition is true. */
+
+    /**
+     * Skip any value until the condition is true.
+     */
     @Sequential
     public default LongStreamPlus skipUntil(LongPredicate condition) {
         val streamPlus = longStreamPlus();
@@ -135,32 +140,38 @@ public interface LongStreamPlusWithLimit {
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
-                
                 if (condition.test(e))
                     isStillTrue.set(false);
-                
                 return !isStillTrue.get();
             });
         });
     }
-    
-    /** Skip any value until the condition is true. */
+
+    /**
+     * Skip any value until the condition is true.
+     */
     @Sequential
     public default LongStreamPlus skipUntil(LongAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return skipUntil(condition);
     }
-    
-    /** Skip any value until the condition is true. */
+
+    /**
+     * Skip any value until the condition is true.
+     */
     @Sequential
     public default LongStreamPlus skipUntil(LongBiPredicatePrimitive condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
+
                 boolean isStillSkipping = true;
-                boolean isFirst         = true;
-                long    prevValue       = Long.MIN_VALUE;
+
+                boolean isFirst = true;
+
+                long prevValue = Long.MIN_VALUE;
+
                 @Override
                 public boolean tryAdvance(LongConsumer consumer) {
                     LongConsumer action = elem -> {
@@ -192,15 +203,19 @@ public interface LongStreamPlusWithLimit {
             return LongStreamPlus.from(newStream);
         });
     }
-    
-    /** Accept any value while the condition is true. */
+
+    /**
+     * Accept any value while the condition is true.
+     */
     @Sequential
     public default LongStreamPlus acceptWhile(LongPredicate condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
+
                 boolean stillGoing = true;
+
                 @Override
                 public boolean tryAdvance(LongConsumer consumer) {
                     if (stillGoing) {
@@ -221,24 +236,32 @@ public interface LongStreamPlusWithLimit {
             return LongStreamPlus.from(newStream);
         });
     }
-    
-    /** Accept any value while the condition is true. */
+
+    /**
+     * Accept any value while the condition is true.
+     */
     @Sequential
     public default LongStreamPlus acceptWhile(LongAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return acceptWhile(condition);
     }
-    
-    /** Accept any value while the condition is true. */
+
+    /**
+     * Accept any value while the condition is true.
+     */
     @Sequential
     public default LongStreamPlus acceptWhile(LongBiPredicatePrimitive condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
+
                 boolean stillGoing = true;
-                boolean isFirst    = true;
-                long    prevValue  = -1;
+
+                boolean isFirst = true;
+
+                long prevValue = -1;
+
                 @Override
                 public boolean tryAdvance(LongConsumer consumer) {
                     if (stillGoing) {
@@ -265,15 +288,19 @@ public interface LongStreamPlusWithLimit {
             return LongStreamPlus.from(newStream);
         });
     }
-    
-    /** Accept any value until the condition is true. */
+
+    /**
+     * Accept any value until the condition is true.
+     */
     @Sequential
     public default LongStreamPlus acceptUntil(LongPredicate condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
+
                 boolean stillGoing = true;
+
                 @Override
                 public boolean tryAdvance(LongConsumer consumer) {
                     if (stillGoing) {
@@ -294,24 +321,32 @@ public interface LongStreamPlusWithLimit {
             return LongStreamPlus.from(newStream);
         });
     }
-    
-    /** Accept any value until the condition is true. */
+
+    /**
+     * Accept any value until the condition is true.
+     */
     @Sequential
     public default LongStreamPlus acceptUntil(LongAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return acceptWhile(condition);
     }
-    
-    /** Accept any value until the condition is true. */
+
+    /**
+     * Accept any value until the condition is true.
+     */
     @Sequential
     public default LongStreamPlus acceptUntil(LongBiPredicatePrimitive condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
+
                 boolean stillGoing = true;
-                boolean isFirst    = true;
-                long    prevValue  = -1;
+
+                boolean isFirst = true;
+
+                long prevValue = -1;
+
                 @Override
                 public boolean tryAdvance(LongConsumer consumer) {
                     if (stillGoing) {
@@ -338,16 +373,19 @@ public interface LongStreamPlusWithLimit {
             return LongStreamPlus.from(newStream);
         });
     }
-    
-    /** Accept any value until the condition is false - include the item that the condition is false. */
+
+    /**
+     * Accept any value until the condition is false - include the item that the condition is false.
+     */
     @Sequential
     public default LongStreamPlus dropAfter(LongPredicate condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
+
                 boolean stillGoing = true;
-                
+
                 @Override
                 public boolean tryAdvance(LongConsumer consumer) {
                     if (stillGoing) {
@@ -367,24 +405,32 @@ public interface LongStreamPlusWithLimit {
             return LongStreamPlus.from(newStream);
         });
     }
-    
-    /** Accept any value until the condition is false - include the item that the condition is false. */
+
+    /**
+     * Accept any value until the condition is false - include the item that the condition is false.
+     */
     @Sequential
     public default LongStreamPlus dropAfter(LongAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return dropAfter(condition);
     }
-    
-    /** Accept any value until the condition is false - include the item that the condition is false. */
+
+    /**
+     * Accept any value until the condition is false - include the item that the condition is false.
+     */
     @Sequential
     public default LongStreamPlus dropAfter(LongBiPredicatePrimitive condition) {
         val streamPlus = longStreamPlus();
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
+
                 boolean stillGoing = true;
-                boolean isFirst    = true;
-                long    prevValue  = -1;
+
+                boolean isFirst = true;
+
+                long prevValue = -1;
+
                 @Override
                 public boolean tryAdvance(LongConsumer consumer) {
                     if (stillGoing) {
@@ -410,5 +456,4 @@ public interface LongStreamPlusWithLimit {
             return LongStreamPlus.from(newStream);
         });
     }
-    
 }

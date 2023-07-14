@@ -25,14 +25,13 @@ package functionalj.types;
 
 /**
  * Classes implements this interface requires post construct processing.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface IPostConstruct {
-    
+
     /**
      * This method should be called after a construction.
      */
     public void postConstruct();
-    
 }

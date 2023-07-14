@@ -24,16 +24,15 @@
 package functionalj.typestests.struct;
 
 import java.util.List;
-
 import functionalj.types.Struct;
 
 public class WithListTest {
 
-    @Struct(name="ParentWithList")
+    @Struct(name = "ParentWithList")
     public static interface IParent2 {
-        
+
         public List<String> names();
-        public List<Child>  children();
-        
+
+        public List<Child> children();
     }
 }

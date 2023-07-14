@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: functionalj.list.FuncListModeTest
+-------------------------------------------------------------------------------
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in functionalj.list.FuncListModeTest

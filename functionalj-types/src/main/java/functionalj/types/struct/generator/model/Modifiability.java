@@ -27,7 +27,7 @@ import functionalj.types.struct.generator.IGenerateTerm;
 
 /**
  * Representation of modifier.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public enum Modifiability implements IGenerateTerm {
@@ -36,14 +36,11 @@ public enum Modifiability implements IGenerateTerm {
     
     @Override
     public String toTerm(String currentPackage) {
-        return (this == MODIFIABLE)
-                ? null
-                : name().toLowerCase();
+        return (this == MODIFIABLE) ? null : name().toLowerCase();
     }
     
     @Override
     public String toString() {
         return toTerm(null);
     }
-    
 }

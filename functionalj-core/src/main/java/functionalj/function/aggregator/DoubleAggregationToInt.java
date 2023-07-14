@@ -27,70 +27,62 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToIntPlus;
 import lombok.val;
 
-
 public abstract class DoubleAggregationToInt extends DoubleAggregation<Integer> {
-    
+
     public static <A> DoubleAggregationToInt from(DoubleCollectorToIntPlus<A> collector) {
         return new DoubleAggregationToInt.Impl(collector);
     }
-    
-    //== Instance == 
-    
+
+    // == Instance ==
     public abstract DoubleCollectorToIntPlus<?> doubleCollectorToIntPlus();
-    
-    
+
     @Override
     public DoubleCollectorPlus<?, Integer> doubleCollectorPlus() {
         return doubleCollectorToIntPlus();
     }
-    
+
     public DoubleAggregatorToInt newAggregator() {
         val collector = doubleCollectorToIntPlus();
         return new DoubleAggregatorToInt.Impl(collector);
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public <INPUT> AggregationToInt<INPUT> of(ToDoubleFunction<INPUT> mapper) {
         val newCollector = doubleCollectorToIntPlus().of(mapper);
         return new AggregationToInt.Impl<INPUT>(newCollector);
     }
-    
+
     public IntAggregationToInt ofInt(IntToDoubleFunction mapper) {
         val newCollector = doubleCollectorToIntPlus().of(mapper);
         return new IntAggregationToInt.Impl(newCollector);
     }
-    
+
     public LongAggregationToInt ofLong(LongToDoubleFunction mapper) {
         val newCollector = doubleCollectorToIntPlus().of(mapper);
         return new LongAggregationToInt.Impl(newCollector);
     }
-    
+
     public DoubleAggregationToInt ofDouble(DoubleUnaryOperator mapper) {
         val newCollector = doubleCollectorToIntPlus().of(mapper);
         return new DoubleAggregationToInt.Impl(newCollector);
     }
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl extends DoubleAggregationToInt {
-        
+
         private final DoubleCollectorToIntPlus<?> collector;
-        
+
         public Impl(DoubleCollectorToIntPlus<?> collector) {
             this.collector = collector;
         }
-        
+
         @Override
         public DoubleCollectorToIntPlus<?> doubleCollectorToIntPlus() {
             return collector;
         }
-        
     }
-    
 }

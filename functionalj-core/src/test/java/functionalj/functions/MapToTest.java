@@ -26,26 +26,22 @@ package functionalj.functions;
 import static functionalj.functions.MapTo.only;
 import static functionalj.functions.MapTo.toTuple;
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import functionalj.result.Result;
 import lombok.val;
-
 
 public class MapToTest {
 
     @Test
     public void testSelectThen() {
-        assertEquals("Result:{ Value: null }", "" + Result.valueOf("Hello").map(only(s -> s.length() < 4))); //.then(s -> "--" + s + "")
-    }
-    
-    @Test
-    public void testTuple() {
-        val f1 = toTuple  ((String s)->s, (String s) -> s.length())
-                .thenReduce((a,b)-> a + " - " + b);
-        Assert.assertEquals("Result:{ Value: Hello - 5 }", "" + Result.valueOf("Hello").map(f1));
+        // .then(s -> "--" + s + "")
+        assertEquals("Result:{ Value: null }", "" + Result.valueOf("Hello").map(only(s -> s.length() < 4)));
     }
 
+    @Test
+    public void testTuple() {
+        val f1 = toTuple((String s) -> s, (String s) -> s.length()).thenReduce((a, b) -> a + " - " + b);
+        Assert.assertEquals("Result:{ Value: Hello - 5 }", "" + Result.valueOf("Hello").map(f1));
+    }
 }

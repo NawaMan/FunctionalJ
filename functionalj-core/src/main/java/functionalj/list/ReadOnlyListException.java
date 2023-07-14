@@ -26,17 +26,16 @@ package functionalj.list;
 import java.util.Objects;
 
 public class ReadOnlyListException extends UnsupportedOperationException {
-    
+
     private static final long serialVersionUID = 832691415697511541L;
-    
+
     public ReadOnlyListException(@SuppressWarnings("rawtypes") ReadOnlyList list) {
         super(message(list));
     }
-    
+
     @SuppressWarnings("rawtypes")
     public static String message(ReadOnlyList list) {
         Objects.requireNonNull(list);
-        
         String listToString = null;
         try {
             if (list.size() <= 3) {
@@ -53,5 +52,4 @@ public class ReadOnlyListException extends UnsupportedOperationException {
         }
         return listToString + " is read only.";
     }
-    
 }

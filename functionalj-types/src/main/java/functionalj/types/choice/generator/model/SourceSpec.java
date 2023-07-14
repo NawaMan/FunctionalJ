@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,49 +28,44 @@ import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-
 import functionalj.types.Generic;
 import functionalj.types.Serialize;
 import functionalj.types.Type;
-import lombok.val;
-
 
 public class SourceSpec {
     
     public static final String TAG_MAP_KEY_NAME = "__tagged";
     
-    public final String        targetName;
-    public final Type          sourceType;
-    public final String        specObjName;
-    public final boolean       publicFields;
-    public final String        tagMapKeyName;
-    public final Serialize.To  serialize;
-    public final List<Generic> generics;
-    public final List<Case>    choices;
-    public final List<Method>  methods;
-    public final List<String>  localTypeWithLens;
+    public final String targetName;
     
-    public SourceSpec(
-                    String        targetName, 
-                    Type          sourceType, 
-                    String        specObjName, 
-                    boolean       publicFields, 
-                    String        tagMapKeyName,
-                    Serialize.To  serialize,
-                    List<Generic> generics, 
-                    List<Case>    choices, 
-                    List<Method>  methods, 
-                    List<String>  localTypeWithLens) {
+    public final Type sourceType;
+    
+    public final String specObjName;
+    
+    public final boolean publicFields;
+    
+    public final String tagMapKeyName;
+    
+    public final Serialize.To serialize;
+    
+    public final List<Generic> generics;
+    
+    public final List<Case> choices;
+    
+    public final List<Method> methods;
+    
+    public final List<String> localTypeWithLens;
+    
+    public SourceSpec(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, Serialize.To serialize, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
         this.targetName = targetName;
         this.sourceType = sourceType;
         this.specObjName = specObjName;
         this.publicFields = publicFields;
         this.tagMapKeyName = (tagMapKeyName != null) ? tagMapKeyName : TAG_MAP_KEY_NAME;
-        this.serialize     = (serialize     != null) ? serialize     : Serialize.To.NOTHING;
+        this.serialize = (serialize != null) ? serialize : Serialize.To.NOTHING;
         this.generics = generics;
         this.choices = choices;
         this.methods = methods;
@@ -82,23 +77,8 @@ public class SourceSpec {
     }
     
     public String toCode() {
-        val serializeCode = Serialize.class.getCanonicalName() + ".To." + serialize;
-        val params = asList(
-                toStringLiteral(targetName),
-                sourceType.toCode(),
-                toStringLiteral(specObjName),
-                "" + publicFields,
-                toStringLiteral(tagMapKeyName),
-                serializeCode,
-                toListCode     (generics, Generic::toCode),
-                toListCode     (choices,  Case::toCode),
-                toListCode     (methods,  Method::toCode),
-                toListCode     (localTypeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())
-        );
-        
-        return "new " + this.getClass().getCanonicalName() + "("
-                + params.stream().collect(joining(", "))
-                + ")";
+        String       serializeCode = Serialize.class.getCanonicalName() + ".To." + serialize;
+        List<String> params        = asList(toStringLiteral(targetName), sourceType.toCode(), toStringLiteral(specObjName), "" + publicFields, toStringLiteral(tagMapKeyName), serializeCode, toListCode(generics, Generic::toCode), toListCode(choices, Case::toCode), toListCode(methods, Method::toCode), toListCode(localTypeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity()));
+        return "new " + this.getClass().getCanonicalName() + "(" + params.stream().collect(joining(", ")) + ")";
     }
-    
 }

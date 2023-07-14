@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: functionalj.list.DoubleFuncListTest
+-------------------------------------------------------------------------------
+Tests run: 258, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.742 s -- in functionalj.list.DoubleFuncListTest

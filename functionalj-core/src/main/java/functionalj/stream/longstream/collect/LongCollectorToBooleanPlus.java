@@ -33,41 +33,43 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.collect.CollectorToBooleanPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToBooleanPlus;
 import functionalj.stream.intstream.collect.IntCollectorToBooleanPlus;
 import lombok.val;
 
 public interface LongCollectorToBooleanPlus<ACCUMULATED> extends LongCollectorPlus<ACCUMULATED, Boolean> {
-    
-    public Supplier<ACCUMULATED>        supplier();
+
+    public Supplier<ACCUMULATED> supplier();
+
     public ObjLongConsumer<ACCUMULATED> longAccumulator();
-    public BinaryOperator<ACCUMULATED>  combiner();
-    public Predicate<ACCUMULATED>       finisherToBoolean();
-    public Set<Characteristics>         characteristics();
-    
+
+    public BinaryOperator<ACCUMULATED> combiner();
+
+    public Predicate<ACCUMULATED> finisherToBoolean();
+
+    public Set<Characteristics> characteristics();
+
     public default Function<ACCUMULATED, Boolean> finisher() {
         val finisherToDouble = finisherToBoolean();
         return accumulated -> {
             return finisherToDouble.test(accumulated);
         };
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public default <SOURCE> CollectorToBooleanPlus<SOURCE, ACCUMULATED> of(ToLongFunction<SOURCE> mapper) {
         return new DerivedLongCollectorToBooleanPlus.FromObj<>(this, mapper);
     }
-    
+
     public default IntCollectorToBooleanPlus<ACCUMULATED> of(IntToLongFunction mapper) {
         return new DerivedLongCollectorToBooleanPlus.FromInt<>(this, mapper);
     }
-    
+
     public default LongCollectorToBooleanPlus<ACCUMULATED> of(LongUnaryOperator mapper) {
         return new DerivedLongCollectorToBooleanPlus.FromLong<>(this, mapper);
     }
-    
+
     public default DoubleCollectorToBooleanPlus<ACCUMULATED> of(DoubleToLongFunction mapper) {
         return new DerivedLongCollectorToBooleanPlus.FromDouble<>(this, mapper);
     }

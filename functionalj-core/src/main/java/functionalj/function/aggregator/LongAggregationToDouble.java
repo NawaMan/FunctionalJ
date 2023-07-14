@@ -27,70 +27,62 @@ import java.util.function.DoubleToLongFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorToDoublePlus;
 import lombok.val;
 
-
 public abstract class LongAggregationToDouble extends LongAggregation<Double> {
-    
+
     public static <A> LongAggregationToDouble from(LongCollectorToDoublePlus<A> collector) {
         return new LongAggregationToDouble.Impl(collector);
     }
-    
-    //== Instance == 
-    
+
+    // == Instance ==
     public abstract LongCollectorToDoublePlus<?> longCollectorToDoublePlus();
-    
-    
+
     @Override
     public LongCollectorPlus<?, Double> longCollectorPlus() {
         return longCollectorToDoublePlus();
     }
-    
+
     public LongAggregatorToDouble newAggregator() {
         val collector = longCollectorToDoublePlus();
         return new LongAggregatorToDouble.Impl(collector);
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public <INPUT> AggregationToDouble<INPUT> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorToDoublePlus().of(mapper);
         return new AggregationToDouble.Impl<INPUT>(newCollector);
     }
-    
+
     public IntAggregationToDouble ofInt(IntToLongFunction mapper) {
         val newCollector = longCollectorToDoublePlus().of(mapper);
         return new IntAggregationToDouble.Impl(newCollector);
     }
-    
+
     public LongAggregationToDouble ofLong(LongUnaryOperator mapper) {
         val newCollector = longCollectorToDoublePlus().of(mapper);
         return new LongAggregationToDouble.Impl(newCollector);
     }
-    
+
     public DoubleAggregationToDouble ofDouble(DoubleToLongFunction mapper) {
         val newCollector = longCollectorToDoublePlus().of(mapper);
         return new DoubleAggregationToDouble.Impl(newCollector);
     }
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl extends LongAggregationToDouble {
-        
+
         private final LongCollectorToDoublePlus<?> collector;
-        
+
         public Impl(LongCollectorToDoublePlus<?> collector) {
             this.collector = collector;
         }
-        
+
         @Override
         public LongCollectorToDoublePlus<?> longCollectorToDoublePlus() {
             return collector;
         }
-        
     }
-    
 }

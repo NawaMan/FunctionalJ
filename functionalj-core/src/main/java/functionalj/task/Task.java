@@ -28,7 +28,6 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
@@ -62,106 +61,88 @@ import functionalj.task.Tasks.TaskValue;
 
 @FunctionalInterface
 public interface Task<DATA> {
-    
+
     public DeferAction<DATA> createAction();
-    
-    
+
     public static <D> Task<D> ofValue(D value) {
         return new TaskValue<>(value);
     }
+
     public static <D> DeferActionBuilder<D> from(Func0<D> supplier) {
         return new TaskSupplier<>(supplier);
     }
+
     public static <D> Task<D> from(Result<D> result) {
         return new TaskResult<>(result);
     }
+
     public static <D> Task<D> from(Promise<D> promise) {
         return new TaskPromise<>(promise);
     }
-    
-    public static <I1, I2, D> Task<D> from(
-            Task<I1>           io1,
-            Task<I2>           io2,
-            Func2<I1, I2, D> merger) {
+
+    public static <I1, I2, D> Task<D> from(Task<I1> io1, Task<I2> io2, Func2<I1, I2, D> merger) {
         return new TaskMerge2<>(io1, io2, merger);
     }
-    public static <I1, I2, I3, D> Task<D> from(
-            Task<I1>               io1,
-            Task<I2>               io2,
-            Task<I3>               io3,
-            Func3<I1, I2, I3, D> merger) {
+
+    public static <I1, I2, I3, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Func3<I1, I2, I3, D> merger) {
         return new TaskMerge3<>(io1, io2, io3, merger);
     }
-    public static <I1, I2, I3, I4, D> Task<D> from(
-            Task<I1>                   io1,
-            Task<I2>                   io2,
-            Task<I3>                   io3,
-            Task<I4>                   io4,
-            Func4<I1, I2, I3, I4, D> merger) {
+
+    public static <I1, I2, I3, I4, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Func4<I1, I2, I3, I4, D> merger) {
         return new TaskMerge4<>(io1, io2, io3, io4, merger);
     }
-    public static <I1, I2, I3, I4, I5, D> Task<D> from(
-            Task<I1>                       io1,
-            Task<I2>                       io2,
-            Task<I3>                       io3,
-            Task<I4>                       io4,
-            Task<I5>                       io5,
-            Func5<I1, I2, I3, I4, I5, D> merger) {
+
+    public static <I1, I2, I3, I4, I5, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Task<I5> io5, Func5<I1, I2, I3, I4, I5, D> merger) {
         return new TaskMerge5<>(io1, io2, io3, io4, io5, merger);
     }
-    public static <I1, I2, I3, I4, I5, I6, D> Task<D> from(
-            Task<I1>                           io1,
-            Task<I2>                           io2,
-            Task<I3>                           io3,
-            Task<I4>                           io4,
-            Task<I5>                           io5,
-            Task<I6>                           io6,
-            Func6<I1, I2, I3, I4, I5, I6, D> merger) {
+
+    public static <I1, I2, I3, I4, I5, I6, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Task<I5> io5, Task<I6> io6, Func6<I1, I2, I3, I4, I5, I6, D> merger) {
         return new TaskMerge6<>(io1, io2, io3, io4, io5, io6, merger);
     }
-    
+
     @SafeVarargs
-    public static <D> Task<D> firstOf(Task<D> ... ios) {
+    public static <D> Task<D> firstOf(Task<D>... ios) {
         return new TaskRace<D>(FuncList.from(ios));
     }
+
     public static <D> Task<D> firstFrom(List<? extends Task<D>> ios) {
         return new TaskRace<D>(FuncList.from(ios));
     }
-    
+
     public static <D> Task<D> doUntil(Task<D> body, Predicate<Result<D>> breakCondition) {
         return new Tasks.TaskDoUntil<D>(body, breakCondition);
     }
-    
+
     // TODO - Do while that has Task<Boolean> as a way to check if the loop should still continue.
-    
     public default Task<DATA> peek(FuncUnit1<? super DATA> keeper) {
         return new TaskPeek<>(this, keeper);
     }
-    
+
     public default <TARGET> Task<TARGET> map(Func1<? super DATA, TARGET> mapper) {
         return new TaskMap<>(this, mapper);
     }
-    
+
     public default <TARGET> Task<TARGET> flatMap(Func1<? super DATA, Task<? extends TARGET>> mapper) {
         return new TaskChain<>(this, mapper);
     }
-    
+
     public default <TARGET> Task<TARGET> chain(Func1<? super DATA, Task<? extends TARGET>> mapper) {
         return new TaskChain<>(this, mapper);
     }
-    
+
     public default Task<DATA> filter(Predicate<? super DATA> predicate) {
         return new TaskFilter<>(this, predicate);
     }
-    
+
     public default <S> Task<DATA> cached() {
         return new TaskCached<>(this);
     }
+
     public default <S> Task<DATA> cached(Supplier<S> theContext) {
-        return cached(theContext, Named.BiPredicate("when-change", (S o, S n)->!Objects.equals(o, n)));
+        return cached(theContext, Named.BiPredicate("when-change", (S o, S n) -> !Objects.equals(o, n)));
     }
+
     public default <S> Task<DATA> cached(Supplier<S> contextSupplier, BiPredicate<S, S> staleChecker) {
         return new TaskCachedFor<>(this, contextSupplier, staleChecker);
     }
-    
 }

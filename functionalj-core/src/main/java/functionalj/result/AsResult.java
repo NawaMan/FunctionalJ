@@ -27,9 +27,8 @@ package functionalj.result;
 public interface AsResult<DATA> extends HasResult<DATA> {
 
     public Result<DATA> asResult();
-    
+
     public default Result<DATA> getResult() {
         return asResult();
     }
-    
 }

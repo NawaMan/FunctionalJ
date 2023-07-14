@@ -24,122 +24,102 @@
 package functionalj.stream;
 
 import static functionalj.stream.StreamPlusHelper.derive;
-
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 import functionalj.function.Func1;
 import functionalj.lens.core.WriteLens;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
-
 public interface StreamPlusWithFillNull<DATA> {
-    
+
     public StreamPlus<DATA> streamPlus();
-    
-    /** Replace any null value with the given replacement. */
+
+    /**
+     * Replace any null value with the given replacement.
+     */
     public default StreamPlus<DATA> fillNull(DATA replacement) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .map(value -> {
-                    val isNull = value == null;
-                    val replaced
-                            = isNull
-                            ? replacement
-                            : value;
-                    return replaced;
-                });
-    }
-    
-    /** Replace sub element that is null (accessed with the given lens) with the given replacement. */
-    public default <VALUE> StreamPlus<DATA> fillNull(
-            AnyLens<DATA, VALUE> lens, 
-            VALUE                replacement) {
-        return fillNull(
-                (Func1<DATA, VALUE>)lens, 
-                ((WriteLens<DATA, VALUE>)lens)::apply, 
-                replacement);
-    }
-    
-    /** Replace sub element that is null (accessed with the given getter and setter) with the given replacement. */
-    public default <VALUE> StreamPlus<DATA> fillNull(
-            Function<DATA, VALUE>         getter, 
-            BiFunction<DATA, VALUE, DATA> setter, 
-            VALUE                         replacement) {
-        val streamPlus = streamPlus();
-        return derive(streamPlus, stream ->  {
-            return (Stream<DATA>)stream
-                    .map(orgElmt -> {
-                        val value   = getter.apply(orgElmt);
-                        if (value == null) {
-                            val newElmt = setter.apply(orgElmt, replacement);
-                            return (DATA)newElmt;
-                        }
-                        return orgElmt;
-                    });
+        return streamPlus.map(value -> {
+            val isNull = value == null;
+            val replaced = isNull ? replacement : value;
+            return replaced;
         });
     }
-    
-    /** Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier. */
-    public default <VALUE> StreamPlus<DATA> fillNullWith(
-            AnyLens<DATA, VALUE> lens, 
-            Supplier<VALUE>      replacementSupplier) {
-        return fillNullWith(
-                (Func1<DATA, VALUE>)lens, 
-                ((WriteLens<DATA, VALUE>)lens)::apply, 
-                replacementSupplier);
+
+    /**
+     * Replace sub element that is null (accessed with the given lens) with the given replacement.
+     */
+    public default <VALUE> StreamPlus<DATA> fillNull(AnyLens<DATA, VALUE> lens, VALUE replacement) {
+        return fillNull((Func1<DATA, VALUE>) lens, ((WriteLens<DATA, VALUE>) lens)::apply, replacement);
     }
-    
-    /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier. */
-    public default <VALUE> StreamPlus<DATA> fillNullWith(
-            Function<DATA, VALUE>         getter, 
-            BiFunction<DATA, VALUE, DATA> setter, 
-            Supplier<VALUE>               replacementSupplier) {
+
+    /**
+     * Replace sub element that is null (accessed with the given getter and setter) with the given replacement.
+     */
+    public default <VALUE> StreamPlus<DATA> fillNull(Function<DATA, VALUE> getter, BiFunction<DATA, VALUE, DATA> setter, VALUE replacement) {
         val streamPlus = streamPlus();
-        return derive(streamPlus, stream ->  {
-            return (Stream<DATA>)stream
-                    .map(orgValue -> {
-                        val value = getter.apply(orgValue);
-                        if (value == null) {
-                            val replacement = replacementSupplier.get();
-                            val newValue    = setter.apply(orgValue, replacement);
-                            return (DATA)newValue;
-                        }
-                        return orgValue;
-                    });
+        return derive(streamPlus, stream -> {
+            return (Stream<DATA>) stream.map(orgElmt -> {
+                val value = getter.apply(orgElmt);
+                if (value == null) {
+                    val newElmt = setter.apply(orgElmt, replacement);
+                    return (DATA) newElmt;
+                }
+                return orgElmt;
+            });
         });
     }
-    
-    /** Replace sub element that is null (accessed with the given lens) with the replacement value from the function. */
-    public default <VALUE> StreamPlus<DATA> fillNullBy(
-            AnyLens<DATA, VALUE>  lens, 
-            Function<DATA, VALUE> replacementFunction) {
-        return fillNullBy(
-                (Func1<DATA, VALUE>)lens, 
-                ((WriteLens<DATA, VALUE>)lens)::apply, 
-                replacementFunction);
+
+    /**
+     * Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier.
+     */
+    public default <VALUE> StreamPlus<DATA> fillNullWith(AnyLens<DATA, VALUE> lens, Supplier<VALUE> replacementSupplier) {
+        return fillNullWith((Func1<DATA, VALUE>) lens, ((WriteLens<DATA, VALUE>) lens)::apply, replacementSupplier);
     }
-    
-    /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function. */
-    public default <VALUE> StreamPlus<DATA> fillNullBy(
-            Function<DATA, VALUE>         getter, 
-            BiFunction<DATA, VALUE, DATA> setter, 
-            Function<DATA, VALUE>         replacementFunction) {
+
+    /**
+     * Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier.
+     */
+    public default <VALUE> StreamPlus<DATA> fillNullWith(Function<DATA, VALUE> getter, BiFunction<DATA, VALUE, DATA> setter, Supplier<VALUE> replacementSupplier) {
         val streamPlus = streamPlus();
-        return derive(streamPlus, stream ->  {
-            return (Stream<DATA>)stream
-                    .map(orgValue -> {
-                        val value = getter.apply(orgValue);
-                        if (value == null) {
-                            val replacement = replacementFunction.apply(orgValue);
-                            val newValue    = setter.apply(orgValue, replacement);
-                            return (DATA)newValue;
-                        }
-                        return orgValue;
-                    });
+        return derive(streamPlus, stream -> {
+            return (Stream<DATA>) stream.map(orgValue -> {
+                val value = getter.apply(orgValue);
+                if (value == null) {
+                    val replacement = replacementSupplier.get();
+                    val newValue = setter.apply(orgValue, replacement);
+                    return (DATA) newValue;
+                }
+                return orgValue;
+            });
+        });
+    }
+
+    /**
+     * Replace sub element that is null (accessed with the given lens) with the replacement value from the function.
+     */
+    public default <VALUE> StreamPlus<DATA> fillNullBy(AnyLens<DATA, VALUE> lens, Function<DATA, VALUE> replacementFunction) {
+        return fillNullBy((Func1<DATA, VALUE>) lens, ((WriteLens<DATA, VALUE>) lens)::apply, replacementFunction);
+    }
+
+    /**
+     * Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function.
+     */
+    public default <VALUE> StreamPlus<DATA> fillNullBy(Function<DATA, VALUE> getter, BiFunction<DATA, VALUE, DATA> setter, Function<DATA, VALUE> replacementFunction) {
+        val streamPlus = streamPlus();
+        return derive(streamPlus, stream -> {
+            return (Stream<DATA>) stream.map(orgValue -> {
+                val value = getter.apply(orgValue);
+                if (value == null) {
+                    val replacement = replacementFunction.apply(orgValue);
+                    val newValue = setter.apply(orgValue, replacement);
+                    return (DATA) newValue;
+                }
+                return orgValue;
+            });
         });
     }
 }

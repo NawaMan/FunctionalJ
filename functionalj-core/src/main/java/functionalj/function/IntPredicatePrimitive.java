@@ -28,37 +28,33 @@ import java.util.function.Predicate;
 
 @FunctionalInterface
 public interface IntPredicatePrimitive extends IntPredicate, Func1<Integer, Boolean> {
-    
+
     public boolean test(int value);
-    
+
     public default Predicate<Integer> toPredicate() {
         return this::test;
     }
-    
+
     @Override
     public default Boolean applyUnsafe(Integer input) throws Exception {
         return test(input);
     }
-    
+
     public static IntPredicatePrimitive intPredicate(IntPredicate predicate) {
         if (predicate instanceof IntPredicatePrimitive)
-            return ((IntPredicatePrimitive)predicate);
-        
+            return ((IntPredicatePrimitive) predicate);
         return predicate::test;
     }
-    
+
     public static IntPredicatePrimitive intPredicate(Func1<Integer, Boolean> predicate) {
         if (predicate instanceof IntPredicatePrimitive)
-            return ((IntPredicatePrimitive)predicate);
-        
+            return ((IntPredicatePrimitive) predicate);
         return predicate::apply;
     }
-    
+
     public static IntPredicatePrimitive intPredicate(Predicate<Integer> predicate) {
         if (predicate instanceof IntPredicatePrimitive)
-            return ((IntPredicatePrimitive)predicate);
-        
+            return ((IntPredicatePrimitive) predicate);
         return predicate::test;
     }
-    
 }

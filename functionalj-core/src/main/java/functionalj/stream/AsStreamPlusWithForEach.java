@@ -25,74 +25,70 @@ package functionalj.stream;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-
 import functionalj.function.IntObjBiConsumer;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
 
-
 public interface AsStreamPlusWithForEach<DATA> {
-    
+
     public StreamPlus<DATA> streamPlus();
-    
-    
-    /** Iterate in order all element through the action */
+
+    /**
+     * Iterate in order all element through the action
+     */
     public default void forEachOrdered(Consumer<? super DATA> action) {
         val streamPlus = streamPlus();
-        streamPlus
-        .forEachOrdered(action);
+        streamPlus.forEachOrdered(action);
     }
-    
-    /** For each with the index. */
+
+    /**
+     * For each with the index.
+     */
     @Eager
     @Terminal
     public default void forEachWithIndex(IntObjBiConsumer<? super DATA> action) {
         val streamPlus = streamPlus();
-        val index      = new AtomicInteger();
-        streamPlus
-        .forEach(each -> {
+        val index = new AtomicInteger();
+        streamPlus.forEach(each -> {
             val currentIndex = index.getAndIncrement();
             action.accept(currentIndex, each);
         });
     }
-    
-    /** Populate the array with the population in the stream from 0 to length or until run out of elements. */
+
+    /**
+     * Populate the array with the population in the stream from 0 to length or until run out of elements.
+     */
     @Terminal
     public default void populateArray(DATA[] array) {
         val streamPlus = streamPlus();
-        streamPlus
-        .limit           (array.length)
-        .forEachWithIndex((index, element) -> {
+        streamPlus.limit(array.length).forEachWithIndex((index, element) -> {
             array[index] = element;
         });
     }
-    
-    /** Populate the array with the population in the stream from offset to length or until run out of elements. */
+
+    /**
+     * Populate the array with the population in the stream from offset to length or until run out of elements.
+     */
     @Terminal
     public default void populateArray(DATA[] array, int offset) {
         val streamPlus = streamPlus();
-        streamPlus
-        .limit           (array.length - offset)
-        .forEachWithIndex((index, element) -> {
+        streamPlus.limit(array.length - offset).forEachWithIndex((index, element) -> {
             array[offset + index] = element;
         });
     }
-    
-    /** Populate the array with the population in the stream from offset to length or until run out of elements. */
+
+    /**
+     * Populate the array with the population in the stream from offset to length or until run out of elements.
+     */
     @Terminal
     public default void populateArray(DATA[] array, int offset, int length) {
         val streamPlus = streamPlus();
-        streamPlus
-        .limit           (Math.min(length, array.length - offset))
-        .forEachWithIndex((index, element) -> {
+        streamPlus.limit(Math.min(length, array.length - offset)).forEachWithIndex((index, element) -> {
             array[offset + index] = element;
         });
     }
-    
     // TODO - addAllTo(List|Set)
     // TODO - insertAllTo(index, List|Set)
     // TODO - putAllTo(Map)
-    
-    
 }

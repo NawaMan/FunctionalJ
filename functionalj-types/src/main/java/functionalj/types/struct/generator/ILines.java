@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,16 +33,12 @@ import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
 import functionalj.types.IRequireTypes;
 import functionalj.types.Type;
-import lombok.val;
-
 
 /**
  * Classes implementing this interface can turns itself into lines.
@@ -53,12 +49,19 @@ public interface ILines extends IRequireTypes {
     
     public static final Function<String, ILines> toLine = string -> ILines.line(string);
     
-    /** An empty line */
-    public static final ILines emptyLine = ()->Stream.of("");
-    /** A no line */
-    public static final ILines noLine = ()->Stream.empty();
+    /**
+     * An empty line
+     */
+    public static final ILines emptyLine = () -> Stream.of("");
     
-    /** @return  the lines. **/
+    /**
+     * A no line
+     */
+    public static final ILines noLine = () -> Stream.empty();
+    
+    /**
+     * @return  the lines. *
+     */
     public Stream<String> lines();
     
     /**
@@ -80,20 +83,18 @@ public interface ILines extends IRequireTypes {
     }
     
     // == Factory methods ==
-    
     /**
      * Create and return an ILines from the given lines. Any of the line that is null will be ignored.
      *
      * @param lines  the lines.
      * @return       the ILines.
      */
-    public static ILines line(String ... lines) {
+    public static ILines line(String... lines) {
         if (lines != null && lines.length == 0)
             return noLine;
-        
-        return ()->Stream.of(lines)
-                .filter(Objects::nonNull);
+        return () -> Stream.of(lines).filter(Objects::nonNull);
     }
+    
     /**
      * Returns lines of the given stream of string.
      *
@@ -101,8 +102,9 @@ public interface ILines extends IRequireTypes {
      * @return        the lines.
      */
     public static ILines line(Stream<String> stream) {
-        return ()->stream.filter(Objects::nonNull);
+        return () -> stream.filter(Objects::nonNull);
     }
+    
     /**
      * Returns lines of the given list of string.
      *
@@ -110,7 +112,7 @@ public interface ILines extends IRequireTypes {
      * @return      the lines.
      */
     public static ILines line(List<String> list) {
-        return ()->list.stream().filter(Objects::nonNull);
+        return () -> list.stream().filter(Objects::nonNull);
     }
     
     /**
@@ -120,9 +122,7 @@ public interface ILines extends IRequireTypes {
      * @return       the lines.
      */
     public static ILines of(ILines lines) {
-        return () -> Stream.of(lines)
-                .flatMap(ILines::lines)
-                .filter(Objects::nonNull);
+        return () -> Stream.of(lines).flatMap(ILines::lines).filter(Objects::nonNull);
     }
     
     /**
@@ -132,10 +132,7 @@ public interface ILines extends IRequireTypes {
      * @return        the lines.
      */
     public static ILines linesOf(Stream<ILines> stream) {
-        return ()-> Stream.of(stream)
-                .flatMap(themAll())
-                .flatMap(ILines::lines)
-                .filter (Objects::nonNull);
+        return () -> Stream.of(stream).flatMap(themAll()).flatMap(ILines::lines).filter(Objects::nonNull);
     }
     
     /**
@@ -154,7 +151,7 @@ public interface ILines extends IRequireTypes {
      * @param array  the array of lines.
      * @return       the lines.
      */
-    public static ILines linesOf(ILines ... array) {
+    public static ILines linesOf(ILines... array) {
         return linesOf(stream(array));
     }
     
@@ -165,13 +162,8 @@ public interface ILines extends IRequireTypes {
      * @return             the lines.
      */
     @SafeVarargs
-    public static ILines linesOf(List<ILines> ... listOfILines) {
-        return ILines.linesOf(
-                stream  (listOfILines)
-                .filter (list -> !list.isEmpty())
-                .flatMap(delimitWith(asList(ILines.emptyLine)))
-                .flatMap(List::stream)
-                .map    (ILines.class::cast));
+    public static ILines linesOf(List<ILines>... listOfILines) {
+        return ILines.linesOf(stream(listOfILines).filter(list -> !list.isEmpty()).flatMap(delimitWith(asList(ILines.emptyLine))).flatMap(List::stream).map(ILines.class::cast));
     }
     
     /**
@@ -203,12 +195,13 @@ public interface ILines extends IRequireTypes {
     public static ILines indent() {
         return indent(Stream.of(line("")));
     }
+    
     public default ILines indent(int count) {
         ILines lines = this;
-        for (int i = 0; i < count; i++)
-            lines = indent(lines);
+        for (int i = 0; i < count; i++) lines = indent(lines);
         return lines;
     }
+    
     /**
      * Create indented empty lines from the given stream of lines.
      *
@@ -216,11 +209,7 @@ public interface ILines extends IRequireTypes {
      * @return        the result lines.
      */
     public static ILines indent(Stream<? extends ILines> stream) {
-        return ()-> Stream.of(stream)
-                .flatMap(themAll())
-                .flatMap(ILines::lines)
-                .filter (Objects::nonNull)
-                .map    (prependWith("    "));
+        return () -> Stream.of(stream).flatMap(themAll()).flatMap(ILines::lines).filter(Objects::nonNull).map(prependWith("    "));
     }
     
     /**
@@ -229,11 +218,8 @@ public interface ILines extends IRequireTypes {
      * @param parts  the parts.
      * @return       the combined line.
      */
-    public static String oneLineOf(Object ... parts) {
-        return stream(parts)
-            .map     (toStr())
-            .filter  (strNotNullOrEmpty())
-            .collect (joining(" "));
+    public static String oneLineOf(Object... parts) {
+        return stream(parts).map(toStr()).filter(strNotNullOrEmpty()).collect(joining(" "));
     }
     
     /**
@@ -242,9 +228,8 @@ public interface ILines extends IRequireTypes {
      * @param arrayOflines  the array.
      * @return              the result lines.
      */
-    public static ILines flatenLines(ILines ... arrayOflines) {
-        return flatenLines(
-                stream(arrayOflines));
+    public static ILines flatenLines(ILines... arrayOflines) {
+        return flatenLines(stream(arrayOflines));
     }
     
     /**
@@ -254,10 +239,7 @@ public interface ILines extends IRequireTypes {
      * @return               the result lines.
      */
     public static ILines flatenLines(Stream<ILines> streamOflines) {
-        return ILines.line(
-                streamOflines
-                .flatMap(ILines::lines)
-                .filter(Objects::nonNull));
+        return ILines.line(streamOflines.flatMap(ILines::lines).filter(Objects::nonNull));
     }
     
     /**
@@ -266,32 +248,24 @@ public interface ILines extends IRequireTypes {
      * @param   iLines  the input lines.
      * @return          the result lines.
      */
-    public static Stream<ILines> withSeparateIndentedSpace(ILines ... iLines) {
-        return Stream.of(iLines)
-                .flatMap(delimitWith(()->indent()));
+    public static Stream<ILines> withSeparateIndentedSpace(ILines... iLines) {
+        return Stream.of(iLines).flatMap(delimitWith(() -> indent()));
     }
     
     public default ILines append(String line) {
         return ILines.linesOf(Stream.concat(this.lines(), Stream.of(line)).map(toLine));
     }
+    
     public default ILines append(ILines lines) {
         return ILines.linesOf(Stream.concat(this.lines(), lines.lines()).map(toLine));
     }
+    
     public default ILines containWith(String prefix, String delimiter, String suffix) {
-        val lines     = this.lines().collect(toList());
-        val firstLine = lines.stream().limit(1).map(line -> prefix    + " " + line).collect(toList());
-        val restLines = lines.stream().skip (1).map(line -> delimiter + " " + line).collect(toList());
-        val lastLine  = (suffix == null) ? null : Stream.of(suffix);
-        val stream
-            = Stream.of(
-                firstLine.stream(),
-                restLines.stream(),
-                lastLine)
-            .filter (Objects::nonNull)
-            .flatMap(identity())
-            .map    (String::trim)
-            .map    (ILines::line);
+        List<String>   lines     = this.lines().collect(toList());
+        List<String>   firstLine = lines.stream().limit(1).map(line -> prefix + " " + line).collect(toList());
+        List<String>   restLines = lines.stream().skip(1).map(line -> delimiter + " " + line).collect(toList());
+        Stream<String> lastLine  = (suffix == null) ? null : Stream.of(suffix);
+        Stream<ILines> stream    = Stream.of(firstLine.stream(), restLines.stream(), lastLine).filter(Objects::nonNull).flatMap(identity()).map(String::trim).map(ILines::line);
         return ILines.linesOf(stream);
     }
-    
 }

@@ -28,50 +28,42 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 import java.util.stream.Collector;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
 
-
 @FunctionalInterface
-public interface CollectorPlus<DATA, ACCUMULATED, RESULT> 
-            extends
-                CollectorExtensible<DATA, ACCUMULATED, RESULT> {
-    
+public interface CollectorPlus<DATA, ACCUMULATED, RESULT> extends CollectorExtensible<DATA, ACCUMULATED, RESULT> {
+
     public static <D, A, R> CollectorPlus<D, A, R> from(Collector<D, A, R> collector) {
-        return (collector instanceof CollectorPlus)
-                ? (CollectorPlus<D,A,R>)collector
-                : ()->collector;
+        return (collector instanceof CollectorPlus) ? (CollectorPlus<D, A, R>) collector : () -> collector;
     }
-    
+
     // TODO - make it easy to create reducer
     // (DATA, DATA)->DATA
     // or
     // (DATA)->TARGET , (TARGET, TARGET) -> TARGET
     // or
     // (DATA)->ACCUMULATED , (ACCUMULATED, ACCUMULATED) -> ACCUMULATED, (ACCUMULATED) -> TARGET
-    
     public default CollectorPlus<DATA, ACCUMULATED, RESULT> collectorPlus() {
         return this;
     }
-    
-    //== Derive == 
-    
+
+    // == Derive ==
     public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(Function<SOURCE, DATA> mapper) {
         val collector = new DerivedCollectorPlus.FromObj<>(this, mapper);
         return CollectorPlus.from(collector);
     }
-    
+
     public default IntCollectorPlus<ACCUMULATED, RESULT> of(IntFunction<DATA> mapper) {
         return new DerivedCollectorPlus.FromInt<>(this, mapper);
     }
-    
+
     public default LongCollectorPlus<ACCUMULATED, RESULT> of(LongFunction<DATA> mapper) {
         return new DerivedCollectorPlus.FromLong<>(this, mapper);
     }
-    
+
     public default DoubleCollectorPlus<ACCUMULATED, RESULT> of(DoubleFunction<DATA> mapper) {
         return new DerivedCollectorPlus.FromDouble<>(this, mapper);
     }

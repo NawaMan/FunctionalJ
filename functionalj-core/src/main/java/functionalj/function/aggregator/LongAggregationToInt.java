@@ -27,70 +27,62 @@ import java.util.function.DoubleToLongFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
 import lombok.val;
 
-
 public abstract class LongAggregationToInt extends LongAggregation<Integer> {
-    
+
     public static <A> LongAggregationToInt from(LongCollectorToIntPlus<A> collector) {
         return new LongAggregationToInt.Impl(collector);
     }
-    
-    //== Instance == 
-    
+
+    // == Instance ==
     public abstract LongCollectorToIntPlus<?> longCollectorToIntPlus();
-    
-    
+
     @Override
     public LongCollectorPlus<?, Integer> longCollectorPlus() {
         return longCollectorToIntPlus();
     }
-    
+
     public LongAggregatorToInt newAggregator() {
         val collector = longCollectorToIntPlus();
         return new LongAggregatorToInt.Impl(collector);
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public <INPUT> AggregationToInt<INPUT> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorToIntPlus().of(mapper);
         return new AggregationToInt.Impl<>(newCollector);
     }
-    
+
     public IntAggregationToInt ofInt(IntToLongFunction mapper) {
         val newCollector = longCollectorToIntPlus().of(mapper);
         return new IntAggregationToInt.Impl(newCollector);
     }
-    
+
     public LongAggregationToInt ofLong(LongUnaryOperator mapper) {
         val newCollector = longCollectorToIntPlus().of(mapper);
         return new LongAggregationToInt.Impl(newCollector);
     }
-    
+
     public DoubleAggregationToInt ofDouble(DoubleToLongFunction mapper) {
         val newCollector = longCollectorToIntPlus().of(mapper);
         return new DoubleAggregationToInt.Impl(newCollector);
     }
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl extends LongAggregationToInt {
-        
+
         private final LongCollectorToIntPlus<?> collector;
-        
+
         public Impl(LongCollectorToIntPlus<?> collector) {
             this.collector = collector;
         }
-        
+
         @Override
         public LongCollectorToIntPlus<?> longCollectorToIntPlus() {
             return collector;
         }
-        
     }
-    
 }

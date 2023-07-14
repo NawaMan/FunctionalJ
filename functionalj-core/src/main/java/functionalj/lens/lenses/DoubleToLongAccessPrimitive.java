@@ -28,21 +28,19 @@ import java.util.function.DoubleToLongFunction;
 
 @FunctionalInterface
 public interface DoubleToLongAccessPrimitive extends LongAccessPrimitive<Double>, DoubleToLongFunction, DoubleFunction<Long> {
-    
+
     public long applyDoubleToLong(double host);
-    
+
     public default long applyAsLong(double operand) {
         return applyDoubleToLong(operand);
     }
-    
+
     public default long applyAsLong(Double host) {
         return applyDoubleToLong(host);
     }
-    
+
     @Override
     public default Long apply(double value) {
         return null;
     }
-    
-
 }

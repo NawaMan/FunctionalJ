@@ -24,18 +24,17 @@
 package functionalj.result;
 
 public class ValueException extends RuntimeException {
-    
+
     private static final long serialVersionUID = -3889275875120914601L;
-    
+
     private final Object errorValue;
-    
+
     ValueException(Object errorValue) {
         super("Value: " + errorValue);
         this.errorValue = errorValue;
     }
-    
+
     public Object getErrorValue() {
         return errorValue;
     }
-    
 }

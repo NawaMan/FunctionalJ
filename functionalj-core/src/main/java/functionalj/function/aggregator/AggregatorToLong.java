@@ -28,28 +28,26 @@ import functionalj.stream.collect.CollectedToLong;
 import functionalj.stream.collect.CollectorToLongPlus;
 
 public interface AggregatorToLong<SOURCE> extends LongAccessPrimitive<SOURCE>, Aggregator<SOURCE, Long> {
-    
+
     public CollectedToLong<SOURCE, ?> asCollected();
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl<SOURCE> implements AggregatorToLong<SOURCE>, Aggregator<SOURCE, Long> {
-        
+
         private final CollectedToLong<SOURCE, ?> collected;
-        
+
         public Impl(CollectorToLongPlus<SOURCE, ?> collector) {
             this.collected = CollectedToLong.of(collector);
         }
-        
+
         @Override
         public long applyAsLong(SOURCE host) {
             collected.accumulate(host);
             return collected.finishToLong();
         }
-        
+
         public CollectedToLong<SOURCE, ?> asCollected() {
             return collected;
         }
     }
-    
 }

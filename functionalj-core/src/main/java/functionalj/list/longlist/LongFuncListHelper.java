@@ -24,26 +24,18 @@
 package functionalj.list.longlist;
 
 import java.util.ArrayList;
-
 import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.longstream.GrowOnlyLongArray;
 import lombok.val;
 
-
 public class LongFuncListHelper {
-    
+
     static <D> FuncList<LongFuncList> segmentByPercentiles(AsLongFuncList asList, DoubleFuncList percentiles) {
         val list = asList.asLongFuncList();
         val size = list.size();
-        DoubleFuncList indexes 
-                = percentiles
-                .append(100.0)
-                .sorted()
-                .map   (d -> (int)Math.round(d*size/100))
-                .toImmutableList();
-        
-        val lists   = new ArrayList<GrowOnlyLongArray>();
+        DoubleFuncList indexes = percentiles.append(100.0).sorted().map(d -> (int) Math.round(d * size / 100)).toImmutableList();
+        val lists = new ArrayList<GrowOnlyLongArray>();
         for (int i = 0; i < indexes.size(); i++) {
             lists.add(new GrowOnlyLongArray());
         }
@@ -56,8 +48,6 @@ public class LongFuncListHelper {
             val element = list.get(i);
             l.add(element);
         }
-        
         return FuncList.from(lists.stream().map(each -> each.toFuncList()));
     }
-    
 }

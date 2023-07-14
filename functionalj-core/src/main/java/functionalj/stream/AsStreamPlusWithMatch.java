@@ -24,13 +24,11 @@
 package functionalj.stream;
 
 import static functionalj.stream.StreamPlus.streamOf;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
 import functionalj.function.aggregator.Aggregation;
 import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.result.Result;
@@ -38,237 +36,220 @@ import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
 
-
 public interface AsStreamPlusWithMatch<DATA> {
-    
+
     public StreamPlus<DATA> streamPlus();
-    
-    
-    //-- Match --
-    
+
+    // -- Match --
     @Terminal
     public default boolean anyMatch(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .anyMatch(predicate);
+        return streamPlus.anyMatch(predicate);
     }
-    
+
     @Terminal
     public default boolean anyMatch(AggregationToBoolean<? super DATA> aggregation) {
         val aggregator = aggregation.newAggregator();
         return anyMatch(aggregator::test);
     }
-    
+
     @Terminal
     public default boolean allMatch(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .allMatch(predicate);
+        return streamPlus.allMatch(predicate);
     }
-    
+
     @Terminal
     public default boolean allMatch(AggregationToBoolean<? super DATA> aggregation) {
         val aggregator = aggregation.newAggregator();
         return allMatch(aggregator::test);
     }
-    
+
     @Terminal
     public default boolean noneMatch(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .noneMatch(predicate);
+        return streamPlus.noneMatch(predicate);
     }
-    
+
     @Terminal
     public default boolean noneMatch(AggregationToBoolean<? super DATA> aggregation) {
         val aggregator = aggregation.newAggregator();
         return noneMatch(aggregator::test);
     }
-    
+
     @Terminal
     public default Optional<DATA> findFirst() {
         val streamPlus = streamPlus();
-        return streamPlus
-                .findFirst();
+        return streamPlus.findFirst();
     }
-    
+
     @Terminal
     public default Optional<DATA> findAny() {
         val streamPlus = streamPlus();
-        return streamPlus
-                .findAny();
+        return streamPlus.findAny();
     }
-    
+
     @Sequential
     @Terminal
     public default Optional<DATA> findLast() {
         val streamPlus = streamPlus();
-        return streamPlus
-                .findLast();
+        return streamPlus.findLast();
     }
-    
+
     @Sequential
     @Terminal
     public default Result<DATA> firstResult() {
         val streamPlus = streamPlus();
-        return streamPlus
-                .firstResult();
+        return streamPlus.firstResult();
     }
-    
+
     @Sequential
     @Terminal
     public default Result<DATA> lastResult() {
         val streamPlus = streamPlus();
-        return streamPlus
-                .lastResult();
+        return streamPlus.lastResult();
     }
-    
-    /** Return the first element that matches the predicate. */
+
+    /**
+     * Return the first element that matches the predicate.
+     */
     @Terminal
     @Sequential
-    public default Optional<DATA> findFirst(
-            Predicate<? super DATA> predicate) {
+    public default Optional<DATA> findFirst(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .filter(predicate)
-                .findFirst();
+        return streamPlus.filter(predicate).findFirst();
     }
-    
-    /** Return the first element that matches the predicate. */
+
+    /**
+     * Return the first element that matches the predicate.
+     */
     @Terminal
     @Sequential
-    public default Optional<DATA> findFirst(
-            AggregationToBoolean<? super DATA> aggregation) {
+    public default Optional<DATA> findFirst(AggregationToBoolean<? super DATA> aggregation) {
         val aggregator = aggregation.newAggregator();
         return findFirst(aggregator::test);
     }
-    
-    /** Return the any element that matches the predicate. */
+
+    /**
+     * Return the any element that matches the predicate.
+     */
     @Terminal
-    public default Optional<DATA> findAny(
-            Predicate<? super DATA> predicate) {
+    public default Optional<DATA> findAny(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .filter(predicate)
-                .findAny();
+        return streamPlus.filter(predicate).findAny();
     }
-    
-    /** Return the any element that matches the predicate. */
+
+    /**
+     * Return the any element that matches the predicate.
+     */
     @Terminal
-    public default Optional<DATA> findAny(
-            AggregationToBoolean<? super DATA> aggregation) {
+    public default Optional<DATA> findAny(AggregationToBoolean<? super DATA> aggregation) {
         val aggregator = aggregation.newAggregator();
         return findFirst(aggregator::test);
     }
-    
-    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+
+    /**
+     * Use the mapper, return the first element that its mapped value matches the predicate.
+     */
     @Terminal
     @Sequential
-    public default <T> Optional<DATA> findFirst(
-            Function<? super DATA, T> mapper, 
-            Predicate<? super T>      theCondition) {
+    public default <T> Optional<DATA> findFirst(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .filter(mapper, theCondition)
-                .findFirst();
+        return streamPlus.filter(mapper, theCondition).findFirst();
     }
-    
-    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+
+    /**
+     * Use the mapper, return the first element that its mapped value matches the predicate.
+     */
     @Terminal
     @Sequential
-    public default <T> Optional<DATA> findFirst(
-            Aggregation<? super DATA, T> aggregation, 
-            Predicate<? super T>         theCondition) {
+    public default <T> Optional<DATA> findFirst(Aggregation<? super DATA, T> aggregation, Predicate<? super T> theCondition) {
         val mapper = aggregation.newAggregator();
         return findFirst(mapper, theCondition);
     }
-    
-    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+
+    /**
+     * Use the mapper, return the first element that its mapped value matches the predicate.
+     */
     @Terminal
     @Sequential
-    public default <T> Optional<DATA> findFirst(
-            Function<? super DATA, T>       mapper, 
-            AggregationToBoolean<? super T> theConditionAggregation) {
+    public default <T> Optional<DATA> findFirst(Function<? super DATA, T> mapper, AggregationToBoolean<? super T> theConditionAggregation) {
         val theCondition = theConditionAggregation.newAggregator();
         return findFirst(mapper, theCondition::test);
     }
-    
-    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+
+    /**
+     * Use the mapper, return the first element that its mapped value matches the predicate.
+     */
     @Terminal
     @Sequential
-    public default <T> Optional<DATA> findFirst(
-            Aggregation<? super DATA, T>    aggregation, 
-            AggregationToBoolean<? super T> theConditionAggregation) {
+    public default <T> Optional<DATA> findFirst(Aggregation<? super DATA, T> aggregation, AggregationToBoolean<? super T> theConditionAggregation) {
         val mapper = aggregation.newAggregator();
         val theCondition = theConditionAggregation.newAggregator();
         return findFirst(mapper, theCondition::test);
     }
-    
-    /** Use the mapper, return the any element that its mapped value matches the predicate. */
+
+    /**
+     * Use the mapper, return the any element that its mapped value matches the predicate.
+     */
     @Terminal
-    public default <T>  Optional<DATA> findAny(
-            Function<? super DATA, T> mapper, 
-            Predicate<? super T>      theCondition) {
+    public default <T> Optional<DATA> findAny(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .filter(mapper, theCondition)
-                .findAny();
+        return streamPlus.filter(mapper, theCondition).findAny();
     }
-    
-    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+
+    /**
+     * Use the mapper, return the first element that its mapped value matches the predicate.
+     */
     @Terminal
     @Sequential
-    public default <T> Optional<DATA> findAny(
-            Aggregation<? super DATA, T> aggregation, 
-            Predicate<? super T>         theCondition) {
+    public default <T> Optional<DATA> findAny(Aggregation<? super DATA, T> aggregation, Predicate<? super T> theCondition) {
         val mapper = aggregation.newAggregator();
         return findAny(mapper, theCondition);
     }
-    
-    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+
+    /**
+     * Use the mapper, return the first element that its mapped value matches the predicate.
+     */
     @Terminal
     @Sequential
-    public default <T> Optional<DATA> findAny(
-            Function<? super DATA, T>       mapper, 
-            AggregationToBoolean<? super T> theConditionAggregation) {
+    public default <T> Optional<DATA> findAny(Function<? super DATA, T> mapper, AggregationToBoolean<? super T> theConditionAggregation) {
         val theCondition = theConditionAggregation.newAggregator();
         return findAny(mapper, theCondition::test);
     }
-    
-    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+
+    /**
+     * Use the mapper, return the first element that its mapped value matches the predicate.
+     */
     @Terminal
     @Sequential
-    public default <T> Optional<DATA> findAny(
-            Aggregation<? super DATA, T>    aggregation, 
-            AggregationToBoolean<? super T> theConditionAggregation) {
+    public default <T> Optional<DATA> findAny(Aggregation<? super DATA, T> aggregation, AggregationToBoolean<? super T> theConditionAggregation) {
         val mapper = aggregation.newAggregator();
         val theCondition = theConditionAggregation.newAggregator();
         return findAny(mapper, theCondition::test);
     }
-    
-    //== Contains ==
-    
-    /** Check if the list contains all the given values */
+
+    // == Contains ==
+    /**
+     * Check if the list contains all the given values
+     */
     @SuppressWarnings("unchecked")
-    public default boolean containsAllOf(DATA ... values) {
+    public default boolean containsAllOf(DATA... values) {
         val set = new HashSet<DATA>(values.length);
         for (val value : values) {
             set.add(value);
         }
         val streamPlus = streamPlus();
-        return streamPlus
-                .peek(set::remove)
-                .anyMatch(__ -> set.isEmpty());
+        return streamPlus.peek(set::remove).anyMatch(__ -> set.isEmpty());
     }
-    
+
     @SuppressWarnings("unchecked")
-    public default boolean containsAnyOf(DATA ... values) {
+    public default boolean containsAnyOf(DATA... values) {
         return anyMatch(each -> streamOf(values).anyMatch(o -> Objects.equals(each, o)));
     }
-    
+
     @SuppressWarnings("unchecked")
-    public default boolean containsNoneOf(DATA ... values) {
+    public default boolean containsNoneOf(DATA... values) {
         return noneMatch(each -> streamOf(values).anyMatch(o -> Objects.equals(each, o)));
     }
-    
 }

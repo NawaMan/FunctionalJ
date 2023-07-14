@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,24 +27,21 @@ import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
+import java.util.List;
+
 import functionalj.types.DefaultValue;
 import functionalj.types.Property;
 import functionalj.types.Type;
-import lombok.Value;
-import lombok.With;
-import lombok.val;
-import lombok.experimental.Accessors;
 
-
-@Value
-@With
-@Accessors(fluent = true)
 public class CaseParam implements Property {
     
-    private String       name;
-    private Type         type;
-    private boolean      isNullable;
-    private DefaultValue defValue;
+    private final String name;
+    
+    private final Type type;
+    
+    private final boolean isNullable;
+    
+    private final DefaultValue defValue;
     
     public CaseParam(String name, Type type, boolean isNullable) {
         this(name, type, isNullable, null);
@@ -57,21 +54,45 @@ public class CaseParam implements Property {
         this.defValue = defValue;
     }
     
+    public String name() {
+        return name;
+    }
+    
+    public Type type() {
+        return type;
+    }
+    
+    public boolean isNullable() {
+        return isNullable;
+    }
+    
+    public DefaultValue defValue() {
+        return defValue;
+    }
+    
+    public CaseParam withName(String name) {
+        return new CaseParam(name, type, isNullable);
+    }
+    
+    public CaseParam withType(Type type) {
+        return new CaseParam(name, type, isNullable);
+    }
+    
+    public CaseParam withNullable(boolean isNullable) {
+        return new CaseParam(name, type, isNullable);
+    }
+    
+    public CaseParam withDefValue(DefaultValue defValue) {
+        return new CaseParam(name, type, isNullable);
+    }
+    
     public String toCode() {
-        val params = asList(
-                toStringLiteral(name),
-                type.toCode(),
-                "" + isNullable,
-                (defValue == null) ? "null" : DefaultValue.defaultValueCode(type, defValue)
-        );
-        return "new " + this.getClass().getCanonicalName() + "("
-                + params.stream().collect(joining(", "))
-                + ")";
+        List<String> params = asList(toStringLiteral(name), type.toCode(), "" + isNullable, (defValue == null) ? "null" : DefaultValue.defaultValueCode(type, defValue));
+        return "new " + this.getClass().getCanonicalName() + "(" + params.stream().collect(joining(", ")) + ")";
     }
     
     @Override
     public String toString() {
         return "CaseParam [name=" + name + ", type=" + type + ", isNullable=" + isNullable + "]";
     }
-    
 }

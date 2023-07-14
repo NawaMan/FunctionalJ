@@ -24,15 +24,13 @@
 package functionalj.typestests.struct;
 
 import java.util.Map;
-
 import functionalj.types.Struct;
 
 public class WithMapTest {
 
-    @Struct(name="ParentWithMap")
+    @Struct(name = "ParentWithMap")
     public static interface IParent4 {
-        
+
         public Map<String, Child> children();
-        
     }
 }

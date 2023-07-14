@@ -24,19 +24,17 @@
 package functionalj.store;
 
 // import functionalj.types.Choice;
-
 class Specs {
-    
     // Due to Eclipse needing the built jar to be here and not as part of the build,
-    //   I simply move the generated class in the package.
-//    
-//    @Choice
-//    static interface ResultStatusSpec<D> {
-//        void NotAllowed(ChangeNotAllowedException reason);
-//        void Accepted  (D newData);
-//        void Adjusted  (D proposedData, D adjustedData);
-//        void Rejected  (D propose, D rollback, ChangeRejectedException reason);
-//        void Failed    (ChangeFailException problem);
-//    }
-//    
+    // I simply move the generated class in the package.
+    // 
+    // @Choice
+    // static interface ResultStatusSpec<D> {
+    // void NotAllowed(ChangeNotAllowedException reason);
+    // void Accepted  (D newData);
+    // void Adjusted  (D proposedData, D adjustedData);
+    // void Rejected  (D propose, D rollback, ChangeRejectedException reason);
+    // void Failed    (ChangeFailException problem);
+    // }
+    // 
 }

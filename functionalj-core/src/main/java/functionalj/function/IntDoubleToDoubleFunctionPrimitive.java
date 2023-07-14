@@ -25,40 +25,30 @@ package functionalj.function;
 
 import java.util.function.ToDoubleBiFunction;
 
-
 @FunctionalInterface
-public interface IntDoubleToDoubleFunctionPrimitive 
-            extends 
-                ToDoubleBiFunction<Integer, Double>, 
-                ObjectDoubleToDoubleFunctionPrimitive<Integer> {
-    
+public interface IntDoubleToDoubleFunctionPrimitive extends ToDoubleBiFunction<Integer, Double>, ObjectDoubleToDoubleFunctionPrimitive<Integer> {
+
     public static IntDoubleToDoubleFunctionPrimitive of(IntDoubleToDoubleFunctionPrimitive function) {
         return function;
-        
     }
+
     public static IntDoubleToDoubleFunctionPrimitive from(ToDoubleBiFunction<Integer, Double> function) {
-        return (function instanceof IntDoubleToDoubleFunctionPrimitive)
-                ? (IntDoubleToDoubleFunctionPrimitive)function
-                : ((d1, d2) -> function.applyAsDouble(d1, d2));
+        return (function instanceof IntDoubleToDoubleFunctionPrimitive) ? (IntDoubleToDoubleFunctionPrimitive) function : ((d1, d2) -> function.applyAsDouble(d1, d2));
     }
+
     public static IntDoubleToDoubleFunctionPrimitive from(ObjectDoubleToDoubleFunctionPrimitive<Integer> function) {
-        return (function instanceof IntDoubleToDoubleFunctionPrimitive)
-                ? (IntDoubleToDoubleFunctionPrimitive)function
-                : ((d1, d2) -> function.applyObjectDouble(d1, d2));
+        return (function instanceof IntDoubleToDoubleFunctionPrimitive) ? (IntDoubleToDoubleFunctionPrimitive) function : ((d1, d2) -> function.applyObjectDouble(d1, d2));
     }
-    
-    //-- functionality --
-    
+
+    // -- functionality --
     public double applyIntDouble(int intValue, double doubleValue);
-    
-    
+
     public default double applyAsDouble(Integer intValue, Double doubleValue) {
         return applyIntDouble(intValue, doubleValue);
     }
-    
+
     @Override
     public default double applyObjectDouble(Integer data, double doubleValue) {
         return applyIntDouble(data, doubleValue);
     }
-    
 }

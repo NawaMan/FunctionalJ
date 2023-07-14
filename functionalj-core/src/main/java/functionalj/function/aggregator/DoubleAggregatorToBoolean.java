@@ -28,33 +28,31 @@ import functionalj.stream.doublestream.collect.DoubleCollectedToBoolean;
 import functionalj.stream.doublestream.collect.DoubleCollectorToBooleanPlus;
 
 public interface DoubleAggregatorToBoolean extends DoubleToBooleanAccessPrimitive, DoubleAggregator<Boolean> {
-    
+
     public DoubleCollectedToBoolean<?> asCollected();
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl implements DoubleAggregatorToBoolean {
-        
+
         private final DoubleCollectedToBoolean<?> collected;
-        
+
         public Impl(DoubleCollectorToBooleanPlus<?> collector) {
             this.collected = DoubleCollectedToBoolean.of(collector);
         }
-        
+
         public DoubleCollectedToBoolean<?> asCollected() {
             return collected;
         }
-        
+
         @Override
         public boolean applyDoubleToBoolean(double input) {
             collected.accumulate(input);
             return collected.finish();
         }
-        
+
         @Override
         public Boolean apply(double input) {
             return applyDoubleToBoolean(input);
         }
     }
-    
 }

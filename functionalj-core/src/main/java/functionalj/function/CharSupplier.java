@@ -32,5 +32,4 @@ public interface CharSupplier {
      * @return a result
      */
     char getAsChar();
-    
 }

@@ -26,44 +26,33 @@ package functionalj.stream.intstream;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
-
 import lombok.val;
 
-
 public interface IntStreamPlusWithFlatMap {
-    
+
     public IntStreamPlus intStreamPlus();
-    
-    
-    /** FlatMap with the given mapper for only the value that pass the condition. */
-    public default IntStreamPlus flatMapOnly(
-            IntPredicate                     condition,
-            IntFunction<? extends IntStream> mapper) {
+
+    /**
+     * FlatMap with the given mapper for only the value that pass the condition.
+     */
+    public default IntStreamPlus flatMapOnly(IntPredicate condition, IntFunction<? extends IntStream> mapper) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .flatMap(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
-                            ? mapper.apply(value)
-                            : IntStreamPlus.of(value);
-                    return mapped;
-                });
+        return streamPlus.flatMap(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.apply(value) : IntStreamPlus.of(value);
+            return mapped;
+        });
     }
-    
-    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
-    public default IntStreamPlus flatMapIf(
-            IntPredicate                     condition,
-            IntFunction<? extends IntStream> mapper,
-            IntFunction<? extends IntStream> elseMapper) {
+
+    /**
+     * FlatMap with the mapper if the condition is true, otherwise use another elseMapper.
+     */
+    public default IntStreamPlus flatMapIf(IntPredicate condition, IntFunction<? extends IntStream> mapper, IntFunction<? extends IntStream> elseMapper) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .flatMap(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
-                            ? mapper.apply(value)
-                            : elseMapper.apply(value);
-                    return mapped;
-                });
+        return streamPlus.flatMap(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.apply(value) : elseMapper.apply(value);
+            return mapped;
+        });
     }
-    
 }

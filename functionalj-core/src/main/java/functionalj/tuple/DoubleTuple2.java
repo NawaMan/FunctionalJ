@@ -26,55 +26,59 @@ package functionalj.tuple;
 import java.util.Map;
 
 public class DoubleTuple2<T2> implements Tuple2<Double, T2>, Map.Entry<Double, T2> {
-    
+
     public static <T2> DoubleTuple2<T2> of(double i, T2 t2) {
         return new DoubleTuple2<>(i, t2);
     }
-    
+
     public final double _1;
-    public final T2  _2;
-    
+
+    public final T2 _2;
+
     public DoubleTuple2(double _1, T2 T2) {
         this._1 = _1;
         this._2 = T2;
     }
-    
+
     public double _double() {
         return _1;
     }
+
     public Double _1() {
         return _1;
     }
+
     public T2 _2() {
         return _2;
     }
-    
+
     @Override
     public Double getKey() {
         return _1();
     }
-    
+
     @Override
     public T2 getValue() {
         return _2();
     }
-    
+
     @Override
     public T2 setValue(T2 value) {
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
     public String toString() {
         return Tuple.toString(this);
     }
+
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
+
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);
     }
-    
 }

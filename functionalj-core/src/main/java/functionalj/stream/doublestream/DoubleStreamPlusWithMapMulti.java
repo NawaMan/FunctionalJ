@@ -29,7 +29,6 @@ import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.stream.StreamSupport;
-
 import functionalj.function.DoubleObjBiConsumer;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
@@ -37,16 +36,17 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
-
 public interface DoubleStreamPlusWithMapMulti extends AsDoubleStreamPlus {
-    
+
     public default DoubleStreamPlus mapMulti(DoubleObjBiConsumer<DoubleConsumer> mapper) {
         val orgSpliterator = this.spliterator();
         val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+
             private volatile boolean shouldContinue = true;
+
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
-                return shouldContinue && orgSpliterator.tryAdvance((DoubleConsumer)(elem -> {
+                return shouldContinue && orgSpliterator.tryAdvance((DoubleConsumer) (elem -> {
                     try {
                         mapper.accept(elem, consumer);
                     } catch (NoMoreResultException e) {
@@ -58,14 +58,16 @@ public interface DoubleStreamPlusWithMapMulti extends AsDoubleStreamPlus {
         val newStream = StreamSupport.doubleStream(newSpliterator, false);
         return DoubleStreamPlus.from(newStream);
     }
-    
+
     public default IntStreamPlus mapMultiToInt(DoubleObjBiConsumer<IntConsumer> mapper) {
         val orgSpliterator = this.spliterator();
         val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
+
             private volatile boolean shouldContinue = true;
+
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
-                return shouldContinue && orgSpliterator.tryAdvance((DoubleConsumer)(elem -> {
+                return shouldContinue && orgSpliterator.tryAdvance((DoubleConsumer) (elem -> {
                     try {
                         mapper.accept(elem, consumer);
                     } catch (NoMoreResultException e) {
@@ -77,14 +79,16 @@ public interface DoubleStreamPlusWithMapMulti extends AsDoubleStreamPlus {
         val newStream = StreamSupport.intStream(newSpliterator, false);
         return IntStreamPlus.from(newStream);
     }
-    
+
     public default LongStreamPlus mapMultiToLong(DoubleObjBiConsumer<LongConsumer> mapper) {
         val orgSpliterator = this.spliterator();
         val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
+
             private volatile boolean shouldContinue = true;
+
             @Override
             public boolean tryAdvance(LongConsumer consumer) {
-                return shouldContinue && orgSpliterator.tryAdvance((DoubleConsumer)(elem -> {
+                return shouldContinue && orgSpliterator.tryAdvance((DoubleConsumer) (elem -> {
                     try {
                         mapper.accept(elem, consumer);
                     } catch (NoMoreResultException e) {
@@ -96,18 +100,20 @@ public interface DoubleStreamPlusWithMapMulti extends AsDoubleStreamPlus {
         val newStream = StreamSupport.longStream(newSpliterator, false);
         return LongStreamPlus.from(newStream);
     }
-    
+
     public default DoubleStreamPlus mapMultiToDouble(DoubleObjBiConsumer<DoubleConsumer> mapper) {
         return mapMulti(mapper);
     }
-    
+
     public default <T> StreamPlus<T> mapMultiToObj(DoubleObjBiConsumer<Consumer<? super T>> mapper) {
         val orgSpliterator = this.spliterator();
         val newSpliterator = new Spliterators.AbstractSpliterator<T>(orgSpliterator.estimateSize(), 0) {
+
             private volatile boolean shouldContinue = true;
+
             @Override
             public boolean tryAdvance(Consumer<? super T> consumer) {
-                return shouldContinue && orgSpliterator.tryAdvance((DoubleConsumer)(elem -> {
+                return shouldContinue && orgSpliterator.tryAdvance((DoubleConsumer) (elem -> {
                     try {
                         mapper.accept(elem, consumer);
                     } catch (NoMoreResultException e) {
@@ -119,5 +125,4 @@ public interface DoubleStreamPlusWithMapMulti extends AsDoubleStreamPlus {
         val newStream = StreamSupport.stream(newSpliterator, false);
         return StreamPlus.from(newStream);
     }
-    
 }

@@ -25,10 +25,8 @@ package functionalj.list.intlist;
 
 import static functionalj.list.intlist.IntFuncList.deriveFrom;
 import static functionalj.list.intlist.IntFuncList.deriveToObj;
-
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
-
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.promise.UncompletedAction;
@@ -37,18 +35,18 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 
 public interface IntFuncListWithModify extends AsIntFuncList {
-    
+
     /**
      * Accumulate the previous to the next element.
-     * 
+     *
      * For example:
      *      inputs = [i1, i2, i3, i4, i5, i6, i7, i8, i9, i10]
      *      and ~ is a accumulate function
-     * 
+     *
      * From this we get
-     *      acc0  = head of inputs => i1
-     *      rest0 = tail of inputs => [i2, i3, i4, i5, i6, i7, i8, i9, i10]
-     * 
+     *      acc0  = head of inputs =&gt; i1
+     *      rest0 = tail of inputs =&gt; [i2, i3, i4, i5, i6, i7, i8, i9, i10]
+     *
      * The outputs are:
      *     output0 = acc0 with acc1 = acc0 ~ rest0 and rest1 = rest of rest0
      *     output1 = acc1 with acc2 = acc1 ~ rest1 and rest2 = rest of rest1
@@ -58,42 +56,40 @@ public interface IntFuncListWithModify extends AsIntFuncList {
     public default IntFuncList accumulate(IntBinaryOperator accumulator) {
         return deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
-    
+
     /**
      * Given a collector, create a list that each element is an accumulation from the previous.
-     * 
+     *
      * @param collector  the collector.
      * @return           the accumulated stream.
      */
     public default IntFuncList accumulate(IntCollectorToIntPlus<int[]> collector) {
         return deriveFrom(this, stream -> stream.accumulate(collector));
     }
-    
-    //== restate ==
-    
+
+    // == restate ==
     /**
      * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
-     * 
+     *
      * For example:
      *      inputs = [i1, i2, i3, i4, i5, i6, i7, i8, i9, i10]
      *      and ~ is a restate function
-     * 
+     *
      * From this we get
      *      head0 = head of inputs = i1
      *      rest0 = tail of inputs = [i2, i3, i4, i5, i6, i7, i8, i9, i10]
-     * 
+     *
      * The outputs are:
      *     output0 = head0 with rest1 = head0 ~ rest0 and head1 = head of rest0
      *     output1 = head1 with rest2 = head1 ~ rest1 and head2 = head of rest2
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
-     **/
+     */
     public default IntFuncList restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
         return deriveFrom(this, stream -> stream.restate(restater));
     }
-    
-    //== Spawn ==
-    
+
+    // == Spawn ==
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.
      * The result stream will not be the same order with the original one
@@ -104,5 +100,4 @@ public interface IntFuncListWithModify extends AsIntFuncList {
     public default <T> FuncList<Result<T>> spawn(IntFunction<? extends UncompletedAction<T>> mapToAction) {
         return deriveToObj(this, stream -> stream.spawn(mapToAction));
     }
-    
 }

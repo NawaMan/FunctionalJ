@@ -25,9 +25,9 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface IntLongToIntFunction extends Func2<Integer, Long, Integer> {
-    
+
     public int applyInt(int input1, long input2);
-    
+
     @Override
     public default Integer applyUnsafe(Integer input1, Long input2) throws Exception {
         return applyInt(input1, input2);

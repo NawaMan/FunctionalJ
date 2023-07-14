@@ -26,90 +26,97 @@ package functionalj.lens.lenses;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
-
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import nullablej.nullable.Nullable;
 
 class BigIntegerAccessConstants {
+
     public static final BigInteger MINUS_ONE = BigInteger.ZERO.subtract(BigInteger.ONE);
 }
 
 @FunctionalInterface
-public interface BigIntegerAccess<HOST> 
-        extends 
-            NumberAccess<HOST, BigInteger, BigIntegerAccess<HOST>>, 
-            ConcreteAccess<HOST, BigInteger, BigIntegerAccess<HOST>> {
-    
+public interface BigIntegerAccess<HOST> extends NumberAccess<HOST, BigInteger, BigIntegerAccess<HOST>>, ConcreteAccess<HOST, BigInteger, BigIntegerAccess<HOST>> {
+
     @Override
     public default BigIntegerAccess<HOST> newAccess(Function<HOST, BigInteger> access) {
         return access::apply;
     }
-    
-    
+
     public default MathOperators<BigInteger> __mathOperators() {
         return __BigIntegerMathOperators;
     }
-    
+
     public static MathOperators<BigInteger> __BigIntegerMathOperators = new MathOperators<BigInteger>() {
 
         @Override
         public BigInteger zero() {
             return BigInteger.ZERO;
         }
+
         @Override
         public BigInteger one() {
             return BigInteger.ONE;
         }
+
         @Override
         public BigInteger minusOne() {
             return BigIntegerAccessConstants.MINUS_ONE;
         }
+
         @Override
         public Integer asInteger(BigInteger number) {
             return asBigInteger(number).intValue();
         }
+
         @Override
         public Long asLong(BigInteger number) {
             return asBigInteger(number).longValue();
         }
+
         @Override
         public Double asDouble(BigInteger number) {
             return asBigInteger(number).doubleValue();
         }
+
         @Override
         public BigInteger asBigInteger(BigInteger number) {
             return Nullable.of(number).orElse(BigInteger.ZERO);
         }
+
         @Override
         public BigDecimal asBigDecimal(BigInteger number) {
             return new BigDecimal(asBigInteger(number));
         }
-        
+
         @Override
         public BigInteger add(BigInteger number1, BigInteger number2) {
             BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
             BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
             return v1.add(v2);
         }
+
         @Override
         public BigInteger subtract(BigInteger number1, BigInteger number2) {
             BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
             BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
             return v1.subtract(v2);
         }
+
         @Override
         public BigInteger multiply(BigInteger number1, BigInteger number2) {
             BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
             BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
             return v1.multiply(v2);
         }
+
         @Override
         public BigInteger divide(BigInteger number1, BigInteger number2) {
             BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
             BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
             return v1.divide(v2);
         }
+
         @Override
         public BigInteger remainder(BigInteger number1, BigInteger number2) {
             BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
@@ -137,11 +144,13 @@ public interface BigIntegerAccess<HOST>
             BigInteger v = (number == null) ? BigInteger.ZERO : number;
             return v.abs();
         }
+
         @Override
         public BigInteger negate(BigInteger number) {
             BigInteger v = (number == null) ? BigInteger.ZERO : number;
             return v.negate();
         }
+
         @Override
         public BigInteger signum(BigInteger number) {
             BigInteger v = (number == null) ? BigInteger.ZERO : number;
@@ -154,13 +163,12 @@ public interface BigIntegerAccess<HOST>
             BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
             return v1.min(v2);
         }
+
         @Override
         public BigInteger max(BigInteger number1, BigInteger number2) {
             BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
             BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
             return v1.max(v2);
         }
-        
     };
-    
 }

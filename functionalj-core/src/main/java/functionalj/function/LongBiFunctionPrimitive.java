@@ -27,19 +27,15 @@ import lombok.val;
 
 @FunctionalInterface
 public interface LongBiFunctionPrimitive extends ToLongBiLongFunction<Long> {
-    
+
     public long applyAsLongAndLong(long data, long longValue);
-    
+
     public default long applyAsLong(Long data, long longValue) {
         return applyAsLongAndLong(data, longValue);
     }
-    
-    
+
     public static long apply(ToLongBiLongFunction<Long> function, long value, long anotherValue) {
-        val resValue 
-            = (function instanceof LongBiFunctionPrimitive)
-            ? ((LongBiFunctionPrimitive)function).applyAsLongAndLong(value, anotherValue)
-            : function.applyAsLong(value, anotherValue);
+        val resValue = (function instanceof LongBiFunctionPrimitive) ? ((LongBiFunctionPrimitive) function).applyAsLongAndLong(value, anotherValue) : function.applyAsLong(value, anotherValue);
         return resValue;
     }
 }

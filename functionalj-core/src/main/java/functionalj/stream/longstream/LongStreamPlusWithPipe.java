@@ -24,25 +24,26 @@
 package functionalj.stream.longstream;
 
 import java.util.function.Function;
-
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
-
 public interface LongStreamPlusWithPipe {
-    
+
     public LongStreamPlus longStreamPlus();
-    
-    /** @return the pipeable of this stream. */
+
+    /**
+     * @return the pipeable of this stream.
+     */
     public default Pipeable<? extends LongStreamPlus> pipable() {
         val streamPlus = longStreamPlus();
         return Pipeable.of(streamPlus);
     }
-    
-    /** Pipe this stream plus through the given function. */
+
+    /**
+     * Pipe this stream plus through the given function.
+     */
     public default <T> T pipeTo(Function<? super LongStreamPlus, T> function) {
         val streamPlus = longStreamPlus();
         return function.apply(streamPlus);
     }
-    
 }

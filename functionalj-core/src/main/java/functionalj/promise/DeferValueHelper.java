@@ -24,21 +24,17 @@
 package functionalj.promise;
 
 import java.util.function.Function;
-
 import functionalj.result.Result;
 import lombok.val;
 
 class DeferValueHelper {
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    static public <DATA, TARGET> DeferValue<TARGET> mapResult(
-            DeferValue<DATA>                                              originalLater, 
-            Function<Result<? super DATA>, Result<? extends TARGET>> mapper) {
-        val resultLater   = (originalLater instanceof NamedDeferValue) 
-                          ? new DeferValue<TARGET>(originalLater).named(((NamedDeferValue)originalLater).name())
-                          : new DeferValue<TARGET>(originalLater);
+    static public <DATA, TARGET> DeferValue<TARGET> mapResult(DeferValue<DATA> originalLater, Function<Result<? super DATA>, Result<? extends TARGET>> mapper) {
+        val resultLater = (originalLater instanceof NamedDeferValue) ? new DeferValue<TARGET>(originalLater).named(((NamedDeferValue) originalLater).name()) : new DeferValue<TARGET>(originalLater);
         originalLater.onComplete(result -> {
             val finalResult = mapper.apply(result);
-            Promise.makeDone(resultLater, (Result<TARGET>)finalResult);
+            Promise.makeDone(resultLater, (Result<TARGET>) finalResult);
         });
         return resultLater;
     }

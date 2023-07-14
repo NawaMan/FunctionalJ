@@ -26,33 +26,26 @@ package functionalj.function;
 import java.util.function.BiFunction;
 import java.util.function.ToDoubleBiFunction;
 
-
 @FunctionalInterface
 public interface DoubleLongToDoubleFunction extends ToDoubleBiFunction<Long, Double>, BiFunction<Long, Double, Double> {
-    
+
     public double applyAsLongAndDouble(long longValue, double doubleValue);
-    
+
     @Override
     public default double applyAsDouble(Long longValue, Double doubleValue) {
         return applyAsLongAndDouble(longValue, doubleValue);
     }
-    
+
     @Override
     public default Double apply(Long longValue, Double doubleValue) {
         return applyAsLongAndDouble(longValue, doubleValue);
     }
-    
-    
+
     public static double apply(ToDoubleBiFunction<Long, Double> function, Long longValue, double doubleValue) {
-        return (function instanceof DoubleLongToDoubleFunction)
-                ? ((DoubleLongToDoubleFunction)function).applyAsLongAndDouble(longValue, doubleValue)
-                : function.applyAsDouble(longValue, doubleValue);
+        return (function instanceof DoubleLongToDoubleFunction) ? ((DoubleLongToDoubleFunction) function).applyAsLongAndDouble(longValue, doubleValue) : function.applyAsDouble(longValue, doubleValue);
     }
-    
-    
+
     public static double apply(BiFunction<Long, Double, Double> function, Long longValue, double doubleValue) {
-        return (function instanceof DoubleLongToDoubleFunction)
-                ? ((DoubleLongToDoubleFunction)function).applyAsLongAndDouble(longValue, doubleValue)
-                : function.apply(longValue, doubleValue);
+        return (function instanceof DoubleLongToDoubleFunction) ? ((DoubleLongToDoubleFunction) function).applyAsLongAndDouble(longValue, doubleValue) : function.apply(longValue, doubleValue);
     }
 }

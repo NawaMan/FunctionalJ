@@ -37,5 +37,4 @@ public @interface Generated {
     public abstract String date() default "";
     
     public abstract String[] comments() default "";
-    
 }

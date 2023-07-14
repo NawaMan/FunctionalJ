@@ -23,112 +23,110 @@
 // ============================================================================
 package functionalj.list.intlist;
 
-
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
-
 import functionalj.list.FuncList.Mode;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
-
 public class IntFuncListDerived implements IntFuncList {
-    
+
     private static final IntBinaryOperator zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
-    private static final IntPredicate      notZero       = (int i)          -> i  != 0;
-    
-    //-- Data --
-    
+
+    private static final IntPredicate notZero = (int i) -> i != 0;
+
+    // -- Data --
     private final Object source;
+
     private final Function<IntStream, IntStream> action;
-    
-    //-- Constructors --
-    
+
+    // -- Constructors --
     IntFuncListDerived(AsIntFuncList source, Function<IntStream, IntStream> action) {
         this.source = Objects.requireNonNull(source);
         this.action = Objects.requireNonNull(action);
     }
+
     IntFuncListDerived(Supplier<IntStream> streams) {
         this.action = stream -> stream;
         this.source = streams;
     }
+
     IntFuncListDerived(Supplier<IntStream> streams, Function<IntStream, IntStream> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streams;
     }
-    
-    //-- Source Stream --
-    
+
+    // -- Source Stream --
     @SuppressWarnings("unchecked")
     private IntStream getSourceStream() {
         if (source == null)
             return IntStream.empty();
         if (source instanceof IntFuncList)
-            return (IntStream)((IntFuncList)source).intStream();
+            return (IntStream) ((IntFuncList) source).intStream();
         if (source instanceof Supplier)
-            return ((Supplier<IntStream>)source).get();
+            return ((Supplier<IntStream>) source).get();
         throw new IllegalStateException();
     }
-    
+
     @Override
     public IntStreamPlus intStream() {
         IntStream theStream = getSourceStream();
         IntStream newStream = action.apply(theStream);
         return IntStreamPlus.from(newStream);
     }
-    
-    /** Check if this list is a lazy list. */
+
+    /**
+     * Check if this list is a lazy list.
+     */
     public Mode mode() {
         return Mode.lazy;
     }
-    
+
     @Override
     public IntFuncList toLazy() {
         return this;
     }
-    
+
     @Override
     public IntFuncList toEager() {
         val data = this.toArray();
         return new ImmutableIntFuncList(data, data.length, Mode.eager);
     }
-    
+
     @Override
     public IntFuncList toCache() {
         return IntFuncList.from(intStream());
     }
-    
-    /** Returns an immutable list containing the data of this list. Maintaining the mode. */
+
+    /**
+     * Returns an immutable list containing the data of this list. Maintaining the mode.
+     */
     @Override
     public ImmutableIntFuncList toImmutableList() {
         return ImmutableIntFuncList.from(this);
     }
-    
+
     @Override
     public int hashCode() {
-        return reduce(43, (hash, each) -> hash*43 + each);
+        return reduce(43, (hash, each) -> hash * 43 + each);
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof AsIntFuncList))
             return false;
-        
-        val anotherList = (IntFuncList)o;
+        val anotherList = (IntFuncList) o;
         if (size() != anotherList.size())
             return false;
-        
-        return !IntFuncList.zipOf(this, anotherList.asIntFuncList(), zeroForEquals)
-                .anyMatch(notZero);
+        return !IntFuncList.zipOf(this, anotherList.asIntFuncList(), zeroForEquals).anyMatch(notZero);
     }
-    
+
     @Override
     public String toString() {
         return asIntFuncList().toListString();
     }
-    
 }

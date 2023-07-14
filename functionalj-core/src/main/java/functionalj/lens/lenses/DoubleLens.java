@@ -24,57 +24,50 @@
 package functionalj.lens.lenses;
 
 import java.util.function.ToDoubleFunction;
-
 import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 import lombok.val;
 
-
 @FunctionalInterface
-public interface DoubleLens<HOST>
-        extends
-            DoubleAccess<HOST>,
-            ToDoubleFunction<HOST>,
-            ComparableLens<HOST, Double> {
-    
-    
+public interface DoubleLens<HOST> extends DoubleAccess<HOST>, ToDoubleFunction<HOST>, ComparableLens<HOST, Double> {
+
     public static class Impl<H> extends ComparableLens.Impl<H, Double> implements Named, DoubleLens<H> {
+
         public Impl(String name, LensSpec<H, Double> spec) {
             super(name, spec);
         }
     }
-    
+
     public static <HOST> DoubleLens<HOST> of(String name, LensSpec<HOST, Double> spec) {
         return new Impl<>(name, spec);
     }
+
     public static <HOST> DoubleLens<HOST> of(LensSpec<HOST, Double> spec) {
         return of(null, spec);
     }
-    
+
     @Override
     default Double apply(HOST host) {
         LensSpec<HOST, Double> lensSpec = lensSpec();
         return lensSpec.getRead().apply(host);
     }
-    
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public default double applyAsDouble(HOST host) {
         LensSpec<HOST, Double> lensSpec = lensSpec();
         if (lensSpec instanceof PrimitiveLensSpecs.DoubleLensSpecPrimitive) {
-            val spec  = (PrimitiveLensSpecs.DoubleLensSpecPrimitive)lensSpec;
+            val spec = (PrimitiveLensSpecs.DoubleLensSpecPrimitive) lensSpec;
             val value = spec.applyAsDouble(host);
             return value;
         }
-        
         val value = lensSpec.apply(host);
         return value;
     }
-    
+
     @Override
     public default Double applyUnsafe(HOST host) throws Exception {
         LensSpec<HOST, Double> lensSpec = lensSpec();
         return lensSpec.apply(host);
     }
-    
 }

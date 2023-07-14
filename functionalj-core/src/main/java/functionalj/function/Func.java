@@ -24,7 +24,6 @@
 package functionalj.function;
 
 import static java.util.Arrays.stream;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +38,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 import functionalj.environments.Env;
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
@@ -48,36 +46,35 @@ import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
 
-
 public interface Func {
     
-    //== Provide different name for more readability ==
-    
+    // == Provide different name for more readability ==
     /**
      * A shorter way to use Function.identity() -- alias for itself() and themAll().
-     * 
+     *
      * @param <TYPE> the type of it.
      * @return the function that take it and return it.
-     **/
+     */
     public static <TYPE> Func1<TYPE, TYPE> it() {
         return it -> it;
     }
+    
     /**
      * A shorter way to use Function.identity() -- alias for it() and themAll().
-     * 
+     *
      * @param <TYPE> the type of it.
      * @return the function that take it and return it.
-     **/
+     */
     public static <TYPE> Func1<TYPE, TYPE> itself() {
         return it -> it;
     }
     
     /**
      * A shorter way to use Function.identity() -- alias for it() and itself().
-     * 
+     *
      * @param <TYPE> the type of it.
      * @return the function that take it and return it.
-     **/
+     */
     public static <TYPE> Func1<TYPE, TYPE> themAll() {
         return it -> it;
     }
@@ -85,13 +82,14 @@ public interface Func {
     public static <T> Predicate<T> alwaysTrue() {
         return t -> true;
     }
+    
     public static <T> Predicate<T> alwaysFalse() {
         return t -> false;
     }
     
     /**
      * A shorter way to do flatmap on list directly.
-     * 
+     *
      * @param <IN>   the input data type.
      * @param <OUT>  the output data type.
      * @return the function that take list and change to stream.
@@ -102,7 +100,7 @@ public interface Func {
     
     /**
      * A shorter way to do flatmap on list directly from the result of the given mapper function.
-     * 
+     *
      * @param <IN>    the input data type.
      * @param <OUT>   the output data type.
      * @param mapper  the mapper function.
@@ -116,79 +114,70 @@ public interface Func {
         return input -> check.apply(input);
     }
     
-    public static <I, O1, I2> Predicate<I> only(
-            Function<I,O1>      mapper,
-            BiPredicate<O1, I2> checker,
-            I2                  tailInput) {
-        return i->checker.test(mapper.apply(i), tailInput);
+    public static <I, O1, I2> Predicate<I> only(Function<I, O1> mapper, BiPredicate<O1, I2> checker, I2 tailInput) {
+        return i -> checker.test(mapper.apply(i), tailInput);
     }
     
-    //== List ==
-    
+    // == List ==
     @SafeVarargs
-    public static <T> FuncList<T> listOf(T ... data) {
+    public static <T> FuncList<T> listOf(T... data) {
         return ImmutableFuncList.of(data);
     }
     
-    //== Of ==
-    
+    // == Of ==
     /**
      * Constructs a Func0 from supplier or lambda.
-     * 
+     *
      * @param  supplier  the supplier or lambda.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func0.
-     **/
-    public static <OUTPUT> 
-            Func0<OUTPUT> of(Func0<OUTPUT> supplier) {
+     */
+    public static <OUTPUT> Func0<OUTPUT> of(Func0<OUTPUT> supplier) {
         return supplier;
     }
     
     /**
      * Constructs a Func1 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func1.
-     **/
-    public static <INPUT, OUTPUT> 
-            Func1<INPUT, OUTPUT> of(Func1<INPUT, OUTPUT> function) {
+     */
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> of(Func1<INPUT, OUTPUT> function) {
         return function;
     }
     
     /**
      * Constructs a Func2 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func2.
-     **/
-    public static <INPUT1, INPUT2,OUTPUT> 
-            Func2<INPUT1, INPUT2, OUTPUT> of(Func2<INPUT1, INPUT2, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> of(Func2<INPUT1, INPUT2, OUTPUT> function) {
         return function;
     }
     
     /**
      * Constructs a Func3 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <INPUT3>  the third input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
-            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func3<INPUT1, INPUT2, INPUT3, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
         return function;
     }
     
     /**
      * Constructs a Func4 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -196,16 +185,14 @@ public interface Func {
      * @param  <INPUT4>  the forth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static
-            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
-            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
         return function;
     }
     
     /**
      * Constructs a Func5 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -214,16 +201,14 @@ public interface Func {
      * @param  <INPUT5>  the fifth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
-            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
         return function;
     }
     
     /**
      * Constructs a Func2 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -233,10 +218,8 @@ public interface Func {
      * @param  <INPUT6>  the sixth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
-            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return function;
     }
     
@@ -252,13 +235,13 @@ public interface Func {
         return FuncUnit3.of(consumer);
     }
     
-    //== From ==
-    
+    // == From ==
     public static FuncUnit0 from(Runnable runnable) {
         if (runnable instanceof FuncUnit0)
-            return (FuncUnit0)runnable;
+            return (FuncUnit0) runnable;
         return runnable::run;
     }
+    
     public static <INPUT> Predicate<INPUT> from(String name, Predicate<INPUT> predicate) {
         return Named.predicate(name, predicate);
     }
@@ -270,101 +253,97 @@ public interface Func {
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> from(BiConsumer<INPUT1, INPUT2> consumer) {
         return FuncUnit2.from(consumer);
     }
+    
     /**
      * Constructs a Func0 from supplier or lambda.
-     * 
+     *
      * @param  supplier  the supplier or lambda.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func0.
-     **/
+     */
     public static <OUTPUT> Func0<OUTPUT> from(Supplier<OUTPUT> supplier) {
         return Func0.from(supplier);
     }
     
     /**
      * Constructs a Func1 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func1.
-     **/
+     */
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> from(Function<INPUT, OUTPUT> function) {
         return Func1.from(function);
     }
     
     /**
      * Constructs a Func2 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func2.
-     **/
+     */
     public static <INPUT1, INPUT2, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> from(BiFunction<INPUT1, INPUT2, OUTPUT> function) {
         return Func2.from(function);
     }
     
-    //== f - no name ==
-    
+    // == f - no name ==
     /**
      * Constructs a Func0 from supplier or lambda.
-     * 
+     *
      * @param  supplier  the supplier or lambda.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func0.
-     **/
-    public static <OUTPUT> 
-            Func0<OUTPUT> f(Func0<OUTPUT> supplier) {
+     */
+    public static <OUTPUT> Func0<OUTPUT> f(Func0<OUTPUT> supplier) {
         return supplier;
     }
     
     /**
      * Constructs a Func1 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func1.
-     **/
-    public static <INPUT, OUTPUT> 
-            Func1<INPUT, OUTPUT> f(Func1<INPUT, OUTPUT> function) {
+     */
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> f(Func1<INPUT, OUTPUT> function) {
         return function;
     }
-
+    
     /**
      * Constructs a Func2 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func2.
-     **/
-    public static <INPUT1, INPUT2,OUTPUT> 
-            Func2<INPUT1, INPUT2, OUTPUT> f(Func2<INPUT1, INPUT2, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> f(Func2<INPUT1, INPUT2, OUTPUT> function) {
         return function;
     }
     
     /**
      * Constructs a Func3 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <INPUT3>  the third input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
-            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> f(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func3<INPUT1, INPUT2, INPUT3, OUTPUT> f(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
         return function;
     }
     
     /**
      * Constructs a Func4 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -372,16 +351,14 @@ public interface Func {
      * @param  <INPUT4>  the forth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static
-            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
-            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> f(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> f(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
         return function;
     }
     
     /**
      * Constructs a Func5 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -390,16 +367,14 @@ public interface Func {
      * @param  <INPUT5>  the fifth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
-            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> f(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> f(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
         return function;
     }
     
     /**
      * Constructs a Func6 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -409,10 +384,8 @@ public interface Func {
      * @param  <INPUT6>  the sixth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
-            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> f(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> f(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return function;
     }
     
@@ -432,65 +405,61 @@ public interface Func {
         return consumer;
     }
     
-    //== f - with name ==
-    
+    // == f - with name ==
     /**
-     * Constructs a Func0 from supplier or lambda.
-     * 
-     * @param  supplier  the supplier or lambda.
+     * Constructs a name Func0.
+     *
+     * @param  name      the function name.
+     * @param  function  the original function.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func0.
-     **/
-    public static <OUTPUT> 
-            Func0<OUTPUT> f(String name, Func0<OUTPUT> function) {
+     */
+    public static <OUTPUT> Func0<OUTPUT> f(String name, Func0<OUTPUT> function) {
         return Named.func0(name, function);
     }
     
     /**
      * Constructs a Func1 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func1.
-     **/
-    public static <INPUT, OUTPUT> 
-            Func1<INPUT, OUTPUT> f(String name, Func1<INPUT, OUTPUT> function) {
+     */
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> f(String name, Func1<INPUT, OUTPUT> function) {
         return Named.func1(name, function);
     }
-
+    
     /**
      * Constructs a Func2 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func2.
-     **/
-    public static <INPUT1, INPUT2,OUTPUT> 
-            Func2<INPUT1, INPUT2, OUTPUT> f(String name, Func2<INPUT1, INPUT2, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> f(String name, Func2<INPUT1, INPUT2, OUTPUT> function) {
         return Named.func2(name, function);
     }
     
     /**
      * Constructs a Func3 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <INPUT3>  the third input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
-            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> f(String name, Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func3<INPUT1, INPUT2, INPUT3, OUTPUT> f(String name, Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
         return Named.func3(name, function);
     }
     
     /**
      * Constructs a Func4 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -498,16 +467,14 @@ public interface Func {
      * @param  <INPUT4>  the forth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static
-            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
-            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> f(String name, Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> f(String name, Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
         return Named.func4(name, function);
     }
     
     /**
      * Constructs a Func5 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -516,16 +483,14 @@ public interface Func {
      * @param  <INPUT5>  the fifth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
-            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> f(String name, Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> f(String name, Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
         return Named.func5(name, function);
     }
     
     /**
      * Constructs a Func6 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -535,10 +500,8 @@ public interface Func {
      * @param  <INPUT6>  the sixth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
-            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> f(String name, Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> f(String name, Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return Named.func6(name, function);
     }
     
@@ -558,65 +521,60 @@ public interface Func {
         return Named.funcUnit3(name, function);
     }
     
-    //== F (traced location) - no name ==
-    
+    // == F (traced location) - no name ==
     /**
      * Constructs a Func0 from supplier or lambda.
-     * 
-     * @param  func      the func or lambda.
+     *
+     * @param  function  the function or lambda.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func0.
-     **/
-    public static <OUTPUT> 
-            Func0<OUTPUT> F(Func0<OUTPUT> function) {
+     */
+    public static <OUTPUT> Func0<OUTPUT> F(Func0<OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func0(function));
     }
     
     /**
      * Constructs a Func1 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func1.
-     **/
-    public static <INPUT, OUTPUT> 
-            Func1<INPUT, OUTPUT> F(Func1<INPUT, OUTPUT> function) {
+     */
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> F(Func1<INPUT, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func1(function));
     }
-
+    
     /**
      * Constructs a Func2 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func2.
-     **/
-    public static <INPUT1, INPUT2,OUTPUT> 
-            Func2<INPUT1, INPUT2, OUTPUT> F(Func2<INPUT1, INPUT2, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> F(Func2<INPUT1, INPUT2, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func2(function));
     }
     
     /**
      * Constructs a Func3 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <INPUT3>  the third input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
-            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> F(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func3<INPUT1, INPUT2, INPUT3, OUTPUT> F(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func3(function));
     }
     
     /**
      * Constructs a Func4 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -624,16 +582,14 @@ public interface Func {
      * @param  <INPUT4>  the forth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static
-            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
-            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> F(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> F(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func4(function));
     }
     
     /**
      * Constructs a Func5 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -642,16 +598,14 @@ public interface Func {
      * @param  <INPUT5>  the fifth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
-            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> F(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> F(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func5(function));
     }
     
     /**
      * Constructs a Func6 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -661,10 +615,8 @@ public interface Func {
      * @param  <INPUT6>  the sixth input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
-            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func6(function));
     }
     
@@ -680,82 +632,75 @@ public interface Func {
         return CallerId.instance.trace(caller -> Traced.FuncUnit2(function));
     }
     
-    //== F (traced location) - with name ==
-    
+    // == F (traced location) - with name ==
     /**
      * Constructs a Func0 from supplier or lambda.
-     * 
-     * @param  func      the func or lambda.
+     *
+     * @param  function  the function or lambda.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func0.
-     **/
-    public static <OUTPUT> 
-            Func0<OUTPUT> F(String name, Func0<OUTPUT> function) {
+     */
+    public static <OUTPUT> Func0<OUTPUT> F(String name, Func0<OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func0(name, function));
     }
     
     /**
      * Constructs a Func1 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func1.
-     **/
-    public static <INPUT, OUTPUT> 
-            Func1<INPUT, OUTPUT> F(String name, Func1<INPUT, OUTPUT> function) {
+     */
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> F(String name, Func1<INPUT, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func1(name, function));
     }
-
+    
     /**
      * Constructs a Func2 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func2.
-     **/
-    public static <INPUT1, INPUT2,OUTPUT> 
-            Func2<INPUT1, INPUT2, OUTPUT> F(String name, Func2<INPUT1, INPUT2, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> F(String name, Func2<INPUT1, INPUT2, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func2(name, function));
     }
     
     /**
      * Constructs a Func3 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <INPUT3>  the third input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func3.
-     **/
-    public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
-            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> F(String name, Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+     */
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func3<INPUT1, INPUT2, INPUT3, OUTPUT> F(String name, Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func3(name, function));
     }
     
     /**
      * Constructs a Func4 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
      * @param  <INPUT3>  the third input data type.
      * @param  <INPUT4>  the forth input data type.
      * @param  <OUTPUT>  the output data type.
-     * @return           the result Func3.
-     **/
-    public static
-            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
-            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> F(String name, Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+     * @return           the result Func4.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> F(String name, Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func4(name, function));
     }
     
     /**
      * Constructs a Func5 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -763,17 +708,15 @@ public interface Func {
      * @param  <INPUT4>  the forth input data type.
      * @param  <INPUT5>  the fifth input data type.
      * @param  <OUTPUT>  the output data type.
-     * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
-            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> F(String name, Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+     * @return           the result Func5.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> F(String name, Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func5(name, function));
     }
     
     /**
      * Constructs a Func6 from function or lambda.
-     * 
+     *
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -782,11 +725,9 @@ public interface Func {
      * @param  <INPUT5>  the fifth input data type.
      * @param  <INPUT6>  the sixth input data type.
      * @param  <OUTPUT>  the output data type.
-     * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
-            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(String name, Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+     * @return           the result Func6.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(String name, Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func6(name, function));
     }
     
@@ -802,8 +743,7 @@ public interface Func {
         return CallerId.instance.trace(caller -> Traced.FuncUnit2(name, function));
     }
     
-    //== Elevate (instant bind) ==
-    
+    // == Elevate (instant bind) ==
     public static <I1, I2, O> Func1<I1, O> elevate(BiFunction<I1, I2, O> func, I2 input2) {
         return input1 -> Func.applyUnsafe(func, input1, input2);
     }
@@ -824,8 +764,7 @@ public interface Func {
         return input1 -> func.apply(input1, input2, input3, input4, input5, input6);
     }
     
-    //== Join with delimit ==
-    
+    // == Join with delimit ==
     public static <IN> Func1<IN, Stream<IN>> delimitWith(IN delimiter) {
         val isFirst = new AtomicBoolean(true);
         return in -> {
@@ -854,27 +793,22 @@ public interface Func {
     }
     
     @SafeVarargs
-    public static <T> Stream<T> streamConcat(Stream<T> ...  streams) {
-        return stream(streams)
-                .filter(Objects::nonNull)
-                .flatMap(themAll());
+    public static <T> Stream<T> streamConcat(Stream<T>... streams) {
+        return stream(streams).filter(Objects::nonNull).flatMap(themAll());
     }
     
     public static Consumer<String> throwThis(Function<String, ? extends RuntimeException> exceptionCreator) {
         return errMsg -> {
             if (errMsg == null)
                 return;
-            
             val exception = exceptionCreator.apply(errMsg);
             if (exception == null)
                 return;
-            
             throw exception;
         };
     }
     
-    //== Index ==
-    
+    // == Index ==
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> withIndex(Func2<INPUT, Integer, OUTPUT> body) {
         val index = new AtomicInteger();
         return input -> body.applyUnsafe(input, index.getAndIncrement());
@@ -886,11 +820,18 @@ public interface Func {
     }
     
     public static class WithIndex<DATA> extends ImmutableTuple2<DATA, Integer> {
+        
         public WithIndex(DATA _1, Integer _2) {
             super(_1, _2);
         }
-        public int  index() { return _2.intValue(); }
-        public DATA value()  { return _1; }
+        
+        public int index() {
+            return _2.intValue();
+        }
+        
+        public DATA value() {
+            return _1;
+        }
         
         public String toString() {
             // TODO - Umm .. this feels useful but it will break Tuple2.toString() contract.
@@ -899,7 +840,6 @@ public interface Func {
     }
     
     public static interface WithIndexFunction<INPUT, OUTPUT> extends Func1<WithIndex<INPUT>, OUTPUT> {
-        
     }
     
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> withIndex(WithIndexFunction<INPUT, OUTPUT> body) {
@@ -925,22 +865,20 @@ public interface Func {
         return input -> body.acceptUnsafe(index.getAndIncrement());
     }
     
-    //== Cache and Lazy ==
-    
+    // == Cache and Lazy ==
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(Function<INPUT, OUTPUT> inFunction) {
         val cache = new ConcurrentHashMap<INPUT, OUTPUT>();
         return in -> cache.computeIfAbsent(in, inFunction::apply);
     }
     
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(long timeMilliSecond, Function<INPUT, OUTPUT> inFunction) {
-        val cache       = new ConcurrentHashMap<INPUT, OUTPUT>();
+        val cache = new ConcurrentHashMap<INPUT, OUTPUT>();
         val expiredTime = new ConcurrentHashMap<INPUT, Long>();
         return in -> {
-            if (expiredTime.contains(in)
-             && expiredTime.get(in) > Env.time().currentMilliSecond()) {
+            if (expiredTime.contains(in) && expiredTime.get(in) > Env.time().currentMilliSecond()) {
                 cache.remove(in);
             }
-            return cache.computeIfAbsent(in, key->{
+            return cache.computeIfAbsent(in, key -> {
                 expiredTime.put(key, Env.time().currentMilliSecond() + timeMilliSecond);
                 return inFunction.apply(key);
             });
@@ -950,34 +888,35 @@ public interface Func {
     @SuppressWarnings("unchecked")
     public static <TYPE> Func0<TYPE> lazy(Supplier<TYPE> supplier) {
         val reference = new AtomicReference<Object>();
-        val startKey  = new Object();
-        return ()->{
+        val startKey = new Object();
+        return () -> {
             if (reference.compareAndSet(null, startKey)) {
                 try {
                     val value = supplier.get();
-                    reference.set((Supplier<TYPE>)(()->value));
+                    reference.set((Supplier<TYPE>) (() -> value));
                 } catch (RuntimeException e) {
                     reference.set(e);
                 }
             }
             while (!(reference.get() instanceof Supplier)) {
                 if (reference.get() instanceof RuntimeException)
-                    throw (RuntimeException)reference.get();
+                    throw (RuntimeException) reference.get();
             }
-            return ((Supplier<TYPE>)reference.get()).get();
+            return ((Supplier<TYPE>) reference.get()).get();
         };
     }
     
-    //== Recursive ==
-    
+    // == Recursive ==
     public static <I1, I2, R> Func1<I1, R> recusive(Absent absent, I2 i2, Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
         Func2<I1, I2, R> grt = recusive(func3);
         return grt.bind(absent, i2);
     }
+    
     public static <I1, I2, R> Func1<I2, R> recusive(I1 i1, Absent absent, Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
         Func2<I1, I2, R> grt = recusive(func3);
         return grt.bind(i1, absent);
     }
+    
     public static <I, R> Func1<I, R> recusive(Func2<Func1<I, R>, I, R> func2) {
         AtomicReference<Func1<I, R>> selfRef = new AtomicReference<>();
         Supplier<Func1<I, R>> self = selfRef::get;
@@ -985,8 +924,8 @@ public interface Func {
         selfRef.set(cacheFor(selfFunc));
         return selfFunc;
     }
-    public static <I1, I2, R> Func2<I1, I2, R> recusive(
-            Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
+    
+    public static <I1, I2, R> Func2<I1, I2, R> recusive(Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
         AtomicReference<Func2<I1, I2, R>> selfRef = new AtomicReference<>();
         Supplier<Func2<I1, I2, R>> self = selfRef::get;
         Func2<I1, I2, R> selfFunc = (i1, i2) -> func3.applyUnsafe(self.get(), i1, i2);
@@ -994,50 +933,53 @@ public interface Func {
         return selfFunc;
     }
     
-    //== Apply - Unsafe ==
-    
+    // == Apply - Unsafe ==
     public static <O, I> O applyUnsafe(Function<I, O> func, I input) throws Exception {
         if (func instanceof Func1)
-             return ((Func1<I, O>)func).applyUnsafe(input);
-        else return func.apply(input);
+            return ((Func1<I, O>) func).applyUnsafe(input);
+        else
+            return func.apply(input);
     }
     
     public static <O, I1, I2> O applyUnsafe(BiFunction<I1, I2, O> func, I1 input1, I2 input2) throws Exception {
         if (func instanceof Func1)
-             return ((Func2<I1, I2, O>)func).applyUnsafe(input1, input2);
-        else return func.apply(input1, input2);
+            return ((Func2<I1, I2, O>) func).applyUnsafe(input1, input2);
+        else
+            return func.apply(input1, input2);
     }
     
     public static <O> O getUnsafe(Supplier<O> func) throws Exception {
         if (func instanceof Func1)
-             return ((Supplier<O>)func).get();
-        else return func.get();
+            return ((Supplier<O>) func).get();
+        else
+            return func.get();
     }
     
     public static void runUnsafe(Runnable runnable) throws Exception {
         if (runnable instanceof Func1)
-             ((FuncUnit0)runnable).runUnsafe();
-        else runnable.run();
+            ((FuncUnit0) runnable).runUnsafe();
+        else
+            runnable.run();
     }
     
     public static <I> void acceptUnsafe(Consumer<I> func, I input) throws Exception {
         if (func instanceof Func1)
-             ((FuncUnit1<I>)func).acceptUnsafe(input);
-        else func.accept(input);
+            ((FuncUnit1<I>) func).acceptUnsafe(input);
+        else
+            func.accept(input);
     }
     
     public static <I1, I2> void acceptUnsafe(BiConsumer<I1, I2> func, I1 input1, I2 input2) throws Exception {
         if (func instanceof Func1)
-             ((FuncUnit2<I1, I2>)func).acceptUnsafe(input1, input2);
-        else func.accept(input1, input2);
+            ((FuncUnit2<I1, I2>) func).acceptUnsafe(input1, input2);
+        else
+            func.accept(input1, input2);
     }
     
-    //== Apply - Carelessly ==
-    
+    // == Apply - Carelessly ==
     public static void carelessly(Runnable runnable) {
         if (runnable == null)
             return;
-        
         try {
             runnable.run();
         } catch (Exception e) {
@@ -1048,7 +990,6 @@ public interface Func {
     public static void carelessly(FuncUnit0 action) {
         if (action == null)
             return;
-        
         try {
             action.run();
         } catch (Exception e) {
@@ -1059,7 +1000,6 @@ public interface Func {
     public static void gracefully(Runnable runnable) {
         if (runnable == null)
             return;
-        
         try {
             runnable.run();
         } catch (RuntimeException e) {
@@ -1072,7 +1012,6 @@ public interface Func {
     public static void gracefully(FuncUnit0 action) {
         if (action == null)
             return;
-        
         try {
             action.run();
         } catch (RuntimeException e) {
@@ -1082,11 +1021,10 @@ public interface Func {
         }
     }
     
-    //== Instant apply == 
-    
+    // == Instant apply ==
     /**
      * Get the value from the supplier that might be null.
-     * 
+     *
      * @param <O>       the output type.
      * @param <F>       the fallback data type
      * @param supplier  the suppler.
@@ -1096,14 +1034,13 @@ public interface Func {
     public static <O, F extends O> O getOrElse(Supplier<O> supplier, F fallback) {
         if (supplier == null)
             return fallback;
-        
         val value = supplier.get();
         return (value == null) ? fallback : value;
     }
     
     /**
      * Apply the input value to the function that might be null.
-     * 
+     *
      * @param <I>       the input type.
      * @param <O>       the output type.
      * @param <F>       the fallback data type
@@ -1115,14 +1052,13 @@ public interface Func {
     public static <I, O, F extends O> O applyOrElse(Function<? super I, O> function, I input, F fallback) {
         if (function == null)
             return fallback;
-        
         val value = function.apply(input);
         return (value == null) ? fallback : value;
     }
     
     /**
      * Apply the input value to the function that might be null.
-     * 
+     *
      * @param <I1>      the input 1 type.
      * @param <I2>      the input 2 type.
      * @param <O>       the output type.
@@ -1133,21 +1069,16 @@ public interface Func {
      * @param fallback  the fallback value.
      * @return  the result or the fallback type.
      */
-    public static <I1, I2, O, F extends O> O applyOrElse(
-            BiFunction<? super I1, ? super I2, O> function, 
-            I1                                    input1, 
-            I2                                    input2,
-            F                                     fallback) {
+    public static <I1, I2, O, F extends O> O applyOrElse(BiFunction<? super I1, ? super I2, O> function, I1 input1, I2 input2, F fallback) {
         if (function == null)
             return fallback;
-        
         val value = function.apply(input1, input2);
         return (value == null) ? fallback : value;
     }
     
     /**
      * Apply the input value to the function that might be null.
-     * 
+     *
      * @param <I1>      the input 1 type.
      * @param <I2>      the input 2 type.
      * @param <I3>      the input 3 type.
@@ -1160,21 +1091,15 @@ public interface Func {
      * @param fallback  the fallback value.
      * @return  the result or the fallback type.
      */
-    public static <I1, I2, I3, O, F extends O> O applyOrElse(
-            Func3<? super I1, ? super I2, ? super I3, O> function, 
-            I1                                           input1,
-            I2                                           input2, 
-            I3                                           input3, 
-            F                                            fallback) {
+    public static <I1, I2, I3, O, F extends O> O applyOrElse(Func3<? super I1, ? super I2, ? super I3, O> function, I1 input1, I2 input2, I3 input3, F fallback) {
         if (function == null)
             return fallback;
-        
         return function.apply(input1, input2, input3);
     }
     
     /**
      * Apply the input value to the function that might be null.
-     * 
+     *
      * @param <I1>      the input 1 type.
      * @param <I2>      the input 2 type.
      * @param <I3>      the input 3 type.
@@ -1189,31 +1114,23 @@ public interface Func {
      * @param fallback  the fallback value.
      * @return  the result or the fallback type.
      */
-    public static <I1, I2, I3, I4, O, F extends O> O applyOrElse(
-            Func4<? super I1, ? super I2, ? super I3, ? super I4, O> function, 
-            I1                                                       input1,
-            I2                                                       input2, 
-            I3                                                       input3, 
-            I4                                                       input4, 
-            F                                                        fallback) {
+    public static <I1, I2, I3, I4, O, F extends O> O applyOrElse(Func4<? super I1, ? super I2, ? super I3, ? super I4, O> function, I1 input1, I2 input2, I3 input3, I4 input4, F fallback) {
         if (function == null)
             return fallback;
-        
         return function.apply(input1, input2, input3, input4);
     }
     
-    //== All ==
-    
+    // == All ==
     /**
      * Create a high-order function that will take another function that take the given input and return output.
      * NOTE: Not sure if this a traverse.
-     * 
+     *
      * @param <INPUT>   the input data type.
      * @param <OUTPUT>  the output data type.
      * @param input     the input.
      * @return          the high-order function.
      */
-    public static <INPUT,OUTPUT> Func1<Func1<INPUT,OUTPUT>, OUTPUT> allApplyTo(INPUT input) {
+    public static <INPUT, OUTPUT> Func1<Func1<INPUT, OUTPUT>, OUTPUT> allApplyTo(INPUT input) {
         return func -> {
             return func.applyUnsafe(input);
         };
@@ -1222,7 +1139,7 @@ public interface Func {
     /**
      * Create a high-order function that will take another function that take the given input and return output.
      * NOTE: Not sure if this a traverse.
-     * 
+     *
      * @param <INPUT>   the input data type.
      * @param input     the input.
      * @return          the high-order function.
@@ -1233,48 +1150,43 @@ public interface Func {
         };
     }
     
-    //== Condition ==
-    
-    public static <INPUT> Func1<INPUT, INPUT> ifThen(
-            Predicate<INPUT>    check, 
-            Function<INPUT, INPUT> then) {
+    // == Condition ==
+    public static <INPUT> Func1<INPUT, INPUT> ifThen(Predicate<INPUT> check, Function<INPUT, INPUT> then) {
         return input -> {
             if (check.test(input))
-                 return Func.applyUnsafe(then, input);
-            else return input;
+                return Func.applyUnsafe(then, input);
+            else
+                return input;
         };
     }
-    public static <INPUT> Func1<INPUT, INPUT> ifNotThen(
-            Predicate<INPUT>    check, 
-            Func1<INPUT, INPUT> then) {
+    
+    public static <INPUT> Func1<INPUT, INPUT> ifNotThen(Predicate<INPUT> check, Func1<INPUT, INPUT> then) {
         return input -> {
             if (!check.test(input))
-                 return Func.applyUnsafe(then, input);
-            else return input;
+                return Func.applyUnsafe(then, input);
+            else
+                return input;
         };
     }
-    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> ifElse(
-            Predicate<INPUT>     check, 
-            Function<INPUT, OUTPUT> then, 
-            Function<INPUT, OUTPUT> thenElse) {
+    
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> ifElse(Predicate<INPUT> check, Function<INPUT, OUTPUT> then, Function<INPUT, OUTPUT> thenElse) {
         return input -> {
             if (check.test(input))
-                 return Func.applyUnsafe(then,     input);
-            else return Func.applyUnsafe(thenElse, input);
+                return Func.applyUnsafe(then, input);
+            else
+                return Func.applyUnsafe(thenElse, input);
         };
     }
     
-    //== Conversion ==
-    
+    // == Conversion ==
     /**
      * Change the input function to a preficate.
-     * 
+     *
      * @param <INPUT> the input type.
      * @param func    the function that takes input and returns boolean.
      * @return the predicate of the same functionality.
-     **/
+     */
     public static <INPUT> Predicate<INPUT> toPredicate(Func1<INPUT, Boolean> func) {
         return input -> func.apply(input);
     }
-    
 }

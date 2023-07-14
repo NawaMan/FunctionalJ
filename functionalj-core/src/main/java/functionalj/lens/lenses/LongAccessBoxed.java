@@ -3,10 +3,9 @@ package functionalj.lens.lenses;
 import functionalj.functions.ThrowFuncs;
 import lombok.val;
 
-
 @FunctionalInterface
 public interface LongAccessBoxed<HOST> extends LongAccess<HOST> {
-    
+
     public default long applyAsLong(HOST host) {
         try {
             val value = applyUnsafe(host);
@@ -17,5 +16,4 @@ public interface LongAccessBoxed<HOST> extends LongAccess<HOST> {
             throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
-    
 }

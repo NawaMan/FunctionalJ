@@ -23,23 +23,21 @@
 // ============================================================================
 package functionalj.stream;
 
-
 import functionalj.list.FuncList;
 
 /**
  * Classes implementing this interface can create an iterator plus.
- * 
+ *
  * @param <DATA>  the data type.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
 public interface IterablePlus<DATA> {
-    
+
     public IteratorPlus<DATA> iterator();
-    
+
     public default FuncList<DATA> FuncList() {
         return FuncList.from(() -> iterator().stream());
     }
-    
 }

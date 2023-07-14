@@ -26,13 +26,10 @@ package functionalj.lens.lenses;
 import java.util.function.Function;
 
 @FunctionalInterface
-public interface ObjectAccess<HOST, TYPE> 
-        extends
-            AnyAccess<HOST, TYPE> {
-    
+public interface ObjectAccess<HOST, TYPE> extends AnyAccess<HOST, TYPE> {
+
     // NOTE: This one thought ... might go.
     public default <T> Function<HOST, T> linkTo(Function<TYPE, T> sub) {
-        return host->sub.apply(this.apply(host));
+        return host -> sub.apply(this.apply(host));
     }
-    
 }

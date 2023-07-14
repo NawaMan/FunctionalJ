@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="functionalj.list.DoubleFuncListTest" time="4.742" tests="258" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="sun.desktop" value="gnome"/>
+    <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="java.specification.version" value="1.8"/>
+    <property name="sun.cpu.isalist" value=""/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/test-classes:/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/classes:/home/nawaman/.m2/repository/io/nullablej/nullablej/4.0.6.0/nullablej-4.0.6.0.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-api/2.2.0.5/defaultj-api-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-core/2.2.0.5/defaultj-core-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-annotations/2.2.0.5/defaultj-annotations-2.2.0.5.jar:/home/nawaman/.m2/repository/org/projectlombok/lombok/1.18.28/lombok-1.18.28.jar:/home/nawaman/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/nawaman/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:"/>
+    <property name="java.vm.vendor" value="Homebrew"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="user.timezone" value=""/>
+    <property name="java.vm.specification.version" value="1.8"/>
+    <property name="os.name" value="Linux"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.boot.library.path" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/amd64"/>
+    <property name="sun.java.command" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/surefire/surefirebooter-20230714013047780_3.jar /home/nawaman/dev/git/FunctionalJ/functionalj-core/target/surefire 2023-07-14T01-30-47_751-jvmRun1 surefire-20230714013047780_1tmp surefire_0-20230714013047780_2tmp"/>
+    <property name="surefire.test.class.path" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/test-classes:/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/classes:/home/nawaman/.m2/repository/io/nullablej/nullablej/4.0.6.0/nullablej-4.0.6.0.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-api/2.2.0.5/defaultj-api-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-core/2.2.0.5/defaultj-core-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-annotations/2.2.0.5/defaultj-annotations-2.2.0.5.jar:/home/nawaman/.m2/repository/org/projectlombok/lombok/1.18.28/lombok-1.18.28.jar:/home/nawaman/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/nawaman/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/home/nawaman"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.home" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre"/>
+    <property name="basedir" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core"/>
+    <property name="file.separator" value="/"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="surefire.real.class.path" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/surefire/surefirebooter-20230714013047780_3.jar"/>
+    <property name="sun.boot.class.path" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/resources.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/rt.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/sunrsasign.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/jsse.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/jce.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/charsets.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/jfr.jar:/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/classes"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="1.8.0_372-linuxbre_2023_04_25_03_07-b00"/>
+    <property name="user.name" value="nawaman"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="6.2.0-25-generic"/>
+    <property name="java.endorsed.dirs" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/endorsed"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="localRepository" value="/home/nawaman/.m2/repository"/>
+    <property name="java.vendor.url.bug" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="java.version" value="1.8.0_372"/>
+    <property name="user.dir" value="/home/nawaman/dev/git/FunctionalJ/functionalj-core"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.library.path" value="/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.vendor" value="Homebrew"/>
+    <property name="java.vm.version" value="25.372-b00"/>
+    <property name="java.specification.maintenance.version" value="4"/>
+    <property name="java.ext.dirs" value="/home/linuxbrew/.linuxbrew/Cellar/openjdk@8/1.8.0+372/libexec/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="52.0"/>
+  </properties>
+  <testcase name="testNullableOptionalResult" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSegment_sizeFunction" classname="functionalj.list.DoubleFuncListTest" time="0.002"/>
+  <testcase name="testDeriveFrom" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testDropAfter_previous" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMinBy_withMapper" classname="functionalj.list.DoubleFuncListTest" time="0.002"/>
+  <testcase name="testSortedBy" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testPrependAll" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMaxIndexBy" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMaxIndexOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testZipOf_toTuple_default" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testContainsNoneOf" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMaxBy_withMapper" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCalculate2" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testCalculate3" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCalculate4" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCalculate5" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testCalculate6" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testAllMatch" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testGenerate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToMap_1" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapToMap_2" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToMap_3" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToMap_4" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapToMap_5" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapToMap_6" classname="functionalj.list.DoubleFuncListTest" time="0.002"/>
+  <testcase name="testMapToMap_7" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToMap_8" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapToMap_9" classname="functionalj.list.DoubleFuncListTest" time="0.002"/>
+  <testcase name="testMapToObjIf" classname="functionalj.list.DoubleFuncListTest" time="0.002"/>
+  <testcase name="testCalculate4_combine" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJavaList_containsNoneOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFirstResult" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testContainsSomeOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testExclude" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testacceptWhile" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testFilterIn_collection" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFilterAsLong" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testSkipLimitLong" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testAppendAll" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testSegmentWhen" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testJavaList_containsSomeOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFilterAsInt" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToArray" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSkipUntil" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testSkipWhile" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testFilterIn_array" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testZipOf_merge" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapToTuple_2" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToTuple_3" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToTuple_4" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapToTuple_5" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToTuple_6" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapFirst_2" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapFirst_3" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapFirst_4" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapFirst_5" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapFirst_6" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testToMap_withMergedValue" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSkipTake" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMap" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testNew" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSum" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFilterIn_funcList" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testWholeNumbers" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToJavaList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFindAny" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFilterWithIndex" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testAllOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testBoxed" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCount" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCycle" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testEmpty" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFirst" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testLimit" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapIf" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMaxBy" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMerge" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMinBy" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testQuery" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testRange" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSpawn" classname="functionalj.list.DoubleFuncListTest" time="4.427"/>
+  <testcase name="testSplit" classname="functionalj.list.DoubleFuncListTest" time="0.003"/>
+  <testcase name="testToMap" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToSet" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFlatMapasDouble" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testFlatMap" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJoin" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testLast" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testLoop" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testOnes" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testPeek" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testPipe" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSize" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSkip" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testTail" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testWith" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapWithIndex_combine" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testLastIndexOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testExcludeIn_array" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCalculate6_combine" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testForEach" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSplitTuple" classname="functionalj.list.DoubleFuncListTest" time="0.001">
+    <system-out><![CDATA[0.0
+]]></system-out>
+  </testcase>
+  <testcase name="testToString" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMinByMaxBy" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testPeekAs_map" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testPopulateArray_withOffsetLength" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJavaList_lastIndexOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToObjWithIndex_combine" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testPeekBy_map" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testJavaList_contains" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFilterNonNull" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testRestate_sieveOfEratosthenes" classname="functionalj.list.DoubleFuncListTest" time="0.003"/>
+  <testcase name="testAt" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFindAny_withPredicate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapGroupToInt" classname="functionalj.list.DoubleFuncListTest" time="0.003"/>
+  <testcase name="testMapGroupToObj" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testFrom_funcList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testInsertAllAt" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToMutableList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToBuilder" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testAccumulate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToListString" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testProduct" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMinIndex" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testZipWith" classname="functionalj.list.DoubleFuncListTest" time="0.003"/>
+  <testcase name="testMinMaxBy" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCalculate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToDoubleArray" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSkipLimitLongMinus" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testForEachWithIndex" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testacceptWhile_previous" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testForEachOrdered" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFrom_collection" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFlatMapIf" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testFrom_stream" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapGroupasDouble" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testFlatMapToInt" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFindAny_withMapper_withPredicate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSkipLimitLongNull" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testFindFirst_withMapper_withPredicate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSortedByComparator" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJavaList_for" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJavaList_get" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testExcludeIn_collection" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJavaList_indexOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testacceptUntil_previous" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testIndexesOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testContainsAllOf" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testEagerLazy" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFindLast" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCalculate3_combine" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testTakeUtil" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJavaList_containsAllOf" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testCompound" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testDropAfter" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testChoose_AllowUnpaired" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJoin_withDelimiter" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFlatMapOnly" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testEmptyFuncList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMinMaxBy_withMapper" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToMap_withMappedMergedValue" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJavaList_subList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testPipeable" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testAnyMatch" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSegmentByPercentiles" classname="functionalj.list.DoubleFuncListTest" time="0.003"/>
+  <testcase name="testFizzBuzz" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapOnly" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testZipWith_object" classname="functionalj.list.DoubleFuncListTest" time="0.002"/>
+  <testcase name="testIsEagerIsLazy" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testExcludeNull" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSegmentByPercentiles_mapper" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testCollect" classname="functionalj.list.DoubleFuncListTest" time="0.002"/>
+  <testcase name="testCombine" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSplit_ignore" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testGroupingBy" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMinIndexBy" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMinIndexOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testGroupingBy_aggregate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testZipOf_toTuple" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testPopulateArray_withOffset" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToFuncList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFindFirst_withPredicate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testRestate" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testReverse" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testEmpty_doubleFuncList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCalculate5_combine" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testHashCode" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapGroup" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToInt" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToObj" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testInfinite" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToMap_10" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testEagerLazy_more" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testDistinct" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFindFirst" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMaxIndex" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testSegmentBetween" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapGroup_count" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMinMaxBy_withMapper_withComparator" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFilterAsDouble" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testToMap_withValue" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testFilter_mapper" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapToString" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapasDouble" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testLastResult" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testAppend" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testInsertAt" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testChoose" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testConcat" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testExcludeIn_funcList" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testEquals" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFilter" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMinOfMaxOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testNoneMatch" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFilterAsObject" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testAppendWith" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testDoubles" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testZipOf_merge_default" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testListOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testLoopBy" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testSegmentAfter" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMinMax" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testIndexOf" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testIntList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSegment" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToArrayList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapThen_2" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testMapThen_3" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapThen_4" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapThen_5" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapThen_6" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testParependWith" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testNaturalNumbers" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testPeekAs" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testShuffle" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testReduce" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testRepeat" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testSorted" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testIterate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testToList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFrom_array" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testTest_predicate" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testCalculate2_combine" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSpliterator" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testFilter_withMappter" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testIterable" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testIterator" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testZeroes" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testJavaList_size_isEmpty" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSpawn_limit" classname="functionalj.list.DoubleFuncListTest" time="0.212"/>
+  <testcase name="testFrom_streamSupplier" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testSegmentByPercentiles_mapper_comparator" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testToImmutableList" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testMapWithIndex" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testPopulateArray" classname="functionalj.list.DoubleFuncListTest" time="0.001"/>
+  <testcase name="testCalculate_of" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+  <testcase name="testStepFrom" classname="functionalj.list.DoubleFuncListTest" time="0.0"/>
+</testsuite>

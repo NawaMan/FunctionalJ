@@ -24,14 +24,12 @@
 package functionalj.stream.intstream;
 
 import static functionalj.stream.intstream.collect.IntCollected.collectedOf;
-
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
-
 import functionalj.function.aggregator.IntAggregation;
 import functionalj.function.aggregator.IntAggregationToInt;
 import functionalj.tuple.Tuple;
@@ -42,56 +40,53 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
-
 public interface AsIntStreamPlusWithCalculate {
-    
-    /** @return  the stream plus instance of this object. */
+
+    /**
+     * @return  the stream plus instance of this object.
+     */
     public IntStreamPlus intStreamPlus();
-    
+
     public void forEach(IntConsumer action);
-    
-    
+
     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
-    //        Still not sure how to do that.
-    
-    /** Perform the calculation using the data of this stream */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public default <RESULT> RESULT calculate(
-            IntAggregation<RESULT> aggregation) {
-        val collector  = aggregation.intCollectorPlus();
-        Supplier       supplier    = collector.supplier();
+    // Still not sure how to do that.
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public default <RESULT> RESULT calculate(IntAggregation<RESULT> aggregation) {
+        val collector = aggregation.intCollectorPlus();
+        Supplier supplier = collector.supplier();
         ObjIntConsumer accumulator = collector.intAccumulator();
-        BinaryOperator combiner    = collector.combiner();
-        Function       finisher    = collector.finisher();
-        
-        val streamPlus  = intStreamPlus();
+        BinaryOperator combiner = collector.combiner();
+        Function finisher = collector.finisher();
+        val streamPlus = intStreamPlus();
         val accumulated = streamPlus.intStream().collect(supplier, accumulator, (a, b) -> combiner.apply(a, b));
-        val value       = finisher.apply(accumulated);
-        return (RESULT)value;
+        val value = finisher.apply(accumulated);
+        return (RESULT) value;
     }
-    
-    /** Perform the calculation using the data of this stream */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public default int calculate(
-           IntAggregationToInt aggregation) {
-        val collector  = aggregation.intCollectorToIntPlus();
-        Supplier       supplier    = collector.supplier();
+
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public default int calculate(IntAggregationToInt aggregation) {
+        val collector = aggregation.intCollectorToIntPlus();
+        Supplier supplier = collector.supplier();
         ObjIntConsumer accumulator = collector.intAccumulator();
-        BinaryOperator combiner    = collector.combiner();
-        ToIntFunction  finisher    = collector.finisherToInt();
-        
-        val streamPlus  = intStreamPlus();
+        BinaryOperator combiner = collector.combiner();
+        ToIntFunction finisher = collector.finisherToInt();
+        val streamPlus = intStreamPlus();
         val accumulated = streamPlus.intStream().collect(supplier, accumulator, (a, b) -> combiner.apply(a, b));
-        val value       = finisher.applyAsInt(accumulated);
+        val value = finisher.applyAsInt(accumulated);
         return value;
     }
-    
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2>
-                        Tuple2<RESULT1, RESULT2>
-                        calculate(
-                                IntAggregation<RESULT1> collector1,
-                                IntAggregation<RESULT2> collector2) {
+
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2> Tuple2<RESULT1, RESULT2> calculate(IntAggregation<RESULT1> collector1, IntAggregation<RESULT2> collector2) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -99,19 +94,13 @@ public interface AsIntStreamPlusWithCalculate {
             collected1.accumulate(each);
             collected2.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish());
     }
-    
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2, RESULT3>
-                        Tuple3<RESULT1, RESULT2, RESULT3>
-                        calculate(
-                                IntAggregation<RESULT1> collector1,
-                                IntAggregation<RESULT2> collector2,
-                                IntAggregation<RESULT3> collector3) {
+
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3> Tuple3<RESULT1, RESULT2, RESULT3> calculate(IntAggregation<RESULT1> collector1, IntAggregation<RESULT2> collector2, IntAggregation<RESULT3> collector3) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -121,21 +110,13 @@ public interface AsIntStreamPlusWithCalculate {
             collected2.accumulate(each);
             collected3.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish(),
-            collected3.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish());
     }
-    
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2, RESULT3, RESULT4>
-                        Tuple4<RESULT1, RESULT2, RESULT3, RESULT4>
-                        calculate(
-                                IntAggregation<RESULT1> collector1,
-                                IntAggregation<RESULT2> collector2,
-                                IntAggregation<RESULT3> collector3,
-                                IntAggregation<RESULT4> collector4) {
+
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4> Tuple4<RESULT1, RESULT2, RESULT3, RESULT4> calculate(IntAggregation<RESULT1> collector1, IntAggregation<RESULT2> collector2, IntAggregation<RESULT3> collector3, IntAggregation<RESULT4> collector4) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -147,23 +128,13 @@ public interface AsIntStreamPlusWithCalculate {
             collected3.accumulate(each);
             collected4.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish(),
-            collected3.finish(),
-            collected4.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish());
     }
-    
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5>
-                        Tuple5<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5>
-                        calculate(
-                                IntAggregation<RESULT1> collector1,
-                                IntAggregation<RESULT2> collector2,
-                                IntAggregation<RESULT3> collector3,
-                                IntAggregation<RESULT4> collector4,
-                                IntAggregation<RESULT5> collector5) {
+
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5> Tuple5<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5> calculate(IntAggregation<RESULT1> collector1, IntAggregation<RESULT2> collector2, IntAggregation<RESULT3> collector3, IntAggregation<RESULT4> collector4, IntAggregation<RESULT5> collector5) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -177,25 +148,13 @@ public interface AsIntStreamPlusWithCalculate {
             collected4.accumulate(each);
             collected5.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish(),
-            collected3.finish(),
-            collected4.finish(),
-            collected5.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish(), collected5.finish());
     }
-    
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6>
-                        Tuple6<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6>
-                        calculate(
-                                IntAggregation<RESULT1> collector1,
-                                IntAggregation<RESULT2> collector2,
-                                IntAggregation<RESULT3> collector3,
-                                IntAggregation<RESULT4> collector4,
-                                IntAggregation<RESULT5> collector5,
-                                IntAggregation<RESULT6> collector6) {
+
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6> Tuple6<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6> calculate(IntAggregation<RESULT1> collector1, IntAggregation<RESULT2> collector2, IntAggregation<RESULT3> collector3, IntAggregation<RESULT4> collector4, IntAggregation<RESULT5> collector5, IntAggregation<RESULT6> collector6) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -211,14 +170,6 @@ public interface AsIntStreamPlusWithCalculate {
             collected5.accumulate(each);
             collected6.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish(),
-            collected3.finish(),
-            collected4.finish(),
-            collected5.finish(),
-            collected6.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish(), collected5.finish(), collected6.finish());
     }
-    
 }

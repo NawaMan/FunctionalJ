@@ -27,24 +27,20 @@ import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
-public interface StringLens<HOST>
-        extends
-            StringAccess<HOST>,
-            AnyLens<HOST, String> {
-    
-    
+public interface StringLens<HOST> extends StringAccess<HOST>, AnyLens<HOST, String> {
+
     public static class Impl<H> extends AnyLens.Impl<H, String> implements Named, StringLens<H> {
+
         public Impl(String name, LensSpec<H, String> spec) {
             super(name, spec);
         }
     }
-    
+
     public static <HOST> StringLens<HOST> of(String name, LensSpec<HOST, String> spec) {
         return new StringLens.Impl<>(name, spec);
     }
-    
+
     public static <HOST> StringLens<HOST> of(LensSpec<HOST, String> spec) {
         return of(null, spec);
     }
-    
 }

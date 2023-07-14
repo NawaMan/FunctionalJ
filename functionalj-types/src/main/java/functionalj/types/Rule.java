@@ -30,14 +30,16 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation marks a method to create a rule type.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Rule {
     
-    /** The error message used in the case of boolean validation */
+    /**
+     * The error message used in the case of boolean validation
+     */
     public String value() default "";
     
     public String extendRule() default "";

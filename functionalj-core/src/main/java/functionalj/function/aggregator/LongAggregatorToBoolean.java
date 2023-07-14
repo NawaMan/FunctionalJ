@@ -28,33 +28,31 @@ import functionalj.stream.longstream.collect.LongCollectedToBoolean;
 import functionalj.stream.longstream.collect.LongCollectorToBooleanPlus;
 
 public interface LongAggregatorToBoolean extends LongToBooleanAccessPrimitive, LongAggregator<Boolean> {
-    
+
     public LongCollectedToBoolean<?> asCollected();
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl implements LongAggregatorToBoolean {
-        
+
         private final LongCollectedToBoolean<?> collected;
-        
+
         public Impl(LongCollectorToBooleanPlus<?> collector) {
             this.collected = LongCollectedToBoolean.of(collector);
         }
-        
+
         @Override
         public boolean applyLongToBoolean(long input) {
             collected.accumulate(input);
             return collected.finish();
         }
-        
+
         public LongCollectedToBoolean<?> asCollected() {
             return collected;
         }
-        
+
         @Override
         public Boolean apply(long input) {
             return applyLongToBoolean(input);
         }
     }
-    
 }

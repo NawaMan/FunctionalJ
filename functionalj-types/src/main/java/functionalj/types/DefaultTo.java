@@ -31,7 +31,6 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DefaultTo {
-    
+
     public DefaultValue value() default DefaultValue.UNSPECIFIED;
-    
 }

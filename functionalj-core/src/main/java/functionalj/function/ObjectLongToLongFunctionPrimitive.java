@@ -25,26 +25,21 @@ package functionalj.function;
 
 import java.util.function.ToLongBiFunction;
 
-
 @FunctionalInterface
-public interface ObjectLongToLongFunctionPrimitive<DATA> 
-        extends
-            Func2<DATA, Long, Long>,
-            ToLongBiFunction<DATA, Long> {
-    
-    
+public interface ObjectLongToLongFunctionPrimitive<DATA> extends Func2<DATA, Long, Long>, ToLongBiFunction<DATA, Long> {
+
     public long applyObjectLong(DATA data, long longValue);
-    
+
     @Override
     public default Long applyUnsafe(DATA data, Long longValue) throws Exception {
         return applyObjectLong(data, longValue);
     }
-    
+
     @Override
     public default Long apply(DATA data, Long longValue) {
         return applyObjectLong(data, longValue);
     }
-    
+
     @Override
     public default long applyAsLong(DATA data, Long longValue) {
         return applyObjectLong(data, longValue);

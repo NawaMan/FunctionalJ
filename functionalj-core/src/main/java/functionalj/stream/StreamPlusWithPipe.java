@@ -24,25 +24,26 @@
 package functionalj.stream;
 
 import java.util.function.Function;
-
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
-
 public interface StreamPlusWithPipe<DATA> {
-    
+
     public StreamPlus<DATA> streamPlus();
-    
-    /** @return the pipeable of this stream. */
+
+    /**
+     * @return the pipeable of this stream.
+     */
     public default Pipeable<? extends StreamPlus<DATA>> pipable() {
         val streamPlus = streamPlus();
         return Pipeable.of(streamPlus);
     }
-    
-    /** Pipe this stream plus through the given function. */
+
+    /**
+     * Pipe this stream plus through the given function.
+     */
     public default <T> T pipeTo(Function<? super StreamPlus<DATA>, T> function) {
         val streamPlus = streamPlus();
         return function.apply(streamPlus);
     }
-    
 }

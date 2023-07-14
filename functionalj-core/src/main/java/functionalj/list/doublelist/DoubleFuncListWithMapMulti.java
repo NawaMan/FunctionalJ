@@ -24,12 +24,10 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.AsDoubleFuncListHelper.funcListOf;
-
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
-
 import functionalj.function.DoubleObjBiConsumer;
 import functionalj.list.FuncList;
 import functionalj.list.intlist.IntFuncList;
@@ -37,29 +35,28 @@ import functionalj.list.longlist.LongFuncList;
 import lombok.val;
 
 public interface DoubleFuncListWithMapMulti extends AsDoubleFuncList {
-    
+
     public default <T> DoubleFuncList mapMulti(DoubleObjBiConsumer<DoubleConsumer> mapper) {
         val funcList = funcListOf(this);
         return DoubleFuncList.deriveFrom(funcList, stream -> stream.mapMulti(mapper));
     }
-    
+
     public default IntFuncList mapMultiToInt(DoubleObjBiConsumer<IntConsumer> mapper) {
         val funcList = funcListOf(this);
         return IntFuncList.deriveFrom(funcList, stream -> stream.mapMultiToInt(mapper));
     }
-    
+
     public default LongFuncList mapMultiToLong(DoubleObjBiConsumer<LongConsumer> mapper) {
         val funcList = funcListOf(this);
         return LongFuncList.deriveFrom(funcList, stream -> stream.mapMultiToLong(mapper));
     }
-    
+
     public default DoubleFuncList mapMultiToDouble(DoubleObjBiConsumer<DoubleConsumer> mapper) {
         return mapMulti(mapper);
     }
-    
+
     public default <T> FuncList<T> mapMultiToObj(DoubleObjBiConsumer<Consumer<? super T>> mapper) {
         val funcList = funcListOf(this);
         return FuncList.deriveFrom(funcList, stream -> stream.mapMultiToObj(mapper));
     }
-    
 }

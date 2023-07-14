@@ -28,27 +28,23 @@ import java.util.function.Supplier;
 
 @FunctionalInterface
 public interface IntSupplierPrimitive extends IntSupplier, Supplier<Integer> {
-    
+
     public static IntSupplierPrimitive of(Supplier<Integer> supplier) {
         if (supplier instanceof IntSupplierPrimitive)
-            return (IntSupplierPrimitive)supplier;
-        
+            return (IntSupplierPrimitive) supplier;
         return () -> supplier.get();
     }
+
     public static IntSupplierPrimitive intSupplier(Supplier<Integer> supplier) {
         if (supplier instanceof IntSupplierPrimitive)
-            return (IntSupplierPrimitive)supplier;
-        
+            return (IntSupplierPrimitive) supplier;
         return () -> supplier.get();
     }
-    
-    
+
     public int getAsInt();
-    
+
     @Override
     public default Integer get() {
         return getAsInt();
     }
-    
 }
-

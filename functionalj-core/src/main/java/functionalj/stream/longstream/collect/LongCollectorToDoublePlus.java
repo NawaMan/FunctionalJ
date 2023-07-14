@@ -33,41 +33,43 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.collect.CollectorToDoublePlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;
 import functionalj.stream.intstream.collect.IntCollectorToDoublePlus;
 import lombok.val;
 
 public interface LongCollectorToDoublePlus<ACCUMULATED> extends LongCollectorPlus<ACCUMULATED, Double> {
-    
-    public Supplier<ACCUMULATED>         supplier();
-    public ObjLongConsumer<ACCUMULATED>  longAccumulator();
-    public BinaryOperator<ACCUMULATED>   combiner();
+
+    public Supplier<ACCUMULATED> supplier();
+
+    public ObjLongConsumer<ACCUMULATED> longAccumulator();
+
+    public BinaryOperator<ACCUMULATED> combiner();
+
     public ToDoubleFunction<ACCUMULATED> finisherToDouble();
-    public Set<Characteristics>          characteristics();
-    
+
+    public Set<Characteristics> characteristics();
+
     public default Function<ACCUMULATED, Double> finisher() {
         val finisherToDouble = finisherToDouble();
         return accumulated -> {
             return finisherToDouble.applyAsDouble(accumulated);
         };
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public default <SOURCE> CollectorToDoublePlus<SOURCE, ACCUMULATED> of(ToLongFunction<SOURCE> mapper) {
         return new DerivedLongCollectorToDoublePlus.FromObj<>(this, mapper);
     }
-    
+
     public default IntCollectorToDoublePlus<ACCUMULATED> of(IntToLongFunction mapper) {
         return new DerivedLongCollectorToDoublePlus.FromInt<>(this, mapper);
     }
-    
+
     public default LongCollectorToDoublePlus<ACCUMULATED> of(LongUnaryOperator mapper) {
         return new DerivedLongCollectorToDoublePlus.FromLong<>(this, mapper);
     }
-    
+
     public default DoubleCollectorToDoublePlus<ACCUMULATED> of(DoubleToLongFunction mapper) {
         return new DerivedLongCollectorToDoublePlus.FromDouble<>(this, mapper);
     }

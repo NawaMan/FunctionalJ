@@ -25,9 +25,8 @@ package functionalj.result;
 
 public class UnacceptableForUnknownReasonException extends Exception {
 
-	private static final long serialVersionUID = 1361955593036029932L;
+    private static final long serialVersionUID = 1361955593036029932L;
 
-	public UnacceptableForUnknownReasonException() {
+    public UnacceptableForUnknownReasonException() {
     }
-    
 }

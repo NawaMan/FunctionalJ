@@ -24,25 +24,22 @@
 package functionalj.lens.core;
 
 import java.util.function.Function;
-
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
+public interface LensSpecParameterized2<HOST, TYPE, SUB1, SUB2, SUBLENS1 extends AnyLens<HOST, SUB1>, SUBLENS2 extends AnyLens<HOST, SUB2>> extends AccessParameterized2<HOST, TYPE, SUB1, SUB2, SUBLENS1, SUBLENS2> {
 
-public interface LensSpecParameterized2<HOST, TYPE, SUB1, SUB2,
-                                         SUBLENS1 extends AnyLens<HOST, SUB1>,
-                                         SUBLENS2 extends AnyLens<HOST, SUB2>>
-            extends AccessParameterized2<HOST, TYPE, SUB1, SUB2, SUBLENS1, SUBLENS2> {
-    
     public LensSpec<HOST, TYPE> getSpec();
-    public SUBLENS1             createSubLens1(String subName, LensSpec<HOST, SUB1> subSpec);
-    public SUBLENS2             createSubLens2(String subName, LensSpec<HOST, SUB2> subSpec);
-    
+
+    public SUBLENS1 createSubLens1(String subName, LensSpec<HOST, SUB1> subSpec);
+
+    public SUBLENS2 createSubLens2(String subName, LensSpec<HOST, SUB2> subSpec);
+
     @Override
     public default TYPE applyUnsafe(HOST host) throws Exception {
         return getSpec().getRead().apply(host);
     }
-    
+
     @Override
     public default SUBLENS1 createSubAccess1(Function<TYPE, SUB1> accessToSub) {
         val read = getSpec().getRead().andThen(accessToSub);
@@ -66,5 +63,4 @@ public interface LensSpecParameterized2<HOST, TYPE, SUB1, SUB2,
     public default SUBLENS2 createSubAccessFromHost2(Function<HOST, SUB2> accessToParameter) {
         return createSubLens2(null, LensSpec.of(accessToParameter));
     }
-    
 }

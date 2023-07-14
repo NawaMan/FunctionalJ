@@ -24,38 +24,35 @@
 package functionalj.function.aggregator;
 
 import java.util.function.IntFunction;
-
 import functionalj.stream.intstream.collect.IntCollected;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 
 public interface IntAggregator<TARGET> extends IntFunction<TARGET>, Aggregator<Integer, TARGET> {
-    
+
     public IntCollected<?, TARGET> asCollected();
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl<TARGET> implements IntAggregator<TARGET> {
-        
+
         private final IntCollected<?, TARGET> collected;
-        
+
         public Impl(IntCollectorPlus<?, TARGET> collector) {
             this.collected = IntCollected.collectedOf(collector);
         }
-        
+
         @Override
         public TARGET apply(int input) {
             collected.accumulate(input);
             return collected.finish();
         }
-        
+
         @Override
         public TARGET applyUnsafe(Integer input) throws Exception {
             return apply(input);
         }
-        
+
         public IntCollected<?, TARGET> asCollected() {
             return collected;
         }
     }
-    
 }

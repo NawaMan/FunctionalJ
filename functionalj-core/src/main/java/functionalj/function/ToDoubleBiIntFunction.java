@@ -25,7 +25,6 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface ToDoubleBiIntFunction<DATA> {
-    
+
     public double applyAsDouble(DATA data, int intValue);
-    
 }

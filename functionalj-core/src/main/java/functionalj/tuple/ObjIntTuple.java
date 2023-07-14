@@ -26,55 +26,59 @@ package functionalj.tuple;
 import java.util.Map;
 
 public class ObjIntTuple<T1> implements Tuple2<T1, Integer>, Map.Entry<T1, Integer> {
-    
+
     public static <T1> ObjIntTuple<T1> of(T1 t1, int i) {
         return new ObjIntTuple<>(t1, i);
     }
-    
-    public final T1  _1;
+
+    public final T1 _1;
+
     public final int _2;
-    
+
     public ObjIntTuple(T1 _1, int _2) {
         this._1 = _1;
         this._2 = _2;
     }
-    
+
     public T1 _1() {
         return _1;
     }
+
     public int _2int() {
         return _2;
     }
+
     public Integer _2() {
         return _2;
     }
-    
+
     @Override
     public T1 getKey() {
         return _1();
     }
-    
+
     @Override
     public Integer getValue() {
         return _2();
     }
-    
+
     @Override
     public Integer setValue(Integer value) {
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
     public String toString() {
         return Tuple.toString(this);
     }
+
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
+
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);
     }
-    
 }

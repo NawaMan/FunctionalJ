@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,69 +25,67 @@ package functionalj.stream.intstream;
 
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
-
 import lombok.val;
 
-
 // This class along with ArrayBackedIntIteratorPlus helps improve performance when do pullNext, useNext and mapNext
-//   with multiple value to run faster.
+// with multiple value to run faster.
 public class ArrayBackedIntStreamPlus implements IntStreamPlus {
 
     private final ArrayBackedIntIteratorPlus iterator;
-    private final IntStreamPlus              stream;
-    
+
+    private final IntStreamPlus stream;
+
     @SafeVarargs
-    public static IntStreamPlus of(int ... array) {
+    public static IntStreamPlus of(int... array) {
         val iterator = ArrayBackedIntIteratorPlus.of(array);
-        val stream   = new ArrayBackedIntStreamPlus(iterator);
+        val stream = new ArrayBackedIntStreamPlus(iterator);
         return stream;
     }
+
     public static IntStreamPlus from(int[] array) {
         val iterator = ArrayBackedIntIteratorPlus.of(array);
-        val stream   = new ArrayBackedIntStreamPlus(iterator);
+        val stream = new ArrayBackedIntStreamPlus(iterator);
         return stream;
     }
+
     public static IntStreamPlus from(int[] array, int start, int length) {
-        val iterator = (ArrayBackedIntIteratorPlus)ArrayBackedIntIteratorPlus.from(array, start, length);
-        val stream   = new ArrayBackedIntStreamPlus(iterator);
+        val iterator = (ArrayBackedIntIteratorPlus) ArrayBackedIntIteratorPlus.from(array, start, length);
+        val stream = new ArrayBackedIntStreamPlus(iterator);
         return stream;
     }
-    
+
     ArrayBackedIntStreamPlus(ArrayBackedIntIteratorPlus iterator) {
         this.iterator = iterator;
-        
-        val iterable = (IntIterable)()->iterator;
-        this.stream  = IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
+        val iterable = (IntIterable) () -> iterator;
+        this.stream = IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
-    
+
     @Override
     public IntStream intStream() {
         return stream;
     }
-    
+
     @Override
     public void close() {
         iterator.close();
         stream.close();
     }
-    
+
     @Override
     public IntStreamPlus onClose(Runnable closeHandler) {
         iterator.onClose(closeHandler);
         stream.onClose(closeHandler);
         return derive(stream -> {
-            return stream
-                    .onClose(closeHandler);
+            return stream.onClose(closeHandler);
         });
     }
-    
+
     public IntIteratorPlus iterator() {
         return iterator;
     }
-    
+
     @Override
     public int[] toArray() {
         return iterator.toArray();
     }
-    
 }

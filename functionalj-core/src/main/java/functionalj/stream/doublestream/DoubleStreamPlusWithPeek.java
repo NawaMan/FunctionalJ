@@ -28,73 +28,60 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.Predicate;
-
 import lombok.val;
 
-
-
 public interface DoubleStreamPlusWithPeek {
-    
-     public DoubleStreamPlus doubleStreamPlus();
-    
-    //-- Peek --
-    
-    /** Peek only the value that is selected with selector. */
-    public default DoubleStreamPlus peekBy(
-            DoublePredicate selector,
-            DoubleConsumer  theConsumer) {
+
+    public DoubleStreamPlus doubleStreamPlus();
+
+    // -- Peek --
+    /**
+     * Peek only the value that is selected with selector.
+     */
+    public default DoubleStreamPlus peekBy(DoublePredicate selector, DoubleConsumer theConsumer) {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    if (!selector.test(value))
-                        return;
-                    
-                    theConsumer.accept(value);
-                });
+        return streamPlus.peek(value -> {
+            if (!selector.test(value))
+                return;
+            theConsumer.accept(value);
+        });
     }
-    
+
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
-    
-    /** Peek the mapped value using the mapper. */
-    public default <T> DoubleStreamPlus peekAs(
-            DoubleFunction<T>   mapper,
-            Consumer<? super T> consumer) {
+    /**
+     * Peek the mapped value using the mapper.
+     */
+    public default <T> DoubleStreamPlus peekAs(DoubleFunction<T> mapper, Consumer<? super T> consumer) {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    consumer.accept(target);
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            consumer.accept(target);
+        });
     }
-    
-    /** Peek only the mapped value using the mapper. */
-    public default <T> DoubleStreamPlus peekBy(
-            DoubleFunction<T>    mapper,
-            Predicate<? super T> selector,
-            DoubleConsumer       consumer) {
+
+    /**
+     * Peek only the mapped value using the mapper.
+     */
+    public default <T> DoubleStreamPlus peekBy(DoubleFunction<T> mapper, Predicate<? super T> selector, DoubleConsumer consumer) {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    if (selector.test(target))
-                        consumer.accept(value);
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            if (selector.test(target))
+                consumer.accept(value);
+        });
     }
-    
-    /** Peek the mapped value using the mapper. */
-    public default <T> DoubleStreamPlus peekAs(
-            DoubleFunction<T>    mapper,
-            Predicate<? super T> selector,
-            Consumer<? super T>  consumer) {
+
+    /**
+     * Peek the mapped value using the mapper.
+     */
+    public default <T> DoubleStreamPlus peekAs(DoubleFunction<T> mapper, Predicate<? super T> selector, Consumer<? super T> consumer) {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    if (selector.test(target)) {
-                        consumer.accept(target);
-                    }
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            if (selector.test(target)) {
+                consumer.accept(target);
+            }
+        });
     }
-    
 }

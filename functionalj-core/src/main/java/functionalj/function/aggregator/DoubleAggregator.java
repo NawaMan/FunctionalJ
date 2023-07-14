@@ -24,38 +24,35 @@
 package functionalj.function.aggregator;
 
 import java.util.function.DoubleFunction;
-
 import functionalj.stream.doublestream.collect.DoubleCollected;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 
 public interface DoubleAggregator<TARGET> extends DoubleFunction<TARGET>, Aggregator<Double, TARGET> {
-    
+
     public DoubleCollected<?, TARGET> asCollected();
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl<TARGET> implements DoubleAggregator<TARGET> {
-        
+
         private final DoubleCollected<?, TARGET> collected;
-        
+
         public Impl(DoubleCollectorPlus<?, TARGET> collector) {
             this.collected = DoubleCollected.collectedOf(collector);
         }
-        
+
         @Override
         public TARGET apply(double input) {
             collected.accumulate(input);
             return collected.finish();
         }
-        
+
         @Override
         public TARGET applyUnsafe(Double input) throws Exception {
             return apply(input);
         }
-        
+
         public DoubleCollected<?, TARGET> asCollected() {
             return collected;
         }
     }
-    
 }

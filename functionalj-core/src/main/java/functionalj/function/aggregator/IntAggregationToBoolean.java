@@ -28,81 +28,72 @@ import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
-
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToBooleanPlus;
 import lombok.val;
 
-
 public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
-    
+
     public static <A> IntAggregationToBoolean from(IntCollectorToBooleanPlus<A> collector) {
         return new IntAggregationToBoolean.Impl(collector);
     }
-    
-    //== Instance == 
-    
+
+    // == Instance ==
     public abstract IntCollectorToBooleanPlus<?> intCollectorToBooleanPlus();
-    
-    
+
     @Override
     public IntCollectorPlus<?, Boolean> intCollectorPlus() {
         return intCollectorToBooleanPlus();
     }
-    
+
     public IntAggregatorToBoolean newAggregator() {
         val collector = intCollectorToBooleanPlus();
         return new IntAggregatorToBoolean.Impl(collector);
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public <INPUT> AggregationToBoolean<INPUT> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorToBooleanPlus().of(mapper);
         return new AggregationToBoolean.Impl<>(newCollector);
     }
-    
+
     public IntAggregation<Boolean> ofInt(IntFunction<Integer> mapper) {
         if (mapper instanceof IntUnaryOperator) {
-            return ofIntToBoolean((IntUnaryOperator)mapper);
+            return ofIntToBoolean((IntUnaryOperator) mapper);
         }
-        
         val newCollector = intCollectorToBooleanPlus().of(mapper);
         return new IntAggregation.Impl<>(newCollector);
     }
-    
+
     public LongAggregationToBoolean ofLong(LongToIntFunction mapper) {
         val newCollector = intCollectorToBooleanPlus().of(mapper);
         return new LongAggregationToBoolean.Impl(newCollector);
     }
-    
+
     public DoubleAggregationToBoolean ofDouble(DoubleToIntFunction mapper) {
         val newCollector = intCollectorToBooleanPlus().of(mapper);
         return new DoubleAggregationToBoolean.Impl(newCollector);
     }
-    
+
     // This is a terrible name .... :-(
     // But if we use `ofDouble`, Java confuse this one and the one above
     public IntAggregationToBoolean ofIntToBoolean(IntUnaryOperator mapper) {
         val newCollector = intCollectorToBooleanPlus().of(mapper);
         return new IntAggregationToBoolean.Impl(newCollector);
     }
-    
-    //== Implementation ==
-    
+
+    // == Implementation ==
     public static class Impl extends IntAggregationToBoolean {
-        
+
         private final IntCollectorToBooleanPlus<?> collector;
-        
+
         public Impl(IntCollectorToBooleanPlus<?> collector) {
             this.collector = collector;
         }
-        
+
         @Override
         public IntCollectorToBooleanPlus<?> intCollectorToBooleanPlus() {
             return collector;
         }
-        
     }
-    
 }

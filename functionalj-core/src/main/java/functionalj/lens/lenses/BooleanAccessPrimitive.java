@@ -25,9 +25,8 @@ package functionalj.lens.lenses;
 
 @FunctionalInterface
 public interface BooleanAccessPrimitive<HOST> extends BooleanAccess<HOST> {
-    
+
     public default Boolean applyUnsafe(HOST host) throws Exception {
         return test(host);
     }
-    
 }

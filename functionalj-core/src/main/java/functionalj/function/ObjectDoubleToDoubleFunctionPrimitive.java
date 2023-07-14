@@ -25,26 +25,21 @@ package functionalj.function;
 
 import java.util.function.ToDoubleBiFunction;
 
-
 @FunctionalInterface
-public interface ObjectDoubleToDoubleFunctionPrimitive<DATA> 
-        extends
-            Func2<DATA, Double, Double>,
-            ToDoubleBiFunction<DATA, Double> {
-    
-    
+public interface ObjectDoubleToDoubleFunctionPrimitive<DATA> extends Func2<DATA, Double, Double>, ToDoubleBiFunction<DATA, Double> {
+
     public double applyObjectDouble(DATA data, double doubleValue);
-    
+
     @Override
     public default Double applyUnsafe(DATA data, Double doubleValue) throws Exception {
         return applyObjectDouble(data, doubleValue);
     }
-    
+
     @Override
     public default Double apply(DATA data, Double doubleValue) {
         return applyObjectDouble(data, doubleValue);
     }
-    
+
     @Override
     public default double applyAsDouble(DATA data, Double doubleValue) {
         return applyObjectDouble(data, doubleValue);

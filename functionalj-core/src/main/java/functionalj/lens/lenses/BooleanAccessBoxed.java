@@ -26,10 +26,9 @@ package functionalj.lens.lenses;
 import functionalj.functions.ThrowFuncs;
 import lombok.val;
 
-
 @FunctionalInterface
 public interface BooleanAccessBoxed<HOST> extends BooleanAccess<HOST> {
-    
+
     public default boolean test(HOST host) {
         try {
             val value = applyUnsafe(host);
@@ -40,5 +39,4 @@ public interface BooleanAccessBoxed<HOST> extends BooleanAccess<HOST> {
             throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
-    
 }

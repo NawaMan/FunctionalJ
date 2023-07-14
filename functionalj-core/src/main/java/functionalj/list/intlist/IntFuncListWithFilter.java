@@ -24,7 +24,6 @@
 package functionalj.list.intlist;
 
 import static functionalj.list.intlist.IntFuncList.deriveFrom;
-
 import java.util.Collection;
 import java.util.function.DoublePredicate;
 import java.util.function.IntFunction;
@@ -34,96 +33,112 @@ import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
-
 import functionalj.function.IntBiPredicatePrimitive;
 
-
 public interface IntFuncListWithFilter extends AsIntFuncList {
-    
-    /** Map each value to an int and used it to filter the value. */
-    public default IntFuncList filterAsInt(
-            IntUnaryOperator mapper,
-            IntPredicate     predicate) {
+
+    /**
+     * Map each value to an int and used it to filter the value.
+     */
+    public default IntFuncList filterAsInt(IntUnaryOperator mapper, IntPredicate predicate) {
         return deriveFrom(this, stream -> stream.filterAsInt(mapper, predicate));
     }
-    
-    /** Map each value to a long and used it to filter the value. */
-    public default IntFuncList filterAsLong(
-            IntToLongFunction mapper,
-            LongPredicate     predicate) {
+
+    /**
+     * Map each value to a long and used it to filter the value.
+     */
+    public default IntFuncList filterAsLong(IntToLongFunction mapper, LongPredicate predicate) {
         return deriveFrom(this, stream -> stream.filterAsLong(mapper, predicate));
     }
-    
-    /** Map each value to a double and used it to filter the value. */
-    public default IntFuncList filterAsDouble(
-            IntToDoubleFunction mapper,
-            DoublePredicate     predicate) {
+
+    /**
+     * Map each value to a double and used it to filter the value.
+     */
+    public default IntFuncList filterAsDouble(IntToDoubleFunction mapper, DoublePredicate predicate) {
         return deriveFrom(this, stream -> stream.filterAsDouble(mapper, predicate));
     }
-    
-    /** Map each value to another object and used it to filter the value. */
-    public default <T> IntFuncList filterAsObject(
-            IntFunction<T>       mapper,
-            Predicate<? super T> predicate) {
+
+    /**
+     * Map each value to another object and used it to filter the value.
+     */
+    public default <T> IntFuncList filterAsObject(IntFunction<T> mapper, Predicate<? super T> predicate) {
         return deriveFrom(this, stream -> stream.filterAsObject(mapper, predicate));
     }
-    
-    /** Map each value to another object and used it to filter the value. */
-    public default <T> IntFuncList filter(
-            IntUnaryOperator mapper,
-            IntPredicate     predicate) {
+
+    /**
+     * Map each value to another object and used it to filter the value.
+     */
+    public default <T> IntFuncList filter(IntUnaryOperator mapper, IntPredicate predicate) {
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
-    
-    /** Filter value with its index. */
-    public default IntFuncList filterWithIndex(
-            IntBiPredicatePrimitive predicate) {
+
+    /**
+     * Filter value with its index.
+     */
+    public default IntFuncList filterWithIndex(IntBiPredicatePrimitive predicate) {
         return deriveFrom(this, stream -> stream.filterWithIndex(predicate));
     }
-    
-    /** Map the value to another object and filter the one that is not null. */
+
+    /**
+     * Map the value to another object and filter the one that is not null.
+     */
     public default <T> IntFuncList filterNonNull(IntFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.filterNonNull(mapper));
     }
-    
-    /** Map the value to another object and filter the one that is not null. */
+
+    /**
+     * Map the value to another object and filter the one that is not null.
+     */
     public default <T> IntFuncList excludeNull(IntFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.excludeNull(mapper));
     }
-    
-    /** Filter only the value that is in the given items. */
-    public default IntFuncList filterIn(int ... items) {
+
+    /**
+     * Filter only the value that is in the given items.
+     */
+    public default IntFuncList filterIn(int... items) {
         return deriveFrom(this, stream -> stream.filterIn(items));
     }
-    
-    /** Filter only the value that is in the given collections. */
+
+    /**
+     * Filter only the value that is in the given collections.
+     */
     public default IntFuncList filterIn(IntFuncList collection) {
         return deriveFrom(this, stream -> stream.filterIn(collection));
     }
-    
-    /** Filter only the value that is in the given collections. */
+
+    /**
+     * Filter only the value that is in the given collections.
+     */
     public default IntFuncList filterIn(Collection<Integer> collection) {
         return deriveFrom(this, stream -> stream.filterIn(collection));
     }
-    
-    /** Filter only the value that the predicate returns false. */
+
+    /**
+     * Filter only the value that the predicate returns false.
+     */
     public default IntFuncList exclude(IntPredicate predicate) {
         return deriveFrom(this, stream -> stream.exclude(predicate));
     }
-    
-    /** Filter only the value that is not in the given items. */
-    public default IntFuncList excludeIn(int ... items) {
+
+    /**
+     * Filter only the value that is not in the given items.
+     */
+    public default IntFuncList excludeIn(int... items) {
         return deriveFrom(this, stream -> stream.excludeIn(items));
     }
-    
-    /** Filter out any value that is in the given collection. */
+
+    /**
+     * Filter out any value that is in the given collection.
+     */
     public default IntFuncList excludeIn(IntFuncList collection) {
         return deriveFrom(this, stream -> stream.excludeIn(collection));
     }
-    
-    /** Filter only the value that is in the given collections. */
+
+    /**
+     * Filter only the value that is in the given collections.
+     */
     public default IntFuncList excludeIn(Collection<Integer> collection) {
         return deriveFrom(this, stream -> stream.excludeIn(collection));
     }
-    
 }

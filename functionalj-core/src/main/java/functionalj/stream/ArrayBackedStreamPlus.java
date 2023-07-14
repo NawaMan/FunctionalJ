@@ -26,75 +26,72 @@ package functionalj.stream;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
 import lombok.val;
 
-
-
-// This class along with ArrayBackedIteratorPlus helps improve performance when do pullNext, useNext and mapNext 
-//   with multiple value to run faster.
+// This class along with ArrayBackedIteratorPlus helps improve performance when do pullNext, useNext and mapNext
+// with multiple value to run faster.
 public class ArrayBackedStreamPlus<DATA> implements StreamPlus<DATA> {
-    
+
     private final ArrayBackedIteratorPlus<DATA> iterator;
-    private final StreamPlus<DATA>              stream;
-    
+
+    private final StreamPlus<DATA> stream;
+
     @SafeVarargs
-    public static <DATA> StreamPlus<DATA> of(DATA ... array) {
+    public static <DATA> StreamPlus<DATA> of(DATA... array) {
         val iterator = ArrayBackedIteratorPlus.of(array);
-        val stream   = new ArrayBackedStreamPlus<>(iterator);
+        val stream = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
+
     public static <DATA> StreamPlus<DATA> from(DATA[] array) {
         val iterator = ArrayBackedIteratorPlus.of(array);
-        val stream   = new ArrayBackedStreamPlus<>(iterator);
+        val stream = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
+
     public static <DATA> StreamPlus<DATA> from(DATA[] array, int start, int length) {
-        val iterator = (ArrayBackedIteratorPlus<DATA>)ArrayBackedIteratorPlus.from(array, start, length);
-        val stream   = new ArrayBackedStreamPlus<>(iterator);
+        val iterator = (ArrayBackedIteratorPlus<DATA>) ArrayBackedIteratorPlus.from(array, start, length);
+        val stream = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
-    
+
     ArrayBackedStreamPlus(ArrayBackedIteratorPlus<DATA> iterator) {
         this.iterator = iterator;
-        
-        val iterable = (Iterable<DATA>)()->iterator;
-        this.stream  = StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        val iterable = (Iterable<DATA>) () -> iterator;
+        this.stream = StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
-    
+
     public Stream<DATA> stream() {
         return stream;
     }
-    
+
     @Override
     public void close() {
         iterator.close();
         stream.close();
     }
-    
+
     @Override
     public StreamPlus<DATA> onClose(Runnable closeHandler) {
         iterator.onClose(closeHandler);
         stream.onClose(closeHandler);
-        return derive(stream -> { 
-            stream
-                .stream()
-                .onClose(closeHandler);
+        return derive(stream -> {
+            stream.stream().onClose(closeHandler);
             return stream;
         });
     }
-    
+
     public IteratorPlus<DATA> iterator() {
         return iterator;
     }
+
     @Override
     public DATA[] toArray() {
         return iterator.toArray();
     }
-    
+
     @Override
     public <A> A[] toArray(IntFunction<A[]> generator) {
         return iterator.toArray(generator);
     }
-    
 }

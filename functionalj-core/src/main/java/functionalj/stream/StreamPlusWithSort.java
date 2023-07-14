@@ -26,39 +26,36 @@ package functionalj.stream;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Function;
-
 import functionalj.stream.markers.Eager;
 import lombok.val;
 
-
 public interface StreamPlusWithSort<DATA> {
-    
+
     public StreamPlus<DATA> streamPlus();
-    
-    /** Sort the values by the mapped value. */
+
+    /**
+     * Sort the values by the mapped value.
+     */
     @Eager
     public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .sorted((a, b) -> {
-                    T vA = mapper.apply(a);
-                    T vB = mapper.apply(b);
-                    return vA.compareTo(vB);
-                });
+        return streamPlus.sorted((a, b) -> {
+            T vA = mapper.apply(a);
+            T vB = mapper.apply(b);
+            return vA.compareTo(vB);
+        });
     }
-    
-    /** Sort the values by the mapped value using the comparator. */
+
+    /**
+     * Sort the values by the mapped value using the comparator.
+     */
     @Eager
-    public default <T> StreamPlus<DATA> sortedBy(
-            Function<? super DATA, T> mapper, 
-            Comparator<T>             comparator) {
+    public default <T> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper, Comparator<T> comparator) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .sorted((a, b) -> {
-                    T vA = mapper.apply(a);
-                    T vB = mapper.apply(b);
-                    return Objects.compare(vA, vB, comparator);
-                });
+        return streamPlus.sorted((a, b) -> {
+            T vA = mapper.apply(a);
+            T vB = mapper.apply(b);
+            return Objects.compare(vA, vB, comparator);
+        });
     }
-    
 }

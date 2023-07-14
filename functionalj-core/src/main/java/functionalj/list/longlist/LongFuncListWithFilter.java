@@ -24,7 +24,6 @@
 package functionalj.list.longlist;
 
 import static functionalj.list.longlist.LongFuncList.deriveFrom;
-
 import java.util.Collection;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
@@ -34,96 +33,112 @@ import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.Predicate;
-
 import functionalj.function.IntLongPredicatePrimitive;
 
-
 public interface LongFuncListWithFilter extends AsLongFuncList {
-    
-    /** Map each value to an int and used it to filter the value. */
-    public default LongFuncList filterAsInt(
-            LongToIntFunction mapper,
-            IntPredicate      predicate) {
+
+    /**
+     * Map each value to an int and used it to filter the value.
+     */
+    public default LongFuncList filterAsInt(LongToIntFunction mapper, IntPredicate predicate) {
         return deriveFrom(this, stream -> stream.filterAsInt(mapper, predicate));
     }
-    
-    /** Map each value to a long and used it to filter the value. */
-    public default LongFuncList filterAsLong(
-            LongUnaryOperator mapper,
-            LongPredicate     predicate) {
+
+    /**
+     * Map each value to a long and used it to filter the value.
+     */
+    public default LongFuncList filterAsLong(LongUnaryOperator mapper, LongPredicate predicate) {
         return deriveFrom(this, stream -> stream.filterAsLong(mapper, predicate));
     }
-    
-    /** Map each value to a double and used it to filter the value. */
-    public default LongFuncList filterAsDouble(
-            LongToDoubleFunction mapper,
-            DoublePredicate      predicate) {
+
+    /**
+     * Map each value to a double and used it to filter the value.
+     */
+    public default LongFuncList filterAsDouble(LongToDoubleFunction mapper, DoublePredicate predicate) {
         return deriveFrom(this, stream -> stream.filterAsDouble(mapper, predicate));
     }
-    
-    /** Map each value to another object and used it to filter the value. */
-    public default <T> LongFuncList filterAsObject(
-            LongFunction<T>      mapper,
-            Predicate<? super T> predicate) {
+
+    /**
+     * Map each value to another object and used it to filter the value.
+     */
+    public default <T> LongFuncList filterAsObject(LongFunction<T> mapper, Predicate<? super T> predicate) {
         return deriveFrom(this, stream -> stream.filterAsObject(mapper, predicate));
     }
-    
-    /** Map each value to another object and used it to filter the value. */
-    public default <T> LongFuncList filter(
-            LongUnaryOperator mapper,
-            LongPredicate     predicate) {
+
+    /**
+     * Map each value to another object and used it to filter the value.
+     */
+    public default <T> LongFuncList filter(LongUnaryOperator mapper, LongPredicate predicate) {
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
-    
-    /** Filter value with its index. */
-    public default LongFuncList filterWithIndex(
-            IntLongPredicatePrimitive predicate) {
+
+    /**
+     * Filter value with its index.
+     */
+    public default LongFuncList filterWithIndex(IntLongPredicatePrimitive predicate) {
         return deriveFrom(this, stream -> stream.filterWithIndex(predicate));
     }
-    
-    /** Map the value to another object and filter the one that is not null. */
+
+    /**
+     * Map the value to another object and filter the one that is not null.
+     */
     public default <T> LongFuncList filterNonNull(LongFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.filterNonNull(mapper));
     }
-    
-    /** Map the value to another object and filter the one that is not null. */
+
+    /**
+     * Map the value to another object and filter the one that is not null.
+     */
     public default <T> LongFuncList excludeNull(LongFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.excludeNull(mapper));
     }
-    
-    /** Filter only the value that is in the given items. */
-    public default LongFuncList filterIn(long ... items) {
+
+    /**
+     * Filter only the value that is in the given items.
+     */
+    public default LongFuncList filterIn(long... items) {
         return deriveFrom(this, stream -> stream.filterIn(items));
     }
-    
-    /** Filter only the value that is in the given collections. */
+
+    /**
+     * Filter only the value that is in the given collections.
+     */
     public default LongFuncList filterIn(LongFuncList collection) {
         return deriveFrom(this, stream -> stream.filterIn(collection));
     }
-    
-    /** Filter only the value that is in the given collections. */
+
+    /**
+     * Filter only the value that is in the given collections.
+     */
     public default LongFuncList filterIn(Collection<Long> collection) {
         return deriveFrom(this, stream -> stream.filterIn(collection));
     }
-    
-    /** Filter only the value that the predicate returns false. */
+
+    /**
+     * Filter only the value that the predicate returns false.
+     */
     public default LongFuncList exclude(LongPredicate predicate) {
         return deriveFrom(this, stream -> stream.exclude(predicate));
     }
-    
-    /** Filter only the value that is not in the given items. */
-    public default LongFuncList excludeIn(long ... items) {
+
+    /**
+     * Filter only the value that is not in the given items.
+     */
+    public default LongFuncList excludeIn(long... items) {
         return deriveFrom(this, stream -> stream.excludeIn(items));
     }
-    
-    /** Filter out any value that is in the given collection. */
+
+    /**
+     * Filter out any value that is in the given collection.
+     */
     public default LongFuncList excludeIn(LongFuncList collection) {
         return deriveFrom(this, stream -> stream.excludeIn(collection));
     }
-    
-    /** Filter only the value that is in the given collections. */
+
+    /**
+     * Filter only the value that is in the given collections.
+     */
     public default LongFuncList excludeIn(Collection<Long> collection) {
         return deriveFrom(this, stream -> stream.excludeIn(collection));
     }
-    
 }

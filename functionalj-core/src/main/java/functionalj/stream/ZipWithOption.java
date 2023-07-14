@@ -24,12 +24,10 @@
 package functionalj.stream;
 
 public enum ZipWithOption {
-    
-    RequireBoth,
-    AllowUnpaired;
-    
+
+    RequireBoth, AllowUnpaired;
+
     public boolean isRequireBoth() {
         return this == ZipWithOption.RequireBoth;
     }
-    
 }

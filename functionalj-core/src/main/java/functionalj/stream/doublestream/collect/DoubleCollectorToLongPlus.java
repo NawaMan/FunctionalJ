@@ -32,41 +32,41 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.collect.CollectorToLongPlus;
 import functionalj.stream.intstream.collect.IntCollectorToLongPlus;
 import functionalj.stream.longstream.collect.LongCollectorToLongPlus;
 import lombok.val;
 
 public interface DoubleCollectorToLongPlus<ACCUMULATED> extends DoubleCollectorPlus<ACCUMULATED, Long> {
-    
-    public Supplier<ACCUMULATED>          supplier();
+
+    public Supplier<ACCUMULATED> supplier();
+
     public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator();
-    public BinaryOperator<ACCUMULATED>    combiner();
-    
+
+    public BinaryOperator<ACCUMULATED> combiner();
+
     public ToLongFunction<ACCUMULATED> finisherToLong();
-    
+
     public default Function<ACCUMULATED, Long> finisher() {
         val finisherToLong = finisherToLong();
         return accumulated -> {
             return finisherToLong.applyAsLong(accumulated);
         };
     }
-    
-    //== Derived ==
-    
+
+    // == Derived ==
     public default <SOURCE> CollectorToLongPlus<SOURCE, ACCUMULATED> of(ToDoubleFunction<SOURCE> mapper) {
         return new DerivedDoubleCollectorToLongPlus.FromObj<>(this, mapper);
     }
-    
+
     public default IntCollectorToLongPlus<ACCUMULATED> of(IntToDoubleFunction mapper) {
         return new DerivedDoubleCollectorToLongPlus.FromInt<>(this, mapper);
     }
-    
+
     public default LongCollectorToLongPlus<ACCUMULATED> of(LongToDoubleFunction mapper) {
         return new DerivedDoubleCollectorToLongPlus.FromLong<>(this, mapper);
     }
-    
+
     public default DoubleCollectorToLongPlus<ACCUMULATED> of(DoubleUnaryOperator mapper) {
         return new DerivedDoubleCollectorToLongPlus.FromDouble<>(this, mapper);
     }
