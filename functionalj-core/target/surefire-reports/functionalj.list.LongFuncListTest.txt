@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: functionalj.list.LongFuncListTest
 -------------------------------------------------------------------------------
-Tests run: 259, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.791 s -- in functionalj.list.LongFuncListTest
+Tests run: 259, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.803 s -- in functionalj.list.LongFuncListTest

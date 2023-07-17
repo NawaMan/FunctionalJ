@@ -16,7 +16,7 @@ import lombok.val;
 public class InputMethodElementTest {
     
     @Struct
-    public String method1(String name) throws RuntimeException {
+    public static String method1(String name) throws RuntimeException {
         return name;
     }
     

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: functionalj.promise.DeferActionTest
 -------------------------------------------------------------------------------
-Tests run: 33, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.388 s -- in functionalj.promise.DeferActionTest
+Tests run: 33, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.395 s -- in functionalj.promise.DeferActionTest

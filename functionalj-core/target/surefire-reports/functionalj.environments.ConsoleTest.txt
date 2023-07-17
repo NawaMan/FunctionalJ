@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: functionalj.environments.ConsoleTest
 -------------------------------------------------------------------------------
-Tests run: 12, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.197 s -- in functionalj.environments.ConsoleTest
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.200 s -- in functionalj.environments.ConsoleTest

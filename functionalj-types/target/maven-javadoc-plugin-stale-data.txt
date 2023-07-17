@@ -1,0 +1,63 @@
+@options
+@packages
+-classpath
+'/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/functionalj-core-0.5.9.0.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-api/2.2.0.5/defaultj-api-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-core/2.2.0.5/defaultj-core-2.2.0.5.jar:/home/nawaman/.m2/repository/io/defaultj/defaultj-annotations/2.2.0.5/defaultj-annotations-2.2.0.5.jar:/home/nawaman/.m2/repository/io/nullablej/nullablej/4.0.6.0/nullablej-4.0.6.0.jar:/home/nawaman/.m2/repository/org/projectlombok/lombok/1.18.28/lombok-1.18.28.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'1.8'
+-sourcepath
+'/home/nawaman/dev/git/FunctionalJ/functionalj-types/src/main/java:/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2023. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'functionalj-types 0.5.9.0 API'
+-linkoffline
+'https://docs.oracle.com/javase/8/docs/api' '/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/javadoc-bundle-options'
+-linkoffline
+'https://github.com/NawaMan/FunctionJ/functionalj-core/apidocs' '/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/apidocs'
+-use
+-version
+-windowtitle
+'functionalj-types 0.5.9.0 API'
+functionalj.types
+functionalj.types.rule
+functionalj.types.struct
+functionalj.types.struct.features
+functionalj.types.struct.generator
+functionalj.types.struct.generator.model
+functionalj.types.input
+functionalj.types.choice
+functionalj.types.choice.generator
+functionalj.types.choice.generator.model
+functionalj.types.choice.generator.helpers
+/home/nawaman/dev/git/FunctionalJ/functionalj-core/target/functionalj-core-0.5.9.0.jar = 1689566660094
+/home/nawaman/.m2/repository/io/defaultj/defaultj-api/2.2.0.5/defaultj-api-2.2.0.5.jar = 1689053161355
+/home/nawaman/.m2/repository/io/defaultj/defaultj-core/2.2.0.5/defaultj-core-2.2.0.5.jar = 1689053165567
+/home/nawaman/.m2/repository/io/defaultj/defaultj-annotations/2.2.0.5/defaultj-annotations-2.2.0.5.jar = 1689053163139
+/home/nawaman/.m2/repository/io/nullablej/nullablej/4.0.6.0/nullablej-4.0.6.0.jar = 1688617147915
+/home/nawaman/.m2/repository/org/projectlombok/lombok/1.18.28/lombok-1.18.28.jar = 1688392868147
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/src/main/java = 1688239709854
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/generated-sources/annotations = 1689566673902
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/overview-frame.html = 1689566675898
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/allclasses-noframe.html = 1689566676030
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/index-all.html = 1689566676026
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/script.js = 1689566676030
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/index.html = 1689566676030
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/constant-values.html = 1689566675914
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/help-doc.html = 1689566676030
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/overview-summary.html = 1689566676030
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/allclasses-frame.html = 1689566676030
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/package-list = 1689566675898
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/serialized-form.html = 1689566675918
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/overview-tree.html = 1689566676006
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/deprecated-list.html = 1689566676030
+/home/nawaman/dev/git/FunctionalJ/functionalj-types/target/apidocs/stylesheet.css = 1689566676030

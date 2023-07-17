@@ -27,14 +27,18 @@ import static functionalj.types.struct.generator.model.Accessibility.PUBLIC;
 import static functionalj.types.struct.generator.model.Modifiability.MODIFIABLE;
 import static functionalj.types.struct.generator.model.Scope.NONE;
 import static java.util.Arrays.asList;
+
 import java.util.List;
+
 import functionalj.types.Generic;
 import functionalj.types.Type;
+import functionalj.types.struct.generator.model.Accessibility;
 import functionalj.types.struct.generator.model.GenClass;
 import functionalj.types.struct.generator.model.GenConstructor;
 import functionalj.types.struct.generator.model.GenField;
 import functionalj.types.struct.generator.model.GenMethod;
-import lombok.experimental.Delegate;
+import functionalj.types.struct.generator.model.Modifiability;
+import functionalj.types.struct.generator.model.Scope;
 
 /**
  * Specification for Record.
@@ -43,12 +47,11 @@ import lombok.experimental.Delegate;
  */
 public class StructSpec {
     
-    @Delegate
-    private GenClass classSpec;
+    private final GenClass classSpec;
     
-    private String sourceClassName;
+    private final String sourceClassName;
     
-    private String sourcePackageName;
+    private final String sourcePackageName;
     
     /**
      * Constructs a RecordSpec.
@@ -85,6 +88,58 @@ public class StructSpec {
     
     public String targetClassName() {
         return (String) type().fullName("");
+    }
+    
+    public Accessibility accessibility() {
+        return classSpec.accessibility();
+    }
+    
+    public Scope scope() {
+        return classSpec.scope();
+    }
+    
+    public Modifiability modifiability() {
+        return classSpec.modifiability();
+    }
+    
+    public boolean isClass() {
+        return classSpec.isClass();
+    }
+    
+    public Type type() {
+        return classSpec.type();
+    }
+    
+    public String generic() {
+        return classSpec.generic();
+    }
+    
+    public List<Type> extendeds() {
+        return classSpec.extendeds();
+    }
+    
+    public List<Type> implementeds() {
+        return classSpec.implementeds();
+    }
+    
+    public List<GenConstructor> constructors() {
+        return classSpec.constructors();
+    }
+    
+    public List<GenField> fields() {
+        return classSpec.fields();
+    }
+    
+    public List<GenMethod> methods() {
+        return classSpec.methods();
+    }
+    
+    public List<GenClass> innerClasses() {
+        return classSpec.innerClasses();
+    }
+    
+    public List<ILines> mores() {
+        return classSpec.mores();
     }
     
     /**

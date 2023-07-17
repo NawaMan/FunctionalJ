@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: functionalj.stream.StreamPlusTest
 -------------------------------------------------------------------------------
-Tests run: 192, Failures: 0, Errors: 0, Skipped: 3, Time elapsed: 0.856 s -- in functionalj.stream.StreamPlusTest
+Tests run: 192, Failures: 0, Errors: 0, Skipped: 3, Time elapsed: 0.858 s -- in functionalj.stream.StreamPlusTest

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: functionalj.list.StreamBackedFuncListTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.075 s -- in functionalj.list.StreamBackedFuncListTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.073 s -- in functionalj.list.StreamBackedFuncListTest

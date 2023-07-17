@@ -101,7 +101,7 @@ public class GenClass implements IGenerateDefinition {
         return accessibility;
     }
     
-    public Scope getScope() {
+    public Scope scope() {
         return scope;
     }
     

@@ -1,0 +1,11 @@
+functionalj.types
+functionalj.types.choice
+functionalj.types.choice.generator
+functionalj.types.choice.generator.helpers
+functionalj.types.choice.generator.model
+functionalj.types.input
+functionalj.types.rule
+functionalj.types.struct
+functionalj.types.struct.features
+functionalj.types.struct.generator
+functionalj.types.struct.generator.model
