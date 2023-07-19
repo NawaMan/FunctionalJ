@@ -366,13 +366,13 @@ public interface StreamPlus<DATA> extends Stream<DATA>, AsStreamPlus<DATA>, Stre
     @Sequential
     public static <TARGET> StreamPlus<TARGET> iterate(TARGET seed1, TARGET seed2, BiFunction<TARGET, TARGET, TARGET> compounder) {
         return StreamPlus.from(StreamSupport.stream(new Spliterators.AbstractSpliterator<TARGET>(Long.MAX_VALUE, 0) {
-    
+        
             private final AtomicReference<TARGET> first = new AtomicReference<>(seed1);
-    
+        
             private final AtomicReference<TARGET> second = new AtomicReference<>(seed2);
-    
+        
             private volatile AtomicBoolean isInOrder = null;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super TARGET> action) {
                 if (isInOrder == null) {

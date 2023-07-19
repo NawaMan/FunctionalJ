@@ -91,13 +91,13 @@ public interface DoubleStreamPlusWithLimit {
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean isStillSkipping = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 double prevValue = Double.NaN;
-    
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     DoubleConsumer action = elem -> {
@@ -166,13 +166,13 @@ public interface DoubleStreamPlusWithLimit {
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean isStillSkipping = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 double prevValue = Integer.MIN_VALUE;
-    
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     DoubleConsumer action = elem -> {
@@ -214,9 +214,9 @@ public interface DoubleStreamPlusWithLimit {
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -256,13 +256,13 @@ public interface DoubleStreamPlusWithLimit {
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 double prevValue = Double.NaN;
-    
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -299,9 +299,9 @@ public interface DoubleStreamPlusWithLimit {
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -341,13 +341,13 @@ public interface DoubleStreamPlusWithLimit {
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 double prevValue = -1;
-    
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -384,9 +384,9 @@ public interface DoubleStreamPlusWithLimit {
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -425,13 +425,13 @@ public interface DoubleStreamPlusWithLimit {
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 double prevValue = -1;
-    
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {

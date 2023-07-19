@@ -45,13 +45,13 @@ import lombok.val;
 public interface IntTuple2Lens<HOST, T2, T2LENS extends AnyLens<HOST, T2>> extends ObjectLens<HOST, IntTuple2<T2>>, IntTuple2Access<HOST, T2, T2LENS> {
     
     public static class Impl<HOST, T2, T2LENS extends AnyLens<HOST, T2>> extends ObjectLensImpl<HOST, IntTuple2<T2>> implements IntTuple2Lens<HOST, T2, T2LENS> {
-    
+        
         private LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS> lensSpecParameterized;
-    
+        
         public Impl(String name, LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS> lensSpecParameterized) {
             super(name, lensSpecParameterized.getSpec());
         }
-    
+        
         @Override
         public LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS> lensSpecParameterized() {
             return lensSpecParameterized;
@@ -60,12 +60,12 @@ public interface IntTuple2Lens<HOST, T2, T2LENS extends AnyLens<HOST, T2>> exten
     
     public static <HOST, T2, T2LENS extends AnyLens<HOST, T2>> IntTuple2Lens<HOST, T2, T2LENS> of(String name, Function<HOST, IntTuple2<T2>> read, WriteLens<HOST, IntTuple2<T2>> write, BiFunction<String, LensSpec<HOST, T2>, T2LENS> valueLensCreator) {
         val spec = new LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS>() {
-    
+        
             @Override
             public LensSpec<HOST, IntTuple2<T2>> getSpec() {
                 return LensSpec.of(read, write);
             }
-    
+        
             @Override
             public T2LENS createSubLens(String subName, LensSpec<HOST, T2> subSpec) {
                 val lensName = whenBlank(joinNonNull(".", name, subName), (String) null);

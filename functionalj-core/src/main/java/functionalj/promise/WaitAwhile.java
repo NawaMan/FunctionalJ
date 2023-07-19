@@ -70,20 +70,20 @@ public abstract class WaitAwhile extends Wait {
     
     // ==  Basic sub class ==
     public static class WaitAsync extends WaitAwhile {
-    
+        
         private final long time;
-    
+        
         private final AsyncRunner asyncRunner;
-    
+        
         public WaitAsync(long time) {
             this(time, null);
         }
-    
+        
         public WaitAsync(long time, AsyncRunner asyncRunner) {
             this.time = Math.max(0, time);
             this.asyncRunner = asyncRunner;
         }
-    
+        
         @Override
         public WaitSession newSession() {
             val session = new WaitSession();

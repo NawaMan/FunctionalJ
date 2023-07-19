@@ -75,17 +75,17 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     
     public default <T3> Tuple3<T1, T2, T3> with(T3 new3) {
         return new Tuple3<T1, T2, T3>() {
-    
+        
             @Override
             public T1 _1() {
                 return Tuple2.this._1();
             }
-    
+        
             @Override
             public T2 _2() {
                 return Tuple2.this._2();
             }
-    
+        
             @Override
             public T3 _3() {
                 return new3;
@@ -95,12 +95,12 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     
     public default Tuple2<T1, T2> with1(T1 new1) {
         return new Tuple2<T1, T2>() {
-    
+        
             @Override
             public T1 _1() {
                 return new1;
             }
-    
+        
             @Override
             public T2 _2() {
                 return Tuple2.this._2();
@@ -110,12 +110,12 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     
     public default Tuple2<T1, T2> with1(Supplier<T1> supplier1) {
         return new Tuple2<T1, T2>() {
-    
+        
             @Override
             public T1 _1() {
                 return supplier1.get();
             }
-    
+        
             @Override
             public T2 _2() {
                 return Tuple2.this._2();
@@ -125,12 +125,12 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     
     public default Tuple2<T1, T2> with1(Func1<T1, T1> function1) {
         return new Tuple2<T1, T2>() {
-    
+        
             @Override
             public T1 _1() {
                 return function1.apply(Tuple2.this._1());
             }
-    
+        
             @Override
             public T2 _2() {
                 return Tuple2.this._2();
@@ -140,12 +140,12 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     
     public default Tuple2<T1, T2> with2(T2 new2) {
         return new Tuple2<T1, T2>() {
-    
+        
             @Override
             public T1 _1() {
                 return Tuple2.this._1();
             }
-    
+        
             @Override
             public T2 _2() {
                 return new2;
@@ -155,12 +155,12 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     
     public default Tuple2<T1, T2> with2(Supplier<T2> supplier2) {
         return new Tuple2<T1, T2>() {
-    
+        
             @Override
             public T1 _1() {
                 return Tuple2.this._1();
             }
-    
+        
             @Override
             public T2 _2() {
                 return supplier2.get();
@@ -170,12 +170,12 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     
     public default Tuple2<T1, T2> with2(Func1<T2, T2> function2) {
         return new Tuple2<T1, T2>() {
-    
+        
             @Override
             public T1 _1() {
                 return Tuple2.this._1();
             }
-    
+        
             @Override
             public T2 _2() {
                 return function2.apply(Tuple2.this._2());

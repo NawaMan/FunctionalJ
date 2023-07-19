@@ -43,14 +43,14 @@ import lombok.val;
 public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> extends ObjectLens<HOST, List<TYPE>>, ListAccess<HOST, TYPE, TYPELENS> {
     
     public static class Impl<H, T, SL extends AnyLens<H, T>> extends ObjectLens.Impl<H, List<T>> implements ListLens<H, T, SL> {
-    
+        
         private LensSpecParameterized<H, List<T>, T, SL> spec;
-    
+        
         public Impl(String name, LensSpecParameterized<H, List<T>, T, SL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;
         }
-    
+        
         @Override
         public LensSpecParameterized<H, List<T>, T, SL> lensSpecParameterized() {
             return spec;

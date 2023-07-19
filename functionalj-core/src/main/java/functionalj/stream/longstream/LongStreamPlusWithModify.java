@@ -69,11 +69,11 @@ public interface LongStreamPlusWithModify {
     public default LongStreamPlus accumulate(LongBinaryOperator accumulator) {
         val splitr = longStreamPlus().spliterator();
         val spliterator = new Spliterators.AbstractLongSpliterator(splitr.estimateSize(), 0) {
-    
+        
             long acc = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(LongConsumer consumer) {
                 LongConsumer action = elem -> {

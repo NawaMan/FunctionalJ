@@ -32,10 +32,10 @@ public interface InputReferenceType extends InputType {
     }
     
     public static class Impl extends InputType.Impl implements InputReferenceType {
-    
+        
         @SuppressWarnings("unused")
         private final ReferenceType referenceType;
-    
+        
         public Impl(Environment environment, ReferenceType referenceType) {
             super(environment, referenceType);
             this.referenceType = referenceType;

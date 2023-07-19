@@ -37,19 +37,19 @@ public interface InputDeclaredType extends InputReferenceType {
     }
     
     public static class Impl extends InputReferenceType.Impl implements InputDeclaredType {
-    
+        
         private final DeclaredType declaredType;
-    
+        
         Impl(Environment environment, DeclaredType declaredType) {
             super(environment, declaredType);
             this.declaredType = declaredType;
         }
-    
+        
         @Override
         public InputTypeElement asTypeElement() {
             return environment.element((TypeElement) declaredType.asElement());
         }
-    
+        
         @Override
         public List<InputTypeArgument> typeArguments() {
             return declaredType.getTypeArguments().stream().map(element -> InputTypeArgument.of(environment, element)).collect(toList());
@@ -57,83 +57,83 @@ public interface InputDeclaredType extends InputReferenceType {
     }
     
     public static class Mock extends InputType.Mock implements InputDeclaredType {
-    
+        
         private final TypeKind kind;
-    
+        
         private final String toString;
-    
+        
         private final InputTypeElement asTypeElement;
-    
+        
         private final List<InputTypeArgument> typeArguments;
-    
+        
         Mock(TypeKind kind, String toString, InputTypeElement asTypeElement, List<InputTypeArgument> typeArguments) {
             this.kind = kind;
             this.toString = toString;
             this.asTypeElement = asTypeElement;
             this.typeArguments = typeArguments;
         }
-    
+        
         @Override
         public boolean isNoType() {
             return false;
         }
-    
+        
         @Override
         public TypeKind typeKind() {
             return kind;
         }
-    
+        
         @Override
         public String getToString() {
             return toString;
             // return "Q_DECLARED";
         }
-    
+        
         @Override
         public InputTypeElement asTypeElement() {
             return asTypeElement;
         }
-    
+        
         @Override
         public List<InputTypeArgument> typeArguments() {
             return typeArguments;
         }
-    
+        
         // == Builder ==
         public static class Builder {
-    
+        
             protected TypeKind kind;
-    
+        
             protected String toString;
-    
+        
             protected InputTypeElement asTypeElement;
-    
+        
             protected List<InputTypeArgument> typeArguments;
-    
+        
             public Builder kind(TypeKind kind) {
                 this.kind = kind;
                 return this;
             }
-    
+        
             public Builder toString(String toString) {
                 this.toString = toString;
                 return this;
             }
-    
+        
             public Builder asTypeElement(InputTypeElement asTypeElement) {
                 this.asTypeElement = asTypeElement;
                 return this;
             }
-    
+        
             public Builder typeArguments(InputTypeArgument... typeArguments) {
                 return typeArguments(Arrays.asList(typeArguments));
             }
-    
+        
             public Builder typeArguments(List<InputTypeArgument> typeArguments) {
                 this.typeArguments = typeArguments;
                 return this;
             }
-    
+        
             public InputDeclaredType.Mock build() {
                 return new InputDeclaredType.Mock(TypeKind.DECLARED, toString, asTypeElement, typeArguments);
             }

@@ -69,11 +69,11 @@ public interface DoubleStreamPlusWithModify {
     public default DoubleStreamPlus accumulate(DoubleDoubleToDoubleFunctionPrimitive accumulator) {
         val splitr = doubleStreamPlus().spliterator();
         val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-    
+        
             double acc = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 DoubleConsumer action = elem -> {

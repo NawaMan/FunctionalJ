@@ -73,13 +73,13 @@ public abstract class DoubleAggregationToInt extends DoubleAggregation<Integer> 
     
     // == Implementation ==
     public static class Impl extends DoubleAggregationToInt {
-    
+        
         private final DoubleCollectorToIntPlus<?> collector;
-    
+        
         public Impl(DoubleCollectorToIntPlus<?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public DoubleCollectorToIntPlus<?> doubleCollectorToIntPlus() {
             return collector;

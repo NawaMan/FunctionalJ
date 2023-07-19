@@ -63,7 +63,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      */
     public static <OUTPUT> Catch<OUTPUT, Result<OUTPUT>, RuntimeException> toResult() {
         return new Catch<OUTPUT, Result<OUTPUT>, RuntimeException>() {
-    
+        
             public Result<OUTPUT> doCatch(OUTPUT data, Exception exception) {
                 if (exception != null)
                     return Result.ofException(exception);
@@ -80,7 +80,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      */
     public static <OUTPUT> Catch<OUTPUT, Optional<OUTPUT>, RuntimeException> toOptional() {
         return new Catch<OUTPUT, Optional<OUTPUT>, RuntimeException>() {
-    
+        
             public Optional<OUTPUT> doCatch(OUTPUT data, Exception exception) {
                 if (exception != null)
                     return Optional.empty();
@@ -97,7 +97,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      */
     public static <OUTPUT> Catch<OUTPUT, Nullable<OUTPUT>, RuntimeException> toNullable() {
         return new Catch<OUTPUT, Nullable<OUTPUT>, RuntimeException>() {
-    
+        
             public Nullable<OUTPUT> doCatch(OUTPUT data, Exception exception) {
                 if (exception != null)
                     return Nullable.empty();
@@ -115,7 +115,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      */
     public static <OUTPUT> Catch<OUTPUT, OUTPUT, RuntimeException> thenReturn(OUTPUT elseValue) {
         return new Catch<OUTPUT, OUTPUT, RuntimeException>() {
-    
+        
             public OUTPUT doCatch(OUTPUT data, Exception exception) {
                 if (exception != null)
                     return elseValue;
@@ -135,7 +135,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      */
     public static <OUTPUT> Catch<OUTPUT, OUTPUT, RuntimeException> thenGet(Supplier<OUTPUT> elseSupplier) {
         return new Catch<OUTPUT, OUTPUT, RuntimeException>() {
-    
+        
             public OUTPUT doCatch(OUTPUT data, Exception exception) {
                 if (exception != null)
                     return elseSupplier.get();
@@ -154,7 +154,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      */
     public static <OUTPUT> Catch<OUTPUT, OUTPUT, Exception> thenThrow() {
         return new Catch<OUTPUT, OUTPUT, Exception>() {
-    
+        
             public OUTPUT doCatch(OUTPUT data, Exception exception) throws Exception {
                 if (exception != null)
                     throw exception;
@@ -172,7 +172,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      */
     public static <OUTPUT> Catch<OUTPUT, OUTPUT, RuntimeException> thenThrowRuntimeException() {
         return new Catch<OUTPUT, OUTPUT, RuntimeException>() {
-    
+        
             public OUTPUT doCatch(OUTPUT data, Exception exception) {
                 if (exception instanceof RuntimeException)
                     throw (RuntimeException) exception;

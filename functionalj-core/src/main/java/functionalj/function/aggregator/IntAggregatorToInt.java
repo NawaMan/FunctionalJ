@@ -33,19 +33,19 @@ public interface IntAggregatorToInt extends IntegerToIntegerAccessPrimitive, Int
     
     // == Implementation ==
     public static class Impl implements IntAggregatorToInt {
-    
+        
         private final IntCollectedToInt<?> collected;
-    
+        
         public Impl(IntCollectorToIntPlus<?> collector) {
             this.collected = IntCollectedToInt.of(collector);
         }
-    
+        
         @Override
         public int applyIntToInt(int input) {
             collected.accumulate(input);
             return collected.finish();
         }
-    
+        
         public IntCollectedToInt<?> asCollected() {
             return collected;
         }

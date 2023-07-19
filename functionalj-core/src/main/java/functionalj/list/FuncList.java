@@ -86,17 +86,17 @@ import nullablej.nullable.Nullable;
 public interface FuncList<DATA> extends ReadOnlyList<DATA>, Predicate<DATA>, AsFuncList<DATA>, FuncListWithCombine<DATA>, FuncListWithFillNull<DATA>, FuncListWithFilter<DATA>, FuncListWithFlatMap<DATA>, FuncListWithLimit<DATA>, FuncListWithMap<DATA>, FuncListWithMapFirst<DATA>, FuncListWithMapGroup<DATA>, FuncListWithMapMulti<DATA>, FuncListWithMapThen<DATA>, FuncListWithMapToMap<DATA>, FuncListWithMapToTuple<DATA>, FuncListWithMapWithIndex<DATA>, FuncListWithModify<DATA>, FuncListWithPeek<DATA>, FuncListWithPipe<DATA>, FuncListWithSegment<DATA>, FuncListWithSort<DATA>, FuncListWithSplit<DATA> {
     
     public enum Mode {
-    
+        
         lazy, eager, cache;
-    
+        
         public boolean isLazy() {
             return this == lazy;
         }
-    
+        
         public boolean isEager() {
             return this == eager;
         }
-    
+        
         public boolean isCache() {
             return this == cache;
         }

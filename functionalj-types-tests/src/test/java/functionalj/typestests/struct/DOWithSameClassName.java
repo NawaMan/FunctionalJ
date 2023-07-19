@@ -32,7 +32,7 @@ public class DOWithSameClassName {
     
     @Struct
     public static interface DOSameName {
-    
+        
         public String name();
     }
     

@@ -56,7 +56,7 @@ public interface LongStreamPlusWithSegment {
         val splitr = longStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<LongFuncList>(splitr.estimateSize(), 0) {
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super LongFuncList> consumer) {
                 val eachListBuilder = LongFuncList.newBuilder();
@@ -88,9 +88,9 @@ public interface LongStreamPlusWithSegment {
         val splitr = longStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<LongFuncList>(splitr.estimateSize(), 0) {
-    
+        
             int count = -1;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super LongFuncList> consumer) {
                 val eachListBuilder = LongFuncList.newBuilder();
@@ -125,11 +125,11 @@ public interface LongStreamPlusWithSegment {
         val splitr = longStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<LongFuncList>(splitr.estimateSize(), 0) {
-    
+        
             LongFuncListBuilder eachListBuilder = LongFuncList.newBuilder();
-    
+        
             boolean hasNewList = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super LongFuncList> consumer) {
                 boolean hasThis;
@@ -171,11 +171,11 @@ public interface LongStreamPlusWithSegment {
         val splitr = longStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<LongFuncList>(splitr.estimateSize(), 0) {
-    
+        
             LongFuncListBuilder eachListBuilder = LongFuncList.newBuilder();
-    
+        
             boolean hasNewList = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super LongFuncList> consumer) {
                 boolean hasThis;
@@ -254,11 +254,11 @@ public interface LongStreamPlusWithSegment {
         val splitr = longStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<LongFuncList>(splitr.estimateSize(), 0) {
-    
+        
             LongFuncListBuilder eachListBuilder = null;
-    
+        
             boolean hasNewList = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super LongFuncList> consumer) {
                 boolean hasThis;

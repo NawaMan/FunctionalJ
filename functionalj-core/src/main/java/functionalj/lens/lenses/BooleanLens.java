@@ -32,7 +32,7 @@ import lombok.val;
 public interface BooleanLens<HOST> extends BooleanAccess<HOST>, AnyLens<HOST, Boolean>, Predicate<HOST> {
     
     public static class Impl<H> extends AnyLens.Impl<H, Boolean> implements Named, BooleanLens<H> {
-    
+        
         public Impl(String name, LensSpec<H, Boolean> spec) {
             super(name, spec);
         }

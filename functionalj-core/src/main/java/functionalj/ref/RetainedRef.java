@@ -78,40 +78,40 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
     
     // == Aux Class ==
     public static class Builder<DATA> {
-    
+        
         private final Ref<DATA> sourceRef;
-    
+        
         private final boolean isLocal;
-    
+        
         public Builder(Ref<DATA> sourceRef, boolean isLocal) {
             this.sourceRef = requireNonNull(sourceRef);
             this.isLocal = isLocal;
         }
-    
+        
         public Builder<DATA> globally() {
             if (!isLocal)
                 return this;
             return new Builder<>(sourceRef, false);
         }
-    
+        
         public Builder<DATA> locally() {
             if (isLocal)
                 return this;
             return new Builder<>(sourceRef, true);
         }
-    
+        
         public RetainedRef<DATA> forever() {
             return new RetainedRef<DATA>(sourceRef, RetainChecker.forever, isLocal);
         }
-    
+        
         public RetainedRef<DATA> never() {
             return new RetainedRef<DATA>(sourceRef, RetainChecker.never, isLocal);
         }
-    
+        
         public <STATE> WhileBuilder<STATE, DATA> when(Ref<STATE> stateSupplier) {
             return new WhileBuilder<>(sourceRef, stateSupplier, isLocal);
         }
-    
+        
         public <STATE> RetainedRef<DATA> when(Ref<STATE> stateSupplier, BiPredicate<STATE, STATE> whenStateChange) {
             val updateOnChange = new RetainChecker.UpdateOnChanged<STATE>();
             val valueSupplier = stateSupplier.valueSupplier();
@@ -119,11 +119,11 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
             val ref = new RetainedRef<>(sourceRef, checker, isLocal);
             return ref;
         }
-    
+        
         public ForPeriodBuilder<DATA> withIn(long period) {
             return new ForPeriodBuilder<DATA>(sourceRef, period, isLocal);
         }
-    
+        
         public Builder<DATA> localThread() {
             // TODO Auto-generated method stub
             return this;
@@ -131,19 +131,19 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
     }
     
     public static class WhileBuilder<STATE, DATA> {
-    
+        
         private final Ref<DATA> sourceRef;
-    
+        
         private final Ref<STATE> stateSupplier;
-    
+        
         private final boolean isLocal;
-    
+        
         public WhileBuilder(Ref<DATA> sourceRef, Ref<STATE> stateSupplier, boolean isLocal) {
             this.sourceRef = requireNonNull(sourceRef);
             this.stateSupplier = requireNonNull(stateSupplier);
             this.isLocal = isLocal;
         }
-    
+        
         public RetainedRef<DATA> same() {
             val whenStateChange = new RetainChecker.WhenNotSame<STATE>();
             val updateOnChange = new RetainChecker.UpdateOnChanged<STATE>();
@@ -152,7 +152,7 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
             val ref = new RetainedRef<>(sourceRef, checker, isLocal);
             return ref;
         }
-    
+        
         public RetainedRef<DATA> equals() {
             val whenStateChange = new RetainChecker.WhenNotEqual<STATE>();
             val updateOnChange = new RetainChecker.UpdateOnChanged<STATE>();
@@ -161,7 +161,7 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
             val ref = new RetainedRef<>(sourceRef, checker, isLocal);
             return ref;
         }
-    
+        
         public RetainedRef<DATA> match(Predicate<STATE> matcher) {
             val whenStateChange = (BiPredicate<STATE, STATE>) ((STATE oldState, STATE newState) -> !matcher.test(newState));
             val updateOnChange = new RetainChecker.UpdateOnChanged<STATE>();
@@ -173,43 +173,43 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
     }
     
     public static class ForPeriodBuilder<DATA> {
-    
+        
         private final Ref<DATA> sourceRef;
-    
+        
         private final long period;
-    
+        
         private final boolean isLocal;
-    
+        
         public ForPeriodBuilder(Ref<DATA> sourceRef, long period, boolean isLocal) {
             this.sourceRef = requireNonNull(sourceRef);
             this.period = period;
             this.isLocal = isLocal;
         }
-    
+        
         public RetainedRef<DATA> milliSeconds() {
             return milliSeconds(period);
         }
-    
+        
         public RetainedRef<DATA> seconds() {
             return milliSeconds(period * 1000L);
         }
-    
+        
         public RetainedRef<DATA> minutes() {
             return milliSeconds(period * 60 * 1000L);
         }
-    
+        
         public RetainedRef<DATA> hours() {
             return milliSeconds(period * 60 * 60 * 1000L);
         }
-    
+        
         public RetainedRef<DATA> days() {
             return milliSeconds(period * 24 * 60 * 60 * 1000L);
         }
-    
+        
         public RetainedRef<DATA> weeks() {
             return milliSeconds(period * 7 * 24 * 60 * 60 * 1000L);
         }
-    
+        
         private <STATE> RetainedRef<DATA> milliSeconds(long milliSeconds) {
             val whenStateChange = (BiPredicate<Long, Long>) ((Long oldState, Long newState) -> {
                 long oldTime = (oldState == null) ? 0 : oldState.longValue();

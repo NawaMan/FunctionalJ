@@ -34,9 +34,9 @@ import lombok.val;
 public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntFuncList {
     
     public static class Size {
-    
+        
         public final int size;
-    
+        
         Size(int size) {
             if (size <= 0) {
                 throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
@@ -46,32 +46,32 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     }
     
     public static class From {
-    
+        
         public final int from;
-    
+        
         From(int from) {
             this.from = from;
         }
-    
+        
         public IntStep step(int size) {
             return new IntStep(size, from);
         }
     }
     
     public static class IntStepToStream implements IntStreamPlus {
-    
+        
         private final boolean distancePositive;
-    
+        
         private final int end;
-    
+        
         private final IntStreamPlus intStreamPlus;
-    
+        
         IntStepToStream(IntStreamPlus intStreamPlus, int end, boolean distancePositive) {
             this.distancePositive = distancePositive;
             this.end = end;
             this.intStreamPlus = intStreamPlus;
         }
-    
+        
         public IntStreamPlus inclusive() {
             if (distancePositive) {
                 return intStreamPlus.acceptUntil(i -> i > end);
@@ -79,7 +79,7 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
                 return intStreamPlus.acceptUntil(i -> i < end);
             }
         }
-    
+        
         @Override
         public IntStream intStream() {
             if (distancePositive) {

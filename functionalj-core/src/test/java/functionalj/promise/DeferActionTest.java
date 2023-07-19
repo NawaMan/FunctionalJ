@@ -379,21 +379,21 @@ public class DeferActionTest {
     }
     
     static class LoggedCreator extends DeferActionCreator {
-    
+        
         private final List<String> logs = Collections.synchronizedList(new ArrayList<String>());
-    
+        
         private final AtomicInteger deferActionCount = new AtomicInteger(0);
-    
+        
         private final AsyncRunner runner;
-    
+        
         public LoggedCreator() {
             this(null);
         }
-    
+        
         public LoggedCreator(AsyncRunner runner) {
             this.runner = runner;
         }
-    
+        
         @Override
         public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, boolean interruptOnCancel, AsyncRunner runner) {
             val id = deferActionCount.getAndIncrement();
@@ -412,7 +412,7 @@ public class DeferActionTest {
             val theRunner = (this.runner != null) ? this.runner : runner;
             return DeferActionCreator.instance.create(wrappedSupplier, onStart, interruptOnCancel, theRunner);
         }
-    
+        
         public List<String> logs() {
             return FuncList.from(logs);
         }

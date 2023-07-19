@@ -63,63 +63,63 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
     
     // == Sub classes ==
     public static class FromResult<DATA> extends RefOf<DATA> {
-    
+        
         private final Result<DATA> result;
-    
+        
         FromResult(Class<DATA> dataClass, Result<DATA> result, Supplier<DATA> elseSupplier) {
             super(dataClass, elseSupplier);
             this.result = (result != null) ? result : Result.ofNull();
         }
-    
+        
         @Override
         protected final Result<DATA> findResult() {
             return result;
         }
-    
+        
         protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
             return new RefOf.FromResult<>(getDataType(), result, whenAbsent);
         }
     }
     
     public static class FromSupplier<DATA> extends RefOf<DATA> {
-    
+        
         @SuppressWarnings("rawtypes")
         private static final Func0 notExist = () -> Result.ofNotExist();
-    
+        
         private final Func0<DATA> supplier;
-    
+        
         @SuppressWarnings("unchecked")
         FromSupplier(Class<DATA> dataClass, Func0<DATA> supplier, Supplier<DATA> elseSupplier) {
             super(dataClass, elseSupplier);
             this.supplier = (supplier != null) ? supplier : notExist;
         }
-    
+        
         @Override
         protected final Result<DATA> findResult() {
             val result = Result.of(supplier);
             return result;
         }
-    
+        
         protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
             return new RefOf.FromSupplier<>(getDataType(), supplier, whenAbsent);
         }
     }
     
     public static class FromRef<DATA> extends RefOf<DATA> {
-    
+        
         private final Ref<DATA> anotherRef;
-    
+        
         FromRef(Class<DATA> dataClass, Ref<DATA> anotherRef, Supplier<DATA> elseSupplier) {
             super(dataClass, elseSupplier);
             this.anotherRef = anotherRef;
         }
-    
+        
         @Override
         protected final Result<DATA> findResult() {
             val result = Result.of(anotherRef.valueSupplier()).whenAbsentGet(whenAbsentSupplier);
             return result;
         }
-    
+        
         protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
             return new RefOf.FromRef<>(getDataType(), anotherRef, whenAbsent);
         }

@@ -84,13 +84,13 @@ public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
     
     // == Implementation ==
     public static class Impl extends IntAggregationToBoolean {
-    
+        
         private final IntCollectorToBooleanPlus<?> collector;
-    
+        
         public Impl(IntCollectorToBooleanPlus<?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public IntCollectorToBooleanPlus<?> intCollectorToBooleanPlus() {
             return collector;

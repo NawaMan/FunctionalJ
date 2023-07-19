@@ -79,12 +79,12 @@ public class ArrayBackedLongIteratorPlus implements LongIteratorPlus, PrimitiveI
     
     private PrimitiveIterator.OfLong createIterator(long[] array) {
         return new PrimitiveIterator.OfLong() {
-    
+        
             @Override
             public boolean hasNext() {
                 return current.incrementAndGet() < ArrayBackedLongIteratorPlus.this.end;
             }
-    
+        
             @Override
             public long nextLong() {
                 val index = current.get();
@@ -123,7 +123,7 @@ public class ArrayBackedLongIteratorPlus implements LongIteratorPlus, PrimitiveI
                 } else {
                     val thisCloseHandler = this.closeHandler;
                     this.closeHandler = new Runnable() {
-    
+        
                         @Override
                         public void run() {
                             thisCloseHandler.run();

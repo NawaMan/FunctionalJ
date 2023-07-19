@@ -211,17 +211,17 @@ public interface IntStreamPlusWithCombine {
         val iteratorA = this.intStreamPlus().iterator();
         val iteratorB = IntStreamPlus.from(anotherStream).iterator();
         val iterator = new PrimitiveIterator.OfInt() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-    
+        
             public int nextInt() {
                 val nextA = hasNextA ? iteratorA.nextInt() : Integer.MIN_VALUE;
                 val nextB = hasNextB ? iteratorB.nextInt() : Integer.MIN_VALUE;
@@ -239,7 +239,7 @@ public interface IntStreamPlusWithCombine {
             }
         };
         val iterable = new IntIterable() {
-    
+        
             @Override
             public IntIteratorPlus iterator() {
                 return IntIteratorPlus.from(iterator);

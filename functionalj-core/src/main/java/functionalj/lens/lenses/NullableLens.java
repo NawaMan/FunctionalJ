@@ -36,18 +36,18 @@ import nullablej.nullable.Nullable;
 public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> extends ObjectLens<HOST, Nullable<TYPE>>, NullableAccess<HOST, TYPE, SUBLENS> {
     
     public static class Impl<H, T, SL extends AnyLens<H, T>> extends ObjectLens.Impl<H, Nullable<T>> implements NullableLens<H, T, SL> {
-    
+        
         private LensSpecParameterized<H, Nullable<T>, T, SL> spec;
-    
+        
         public final SL value() {
             return get();
         }
-    
+        
         public Impl(String name, LensSpecParameterized<H, Nullable<T>, T, SL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;
         }
-    
+        
         @Override
         public LensSpecParameterized<H, Nullable<T>, T, SL> lensSpecWithSub() {
             return spec;

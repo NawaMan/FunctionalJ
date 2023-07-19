@@ -319,13 +319,13 @@ public interface DoubleStreamPlus extends DoubleStream, AsDoubleStreamPlus, Doub
      */
     public static DoubleStreamPlus iterate(double seed1, double seed2, DoubleBinaryOperator compounder) {
         return DoubleStreamPlus.from(StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(Long.MAX_VALUE, 0) {
-    
+        
             private final double[] first = new double[] { seed1 };
-    
+        
             private final double[] second = new double[] { seed2 };
-    
+        
             private volatile AtomicBoolean isInOrder = null;
-    
+        
             @Override
             public boolean tryAdvance(DoubleConsumer action) {
                 if (isInOrder == null) {

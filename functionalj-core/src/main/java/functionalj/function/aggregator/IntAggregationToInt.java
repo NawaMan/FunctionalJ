@@ -84,13 +84,13 @@ public abstract class IntAggregationToInt extends IntAggregation<Integer> {
     
     // == Implementation ==
     public static class Impl extends IntAggregationToInt {
-    
+        
         private final IntCollectorToIntPlus<?> collector;
-    
+        
         public Impl(IntCollectorToIntPlus<?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public IntCollectorToIntPlus<?> intCollectorToIntPlus() {
             return collector;

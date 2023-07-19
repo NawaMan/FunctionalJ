@@ -36,12 +36,12 @@ public interface StreamPlusAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST,
     
     public static <H, T, A extends AnyAccess<H, T>> StreamPlusAccess<H, T, A> of(Function<H, StreamPlus<T>> read, Function<Function<H, T>, A> createAccess) {
         val accessParameterized = new AccessParameterized<H, StreamPlus<T>, T, A>() {
-    
+        
             @Override
             public StreamPlus<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
             }
-    
+        
             @Override
             public A createSubAccessFromHost(Function<H, T> accessToParameter) {
                 return createAccess.apply(accessToParameter);
@@ -65,13 +65,13 @@ public interface StreamPlusAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST,
     public default ListAccess<HOST, TYPE, TYPEACCESS> toList() {
         val spec = accessParameterized();
         val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, TYPEACCESS>() {
-    
+        
             @Override
             public List<TYPE> applyUnsafe(HOST host) throws Exception {
                 val streamPlus = spec.apply(host);
                 return streamPlus.toList();
             }
-    
+        
             @Override
             public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return spec.createSubAccessFromHost(accessToParameter);
@@ -83,13 +83,13 @@ public interface StreamPlusAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST,
     public default FuncListAccess<HOST, TYPE, TYPEACCESS> toFuncList() {
         val spec = accessParameterized();
         val specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS>() {
-    
+        
             @Override
             public FuncList<TYPE> applyUnsafe(HOST host) throws Exception {
                 val streamPlus = spec.apply(host);
                 return streamPlus.toList();
             }
-    
+        
             @Override
             public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return spec.createSubAccessFromHost(accessToParameter);

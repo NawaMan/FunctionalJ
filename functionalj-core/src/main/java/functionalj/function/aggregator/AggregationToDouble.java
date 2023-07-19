@@ -72,13 +72,13 @@ public abstract class AggregationToDouble<SOURCE> extends Aggregation<SOURCE, Do
     
     // == Implementation ==
     public static class Impl<SRC> extends AggregationToDouble<SRC> {
-    
+        
         private final CollectorToDoublePlus<SRC, ?> collector;
-    
+        
         public Impl(CollectorToDoublePlus<SRC, ?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public CollectorToDoublePlus<SRC, ?> collectorToDoublePlus() {
             return collector;

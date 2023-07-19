@@ -313,13 +313,13 @@ public interface IntStreamPlus extends IntStream, AsIntStreamPlus, IntStreamPlus
      */
     public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator compounder) {
         return IntStreamPlus.from(StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(Long.MAX_VALUE, 0) {
-    
+        
             private final AtomicInteger first = new AtomicInteger(seed1);
-    
+        
             private final AtomicInteger second = new AtomicInteger(seed2);
-    
+        
             private volatile AtomicBoolean isInOrder = null;
-    
+        
             @Override
             public boolean tryAdvance(IntConsumer action) {
                 if (isInOrder == null) {

@@ -668,44 +668,44 @@ public class StreamPlusTest {
     
     // -- StreamPlusWithCalculate --
     static class SumLength extends Aggregation<String, Integer> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { 0 };
             }
-    
+        
             @Override
             public BiConsumer<int[], String> accumulator() {
                 return (a, s) -> {
                     a[0] += s.length();
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { a1[0] + a1[1] };
             }
-    
+        
             @Override
             public ToIntFunction<int[]> finisherToInt() {
                 return a -> a[0];
             }
-    
+        
             @Override
             public Collector<String, int[], Integer> collector() {
                 return this;
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public CollectorPlus<String, ?, Integer> collectorPlus() {
             return collectorPlus;
@@ -713,16 +713,16 @@ public class StreamPlusTest {
     }
     
     static class AvgLength extends Aggregation<String, Integer> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { 0, 0 };
             }
-    
+        
             @Override
             public BiConsumer<int[], String> accumulator() {
                 return (a, s) -> {
@@ -730,33 +730,33 @@ public class StreamPlusTest {
                     a[1]++;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] };
             }
-    
+        
             @Override
             public Function<int[], Integer> finisher() {
                 return a -> a[0] / a[1];
             }
-    
+        
             @Override
             public ToIntFunction<int[]> finisherToInt() {
                 return a -> a[0] / a[1];
             }
-    
+        
             @Override
             public Collector<String, int[], Integer> collector() {
                 return this;
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public CollectorToIntPlus<String, ?> collectorPlus() {
             return collectorPlus;
@@ -764,49 +764,49 @@ public class StreamPlusTest {
     }
     
     static class MinLength extends Aggregation<String, Integer> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { Integer.MAX_VALUE };
             }
-    
+        
             @Override
             public BiConsumer<int[], String> accumulator() {
                 return (a, s) -> {
                     a[0] = Math.min(a[0], s.length());
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { Math.min(a1[0], a2[0]) };
             }
-    
+        
             @Override
             public Function<int[], Integer> finisher() {
                 return a -> a[0];
             }
-    
+        
             @Override
             public ToIntFunction<int[]> finisherToInt() {
                 return a -> a[0];
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
-    
+        
             @Override
             public Collector<String, int[], Integer> collector() {
                 return this;
             }
         };
-    
+        
         @Override
         public CollectorToIntPlus<String, ?> collectorPlus() {
             return collectorPlus;
@@ -814,49 +814,49 @@ public class StreamPlusTest {
     }
     
     static class MaxLength extends Aggregation<String, Integer> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private CollectorToIntPlus<String, int[]> collectorPlus = new CollectorToIntPlus<String, int[]>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { Integer.MIN_VALUE };
             }
-    
+        
             @Override
             public BiConsumer<int[], String> accumulator() {
                 return (a, s) -> {
                     a[0] = Math.max(a[0], s.length());
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { Math.max(a1[0], a2[0]) };
             }
-    
+        
             @Override
             public Function<int[], Integer> finisher() {
                 return a -> a[0];
             }
-    
+        
             @Override
             public ToIntFunction<int[]> finisherToInt() {
                 return a -> a[0];
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
-    
+        
             @Override
             public Collector<String, int[], Integer> collector() {
                 return this;
             }
         };
-    
+        
         @Override
         public CollectorToIntPlus<String, ?> collectorPlus() {
             return collectorPlus;

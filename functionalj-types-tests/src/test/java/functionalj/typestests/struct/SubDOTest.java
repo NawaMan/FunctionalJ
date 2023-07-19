@@ -32,15 +32,15 @@ public class SubDOTest {
     
     @Struct(name = "Child")
     public static interface IChild {
-    
+        
         String name();
     }
     
     @Struct(name = "Parent")
     public static interface IParent {
-    
+        
         String name();
-    
+        
         Child child();
     }
     

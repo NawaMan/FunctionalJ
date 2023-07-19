@@ -65,7 +65,7 @@ public class PromiseWaitTest {
     @Test
     public void testWaitAWhile_differentRunners_complete() throws InterruptedException {
         val runners = FuncList.of(Tuple.of("asyncRunnerOnNewThread", AsyncRunner.onNewThread), Tuple.of("asyncRunnerThreadFactory", AsyncRunner.threadFactory), Tuple.of("asyncRunnerCompleteableFuture", AsyncRunner.completeableFuture), Tuple.of("asyncRunnerExecutorService", AsyncRunner.executorService(Executors.newSingleThreadExecutor())), Tuple.of("asyncRunnerThreadFactory()", AsyncRunner.threadFactory(new ThreadFactory() {
-    
+        
             @Override
             public Thread newThread(Runnable runnable) {
                 return new Thread(runnable);
@@ -87,7 +87,7 @@ public class PromiseWaitTest {
     @Test
     public void testWaitAWhile_differentRunners_abort() throws InterruptedException {
         val runners = FuncList.of(Tuple.of("asyncRunnerOnNewThread", AsyncRunner.onNewThread), Tuple.of("asyncRunnerThreadFactory", AsyncRunner.threadFactory), Tuple.of("asyncRunnerCompleteableFuture", AsyncRunner.completeableFuture), Tuple.of("asyncRunnerExecutorService", AsyncRunner.executorService(Executors.newSingleThreadExecutor())), Tuple.of("asyncRunnerThreadFactory()", AsyncRunner.threadFactory(new ThreadFactory() {
-    
+        
             @Override
             public Thread newThread(Runnable runnable) {
                 return new Thread(runnable);

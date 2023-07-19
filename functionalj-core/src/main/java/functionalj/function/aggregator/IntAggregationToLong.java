@@ -73,13 +73,13 @@ public abstract class IntAggregationToLong extends IntAggregation<Long> {
     
     // == Implementation ==
     public static class Impl extends IntAggregationToLong {
-    
+        
         private final IntCollectorToLongPlus<?> collector;
-    
+        
         public Impl(IntCollectorToLongPlus<?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public IntCollectorToLongPlus<?> intCollectorToLongPlus() {
             return collector;

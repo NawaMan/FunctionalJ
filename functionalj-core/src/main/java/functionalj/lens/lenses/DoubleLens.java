@@ -32,7 +32,7 @@ import lombok.val;
 public interface DoubleLens<HOST> extends DoubleAccess<HOST>, ToDoubleFunction<HOST>, ComparableLens<HOST, Double> {
     
     public static class Impl<H> extends ComparableLens.Impl<H, Double> implements Named, DoubleLens<H> {
-    
+        
         public Impl(String name, LensSpec<H, Double> spec) {
             super(name, spec);
         }

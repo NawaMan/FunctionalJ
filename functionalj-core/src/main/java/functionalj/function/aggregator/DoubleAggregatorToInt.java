@@ -33,19 +33,19 @@ public interface DoubleAggregatorToInt extends DoubleToIntegerAccessPrimitive, D
     
     // == Implementation ==
     public static class Impl implements DoubleAggregatorToInt {
-    
+        
         private final DoubleCollectedToInt<?> collected;
-    
+        
         public Impl(DoubleCollectorToIntPlus<?> collector) {
             this.collected = DoubleCollectedToInt.of(collector);
         }
-    
+        
         @Override
         public int applyDoubleToInt(double input) {
             collected.accumulate(input);
             return collected.finish();
         }
-    
+        
         public DoubleCollectedToInt<?> asCollected() {
             return collected;
         }

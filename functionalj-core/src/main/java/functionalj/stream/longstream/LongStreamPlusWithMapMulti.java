@@ -41,9 +41,9 @@ public interface LongStreamPlusWithMapMulti extends AsLongStreamPlus {
     public default LongStreamPlus mapMulti(LongObjBiConsumer<LongConsumer> mapper) {
         val orgSpliterator = this.spliterator();
         val newSpliterator = new Spliterators.AbstractLongSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
             private volatile boolean shouldContinue = true;
-    
+        
             @Override
             public boolean tryAdvance(LongConsumer consumer) {
                 return shouldContinue && orgSpliterator.tryAdvance((LongConsumer) (elem -> {
@@ -62,9 +62,9 @@ public interface LongStreamPlusWithMapMulti extends AsLongStreamPlus {
     public default IntStreamPlus mapMultiToInt(LongObjBiConsumer<IntConsumer> mapper) {
         val orgSpliterator = this.spliterator();
         val newSpliterator = new Spliterators.AbstractIntSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
             private volatile boolean shouldContinue = true;
-    
+        
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 return shouldContinue && orgSpliterator.tryAdvance((LongConsumer) (elem -> {
@@ -87,9 +87,9 @@ public interface LongStreamPlusWithMapMulti extends AsLongStreamPlus {
     public default DoubleStreamPlus mapMultiToDouble(LongObjBiConsumer<DoubleConsumer> mapper) {
         val orgSpliterator = this.spliterator();
         val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
-    
+        
             private volatile boolean shouldContinue = true;
-    
+        
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 return shouldContinue && orgSpliterator.tryAdvance((LongConsumer) (elem -> {
@@ -108,9 +108,9 @@ public interface LongStreamPlusWithMapMulti extends AsLongStreamPlus {
     public default <T> StreamPlus<T> mapMultiToObj(LongObjBiConsumer<Consumer<? super T>> mapper) {
         val orgSpliterator = this.spliterator();
         val newSpliterator = new Spliterators.AbstractSpliterator<T>(orgSpliterator.estimateSize(), 0) {
-    
+        
             private volatile boolean shouldContinue = true;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super T> consumer) {
                 return shouldContinue && orgSpliterator.tryAdvance((LongConsumer) (elem -> {

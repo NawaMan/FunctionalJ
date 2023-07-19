@@ -211,17 +211,17 @@ public interface LongStreamPlusWithCombine {
         val iteratorA = this.longStreamPlus().iterator();
         val iteratorB = LongStreamPlus.from(anotherStream).iterator();
         val iterator = new PrimitiveIterator.OfLong() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-    
+        
             public long nextLong() {
                 val nextA = hasNextA ? iteratorA.nextLong() : Long.MIN_VALUE;
                 val nextB = hasNextB ? iteratorB.nextLong() : Long.MIN_VALUE;
@@ -239,7 +239,7 @@ public interface LongStreamPlusWithCombine {
             }
         };
         val iterable = new LongIterable() {
-    
+        
             @Override
             public LongIteratorPlus iterator() {
                 return LongIteratorPlus.from(iterator);

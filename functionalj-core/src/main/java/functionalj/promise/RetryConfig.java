@@ -22,39 +22,39 @@ public class RetryConfig<DATA> implements AnyAccess<DeferActionBuilder<DATA>, Re
     }
     
     public static class WaitConfig<DATA> implements AnyAccess<DeferActionBuilder<DATA>, WaitRetryBuilder<DATA>> {
-    
+        
         private final RetryConfig<DATA> retryConfig;
-    
+        
         WaitConfig(RetryConfig<DATA> retryConfig) {
             this.retryConfig = retryConfig;
         }
-    
+        
         @Override
         public WaitRetryBuilder<DATA> applyUnsafe(DeferActionBuilder<DATA> input) throws Exception {
             return retryConfig.apply(input).times();
         }
-    
+        
         public WaitForConfig<DATA> waitFor(long period) {
             return new WaitForConfig<DATA>(this, period);
         }
     }
     
     public static class WaitForConfig<DATA> implements AnyAccess<DeferActionBuilder<DATA>, WaitRetryBuilderUnit<DATA>> {
-    
+        
         private final WaitConfig<DATA> waitConfig;
-    
+        
         private final long period;
-    
+        
         WaitForConfig(WaitConfig<DATA> waitConfig, long period) {
             this.waitConfig = waitConfig;
             this.period = period;
         }
-    
+        
         @Override
         public WaitRetryBuilderUnit<DATA> applyUnsafe(DeferActionBuilder<DATA> input) throws Exception {
             return waitConfig.apply(input).waitFor(period);
         }
-    
+        
         public Function<DeferActionBuilder<DATA>, DeferActionBuilder<DATA>> seconds = builder -> this.apply(builder).seconds();
     }
 }

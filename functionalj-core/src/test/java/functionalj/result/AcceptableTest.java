@@ -32,7 +32,7 @@ import org.junit.Test;
 public class AcceptableTest {
     
     public static class ThreeDigitString extends Acceptable<String> {
-    
+        
         public ThreeDigitString(String value) {
             super(value, Validation.ToBoolean(str -> str.matches("^[0-9]{3}$"), "Three digit string is required."));
         }
@@ -67,7 +67,7 @@ public class AcceptableTest {
     
     // Notice the null value is passed to the checker
     public static class ThreeDigitStringOrNull extends Acceptable<String> {
-    
+        
         public ThreeDigitStringOrNull(String value) {
             super(value, Validation.ToBoolean(str -> (str != null) && str.matches("^[0-9]{3}$"), "Three digit string is required."));
         }

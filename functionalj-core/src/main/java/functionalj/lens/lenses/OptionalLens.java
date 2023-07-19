@@ -36,18 +36,18 @@ import lombok.val;
 public interface OptionalLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> extends ObjectLens<HOST, Optional<TYPE>>, OptionalAccess<HOST, TYPE, SUBLENS> {
     
     public static class Impl<H, T, SL extends AnyLens<H, T>> extends ObjectLens.Impl<H, Optional<T>> implements OptionalLens<H, T, SL> {
-    
+        
         private LensSpecParameterized<H, Optional<T>, T, SL> spec;
-    
+        
         public final SL value() {
             return get();
         }
-    
+        
         public Impl(String name, LensSpecParameterized<H, Optional<T>, T, SL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;
         }
-    
+        
         @Override
         public LensSpecParameterized<H, Optional<T>, T, SL> lensSpecWithSub() {
             return spec;

@@ -56,7 +56,7 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
             return (DoubleIteratorPlus) iterator;
         else
             return new DoubleIteratorPlus() {
-    
+        
                 @Override
                 public OfDouble asIterator() {
                     return iterator;

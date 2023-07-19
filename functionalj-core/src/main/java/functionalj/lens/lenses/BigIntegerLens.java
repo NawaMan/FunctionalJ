@@ -31,7 +31,7 @@ import functionalj.lens.core.LensSpec;
 public interface BigIntegerLens<HOST> extends BigIntegerAccess<HOST>, ComparableLens<HOST, BigInteger> {
     
     public static class Impl<H> extends ComparableLens.Impl<H, BigInteger> implements Named, BigIntegerLens<H> {
-    
+        
         public Impl(String name, LensSpec<H, BigInteger> spec) {
             super(name, spec);
         }

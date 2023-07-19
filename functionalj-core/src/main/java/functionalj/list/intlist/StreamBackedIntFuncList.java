@@ -70,7 +70,7 @@ public class StreamBackedIntFuncList implements IntFuncList {
         val indexRef = new AtomicInteger(0);
         val valueConsumer = (IntConsumer) ((int v) -> cache.add(v));
         val newSpliterator = new Spliterators.AbstractIntSpliterator(Long.MAX_VALUE, 0) {
-    
+        
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 int index = indexRef.getAndIncrement();
@@ -86,7 +86,7 @@ public class StreamBackedIntFuncList implements IntFuncList {
                     return true;
                 return hadNext;
             }
-    
+        
             private boolean fromCache(IntConsumer consumer, int index) {
                 if (index >= cache.length())
                     return false;

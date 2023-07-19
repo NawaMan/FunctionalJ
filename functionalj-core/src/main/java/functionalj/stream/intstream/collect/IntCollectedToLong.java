@@ -47,23 +47,23 @@ public interface IntCollectedToLong<ACCUMULATED> extends Collected<Integer, ACCU
     
     // == Implementation ==
     public static class Impl<ACCUMULATED> implements IntCollectedToLong<ACCUMULATED> {
-    
+        
         private final IntCollectorToLongPlus<ACCUMULATED> collector;
-    
+        
         private final ObjIntConsumer<ACCUMULATED> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(IntCollectorToLongPlus<ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.intAccumulator();
         }
-    
+        
         public void accumulate(int each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         @Override
         public long finishAsLong() {
             return collector.finisher().apply(accumulated);

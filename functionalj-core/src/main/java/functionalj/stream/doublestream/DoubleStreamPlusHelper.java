@@ -120,17 +120,17 @@ public class DoubleStreamPlusHelper {
     
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipDoubleWith(DoubleObjBiFunction<B, TARGET> merger, DoubleIteratorPlus iteratorA, IteratorPlus<B> iteratorB) {
         val targetIterator = new Iterator<TARGET>() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
-    
+        
             public TARGET next() {
                 if (!hasNextA)
                     throw new NoSuchElementException();
@@ -151,17 +151,17 @@ public class DoubleStreamPlusHelper {
     
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipDoubleWith(double defaultValue, DoubleObjBiFunction<B, TARGET> merger, DoubleIteratorPlus iteratorA, IteratorPlus<B> iteratorB) {
         val targetIterator = new Iterator<TARGET>() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return hasNextA || hasNextB;
             }
-    
+        
             public TARGET next() {
                 double nextA = hasNextA ? iteratorA.nextDouble() : defaultValue;
                 B nextB = hasNextB ? iteratorB.next() : null;
@@ -180,17 +180,17 @@ public class DoubleStreamPlusHelper {
     
     static DoubleStreamPlus doZipDoubleDoubleWith(DoubleBinaryOperator merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB) {
         val iterator = new PrimitiveIterator.OfDouble() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
-    
+        
             public double nextDouble() {
                 if (hasNextA && hasNextB) {
                     double nextA = iteratorA.nextDouble();
@@ -214,17 +214,17 @@ public class DoubleStreamPlusHelper {
     
     static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(DoubleDoubleFunction<TARGET> merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB) {
         val iterator = new Iterator<TARGET>() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
-    
+        
             public TARGET next() {
                 if (hasNextA && hasNextB) {
                     double nextA = iteratorA.nextDouble();
@@ -248,17 +248,17 @@ public class DoubleStreamPlusHelper {
     
     static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(DoubleDoubleFunction<TARGET> merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB, double defaultValue) {
         val iterator = new Iterator<TARGET>() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-    
+        
             public TARGET next() {
                 if (hasNextA && hasNextB) {
                     double nextA = iteratorA.nextDouble();
@@ -291,17 +291,17 @@ public class DoubleStreamPlusHelper {
     
     static DoubleStreamPlus doZipDoubleDoubleWith(DoubleBinaryOperator merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB, double defaultValue) {
         val iterator = new PrimitiveIterator.OfDouble() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-    
+        
             public double nextDouble() {
                 if (hasNextA && hasNextB) {
                     double nextA = iteratorA.nextDouble();
@@ -335,17 +335,17 @@ public class DoubleStreamPlusHelper {
     
     static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(DoubleDoubleFunction<TARGET> merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB, double defaultValueA, double defaultValueB) {
         val iterator = new Iterator<TARGET>() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-    
+        
             public TARGET next() {
                 if (hasNextA && hasNextB) {
                     double nextA = iteratorA.nextDouble();
@@ -379,17 +379,17 @@ public class DoubleStreamPlusHelper {
     
     static DoubleStreamPlus doZipDoubleDoubleWith(DoubleBinaryOperator merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB, double defaultValueA, double defaultValueB) {
         val iterator = new PrimitiveIterator.OfDouble() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-    
+        
             public double nextDouble() {
                 if (hasNextA && hasNextB) {
                     double nextA = iteratorA.nextDouble();
@@ -423,9 +423,9 @@ public class DoubleStreamPlusHelper {
     
     static DoubleStreamPlus doMergeInt(DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB) {
         val iterator = new DoubleIteratorPlus() {
-    
+        
             private boolean isA = true;
-    
+        
             public boolean hasNext() {
                 if (isA) {
                     if (iteratorA.hasNext())
@@ -442,13 +442,13 @@ public class DoubleStreamPlusHelper {
                     return true;
                 return false;
             }
-    
+        
             public double nextDouble() {
                 val next = isA ? iteratorA.next() : iteratorB.next();
                 isA = !isA;
                 return next;
             }
-    
+        
             @Override
             public OfDouble asIterator() {
                 return this;
@@ -467,17 +467,17 @@ public class DoubleStreamPlusHelper {
     
     static DoubleStreamPlus doChoiceWith(ZipWithOption option, DoubleBinaryOperator merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB) {
         val iterator = new PrimitiveIterator.OfDouble() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-    
+        
             public double nextDouble() {
                 if (hasNextA && hasNextB) {
                     double nextA = iteratorA.nextDouble();

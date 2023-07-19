@@ -47,23 +47,23 @@ public interface LongCollectedToBoolean<ACCUMULATED> extends Collected<Long, ACC
     
     // == Implementation ==
     public static class Impl<ACCUMULATED> implements LongCollectedToBoolean<ACCUMULATED> {
-    
+        
         private final LongCollectorToBooleanPlus<ACCUMULATED> collector;
-    
+        
         private final ObjLongConsumer<ACCUMULATED> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(LongCollectorToBooleanPlus<ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.longAccumulator();
         }
-    
+        
         public void accumulate(long each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         @Override
         public boolean finishAsBoolean() {
             return collector.finisher().apply(accumulated);

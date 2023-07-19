@@ -70,7 +70,7 @@ public class StreamBackedDoubleFuncList implements DoubleFuncList {
         val indexRef = new AtomicInteger(0);
         val valueConsumer = (DoubleConsumer) ((double v) -> cache.add(v));
         val newSpliterator = new Spliterators.AbstractDoubleSpliterator(Long.MAX_VALUE, 0) {
-    
+        
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 int index = indexRef.getAndIncrement();
@@ -86,7 +86,7 @@ public class StreamBackedDoubleFuncList implements DoubleFuncList {
                     return true;
                 return hadNext;
             }
-    
+        
             private boolean fromCache(DoubleConsumer consumer, int index) {
                 if (index >= cache.length())
                     return false;

@@ -53,7 +53,7 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 val eachListBuilder = FuncList.<DATA>newBuilder();
@@ -85,9 +85,9 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-    
+        
             int count = -1;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 val eachListBuilder = FuncList.<DATA>newBuilder();
@@ -122,11 +122,11 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-    
+        
             FuncListBuilder<DATA> eachListBuilder = FuncList.newBuilder();
-    
+        
             boolean hasNewList = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 boolean hasThis;
@@ -168,11 +168,11 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-    
+        
             FuncListBuilder<DATA> eachListBuilder = FuncList.newBuilder();
-    
+        
             boolean hasNewList = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 boolean hasThis;
@@ -254,11 +254,11 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-    
+        
             FuncListBuilder<DATA> eachListBuilder = null;
-    
+        
             boolean hasNewList = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 boolean hasThis;

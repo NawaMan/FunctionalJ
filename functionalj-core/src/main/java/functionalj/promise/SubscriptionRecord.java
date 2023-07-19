@@ -31,29 +31,29 @@ import lombok.val;
 public class SubscriptionRecord<DATA> implements HasPromise<DATA> {
     
     public static enum SubscriptionStatus {
-    
+        
         AWAITING, UNSUBSCRIBED, CANCELLED, COMPLETED;
-    
+        
         public boolean isAwaiting() {
             return AWAITING.equals(this);
         }
-    
+        
         public boolean isUnsubscribed() {
             return UNSUBSCRIBED.equals(this);
         }
-    
+        
         public boolean isCancelled() {
             return CANCELLED.equals(this);
         }
-    
+        
         public boolean isCompleted() {
             return COMPLETED.equals(this);
         }
-    
+        
         public boolean isNotDone() {
             return !isDone();
         }
-    
+        
         public boolean isDone() {
             return isCancelled() || isCompleted();
         }

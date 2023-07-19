@@ -42,23 +42,23 @@ public interface CollectedToInt<DATA, ACCUMULATED> extends Collected<DATA, ACCUM
     
     // -- Implementation --
     public static class Impl<DATA, ACCUMULATED> implements CollectedToInt<DATA, ACCUMULATED> {
-    
+        
         private final CollectorToIntPlus<DATA, ACCUMULATED> collector;
-    
+        
         private final BiConsumer<ACCUMULATED, DATA> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(CollectorToIntPlus<DATA, ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.accumulator();
         }
-    
+        
         public void accumulate(DATA each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         public int finishToInt() {
             return collector.finisherToInt().applyAsInt(accumulated);
         }

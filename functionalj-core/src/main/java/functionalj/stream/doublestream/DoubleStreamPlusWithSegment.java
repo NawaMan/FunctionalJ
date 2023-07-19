@@ -56,7 +56,7 @@ public interface DoubleStreamPlusWithSegment extends AsDoubleStreamPlus {
         val splitr = doubleStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<DoubleFuncList>(splitr.estimateSize(), 0) {
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super DoubleFuncList> consumer) {
                 val eachListBuilder = DoubleFuncList.newBuilder();
@@ -88,9 +88,9 @@ public interface DoubleStreamPlusWithSegment extends AsDoubleStreamPlus {
         val splitr = doubleStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<DoubleFuncList>(splitr.estimateSize(), 0) {
-    
+        
             int count = -1;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super DoubleFuncList> consumer) {
                 val eachListBuilder = DoubleFuncList.newBuilder();
@@ -125,11 +125,11 @@ public interface DoubleStreamPlusWithSegment extends AsDoubleStreamPlus {
         val splitr = doubleStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<DoubleFuncList>(splitr.estimateSize(), 0) {
-    
+        
             DoubleFuncListBuilder eachListBuilder = DoubleFuncList.newBuilder();
-    
+        
             boolean hasNewList = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super DoubleFuncList> consumer) {
                 boolean hasThis;
@@ -171,11 +171,11 @@ public interface DoubleStreamPlusWithSegment extends AsDoubleStreamPlus {
         val splitr = doubleStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<DoubleFuncList>(splitr.estimateSize(), 0) {
-    
+        
             DoubleFuncListBuilder eachListBuilder = DoubleFuncList.newBuilder();
-    
+        
             boolean hasNewList = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super DoubleFuncList> consumer) {
                 boolean hasThis;
@@ -254,11 +254,11 @@ public interface DoubleStreamPlusWithSegment extends AsDoubleStreamPlus {
         val splitr = doubleStreamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<DoubleFuncList>(splitr.estimateSize(), 0) {
-    
+        
             DoubleFuncListBuilder eachListBuilder = null;
-    
+        
             boolean hasNewList = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super DoubleFuncList> consumer) {
                 boolean hasThis;

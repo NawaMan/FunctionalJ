@@ -31,7 +31,7 @@ import lombok.val;
 public interface LongLens<HOST> extends LongAccess<HOST>, ComparableLens<HOST, Long> {
     
     public static class Impl<H> extends ComparableLens.Impl<H, Long> implements Named, LongLens<H> {
-    
+        
         public Impl(String name, LensSpec<H, Long> spec) {
             super(name, spec);
         }

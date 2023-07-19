@@ -68,7 +68,7 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
         val indexRef = new AtomicInteger(0);
         val valueConsumer = (Consumer<DATA>) ((DATA v) -> cache.add(v));
         val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(Long.MAX_VALUE, 0) {
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super DATA> consumer) {
                 int index = indexRef.getAndIncrement();
@@ -84,7 +84,7 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
                     return true;
                 return hadNext;
             }
-    
+        
             private boolean fromCache(Consumer<? super DATA> consumer, int index) {
                 if (index >= cache.size())
                     return false;

@@ -216,16 +216,16 @@ public abstract class Ref<DATA> {
     // == Overriability ==
     @SuppressWarnings("rawtypes")
     private static class Entry {
-    
+        
         private final Entry parent;
-    
+        
         private final Substitution substitution;
-    
+        
         Entry(Entry parent, Substitution substitution) {
             this.parent = parent;
             this.substitution = substitution;
         }
-    
+        
         @SuppressWarnings("unchecked")
         public <D> Func0<D> findSupplier(Ref<D> ref) {
             if (ref == null)
@@ -239,7 +239,7 @@ public abstract class Ref<DATA> {
                 return null;
             return parent.findSupplier(ref);
         }
-    
+        
         @Override
         public String toString() {
             return "Entry [parent=" + parent + ", substitution=" + substitution + "]";

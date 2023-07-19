@@ -66,23 +66,23 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     
     // == Implementation ==
     public static class Impl<DATA, ACCUMULATED, RESULT> implements Collected<DATA, ACCUMULATED, RESULT> {
-    
+        
         private final Collector<DATA, ACCUMULATED, RESULT> collector;
-    
+        
         private final BiConsumer<ACCUMULATED, DATA> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(Collector<DATA, ACCUMULATED, RESULT> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.accumulator();
         }
-    
+        
         public void accumulate(DATA each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         public RESULT finish() {
             return collector.finisher().apply(accumulated);
         }

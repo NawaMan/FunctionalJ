@@ -30,7 +30,7 @@ import functionalj.lens.core.LensSpec;
 public interface StringLens<HOST> extends StringAccess<HOST>, AnyLens<HOST, String> {
     
     public static class Impl<H> extends AnyLens.Impl<H, String> implements Named, StringLens<H> {
-    
+        
         public Impl(String name, LensSpec<H, String> spec) {
             super(name, spec);
         }

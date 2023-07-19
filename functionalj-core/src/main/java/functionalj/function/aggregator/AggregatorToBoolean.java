@@ -33,19 +33,19 @@ public interface AggregatorToBoolean<SOURCE> extends BooleanAccessPrimitive<SOUR
     
     // == Implementation ==
     public static class Impl<SOURCE> implements AggregatorToBoolean<SOURCE>, Aggregator<SOURCE, Boolean> {
-    
+        
         private final CollectedToBoolean<SOURCE, ?> collected;
-    
+        
         public Impl(CollectorToBooleanPlus<SOURCE, ?> collector) {
             this.collected = CollectedToBoolean.of(collector);
         }
-    
+        
         @Override
         public boolean test(SOURCE host) {
             collected.accumulate(host);
             return collected.finishToBoolean();
         }
-    
+        
         public CollectedToBoolean<SOURCE, ?> asCollected() {
             return collected;
         }

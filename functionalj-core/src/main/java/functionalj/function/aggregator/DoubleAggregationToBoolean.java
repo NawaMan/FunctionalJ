@@ -84,13 +84,13 @@ public abstract class DoubleAggregationToBoolean extends DoubleAggregation<Boole
     
     // == Implementation ==
     public static class Impl extends DoubleAggregationToBoolean {
-    
+        
         private final DoubleCollectorToBooleanPlus<?> collector;
-    
+        
         public Impl(DoubleCollectorToBooleanPlus<?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public DoubleCollectorToBooleanPlus<?> doubleCollectorToBooleanPlus() {
             return collector;

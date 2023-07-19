@@ -70,13 +70,13 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     public default CollectionAccess<HOST, COLLECTION, TYPE, SUBACCESS> filter(Predicate<TYPE> checker) {
         val spec = accessParameterized();
         val specWithSub = new AccessParameterized<HOST, COLLECTION, TYPE, SUBACCESS>() {
-    
+        
             @SuppressWarnings("unchecked")
             @Override
             public COLLECTION applyUnsafe(HOST host) throws Exception {
                 return (COLLECTION) spec.apply(host).stream().filter(checker).collect(Collectors.toList());
             }
-    
+        
             @Override
             public SUBACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return spec.createSubAccessFromHost(accessToParameter);
@@ -88,13 +88,13 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     public default ListAccess<HOST, TYPE, SUBACCESS> toList() {
         val spec = accessParameterized();
         val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, SUBACCESS>() {
-    
+        
             @Override
             public List<TYPE> applyUnsafe(HOST host) throws Exception {
                 val collection = spec.apply(host);
                 return FuncList.from(collection);
             }
-    
+        
             @Override
             public SUBACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return spec.createSubAccessFromHost(accessToParameter);

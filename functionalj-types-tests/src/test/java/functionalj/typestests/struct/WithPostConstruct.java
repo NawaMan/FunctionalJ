@@ -37,9 +37,9 @@ public class WithPostConstruct {
     
     @Struct(name = "SimpleWithPostReConstruct")
     public static interface SimpleDOWithPostReConstruct extends IPostConstruct {
-    
+        
         public String name();
-    
+        
         public default void postConstruct() {
             logs.add("Hello: " + name());
         }

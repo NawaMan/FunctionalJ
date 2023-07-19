@@ -56,7 +56,7 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong, AutoCloseabl
             return (LongIteratorPlus) iterator;
         else
             return new LongIteratorPlus() {
-    
+        
                 @Override
                 public PrimitiveIterator.OfLong asIterator() {
                     return iterator;

@@ -86,22 +86,22 @@ public abstract class Substitution<DATA> {
     
     // == Sub classes ==
     public static class Value<DATA> extends Substitution<DATA> {
-    
+        
         private final DATA value;
-    
+        
         public Value(Ref<DATA> ref, boolean isThreadLocal, DATA value) {
             super(ref, isThreadLocal);
             this.value = value;
         }
-    
+        
         Substitution<DATA> newSubstitution(Ref<DATA> ref, boolean isThreadLocal) {
             return new Substitution.Value<DATA>(ref, isThreadLocal, value);
         }
-    
+        
         public final Func0<DATA> supplier() {
             return () -> value;
         }
-    
+        
         @Override
         public String toString() {
             return "Value [value=" + value + ", ref()=" + ref() + "]";
@@ -109,22 +109,22 @@ public abstract class Substitution<DATA> {
     }
     
     public static class Supplier<DATA> extends Substitution<DATA> {
-    
+        
         private final Func0<DATA> supplier;
-    
+        
         public Supplier(Ref<DATA> ref, boolean isThreadLocal, Func0<DATA> supplier) {
             super(ref, isThreadLocal);
             this.supplier = (supplier != null) ? supplier : () -> null;
         }
-    
+        
         Substitution<DATA> newSubstitution(Ref<DATA> ref, boolean isThreadLocal) {
             return new Substitution.Supplier<DATA>(ref, isThreadLocal, supplier);
         }
-    
+        
         public final Func0<DATA> supplier() {
             return supplier;
         }
-    
+        
         @Override
         public String toString() {
             return "Supplier [ref()=" + ref() + "]";

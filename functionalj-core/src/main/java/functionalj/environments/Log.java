@@ -94,18 +94,18 @@ public final class Log {
     }
     
     public static class Instance {
-    
+        
         public static final Instance instance = new Instance();
-    
+        
         public <DATA> DATA log(DATA value) {
             Env.console().println(value);
             return value;
         }
-    
+        
         public <DATA> DATA log(Object prefix, DATA value) {
             return log(prefix, value, null);
         }
-    
+        
         public <DATA> DATA log(Object prefix, DATA value, Object suffix) {
             val prefixStr = (prefix != null) ? String.valueOf(prefix) : "";
             val suffixStr = (suffix != null) ? String.valueOf(suffix) : "";
@@ -113,37 +113,37 @@ public final class Log {
             log(line);
             return value;
         }
-    
+        
         @SuppressWarnings("unchecked")
         public <DATA> FuncList<DATA> logEach(DATA... values) {
             val funcList = FuncList.of((DATA[]) values);
             funcList.forEach(value -> this.log(value));
             return funcList;
         }
-    
+        
         public <DATA> FuncList<DATA> logEach(String prefix, Collection<DATA> values) {
             return logEach(prefix, values, null);
         }
-    
+        
         public <DATA> FuncList<DATA> logEach(String prefix, Collection<DATA> values, String suffix) {
             val list = FuncList.from(values);
             list.forEach(value -> this.log(prefix, value, suffix));
             return list;
         }
-    
+        
         public <DATA> DATA logBy(Supplier<DATA> supplier) {
             DATA value = Func.getOrElse(supplier, null);
             return log(value);
         }
-    
+        
         public <THROWABLE extends Throwable> THROWABLE logErr(THROWABLE throwable) {
             return logErr(null, throwable, null);
         }
-    
+        
         public <THROWABLE extends Throwable> THROWABLE logErr(Object prefix, THROWABLE throwable) {
             return logErr(prefix, throwable, null);
         }
-    
+        
         public <THROWABLE extends Throwable> THROWABLE logErr(Object prefix, THROWABLE throwable, Object suffix) {
             val prefixStr = (prefix != null) ? String.valueOf(prefix) + "\n" : "";
             val suffixStr = (suffix != null) ? String.valueOf(suffix) : "";

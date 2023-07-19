@@ -214,12 +214,12 @@ public class LensUtils {
     // == Parameterized ==
     public static <HOST, TYPE, SUB, SUBLENS extends AnyLens<HOST, SUB>> LensSpecParameterized<HOST, TYPE, SUB, SUBLENS> createLensSpecParameterized(String name, Function<HOST, TYPE> read, WriteLens<HOST, TYPE> write, BiFunction<String, LensSpec<HOST, SUB>, SUBLENS> subCreator) {
         return new LensSpecParameterized<HOST, TYPE, SUB, SUBLENS>() {
-    
+        
             @Override
             public LensSpec<HOST, TYPE> getSpec() {
                 return LensSpec.of(read, write);
             }
-    
+        
             @Override
             public SUBLENS createSubLens(String subName, LensSpec<HOST, SUB> subSpec) {
                 val lensName = whenBlank(joinNonNull(".", name, subName), (String) null);
@@ -309,12 +309,12 @@ public class LensUtils {
     
     public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> ListLens<HOST, TYPE, TYPELENS> createSubListLens(String name, LensSpec<HOST, List<TYPE>> spec, LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> specParameterized, Function<HOST, List<TYPE>> read) {
         val newSpec = new LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS>() {
-    
+        
             @Override
             public LensSpec<HOST, List<TYPE>> getSpec() {
                 return new LensSpec<>(read, spec.getWrite(), spec.getIsNullSafe());
             }
-    
+        
             @Override
             public TYPELENS createSubLens(String subName, LensSpec<HOST, TYPE> subSpec) {
                 val lensName = whenBlank(joinNonNull(".", name, subName), (String) null);
@@ -343,18 +343,18 @@ public class LensUtils {
     
     public static <KEYLENS extends AnyLens<HOST, KEY>, HOST, VALUELENS extends AnyLens<HOST, VALUE>, KEY, VALUE> LensSpecParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> createMapLensSpec(String name, Function<HOST, Map<KEY, VALUE>> read, WriteLens<HOST, Map<KEY, VALUE>> write, BiFunction<String, LensSpec<HOST, KEY>, KEYLENS> keyLensCreator, BiFunction<String, LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
         return new LensSpecParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS>() {
-    
+        
             @Override
             public LensSpec<HOST, Map<KEY, VALUE>> getSpec() {
                 return LensSpec.of(read, write);
             }
-    
+        
             @Override
             public KEYLENS createSubLens1(String subName, LensSpec<HOST, KEY> subSpec) {
                 val lensName = whenBlank(joinNonNull(".", name, subName), (String) null);
                 return keyLensCreator.apply(lensName, subSpec);
             }
-    
+        
             @Override
             public VALUELENS createSubLens2(String subName, LensSpec<HOST, VALUE> subSpec) {
                 val lensName = whenBlank(joinNonNull(".", name, subName), (String) null);
@@ -387,12 +387,12 @@ public class LensUtils {
     
     public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> FuncListLens<HOST, TYPE, TYPELENS> createSubFuncListLens(String name, LensSpec<HOST, FuncList<TYPE>> spec, LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> specParameterized, Function<HOST, FuncList<TYPE>> read) {
         val newSpec = new LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS>() {
-    
+        
             @Override
             public LensSpec<HOST, FuncList<TYPE>> getSpec() {
                 return new LensSpec<>(read, spec.getWrite(), spec.getIsNullSafe());
             }
-    
+        
             @Override
             public TYPELENS createSubLens(String subName, LensSpec<HOST, TYPE> subSpec) {
                 val lensName = whenBlank(joinNonNull(".", name, subName), (String) null);
@@ -409,18 +409,18 @@ public class LensUtils {
     // == FuncMap ==
     public static <KEYLENS extends AnyLens<HOST, KEY>, HOST, VALUELENS extends AnyLens<HOST, VALUE>, KEY, VALUE> LensSpecParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> createFuncMapLensSpec(String name, Function<HOST, FuncMap<KEY, VALUE>> read, WriteLens<HOST, FuncMap<KEY, VALUE>> write, BiFunction<String, LensSpec<HOST, KEY>, KEYLENS> keyLensCreator, BiFunction<String, LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
         return new LensSpecParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS>() {
-    
+        
             @Override
             public LensSpec<HOST, FuncMap<KEY, VALUE>> getSpec() {
                 return LensSpec.of(read, write);
             }
-    
+        
             @Override
             public KEYLENS createSubLens1(String subName, LensSpec<HOST, KEY> subSpec) {
                 val lensName = whenBlank(joinNonNull(".", name, subName), (String) null);
                 return keyLensCreator.apply(lensName, subSpec);
             }
-    
+        
             @Override
             public VALUELENS createSubLens2(String subName, LensSpec<HOST, VALUE> subSpec) {
                 val lensName = whenBlank(joinNonNull(".", name, subName), (String) null);

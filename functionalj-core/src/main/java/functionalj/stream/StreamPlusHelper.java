@@ -87,17 +87,17 @@ public class StreamPlusHelper {
     
     static <DATA, C, B> StreamPlus<C> doZipWith(ZipWithOption option, BiFunction<DATA, B, C> merger, IteratorPlus<DATA> iteratorA, IteratorPlus<B> iteratorB) {
         val iterator = new Iterator<C>() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-    
+        
             public C next() {
                 val nextA = hasNextA ? iteratorA.next() : null;
                 val nextB = hasNextB ? iteratorB.next() : null;
@@ -105,7 +105,7 @@ public class StreamPlusHelper {
             }
         };
         val iterable = new Iterable<C>() {
-    
+        
             @Override
             public Iterator<C> iterator() {
                 return iterator;
@@ -116,11 +116,11 @@ public class StreamPlusHelper {
     
     static <DATA> StreamPlus<DATA> doMerge(Iterator<DATA> iteratorA, Iterator<DATA> iteratorB) {
         val iterable = new Iterable<DATA>() {
-    
+        
             private final Iterator<DATA> iterator = new Iterator<DATA>() {
-    
+        
                 private boolean isA = true;
-    
+        
                 public boolean hasNext() {
                     if (isA) {
                         if (iteratorA.hasNext())
@@ -137,14 +137,14 @@ public class StreamPlusHelper {
                         return true;
                     return false;
                 }
-    
+        
                 public DATA next() {
                     val next = isA ? iteratorA.next() : iteratorB.next();
                     isA = !isA;
                     return next;
                 }
             };
-    
+        
             @Override
             public Iterator<DATA> iterator() {
                 return iterator;

@@ -38,25 +38,25 @@ import lombok.val;
 public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HOST, DATA> {
     
     public static class Impl<H, D> implements Named, AnyLens<H, D> {
-    
+        
         private final String name;
-    
+        
         private final LensSpec<H, D> spec;
-    
+        
         public Impl(String name, LensSpec<H, D> spec) {
             this.name = name;
             this.spec = spec;
         }
-    
+        
         public String getName() {
             return name;
         }
-    
+        
         @Override
         public LensSpec<H, D> lensSpec() {
             return spec;
         }
-    
+        
         @Override
         public String toString() {
             return whenBlank(name, () -> super.toString());

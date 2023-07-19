@@ -79,12 +79,12 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     
     private Iterator<DATA> createIterator(DATA[] array) {
         return new Iterator<DATA>() {
-    
+        
             @Override
             public boolean hasNext() {
                 return current.incrementAndGet() < ArrayBackedIteratorPlus.this.end;
             }
-    
+        
             @Override
             public DATA next() {
                 int index = current.get();
@@ -123,7 +123,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
                 } else {
                     val thisCloseHandler = this.closeHandler;
                     this.closeHandler = new Runnable() {
-    
+        
                         @Override
                         public void run() {
                             thisCloseHandler.run();

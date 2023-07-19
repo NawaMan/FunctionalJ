@@ -47,23 +47,23 @@ public interface DoubleCollectedToInt<ACCUMULATED> extends Collected<Double, ACC
     
     // == Implementation ==
     public static class Impl<ACCUMULATED> implements DoubleCollectedToInt<ACCUMULATED> {
-    
+        
         private final DoubleCollectorToIntPlus<ACCUMULATED> collector;
-    
+        
         private final ObjDoubleConsumer<ACCUMULATED> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(DoubleCollectorToIntPlus<ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.doubleAccumulator();
         }
-    
+        
         public void accumulate(double each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         @Override
         public int finishAsInt() {
             return collector.finisher().apply(accumulated);

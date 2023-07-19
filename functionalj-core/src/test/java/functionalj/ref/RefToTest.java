@@ -35,27 +35,27 @@ public class RefToTest {
     
     // == Bind use in the dependency ==
     public static class Car {
-    
+        
         public String zoom() {
             return "FLASH!";
         }
     }
     
     public static class SuperCar extends Car {
-    
+        
         public String zoom() {
             return "SUPER FLASH!!!!";
         }
     }
     
     public static class Person {
-    
+        
         private Car car;
-    
+        
         public Person(Car car) {
             this.car = car;
         }
-    
+        
         public String zoom() {
             return (car != null) ? car.zoom() : "Meh";
         }

@@ -34,9 +34,9 @@ public class WithFuncListTest {
     
     @Struct(name = "ParentWithFuncList")
     public static interface IParent2 {
-    
+        
         public FuncList<String> names();
-    
+        
         public FuncList<Child> children();
     }
     

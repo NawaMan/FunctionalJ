@@ -101,7 +101,7 @@ public interface IData {
     // TODO - Extract this out so it can be used in other scenarios.
     @SuppressWarnings("rawtypes")
     public static class $utils {
-    
+        
         private static final Map<Class<?>, Class<?>> boxedClasses;
         
         static {

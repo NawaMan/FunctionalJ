@@ -32,19 +32,19 @@ public interface InputTypeVariable extends InputReferenceType {
     }
     
     public static class Impl extends InputReferenceType.Impl implements InputTypeVariable {
-    
+        
         private final TypeVariable typeVariable;
-    
+        
         Impl(Environment environment, TypeVariable typeVariable) {
             super(environment, typeVariable);
             this.typeVariable = typeVariable;
         }
-    
+        
         @Override
         public InputType getLowerBound() {
             return InputType.of(environment, typeVariable.getLowerBound());
         }
-    
+        
         @Override
         public InputType getUpperBound() {
             return InputType.of(environment, typeVariable.getUpperBound());

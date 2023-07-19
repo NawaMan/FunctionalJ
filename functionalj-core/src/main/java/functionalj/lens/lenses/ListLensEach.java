@@ -26,12 +26,12 @@ public class ListLensEach<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> impl
             return apply(host).filter(checker);
         });
         val specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS>() {
-    
+        
             @Override
             public FuncList<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
-    
+        
             @Override
             public TYPELENS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return parentLens.accessParameterized().createSubAccessFromHost(accessToParameter);

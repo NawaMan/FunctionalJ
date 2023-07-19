@@ -373,11 +373,11 @@ public class StrFuncs {
         val offset = new AtomicInteger(0);
         val isLast = new AtomicReference<Boolean>(null);
         Iterable<String> iterable = new Iterable<String>() {
-    
+        
             @Override
             public Iterator<String> iterator() {
                 return new Iterator<String>() {
-    
+        
                     @Override
                     public boolean hasNext() {
                         val find = matcher.find();
@@ -391,7 +391,7 @@ public class StrFuncs {
                         }
                         return find;
                     }
-    
+        
                     @Override
                     public String next() {
                         val isLastBoolean = isLast.get();
@@ -472,16 +472,16 @@ public class StrFuncs {
     
     private static IteratorPlus<String> createMatchIterator(final java.util.regex.Matcher matcher) {
         return new IteratorPlus<String>() {
-    
+        
             @Override
             public Iterator<String> asIterator() {
                 return new Iterator<String>() {
-    
+        
                     @Override
                     public boolean hasNext() {
                         return matcher.find();
                     }
-    
+        
                     @Override
                     public String next() {
                         return matcher.group();
@@ -529,16 +529,16 @@ public class StrFuncs {
         val source = Func.lazy(() -> str.toString());
         val index = new AtomicInteger();
         Iterable<RegExMatchResult> iterable = new Iterable<RegExMatchResult>() {
-    
+        
             @Override
             public Iterator<RegExMatchResult> iterator() {
                 return new Iterator<RegExMatchResult>() {
-    
+        
                     @Override
                     public boolean hasNext() {
                         return matcher.find();
                     }
-    
+        
                     @Override
                     public RegExMatchResult next() {
                         return new RegExMatchResult(source, pattern, index.getAndIncrement(), matcher.toMatchResult());

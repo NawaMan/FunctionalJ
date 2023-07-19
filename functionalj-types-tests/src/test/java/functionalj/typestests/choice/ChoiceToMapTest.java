@@ -20,9 +20,9 @@ public class ChoiceToMapTest {
     
     @Choice(tagMapKeyName = "type")
     interface CommandModel {
-    
+        
         void Rotate(int degree);
-    
+        
         void Move(int distance);
     }
     

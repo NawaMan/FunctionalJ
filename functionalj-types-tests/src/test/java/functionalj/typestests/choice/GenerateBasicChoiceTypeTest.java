@@ -49,13 +49,13 @@ public class GenerateBasicChoiceTypeTest {
     
     @Choice(specField = "spec")
     public static interface ColorSpec {
-    
+        
         void White();
-    
+        
         void Black();
-    
+        
         void RGB(int r, int g, int b);
-    
+        
         static void __validateRGB(int r, int g, int b) {
             if ((r < 0) || (r > 255))
                 throw new IllegalArgumentException("r: " + r);

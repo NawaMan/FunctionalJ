@@ -84,13 +84,13 @@ public abstract class LongAggregationToBoolean extends LongAggregation<Boolean> 
     
     // == Implementation ==
     public static class Impl extends LongAggregationToBoolean {
-    
+        
         private final LongCollectorToBooleanPlus<?> collector;
-    
+        
         public Impl(LongCollectorToBooleanPlus<?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public LongCollectorToBooleanPlus<?> longCollectorToBooleanPlus() {
             return collector;

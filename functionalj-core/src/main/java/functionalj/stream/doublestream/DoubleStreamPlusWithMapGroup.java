@@ -45,15 +45,15 @@ class DoubleStreamPlusWithMapGroupHelper {
     static <TARGET> StreamPlus<TARGET> mapGroup(DoubleStreamPlus streamPlus, int count, Func4<double[], Integer, Integer, Consumer<? super TARGET>, Void> processNormal, Func4<double[], Integer, Integer, Consumer<? super TARGET>, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractSpliterator<TARGET>(splitr.estimateSize(), 0) {
-    
+        
             double[] array = new double[count * 10];
-    
+        
             int start = 0;
-    
+        
             int end = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super TARGET> consumer) {
                 DoubleConsumer action = elem -> {
@@ -84,15 +84,15 @@ class DoubleStreamPlusWithMapGroupHelper {
     static <TARGET> IntStreamPlus mapGroupToInt(DoubleStreamPlus streamPlus, int count, Func4<double[], Integer, Integer, IntConsumer, Void> processNormal, Func4<double[], Integer, Integer, IntConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-    
+        
             double[] array = new double[count * 10];
-    
+        
             int start = 0;
-    
+        
             int end = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 DoubleConsumer action = elem -> {
@@ -123,15 +123,15 @@ class DoubleStreamPlusWithMapGroupHelper {
     static <DATA, TARGET> DoubleStreamPlus mapGroupToDouble(DoubleStreamPlus streamPlus, int count, Func4<double[], Integer, Integer, DoubleConsumer, Void> processNormal, Func4<double[], Integer, Integer, DoubleConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-    
+        
             double[] array = new double[count * 10];
-    
+        
             int start = 0;
-    
+        
             int end = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 DoubleConsumer action = elem -> {

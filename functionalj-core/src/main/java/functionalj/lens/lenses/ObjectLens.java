@@ -36,7 +36,7 @@ class ObjectLensHelper {
 public interface ObjectLens<HOST, DATA> extends AnyLens<HOST, DATA>, ObjectAccess<HOST, DATA> {
     
     public static class Impl<H, D> extends ObjectLensImpl<H, D> {
-    
+        
         public Impl(String name, LensSpec<H, D> spec) {
             super(name, spec);
         }

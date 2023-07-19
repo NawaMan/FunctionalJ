@@ -54,21 +54,21 @@ public interface SimpleValidator<DATA> extends Validator<DATA> {
     }
     
     public static class Impl<D> implements SimpleValidator<D> {
-    
+        
         private final Predicate<? super D> checker;
-    
+        
         private final Func2<? super D, ? super Predicate<? super D>, ? extends ValidationException> exceptionCreator;
-    
+        
         public Impl(Predicate<? super D> checker, Func2<? super D, ? super Predicate<? super D>, ? extends ValidationException> exceptionCreator) {
             this.checker = checker;
             this.exceptionCreator = exceptionCreator;
         }
-    
+        
         @Override
         public Predicate<? super D> checker() {
             return checker;
         }
-    
+        
         @Override
         public ValidationException createException(D data) {
             return exceptionCreator.apply(data, checker);

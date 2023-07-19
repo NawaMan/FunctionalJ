@@ -35,12 +35,12 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     
     public static <H, T, A extends AnyAccess<H, T>> OptionalAccess<H, T, A> of(Function<H, Optional<T>> read, Function<Function<H, T>, A> createAccess) {
         val accessParameterized = new AccessParameterized<H, Optional<T>, T, A>() {
-    
+        
             @Override
             public Optional<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
             }
-    
+        
             @Override
             public A createSubAccessFromHost(Function<H, T> accessToParameter) {
                 return createAccess.apply(accessToParameter);
@@ -69,7 +69,7 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     
     public default <TARGET> OptionalAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenMap(Function<TYPE, TARGET> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Optional<TARGET>, TARGET, AnyAccess<HOST, TARGET>>() {
-    
+        
             @Override
             public Optional<TARGET> applyUnsafe(HOST host) throws Exception {
                 Optional<TYPE> optional = OptionalAccess.this.apply(host);
@@ -77,14 +77,14 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
                     optional = Optional.empty();
                 return optional.map(mapper);
             }
-    
+        
             @Override
             public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
                 return accessToParameter::apply;
             }
         };
         return new OptionalAccess<HOST, TARGET, AnyAccess<HOST, TARGET>>() {
-    
+        
             @Override
             public AccessParameterized<HOST, Optional<TARGET>, TARGET, AnyAccess<HOST, TARGET>> accessWithSub() {
                 return accessWithSub;
@@ -94,19 +94,19 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     
     public default <TARGET> OptionalAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenFlatMap(Function<TYPE, Optional<TARGET>> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Optional<TARGET>, TARGET, AnyAccess<HOST, TARGET>>() {
-    
+        
             @Override
             public Optional<TARGET> applyUnsafe(HOST host) throws Exception {
                 return OptionalAccess.this.apply(host).flatMap(mapper);
             }
-    
+        
             @Override
             public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
                 return accessToParameter::apply;
             }
         };
         return new OptionalAccess<HOST, TARGET, AnyAccess<HOST, TARGET>>() {
-    
+        
             @Override
             public AccessParameterized<HOST, Optional<TARGET>, TARGET, AnyAccess<HOST, TARGET>> accessWithSub() {
                 return accessWithSub;

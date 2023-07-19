@@ -835,39 +835,39 @@ public class IntFuncListTest {
     }
     
     static class Sum extends IntAggregationToInt {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private IntCollectorToIntPlus<int[]> collectorPlus = new IntCollectorToIntPlus<int[]>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { 0 };
             }
-    
+        
             @Override
             public ObjIntConsumer<int[]> intAccumulator() {
                 return (a, s) -> {
                     a[0] += s;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { a1[0] + a1[1] };
             }
-    
+        
             @Override
             public ToIntFunction<int[]> finisherToInt() {
                 return a -> a[0];
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public IntCollectorToIntPlus<?> intCollectorToIntPlus() {
             return collectorPlus;
@@ -1667,39 +1667,39 @@ public class IntFuncListTest {
     
     // -- IntFuncListWithCalculate --
     static class SumHalf extends IntAggregation<Integer> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { 0 };
             }
-    
+        
             @Override
             public ObjIntConsumer<int[]> intAccumulator() {
                 return (a, i) -> {
                     a[0] += i;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { a1[0] + a2[0] };
             }
-    
+        
             @Override
             public Function<int[], Integer> finisher() {
                 return (a) -> a[0] / 2;
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public IntCollectorPlus<?, Integer> intCollectorPlus() {
             return collectorPlus;
@@ -1707,16 +1707,16 @@ public class IntFuncListTest {
     }
     
     static class Average extends IntAggregation<Double> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private IntCollectorPlus<int[], Double> collectorPlus = new IntCollectorPlus<int[], Double>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { 0, 0 };
             }
-    
+        
             @Override
             public ObjIntConsumer<int[]> intAccumulator() {
                 return (a, i) -> {
@@ -1724,23 +1724,23 @@ public class IntFuncListTest {
                     a[1] += 1;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] };
             }
-    
+        
             @Override
             public Function<int[], Double> finisher() {
                 return (a) -> (a[1] == 0) ? null : (1.0 * a[0] / a[1]);
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public IntCollectorPlus<?, Double> intCollectorPlus() {
             return collectorPlus;
@@ -1748,16 +1748,16 @@ public class IntFuncListTest {
     }
     
     static class MinInt extends IntAggregation<Integer> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { 0, 0 };
             }
-    
+        
             @Override
             public ObjIntConsumer<int[]> intAccumulator() {
                 return (a, i) -> {
@@ -1765,23 +1765,23 @@ public class IntFuncListTest {
                     a[1] = 1;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { Math.min(a1[0], a2[0]), a1[1] + a2[1] };
             }
-    
+        
             @Override
             public Function<int[], Integer> finisher() {
                 return (a) -> (a[1] == 0) ? null : (a[0]);
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public IntCollectorPlus<?, Integer> intCollectorPlus() {
             return collectorPlus;
@@ -1789,16 +1789,16 @@ public class IntFuncListTest {
     }
     
     static class MaxInt extends IntAggregation<Integer> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { 0, 0 };
             }
-    
+        
             @Override
             public ObjIntConsumer<int[]> intAccumulator() {
                 return (a, i) -> {
@@ -1806,23 +1806,23 @@ public class IntFuncListTest {
                     a[1] = 1;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { Math.max(a1[0], a2[0]), a1[1] + a2[1] };
             }
-    
+        
             @Override
             public Function<int[], Integer> finisher() {
                 return (a) -> (a[1] == 0) ? null : (a[0]);
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public IntCollectorPlus<?, Integer> intCollectorPlus() {
             return collectorPlus;
@@ -1830,39 +1830,39 @@ public class IntFuncListTest {
     }
     
     static class SumInt extends IntAggregation<Integer> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { 0 };
             }
-    
+        
             @Override
             public ObjIntConsumer<int[]> intAccumulator() {
                 return (a, i) -> {
                     a[0] += i;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { a1[0] + a2[0] };
             }
-    
+        
             @Override
             public Function<int[], Integer> finisher() {
                 return (a) -> a[0];
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public IntCollectorPlus<?, Integer> intCollectorPlus() {
             return collectorPlus;
@@ -1870,16 +1870,16 @@ public class IntFuncListTest {
     }
     
     static class AvgInt extends IntAggregation<Integer> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private IntCollectorPlus<int[], Integer> collectorPlus = new IntCollectorPlus<int[], Integer>() {
-    
+        
             @Override
             public Supplier<int[]> supplier() {
                 return () -> new int[] { 0, 0 };
             }
-    
+        
             @Override
             public ObjIntConsumer<int[]> intAccumulator() {
                 return (a, i) -> {
@@ -1887,23 +1887,23 @@ public class IntFuncListTest {
                     a[1] += 1;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<int[]> combiner() {
                 return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] };
             }
-    
+        
             @Override
             public Function<int[], Integer> finisher() {
                 return (a) -> (a[1] == 0) ? null : (a[0] / a[1]);
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public IntCollectorPlus<?, Integer> intCollectorPlus() {
             return collectorPlus;

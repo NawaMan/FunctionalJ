@@ -33,7 +33,7 @@ public class DOConstructorTest {
     
     @Struct(name = "DONoNoArgsConstructor", generateNoArgConstructor = false)
     public static interface DONoNoArgsConstructorDef {
-    
+        
         public String name();
     }
     
@@ -44,7 +44,7 @@ public class DOConstructorTest {
     
     @Struct(name = "DONoAllArgsConstructor", generateNoArgConstructor = true, generateAllArgConstructor = false)
     public static interface DONoAllArgsConstructorDef {
-    
+        
         @DefaultTo(NULL)
         public String name();
     }

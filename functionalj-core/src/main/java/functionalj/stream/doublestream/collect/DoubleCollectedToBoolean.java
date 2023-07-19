@@ -47,23 +47,23 @@ public interface DoubleCollectedToBoolean<ACCUMULATED> extends Collected<Double,
     
     // == Implementation ==
     public static class Impl<ACCUMULATED> implements DoubleCollectedToBoolean<ACCUMULATED> {
-    
+        
         private final DoubleCollectorToBooleanPlus<ACCUMULATED> collector;
-    
+        
         private final ObjDoubleConsumer<ACCUMULATED> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(DoubleCollectorToBooleanPlus<ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.doubleAccumulator();
         }
-    
+        
         public void accumulate(double each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         @Override
         public boolean finishAsBoolean() {
             return collector.finisher().apply(accumulated);

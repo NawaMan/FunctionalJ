@@ -319,13 +319,13 @@ public interface LongStreamPlus extends LongStream, AsLongStreamPlus, LongStream
      */
     public static LongStreamPlus iterate(long seed1, long seed2, LongBinaryOperator compounder) {
         return LongStreamPlus.from(StreamSupport.longStream(new Spliterators.AbstractLongSpliterator(Long.MAX_VALUE, 0) {
-    
+        
             private final AtomicLong first = new AtomicLong(seed1);
-    
+        
             private final AtomicLong second = new AtomicLong(seed2);
-    
+        
             private volatile AtomicBoolean isInOrder = null;
-    
+        
             @Override
             public boolean tryAdvance(LongConsumer action) {
                 if (isInOrder == null) {

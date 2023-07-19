@@ -49,19 +49,19 @@ abstract public class DerivedCollectorToIntPlus<ACCUMULATED> {
     
     // == Implementations ==
     public static class FromObj<INPUT, ACCUMULATED> extends DerivedCollectorToIntPlus<ACCUMULATED> implements CollectorToIntPlus<INPUT, ACCUMULATED> {
-    
+        
         private final Function<INPUT, ?> mapper;
-    
+        
         public <SOURCE> FromObj(CollectorToIntPlus<SOURCE, ACCUMULATED> collector, Function<INPUT, SOURCE> mapper) {
             super(collector);
             this.mapper = mapper;
         }
-    
+        
         @Override
         public Collector<INPUT, ACCUMULATED, Integer> collector() {
             return this;
         }
-    
+        
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public BiConsumer<ACCUMULATED, INPUT> accumulator() {
@@ -74,14 +74,14 @@ abstract public class DerivedCollectorToIntPlus<ACCUMULATED> {
     }
     
     public static class FromInt<ACCUMULATED> extends DerivedCollectorToIntPlus<ACCUMULATED> implements IntCollectorToIntPlus<ACCUMULATED> {
-    
+        
         private final IntFunction<?> mapper;
-    
+        
         public <SOURCE> FromInt(CollectorToIntPlus<SOURCE, ACCUMULATED> collector, IntFunction<SOURCE> mapper) {
             super(collector);
             this.mapper = mapper;
         }
-    
+        
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public ObjIntConsumer<ACCUMULATED> intAccumulator() {
@@ -94,14 +94,14 @@ abstract public class DerivedCollectorToIntPlus<ACCUMULATED> {
     }
     
     public static class FromLong<ACCUMULATED> extends DerivedCollectorToIntPlus<ACCUMULATED> implements LongCollectorToIntPlus<ACCUMULATED> {
-    
+        
         private final LongFunction<?> mapper;
-    
+        
         public <SOURCE> FromLong(CollectorToIntPlus<SOURCE, ACCUMULATED> collector, LongFunction<SOURCE> mapper) {
             super(collector);
             this.mapper = mapper;
         }
-    
+        
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public ObjLongConsumer<ACCUMULATED> longAccumulator() {
@@ -114,14 +114,14 @@ abstract public class DerivedCollectorToIntPlus<ACCUMULATED> {
     }
     
     public static class FromDouble<ACCUMULATED> extends DerivedCollectorToIntPlus<ACCUMULATED> implements DoubleCollectorToIntPlus<ACCUMULATED> {
-    
+        
         private final DoubleFunction<?> mapper;
-    
+        
         public <SOURCE> FromDouble(CollectorToIntPlus<SOURCE, ACCUMULATED> collector, DoubleFunction<SOURCE> mapper) {
             super(collector);
             this.mapper = mapper;
         }
-    
+        
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator() {

@@ -54,19 +54,19 @@ public class DeferActionCreator {
     }
     
     private static class RunTask<D> implements Runnable {
-    
+        
         private final boolean interruptOnCancel;
-    
+        
         private final Func0<D> supplier;
-    
+        
         private final Runnable onStart;
-    
+        
         private final AsyncRunner runner;
-    
+        
         private final Func0<Promise<D>> promiseRef;
-    
+        
         private final AtomicReference<Thread> threadRef = new AtomicReference<Thread>();
-    
+        
         public RunTask(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, AsyncRunner runner, Func0<Promise<D>> promiseRef) {
             this.interruptOnCancel = interruptOnCancel;
             this.supplier = supplier;
@@ -74,7 +74,7 @@ public class DeferActionCreator {
             this.runner = runner;
             this.promiseRef = promiseRef;
         }
-    
+        
         @Override
         public void run() {
             AsyncRunner.run(runner, new Body()).onComplete(result -> {
@@ -88,9 +88,9 @@ public class DeferActionCreator {
                     action.fail(result.exception());
             });
         }
-    
+        
         class Body implements ComputeBody<Void, RuntimeException> {
-    
+        
             public void prepared() {
                 val promise = promiseRef.get();
                 if (!promise.isNotDone())
@@ -98,7 +98,7 @@ public class DeferActionCreator {
                 setupInterruptOnCancel(promise);
                 carelessly(onStart);
             }
-    
+        
             @Override
             public Void compute() throws RuntimeException {
                 val promise = promiseRef.get();
@@ -107,7 +107,7 @@ public class DeferActionCreator {
                 action.completeWith(result);
                 return null;
             }
-    
+        
             private D runSupplier() {
                 try {
                     return supplier.get();
@@ -115,7 +115,7 @@ public class DeferActionCreator {
                     doInterruptOnCancel();
                 }
             }
-    
+        
             private void setupInterruptOnCancel(Promise<D> promise) {
                 if (!interruptOnCancel)
                     return;
@@ -130,7 +130,7 @@ public class DeferActionCreator {
                 });
             }
         }
-    
+        
         private void doInterruptOnCancel() {
             if (!interruptOnCancel)
                 return;

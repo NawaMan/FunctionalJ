@@ -56,7 +56,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
             return (IntIteratorPlus) iterator;
         else
             return new IntIteratorPlus() {
-    
+        
                 @Override
                 public OfInt asIterator() {
                     return iterator;

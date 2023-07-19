@@ -42,14 +42,14 @@ import lombok.val;
 public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> extends ObjectLens<HOST, FuncList<TYPE>>, FuncListAccess<HOST, TYPE, TYPELENS> {
     
     public static class Impl<H, T, SL extends AnyLens<H, T>> extends ObjectLens.Impl<H, FuncList<T>> implements FuncListLens<H, T, SL> {
-    
+        
         private LensSpecParameterized<H, FuncList<T>, T, SL> spec;
-    
+        
         public Impl(String name, LensSpecParameterized<H, FuncList<T>, T, SL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;
         }
-    
+        
         @Override
         public LensSpecParameterized<H, FuncList<T>, T, SL> lensSpecParameterized() {
             return spec;

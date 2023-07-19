@@ -36,10 +36,10 @@ public class SimpleStructTest {
     
     @functionalj.types.Struct(name = "SimpleFromInteface", generateNoArgConstructor = true)
     public static interface SimpleDOInterface {
-    
+        
         @DefaultTo(NULL)
         public String name();
-    
+        
         public default String nameUpperCase() {
             return name().toUpperCase();
         }

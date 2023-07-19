@@ -72,13 +72,13 @@ public abstract class AggregationToLong<SOURCE> extends Aggregation<SOURCE, Long
     
     // == Implementation ==
     public static class Impl<SRC> extends AggregationToLong<SRC> {
-    
+        
         private final CollectorToLongPlus<SRC, ?> collector;
-    
+        
         public Impl(CollectorToLongPlus<SRC, ?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public CollectorToLongPlus<SRC, ?> collectorToLongPlus() {
             return collector;

@@ -72,13 +72,13 @@ public abstract class AggregationToInt<SOURCE> extends Aggregation<SOURCE, Integ
     
     // == Implementation ==
     public static class Impl<SRC> extends AggregationToInt<SRC> {
-    
+        
         private final CollectorToIntPlus<SRC, ?> collector;
-    
+        
         public Impl(CollectorToIntPlus<SRC, ?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public CollectorToIntPlus<SRC, ?> collectorToIntPlus() {
             return collector;

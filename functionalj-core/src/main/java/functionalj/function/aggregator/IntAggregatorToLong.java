@@ -33,19 +33,19 @@ public interface IntAggregatorToLong extends IntegerToLongAccessPrimitive, IntAg
     
     // == Implementation ==
     public static class Impl implements IntAggregatorToLong {
-    
+        
         private final IntCollectedToLong<?> collected;
-    
+        
         public Impl(IntCollectorToLongPlus<?> collector) {
             this.collected = IntCollectedToLong.of(collector);
         }
-    
+        
         @Override
         public long applyIntToLong(int input) {
             collected.accumulate(input);
             return collected.finish();
         }
-    
+        
         public IntCollectedToLong<?> asCollected() {
             return collected;
         }

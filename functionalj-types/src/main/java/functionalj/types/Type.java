@@ -176,42 +176,42 @@ public class Type implements IRequireTypes {
     public static final Type SERIALIZE = Type.of(Serialize.class);
     
     static public class TypeBuilder {
-    
+        
         private String packageName;
-    
+        
         private String encloseName;
-    
+        
         private String simpleName;
-    
+        
         private boolean isVirtual;
-    
+        
         private List<Generic> generics;
-    
+        
         public TypeBuilder encloseName(String encloseName) {
             this.encloseName = encloseName;
             return this;
         }
-    
+        
         public TypeBuilder simpleName(String simpleName) {
             this.simpleName = simpleName;
             return this;
         }
-    
+        
         public TypeBuilder packageName(String packageName) {
             this.packageName = packageName;
             return this;
         }
-    
+        
         public TypeBuilder isVirtual(boolean isVirtual) {
             this.isVirtual = isVirtual;
             return this;
         }
-    
+        
         public TypeBuilder generics(List<Generic> generics) {
             this.generics = generics;
             return this;
         }
-    
+        
         public Type build() {
             return new Type(encloseName, simpleName, packageName, isVirtual, generics);
         }

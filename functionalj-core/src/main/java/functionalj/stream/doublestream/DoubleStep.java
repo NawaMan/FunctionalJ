@@ -35,9 +35,9 @@ import lombok.val;
 public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, Function<Double, Double>, DoubleFuncList {
     
     public static class Size {
-    
+        
         public final double size;
-    
+        
         Size(double size) {
             if (size <= 0) {
                 throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
@@ -47,40 +47,40 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
     }
     
     public static class From {
-    
+        
         public final double from;
-    
+        
         From(double from) {
             this.from = from;
         }
-    
+        
         public DoubleStep step(int size) {
             return new DoubleStep(size, from);
         }
-    
+        
         public DoubleStep step(long size) {
             return new DoubleStep(size, from);
         }
-    
+        
         public DoubleStep step(double size) {
             return new DoubleStep(size, from);
         }
     }
     
     public static class DoubleStepToStream implements DoubleStreamPlus {
-    
+        
         private final boolean distancePositive;
-    
+        
         private final double end;
-    
+        
         private final DoubleStreamPlus doubleStreamPlus;
-    
+        
         DoubleStepToStream(DoubleStreamPlus doubleStreamPlus, double end, boolean distancePositive) {
             this.distancePositive = distancePositive;
             this.end = end;
             this.doubleStreamPlus = doubleStreamPlus;
         }
-    
+        
         public DoubleStreamPlus inclusive() {
             if (distancePositive) {
                 return doubleStreamPlus.acceptUntil(i -> i > end);
@@ -88,7 +88,7 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
                 return doubleStreamPlus.acceptUntil(i -> i < end);
             }
         }
-    
+        
         @Override
         public DoubleStream doubleStream() {
             if (distancePositive) {

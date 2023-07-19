@@ -80,22 +80,22 @@ public class Loop<DATA> extends Retry<DATA> {
     }
     
     static class OnComplete<DATA> implements FuncUnit1<Result<DATA>> {
-    
+        
         private final DeferActionBuilder<DATA> actionBuilder;
-    
+        
         private final Func1<Result<DATA>, Boolean> shouldStop;
-    
+        
         private final DeferAction<DATA> finalAction;
-    
+        
         private final Supplier<SubscriptionRecord<DATA>> subscriptionRef;
-    
+        
         public OnComplete(DeferActionBuilder<DATA> actionBuilder, Func1<Result<DATA>, Boolean> shouldStop, DeferAction<DATA> finalAction, Supplier<SubscriptionRecord<DATA>> subscriptionRef) {
             this.actionBuilder = actionBuilder;
             this.shouldStop = shouldStop;
             this.finalAction = finalAction;
             this.subscriptionRef = subscriptionRef;
         }
-    
+        
         @Override
         public void acceptUnsafe(Result<DATA> result) throws Exception {
             val shouldBreak = shouldStop.apply(result);

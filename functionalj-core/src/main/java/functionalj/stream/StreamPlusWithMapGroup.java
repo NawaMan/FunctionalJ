@@ -54,15 +54,15 @@ class StreamPlusWithMapGroupHelper {
         return sequential(streamPlus, stream -> {
             val splitr = stream.spliterator();
             val spliterator = new Spliterators.AbstractSpliterator<TARGET>(splitr.estimateSize(), 0) {
-    
+        
                 Object[] array = new Object[count * 10];
-    
+        
                 int start = 0;
-    
+        
                 int end = 0;
-    
+        
                 boolean used = false;
-    
+        
                 @Override
                 public boolean tryAdvance(Consumer<? super TARGET> consumer) {
                     Consumer<? super DATA> action = elem -> {
@@ -94,15 +94,15 @@ class StreamPlusWithMapGroupHelper {
     static <DATA, TARGET> IntStreamPlus mapGroupToInt(StreamPlus<DATA> streamPlus, int count, Func4<Object[], Integer, Integer, IntConsumer, Void> processNormal, Func4<Object[], Integer, Integer, IntConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-    
+        
             Object[] array = new Object[count * 10];
-    
+        
             int start = 0;
-    
+        
             int end = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 Consumer<DATA> action = elem -> {
@@ -133,15 +133,15 @@ class StreamPlusWithMapGroupHelper {
     static <DATA, TARGET> DoubleStreamPlus mapGroupToDouble(StreamPlus<DATA> streamPlus, int count, Func4<Object[], Integer, Integer, DoubleConsumer, Void> processNormal, Func4<Object[], Integer, Integer, DoubleConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-    
+        
             Object[] array = new Object[count * 10];
-    
+        
             int start = 0;
-    
+        
             int end = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 Consumer<DATA> action = elem -> {

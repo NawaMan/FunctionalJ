@@ -54,7 +54,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
             return (IteratorPlus<D>) iterator;
         else
             return new IteratorPlus<D>() {
-    
+        
                 @Override
                 public Iterator<D> asIterator() {
                     return iterator;

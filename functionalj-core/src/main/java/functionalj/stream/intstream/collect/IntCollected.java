@@ -66,23 +66,23 @@ public interface IntCollected<ACCUMULATED, RESULT> extends Collected<Integer, AC
     
     // == Implementation ==
     public static class Impl<ACCUMULATED, RESULT> implements IntCollected<ACCUMULATED, RESULT> {
-    
+        
         private final IntCollectorPlus<ACCUMULATED, RESULT> collector;
-    
+        
         private final ObjIntConsumer<ACCUMULATED> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(IntCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.intAccumulator();
         }
-    
+        
         public void accumulate(int each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         public RESULT finish() {
             return collector.finisher().apply(accumulated);
         }

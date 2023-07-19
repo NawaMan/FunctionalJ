@@ -31,7 +31,7 @@ import functionalj.lens.core.LensSpec;
 public interface BigDecimalLens<HOST> extends BigDecimalAccess<HOST>, ComparableLens<HOST, BigDecimal> {
     
     public static class Impl<H> extends ComparableLens.Impl<H, BigDecimal> implements Named, BigDecimalLens<H> {
-    
+        
         public Impl(String name, LensSpec<H, BigDecimal> spec) {
             super(name, spec);
         }

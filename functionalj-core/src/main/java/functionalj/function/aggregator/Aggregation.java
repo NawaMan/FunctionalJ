@@ -94,13 +94,13 @@ public abstract class Aggregation<SOURCE, TARGET> {
     
     // == Implementation ==
     public static class Impl<SRC, TRG> extends Aggregation<SRC, TRG> {
-    
+        
         private final CollectorPlus<SRC, ?, TRG> collector;
-    
+        
         public Impl(CollectorPlus<SRC, ?, TRG> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public CollectorPlus<SRC, ?, TRG> collectorPlus() {
             return collector;

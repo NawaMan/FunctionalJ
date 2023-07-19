@@ -42,23 +42,23 @@ public interface CollectedToBoolean<DATA, ACCUMULATED> extends Collected<DATA, A
     
     // == Implementation ==
     public static class Impl<DATA, ACCUMULATED> implements CollectedToBoolean<DATA, ACCUMULATED> {
-    
+        
         private final CollectorToBooleanPlus<DATA, ACCUMULATED> collector;
-    
+        
         private final BiConsumer<ACCUMULATED, DATA> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(CollectorToBooleanPlus<DATA, ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.accumulator();
         }
-    
+        
         public void accumulate(DATA each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         public boolean finishToBoolean() {
             return collector.finisherToBoolean().test(accumulated);
         }

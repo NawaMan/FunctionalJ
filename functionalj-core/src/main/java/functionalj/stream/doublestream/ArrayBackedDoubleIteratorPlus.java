@@ -56,12 +56,12 @@ public class ArrayBackedDoubleIteratorPlus implements DoubleIteratorPlus, Primit
     
     private PrimitiveIterator.OfDouble createIterator(double[] array) {
         return new PrimitiveIterator.OfDouble() {
-    
+        
             @Override
             public boolean hasNext() {
                 return current.incrementAndGet() < ArrayBackedDoubleIteratorPlus.this.end;
             }
-    
+        
             @Override
             public double nextDouble() {
                 int index = current.get();
@@ -100,7 +100,7 @@ public class ArrayBackedDoubleIteratorPlus implements DoubleIteratorPlus, Primit
                 } else {
                     val thisCloseHandler = this.closeHandler;
                     this.closeHandler = new Runnable() {
-    
+        
                         @Override
                         public void run() {
                             thisCloseHandler.run();

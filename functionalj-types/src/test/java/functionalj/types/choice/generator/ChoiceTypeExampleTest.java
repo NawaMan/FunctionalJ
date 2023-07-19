@@ -35,13 +35,13 @@ import org.junit.Test;
 public class ChoiceTypeExampleTest {
     
     public static interface Choice1TypeSpec {
-    
+        
         void White();
-    
+        
         void Black();
-    
+        
         void RGB(int r, int g, int b);
-    
+        
         static void __validateRGB(int r, int g, int b) {
             if ((r < 0) || (r > 255))
                 throw new IllegalArgumentException("r: " + r);

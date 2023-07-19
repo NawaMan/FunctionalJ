@@ -73,13 +73,13 @@ public abstract class DoubleAggregation<TARGET> extends Aggregation<Double, TARG
     
     // == Implementation ==
     public static class Impl<TRG> extends DoubleAggregation<TRG> {
-    
+        
         private final DoubleCollectorPlus<?, TRG> collector;
-    
+        
         public Impl(DoubleCollectorPlus<?, TRG> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public DoubleCollectorPlus<?, TRG> doubleCollectorPlus() {
             return collector;

@@ -33,19 +33,19 @@ public interface InputPrimitiveType extends InputType {
     }
     
     public static class Impl extends InputType.Impl implements InputPrimitiveType {
-    
+        
         private final PrimitiveType primitiveType;
-    
+        
         public Impl(Environment environment, PrimitiveType primitiveType) {
             super(environment, primitiveType);
             this.primitiveType = primitiveType;
         }
-    
+        
         @Override
         public String primitiveName() {
             return primitiveType.toString();
         }
-    
+        
         @Override
         public String toString() {
             return "Q_PRIMITIVE.toString()";
@@ -53,28 +53,28 @@ public interface InputPrimitiveType extends InputType {
     }
     
     public static class Mock extends InputType.Mock implements InputPrimitiveType {
-    
+        
         private final TypeKind kind;
-    
+        
         Mock(TypeKind kind) {
             this.kind = kind;
         }
-    
+        
         @Override
         public boolean isNoType() {
             return kind == TypeKind.NONE;
         }
-    
+        
         @Override
         public TypeKind typeKind() {
             return kind;
         }
-    
+        
         @Override
         public String primitiveName() {
             return kind.name().toLowerCase();
         }
-    
+        
         @Override
         public String getToString() {
             return "Q_PRIMITIVE";

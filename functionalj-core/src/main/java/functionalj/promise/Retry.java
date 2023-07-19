@@ -75,36 +75,36 @@ public class Retry<DATA> {
     }
     
     public static class WaitRetry<DATA> {
-    
+        
         private final Retry<DATA> retry;
-    
+        
         private final long period;
-    
+        
         WaitRetry(Retry<DATA> retry, long period) {
             this.retry = retry;
             this.period = period;
         }
-    
+        
         public Retry<DATA> milliseconds() {
             return new Retry<DATA>(retry.times, period);
         }
-    
+        
         public Retry<DATA> seconds() {
             return new Retry<DATA>(retry.times, period * 1000);
         }
-    
+        
         public Retry<DATA> minutes() {
             return new Retry<DATA>(retry.times, period * 1000 * 60);
         }
-    
+        
         public Retry<DATA> hours() {
             return new Retry<DATA>(retry.times, period * 1000 * 60 * 60);
         }
-    
+        
         public Retry<DATA> days() {
             return new Retry<DATA>(retry.times, period * 1000 * 60 * 60 * 24);
         }
-    
+        
         public Retry<DATA> weeks() {
             return new Retry<DATA>(retry.times, period * 1000 * 60 * 60 * 24 * 7);
         }

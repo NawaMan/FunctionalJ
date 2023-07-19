@@ -79,12 +79,12 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
     
     private PrimitiveIterator.OfInt createIterator(int[] array) {
         return new PrimitiveIterator.OfInt() {
-    
+        
             @Override
             public boolean hasNext() {
                 return current.incrementAndGet() < ArrayBackedIntIteratorPlus.this.end;
             }
-    
+        
             @Override
             public int nextInt() {
                 val index = current.get();
@@ -123,7 +123,7 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
                 } else {
                     val thisCloseHandler = this.closeHandler;
                     this.closeHandler = new Runnable() {
-    
+        
                         @Override
                         public void run() {
                             thisCloseHandler.run();

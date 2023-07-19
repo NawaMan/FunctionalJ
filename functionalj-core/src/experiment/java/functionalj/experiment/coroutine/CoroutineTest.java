@@ -36,42 +36,42 @@ import functionalj.promise.Promise;
 public class CoroutineTest {
     
     public static abstract class CoroutineEntry<IN, OUT> {
-    
+        
         public abstract OUT get();
-    
+        
         public static <IN, MIDDLE, OUT> CoroutineEntry<IN, OUT> c(Func0<MIDDLE> f, Func1<MIDDLE, CoroutineEntry<MIDDLE, OUT>> next) {
             return new CoroutineBetweenEntry<IN, MIDDLE, OUT>(f, next);
         }
-    
+        
         public static <IN, OUT> CoroutineEntry<IN, OUT> c(Func0<OUT> supplier) {
             return new CoroutineLastEntry<IN, OUT>(supplier);
         }
     }
     
     public static class CoroutineLastEntry<IN, OUT> extends CoroutineEntry<IN, OUT> {
-    
+        
         private final Func0<OUT> f;
-    
+        
         public CoroutineLastEntry(Func0<OUT> f) {
             this.f = f;
         }
-    
+        
         public OUT get() {
             return f.get();
         }
     }
     
     public static class CoroutineBetweenEntry<IN, MID, OUT> extends CoroutineEntry<IN, OUT> {
-    
+        
         private final Func0<MID> f;
-    
+        
         private final Func1<MID, CoroutineEntry<MID, OUT>> n;
-    
+        
         public CoroutineBetweenEntry(Func0<MID> f, Func1<MID, CoroutineEntry<MID, OUT>> n) {
             this.f = f;
             this.n = n;
         }
-    
+        
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public OUT get() {
             CoroutineBetweenEntry btEntry = this;

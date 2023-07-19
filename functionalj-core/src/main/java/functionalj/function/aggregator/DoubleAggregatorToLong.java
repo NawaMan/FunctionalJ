@@ -33,19 +33,19 @@ public interface DoubleAggregatorToLong extends DoubleToLongAccessPrimitive, Dou
     
     // == Implementation ==
     public static class Impl implements DoubleAggregatorToLong {
-    
+        
         private final DoubleCollectedToLong<?> collected;
-    
+        
         public Impl(DoubleCollectorToLongPlus<?> collector) {
             this.collected = DoubleCollectedToLong.of(collector);
         }
-    
+        
         @Override
         public long applyDoubleToLong(double input) {
             collected.accumulate(input);
             return collected.finish();
         }
-    
+        
         public DoubleCollectedToLong<?> asCollected() {
             return collected;
         }

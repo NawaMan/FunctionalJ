@@ -66,23 +66,23 @@ public interface DoubleCollected<ACCUMULATED, RESULT> extends Collected<Double, 
     
     // == Implementation ==
     public static class Impl<ACCUMULATED, RESULT> implements DoubleCollected<ACCUMULATED, RESULT> {
-    
+        
         private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
-    
+        
         private final ObjDoubleConsumer<ACCUMULATED> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.doubleAccumulator();
         }
-    
+        
         public void accumulate(double each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         public RESULT finish() {
             return collector.finisher().apply(accumulated);
         }

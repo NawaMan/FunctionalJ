@@ -73,13 +73,13 @@ public abstract class DoubleAggregationToLong extends DoubleAggregation<Long> {
     
     // == Implementation ==
     public static class Impl extends DoubleAggregationToLong {
-    
+        
         private final DoubleCollectorToLongPlus<?> collector;
-    
+        
         public Impl(DoubleCollectorToLongPlus<?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public DoubleCollectorToLongPlus<?> doubleCollectorToLongPlus() {
             return collector;

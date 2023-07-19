@@ -158,17 +158,17 @@ public interface StreamPlusWithCombine<DATA> {
         val iteratorA = this.streamPlus().iterator();
         val iteratorB = anotherStream.iterator();
         val iterator = new Iterator<DATA>() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-    
+        
             public DATA next() {
                 val nextA = hasNextA ? iteratorA.next() : null;
                 val nextB = hasNextB ? iteratorB.next() : null;
@@ -186,7 +186,7 @@ public interface StreamPlusWithCombine<DATA> {
             }
         };
         val iterable = new Iterable<DATA>() {
-    
+        
             @Override
             public Iterator<DATA> iterator() {
                 return iterator;

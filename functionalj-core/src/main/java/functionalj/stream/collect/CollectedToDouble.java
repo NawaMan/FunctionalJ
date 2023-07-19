@@ -42,23 +42,23 @@ public interface CollectedToDouble<DATA, ACCUMULATED> extends Collected<DATA, AC
     
     // == Implementation ==
     public static class Impl<DATA, ACCUMULATED> implements CollectedToDouble<DATA, ACCUMULATED> {
-    
+        
         private final CollectorToDoublePlus<DATA, ACCUMULATED> collector;
-    
+        
         private final BiConsumer<ACCUMULATED, DATA> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(CollectorToDoublePlus<DATA, ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.accumulator();
         }
-    
+        
         public void accumulate(DATA each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         public double finishToDouble() {
             return collector.finisherToDouble().applyAsDouble(accumulated);
         }

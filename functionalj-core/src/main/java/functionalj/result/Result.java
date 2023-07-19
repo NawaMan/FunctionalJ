@@ -557,12 +557,12 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
     
     public final Tuple2<DATA, Exception> toTuple() {
         return new Tuple2<DATA, Exception>() {
-    
+        
             @Override
             public final DATA _1() {
                 return getValue();
             }
-    
+        
             @Override
             public final Exception _2() {
                 return getException();

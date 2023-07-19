@@ -49,15 +49,15 @@ class IntStreamPlusWithMapGroupHelper {
     static <TARGET> StreamPlus<TARGET> mapGroup(IntStreamPlus streamPlus, int count, Func4<int[], Integer, Integer, Consumer<? super TARGET>, Void> processNormal, Func4<int[], Integer, Integer, Consumer<? super TARGET>, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractSpliterator<TARGET>(splitr.estimateSize(), 0) {
-    
+        
             int[] array = new int[count * 10];
-    
+        
             int start = 0;
-    
+        
             int end = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(Consumer<? super TARGET> consumer) {
                 IntConsumer action = elem -> {
@@ -88,15 +88,15 @@ class IntStreamPlusWithMapGroupHelper {
     static <TARGET> IntStreamPlus mapGroupToInt(IntStreamPlus streamPlus, int count, Func4<int[], Integer, Integer, IntConsumer, Void> processNormal, Func4<int[], Integer, Integer, IntConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-    
+        
             int[] array = new int[count * 10];
-    
+        
             int start = 0;
-    
+        
             int end = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 IntConsumer action = elem -> {
@@ -127,15 +127,15 @@ class IntStreamPlusWithMapGroupHelper {
     static <DATA, TARGET> LongStreamPlus mapGroupToLong(IntStreamPlus streamPlus, int count, Func4<int[], Integer, Integer, LongConsumer, Void> processNormal, Func4<int[], Integer, Integer, LongConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractLongSpliterator(splitr.estimateSize(), 0) {
-    
+        
             int[] array = new int[count * 10];
-    
+        
             int start = 0;
-    
+        
             int end = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(LongConsumer consumer) {
                 IntConsumer action = elem -> {
@@ -169,15 +169,15 @@ class IntStreamPlusWithMapGroupHelper {
     static <DATA, TARGET> DoubleStreamPlus mapGroupToDouble(IntStreamPlus streamPlus, int count, Func4<int[], Integer, Integer, DoubleConsumer, Void> processNormal, Func4<int[], Integer, Integer, DoubleConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-    
+        
             int[] array = new int[count * 10];
-    
+        
             int start = 0;
-    
+        
             int end = 0;
-    
+        
             boolean used = false;
-    
+        
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 IntConsumer action = elem -> {

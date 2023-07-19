@@ -35,7 +35,7 @@ public class WaitForever extends Wait {
     @Override
     public WaitSession newSession() {
         return new WaitSession() {
-    
+        
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
             }

@@ -39,22 +39,22 @@ public final class Time {
     }
     
     public static interface Instance {
-    
+        
         public long currentMilliSecond();
-    
+        
         public void sleep(long millisecond);
     }
     
     public static class System implements Instance {
-    
+        
         public static final Time.Instance instance = new Time.System();
-    
+        
         // private final ScheduledExecutorService scheduler =
         // Executors.newScheduledThreadPool(1);
         public long currentMilliSecond() {
             return java.lang.System.currentTimeMillis();
         }
-    
+        
         public void sleep(long millisecond) {
             try {
                 Thread.sleep(millisecond);

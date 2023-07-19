@@ -42,23 +42,23 @@ public interface CollectedToLong<DATA, ACCUMULATED> extends Collected<DATA, ACCU
     
     // -- Implementation --
     public static class Impl<DATA, ACCUMULATED> implements CollectedToLong<DATA, ACCUMULATED> {
-    
+        
         private final CollectorToLongPlus<DATA, ACCUMULATED> collector;
-    
+        
         private final BiConsumer<ACCUMULATED, DATA> accumulator;
-    
+        
         private final ACCUMULATED accumulated;
-    
+        
         public Impl(CollectorToLongPlus<DATA, ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.accumulator();
         }
-    
+        
         public void accumulate(DATA each) {
             accumulator.accept(accumulated, each);
         }
-    
+        
         public long finishToLong() {
             return collector.finisherToLong().applyAsLong(accumulated);
         }

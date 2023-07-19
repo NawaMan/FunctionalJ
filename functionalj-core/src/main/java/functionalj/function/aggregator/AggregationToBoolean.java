@@ -72,13 +72,13 @@ public abstract class AggregationToBoolean<SOURCE> extends Aggregation<SOURCE, B
     
     // == Implementation ==
     public static class Impl<SRC> extends AggregationToBoolean<SRC> {
-    
+        
         private final CollectorToBooleanPlus<SRC, ?> collector;
-    
+        
         public Impl(CollectorToBooleanPlus<SRC, ?> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public CollectorToBooleanPlus<SRC, ?> collectorToBooleanPlus() {
             return collector;

@@ -33,19 +33,19 @@ public interface AggregatorToLong<SOURCE> extends LongAccessPrimitive<SOURCE>, A
     
     // == Implementation ==
     public static class Impl<SOURCE> implements AggregatorToLong<SOURCE>, Aggregator<SOURCE, Long> {
-    
+        
         private final CollectedToLong<SOURCE, ?> collected;
-    
+        
         public Impl(CollectorToLongPlus<SOURCE, ?> collector) {
             this.collected = CollectedToLong.of(collector);
         }
-    
+        
         @Override
         public long applyAsLong(SOURCE host) {
             collected.accumulate(host);
             return collected.finishToLong();
         }
-    
+        
         public CollectedToLong<SOURCE, ?> asCollected() {
             return collected;
         }

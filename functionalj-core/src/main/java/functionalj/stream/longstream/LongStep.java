@@ -33,9 +33,9 @@ import lombok.val;
 public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function<Long, Long>, LongFuncList {
     
     public static class Size {
-    
+        
         public final long size;
-    
+        
         Size(long size) {
             if (size <= 0) {
                 throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
@@ -45,32 +45,32 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
     }
     
     public static class From {
-    
+        
         public final long from;
-    
+        
         From(long from) {
             this.from = from;
         }
-    
+        
         public LongStep step(int size) {
             return new LongStep(size, from);
         }
     }
     
     public static class LongStepToStream implements LongStreamPlus {
-    
+        
         private final boolean distancePositive;
-    
+        
         private final long end;
-    
+        
         private final LongStreamPlus longStreamPlus;
-    
+        
         LongStepToStream(LongStreamPlus longStreamPlus, long end, boolean distancePositive) {
             this.distancePositive = distancePositive;
             this.end = end;
             this.longStreamPlus = longStreamPlus;
         }
-    
+        
         public LongStreamPlus inclusive() {
             if (distancePositive) {
                 return longStreamPlus.acceptUntil(i -> i > end);
@@ -78,7 +78,7 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
                 return longStreamPlus.acceptUntil(i -> i < end);
             }
         }
-    
+        
         @Override
         public LongStreamPlus longStream() {
             if (distancePositive) {

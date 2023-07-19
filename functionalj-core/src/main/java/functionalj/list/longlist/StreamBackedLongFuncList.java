@@ -70,7 +70,7 @@ public class StreamBackedLongFuncList implements LongFuncList {
         val indexRef = new AtomicInteger(0);
         val valueConsumer = (LongConsumer) ((long v) -> cache.add(v));
         val newSpliterator = new Spliterators.AbstractLongSpliterator(Long.MAX_VALUE, 0) {
-    
+        
             @Override
             public boolean tryAdvance(LongConsumer consumer) {
                 int index = indexRef.getAndIncrement();
@@ -86,7 +86,7 @@ public class StreamBackedLongFuncList implements LongFuncList {
                     return true;
                 return hadNext;
             }
-    
+        
             private boolean fromCache(LongConsumer consumer, int index) {
                 if (index >= cache.length())
                     return false;

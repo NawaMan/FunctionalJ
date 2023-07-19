@@ -73,13 +73,13 @@ public abstract class LongAggregation<TARGET> extends Aggregation<Long, TARGET> 
     
     // == Implementation ==
     public static class Impl<TRG> extends LongAggregation<TRG> {
-    
+        
         private final LongCollectorPlus<?, TRG> collector;
-    
+        
         public Impl(LongCollectorPlus<?, TRG> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public LongCollectorPlus<?, TRG> longCollectorPlus() {
             return collector;

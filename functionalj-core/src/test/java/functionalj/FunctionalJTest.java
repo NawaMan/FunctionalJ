@@ -51,7 +51,7 @@ public class FunctionalJTest {
     public void testOnly() {
         @Value
         class Person {
-    
+        
             private String name;
         }
         val persons = asList(new Person("John"), new Person("Jack"), new Person("Jim"));
@@ -61,11 +61,11 @@ public class FunctionalJTest {
     
     @Value
     public static class City {
-    
+        
         private String id;
-    
+        
         private String name;
-    
+        
         public City withName(String name) {
             return new City(id, name);
         }
@@ -73,11 +73,11 @@ public class FunctionalJTest {
     
     @Value
     public static class User {
-    
+        
         private String id;
-    
+        
         private String name;
-    
+        
         private String cityId;
     }
     
@@ -85,7 +85,7 @@ public class FunctionalJTest {
     
     @SuppressWarnings("serial")
     public final Map<String, City> citites = new HashMap<String, City>() {
-    
+        
         @Override
         public City get(Object key) {
             logs.add("Cities: " + key);
@@ -99,7 +99,7 @@ public class FunctionalJTest {
     
     @SuppressWarnings("serial")
     public final Map<String, User> users = new HashMap<String, User>() {
-    
+        
         @Override
         public User get(Object key) {
             User user = super.get(key);

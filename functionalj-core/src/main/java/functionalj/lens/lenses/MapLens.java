@@ -48,14 +48,14 @@ import lombok.val;
 public interface MapLens<HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST, KEY>, VALUELENS extends AnyLens<HOST, VALUE>> extends ObjectLens<HOST, Map<KEY, VALUE>>, MapAccess<HOST, KEY, VALUE, KEYLENS, VALUELENS> {
     
     public static class Impl<H, K, V, KL extends AnyLens<H, K>, VL extends AnyLens<H, V>> extends ObjectLens.Impl<H, Map<K, V>> implements MapLens<H, K, V, KL, VL> {
-    
+        
         private LensSpecParameterized2<H, Map<K, V>, K, V, KL, VL> spec;
-    
+        
         public Impl(String name, LensSpecParameterized2<H, Map<K, V>, K, V, KL, VL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;
         }
-    
+        
         @Override
         public LensSpecParameterized2<H, Map<K, V>, K, V, KL, VL> lensSpecParameterized2() {
             return spec;

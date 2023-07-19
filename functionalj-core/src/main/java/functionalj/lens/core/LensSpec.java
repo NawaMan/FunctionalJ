@@ -61,12 +61,12 @@ public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
     }
     
     public static final BooleanSupplier SUPPLY_TRUE = new BooleanSupplier() {
-    
+        
         @Override
         public boolean getAsBoolean() {
             return true;
         }
-    
+        
         @Override
         public String toString() {
             return "BooleanSupplier(true)";
@@ -74,12 +74,12 @@ public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
     };
     
     public static final BooleanSupplier SUPPLY_FALSE = new BooleanSupplier() {
-    
+        
         @Override
         public boolean getAsBoolean() {
             return false;
         }
-    
+        
         @Override
         public String toString() {
             return "BooleanSupplier(false)";

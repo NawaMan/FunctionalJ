@@ -217,17 +217,17 @@ public interface DoubleStreamPlusWithCombine {
         val iteratorA = this.doubleStreamPlus().iterator();
         val iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         val iterator = new PrimitiveIterator.OfDouble() {
-    
+        
             private boolean hasNextA;
-    
+        
             private boolean hasNextB;
-    
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-    
+        
             public double nextDouble() {
                 val nextA = hasNextA ? iteratorA.nextDouble() : Double.NaN;
                 val nextB = hasNextB ? iteratorB.nextDouble() : Double.NaN;
@@ -245,7 +245,7 @@ public interface DoubleStreamPlusWithCombine {
             }
         };
         val iterable = new DoubleIterable() {
-    
+        
             @Override
             public DoubleIteratorPlus iterator() {
                 return DoubleIteratorPlus.from(iterator);

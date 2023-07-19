@@ -39,12 +39,12 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
     
     public static <H, T, A extends AnyAccess<H, T>> FuncListAccess<H, T, A> of(Function<H, FuncList<T>> read, Function<Function<H, T>, A> createAccess) {
         val accessParameterized = new AccessParameterized<H, FuncList<T>, T, A>() {
-    
+        
             @Override
             public FuncList<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
             }
-    
+        
             @Override
             public A createSubAccessFromHost(Function<H, T> accessToParameter) {
                 return createAccess.apply(accessToParameter);
@@ -105,12 +105,12 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
     
     public default FuncListAccess<HOST, Integer, IntegerAccess<HOST>> indexesOf(Predicate<? super TYPE> check) {
         val access = new AccessParameterized<HOST, FuncList<Integer>, Integer, IntegerAccess<HOST>>() {
-    
+        
             @Override
             public FuncList<Integer> applyUnsafe(HOST host) throws Exception {
                 return FuncListAccess.this.apply(host).indexesOf(check).boxed();
             }
-    
+        
             @Override
             public IntegerAccess<HOST> createSubAccessFromHost(Function<HOST, Integer> accessToParameter) {
                 return IntegerAccess.of(accessToParameter);
@@ -197,7 +197,7 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
     // groupingBy
     // toMap
     public static class __internal__ {
-    
+        
         public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> FuncListAccess<HOST, TYPE, TYPEACCESS> subList(FuncListAccess<HOST, TYPE, TYPEACCESS> lens, Function<HOST, FuncList<TYPE>> read) {
             return createSubFuncListAccess(lens.accessParameterized(), read);
         }

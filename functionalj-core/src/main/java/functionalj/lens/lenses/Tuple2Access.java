@@ -18,17 +18,17 @@ public interface Tuple2Access<HOST, T1, T2, T1ACCESS extends AnyAccess<HOST, T1>
     @Override
     public default Tuple2Access<HOST, T1, T2, T1ACCESS, T2ACCESS> newAccess(Function<HOST, Tuple2<T1, T2>> access) {
         val accessParam = new AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS>() {
-    
+        
             @Override
             public Tuple2<T1, T2> applyUnsafe(HOST host) throws Exception {
                 return access.apply(host);
             }
-    
+        
             @Override
             public T1ACCESS createSubAccessFromHost1(Function<HOST, T1> accessToParameter) {
                 return Tuple2Access.this.createSubAccessFromHost1(accessToParameter);
             }
-    
+        
             @Override
             public T2ACCESS createSubAccessFromHost2(Function<HOST, T2> accessToParameter) {
                 return Tuple2Access.this.createSubAccessFromHost2(accessToParameter);

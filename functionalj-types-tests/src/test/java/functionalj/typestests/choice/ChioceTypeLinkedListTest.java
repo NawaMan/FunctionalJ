@@ -40,11 +40,11 @@ public class ChioceTypeLinkedListTest {
     
     @Choice
     public static interface LinkedListSpec {
-    
+        
         void Nill();
-    
+        
         void Node(Object value, LinkedList rest);
-    
+        
         default int length(Self self) {
             LinkedList list = Self.unwrap(self);
             return Match(list).nill(l -> 0).node(l -> 1 + length(l.rest()));

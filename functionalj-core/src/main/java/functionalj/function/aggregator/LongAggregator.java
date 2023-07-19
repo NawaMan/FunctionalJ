@@ -33,24 +33,24 @@ public interface LongAggregator<TARGET> extends LongFunction<TARGET>, Aggregator
     
     // == Implementation ==
     public static class Impl<TARGET> implements LongAggregator<TARGET> {
-    
+        
         private final LongCollected<?, TARGET> collected;
-    
+        
         public Impl(LongCollectorPlus<?, TARGET> collector) {
             this.collected = LongCollected.collectedOf(collector);
         }
-    
+        
         @Override
         public TARGET apply(long input) {
             collected.accumulate(input);
             return collected.finish();
         }
-    
+        
         @Override
         public TARGET applyUnsafe(Long input) throws Exception {
             return apply(input);
         }
-    
+        
         public LongCollected<?, TARGET> asCollected() {
             return collected;
         }

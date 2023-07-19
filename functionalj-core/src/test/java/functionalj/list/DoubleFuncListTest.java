@@ -840,39 +840,39 @@ public class DoubleFuncListTest {
     }
     
     static class Sum extends DoubleAggregationToDouble {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private DoubleCollectorToDoublePlus<double[]> collectorPlus = new DoubleCollectorToDoublePlus<double[]>() {
-    
+        
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0 };
             }
-    
+        
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, s) -> {
                     a[0] += s;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a1[1] };
             }
-    
+        
             @Override
             public ToDoubleFunction<double[]> finisherToDouble() {
                 return a -> a[0];
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public DoubleCollectorToDoublePlus<?> doubleCollectorToDoublePlus() {
             return collectorPlus;
@@ -1659,39 +1659,39 @@ public class DoubleFuncListTest {
     
     // -- IntFuncListWithCalculate --
     static class SumHalf extends DoubleAggregation<Double> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private DoubleCollectorPlus<double[], Double> collectorPlus = new DoubleCollectorPlus<double[], Double>() {
-    
+        
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0.0 };
             }
-    
+        
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
                     a[0] += i / 2.0;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a2[0] };
             }
-    
+        
             @Override
             public Function<double[], Double> finisher() {
                 return (a) -> a[0];
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public DoubleCollectorPlus<?, Double> doubleCollectorPlus() {
             return collectorPlus;
@@ -1699,16 +1699,16 @@ public class DoubleFuncListTest {
     }
     
     static class Average extends DoubleAggregation<OptionalDouble> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
-    
+        
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0, 0 };
             }
-    
+        
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
@@ -1716,23 +1716,23 @@ public class DoubleFuncListTest {
                     a[1] += 1;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a2[0], a1[1] + a2[1] };
             }
-    
+        
             @Override
             public Function<double[], OptionalDouble> finisher() {
                 return (a) -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]);
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
             return collectorPlus;
@@ -1740,16 +1740,16 @@ public class DoubleFuncListTest {
     }
     
     static class MinDouble extends DoubleAggregation<OptionalDouble> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
-    
+        
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0, 0 };
             }
-    
+        
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
@@ -1757,23 +1757,23 @@ public class DoubleFuncListTest {
                     a[1] = 1;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { Math.min(a1[0], a2[0]), a1[1] + a2[1] };
             }
-    
+        
             @Override
             public Function<double[], OptionalDouble> finisher() {
                 return (a) -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]);
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-    
+        
         @Override
         public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
             return collectorPlus;
@@ -1781,16 +1781,16 @@ public class DoubleFuncListTest {
     }
     
     static class MaxDouble extends DoubleAggregation<OptionalDouble> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
-    
+        
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0, 0 };
             }
-    
+        
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
@@ -1798,28 +1798,28 @@ public class DoubleFuncListTest {
                     a[1] = 1;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { Math.max(a1[0], a2[0]), a1[1] + a2[1] };
             }
-    
+        
             @Override
             public Function<double[], OptionalDouble> finisher() {
                 return (a) -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]);
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
-    
+        
             @Override
             public Collector<Double, double[], OptionalDouble> collector() {
                 return this;
             }
         };
-    
+        
         @Override
         public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
             return collectorPlus;
@@ -1827,44 +1827,44 @@ public class DoubleFuncListTest {
     }
     
     static class SumDouble extends DoubleAggregation<Double> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private DoubleCollectorPlus<double[], Double> collectorPlus = new DoubleCollectorPlus<double[], Double>() {
-    
+        
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0 };
             }
-    
+        
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
                     a[0] += i;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a2[0] };
             }
-    
+        
             @Override
             public Function<double[], Double> finisher() {
                 return (a) -> a[0];
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
-    
+        
             @Override
             public Collector<Double, double[], Double> collector() {
                 return this;
             }
         };
-    
+        
         @Override
         public DoubleCollectorPlus<?, Double> doubleCollectorPlus() {
             return collectorPlus;
@@ -1872,16 +1872,16 @@ public class DoubleFuncListTest {
     }
     
     static class AvgDouble extends DoubleAggregation<OptionalDouble> {
-    
+        
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-    
+        
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
-    
+        
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0, 0 };
             }
-    
+        
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
@@ -1889,28 +1889,28 @@ public class DoubleFuncListTest {
                     a[1] += 1;
                 };
             }
-    
+        
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a2[0], a1[1] + a2[1] };
             }
-    
+        
             @Override
             public Function<double[], OptionalDouble> finisher() {
                 return (a) -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0] / a[1]);
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
-    
+        
             @Override
             public Collector<Double, double[], OptionalDouble> collector() {
                 return this;
             }
         };
-    
+        
         @Override
         public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
             return collectorPlus;

@@ -186,14 +186,14 @@ public class PromiseTest {
         val list = new ArrayList<String>();
         val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
-    
+        
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
         val wait = new WaitAwhile() {
-    
+        
             @Override
             public WaitSession newSession() {
                 return session;
@@ -211,14 +211,14 @@ public class PromiseTest {
         val list = new ArrayList<String>();
         val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
-    
+        
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
         val wait = new WaitAwhile() {
-    
+        
             @Override
             public WaitSession newSession() {
                 return session;
@@ -273,14 +273,14 @@ public class PromiseTest {
         val list = new ArrayList<String>();
         val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
-    
+        
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
         val wait = new WaitAwhile() {
-    
+        
             @Override
             public WaitSession newSession() {
                 return session;

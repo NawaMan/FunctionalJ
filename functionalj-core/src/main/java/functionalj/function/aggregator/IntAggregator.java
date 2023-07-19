@@ -33,24 +33,24 @@ public interface IntAggregator<TARGET> extends IntFunction<TARGET>, Aggregator<I
     
     // == Implementation ==
     public static class Impl<TARGET> implements IntAggregator<TARGET> {
-    
+        
         private final IntCollected<?, TARGET> collected;
-    
+        
         public Impl(IntCollectorPlus<?, TARGET> collector) {
             this.collected = IntCollected.collectedOf(collector);
         }
-    
+        
         @Override
         public TARGET apply(int input) {
             collected.accumulate(input);
             return collected.finish();
         }
-    
+        
         @Override
         public TARGET applyUnsafe(Integer input) throws Exception {
             return apply(input);
         }
-    
+        
         public IntCollected<?, TARGET> asCollected() {
             return collected;
         }

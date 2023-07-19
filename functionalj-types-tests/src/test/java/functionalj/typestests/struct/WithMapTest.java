@@ -30,7 +30,7 @@ public class WithMapTest {
     
     @Struct(name = "ParentWithMap")
     public static interface IParent4 {
-    
+        
         public Map<String, Child> children();
     }
 }

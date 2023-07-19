@@ -90,13 +90,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean isStillSkipping = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 DATA prevValue = null;
-    
+        
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     Consumer<? super DATA> action = elem -> {
@@ -165,13 +165,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean isStillSkipping = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 DATA prevValue = null;
-    
+        
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     Consumer<? super DATA> action = elem -> {
@@ -213,9 +213,9 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -255,13 +255,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 DATA prevValue = null;
-    
+        
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -298,9 +298,9 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -340,13 +340,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 DATA prevValue = null;
-    
+        
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -383,9 +383,9 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -424,13 +424,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-    
+        
                 boolean stillGoing = true;
-    
+        
                 boolean isFirst = true;
-    
+        
                 DATA prevValue = null;
-    
+        
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {

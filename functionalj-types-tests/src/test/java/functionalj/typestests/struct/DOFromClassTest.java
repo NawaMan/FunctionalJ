@@ -33,11 +33,11 @@ public class DOFromClassTest {
     
     @Struct(name = "DOFromClass")
     public abstract static class DOFromClassDef {
-    
+        
         public abstract String name();
-    
+        
         public abstract int count();
-    
+        
         public String nameUpperCase() {
             return name().toUpperCase();
         }

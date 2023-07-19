@@ -33,24 +33,24 @@ public interface DoubleAggregator<TARGET> extends DoubleFunction<TARGET>, Aggreg
     
     // == Implementation ==
     public static class Impl<TARGET> implements DoubleAggregator<TARGET> {
-    
+        
         private final DoubleCollected<?, TARGET> collected;
-    
+        
         public Impl(DoubleCollectorPlus<?, TARGET> collector) {
             this.collected = DoubleCollected.collectedOf(collector);
         }
-    
+        
         @Override
         public TARGET apply(double input) {
             collected.accumulate(input);
             return collected.finish();
         }
-    
+        
         @Override
         public TARGET applyUnsafe(Double input) throws Exception {
             return apply(input);
         }
-    
+        
         public DoubleCollected<?, TARGET> asCollected() {
             return collected;
         }

@@ -73,13 +73,13 @@ public abstract class IntAggregation<TARGET> extends Aggregation<Integer, TARGET
     
     // == Implementation ==
     public static class Impl<TRG> extends IntAggregation<TRG> {
-    
+        
         private final IntCollectorPlus<?, TRG> collector;
-    
+        
         public Impl(IntCollectorPlus<?, TRG> collector) {
             this.collector = collector;
         }
-    
+        
         @Override
         public IntCollectorPlus<?, TRG> intCollectorPlus() {
             return collector;

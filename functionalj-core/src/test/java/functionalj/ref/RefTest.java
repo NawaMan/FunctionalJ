@@ -77,17 +77,17 @@ public class RefTest {
     }
     
     public static class Answer {
-    
+        
         private final int number;
-    
+        
         public Answer() {
             this(42);
         }
-    
+        
         public Answer(int number) {
             this.number = number;
         }
-    
+        
         @Override
         public String toString() {
             return "Answer [number=" + number + "]";

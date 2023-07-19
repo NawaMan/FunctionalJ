@@ -33,19 +33,19 @@ public interface DoubleAggregatorToDouble extends DoubleToDoubleAccessPrimitive,
     
     // == Implementation ==
     public static class Impl implements DoubleAggregatorToDouble {
-    
+        
         private final DoubleCollectedToDouble<?> collected;
-    
+        
         public Impl(DoubleCollectorToDoublePlus<?> collector) {
             this.collected = DoubleCollectedToDouble.of(collector);
         }
-    
+        
         @Override
         public double applyToDouble(double input) {
             collected.accumulate(input);
             return collected.finish();
         }
-    
+        
         public DoubleCollectedToDouble<?> asCollected() {
             return collected;
         }

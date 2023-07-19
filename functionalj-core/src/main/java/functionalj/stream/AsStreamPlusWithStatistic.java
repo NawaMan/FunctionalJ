@@ -486,7 +486,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
                     return running;
                 };
             }
-    
+        
             @Override
             public Function<RunningData, Result<BigDecimal>> finisher() {
                 return running -> {
@@ -494,7 +494,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
                     return (count == 0) ? Result.ofNull() : Result.valueOf(running.sum.divide(BigDecimal.valueOf(count)));
                 };
             }
-    
+        
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
