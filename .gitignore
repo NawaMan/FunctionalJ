@@ -38,3 +38,27 @@ functionalj-store/target/
 functionalj-types/target/
 
 target/
+
+.project
+
+.settings/
+
+functionalj-all/.classpath
+
+functionalj-all/.factorypath
+
+functionalj-core/.classpath
+
+functionalj-core/.factorypath
+
+functionalj-elm/.classpath
+
+functionalj-store/.classpath
+
+functionalj-store/.factorypath
+
+functionalj-types/.classpath
+
+functionalj-types-tests/.classpath
+
+functionalj-types-tests/.factorypath
