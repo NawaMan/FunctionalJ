@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: functionalj.list.FuncListTest
--------------------------------------------------------------------------------
-Tests run: 266, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 2.816 s -- in functionalj.list.FuncListTest

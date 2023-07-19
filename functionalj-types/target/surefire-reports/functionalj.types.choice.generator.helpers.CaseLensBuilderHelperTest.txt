@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: functionalj.types.choice.generator.helpers.CaseLensBuilderHelperTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in functionalj.types.choice.generator.helpers.CaseLensBuilderHelperTest

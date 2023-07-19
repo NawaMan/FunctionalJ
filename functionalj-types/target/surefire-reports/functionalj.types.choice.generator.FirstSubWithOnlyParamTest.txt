@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: functionalj.types.choice.generator.FirstSubWithOnlyParamTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in functionalj.types.choice.generator.FirstSubWithOnlyParamTest

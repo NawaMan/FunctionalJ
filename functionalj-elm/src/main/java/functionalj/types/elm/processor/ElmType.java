@@ -31,17 +31,17 @@ import functionalj.types.Type;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class ElmType {
-
+    
     private final Type type;
-
+    
     public ElmType(Type type) {
         this.type = type;
     }
-
+    
     public Type functionaljType() {
         return type;
     }
-
+    
     public String toString() {
         return UElmType.emlType(type);
     }

@@ -98,15 +98,15 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
                 method.error("Rule spec method MUST have one parameter.");
                 continue;
             }
-            String   targetName = method.simpleName().toString();
+            String   targetName     = method.simpleName().toString();
             String   enclosingClass = method.enclosingElement().simpleName();
-            String   packageName = method.packageQualifiedName();
-            String   superType = getSuperType(method);
-            String   dataName = getDataName(method);
-            String   dataType = getDataType(method);
-            String   errorMsg = isBool ? msg : null;
-            RuleSpec spec = new RuleSpec(targetName, enclosingClass, packageName, superType, dataName, dataType, errorMsg, ruleType);
-            String className = packageName + "." + targetName;
+            String   packageName    = method.packageQualifiedName();
+            String   superType      = getSuperType(method);
+            String   dataName       = getDataName(method);
+            String   dataType       = getDataType(method);
+            String   errorMsg       = isBool ? msg : null;
+            RuleSpec spec           = new RuleSpec(targetName, enclosingClass, packageName, superType, dataName, dataType, errorMsg, ruleType);
+            String   className      = packageName + "." + targetName;
             try {
                 String content = spec.toCode();
                 element.generateCode(className, content);

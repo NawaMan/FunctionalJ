@@ -61,7 +61,8 @@ public class GenStruct implements ILines {
     /**
      * Construct a GenStruct with the data object spec.
      *
-     * @param dataObjSpec  the spec.
+     * @param  sourceSpec   the source spec.
+     * @param  dataObjSpec  the struct spec.
      */
     public GenStruct(SourceSpec sourceSpec, StructSpec dataObjSpec) {
         this.sourceSpec = sourceSpec;

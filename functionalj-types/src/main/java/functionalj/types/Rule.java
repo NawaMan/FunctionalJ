@@ -37,11 +37,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Rule {
     
-    /**
-     * The error message used in the case of boolean validation
-     */
+    /** @return  the error message used in the case of boolean validation or <code>null</code> if no error. */
     public String value() default "";
     
+    /** @return  the name of the super class that is also a {@link Rule}. */
     public String extendRule() default "";
     
 }

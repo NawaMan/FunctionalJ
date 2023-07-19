@@ -50,35 +50,35 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
-
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static enum UnderlineMap {
-
+        
         HashMap(java.util.HashMap::new), LinkedHashMap(java.util.LinkedHashMap::new), TreeMap(java.util.TreeMap::new);
-
+        
         private final Func0<Map> newMap;
-
+        
         private UnderlineMap(Func0<Map> newMap) {
             this.newMap = newMap;
         }
-
+        
         <K, V> Map<K, V> newMap() {
             return (Map<K, V>) newMap.apply();
         }
     }
-
+    
     public static Ref<UnderlineMap> underlineMap = Ref.ofValue(UnderlineMap.HashMap);
-
+    
     public static class Entry<KEY, VALUE> implements Map.Entry<KEY, VALUE>, Tuple2<KEY, VALUE> {
-
+        
         private final KEY key;
-
+        
         private final VALUE value;
-
+        
         public static <K, V> Entry<K, V> of(K key, V value) {
             return new Entry<K, V>(key, value);
         }
-
+        
         public static <K, V> Entry<K, V> of(Map.Entry<K, V> entry) {
             if (entry == null)
                 return null;
@@ -88,47 +88,47 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             V value = entry.getValue();
             return new Entry<K, V>(key, value);
         }
-
+        
         public Entry(KEY key, VALUE value) {
             this.key = key;
             this.value = value;
         }
-
+        
         @Override
         public final KEY _1() {
             return key;
         }
-
+        
         @Override
         public final VALUE _2() {
             return value;
         }
-
+        
         @Override
         public final KEY getKey() {
             return key;
         }
-
+        
         @Override
         public final VALUE getValue() {
             return value;
         }
-
+        
         @Override
         public final VALUE setValue(VALUE value) {
             throw new UnsupportedOperationException();
         }
-
+        
         @Override
         public final String toString() {
             return key + "=" + value;
         }
-
+        
         @Override
         public final int hashCode() {
             return Entry.class.hashCode() + Objects.hash(key, value);
         }
-
+        
         @SuppressWarnings("unchecked")
         @Override
         public final boolean equals(Object obj) {
@@ -140,53 +140,59 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             return Objects.equals(entry.getKey(), key) && Objects.equals(entry.getValue(), value);
         }
     }
-
+    
     public static <K, V> ImmutableFuncMap<K, V> empty() {
         return ImmutableFuncMap.empty();
     }
-
+    
     public static <K, V> ImmutableFuncMap<K, V> emptyMap() {
         return ImmutableFuncMap.empty();
     }
-
+    
     public static <K, V> ImmutableFuncMap<K, V> empty(Class<K> keyClass, Class<V> valueClass) {
         return ImmutableFuncMap.empty();
     }
-
+    
     public static <K, V> ImmutableFuncMap<K, V> emptyMap(Class<K> keyClass, Class<V> valueClass) {
         return ImmutableFuncMap.empty();
     }
-
+    
     @SuppressWarnings("unchecked")
     public static <K, V> ImmutableFuncMap<K, V> from(Map<? extends K, ? extends V> map) {
         if (map instanceof ImmutableFuncMap)
             return (ImmutableFuncMap<K, V>) map;
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     public static <K, V> ImmutableFuncMap<K, V> from(Stream<? extends Map.Entry<? extends K, ? extends V>> stream) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         stream.forEach(entry -> map.put(entry.getKey(), entry.getValue()));
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     @SafeVarargs
     public static <K, V> ImmutableFuncMap<K, V> ofEntries(Map.Entry<K, V>... entries) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         stream(entries).forEach(entry -> map.put(entry.getKey(), entry.getValue()));
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     @SafeVarargs
     public static <K, V> ImmutableFuncMap<K, V> ofTuples(Tuple2<K, V>... entries) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         stream(entries).forEach(entry -> map.put(entry._1(), entry._2()));
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -194,10 +200,18 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key0, value0);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
+     * @param  key1    the 1st key.
+     * @param  value1  the 1st value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -207,10 +221,20 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key1, value1);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
+     * @param  key1    the 1st key.
+     * @param  value1  the 1st value.
+     * @param  key2    the 2nd key.
+     * @param  value2  the 2nd value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -222,10 +246,22 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key2, value2);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
+     * @param  key1    the 1st key.
+     * @param  value1  the 1st value.
+     * @param  key2    the 2nd key.
+     * @param  value2  the 2nd value.
+     * @param  key3    the 3rd key.
+     * @param  value3  the 3rd value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -239,10 +275,24 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key3, value3);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
+     * @param  key1    the 1st key.
+     * @param  value1  the 1st value.
+     * @param  key2    the 2nd key.
+     * @param  value2  the 2nd value.
+     * @param  key3    the 3rd key.
+     * @param  value3  the 3rd value.
+     * @param  key4    the 4th key.
+     * @param  value4  the 4th value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -258,10 +308,26 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key4, value4);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
+     * @param  key1    the 1st key.
+     * @param  value1  the 1st value.
+     * @param  key2    the 2nd key.
+     * @param  value2  the 2nd value.
+     * @param  key3    the 3rd key.
+     * @param  value3  the 3rd value.
+     * @param  key4    the 4th key.
+     * @param  value4  the 4th value.
+     * @param  key5    the 5th key.
+     * @param  value5  the 5th value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -279,10 +345,28 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key5, value5);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
+     * @param  key1    the 1st key.
+     * @param  value1  the 1st value.
+     * @param  key2    the 2nd key.
+     * @param  value2  the 2nd value.
+     * @param  key3    the 3rd key.
+     * @param  value3  the 3rd value.
+     * @param  key4    the 4th key.
+     * @param  value4  the 4th value.
+     * @param  key5    the 5th key.
+     * @param  value5  the 5th value.
+     * @param  key6    the 6th key.
+     * @param  value6  the 6th value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -302,10 +386,30 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key6, value6);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
+     * @param  key1    the 1st key.
+     * @param  value1  the 1st value.
+     * @param  key2    the 2nd key.
+     * @param  value2  the 2nd value.
+     * @param  key3    the 3rd key.
+     * @param  value3  the 3rd value.
+     * @param  key4    the 4th key.
+     * @param  value4  the 4th value.
+     * @param  key5    the 5th key.
+     * @param  value5  the 5th value.
+     * @param  key6    the 6th key.
+     * @param  value6  the 6th value.
+     * @param  key7    the 7th key.
+     * @param  value7  the 7th value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -327,10 +431,32 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key7, value7);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
+     * @param  key1    the 1st key.
+     * @param  value1  the 1st value.
+     * @param  key2    the 2nd key.
+     * @param  value2  the 2nd value.
+     * @param  key3    the 3rd key.
+     * @param  value3  the 3rd value.
+     * @param  key4    the 4th key.
+     * @param  value4  the 4th value.
+     * @param  key5    the 5th key.
+     * @param  value5  the 5th value.
+     * @param  key6    the 6th key.
+     * @param  value6  the 6th value.
+     * @param  key7    the 7th key.
+     * @param  value7  the 7th value.
+     * @param  key8    the 8th key.
+     * @param  value8  the 8th value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -354,10 +480,34 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key8, value8);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0    the 0th key.
+     * @param  value0  the 0th value.
+     * @param  key1    the 1st key.
+     * @param  value1  the 1st value.
+     * @param  key2    the 2nd key.
+     * @param  value2  the 2nd value.
+     * @param  key3    the 3rd key.
+     * @param  value3  the 3rd value.
+     * @param  key4    the 4th key.
+     * @param  value4  the 4th value.
+     * @param  key5    the 5th key.
+     * @param  value5  the 5th value.
+     * @param  key6    the 6th key.
+     * @param  value6  the 6th value.
+     * @param  key7    the 7th key.
+     * @param  value7  the 7th value.
+     * @param  key8    the 8th key.
+     * @param  value8  the 8th value.
+     * @param  key9    the 9th key.
+     * @param  value9  the 9th value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8, K key9, V value9) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -383,10 +533,36 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key9, value9);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * @param  key3     the 3rd key.
+     * @param  value3   the 3rd value.
+     * @param  key4     the 4th key.
+     * @param  value4   the 4th value.
+     * @param  key5     the 5th key.
+     * @param  value5   the 5th value.
+     * @param  key6     the 6th key.
+     * @param  value6   the 6th value.
+     * @param  key7     the 7th key.
+     * @param  value7   the 7th value.
+     * @param  key8     the 8th key.
+     * @param  value8   the 8th value.
+     * @param  key9     the 9th key.
+     * @param  value9   the 9th value.
+     * @param  key10    the 10th key.
+     * @param  value10  the 10th value.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8, K key9, V value9, K key10, V value10) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -414,7 +590,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key10, value10);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -425,7 +601,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key0, value0);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -438,7 +614,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key1, value1);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -453,7 +629,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key2, value2);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -470,7 +646,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key3, value3);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -489,7 +665,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key4, value4);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -510,7 +686,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key5, value5);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -533,7 +709,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key6, value6);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -558,7 +734,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key7, value7);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -585,7 +761,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key8, value8);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -614,7 +790,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key9, value9);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
@@ -645,113 +821,113 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             map.put(key10, value10);
         return new ImmutableFuncMap<K, V>(map);
     }
-
+    
     // Map builder.
     public static <K, V> FuncMapBuilder<K, V> newFuncMap() {
         return new FuncMapBuilder<K, V>();
     }
-
+    
     public static <K, V> FuncMapBuilder<K, V> newMap() {
         return new FuncMapBuilder<K, V>();
     }
-
+    
     public static <K, V> FuncMapBuilder<K, V> newBuilder() {
         return new FuncMapBuilder<K, V>();
     }
-
+    
     public static <K, V> FuncMapBuilder<K, V> newFuncMap(Class<K> keyClass, Class<V> valueClass) {
         return new FuncMapBuilder<K, V>();
     }
-
+    
     public static <K, V> FuncMapBuilder<K, V> newMap(Class<K> keyClass, Class<V> valueClass) {
         return new FuncMapBuilder<K, V>();
     }
-
+    
     public static <K, V> FuncMapBuilder<K, V> newBuilder(Class<K> keyClass, Class<V> valueClass) {
         return new FuncMapBuilder<K, V>();
     }
-
+    
     // Functionalities
     public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
         return mapValue(v -> mapper.apply(v));
     }
-
+    
     public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
         return mapEntry((k, v) -> mapper.apply(k, v));
     }
-
+    
     public <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, TARGET> mapper) {
         return map((k, v) -> mapper.apply(v));
     }
-
+    
     public abstract <TARGET> FuncMap<KEY, TARGET> mapEntry(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper);
-
+    
     public boolean isLazy() {
         return true;
     }
-
+    
     public boolean isEager() {
         return false;
     }
-
+    
     public abstract FuncMap<KEY, VALUE> lazy();
-
+    
     public abstract FuncMap<KEY, VALUE> eager();
-
+    
     @Override
     public abstract int size();
-
+    
     @Override
     public abstract boolean isEmpty();
-
+    
     public abstract boolean hasKey(KEY key);
-
+    
     public abstract boolean hasValue(VALUE value);
-
+    
     public abstract boolean hasKey(Predicate<? super KEY> keyCheck);
-
+    
     public abstract boolean hasValue(Predicate<? super VALUE> valueCheck);
-
+    
     public abstract Optional<VALUE> findBy(KEY key);
-
+    
     public abstract FuncList<VALUE> select(Predicate<? super KEY> keyPredicate);
-
+    
     public abstract FuncList<Map.Entry<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
-
+    
     // TODO - Add with using function.
     public abstract FuncMap<KEY, VALUE> with(KEY key, VALUE value);
-
+    
     public abstract FuncMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries);
-
+    
     public abstract FuncMap<KEY, VALUE> exclude(KEY key);
-
+    
     public abstract FuncMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck);
-
+    
     public abstract FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck);
-
+    
     @SuppressWarnings("unchecked")
     public FuncMap<KEY, VALUE> filterByValue(Predicate<? super VALUE> valueCheck) {
         return filterByEntry(entry -> valueCheck.test((VALUE) entry.getValue()));
     }
-
+    
     public abstract FuncMap<KEY, VALUE> filterByEntry(Predicate<? super Map.Entry<? super KEY, ? super VALUE>> entryCheck);
-
+    
     public abstract FuncList<KEY> keys();
-
+    
     public abstract FuncList<VALUE> values();
-
+    
     public abstract Set<Map.Entry<KEY, VALUE>> entrySet();
-
+    
     public abstract FuncList<Map.Entry<KEY, VALUE>> entries();
-
+    
     public abstract Map<KEY, VALUE> toMap();
-
+    
     public abstract ImmutableFuncMap<KEY, VALUE> toImmutableMap();
-
+    
     public Func1<KEY, VALUE> toFunction() {
         return this::get;
     }
-
+    
     public Func1<KEY, VALUE> toFunction(VALUE elseValue) {
         return key -> {
             try {
@@ -762,7 +938,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             }
         };
     }
-
+    
     public Func1<KEY, VALUE> toFunction(Func0<VALUE> elseSupplier) {
         return key -> {
             try {
@@ -773,7 +949,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             }
         };
     }
-
+    
     public Func1<KEY, VALUE> toFunction(Func1<KEY, VALUE> elseProvider) {
         return key -> {
             try {
@@ -784,7 +960,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             }
         };
     }
-
+    
     public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, VALUE elseValue) {
         return key -> {
             try {
@@ -797,7 +973,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             }
         };
     }
-
+    
     public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, Func0<VALUE> elseSupplier) {
         return key -> {
             try {
@@ -810,7 +986,7 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             }
         };
     }
-
+    
     public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, Func1<KEY, VALUE> elseProvider) {
         return key -> {
             try {
@@ -825,27 +1001,27 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
             }
         };
     }
-
+    
     public ImmutableFuncMap<KEY, VALUE> freeze() {
         return toImmutableMap();
     }
-
+    
     public abstract FuncMap<KEY, VALUE> sorted();
-
+    
     public abstract FuncMap<KEY, VALUE> sorted(Comparator<? super Map.Entry<KEY, VALUE>> comparator);
-
+    
     public abstract FuncMap<KEY, VALUE> sortedByKey(Comparator<? super KEY> comparator);
-
+    
     public abstract FuncMap<KEY, VALUE> sortedByValue(Comparator<? super VALUE> comparator);
-
+    
     public abstract void forEach(BiConsumer<? super KEY, ? super VALUE> action);
-
+    
     public abstract void forEach(Consumer<? super Map.Entry<? super KEY, ? super VALUE>> action);
-
+    
     public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, Func2<VALUE, IN, OUT> merger) {
         return zipWith(anotherMap, RequireBoth, merger);
     }
-
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, ZipWithOption option, Func2<VALUE, IN, OUT> merger) {
         val keys1 = this.keys();
@@ -857,16 +1033,16 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
         });
         return (FuncMap) map;
     }
-
+    
     public String toString() {
         return "{" + entries().map(String::valueOf).collect(Collectors.joining(", ")) + "}";
     }
-
+    
     @Override
     public int hashCode() {
         return FuncMap.class.hashCode() + entries().hashCode();
     }
-
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public boolean equals(Object o) {

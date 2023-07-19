@@ -24,3 +24,17 @@ build/
 .navigation
 captures/
 output.json
+
+functionalj-all/target/
+
+functionalj-all/dependency-reduced-pom.xml
+
+functionalj-core/target/
+
+functionalj-elm/target/
+
+functionalj-store/target/
+
+functionalj-types/target/
+
+target/

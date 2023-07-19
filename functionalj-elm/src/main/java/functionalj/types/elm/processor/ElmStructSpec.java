@@ -25,10 +25,12 @@ package functionalj.types.elm.processor;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
+
+import java.util.List;
+
 import functionalj.types.elm.Elm;
 import functionalj.types.input.InputElement;
 import functionalj.types.struct.generator.SourceSpec;
-import lombok.val;
 
 /**
  * This class represents The spec for an Elm structure type.
@@ -36,62 +38,64 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class ElmStructSpec {
-
+    
     private final SourceSpec sourceSpec;
-
+    
     private final String typeName;
-
+    
     private final String folderName;
-
+    
     private final String generatedDirectory;
-
+    
     public ElmStructSpec(SourceSpec sourceSpec, InputElement element) {
         this.sourceSpec = sourceSpec;
-        this.typeName = sourceSpec.getTargetClassName();
-        val baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
-        this.folderName = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
-        val generatedDirectory = element.annotation(Elm.class).generatedDirectory();
-        this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
+        this.typeName   = sourceSpec.getTargetClassName();
+        
+        List<String> baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
+        this.folderName         = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
+        
+        String generatedDirectory = element.annotation(Elm.class).generatedDirectory();
+        this.generatedDirectory   = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
-
+    
     ElmStructSpec(SourceSpec sourceSpec, String typeName, String folderName, String generatedDirectory) {
         this.sourceSpec = sourceSpec;
         this.typeName = typeName;
         this.folderName = folderName;
         this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
-
+    
     private String elmBaseModule(InputElement element, SourceSpec sourceSpec) {
-        val baseModule = element.annotation(Elm.class).baseModule();
-        val elmtPackage = sourceSpec.getPackageName();
+        String baseModule  = element.annotation(Elm.class).baseModule();
+        String elmtPackage = sourceSpec.getPackageName();
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) ? elmtPackage : baseModule;
     }
-
+    
     public SourceSpec sourceSpec() {
         return sourceSpec;
     }
-
+    
     public String typeName() {
         return typeName;
     }
-
+    
     public String fileName() {
         return typeName + ".elm";
     }
-
+    
     public String moduleName() {
-        val moduleBase = ((folderName == null) || folderName.isEmpty()) ? "" : (folderName.replace('/', '.') + ".");
+        String moduleBase = ((folderName == null) || folderName.isEmpty()) ? "" : (folderName.replace('/', '.') + ".");
         return moduleBase + typeName;
     }
-
+    
     public String folderName() {
         return folderName;
     }
-
+    
     public String generatedDirectory() {
         return generatedDirectory;
     }
-
+    
     @Override
     public String toString() {
         return "ElmStructSpec [" + "typeName=" + typeName + ", " + "fileName=" + fileName() + ", " + "moduleName=" + moduleName() + ", " + "folderName=" + folderName + ", " + "generatedDirectory=" + generatedDirectory + "]";

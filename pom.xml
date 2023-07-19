@@ -77,10 +77,10 @@
     <modules>
         <module>functionalj-core</module>
         <module>functionalj-types</module>
-        <!--module>functionalj-store</module>
+        <module>functionalj-store</module>
         <module>functionalj-elm</module>
         <module>functionalj-all</module>
-        <module>functionalj-types-tests</module-->
+        <!--module>functionalj-types-tests</module-->
     </modules>
     
     <dependencyManagement>
@@ -92,17 +92,17 @@
             </dependency>
             <dependency>
                 <groupId>io.functionalj</groupId>
-                <artifactId>functionalj-store</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.functionalj</groupId>
                 <artifactId>functionalj-types</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.functionalj</groupId>
                 <artifactId>functionalj-elm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.functionalj</groupId>
+                <artifactId>functionalj-store</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

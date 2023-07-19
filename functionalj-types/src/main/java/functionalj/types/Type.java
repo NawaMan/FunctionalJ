@@ -486,6 +486,9 @@ public class Type implements IRequireTypes {
     /**
      * Returns the lens type of this type.
      *
+     * @param  packageName        the package name.
+     * @param  encloseName        the name of the type that enclose this type.
+     * @param  localTypeWithLens  the list of local types that has lens.
      * @return  the lens type.
      */
     public Type lensType(String packageName, String encloseName, List<String> localTypeWithLens) {

@@ -23,22 +23,20 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
-import lombok.val;
-
 /**
  * Generic utility class.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
 public class Utils {
-
+    
     public static String toTitleCase(String str) {
         if ((str == null) || str.isEmpty()) {
             return str;
         }
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
-
+    
     public static String toCamelCase(String str) {
         if ((str == null) || str.isEmpty()) {
             return str;
@@ -47,14 +45,14 @@ public class Utils {
             return str.toLowerCase();
         if (str.length() <= 2)
             return str.toLowerCase();
-        val firstTwo = str.substring(0, 2);
+        String firstTwo = str.substring(0, 2);
         if (firstTwo.equals(firstTwo.toUpperCase())) {
-            val first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
-            val rest = str.substring(first.length());
+            String first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
+            String rest  = str.substring(first.length());
             return first.toLowerCase() + rest;
         } else {
-            val first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
-            val rest = str.substring(first.length());
+            String first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
+            String rest  = str.substring(first.length());
             return first.toLowerCase() + rest;
         }
     }

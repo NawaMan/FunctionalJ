@@ -24,12 +24,13 @@
 package functionalj.types.elm.processor;
 
 import static functionalj.types.elm.processor.Utils.toCamelCase;
+import static java.util.stream.Collectors.joining;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import functionalj.types.Type;
-import lombok.val;
 
 /**
  * This utility class help mapping Java type to Elm type.
@@ -37,9 +38,9 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class UElmType {
-
+    
     static private final Map<Type, String> primitiveTypes;
-
+    
     static {
         primitiveTypes = new HashMap<Type, String>();
         primitiveTypes.put(Type.BOOL, "Bool");
@@ -63,91 +64,94 @@ public class UElmType {
         primitiveTypes.put(Type.STR, "String");
         primitiveTypes.put(Type.STRING, "String");
     }
-
+    
     public static String emlType(Type type) {
-        val basicType = elmBasicType(type);
+        String basicType = elmBasicType(type);
         // https://package.elm-lang.org/packages/elm-lang/core/3.0.0/Result
         // https://package.elm-lang.org/packages/elm-lang/core/3.0.0/Date
         // https://package.elm-lang.org/packages/elm-lang/core/3.0.0/Time
         if (basicType != null)
             return basicType;
+        
         // Must check if the type is local. If not, we need to use full name.
         return elmFullName(type);
     }
-
+    
     public static String elmParamType(Type type) {
         return param(type);
     }
-
+    
     public static String elmParamType(String type) {
         return wrap(type);
     }
-
+    
     private static String elmFullName(Type type) {
-        val simpleName = type.simpleName();
-        val packageName = type.packageName();
+        String simpleName  = type.simpleName();
+        String packageName = type.packageName();
         if (packageName == null)
             return simpleName;
-        val moduleName = Stream.of(packageName.split("\\.")).map(Utils::toTitleCase).collect(Collectors.joining("."));
+        
+        String moduleName = Stream.of(packageName.split("\\.")).map(Utils::toTitleCase).collect(joining("."));
         if (moduleName.isEmpty())
             return simpleName;
+        
         return moduleName + "." + simpleName;
     }
-
+    
     private static String elmBasicType(Type type) {
         String primitiveElmType = primitiveTypes.get(type);
         if (primitiveElmType != null)
             return primitiveElmType;
         if (type.isList() || type.isFuncList()) {
-            val elmType = elmListType(type);
+            String elmType = elmListType(type);
             return elmType;
         }
         if (type.isMap() || type.isFuncMap()) {
-            val elmType = elmMapType(type);
+            String elmType = elmMapType(type);
             return elmType;
         }
         if (type.isOptional() || type.isNullable()) {
-            val elmType = elmMayBeType(type);
+            String elmType = elmMayBeType(type);
             return elmType;
         }
         return null;
     }
-
+    
     private static String elmListType(Type type) {
-        val aType = type.generics().get(0).toType();
-        val aStrg = param(aType);
-        val elmType = "List " + aStrg;
+        Type   aType   = type.generics().get(0).toType();
+        String aStrg   = param(aType);
+        String elmType = "List " + aStrg;
         return elmType;
     }
-
+    
     private static String elmMapType(Type type) {
-        val kType = type.generics().get(0).toType();
-        val kStrg = param(kType);
-        val vType = type.generics().get(1).toType();
-        val vStrg = param(vType);
-        val elmType = "Dict " + kStrg + " " + vStrg;
+        Type   kType   = type.generics().get(0).toType();
+        String kStrg   = param(kType);
+        Type   vType   = type.generics().get(1).toType();
+        String vStrg   = param(vType);
+        String elmType = "Dict " + kStrg + " " + vStrg;
         return elmType;
     }
-
+    
     public static String elmMayBeType(Type type) {
-        val aType = type.generics().get(0).toType();
-        val aStrg = param(aType);
-        val elmType = "Maybe " + aStrg;
+        Type   aType   = type.generics().get(0).toType();
+        String aStrg   = param(aType);
+        String elmType = "Maybe " + aStrg;
         return elmType;
     }
-
+    
     public static String elmMayBeOfType(Type type) {
-        val aStrg = param(type);
-        val elmType = "Maybe " + aStrg;
+        String aStrg   = param(type);
+        String elmType = "Maybe " + aStrg;
         return elmType;
     }
-
+    
     private static String param(Type type) {
-        val emlType = emlType(type);
-        val paramType = wrap(emlType);
+        String emlType   = emlType(type);
+        String paramType = wrap(emlType);
         return paramType;
     }
-
+    
     private static String wrap(String typeStr) {
         if (typeStr.startsWith("(") && typeStr.endsWith(""))
             return typeStr;
@@ -155,28 +159,29 @@ public class UElmType {
             return typeStr;
         return "(" + typeStr + ")";
     }
-
+    
     public static String encoderNameOf(Type type, String name) {
         return encoderNameOf(type, name, false);
     }
-
+    
     public static String encoderNameOf(Type type, String name, boolean isNullable) {
         name = (name != null) ? name : "";
         boolean isOptionalType = type.isOptional() || type.isNullable();
         if (isNullable || isOptionalType) {
-            val paramType = isOptionalType ? type.generics().get(0).toType() : type;
-            val paramEncoder = encoderNameOf(paramType, name);
+            Type   paramType    = isOptionalType ? type.generics().get(0).toType() : type;
+            String paramEncoder = encoderNameOf(paramType, name);
             return "Maybe.withDefault Json.Encode.null (Maybe.map " + paramEncoder + ")";
         }
-        val primitiveElmType = primitiveTypes.get(type);
+        String primitiveElmType = primitiveTypes.get(type);
         if (primitiveElmType != null)
             return "Json.Encode." + primitiveElmType.toLowerCase() + " " + name;
-        val typeName = toCamelCase(type.simpleName());
+        String typeName = toCamelCase(type.simpleName());
         if (type.isList() || type.isFuncList()) {
-            val paramType = type.generics().get(0).toType();
-            val genericPrimitiveType = primitiveTypes.get(paramType);
+            Type   paramType            = type.generics().get(0).toType();
+            String genericPrimitiveType = primitiveTypes.get(paramType);
             if (genericPrimitiveType != null)
                 return "Json.Encode.list Json.Encode." + genericPrimitiveType.toLowerCase() + " " + name;
+            
             return typeName + "ListEncoder " + name;
         }
         if (type.isMap() || type.isFuncMap()) {
@@ -184,15 +189,16 @@ public class UElmType {
         }
         return typeName + "Encoder " + name;
     }
-
+    
     public static String decoderNameOf(Type type) {
-        val primitiveElmType = primitiveTypes.get(type);
+        String primitiveElmType = primitiveTypes.get(type);
         if (primitiveElmType != null)
             return "Json.Decode." + primitiveElmType.toLowerCase();
-        val typeName = Utils.toCamelCase(type.simpleName());
-        if (type.isList() || type.isFuncList()) {
+        
+        String typeName = Utils.toCamelCase(type.simpleName());
+        if (type.isList() || type.isFuncList())
             return typeName + "ListDecode";
-        }
+        
         if (type.isMap() || type.isFuncMap()) {
             throw new UnsupportedOperationException("Decoder of map type is not yet support.");
         }

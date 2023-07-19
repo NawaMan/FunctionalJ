@@ -36,16 +36,16 @@ import javax.tools.Diagnostic;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class DummyMessager implements Messager {
-
+    
     public void printMessage(Diagnostic.Kind kind, CharSequence msg) {
     }
-
+    
     public void printMessage(Diagnostic.Kind kind, CharSequence msg, Element e) {
     }
-
+    
     public void printMessage(Diagnostic.Kind kind, CharSequence msg, Element e, AnnotationMirror a) {
     }
-
+    
     public void printMessage(Diagnostic.Kind kind, CharSequence msg, Element e, AnnotationMirror a, AnnotationValue v) {
     }
 }
