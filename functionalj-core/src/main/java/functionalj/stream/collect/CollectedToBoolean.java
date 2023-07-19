@@ -26,39 +26,39 @@ package functionalj.stream.collect;
 import java.util.function.BiConsumer;
 
 public interface CollectedToBoolean<DATA, ACCUMULATED> extends Collected<DATA, ACCUMULATED, Boolean> {
-
+    
     public static <SRC, ACC> CollectedToBoolean<SRC, ACC> of(CollectorToBooleanPlus<SRC, ACC> collector) {
         return new CollectedToBoolean.Impl<SRC, ACC>(collector);
     }
-
+    
     // == Instance ==
     public void accumulate(DATA each);
-
+    
     public boolean finishToBoolean();
-
+    
     public default Boolean finish() {
         return finishToBoolean();
     }
-
+    
     // == Implementation ==
     public static class Impl<DATA, ACCUMULATED> implements CollectedToBoolean<DATA, ACCUMULATED> {
-
+    
         private final CollectorToBooleanPlus<DATA, ACCUMULATED> collector;
-
+    
         private final BiConsumer<ACCUMULATED, DATA> accumulator;
-
+    
         private final ACCUMULATED accumulated;
-
+    
         public Impl(CollectorToBooleanPlus<DATA, ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.accumulator();
         }
-
+    
         public void accumulate(DATA each) {
             accumulator.accept(accumulated, each);
         }
-
+    
         public boolean finishToBoolean() {
             return collector.finisherToBoolean().test(accumulated);
         }

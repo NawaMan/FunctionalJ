@@ -32,7 +32,7 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class CombineResultTest {
-
+    
     @Test
     public void testMerge() {
         val logs = new ArrayList<String>();

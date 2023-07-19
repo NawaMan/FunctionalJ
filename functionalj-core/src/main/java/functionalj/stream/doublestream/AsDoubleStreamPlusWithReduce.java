@@ -29,9 +29,9 @@ import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 
 public interface AsDoubleStreamPlusWithReduce {
-
+    
     public DoubleStreamPlus doubleStreamPlus();
-
+    
     /**
      * Performs a reduction on the elements of this stream, using the provided identity value and an associative accumulation function,
      * and returns the reduced value.
@@ -41,7 +41,7 @@ public interface AsDoubleStreamPlusWithReduce {
     public default double reduce(double identity, DoubleBinaryOperator reducer) {
         return doubleStreamPlus().reduce(identity, reducer);
     }
-
+    
     /**
      * Performs a reduction on the elements of this stream, using the provided identity value and an associative accumulation function,
      * and returns the reduced value.

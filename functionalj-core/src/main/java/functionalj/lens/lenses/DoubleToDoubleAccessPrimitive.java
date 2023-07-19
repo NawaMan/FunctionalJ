@@ -41,74 +41,74 @@ import lombok.val;
  */
 @FunctionalInterface
 public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, DoubleAccessPrimitive<Double>, DoubleFunction<Double> {
-
+    
     // == Constructor ==
     public static DoubleToDoubleAccessPrimitive of(DoubleToDoubleAccessPrimitive accessToValue) {
         return accessToValue;
     }
-
+    
     public static DoubleToDoubleAccessPrimitive from(DoubleUnaryOperator accessToValue) {
         return host -> accessToValue.applyAsDouble(host);
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive newAccess(Function<Double, Double> accessToValue) {
         return accessToValue::apply;
     }
-
+    
     public default DoubleToDoubleAccessPrimitive newAccess(DoubleUnaryOperator accessToValue) {
         return accessToValue::applyAsDouble;
     }
-
+    
     // == abstract functionalities ==
     public double applyToDouble(double host);
-
+    
     @Override
     public default double applyAsDouble(double host) {
         return applyToDouble(host);
     }
-
+    
     @Override
     public default double applyAsDouble(Double host) {
         return applyToDouble(host);
     }
-
+    
     @Override
     public default Double apply(double host) {
         return applyToDouble(host);
     }
-
+    
     // -- conversion --
     @Override
     public default DoubleToDoubleAccessBoxed boxed() {
         return host -> apply(host);
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive asInteger() {
         return asInteger(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
-
+    
     @Override
     public default DoubleToLongAccessPrimitive asLong() {
         return asLong(Long.MIN_VALUE, Long.MAX_VALUE);
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive asDouble() {
         return host -> accessPrimitive(this, host);
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive asInteger(int overflowValue) {
         return asInteger(overflowValue, overflowValue);
     }
-
+    
     @Override
     public default DoubleToLongAccessPrimitive asLong(long overflowValue) {
         return asLong(overflowValue, overflowValue);
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive asInteger(int negativeOverflowValue, int positiveOverflowValue) {
         return host -> {
@@ -120,7 +120,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return (int) Math.round(value);
         };
     }
-
+    
     @Override
     public default DoubleToLongAccessPrimitive asLong(long negativeOverflowValue, long positiveOverflowValue) {
         return host -> {
@@ -132,7 +132,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return (long) Math.round(value);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive round() {
         return host -> {
@@ -140,17 +140,17 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.round(value);
         };
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive roundToInt() {
         return round().asInteger();
     }
-
+    
     @Override
     public default DoubleToLongAccessPrimitive roundToLong() {
         return round().asLong();
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive ceil() {
         return host -> {
@@ -158,17 +158,17 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.ceil(value);
         };
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive ceilToInt() {
         return round().asInteger();
     }
-
+    
     @Override
     public default DoubleToLongAccessPrimitive ceilToLong() {
         return round().asLong();
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive floor() {
         return host -> {
@@ -176,17 +176,17 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.floor(value);
         };
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive floorToInt() {
         return floor().asInteger();
     }
-
+    
     @Override
     public default DoubleToLongAccessPrimitive floorToLong() {
         return floor().asLong();
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive roundBy(double precision) {
         return host -> {
@@ -197,7 +197,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.round(value / precision) * precision;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive roundBy(DoubleSupplier precisionSupplier) {
         return host -> {
@@ -209,7 +209,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.round(value / precision) * precision;
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive roundBy(DoubleToDoubleAccessPrimitive precisionFunction) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -220,7 +220,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.round(value / precision) * precision;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive ceilBy(double precision) {
         return host -> {
@@ -231,7 +231,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.ceil(value / precision) * precision;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive ceilBy(DoubleSupplier precisionSupplier) {
         return host -> {
@@ -243,7 +243,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.ceil(value / precision) * precision;
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive ceilBy(DoubleToDoubleAccessPrimitive precisionFunction) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -254,7 +254,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.ceil(value / precision) * precision;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive floorBy(double precision) {
         return host -> {
@@ -265,7 +265,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.floor(value / precision) * precision;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive floorBy(DoubleSupplier precisionSupplier) {
         return host -> {
@@ -277,7 +277,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.floor(value / precision) * precision;
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive floorBy(DoubleToDoubleAccessPrimitive precisionFunction) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -288,12 +288,12 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.floor(value / precision) * precision;
         };
     }
-
+    
     @Override
     public default DoubleToStringAccessPrimitive asString() {
         return host -> "" + accessPrimitive(this, host);
     }
-
+    
     @Override
     public default DoubleToStringAccessPrimitive asString(String template) {
         return host -> {
@@ -301,7 +301,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return String.format(template, value);
         };
     }
-
+    
     // TODO - Find a better way to format this that allow a fix width disregards of the magnitude of the value.
     // or just redirect the format to another function that can be substituted.
     // -- Equality --
@@ -312,7 +312,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return checker.test(value);
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIs(double anotherValue) {
         return host -> {
@@ -320,7 +320,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value == anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIs(DoubleSupplier anotherSupplier) {
         return host -> {
@@ -329,7 +329,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value == anotherValue;
         };
     }
-
+    
     public default DoubleToBooleanAccessPrimitive thatIs(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -337,7 +337,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value == anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNot(double anotherValue) {
         return host -> {
@@ -345,7 +345,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value != anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNot(DoubleSupplier anotherSupplier) {
         return host -> {
@@ -354,7 +354,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value != anotherValue;
         };
     }
-
+    
     public default DoubleToBooleanAccessPrimitive thatIsNot(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -362,7 +362,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value != anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsAnyOf(double... otherValues) {
         return host -> {
@@ -375,7 +375,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return false;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsAnyOf(DoubleFuncList otherValues) {
         return host -> {
@@ -383,7 +383,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return otherValues.anyMatch(anotherValue -> value == anotherValue);
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNoneOf(double... otherValues) {
         return host -> {
@@ -396,7 +396,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return true;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNoneOf(DoubleFuncList otherValues) {
         return host -> {
@@ -404,42 +404,42 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return otherValues.noneMatch(anotherValue -> value == anotherValue);
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsOne() {
         return thatIs(1);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsZero() {
         return thatIs(0);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsMinusOne() {
         return thatIs(-1);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsFourtyTwo() {
         return thatIs(42);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNotOne() {
         return thatIsNot(1);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNotZero() {
         return thatIsNot(0);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNotMinusOne() {
         return thatIsNot(-1);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsPositive() {
         return host -> {
@@ -447,7 +447,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value > 0;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNegative() {
         return host -> {
@@ -455,7 +455,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value < 0;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNotPositive() {
         return host -> {
@@ -463,7 +463,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value <= 0;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsNotNegative() {
         return host -> {
@@ -471,98 +471,98 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value >= 0;
         };
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatEquals(double anotherValue) {
         return new DoubleAccessEqualPrimitive(false, this, (host, value) -> anotherValue);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatEquals(DoubleSupplier anotherSupplier) {
         return new DoubleAccessEqualPrimitive(false, this, (host, value) -> anotherSupplier.getAsDouble());
     }
-
+    
     public default DoubleAccessEqualPrimitive thatEquals(DoubleToDoubleAccessPrimitive anotherAccess) {
         return new DoubleAccessEqualPrimitive(false, this, (host, value) -> anotherAccess.applyAsDouble(host));
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive eq(double anotherValue) {
         return thatEquals(anotherValue);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive eq(DoubleSupplier anotherSupplier) {
         return thatEquals(anotherSupplier);
     }
-
+    
     public default DoubleAccessEqualPrimitive eq(DoubleToDoubleAccessPrimitive anotherAccess) {
         return thatEquals(anotherAccess);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatNotEquals(double anotherValue) {
         return new DoubleAccessEqualPrimitive(true, this, (host, value) -> anotherValue);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatNotEquals(DoubleSupplier anotherSupplier) {
         return new DoubleAccessEqualPrimitive(true, this, (host, value) -> anotherSupplier.getAsDouble());
     }
-
+    
     public default DoubleAccessEqualPrimitive thatNotEquals(DoubleToDoubleAccessPrimitive anotherAccess) {
         return new DoubleAccessEqualPrimitive(true, this, (host, value) -> anotherAccess.applyAsDouble(value));
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive neq(double anotherValue) {
         return thatNotEquals(anotherValue);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive neq(DoubleSupplier anotherSupplier) {
         return thatNotEquals(anotherSupplier);
     }
-
+    
     public default DoubleAccessEqualPrimitive neq(DoubleToDoubleAccessPrimitive anotherAccess) {
         return thatNotEquals(anotherAccess);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatEqualsOne() {
         return thatEquals(1);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatEqualsZero() {
         return thatEquals(0);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatEqualsMinusOne() {
         return thatEquals(-1);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatEqualsFourtyTwo() {
         return thatEquals(42);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatNotEqualsOne() {
         return thatEquals(1);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatNotEqualsZero() {
         return thatEquals(0);
     }
-
+    
     @Override
     public default DoubleAccessEqualPrimitive thatNotEqualsMinusOne() {
         return thatEquals(-1);
     }
-
+    
     // -- Compare --
     @Override
     public default DoubleComparator inOrder() {
@@ -572,7 +572,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return comparePrimitive(aValue, bValue);
         };
     }
-
+    
     @Override
     public default DoubleComparator inReverseOrder() {
         return (a, b) -> {
@@ -581,7 +581,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return comparePrimitive(bValue, aValue);
         };
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive compareTo(double anotherValue) {
         return host -> {
@@ -590,7 +590,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return compare;
         };
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive compareTo(DoubleSupplier anotherSupplier) {
         return host -> {
@@ -600,7 +600,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return compare;
         };
     }
-
+    
     public default DoubleToIntegerAccessPrimitive compareTo(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -609,21 +609,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return compare;
         };
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive cmp(double anotherValue) {
         return compareTo(anotherValue);
     }
-
+    
     @Override
     public default DoubleToIntegerAccessPrimitive cmp(DoubleSupplier anotherSupplier) {
         return compareTo(anotherSupplier);
     }
-
+    
     public default DoubleToIntegerAccessPrimitive cmp(DoubleToDoubleAccessPrimitive anotherAccess) {
         return compareTo(anotherAccess);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatGreaterThan(double anotherValue) {
         return host -> {
@@ -631,7 +631,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value > anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatGreaterThan(DoubleSupplier anotherSupplier) {
         return host -> {
@@ -640,7 +640,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value > anotherValue;
         };
     }
-
+    
     public default DoubleToBooleanAccessPrimitive thatGreaterThan(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -648,21 +648,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value > anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive gt(double anotherValue) {
         return thatGreaterThan(anotherValue);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive gt(DoubleSupplier anotherSupplier) {
         return thatGreaterThan(anotherSupplier);
     }
-
+    
     public default DoubleToBooleanAccessPrimitive gt(DoubleToDoubleAccessPrimitive anotherAccess) {
         return thatGreaterThan(anotherAccess);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatLessThan(double anotherValue) {
         return host -> {
@@ -670,7 +670,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value < anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatLessThan(DoubleSupplier anotherSupplier) {
         return host -> {
@@ -679,7 +679,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value < anotherValue;
         };
     }
-
+    
     public default DoubleToBooleanAccessPrimitive thatLessThan(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -687,21 +687,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value < anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive lt(double anotherValue) {
         return thatLessThan(anotherValue);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive lt(DoubleSupplier anotherSupplier) {
         return thatLessThan(anotherSupplier);
     }
-
+    
     public default DoubleToBooleanAccessPrimitive lt(DoubleToDoubleAccessPrimitive anotherAccess) {
         return thatLessThan(anotherAccess);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(double anotherValue) {
         return host -> {
@@ -709,7 +709,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value >= anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(DoubleSupplier anotherSupplier) {
         return host -> {
@@ -718,7 +718,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value >= anotherValue;
         };
     }
-
+    
     public default DoubleToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -726,21 +726,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value >= anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive gteq(double anotherValue) {
         return thatGreaterThanOrEqualsTo(anotherValue);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive gteq(DoubleSupplier anotherSupplier) {
         return thatGreaterThanOrEqualsTo(anotherSupplier);
     }
-
+    
     public default DoubleToBooleanAccessPrimitive gteq(DoubleToDoubleAccessPrimitive anotherAccess) {
         return thatGreaterThanOrEqualsTo(anotherAccess);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatLessThanOrEqualsTo(double anotherValue) {
         return host -> {
@@ -748,7 +748,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value <= anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive thatLessThanOrEqualsTo(DoubleSupplier anotherSupplier) {
         return host -> {
@@ -757,7 +757,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value <= anotherValue;
         };
     }
-
+    
     public default DoubleToBooleanAccessPrimitive thatLessThanOrEqualsTo(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -765,21 +765,21 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value <= anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive lteq(double anotherValue) {
         return thatLessThanOrEqualsTo(anotherValue);
     }
-
+    
     @Override
     public default DoubleToBooleanAccessPrimitive lteq(DoubleSupplier anotherSupplier) {
         return thatLessThanOrEqualsTo(anotherSupplier);
     }
-
+    
     public default DoubleToBooleanAccessPrimitive lteq(DoubleToDoubleAccessPrimitive anotherAccess) {
         return thatLessThanOrEqualsTo(anotherAccess);
     }
-
+    
     // -- Min+Max --
     @Override
     public default DoubleToDoubleAccessPrimitive min(double anotherValue) {
@@ -788,7 +788,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.min(value, anotherValue);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive min(DoubleSupplier valueSupplier) {
         return host -> {
@@ -797,7 +797,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.min(value, anotherValue);
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive min(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -805,7 +805,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.min(value, anotherValue);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive max(double anotherValue) {
         return host -> {
@@ -813,7 +813,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.max(value, anotherValue);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive max(DoubleSupplier valueSupplier) {
         return host -> {
@@ -822,7 +822,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.max(value, anotherValue);
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive max(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -830,7 +830,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.max(value, anotherValue);
         };
     }
-
+    
     // -- Math --
     @Override
     public default DoubleToBooleanAccessPrimitive thatIsRound() {
@@ -839,7 +839,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return 1.0 * Math.round(value) == value;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive abs() {
         return host -> {
@@ -847,7 +847,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return (value < 0) ? -value : value;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive negate() {
         return host -> {
@@ -855,7 +855,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return -value;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive signum() {
         return host -> {
@@ -863,7 +863,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return (value == 0) ? 0 : (value < 0) ? -1 : 1;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive plus(double anotherValue) {
         return host -> {
@@ -871,7 +871,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value + anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive plus(DoubleSupplier valueSupplier) {
         return host -> {
@@ -880,7 +880,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value + anotherValue;
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive plus(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -888,7 +888,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value + anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive minus(double anotherValue) {
         return host -> {
@@ -896,7 +896,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value - anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive minus(DoubleSupplier valueSupplier) {
         return host -> {
@@ -905,7 +905,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value - anotherValue;
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive minus(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -913,7 +913,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value - anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive time(double anotherValue) {
         return host -> {
@@ -921,7 +921,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value * anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive time(DoubleSupplier valueSupplier) {
         return host -> {
@@ -930,7 +930,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value * anotherValue;
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive time(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -938,7 +938,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value * anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive dividedBy(double anotherValue) {
         return host -> {
@@ -946,7 +946,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return 1.0 * value / anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive dividedBy(DoubleSupplier valueSupplier) {
         return host -> {
@@ -955,7 +955,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return 1.0 * value / anotherValue;
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive dividedBy(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -963,7 +963,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return 1.0 * value / anotherValue;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive remainderBy(double anotherValue) {
         return host -> {
@@ -972,7 +972,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value - (division * anotherValue);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive remainderBy(DoubleSupplier valueSupplier) {
         return host -> {
@@ -982,7 +982,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value - (division * anotherValue);
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive remainderBy(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -991,14 +991,14 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value - (division * anotherValue);
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive inverse() {
         return host -> {
             val value = access(this, host);
             return 1 / (value * 1.0);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive square() {
         return host -> {
@@ -1006,7 +1006,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return value * value;
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive squareRoot() {
         return host -> {
@@ -1014,7 +1014,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.sqrt(value);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive pow(double anotherValue) {
         return host -> {
@@ -1022,7 +1022,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.pow(value, anotherValue);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive pow(DoubleSupplier valueSupplier) {
         return host -> {
@@ -1031,7 +1031,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.pow(value, anotherValue);
         };
     }
-
+    
     public default DoubleToDoubleAccessPrimitive pow(DoubleToDoubleAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -1039,7 +1039,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.pow(value, anotherValue);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive exp() {
         return host -> {
@@ -1047,7 +1047,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.exp(doubleValue);
         };
     }
-
+    
     /**
      * Returns &lt;i&gt;e&lt;/i&gt;&lt;sup&gt;x&lt;/sup&gt;&nbsp;-1.  Note that for values of
      * &lt;i&gt;x&lt;/i&gt; near 0, the exact sum of
@@ -1061,7 +1061,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.expm1(doubleValue);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive log() {
         return host -> {
@@ -1069,7 +1069,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.log(doubleValue);
         };
     }
-
+    
     @Override
     public default DoubleToDoubleAccessPrimitive log10() {
         return host -> {
@@ -1077,7 +1077,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
             return Math.log10(doubleValue);
         };
     }
-
+    
     /**
      * Returns the base 10 logarithm of a {@code double} value.
      * Special cases:

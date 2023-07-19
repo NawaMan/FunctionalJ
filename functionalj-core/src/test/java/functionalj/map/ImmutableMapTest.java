@@ -36,7 +36,7 @@ import functionalj.list.FuncList;
 import lombok.val;
 
 public class ImmutableMapTest {
-
+    
     @Test
     public void testGetFindSelect() {
         assertEquals("Two", "" + FuncMap.of("1", "One", "2", "Two").get("2"));
@@ -45,14 +45,14 @@ public class ImmutableMapTest {
         assertEquals("Three", "" + FuncMap.of("1", "One", "2", "Two").findBy("3").orElse("Three"));
         assertEquals("[One, Two]", "" + FuncMap.of("1", "One", "2", "Two", "10", "Ten").select(key -> key.length() == 1));
     }
-
+    
     @Test
     public void testToString() {
         assertEquals("[1, 2]", "" + FuncMap.of("1", "One", "2", "Two").keys().sorted());
         assertEquals("[One, Two]", "" + FuncMap.of("1", "One", "2", "Two").values().sorted());
         assertEquals("{1:One, 2:Two}", "" + FuncMap.of("1", "One", "2", "Two").sorted());
     }
-
+    
     @Test
     public void testWith() {
         assertEquals(2, FuncMap.of("1", "One", "2", "Two").with("2", "Three").size());
@@ -61,18 +61,18 @@ public class ImmutableMapTest {
         assertEquals("{1:Un, 2:Two}", "" + FuncMap.of("1", "One", "2", "Two").with("1", "Un").sorted());
         assertEquals("{1:One, 2:Du}", "" + FuncMap.of("1", "One", "2", "Two").with("2", "Du").sorted());
     }
-
+    
     @Test
     public void testSorted() {
         assertEquals("{1:One, 2:Two}", "" + FuncMap.of("1", "One", "2", "Two").sorted());
         assertEquals("{1:One, 2:Two}", "" + FuncMap.of("2", "Two", "1", "One").sorted());
     }
-
+    
     @Test
     public void testDuplicateElement() {
         assertEquals("{1:Two}", "" + FuncMap.of("1", "One", "1", "Two").sorted());
     }
-
+    
     @Test
     public void testWith_Full() {
         val orgMap = FuncMap.of("1", "One", "2", "Two");
@@ -171,7 +171,7 @@ public class ImmutableMapTest {
         assertEquals("{3:Three, 2:Two, 1:One}", "" + newMap.sortedByKey(reverseOrder()));
         assertEquals("{2:Du, 1:One}", "" + repMap.sortedByKey(reverseOrder()));
     }
-
+    
     @Test
     public void testFilterKey_Full() {
         val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
@@ -234,7 +234,7 @@ public class ImmutableMapTest {
         assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sortedByKey(reverseOrder()));
         assertEquals("{2:Two, 1:One}", "" + newMap.sortedByKey(reverseOrder()));
     }
-
+    
     @Test
     public void testFilterBoth_Full() {
         val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
@@ -333,7 +333,7 @@ public class ImmutableMapTest {
         assertEquals("{3:Three, 1:One}", "" + revMap.sortedByKey(reverseOrder()));
         assertEquals("{3:Three, 2:Two, 1:One}", "" + newMap.sortedByKey(reverseOrder()));
     }
-
+    
     @Test
     public void testMap_Full() {
         val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
@@ -389,7 +389,7 @@ public class ImmutableMapTest {
         assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sortedByKey(reverseOrder()));
         assertEquals("{3:Three, 2:Du, 1:One}", "" + mapMap.sortedByKey(reverseOrder()));
     }
-
+    
     @Test
     public void testMap_thenFilter() {
         val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");

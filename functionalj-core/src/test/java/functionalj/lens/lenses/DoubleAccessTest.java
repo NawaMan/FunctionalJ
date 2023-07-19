@@ -12,7 +12,7 @@ import functionalj.result.Value;
 import lombok.val;
 
 public class DoubleAccessTest {
-
+    
     @Test
     public void testAsString() {
         val value = Value.of(1234.56789);
@@ -27,7 +27,7 @@ public class DoubleAccessTest {
         assertEquals("1.25E-34", Value.of(12.5e-35).map(theDouble.asString()).get());
         assertEquals("1.25E36", Value.of(12.5e+35).map(theDouble.asString()).get());
     }
-
+    
     @Test
     public void testEquals() {
         val value = Result.ofValue(0.001);
@@ -64,7 +64,7 @@ public class DoubleAccessTest {
         assertFalse(theDouble.thatEquals(0.0009).withIn(0.0001).applyAsBoolean(0.001));
         assertFalse(theDouble.thatEquals(0.0011).withIn(0.0001).applyAsBoolean(0.001));
     }
-
+    
     @Test
     public void testRoundTo() {
         assertEquals("1000.0", Result.ofValue(1234.56789).map(theDouble.roundBy(1000.0)).get().toString());

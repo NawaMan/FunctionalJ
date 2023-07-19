@@ -29,22 +29,22 @@ import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
 public interface BigDecimalLens<HOST> extends BigDecimalAccess<HOST>, ComparableLens<HOST, BigDecimal> {
-
+    
     public static class Impl<H> extends ComparableLens.Impl<H, BigDecimal> implements Named, BigDecimalLens<H> {
-
+    
         public Impl(String name, LensSpec<H, BigDecimal> spec) {
             super(name, spec);
         }
     }
-
+    
     public static <HOST> BigDecimalLens<HOST> of(String name, LensSpec<HOST, BigDecimal> spec) {
         return new Impl<>(name, spec);
     }
-
+    
     public static <HOST> BigDecimalLens<HOST> of(LensSpec<HOST, BigDecimal> spec) {
         return of(null, spec);
     }
-
+    
     @Override
     default BigDecimal apply(HOST host) {
         return lensSpec().getRead().apply(host);

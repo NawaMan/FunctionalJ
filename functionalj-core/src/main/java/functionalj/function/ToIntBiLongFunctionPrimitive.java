@@ -27,13 +27,13 @@ import lombok.val;
 
 @FunctionalInterface
 public interface ToIntBiLongFunctionPrimitive extends ToIntBiLongFunction<Long> {
-
+    
     public int applyAsLongAndLong(long data, long longValue);
-
+    
     public default int applyAsInt(Long data, long longValue) {
         return applyAsLongAndLong(data, longValue);
     }
-
+    
     public static int apply(ToIntBiLongFunction<Long> function, long value, long anotherValue) {
         val resValue = (function instanceof ToIntBiLongFunctionPrimitive) ? ((ToIntBiLongFunctionPrimitive) function).applyAsLongAndLong(value, anotherValue) : function.applyAsInt(value, anotherValue);
         return resValue;

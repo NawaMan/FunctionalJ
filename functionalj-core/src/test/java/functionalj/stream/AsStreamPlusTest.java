@@ -9,12 +9,12 @@ import functionalj.list.FuncList;
 import lombok.val;
 
 public class AsStreamPlusTest {
-
+    
     @Test
     public void testToFuncList_finiteStream() {
         assertAsString("[0, 0, 0, 0, 0]", StreamPlus.generate(() -> 0).limit(5).toFuncList());
     }
-
+    
     @Ignore("Too long - run manually.")
     @Test
     public void testToFuncList_infiniteStream() {
@@ -25,7 +25,7 @@ public class AsStreamPlusTest {
             // Expected
         }
     }
-
+    
     @Test
     public void testSum() {
         val list = FuncList.of("1", "2", "3", "4", "5");
@@ -36,7 +36,7 @@ public class AsStreamPlusTest {
         assertAsString("15", list.sumToBigDecimal(theString.asBigDecimal()));
         assertAsString("Result:{ Value: 15 }", list.sum(theString.asBigDecimal()));
     }
-
+    
     @Test
     public void testAverage() {
         val list = FuncList.of("1", "2", "3", "4", "5");

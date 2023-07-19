@@ -30,7 +30,7 @@ import java.util.function.Function;
 import lombok.val;
 
 public interface FuncListWithSort<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Sort the values by the mapped value.
      */
@@ -38,7 +38,7 @@ public interface FuncListWithSort<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.sortedBy(mapper));
     }
-
+    
     /**
      * Sort the values by the mapped value using the comparator.
      */

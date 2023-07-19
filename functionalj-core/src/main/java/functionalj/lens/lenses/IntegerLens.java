@@ -29,28 +29,28 @@ import lombok.val;
 
 @FunctionalInterface
 public interface IntegerLens<HOST> extends IntegerAccess<HOST>, ComparableLens<HOST, Integer> {
-
+    
     public static class Impl<H> extends ComparableLens.Impl<H, Integer> implements Named, IntegerLens<H> {
-
+    
         public Impl(String name, LensSpec<H, Integer> spec) {
             super(name, spec);
         }
     }
-
+    
     public static <HOST> IntegerLens<HOST> of(String name, LensSpec<HOST, Integer> spec) {
         return new Impl<>(name, spec);
     }
-
+    
     public static <HOST> IntegerLens<HOST> of(LensSpec<HOST, Integer> spec) {
         return of(null, spec);
     }
-
+    
     @Override
     default Integer apply(HOST host) {
         LensSpec<HOST, Integer> lensSpec = lensSpec();
         return lensSpec.getRead().apply(host);
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public default int applyAsInt(HOST host) {
@@ -63,7 +63,7 @@ public interface IntegerLens<HOST> extends IntegerAccess<HOST>, ComparableLens<H
         val value = lensSpec.apply(host);
         return value;
     }
-
+    
     @Override
     public default Integer applyUnsafe(HOST host) throws Exception {
         LensSpec<HOST, Integer> lensSpec = lensSpec();

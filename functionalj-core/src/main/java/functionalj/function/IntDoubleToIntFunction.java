@@ -29,9 +29,9 @@ import functionalj.functions.ThrowFuncs;
 
 @FunctionalInterface
 public interface IntDoubleToIntFunction extends ToIntBiFunction<Integer, Double>, Func2<Integer, Double, Integer> {
-
+    
     public int applyIntAndDoubleUnsafe(int intValue, double doubleValue) throws Exception;
-
+    
     public default int applyIntAndDouble(int intValue, double doubleValue) {
         try {
             return applyIntAndDoubleUnsafe(intValue, doubleValue);
@@ -39,21 +39,21 @@ public interface IntDoubleToIntFunction extends ToIntBiFunction<Integer, Double>
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
-
+    
     @Override
     public default int applyAsInt(Integer intValue, Double doubleValue) {
         return applyIntAndDouble(intValue, doubleValue);
     }
-
+    
     @Override
     public default Integer applyUnsafe(Integer intValue, Double doubleValue) throws Exception {
         return applyIntAndDoubleUnsafe(intValue, doubleValue);
     }
-
+    
     public static double apply(ToIntBiFunction<Integer, Double> function, int intValue, double doubleValue) {
         return (function instanceof DoubleDoubleToIntFunctionPrimitive) ? ((DoubleDoubleToIntFunctionPrimitive) function).applyAsDoubleAndDouble(doubleValue, intValue) : function.applyAsInt(intValue, doubleValue);
     }
-
+    
     public static double apply(BiFunction<Integer, Double, Integer> function, int intValue, double doubleValue) {
         return (function instanceof DoubleDoubleToIntFunctionPrimitive) ? ((DoubleDoubleToIntFunctionPrimitive) function).applyAsDoubleAndDouble(doubleValue, intValue) : function.apply(intValue, doubleValue);
     }

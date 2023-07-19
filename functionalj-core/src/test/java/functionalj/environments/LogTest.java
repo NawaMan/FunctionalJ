@@ -31,7 +31,7 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public class LogTest {
-
+    
     @Test
     public void testLog() {
         val stub = new Console.Stub();
@@ -46,7 +46,7 @@ public class LogTest {
             stub.clearOutLines();
         });
     }
-
+    
     @Test
     public void testLogErr() {
         val stub = new Console.Stub();

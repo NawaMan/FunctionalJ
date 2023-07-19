@@ -31,15 +31,15 @@ import functionalj.list.ImmutableFuncList;
 import functionalj.types.Struct;
 
 public class WithFuncListTest {
-
+    
     @Struct(name = "ParentWithFuncList")
     public static interface IParent2 {
-
+    
         public FuncList<String> names();
-
+    
         public FuncList<Child> children();
     }
-
+    
     @Test
     public void testAccessToLens() {
         ParentWithFuncList parent = new ParentWithFuncList(ImmutableFuncList.of("One", "Two", "Three", "Four"), ImmutableFuncList.empty());

@@ -9,7 +9,7 @@ import functionalj.stream.Step;
 import lombok.val;
 
 public class DoubleStreamPlusTest {
-
+    
     @Ignore
     @Test
     public void segmentByPercentiles() {

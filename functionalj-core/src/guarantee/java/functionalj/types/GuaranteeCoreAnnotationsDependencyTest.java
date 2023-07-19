@@ -46,9 +46,9 @@ import functionalj.lens.StringLens;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class GuaranteeCoreAnnotationsDependencyTest {
-
+    
     private Set<Core> checkedCores = new TreeSet<>();
-
+    
     @SuppressWarnings("javadoc")
     @Test
     public void guarantee() {
@@ -60,12 +60,12 @@ public class GuaranteeCoreAnnotationsDependencyTest {
         assertDependency(Core.LensSpec, LensSpec.class);
         assertAllChecked();
     }
-
+    
     private void assertDependency(Core core, Class<?> clzz) {
         assertEquals(core.type().fullName(), clzz.getCanonicalName());
         checkedCores.add(core);
     }
-
+    
     private void assertAllChecked() {
         val allCores = new TreeSet<Core>(asList(Core.values()));
         assertEquals(allCores.toString(), checkedCores.toString());

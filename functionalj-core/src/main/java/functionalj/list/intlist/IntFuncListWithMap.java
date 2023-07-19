@@ -31,28 +31,28 @@ import java.util.function.IntUnaryOperator;
 import functionalj.list.FuncList;
 
 public interface IntFuncListWithMap extends AsIntFuncList {
-
+    
     /**
      * Map the value using the mapper.
      */
     public default <T> FuncList<T> mapToObj(IntFunction<? extends T> mapper) {
         return deriveToObj(this, stream -> stream.mapToObj(mapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true.
      */
     public default IntFuncList mapOnly(IntPredicate condition, IntUnaryOperator mapper) {
         return deriveToInt(this, stream -> stream.mapOnly(condition, mapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */
     public default IntFuncList mapIf(IntPredicate condition, IntUnaryOperator mapper, IntUnaryOperator elseMapper) {
         return deriveToInt(this, stream -> stream.mapIf(condition, mapper, elseMapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */

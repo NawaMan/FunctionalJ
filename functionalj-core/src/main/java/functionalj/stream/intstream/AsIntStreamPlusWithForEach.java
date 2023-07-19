@@ -32,16 +32,16 @@ import functionalj.stream.markers.Terminal;
 import lombok.val;
 
 public interface AsIntStreamPlusWithForEach {
-
+    
     public IntStreamPlus intStreamPlus();
-
+    
     @Eager
     @Terminal
     @Sequential
     public default void forEachOrdered(IntConsumer action) {
         intStreamPlus().forEachOrdered(action);
     }
-
+    
     /**
      * For each with the index.
      */
@@ -55,7 +55,7 @@ public interface AsIntStreamPlusWithForEach {
             action.accept(currentIndex, each);
         });
     }
-
+    
     /**
      * Populate the array with the population in the stream from 0 to length or until run out of elements.
      */
@@ -66,7 +66,7 @@ public interface AsIntStreamPlusWithForEach {
             array[index] = element;
         });
     }
-
+    
     /**
      * Populate the array with the population in the stream from offset to length or until run out of elements.
      */
@@ -77,7 +77,7 @@ public interface AsIntStreamPlusWithForEach {
             array[offset + index] = element;
         });
     }
-
+    
     /**
      * Populate the array with the population in the stream from offset to length or until run out of elements.
      */

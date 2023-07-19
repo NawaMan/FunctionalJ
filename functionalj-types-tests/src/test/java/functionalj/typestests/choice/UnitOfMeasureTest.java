@@ -9,25 +9,25 @@ import functionalj.types.choice.Self;
 import lombok.val;
 
 public class UnitOfMeasureTest {
-
+    
     @Choice
     static interface TemperatureSpec {
-
+    
         void Celsius(double celsius);
-
+    
         void Fahrenheit(double fahrenheit);
-
+    
         default Temperature.Fahrenheit toFahrenheit(Self self) {
             Temperature temp = self.unwrap();
             return temp.match().celsius(c -> Temperature.Fahrenheit(c.celsius() * 1.8 + 32.0)).fahrenheit(f -> f);
         }
-
+    
         default Temperature.Celsius toCelsius(Self self) {
             Temperature temp = self.unwrap();
             return temp.match().celsius(c -> c).fahrenheit(f -> Temperature.Celsius((f.fahrenheit() - 32.0) / 1.8));
         }
     }
-
+    
     @Test
     public void test() {
         val celsius = Celsius(0.0);

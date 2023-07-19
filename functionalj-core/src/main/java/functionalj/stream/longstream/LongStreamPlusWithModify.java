@@ -45,9 +45,9 @@ import functionalj.tuple.LongTuple2;
 import lombok.val;
 
 public interface LongStreamPlusWithModify {
-
+    
     public LongStreamPlus longStreamPlus();
-
+    
     /**
      * Accumulate the previous to the next element.
      *
@@ -69,11 +69,11 @@ public interface LongStreamPlusWithModify {
     public default LongStreamPlus accumulate(LongBinaryOperator accumulator) {
         val splitr = longStreamPlus().spliterator();
         val spliterator = new Spliterators.AbstractLongSpliterator(splitr.estimateSize(), 0) {
-
+    
             long acc = 0;
-
+    
             boolean used = false;
-
+    
             @Override
             public boolean tryAdvance(LongConsumer consumer) {
                 LongConsumer action = elem -> {
@@ -90,7 +90,7 @@ public interface LongStreamPlusWithModify {
         };
         return LongStreamPlus.from(StreamSupport.longStream(spliterator, false));
     }
-
+    
     /**
      * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
      *
@@ -126,7 +126,7 @@ public interface LongStreamPlusWithModify {
         val seed = LongTuple2.of(0, this.longStreamPlus());
         return StreamPlus.iterate(seed, func).acceptUntil(t -> t == null).skip(1).mapToLong(t -> t._1());
     }
-
+    
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.
      * The result stream will not be the same order with the original one

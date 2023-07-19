@@ -29,21 +29,21 @@ import functionalj.types.Struct;
 import lombok.val;
 
 public class SubDOTest {
-
+    
     @Struct(name = "Child")
     public static interface IChild {
-
+    
         String name();
     }
-
+    
     @Struct(name = "Parent")
     public static interface IParent {
-
+    
         String name();
-
+    
         Child child();
     }
-
+    
     @Test
     public void testParentChild() {
         val parent = new Parent("John", new Child("Greg"));

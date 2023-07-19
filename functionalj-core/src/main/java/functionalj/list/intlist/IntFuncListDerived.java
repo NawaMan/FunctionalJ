@@ -34,32 +34,32 @@ import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class IntFuncListDerived implements IntFuncList {
-
+    
     private static final IntBinaryOperator zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
-
+    
     private static final IntPredicate notZero = (int i) -> i != 0;
-
+    
     // -- Data --
     private final Object source;
-
+    
     private final Function<IntStream, IntStream> action;
-
+    
     // -- Constructors --
     IntFuncListDerived(AsIntFuncList source, Function<IntStream, IntStream> action) {
         this.source = Objects.requireNonNull(source);
         this.action = Objects.requireNonNull(action);
     }
-
+    
     IntFuncListDerived(Supplier<IntStream> streams) {
         this.action = stream -> stream;
         this.source = streams;
     }
-
+    
     IntFuncListDerived(Supplier<IntStream> streams, Function<IntStream, IntStream> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streams;
     }
-
+    
     // -- Source Stream --
     @SuppressWarnings("unchecked")
     private IntStream getSourceStream() {
@@ -71,37 +71,37 @@ public class IntFuncListDerived implements IntFuncList {
             return ((Supplier<IntStream>) source).get();
         throw new IllegalStateException();
     }
-
+    
     @Override
     public IntStreamPlus intStream() {
         IntStream theStream = getSourceStream();
         IntStream newStream = action.apply(theStream);
         return IntStreamPlus.from(newStream);
     }
-
+    
     /**
      * Check if this list is a lazy list.
      */
     public Mode mode() {
         return Mode.lazy;
     }
-
+    
     @Override
     public IntFuncList toLazy() {
         return this;
     }
-
+    
     @Override
     public IntFuncList toEager() {
         val data = this.toArray();
         return new ImmutableIntFuncList(data, data.length, Mode.eager);
     }
-
+    
     @Override
     public IntFuncList toCache() {
         return IntFuncList.from(intStream());
     }
-
+    
     /**
      * Returns an immutable list containing the data of this list. Maintaining the mode.
      */
@@ -109,12 +109,12 @@ public class IntFuncListDerived implements IntFuncList {
     public ImmutableIntFuncList toImmutableList() {
         return ImmutableIntFuncList.from(this);
     }
-
+    
     @Override
     public int hashCode() {
         return reduce(43, (hash, each) -> hash * 43 + each);
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof AsIntFuncList))
@@ -124,7 +124,7 @@ public class IntFuncListDerived implements IntFuncList {
             return false;
         return !IntFuncList.zipOf(this, anotherList.asIntFuncList(), zeroForEquals).anyMatch(notZero);
     }
-
+    
     @Override
     public String toString() {
         return asIntFuncList().toListString();

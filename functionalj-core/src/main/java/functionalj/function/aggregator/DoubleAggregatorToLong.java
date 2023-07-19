@@ -28,24 +28,24 @@ import functionalj.stream.doublestream.collect.DoubleCollectedToLong;
 import functionalj.stream.doublestream.collect.DoubleCollectorToLongPlus;
 
 public interface DoubleAggregatorToLong extends DoubleToLongAccessPrimitive, DoubleAggregator<Long> {
-
+    
     public DoubleCollectedToLong<?> asCollected();
-
+    
     // == Implementation ==
     public static class Impl implements DoubleAggregatorToLong {
-
+    
         private final DoubleCollectedToLong<?> collected;
-
+    
         public Impl(DoubleCollectorToLongPlus<?> collector) {
             this.collected = DoubleCollectedToLong.of(collector);
         }
-
+    
         @Override
         public long applyDoubleToLong(double input) {
             collected.accumulate(input);
             return collected.finish();
         }
-
+    
         public DoubleCollectedToLong<?> asCollected() {
             return collected;
         }

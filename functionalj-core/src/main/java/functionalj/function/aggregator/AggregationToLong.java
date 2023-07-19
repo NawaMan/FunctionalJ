@@ -31,54 +31,54 @@ import functionalj.stream.collect.CollectorToLongPlus;
 import lombok.val;
 
 public abstract class AggregationToLong<SOURCE> extends Aggregation<SOURCE, Long> {
-
+    
     public static <S, A> AggregationToLong<S> from(CollectorToLongPlus<S, A> collector) {
         return new AggregationToLong.Impl<S>(collector);
     }
-
+    
     // == Instance ==
     public abstract CollectorToLongPlus<SOURCE, ?> collectorToLongPlus();
-
+    
     @Override
     public CollectorToLongPlus<SOURCE, ?> collectorPlus() {
         return collectorToLongPlus();
     }
-
+    
     public AggregatorToLong<SOURCE> newAggregator() {
         val collector = collectorToLongPlus();
         return new AggregatorToLong.Impl<>(collector);
     }
-
+    
     // == Derived ==
     public <INPUT> AggregationToLong<INPUT> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorToLongPlus().of(mapper);
         return new AggregationToLong.Impl<INPUT>(newCollector);
     }
-
+    
     public IntAggregationToLong ofInt(IntFunction<SOURCE> mapper) {
         val newCollector = collectorToLongPlus().of(mapper);
         return new IntAggregationToLong.Impl(newCollector);
     }
-
+    
     public LongAggregationToLong ofLong(LongFunction<SOURCE> mapper) {
         val newCollector = collectorToLongPlus().of(mapper);
         return new LongAggregationToLong.Impl(newCollector);
     }
-
+    
     public DoubleAggregationToLong ofDouble(DoubleFunction<SOURCE> mapper) {
         val newCollector = collectorToLongPlus().of(mapper);
         return new DoubleAggregationToLong.Impl(newCollector);
     }
-
+    
     // == Implementation ==
     public static class Impl<SRC> extends AggregationToLong<SRC> {
-
+    
         private final CollectorToLongPlus<SRC, ?> collector;
-
+    
         public Impl(CollectorToLongPlus<SRC, ?> collector) {
             this.collector = collector;
         }
-
+    
         @Override
         public CollectorToLongPlus<SRC, ?> collectorToLongPlus() {
             return collector;

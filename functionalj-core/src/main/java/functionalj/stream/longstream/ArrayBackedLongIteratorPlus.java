@@ -36,35 +36,35 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class ArrayBackedLongIteratorPlus implements LongIteratorPlus, PrimitiveIterator.OfLong {
-
+    
     private final long[] array;
-
+    
     private final int start;
-
+    
     private final int end;
-
+    
     private final PrimitiveIterator.OfLong iterator;
-
+    
     private AtomicInteger current = new AtomicInteger();
-
+    
     private volatile Runnable closeHandler = null;
-
+    
     @SafeVarargs
     public static ArrayBackedLongIteratorPlus of(long... array) {
         val copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedLongIteratorPlus(copiedArray);
     }
-
+    
     public static ArrayBackedLongIteratorPlus from(long[] array) {
         val copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedLongIteratorPlus(copiedArray);
     }
-
+    
     public static ArrayBackedLongIteratorPlus from(long[] array, int start, int length) {
         val copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedLongIteratorPlus(copiedArray, start, length);
     }
-
+    
     ArrayBackedLongIteratorPlus(long[] array, int start, int length) {
         this.array = array;
         this.start = Math.max(0, Math.min(array.length - 1, start));
@@ -72,19 +72,19 @@ public class ArrayBackedLongIteratorPlus implements LongIteratorPlus, PrimitiveI
         this.iterator = createIterator(array);
         this.current.set(this.start - 1);
     }
-
+    
     ArrayBackedLongIteratorPlus(long[] array) {
         this(array, 0, array.length);
     }
-
+    
     private PrimitiveIterator.OfLong createIterator(long[] array) {
         return new PrimitiveIterator.OfLong() {
-
+    
             @Override
             public boolean hasNext() {
                 return current.incrementAndGet() < ArrayBackedLongIteratorPlus.this.end;
             }
-
+    
             @Override
             public long nextLong() {
                 val index = current.get();
@@ -96,25 +96,25 @@ public class ArrayBackedLongIteratorPlus implements LongIteratorPlus, PrimitiveI
             }
         };
     }
-
+    
     public LongIteratorPlus newIterator() {
         return new ArrayBackedLongIteratorPlus(array, start, start + end);
     }
-
+    
     public int getStart() {
         return start;
     }
-
+    
     public int getLength() {
         return end - start;
     }
-
+    
     public void close() {
         if (this.closeHandler != null) {
             this.closeHandler.run();
         }
     }
-
+    
     public LongIteratorPlus onClose(Runnable closeHandler) {
         if (closeHandler != null) {
             synchronized (this) {
@@ -123,7 +123,7 @@ public class ArrayBackedLongIteratorPlus implements LongIteratorPlus, PrimitiveI
                 } else {
                     val thisCloseHandler = this.closeHandler;
                     this.closeHandler = new Runnable() {
-
+    
                         @Override
                         public void run() {
                             thisCloseHandler.run();
@@ -135,16 +135,16 @@ public class ArrayBackedLongIteratorPlus implements LongIteratorPlus, PrimitiveI
         }
         return this;
     }
-
+    
     @Override
     public PrimitiveIterator.OfLong asIterator() {
         return iterator;
     }
-
+    
     public LongStreamPlus stream() {
         return new ArrayBackedLongStreamPlus(this);
     }
-
+    
     public AutoCloseableResult<LongIteratorPlus> pullNext(int count) {
         val oldIndex = current.getAndAccumulate(count, (o, n) -> o + n) + 1;
         int newIndex = current.get();
@@ -152,7 +152,7 @@ public class ArrayBackedLongIteratorPlus implements LongIteratorPlus, PrimitiveI
             return AutoCloseableResult.from(Result.ofNoMore());
         return AutoCloseableResult.valueOf(new ArrayBackedLongIteratorPlus(array, oldIndex, oldIndex + count));
     }
-
+    
     public <TARGET> Result<TARGET> mapNext(int count, Func1<LongStreamPlus, TARGET> mapper) {
         val old = current.getAndAccumulate(count, (o, n) -> o + n) + 1;
         if ((current.get() >= end) && (count != 0))
@@ -163,19 +163,19 @@ public class ArrayBackedLongIteratorPlus implements LongIteratorPlus, PrimitiveI
             return Result.valueOf(value);
         }
     }
-
+    
     public LongFuncList funcList() {
         return LongFuncList.from(() -> {
             val iterable = (LongIterable) () -> newIterator();
             return LongStreamPlus.from(StreamSupport.longStream(iterable.spliterator(), false));
         });
     }
-
+    
     public long[] toArray() {
         val copiedArray = Arrays.copyOfRange(array, start, end);
         return copiedArray;
     }
-
+    
     public <A> A[] toArray(LongFunction<A[]> generator) {
         int length = end - start;
         A[] newArray = generator.apply(length);

@@ -38,14 +38,14 @@ import lombok.val;
 
 // @Ignore("Still has problems")
 public class TaskTest {
-
+    
     @Test
     public void testValue() {
         val task = Task.ofValue("Hello!");
         val action = task.createAction();
         assertEquals("Result:{ Value: Hello! }", action.getResult().toString());
     }
-
+    
     @Test
     public void testSupplier() {
         val counter = new AtomicInteger(0);
@@ -57,14 +57,14 @@ public class TaskTest {
         assertEquals("Result:{ Value: 1 }", action2.getResult().toString());
         assertEquals("Result:{ Value: 1 }", action2.getResult().toString());
     }
-
+    
     @Test
     public void testResult() {
         val task = Task.from(Result.ofNotExist());
         assertEquals("Result:{ NotExist }", task.createAction().getResult().toString());
         assertEquals("Result:{ NotExist }", task.createAction().getResult().toString());
     }
-
+    
     @Test
     public void testPromise() {
         val counter = new AtomicInteger(0);
@@ -73,7 +73,7 @@ public class TaskTest {
         assertEquals("Result:{ Value: 0 }", task.createAction().getResult().toString());
         assertEquals("Result:{ Value: 0 }", task.createAction().getResult().toString());
     }
-
+    
     @Test
     public void testMap() {
         val logs = new ArrayList<String>();
@@ -94,7 +94,7 @@ public class TaskTest {
         assertEquals("Task#F0::Action1", action.toString());
         assertEquals("Task#F0::Action1" + ".map(F1::prefix-with-dash)" + ".map(F1::suffix-with-dash)", action2.toString());
     }
-
+    
     @Test
     public void testFlatMap() {
         val logs = new ArrayList<String>();
@@ -121,7 +121,7 @@ public class TaskTest {
         assertEquals("Task#F0::Action1", action1.toString());
         assertEquals("Task#F0::Action1.chain(F1::FM)", action2.toString());
     }
-
+    
     @Test
     public void testFilter() {
         val logs = new ArrayList<String>();
@@ -135,7 +135,7 @@ public class TaskTest {
         logs.add("Result: " + action.createAction().getResult());
         assertEquals("[" + "Result: Result:{ Value: 0 }, " + "Result: Result:{ Value: null }, " + "Result: Result:{ Value: 2 }, " + "Result: Result:{ Value: null }, " + "Result: Result:{ Value: 4 }, " + "Result: Result:{ Value: null }" + "]", logs.toString());
     }
-
+    
     @Test
     public void testMapError() {
         val logs = new ArrayList<String>();
@@ -156,7 +156,7 @@ public class TaskTest {
         logs.add("Result: " + action2.createAction().getResult());
         assertEquals("[" + "Action1 runs!, Result: Result:{ Exception: java.lang.IllegalArgumentException: Count: 0 }, " + "Action1 runs!, B, Result: Result:{ Value: -B- }, " + "Action1 runs!, Result: Result:{ Exception: java.lang.IllegalArgumentException: Count: 2 }, " + "Action1 runs!, D, Result: Result:{ Value: -D- }" + "]", logs.toString());
     }
-
+    
     @Test
     public void testReuseable() {
         val logs = new ArrayList<String>();
@@ -177,7 +177,7 @@ public class TaskTest {
         logs.add("Result: " + action2.createAction().getResult());
         assertEquals("Action1 runs!,\n" + "A,\n" + "Result: Result:{ Value: -A- },\n" + "Result: Result:{ Value: -A- },\n" + "Action1 runs!,\n" + "B,\n" + "Result: Result:{ Value: -B- },\n" + "Result: Result:{ Value: -B- }", logs.stream().collect(joining(",\n")));
     }
-
+    
     @Test
     public void testMerge() {
         val logs = new ArrayList<String>();
@@ -204,7 +204,7 @@ public class TaskTest {
         assertEquals("F2::merge(Task#F0::Action1, Task#F0::Action2)", action.toString());
         assertEquals("[" + "Action1 runs!, A, Action2 runs!, a, Result: Result:{ Value: A-a }, " + "Action1 runs!, B, Action2 runs!, b, Result: Result:{ Value: B-b }, " + "Action1 runs!, C, Action2 runs!, c, Result: Result:{ Value: C-c }" + "]", logs.toString());
     }
-
+    
     @Test
     public void testMerge_ioUsedMultipleTime() {
         val logs = new ArrayList<String>();
@@ -231,7 +231,7 @@ public class TaskTest {
         assertEquals("F2::merge(Task#F0::Action1, F2::merge(Task#F0::Action1, Task#F0::Action2))", action.toString());
         assertEquals("[" + "Action1 runs!, A, Action1 runs!, B, Action2 runs!, a, Result: Result:{ Value: A-B-a }, " + "Action1 runs!, C, Action1 runs!, D, Action2 runs!, b, Result: Result:{ Value: C-D-b }, " + "Action1 runs!, E, Action1 runs!, F, Action2 runs!, c, Result: Result:{ Value: E-F-c }" + "]", logs.toString());
     }
-
+    
     @Test
     public void testMerge3_reusable() {
         val logs = new ArrayList<String>();
@@ -259,7 +259,7 @@ public class TaskTest {
         assertEquals("F2::merge(Task#F0::Action1.cached(), F2::merge(Task#F0::Action1.cached(), Task#F0::Action2))", action.toString());
         assertEquals("[" + "Action1 runs!, A, " + "Action2 runs!, a, " + "Result: Result:{ Value: A-A-a }, " + "Action2 runs!, b, " + "Result: Result:{ Value: A-A-b }, " + "Action2 runs!, c, " + "Result: Result:{ Value: A-A-c }" + "]", logs.toString());
     }
-
+    
     @Test
     public void testMerge4_reusable_withRef() {
         val logs = new ArrayList<String>();
@@ -292,7 +292,7 @@ public class TaskTest {
         assertEquals("F2::merge(Task#F0::Action1.cachedFor(F0::get-ref,BiPredicate::when-change), F2::merge(Task#F0::Action1.cachedFor(F0::get-ref,BiPredicate::when-change), Task#F0::Action2))", action.toString());
         assertEquals("[" + "Action1 runs!, A, " + "Action2 runs!, a, Result: Result:{ Value: A-A-a }, " + "Action2 runs!, b, Result: Result:{ Value: A-A-b }, " + "Action2 runs!, c, Result: Result:{ Value: A-A-c }, " + "Action1 runs!, B, " + "Action2 runs!, d, Result: Result:{ Value: B-B-d }, " + "Action2 runs!, e, Result: Result:{ Value: B-B-e }, " + "Action2 runs!, f, Result: Result:{ Value: B-B-f }" + "]", logs.toString());
     }
-
+    
     @Test
     public void testRace_complete_UpperCaseDoneFirst() {
         val logs = new ArrayList<String>();
@@ -318,7 +318,7 @@ public class TaskTest {
         assertEquals("Race(Task#F0::Action1,Task#F0::Action2)", action.toString());
         assertEquals("Action1 runs!,\n" + "A,\n" + "Result: Result:{ Value: A },\n" + "Action1 runs!,\n" + "B,\n" + "Result: Result:{ Value: B },\n" + "Action1 runs!,\n" + "C,\n" + "Result: Result:{ Value: C }", logs.stream().collect(joining(",\n")));
     }
-
+    
     @Test
     public void testRace_complete_LowerCaseDoneFirst() throws InterruptedException {
         val logs = new ArrayList<String>();
@@ -348,7 +348,7 @@ public class TaskTest {
         // Then check that the action didn't get to run.
         assertEquals("Action2 runs!,\n" + "a,\n" + "Result: Result:{ Value: a },\n" + "Action2 runs!,\n" + "b,\n" + "Result: Result:{ Value: b },\n" + "Action2 runs!,\n" + "c,\n" + "Result: Result:{ Value: c }", logs.stream().collect(joining(",\n")));
     }
-
+    
     @Test
     public void testRace_complete_bothFail() {
         val logs = new ArrayList<String>();
@@ -382,7 +382,7 @@ public class TaskTest {
         assertEquals("Race(Task#F0::Action1,Task#F0::Action2)", action.toString());
         assertEquals("Action1 runs!,\n" + "A,\n" + "Result: Result:{ Value: A },\n" + "Action1 runs!,\n" + "Action2 runs!,\n" + "a,\n" + "Result: Result:{ Value: a },\n" + "Action1 runs!,\n" + "Action2 runs!,\n" + "Result: Result:{ Cancelled: Finish without non-null result. },\n" + "Action1 runs!,\n" + "Action2 runs!,\n" + "Result: Result:{ Cancelled: Finish without non-null result. },\n" + "Action1 runs!,\n" + "Action2 runs!,\n" + "Result: Result:{ Cancelled: Finish without non-null result. }", logs.stream().collect(joining(",\n")));
     }
-
+    
     @Test
     public void testDoUntil() {
         val logs = new ArrayList<String>();

@@ -27,7 +27,7 @@ import functionalj.stream.AsStreamPlus;
 import functionalj.stream.StreamPlus;
 
 class AsFuncListHelper {
-
+    
     static <D> FuncList<D> funcListOf(AsFuncList<D> asFuncList) {
         return asFuncList.asFuncList();
     }
@@ -35,9 +35,9 @@ class AsFuncListHelper {
 
 @FunctionalInterface
 public interface AsFuncList<DATA> extends AsStreamPlus<DATA> {
-
+    
     public FuncList<DATA> asFuncList();
-
+    
     @Override
     public default StreamPlus<DATA> streamPlus() {
         return asFuncList().streamPlus();

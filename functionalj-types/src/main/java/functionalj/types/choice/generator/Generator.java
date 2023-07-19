@@ -56,11 +56,11 @@ public class Generator implements Lines {
     public SourceSpec getSourceSpec() {
         return sourceSpec;
     }
-
+    
     public TargetClass getTargetClass() {
         return targetClass;
     }
-
+    
     @Override
     public List<String> lines() {
         return targetClass.lines();

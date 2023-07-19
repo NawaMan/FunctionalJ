@@ -45,9 +45,9 @@ import functionalj.tuple.DoubleTuple2;
 import lombok.val;
 
 public interface AsDoubleStreamPlusWithStatistic {
-
+    
     public DoubleStreamPlus doubleStreamPlus();
-
+    
     /**
      * @return  the size of the stream
      */
@@ -57,21 +57,21 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return (int) streamPlus.count();
     }
-
+    
     @Eager
     @Terminal
     public default long count() {
         val streamPlus = doubleStreamPlus();
         return streamPlus.count();
     }
-
+    
     @Eager
     @Terminal
     public default double sum() {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sum();
     }
-
+    
     /**
      * @return the product of all the number
      */
@@ -81,19 +81,19 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.reduce((a, b) -> a * b);
     }
-
+    
     @Eager
     @Terminal
     public default OptionalDouble average() {
         val streamPlus = doubleStreamPlus();
         return streamPlus.average();
     }
-
+    
     public default DoubleSummaryStatistics summaryStatistics() {
         val streamPlus = doubleStreamPlus();
         return streamPlus.summaryStatistics();
     }
-
+    
     @Eager
     @Terminal
     public default /**
@@ -103,7 +103,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.min();
     }
-
+    
     @Eager
     @Terminal
     public default /**
@@ -113,7 +113,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.max();
     }
-
+    
     /**
      * Fund the min value using the comparator
      */
@@ -121,7 +121,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sorted(comparator).findFirst();
     }
-
+    
     /**
      * Fund the max value using the comparator
      */
@@ -129,7 +129,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sorted(comparator.reverse()).findFirst();
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest.
      */
@@ -139,7 +139,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sortedBy(mapper).findFirst();
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest.
      */
@@ -149,7 +149,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return minBy(mapper);
     }
-
+    
     /**
      * Return the value whose mapped value is the biggest.
      */
@@ -159,7 +159,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sortedBy(mapper, (a, b) -> Objects.compare(a, b, Comparator.reverseOrder())).findFirst();
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest.
      */
@@ -169,7 +169,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return maxBy(mapper);
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest using the comparator.
      */
@@ -180,7 +180,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sortedBy(mapper, (Comparator) comparator).findFirst();
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest using the comparator.
      */
@@ -192,7 +192,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sortedBy(mapper, (Comparator) comparator).findFirst();
     }
-
+    
     /**
      * Return the value whose mapped value is the biggest using the comparator.
      */
@@ -203,7 +203,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sortedBy(mapper, (Comparator) comparator.reversed()).findFirst();
     }
-
+    
     /**
      * Return the value whose mapped value is the biggest using the comparator.
      */
@@ -215,7 +215,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sortedBy(mapper, (Comparator) comparator.reversed()).findFirst();
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest mapped double value.
      */
@@ -224,7 +224,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val result = streamPlus.mapToObj(i -> DoubleDoubleTuple.of(i, mapper.applyAsDouble(i))).min((a, b) -> Double.compare(a._2, b._2)).map(t -> t._1);
         return result.isPresent() ? OptionalDouble.of((Double) result.get()) : OptionalDouble.empty();
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest mapped double value.
      */
@@ -232,7 +232,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return minOf(mapper);
     }
-
+    
     /**
      * Return the value whose mapped value is the largest mapped int value.
      */
@@ -241,7 +241,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         Optional<Object> result = streamPlus.mapToObj(i -> DoubleDoubleTuple.of(i, mapper.applyAsDouble(i))).max((a, b) -> Double.compare(a._2, b._2)).map(t -> t._1);
         return result.isPresent() ? OptionalDouble.of((double) result.get()) : OptionalDouble.empty();
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest mapped double value.
      */
@@ -249,7 +249,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return maxOf(mapper);
     }
-
+    
     /**
      * Return the value is the smallest and the biggest using the comparator.
      */
@@ -268,7 +268,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val max = minMaxRef[1];
         return (Double.isNaN(min) || Double.isNaN(max)) ? Optional.empty() : Optional.of(DoubleDoubleTuple.of(min, max));
     }
-
+    
     /**
      * Return the value is the smallest and the biggest using the comparator.
      */
@@ -287,7 +287,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val max = minMaxRef[1];
         return (Double.isNaN(min) || Double.isNaN(max)) ? Optional.empty() : Optional.of(DoubleDoubleTuple.of(min, max));
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest and the biggest.
      */
@@ -306,7 +306,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val max = minMaxRef[1];
         return (Double.isNaN(min) || Double.isNaN(max)) ? Optional.empty() : Optional.of(DoubleDoubleTuple.of(min, max));
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest and the biggest.
      */
@@ -316,7 +316,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return minMaxBy(mapper);
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest and the biggest.
      */
@@ -326,7 +326,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return minMaxBy(mapper, comparator);
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest and the biggest.
      */
@@ -343,7 +343,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val max = minMaxRef[1];
         return (Double.isNaN(min) || Double.isNaN(max)) ? Optional.empty() : Optional.of(DoubleDoubleTuple.of(min, max));
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest and the biggest using the comparator.
      */
@@ -362,22 +362,22 @@ public interface AsDoubleStreamPlusWithStatistic {
         val max = minMaxRef[1];
         return (Double.isNaN(min) || Double.isNaN(max)) ? Optional.empty() : Optional.of(DoubleDoubleTuple.of(min, max));
     }
-
+    
     public default OptionalInt minIndex() {
         return minIndexBy(i -> true, i -> i);
     }
-
+    
     public default OptionalInt maxIndex() {
         return maxIndexBy(i -> true, i -> i);
     }
-
+    
     /**
      * Map each value using the mapper to a comparable value and use it to find a minimal value then return the index
      */
     public default <D extends Comparable<D>> OptionalInt minIndexBy(DoubleFunction<D> mapper) {
         return minIndexBy(__ -> true, mapper);
     }
-
+    
     /**
      * Map each value using the mapper to a comparable value and use it to find a minimal value then return the index
      */
@@ -385,14 +385,14 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return minIndexBy(__ -> true, mapper);
     }
-
+    
     /**
      * Map each value using the mapper to a comparable value and use it to find a maximum value then return the index
      */
     public default <D extends Comparable<D>> OptionalInt maxIndexBy(DoubleFunction<D> mapper) {
         return maxIndexBy(__ -> true, mapper);
     }
-
+    
     /**
      * Map each value using the mapper to a comparable value and use it to find a maximum value then return the index
      */
@@ -400,7 +400,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return maxIndexBy(__ -> true, mapper);
     }
-
+    
     /**
      * Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index
      */
@@ -408,7 +408,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val min = doubleStreamPlus().mapWithIndex().filter(t -> filter.test(t._2)).minBy(t -> mapper.apply(t._2)).map(t -> t._1);
         return min.isPresent() ? OptionalInt.of(min.get().intValue()) : OptionalInt.empty();
     }
-
+    
     /**
      * Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index
      */
@@ -416,7 +416,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val filter = aggregateFilter.newAggregator();
         return minIndexBy(filter, mapper);
     }
-
+    
     /**
      * Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index
      */
@@ -424,7 +424,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return minIndexBy(filter, mapper);
     }
-
+    
     /**
      * Using the mapper to map each value that passes the filter to a comparable and use it to find a minimal value then return the index
      */
@@ -433,7 +433,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return minIndexBy(filter, mapper);
     }
-
+    
     /**
      * Using the mapper to map each value that passes the filter to a comparable and use it to find a maximum value then return the index
      */
@@ -441,7 +441,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val max = doubleStreamPlus().mapWithIndex().filter(t -> filter.test(t._2)).maxBy(t -> mapper.apply(t._2)).map(t -> t._1);
         return max.isPresent() ? OptionalInt.of(max.get().intValue()) : OptionalInt.empty();
     }
-
+    
     /**
      * Using the mapper to map each value that passes the filter to a comparable and use it to find a maximum value then return the index
      */
@@ -449,7 +449,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val filter = aggregateFilter.newAggregator();
         return minIndexBy(filter, mapper);
     }
-
+    
     /**
      * Using the mapper to map each value that passes the filter to a comparable and use it to find a maximum value then return the index
      */
@@ -457,7 +457,7 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return minIndexBy(filter, mapper);
     }
-
+    
     /**
      * Using the mapper to map each value that passes the filter to a comparable and use it to find a maximum value then return the index
      */
@@ -466,11 +466,11 @@ public interface AsDoubleStreamPlusWithStatistic {
         val mapper = aggregation.newAggregator();
         return minIndexBy(filter, mapper);
     }
-
+    
     public default <D extends Comparable<D>> OptionalInt minIndexOf(DoublePredicate filter, DoubleUnaryOperator mapper) {
         return doubleStreamPlus().mapWithIndex().map(t -> t.map2ToDouble(mapper)).filter(t -> filter.test(t._2)).minBy(t -> mapper.applyAsDouble(t._2)).map(t -> OptionalInt.of(t._1)).orElse(OptionalInt.empty());
     }
-
+    
     public default <D extends Comparable<D>> OptionalInt maxIndexOf(DoublePredicate filter, DoubleUnaryOperator mapper) {
         return doubleStreamPlus().mapWithIndex().map(t -> t.map2ToDouble(mapper)).filter(t -> filter.test(t._2)).maxBy(t -> mapper.applyAsDouble(t._2)).map(t -> OptionalInt.of(t._1)).orElse(OptionalInt.empty());
     }

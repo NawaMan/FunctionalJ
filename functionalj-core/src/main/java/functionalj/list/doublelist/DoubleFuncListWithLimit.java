@@ -28,84 +28,84 @@ import java.util.function.DoublePredicate;
 import functionalj.function.DoubleDoublePredicatePrimitive;
 
 public interface DoubleFuncListWithLimit extends AsDoubleFuncList {
-
+    
     /**
      * Limit the size of the stream to the given size.
      */
     public default DoubleFuncList limit(Long maxSize) {
         return deriveToDouble(this, stream -> stream.limit(maxSize));
     }
-
+    
     /**
      * Skip to the given offset position.
      */
     public default DoubleFuncList skip(Long startAt) {
         return deriveToDouble(this, stream -> stream.skip(startAt));
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
     public default DoubleFuncList skipWhile(DoublePredicate condition) {
         return deriveToDouble(this, stream -> stream.skipWhile(condition));
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
     public default DoubleFuncList skipWhile(DoubleDoublePredicatePrimitive condition) {
         return deriveToDouble(this, stream -> stream.skipWhile(condition));
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
     public default DoubleFuncList skipUntil(DoublePredicate condition) {
         return deriveToDouble(this, stream -> stream.skipUntil(condition));
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
     public default DoubleFuncList skipUntil(DoubleDoublePredicatePrimitive condition) {
         return deriveToDouble(this, stream -> stream.skipUntil(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
     public default DoubleFuncList acceptWhile(DoublePredicate condition) {
         return deriveToDouble(this, stream -> stream.acceptWhile(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
     public default DoubleFuncList acceptWhile(DoubleDoublePredicatePrimitive condition) {
         return deriveToDouble(this, stream -> stream.acceptWhile(condition));
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
     public default DoubleFuncList acceptUntil(DoublePredicate condition) {
         return deriveToDouble(this, stream -> stream.acceptUntil(condition));
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
     public default DoubleFuncList acceptUntil(DoubleDoublePredicatePrimitive condition) {
         return deriveToDouble(this, stream -> stream.acceptUntil(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
     public default DoubleFuncList dropAfter(DoublePredicate condition) {
         return deriveToDouble(this, stream -> stream.dropAfter(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */

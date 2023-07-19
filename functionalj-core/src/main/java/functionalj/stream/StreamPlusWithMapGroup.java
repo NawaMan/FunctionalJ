@@ -49,20 +49,20 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 class StreamPlusWithMapGroupHelper {
-
+    
     static <DATA, TARGET> StreamPlus<TARGET> mapGroup(StreamPlus<DATA> streamPlus, int count, Func4<Object[], Integer, Integer, Consumer<? super TARGET>, Void> processNormal, Func4<Object[], Integer, Integer, Consumer<? super TARGET>, Void> processTail) {
         return sequential(streamPlus, stream -> {
             val splitr = stream.spliterator();
             val spliterator = new Spliterators.AbstractSpliterator<TARGET>(splitr.estimateSize(), 0) {
-
+    
                 Object[] array = new Object[count * 10];
-
+    
                 int start = 0;
-
+    
                 int end = 0;
-
+    
                 boolean used = false;
-
+    
                 @Override
                 public boolean tryAdvance(Consumer<? super TARGET> consumer) {
                     Consumer<? super DATA> action = elem -> {
@@ -90,19 +90,19 @@ class StreamPlusWithMapGroupHelper {
             return StreamPlus.from(StreamSupport.stream(spliterator, false));
         });
     }
-
+    
     static <DATA, TARGET> IntStreamPlus mapGroupToInt(StreamPlus<DATA> streamPlus, int count, Func4<Object[], Integer, Integer, IntConsumer, Void> processNormal, Func4<Object[], Integer, Integer, IntConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-
+    
             Object[] array = new Object[count * 10];
-
+    
             int start = 0;
-
+    
             int end = 0;
-
+    
             boolean used = false;
-
+    
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 Consumer<DATA> action = elem -> {
@@ -129,19 +129,19 @@ class StreamPlusWithMapGroupHelper {
         };
         return IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
     }
-
+    
     static <DATA, TARGET> DoubleStreamPlus mapGroupToDouble(StreamPlus<DATA> streamPlus, int count, Func4<Object[], Integer, Integer, DoubleConsumer, Void> processNormal, Func4<Object[], Integer, Integer, DoubleConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-
+    
             Object[] array = new Object[count * 10];
-
+    
             int start = 0;
-
+    
             int end = 0;
-
+    
             boolean used = false;
-
+    
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 Consumer<DATA> action = elem -> {
@@ -171,9 +171,9 @@ class StreamPlusWithMapGroupHelper {
 }
 
 public interface StreamPlusWithMapGroup<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -187,7 +187,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -202,7 +202,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -218,7 +218,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -235,7 +235,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -253,7 +253,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -268,7 +268,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -284,7 +284,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -301,7 +301,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -319,7 +319,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -337,7 +337,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -355,14 +355,14 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         });
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
     public default <TARGET> StreamPlus<TARGET> mapGroup(int count, Func1<? super StreamPlus<? extends DATA>, ? extends TARGET> combinator) {
         return mapGroup(count).map(combinator);
     }
-
+    
     // == Int ==
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
@@ -378,7 +378,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -398,7 +398,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         });
     }
-
+    
     // == Double ==
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
@@ -414,7 +414,7 @@ public interface StreamPlusWithMapGroup<DATA> {
             return (Void) null;
         }, null);
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */

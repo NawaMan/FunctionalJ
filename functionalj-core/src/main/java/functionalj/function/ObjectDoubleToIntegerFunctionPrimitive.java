@@ -27,19 +27,19 @@ import java.util.function.ToIntBiFunction;
 
 @FunctionalInterface
 public interface ObjectDoubleToIntegerFunctionPrimitive<DATA> extends Func2<DATA, Double, Integer>, ToIntBiFunction<DATA, Double> {
-
+    
     public int applyObjectDouble(DATA data, double doubleValue);
-
+    
     @Override
     public default Integer applyUnsafe(DATA data, Double doubleValue) throws Exception {
         return applyObjectDouble(data, doubleValue);
     }
-
+    
     @Override
     public default Integer apply(DATA data, Double doubleValue) {
         return applyObjectDouble(data, doubleValue);
     }
-
+    
     @Override
     public default int applyAsInt(DATA data, Double doubleValue) {
         return applyObjectDouble(data, doubleValue);

@@ -35,9 +35,9 @@ import functionalj.tuple.IntTuple2;
 import lombok.val;
 
 public interface StreamPlusWithMapWithIndex<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * @return  the stream of each value and index.
      */
@@ -51,7 +51,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
             return tuple;
         });
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -65,7 +65,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
             return target;
         });
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -79,7 +79,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
             return target;
         });
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -93,7 +93,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
             return target;
         });
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */

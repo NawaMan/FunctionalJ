@@ -20,43 +20,43 @@ import functionalj.stream.longstream.collect.LongCollectorToBooleanPlus;
 import lombok.val;
 
 abstract public class DerivedCollectorToBooleanPlus<ACCUMULATED> {
-
+    
     final CollectorToBooleanPlus<?, ACCUMULATED> collector;
-
+    
     protected DerivedCollectorToBooleanPlus(CollectorToBooleanPlus<?, ACCUMULATED> collector) {
         this.collector = collector;
     }
-
+    
     public Supplier<ACCUMULATED> supplier() {
         return collector.supplier();
     }
-
+    
     public BinaryOperator<ACCUMULATED> combiner() {
         return collector.combiner();
     }
-
+    
     public Predicate<ACCUMULATED> finisherToBoolean() {
         return collector.finisherToBoolean();
     }
-
+    
     public Function<ACCUMULATED, Boolean> finisher() {
         return a -> finisherToBoolean().test(a);
     }
-
+    
     public Set<Characteristics> characteristics() {
         return collector.characteristics();
     }
-
+    
     // == Implementations ==
     public static class FromObj<INPUT, ACCUMULATED> extends DerivedCollectorToBooleanPlus<ACCUMULATED> implements CollectorToBooleanPlus<INPUT, ACCUMULATED> {
-
+    
         private final Function<INPUT, ?> mapper;
-
+    
         public <SOURCE> FromObj(CollectorToBooleanPlus<SOURCE, ACCUMULATED> collector, Function<INPUT, SOURCE> mapper) {
             super(collector);
             this.mapper = mapper;
         }
-
+    
         @SuppressWarnings("unchecked")
         @Override
         public BiConsumer<ACCUMULATED, INPUT> accumulator() {
@@ -67,22 +67,22 @@ abstract public class DerivedCollectorToBooleanPlus<ACCUMULATED> {
                 accumulator.accept(a, d);
             };
         }
-
+    
         @Override
         public Collector<INPUT, ACCUMULATED, Boolean> collector() {
             return this;
         }
     }
-
+    
     public static class FromInt<ACCUMULATED> extends DerivedCollectorToBooleanPlus<ACCUMULATED> implements IntCollectorToBooleanPlus<ACCUMULATED> {
-
+    
         private final IntFunction<?> mapper;
-
+    
         public <SOURCE> FromInt(CollectorToBooleanPlus<SOURCE, ACCUMULATED> collector, IntFunction<SOURCE> mapper) {
             super(collector);
             this.mapper = mapper;
         }
-
+    
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public ObjIntConsumer<ACCUMULATED> intAccumulator() {
@@ -93,16 +93,16 @@ abstract public class DerivedCollectorToBooleanPlus<ACCUMULATED> {
             };
         }
     }
-
+    
     public static class FromLong<ACCUMULATED> extends DerivedCollectorToBooleanPlus<ACCUMULATED> implements LongCollectorToBooleanPlus<ACCUMULATED> {
-
+    
         private final LongFunction<?> mapper;
-
+    
         public <SOURCE> FromLong(CollectorToBooleanPlus<SOURCE, ACCUMULATED> collector, LongFunction<SOURCE> mapper) {
             super(collector);
             this.mapper = mapper;
         }
-
+    
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public ObjLongConsumer<ACCUMULATED> longAccumulator() {
@@ -113,16 +113,16 @@ abstract public class DerivedCollectorToBooleanPlus<ACCUMULATED> {
             };
         }
     }
-
+    
     public static class FromDouble<ACCUMULATED> extends DerivedCollectorToBooleanPlus<ACCUMULATED> implements DoubleCollectorToBooleanPlus<ACCUMULATED> {
-
+    
         private final DoubleFunction<?> mapper;
-
+    
         public <SOURCE> FromDouble(CollectorToBooleanPlus<SOURCE, ACCUMULATED> collector, DoubleFunction<SOURCE> mapper) {
             super(collector);
             this.mapper = mapper;
         }
-
+    
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator() {

@@ -27,13 +27,13 @@ import java.util.function.BiConsumer;
 
 @FunctionalInterface
 public interface DoubleObjBiConsumer<DATA> extends FuncUnit2<Double, DATA> {
-
+    
     public void acceptAsDouble(double input1, DATA input2);
-
+    
     public default void acceptUnsafe(Double input1, DATA input2) throws Exception {
         acceptAsDouble(input1, input2);
     }
-
+    
     public static <D> void accept(BiConsumer<Double, D> function, double input1, D input2) {
         if (function instanceof DoubleObjBiConsumer) {
             ((DoubleObjBiConsumer<D>) function).acceptAsDouble(input1, input2);

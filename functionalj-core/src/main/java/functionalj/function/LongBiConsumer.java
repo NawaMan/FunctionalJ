@@ -27,17 +27,17 @@ import java.util.function.BiConsumer;
 
 @FunctionalInterface
 public interface LongBiConsumer extends LongObjBiConsumer<Long> {
-
+    
     public void acceptAsLongLong(long input1, long input2);
-
+    
     public default void acceptAsLong(long input1, Long input2) {
         acceptAsLongLong(input1, input2);
     }
-
+    
     public default void acceptUnsafe(Long input1, Long input2) throws Exception {
         acceptAsLongLong(input1, input2);
     }
-
+    
     @SuppressWarnings("unchecked")
     public static void accept(BiConsumer<? super Long, ? super Long> consumer, long input1, long input2) {
         if (consumer instanceof LongBiConsumer) {

@@ -5,16 +5,16 @@ import lombok.NonNull;
 import lombok.val;
 
 public class DoubleAccessEqualPrecisionPrimitive extends DoubleAccessEqualPrecision<Double> implements DoubleToBooleanAccessPrimitive {
-
+    
     public DoubleAccessEqualPrecisionPrimitive(@NonNull DoubleAccessEqualPrimitive equals, @NonNull DoubleUnaryOperator precisionFromErrorFunction) {
         super(equals, precisionFromErrorFunction);
     }
-
+    
     @Override
     public boolean applyDoubleToBoolean(double host) {
         return test(host);
     }
-
+    
     @Override
     public boolean test(double host) {
         val value = equals.access.applyAsDouble(host);

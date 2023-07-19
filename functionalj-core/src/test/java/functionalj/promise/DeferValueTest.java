@@ -9,7 +9,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class DeferValueTest {
-
+    
     @Test
     public void testAssign() {
         val defer = DeferValue.of(String.class);
@@ -25,7 +25,7 @@ public class DeferValueTest {
         }
         assertEquals("Result:{ Value: good-value }", "" + defer.getCurrentResult());
     }
-
+    
     @Test
     public void testFail() {
         val defer = DeferValue.of(String.class);
@@ -41,7 +41,7 @@ public class DeferValueTest {
         }
         assertEquals("Result:{ Exception: java.lang.NullPointerException }", "" + defer.getCurrentResult());
     }
-
+    
     @Test
     public void testComplete_connect_value() {
         val defer1 = DeferValue.of(String.class);
@@ -54,7 +54,7 @@ public class DeferValueTest {
         assertEquals("Result:{ Value: the-value }", "" + defer3.getCurrentResult());
         assertEquals("Result:{ Value: the-value }", "" + defer4.getCurrentResult());
     }
-
+    
     @Test
     public void testComplete_connect_null() {
         val logs = new ArrayList<String>();
@@ -69,7 +69,7 @@ public class DeferValueTest {
         assertEquals("Result:{ Value: default-3 }", "" + defer4.getCurrentResult());
         assertEquals("[defer1: null]", "" + logs);
     }
-
+    
     @Test
     public void testComplete_connect_abort() {
         val logs = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class DeferValueTest {
         assertEquals("Result:{ Value: default-3 }", "" + defer3.getCurrentResult());
         assertEquals("Result:{ Value: default-4 }", "" + defer4.getCurrentResult());
     }
-
+    
     @Test
     public void testAssign_When() {
         val normalLater = DeferValue.of(String.class);
@@ -95,7 +95,7 @@ public class DeferValueTest {
         assertEquals("Result:{ Value: null }", "" + normalLater.getCurrentResult());
         assertEquals("Result:{ Value: default }", "" + defaultLater.getCurrentResult());
     }
-
+    
     @Test
     public void testAssign_When_null_absent() {
         val logs = new ArrayList<String>();

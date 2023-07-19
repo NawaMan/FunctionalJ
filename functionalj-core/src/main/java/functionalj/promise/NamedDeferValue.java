@@ -24,18 +24,18 @@
 package functionalj.promise;
 
 public class NamedDeferValue<DATA> extends DeferValue<DATA> {
-
+    
     private final String name;
-
+    
     NamedDeferValue(@SuppressWarnings("rawtypes") Promise parent, String name) {
         super(parent);
         this.name = name;
     }
-
+    
     public String name() {
         return name;
     }
-
+    
     public String toString() {
         return name;
     }

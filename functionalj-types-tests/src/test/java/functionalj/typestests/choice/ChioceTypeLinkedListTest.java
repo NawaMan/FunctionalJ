@@ -37,82 +37,82 @@ import functionalj.types.choice.Self;
 import lombok.val;
 
 public class ChioceTypeLinkedListTest {
-
+    
     @Choice
     public static interface LinkedListSpec {
-
+    
         void Nill();
-
+    
         void Node(Object value, LinkedList rest);
-
+    
         default int length(Self self) {
             LinkedList list = Self.unwrap(self);
             return Match(list).nill(l -> 0).node(l -> 1 + length(l.rest()));
         }
     }
-
+    
     String toStr(LinkedList list) {
         return Match(list).nill(l -> "[]").node(l -> "[" + l.value() + "," + toStr(l.rest()) + "]");
     }
-
+    
     String toStr2(LinkedList list) {
         val noBracketToStr = recusive((f, l) -> {
             return Match((LinkedList) l).nill(l2 -> "").node(l2 -> l2.value() + Match(l2.rest()).nill(__ -> "").node(lr -> "," + f.apply(lr)));
         });
         return "[" + noBracketToStr.apply(list) + "]";
     }
-
+    
     String toStrReverse(LinkedList list) {
         val noBracketToStr = recusive((f, l) -> {
             return Match((LinkedList) l).nill(l2 -> "").node(l2 -> Match(l2.rest()).nill(__ -> "").node(lr -> f.apply(lr) + ",") + l2.value());
         });
         return "[" + noBracketToStr.apply(list) + "]";
     }
-
+    
     LinkedList append(LinkedList list, Object value) {
         return Node(value, list);
     }
-
+    
     LinkedList map(LinkedList list, Function<Object, Object> mapper) {
         return Match(list).toA(LinkedList.class).nill(Nill()).node(l -> Node(mapper.apply(l.value()), map(l.rest(), mapper)));
     }
-
+    
     LinkedList filter(LinkedList list, Predicate<Object> filter) {
         return Match(list).toA(LinkedList.class).nill(Nill()).node(l -> (filter.test(l.value()) ? Node(l.value(), filter(l.rest(), filter)) : filter(l.rest(), filter)));
     }
-
+    
     Object reduce(LinkedList list, BinaryOperator<Object> operator) {
         return Match(list).toA(Object.class).nill(__ -> null).node(l -> l.rest().isNill() ? l.value() : operator.apply(l.value(), reduce(l.rest(), operator)));
     }
-
+    
     @Test
     public void testLength() {
         assertEquals(0, Nill().length());
         assertEquals(1, Node(5, Nill()).length());
         assertEquals(2, Node(5, Node(6, Nill())).length());
     }
-
+    
     @Test
     public void testToString() {
         assertEquals("Nill", "" + Nill());
         assertEquals("Node(5,Nill)", "" + Node(5, Nill()));
         assertEquals("Node(5,Node(6,Nill))", "" + Node(5, Node(6, Nill())));
     }
-
+    
     @Test
     public void testToStr() {
         assertEquals("[]", toStr(Nill()));
         assertEquals("[5,[]]", toStr(Node(5, Nill())));
         assertEquals("[5,[6,[]]]", toStr(Node(5, Node(6, Nill()))));
     }
-
+    
     @Test
     public void testToStr2() {
         assertEquals("[]", toStr2(Nill()));
         assertEquals("[5]", toStr2(Node(5, Nill())));
         assertEquals("[5,6]", toStr2(Node(5, Node(6, Nill()))));
     }
-
+    
     @Test
     public void testToStrReverse() {
         LinkedList l = Nill();
@@ -121,7 +121,7 @@ public class ChioceTypeLinkedListTest {
         assertEquals("[5,6]", toStrReverse(l = append(l, 6)));
         assertEquals("[5,6,7]", toStrReverse(l = append(l, 7)));
     }
-
+    
     @Test
     public void testMap() {
         LinkedList l = Nill();
@@ -132,7 +132,7 @@ public class ChioceTypeLinkedListTest {
         assertEquals("[One,Two,Three,Four]", toStrReverse(l));
         assertEquals("[3,3,5,4]", toStrReverse(map(l, o -> ((String) o).length())));
     }
-
+    
     @Test
     public void testFilter() {
         LinkedList l = Nill();
@@ -144,7 +144,7 @@ public class ChioceTypeLinkedListTest {
         assertEquals("[3,3,5,4]", toStrReverse(map(l, o -> ((String) o).length())));
         assertEquals("[5,4]", toStrReverse(filter(map(l, o -> ((String) o).length()), o -> ((Integer) o) >= 4)));
     }
-
+    
     @Test
     public void testReduce() {
         LinkedList l = Nill();
@@ -156,7 +156,7 @@ public class ChioceTypeLinkedListTest {
         assertEquals("[3,3,5,4]", toStrReverse(l = map(l, o -> ((String) o).length())));
         assertEquals("15", "" + reduce(l, (a, b) -> ((Integer) a) + ((Integer) b)));
     }
-
+    
     @Test
     public void testPipeable() {
         LinkedList l = Nill();

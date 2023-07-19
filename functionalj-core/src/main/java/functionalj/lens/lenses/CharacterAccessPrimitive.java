@@ -25,7 +25,7 @@ package functionalj.lens.lenses;
 
 @FunctionalInterface
 public interface CharacterAccessPrimitive<HOST> extends CharacterAccess<HOST> {
-
+    
     public default Character applyUnsafe(HOST host) throws Exception {
         return applyAsChar(host);
     }

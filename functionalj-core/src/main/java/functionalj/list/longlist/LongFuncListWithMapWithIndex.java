@@ -34,7 +34,7 @@ import functionalj.list.FuncList;
 import functionalj.tuple.IntLongTuple;
 
 public interface LongFuncListWithMapWithIndex extends AsLongFuncList {
-
+    
     // TODO - to int, long, double
     /**
      * @return  the stream of each value and index.
@@ -42,28 +42,28 @@ public interface LongFuncListWithMapWithIndex extends AsLongFuncList {
     public default FuncList<IntLongTuple> mapWithIndex() {
         return deriveToObj(this, stream -> stream.mapWithIndex());
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
     public default LongFuncList mapWithIndex(IntLongToLongFunctionPrimitive combinator) {
         return deriveToLong(this, stream -> stream.mapWithIndex(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
     public default <T> FuncList<T> mapToObjWithIndex(IntLongBiFunction<T> combinator) {
         return deriveToObj(this, stream -> stream.mapToObjWithIndex(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the mapped value of this stream and its index.
      */
     public default <T1, T> FuncList<T> mapWithIndex(LongUnaryOperator valueMapper, IntLongBiFunction<T> combinator) {
         return deriveToObj(this, stream -> stream.mapWithIndex(valueMapper, combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the mapped value of this stream and its index.
      */

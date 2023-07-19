@@ -32,12 +32,12 @@ import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 class StreamPlusMapAddOnHelper {
-
+    
     @SafeVarargs
     static final <D, T> StreamPlus<T> doMapFirst(StreamPlus<D> streamPlus, Function<? super D, T>... mappers) {
         return streamPlus.mapToObj(f((D data) -> eachMapFirst(data, mappers)));
     }
-
+    
     private static <T, D> T eachMapFirst(D d, Function<? super D, T>[] mappers) throws Exception {
         Exception exception = null;
         boolean hasNull = false;
@@ -60,15 +60,15 @@ class StreamPlusMapAddOnHelper {
 }
 
 public interface StreamPlusWithMapFirst<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     public <TARGET> StreamPlus<TARGET> derive(Function<StreamPlus<DATA>, Stream<TARGET>> action);
-
+    
     public IntStreamPlus deriveToInt(Function<StreamPlus<DATA>, IntStream> action);
-
+    
     public <TARGET> StreamPlus<TARGET> deriveToObj(Function<StreamPlus<DATA>, Stream<TARGET>> action);
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -76,7 +76,7 @@ public interface StreamPlusWithMapFirst<DATA> {
         val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -84,7 +84,7 @@ public interface StreamPlusWithMapFirst<DATA> {
         val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -92,7 +92,7 @@ public interface StreamPlusWithMapFirst<DATA> {
         val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -100,7 +100,7 @@ public interface StreamPlusWithMapFirst<DATA> {
         val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */

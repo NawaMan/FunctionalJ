@@ -30,19 +30,19 @@ import lombok.val;
 
 // TODO - This is NOT thread safe (not even try to be).
 public final class GrowOnlyIntArray {
-
+    
     private static int ARRAY_COUNT = 8;
-
+    
     private static int ARRAY_LENGTH = 100;
-
+    
     private int[][] arrays;
-
+    
     private int length = 0;
-
+    
     public GrowOnlyIntArray() {
         arrays = new int[ARRAY_COUNT][];
     }
-
+    
     public GrowOnlyIntArray(int... values) {
         int actualCount = (int) Math.ceil(1.0 * values.length / ARRAY_LENGTH);
         int arrayCount = Math.max(actualCount, ARRAY_COUNT);
@@ -56,7 +56,7 @@ public final class GrowOnlyIntArray {
             offset = offset + ARRAY_LENGTH;
         }
     }
-
+    
     public void add(int i) {
         int next = length;
         int aIndex = next / ARRAY_LENGTH;
@@ -72,15 +72,15 @@ public final class GrowOnlyIntArray {
         arrays[aIndex][residue] = i;
         length++;
     }
-
+    
     public int length() {
         return length;
     }
-
+    
     public boolean isEmpty() {
         return length == 0;
     }
-
+    
     public IntStreamPlus stream() {
         int aCount = length / ARRAY_LENGTH;
         int residue = length % ARRAY_LENGTH;
@@ -89,15 +89,15 @@ public final class GrowOnlyIntArray {
         IntStreamPlus total = head.appendWith(tail);
         return total;
     }
-
+    
     public IntFuncList toFuncList() {
         return IntFuncList.from(stream());
     }
-
+    
     public int[] toArray() {
         return stream().toArray();
     }
-
+    
     public int get(int i) {
         if (i < 0 || i >= length)
             throw new ArrayIndexOutOfBoundsException(i);
@@ -105,7 +105,7 @@ public final class GrowOnlyIntArray {
         int residue = i % ARRAY_LENGTH;
         return arrays[aIndex][residue];
     }
-
+    
     public OptionalInt at(int i) {
         if (i < 0 || i >= length)
             return OptionalInt.empty();
@@ -113,15 +113,15 @@ public final class GrowOnlyIntArray {
         int residue = i % ARRAY_LENGTH;
         return OptionalInt.of(arrays[aIndex][residue]);
     }
-
+    
     public String toString() {
         return stream().toListString();
     }
-
+    
     public int hashCode() {
         return stream().reduce(43, (p, c) -> p * 43 + c);
     }
-
+    
     public boolean equals(GrowOnlyIntArray array) {
         val score = stream().zipWith(array.stream(), (a, b) -> a == b ? 1 : 0).acceptUntil(i -> i == 0).sum();
         return score == length;

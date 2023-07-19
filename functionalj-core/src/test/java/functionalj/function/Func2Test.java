@@ -30,9 +30,9 @@ import functionalj.promise.Promise;
 import functionalj.result.Result;
 
 public class Func2Test {
-
+    
     private Func2<String, String, String> concat = f(String::concat);
-
+    
     @Test
     public void testApplyBare() {
         assertEquals("Hello world!", "" + concat.apply("Hello", " world!"));

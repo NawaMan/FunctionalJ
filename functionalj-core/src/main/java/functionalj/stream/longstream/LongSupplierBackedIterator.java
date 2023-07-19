@@ -28,7 +28,7 @@ import functionalj.functions.ThrowFuncs;
 import functionalj.result.NoMoreResultException;
 
 public class LongSupplierBackedIterator implements LongIteratorPlus {
-
+    
     /**
      * Throw a no more element exception. This is used for generator.
      */
@@ -36,15 +36,15 @@ public class LongSupplierBackedIterator implements LongIteratorPlus {
         ThrowFuncs.doThrowFrom(() -> new NoMoreResultException());
         return (D) null;
     }
-
+    
     private final LongSupplier supplier;
-
+    
     private volatile long next;
-
+    
     public LongSupplierBackedIterator(LongSupplier supplier) {
         this.supplier = supplier;
     }
-
+    
     @Override
     public boolean hasNext() {
         try {
@@ -54,12 +54,12 @@ public class LongSupplierBackedIterator implements LongIteratorPlus {
             return false;
         }
     }
-
+    
     @Override
     public long nextLong() {
         return next;
     }
-
+    
     @Override
     public OfLong asIterator() {
         return this;

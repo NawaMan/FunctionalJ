@@ -40,16 +40,16 @@ import lombok.val;
 import nullablej.nullable.Nullable;
 
 public class AccessUtils {
-
+    
     // Nullable
     public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> NullableAccess<HOST, TYPE, TYPEACCESS> createSubNullableAccess(AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPEACCESS> accessParameterized, Function<HOST, Nullable<TYPE>> read) {
         val specWithSub = new AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPEACCESS>() {
-
+    
             @Override
             public Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
-
+    
             @Override
             public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return accessParameterized.createSubAccessFromHost(accessToParameter);
@@ -57,16 +57,16 @@ public class AccessUtils {
         };
         return () -> specWithSub;
     }
-
+    
     // Optional
     public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> OptionalAccess<HOST, TYPE, TYPEACCESS> createSubOptionalAccess(AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPEACCESS> accessParameterized, Function<HOST, Optional<TYPE>> read) {
         val specWithSub = new AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPEACCESS>() {
-
+    
             @Override
             public Optional<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
-
+    
             @Override
             public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return accessParameterized.createSubAccessFromHost(accessToParameter);
@@ -74,16 +74,16 @@ public class AccessUtils {
         };
         return () -> specWithSub;
     }
-
+    
     // Result
     public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> ResultAccess<HOST, TYPE, TYPEACCESS> createSubResultAccess(AccessParameterized<HOST, Result<TYPE>, TYPE, TYPEACCESS> accessParameterized, Function<HOST, Result<TYPE>> read) {
         val specWithSub = new AccessParameterized<HOST, Result<TYPE>, TYPE, TYPEACCESS>() {
-
+    
             @Override
             public Result<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
-
+    
             @Override
             public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return accessParameterized.createSubAccessFromHost(accessToParameter);
@@ -91,16 +91,16 @@ public class AccessUtils {
         };
         return () -> specWithSub;
     }
-
+    
     // List
     public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> ListAccess<HOST, TYPE, TYPEACCESS> createSubListAccess(AccessParameterized<HOST, List<TYPE>, TYPE, TYPEACCESS> accessParameterized, Function<HOST, List<TYPE>> read) {
         val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, TYPEACCESS>() {
-
+    
             @Override
             public List<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
-
+    
             @Override
             public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return accessParameterized.createSubAccessFromHost(accessToParameter);
@@ -108,15 +108,15 @@ public class AccessUtils {
         };
         return () -> specWithSub;
     }
-
+    
     public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> FuncListAccess<HOST, TYPE, TYPEACCESS> createSubFuncListAccess(AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS> accessParameterized, Function<HOST, FuncList<TYPE>> read) {
         val specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS>() {
-
+    
             @Override
             public FuncList<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
-
+    
             @Override
             public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return accessParameterized.createSubAccessFromHost(accessToParameter);
@@ -124,15 +124,15 @@ public class AccessUtils {
         };
         return () -> specWithSub;
     }
-
+    
     public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> StreamPlusAccess<HOST, TYPE, TYPEACCESS> createSubStreamPlusAccess(AccessParameterized<HOST, StreamPlus<TYPE>, TYPE, TYPEACCESS> accessParameterized, Function<HOST, StreamPlus<TYPE>> read) {
         val specWithSub = new AccessParameterized<HOST, StreamPlus<TYPE>, TYPE, TYPEACCESS>() {
-
+    
             @Override
             public StreamPlus<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
-
+    
             @Override
             public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return accessParameterized.createSubAccessFromHost(accessToParameter);
@@ -140,15 +140,15 @@ public class AccessUtils {
         };
         return () -> specWithSub;
     }
-
+    
     public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> OptionalAccess<HOST, TYPE, TYPELENS> createOptionalAccess(Function<HOST, Optional<TYPE>> accessOptional, Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
         val accessWithSub = new AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPELENS>() {
-
+    
             @Override
             public Optional<TYPE> applyUnsafe(HOST host) throws Exception {
                 return accessOptional.apply(host);
             }
-
+    
             @Override
             public TYPELENS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return createSubLens.apply(accessToParameter);
@@ -156,15 +156,15 @@ public class AccessUtils {
         };
         return () -> accessWithSub;
     }
-
+    
     public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> NullableAccess<HOST, TYPE, TYPELENS> createNullableAccess(Function<HOST, Nullable<TYPE>> accessNullable, Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPELENS>() {
-
+    
             @Override
             public Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
                 return accessNullable.apply(host);
             }
-
+    
             @Override
             public TYPELENS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return createSubLens.apply(accessToParameter);
@@ -172,15 +172,15 @@ public class AccessUtils {
         };
         return () -> accessWithSub;
     }
-
+    
     public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> ResultAccess<HOST, TYPE, TYPELENS> createResultAccess(Function<HOST, Result<TYPE>> accessResult, Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
         val accessWithSub = new AccessParameterized<HOST, Result<TYPE>, TYPE, TYPELENS>() {
-
+    
             @Override
             public Result<TYPE> applyUnsafe(HOST host) throws Exception {
                 return accessResult.apply(host);
             }
-
+    
             @Override
             public TYPELENS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
                 return createSubLens.apply(accessToParameter);

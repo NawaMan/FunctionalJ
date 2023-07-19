@@ -29,7 +29,7 @@ package functionalj.types;
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface IPostConstruct {
-
+    
     /**
      * This method should be called after a construction.
      */

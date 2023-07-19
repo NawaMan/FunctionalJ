@@ -35,7 +35,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 
 public interface IntFuncListWithModify extends AsIntFuncList {
-
+    
     /**
      * Accumulate the previous to the next element.
      *
@@ -56,7 +56,7 @@ public interface IntFuncListWithModify extends AsIntFuncList {
     public default IntFuncList accumulate(IntBinaryOperator accumulator) {
         return deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
-
+    
     /**
      * Given a collector, create a list that each element is an accumulation from the previous.
      *
@@ -66,7 +66,7 @@ public interface IntFuncListWithModify extends AsIntFuncList {
     public default IntFuncList accumulate(IntCollectorToIntPlus<int[]> collector) {
         return deriveFrom(this, stream -> stream.accumulate(collector));
     }
-
+    
     // == restate ==
     /**
      * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
@@ -88,7 +88,7 @@ public interface IntFuncListWithModify extends AsIntFuncList {
     public default IntFuncList restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
         return deriveFrom(this, stream -> stream.restate(restater));
     }
-
+    
     // == Spawn ==
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.

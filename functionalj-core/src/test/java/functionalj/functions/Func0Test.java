@@ -30,7 +30,7 @@ import functionalj.function.Func0;
 import lombok.val;
 
 public class Func0Test {
-
+    
     @Test
     public void testElseUse() throws Exception {
         val str = nullString();
@@ -40,7 +40,7 @@ public class Func0Test {
         assertTrue(func.getSafely().isException());
         assertEquals(0, func.whenAbsentUse(0).get().intValue());
     }
-
+    
     private String nullString() {
         return (String) null;
     }

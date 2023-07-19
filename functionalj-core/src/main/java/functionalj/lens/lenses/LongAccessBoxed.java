@@ -5,7 +5,7 @@ import lombok.val;
 
 @FunctionalInterface
 public interface LongAccessBoxed<HOST> extends LongAccess<HOST> {
-
+    
     public default long applyAsLong(HOST host) {
         try {
             val value = applyUnsafe(host);

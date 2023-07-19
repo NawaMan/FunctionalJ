@@ -32,7 +32,7 @@ import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
 public interface FuncListWithFillNull<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Replace any null value with the given replacement.
      */
@@ -40,7 +40,7 @@ public interface FuncListWithFillNull<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.fillNull(replacement));
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given lens) with the given replacement.
      */
@@ -48,7 +48,7 @@ public interface FuncListWithFillNull<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.fillNull(lens, replacement));
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given getter and setter) with the given replacement.
      */
@@ -56,7 +56,7 @@ public interface FuncListWithFillNull<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.fillNull(getter, setter, replacement));
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier.
      */
@@ -64,7 +64,7 @@ public interface FuncListWithFillNull<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.fillNullWith(lens, replacementSupplier));
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier.
      */
@@ -72,7 +72,7 @@ public interface FuncListWithFillNull<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.fillNullWith(getter, setter, replacementSupplier));
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given lens) with the replacement value from the function.
      */
@@ -80,7 +80,7 @@ public interface FuncListWithFillNull<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.fillNullBy(lens, replacementFunction));
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function.
      */

@@ -31,14 +31,14 @@ import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 public interface IntFuncListWithPeek extends AsIntFuncList {
-
+    
     /**
      * Peek only the value that is selected with selector.
      */
     public default IntFuncList peekBy(IntPredicate selector, IntConsumer theConsumer) {
         return IntFuncList.from(() -> intStreamPlus().peekBy(selector, theConsumer));
     }
-
+    
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
     /**
@@ -47,14 +47,14 @@ public interface IntFuncListWithPeek extends AsIntFuncList {
     public default <T> IntFuncList peekAs(IntFunction<T> mapper, Consumer<? super T> theConsumer) {
         return deriveFrom(this, stream -> stream.peekAs(mapper, theConsumer));
     }
-
+    
     /**
      * Peek only the mapped value using the mapper.
      */
     public default <T> IntFuncList peekBy(IntFunction<T> mapper, Predicate<? super T> selector, IntConsumer theConsumer) {
         return deriveFrom(this, stream -> stream.peekBy(mapper, selector, theConsumer));
     }
-
+    
     /**
      * Peek only the mapped value using the mapper that is selected by the selector.
      */

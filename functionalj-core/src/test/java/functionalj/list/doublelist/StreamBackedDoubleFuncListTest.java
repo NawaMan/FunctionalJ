@@ -11,7 +11,7 @@ import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
 public class StreamBackedDoubleFuncListTest {
-
+    
     @Test
     public void testPeekOne() {
         // This test is to check that the stream is only used once.
@@ -38,7 +38,7 @@ public class StreamBackedDoubleFuncListTest {
         // One, Two, Three, Four, Five, Six, Seven are not peeked again.
         assertEquals("[8.0, 9.0, 10.0]", logs.toString());
     }
-
+    
     @Test
     public void testAppend() {
         val stream = DoubleStreamPlus.of(1L, 2L, 3L, 4L, 5L);
@@ -50,7 +50,7 @@ public class StreamBackedDoubleFuncListTest {
         assertEquals("[1.0, 2.0, 3.0, 4.0, 5.0, 6.0]", list2.limit(6).toListString());
         assertEquals("[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]", list2.toListString());
     }
-
+    
     @Test
     public void testThreadSafety() {
         val size = 100_000;

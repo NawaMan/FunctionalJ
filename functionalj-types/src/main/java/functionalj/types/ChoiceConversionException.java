@@ -24,9 +24,9 @@
 package functionalj.types;
 
 public class ChoiceConversionException extends RuntimeException {
-
+    
     private static final long serialVersionUID = -1438488960840238751L;
-
+    
     public ChoiceConversionException(Throwable cause) {
         super(cause);
     }

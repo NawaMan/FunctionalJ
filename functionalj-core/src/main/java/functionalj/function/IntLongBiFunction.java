@@ -27,9 +27,9 @@ import functionalj.functions.ThrowFuncs;
 
 @FunctionalInterface
 public interface IntLongBiFunction<TARGET> extends Func2<Integer, Long, TARGET> {
-
+    
     public TARGET applyIntAndLongUnsafe(int input1, long input2) throws Exception;
-
+    
     public default TARGET applyIntAndLong(int input1, long input2) {
         try {
             return applyIntAndLongUnsafe(input1, input2);
@@ -37,7 +37,7 @@ public interface IntLongBiFunction<TARGET> extends Func2<Integer, Long, TARGET> 
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
-
+    
     @Override
     public default TARGET applyUnsafe(Integer input1, Long input2) throws Exception {
         return applyIntAndLongUnsafe(input1, input2);

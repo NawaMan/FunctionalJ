@@ -28,24 +28,24 @@ import functionalj.stream.intstream.collect.IntCollectedToInt;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 
 public interface IntAggregatorToInt extends IntegerToIntegerAccessPrimitive, IntAggregator<Integer> {
-
+    
     public IntCollectedToInt<?> asCollected();
-
+    
     // == Implementation ==
     public static class Impl implements IntAggregatorToInt {
-
+    
         private final IntCollectedToInt<?> collected;
-
+    
         public Impl(IntCollectorToIntPlus<?> collector) {
             this.collected = IntCollectedToInt.of(collector);
         }
-
+    
         @Override
         public int applyIntToInt(int input) {
             collected.accumulate(input);
             return collected.finish();
         }
-
+    
         public IntCollectedToInt<?> asCollected() {
             return collected;
         }

@@ -42,23 +42,23 @@ import functionalj.tuple.LongTuple2;
 import lombok.val;
 
 public interface LongStreamPlusWithCombine {
-
+    
     public LongStreamPlus longStreamPlus();
-
+    
     /**
      * Concatenate the given head stream in front of this stream.
      */
     public default LongStreamPlus prependWith(LongStream head) {
         return LongStreamPlus.concat(LongStreamPlus.from(head), LongStreamPlus.from(longStreamPlus()));
     }
-
+    
     /**
      * Concatenate the given tail stream to this stream.
      */
     public default LongStreamPlus appendWith(LongStream tail) {
         return LongStreamPlus.concat(LongStreamPlus.from(longStreamPlus()), LongStreamPlus.from(tail));
     }
-
+    
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
@@ -79,7 +79,7 @@ public interface LongStreamPlusWithCombine {
         });
         return resultStream;
     }
-
+    
     // -- Zip --
     /**
      * Combine this stream with another stream into a stream of tuple pair.
@@ -95,7 +95,7 @@ public interface LongStreamPlusWithCombine {
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongWith((value, another) -> LongTuple2.of(value, another), iteratorA, iteratorB);
     }
-
+    
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -110,7 +110,7 @@ public interface LongStreamPlusWithCombine {
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongWith(defaultValue, (value, another) -> LongTuple2.of(value, another), iteratorA, iteratorB);
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
@@ -126,61 +126,61 @@ public interface LongStreamPlusWithCombine {
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongWith(merger, iteratorA, iteratorB);
     }
-
+    
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(long defaultValue, Stream<ANOTHER> anotherStream, LongObjBiFunction<ANOTHER, TARGET> merger) {
         LongIteratorPlus iteratorA = longStreamPlus().iterator();
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongWith(defaultValue, merger, iteratorA, iteratorB);
     }
-
+    
     public default StreamPlus<LongLongTuple> zipWith(LongStream anotherStream) {
         LongIteratorPlus iteratorA = longStreamPlus().iterator();
         LongIteratorPlus iteratorB = LongStreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongLongObjWith(LongLongTuple::new, iteratorA, iteratorB);
     }
-
+    
     public default StreamPlus<LongLongTuple> zipWith(LongStream anotherStream, long defaultValue) {
         LongIteratorPlus iteratorA = longStreamPlus().iterator();
         LongIteratorPlus iteratorB = LongStreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongLongObjWith(LongLongTuple::new, iteratorA, iteratorB, defaultValue);
     }
-
+    
     public default StreamPlus<LongLongTuple> zipWith(long defaultValue1, LongStream anotherStream, long defaultValue2) {
         LongIteratorPlus iteratorA = longStreamPlus().iterator();
         LongIteratorPlus iteratorB = LongStreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongLongObjWith(LongLongTuple::new, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
-
+    
     public default LongStreamPlus zipWith(LongStream anotherStream, LongBinaryOperator merger) {
         LongIteratorPlus iteratorA = longStreamPlus().iterator();
         LongIteratorPlus iteratorB = LongStreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongLongWith(merger, iteratorA, iteratorB);
     }
-
+    
     public default LongStreamPlus zipWith(LongStream anotherStream, long defaultValue, LongBinaryOperator merger) {
         LongIteratorPlus iteratorA = longStreamPlus().iterator();
         LongIteratorPlus iteratorB = LongStreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongLongWith(merger, iteratorA, iteratorB, defaultValue);
     }
-
+    
     public default LongStreamPlus zipWith(LongStream anotherStream, long defaultValue1, long defaultValue2, LongBinaryOperator merger) {
         LongIteratorPlus iteratorA = longStreamPlus().iterator();
         LongIteratorPlus iteratorB = LongStreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongLongWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
-
+    
     public default <T> StreamPlus<T> zipToObjWith(LongStream anotherStream, LongLongBiFunction<T> merger) {
         LongIteratorPlus iteratorA = longStreamPlus().iterator();
         LongIteratorPlus iteratorB = LongStreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongLongObjWith(merger, iteratorA, iteratorB);
     }
-
+    
     public default <T> StreamPlus<T> zipToObjWith(LongStream anotherStream, long defaultValue1, long defaultValue2, LongLongBiFunction<T> merger) {
         LongIteratorPlus iteratorA = longStreamPlus().iterator();
         LongIteratorPlus iteratorB = LongStreamPlus.from(anotherStream).iterator();
         return LongStreamPlusHelper.doZipLongLongObjWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
@@ -194,7 +194,7 @@ public interface LongStreamPlusWithCombine {
     public default LongStreamPlus choose(LongStream anotherStream, LongBiPredicatePrimitive selectThisNotAnother) {
         return choose(anotherStream, AllowUnpaired, selectThisNotAnother);
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The parameter option can be used to select when the stream should end.
@@ -211,17 +211,17 @@ public interface LongStreamPlusWithCombine {
         val iteratorA = this.longStreamPlus().iterator();
         val iteratorB = LongStreamPlus.from(anotherStream).iterator();
         val iterator = new PrimitiveIterator.OfLong() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-
+    
             public long nextLong() {
                 val nextA = hasNextA ? iteratorA.nextLong() : Long.MIN_VALUE;
                 val nextB = hasNextB ? iteratorB.nextLong() : Long.MIN_VALUE;
@@ -239,7 +239,7 @@ public interface LongStreamPlusWithCombine {
             }
         };
         val iterable = new LongIterable() {
-
+    
             @Override
             public LongIteratorPlus iterator() {
                 return LongIteratorPlus.from(iterator);

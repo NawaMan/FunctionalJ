@@ -35,11 +35,11 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class RetryableDeferActionCreator {
-
+    
     private static final RetryableDeferActionCreator instance = new RetryableDeferActionCreator();
-
+    
     public static final Ref<RetryableDeferActionCreator> current = Ref.of(RetryableDeferActionCreator.class).defaultTo(RetryableDeferActionCreator.instance);
-
+    
     public <DATA> DeferAction<DATA> createRetryDeferAction(boolean interruptOnCancel, FuncUnit0 onStart, AsyncRunner runner, Retry<DATA> retry, Func0<DATA> supplier) {
         DeferAction<DATA> finalAction = DeferAction.createNew();
         val config = new DeferActionConfig().interruptOnCancel(interruptOnCancel).onStart(onStart).runner(runner);

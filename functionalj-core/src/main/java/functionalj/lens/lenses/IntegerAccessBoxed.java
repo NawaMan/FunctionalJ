@@ -29,7 +29,7 @@ import lombok.val;
 
 @FunctionalInterface
 public interface IntegerAccessBoxed<HOST> extends IntegerAccess<HOST> {
-
+    
     public default int applyAsInt(HOST host) {
         try {
             val integer = applyUnsafe(host);
@@ -40,14 +40,14 @@ public interface IntegerAccessBoxed<HOST> extends IntegerAccess<HOST> {
             throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
-
+    
     public default IntegerAccessPrimitive<HOST> orElse(int fallback) {
         return value -> {
             val result = apply(value);
             return (result != null) ? result : fallback;
         };
     }
-
+    
     public default IntegerAccessPrimitive<HOST> orGet(IntSupplier fallback) {
         return value -> {
             val result = apply(value);

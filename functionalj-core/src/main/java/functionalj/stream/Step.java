@@ -27,31 +27,31 @@ import functionalj.stream.doublestream.DoubleStep;
 import functionalj.stream.intstream.IntStep;
 
 public class Step {
-
+    
     public static IntStep.From StartAt(int start) {
         return IntStep.from(start);
     }
-
+    
     public static DoubleStep.From StartAt(double start) {
         return DoubleStep.from(start);
     }
-
+    
     public static IntStep.From From(int start) {
         return IntStep.from(start);
     }
-
+    
     public static DoubleStep.From From(double start) {
         return DoubleStep.from(start);
     }
-
+    
     public static IntStep.From from(int start) {
         return IntStep.from(start);
     }
-
+    
     public static DoubleStep.From from(double start) {
         return DoubleStep.from(start);
     }
-
+    
     private Step() {
     }
 }

@@ -53,17 +53,17 @@ import nullablej.nullable.Nullable;
  */
 @FunctionalInterface
 public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
-
+    
     public static <I1, I2, I3, I4, O> Func4<I1, I2, I3, I4, O> of(Func4<I1, I2, I3, I4, O> func) {
         return func;
     }
-
+    
     public static <I1, I2, I3, I4, O> Func4<I1, I2, I3, I4, O> func4(Func4<I1, I2, I3, I4, O> func) {
         return func;
     }
-
+    
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) throws Exception;
-
+    
     /**
      * Applies this function to the given input values.
      *
@@ -82,7 +82,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
-
+    
     /**
      * Applies this function to the given input values.
      *
@@ -92,15 +92,15 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default OUTPUT applyTo(Tuple4<INPUT1, INPUT2, INPUT3, INPUT4> input) {
         return apply(input._1(), input._2(), input._3(), input._4());
     }
-
+    
     public default Func3<INPUT2, INPUT3, INPUT4, OUTPUT> applyTo(INPUT1 input1) {
         return (input2, input3, input4) -> apply(input1, input2, input3, input4);
     }
-
+    
     public default Result<OUTPUT> applyTo(Result<INPUT1> input1, Result<INPUT2> input2, Result<INPUT3> input3, Result<INPUT4> input4) {
         return Result.ofResults(input1, input2, input3, input4, this);
     }
-
+    
     public default Optional<OUTPUT> applyTo(Optional<INPUT1> input1, Optional<INPUT2> input2, Optional<INPUT3> input3, Optional<INPUT4> input4) {
         return input1.flatMap(i1 -> {
             return input2.flatMap(i2 -> {
@@ -112,7 +112,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             });
         });
     }
-
+    
     public default Nullable<OUTPUT> applyTo(Nullable<INPUT1> input1, Nullable<INPUT2> input2, Nullable<INPUT3> input3, Nullable<INPUT4> input4) {
         return input1.flatMap(i1 -> {
             return input2.flatMap(i2 -> {
@@ -124,19 +124,19 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             });
         });
     }
-
+    
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2, HasPromise<INPUT3> input3, HasPromise<INPUT4> input4) {
         return Promise.from(input1, input2, input3, input4, this);
     }
-
+    
     public default Task<OUTPUT> applyTo(Task<INPUT1> input1, Task<INPUT2> input2, Task<INPUT3> input3, Task<INPUT4> input4) {
         return Task.from(input1, input2, input3, input4, this);
     }
-
+    
     public default Func0<OUTPUT> applyTo(Supplier<INPUT1> input1, Supplier<INPUT2> input2, Supplier<INPUT3> input3, Supplier<INPUT4> input4) {
         return () -> apply(input1.get(), input2.get(), input3.get(), input4.get());
     }
-
+    
     public default <SOURCE> Func1<SOURCE, OUTPUT> applyTo(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2, Func1<SOURCE, INPUT3> input3, Func1<SOURCE, INPUT4> input4) {
         return source -> {
             val i1 = input1.apply(source);
@@ -146,7 +146,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             return apply(i1, i2, i3, i4);
         };
     }
-
+    
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) {
         try {
             val output = applyUnsafe(input1, input2, input3, input4);
@@ -155,7 +155,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             return Result.ofException(exception);
         }
     }
-
+    
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
@@ -171,7 +171,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             return result;
         };
     }
-
+    
     public default <TARGET> Func4<INPUT1, INPUT2, INPUT3, INPUT4, TARGET> map(Function<? super OUTPUT, ? extends TARGET> after) {
         return (input1, input2, input3, input4) -> {
             OUTPUT output = this.applyUnsafe(input1, input2, input3, input4);
@@ -179,7 +179,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             return result;
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -191,7 +191,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> ifExceptionThenPrint() {
         return (input1, input2, input3, input4) -> {
             try {
@@ -203,7 +203,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -215,7 +215,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -227,7 +227,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -239,7 +239,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -251,7 +251,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -263,7 +263,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Func5<INPUT1, INPUT2, INPUT3, INPUT4, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -275,7 +275,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Func2<Tuple4<INPUT1, INPUT2, INPUT3, INPUT4>, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -287,7 +287,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -300,7 +300,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentGet(Consumer<Exception> exceptionHandler, Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -313,7 +313,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func1<Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -326,7 +326,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func5<INPUT1, INPUT2, INPUT3, INPUT4, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -339,7 +339,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func2<Tuple4<INPUT1, INPUT2, INPUT3, INPUT4>, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4) -> {
             try {
@@ -352,19 +352,19 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default OUTPUT orElse(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, OUTPUT defaultValue) {
         return applySafely(input1, input2, input3, input4).orElse(defaultValue);
     }
-
+    
     public default OUTPUT orGet(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, Supplier<OUTPUT> defaultSupplier) {
         return applySafely(input1, input2, input3, input4).orGet(defaultSupplier);
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Optional<OUTPUT>> optionally() {
         return (input1, input2, input3, input4) -> {
             try {
@@ -374,7 +374,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             }
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, HasPromise<OUTPUT>> async() {
         return (input1, input2, input3, input4) -> {
             val supplier = (Func0<OUTPUT>) () -> {
@@ -383,7 +383,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             return DeferAction.from(supplier).start().getPromise();
         };
     }
-
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, DeferAction<OUTPUT>> defer() {
         return (input1, input2, input3, input4) -> {
             val supplier = (Func0<OUTPUT>) () -> {
@@ -392,17 +392,17 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             return DeferAction.from(supplier);
         };
     }
-
+    
     public default Func4<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, Promise<OUTPUT>> forPromise() {
         return (promise1, promise2, promise3, promise4) -> {
             return Promise.from(promise1, promise2, promise3, promise4, this);
         };
     }
-
+    
     public default Func1<Tuple4<INPUT1, INPUT2, INPUT3, INPUT4>, OUTPUT> wholly() {
         return t -> this.applyUnsafe(t._1(), t._2(), t._3(), t._4());
     }
-
+    
     /**
      * Flip the parameter order.
      *
@@ -411,104 +411,104 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT4, INPUT3, INPUT2, INPUT1, OUTPUT> flip() {
         return (i4, i3, i2, i1) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT2, INPUT3, INPUT4, Func1<INPUT1, OUTPUT>> elevate() {
         return (i2, i3, i4) -> (i1) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3, INPUT4 i4) {
         return (i1) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func1<INPUT1, Func3<INPUT2, INPUT3, INPUT4, OUTPUT>> split() {
         return split1();
     }
-
+    
     public default Func1<INPUT1, Func3<INPUT2, INPUT3, INPUT4, OUTPUT>> split1() {
         return (i1) -> (i2, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func2<INPUT1, INPUT2, Func2<INPUT3, INPUT4, OUTPUT>> split2() {
         return (i1, i2) -> (i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT1, INPUT2, INPUT3, Func1<INPUT4, OUTPUT>> split3() {
         return (i1, i2, i3) -> (i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     // == Partially apply functions ==
     public default Func0<OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4) {
         return () -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT2, INPUT3, INPUT4, OUTPUT> bind1(INPUT1 i1) {
         return (i2, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT1, INPUT3, INPUT4, OUTPUT> bind2(INPUT2 i2) {
         return (i1, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT1, INPUT2, INPUT4, OUTPUT> bind3(INPUT3 i3) {
         return (i1, i2, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> bind4(INPUT4 i4) {
         return (i1, i2, i3) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func1<INPUT1, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4) {
         return i1 -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func1<INPUT2, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4) {
         return i2 -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func1<INPUT3, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4) {
         return i3 -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func1<INPUT4, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4) {
         return i4 -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, INPUT4 i4) {
         return (i1, i2) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func2<INPUT1, INPUT3, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, INPUT4 i4) {
         return (i1, i3) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func2<INPUT1, INPUT4, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, Absent a4) {
         return (i1, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func2<INPUT2, INPUT3, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, INPUT4 i4) {
         return (i2, i3) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func2<INPUT2, INPUT4, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, Absent a4) {
         return (i2, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func2<INPUT3, INPUT4, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, Absent a4) {
         return (i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> bind(Absent a1, Absent a2, Absent a3, INPUT4 i4) {
         return (i1, i2, i3) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT1, INPUT2, INPUT4, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, Absent a4) {
         return (i1, i2, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT1, INPUT3, INPUT4, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, Absent a4) {
         return (i1, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }
-
+    
     public default Func3<INPUT2, INPUT3, INPUT4, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, Absent a4) {
         return (i2, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
     }

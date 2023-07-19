@@ -28,9 +28,9 @@ import functionalj.pipeable.Pipeable;
 import lombok.val;
 
 public interface StreamPlusWithPipe<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * @return the pipeable of this stream.
      */
@@ -38,7 +38,7 @@ public interface StreamPlusWithPipe<DATA> {
         val streamPlus = streamPlus();
         return Pipeable.of(streamPlus);
     }
-
+    
     /**
      * Pipe this stream plus through the given function.
      */

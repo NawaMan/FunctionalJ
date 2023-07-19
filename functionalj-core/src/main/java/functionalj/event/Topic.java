@@ -35,15 +35,15 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class Topic<DATA> {
-
+    
     private final AtomicReference<FuncList<Subscription<DATA>>> subscriptions = new AtomicReference<>(FuncList.empty());
-
+    
     private final AtomicBoolean isActive = new AtomicBoolean(true);
-
+    
     public boolean isActive() {
         return isActive.get();
     }
-
+    
     boolean publish(DATA data) {
         boolean stillActive = isActive.get();
         if (stillActive) {
@@ -52,13 +52,13 @@ public class Topic<DATA> {
         }
         return stillActive;
     }
-
+    
     void done() {
         notifySubscription(Result.ofNoMore());
         isActive.set(false);
         subscriptions.set(FuncList.empty());
     }
-
+    
     private void notifySubscription(Result<DATA> result) {
         subscriptions.get().filter(Subscription::isActive).forEach(sub -> {
             try {
@@ -68,12 +68,12 @@ public class Topic<DATA> {
             }
         });
     }
-
+    
     private <TOPIC> Topic<TOPIC> newSubTopic(FuncUnit2<Result<DATA>, Topic<TOPIC>> resultConsumer) {
         val topic = new SubTopic<TOPIC>(this, resultConsumer);
         return topic;
     }
-
+    
     @SuppressWarnings("unchecked")
     public <TARGET> Topic<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         requireNonNull(mapper);
@@ -82,7 +82,7 @@ public class Topic<DATA> {
             targetTopic.notifySubscription((Result<TARGET>) result);
         });
     }
-
+    
     @SuppressWarnings("unchecked")
     public <TARGET> Topic<TARGET> mapResult(Func1<Result<? super DATA>, Result<? extends TARGET>> mapper) {
         requireNonNull(mapper);
@@ -91,7 +91,7 @@ public class Topic<DATA> {
             targetTopic.notifySubscription((Result<TARGET>) result);
         });
     }
-
+    
     public Topic<DATA> filter(Predicate<? super DATA> filter) {
         requireNonNull(filter);
         return (Topic<DATA>) newSubTopic((Result<DATA> r, Topic<DATA> targetTopic) -> {
@@ -99,7 +99,7 @@ public class Topic<DATA> {
             targetTopic.notifySubscription((Result<DATA>) result);
         });
     }
-
+    
     public Topic<DATA> filterResult(Predicate<Result<? super DATA>> filter) {
         requireNonNull(filter);
         return (Topic<DATA>) newSubTopic((Result<DATA> r, Topic<DATA> targetTopic) -> {
@@ -107,21 +107,21 @@ public class Topic<DATA> {
             targetTopic.notifySubscription((Result<DATA>) result);
         });
     }
-
+    
     public Subscription<DATA> subscribe(FuncUnit1<DATA> subscribe) {
         return subscribe(subscribe.thenReturn(Subscription.Continue));
     }
-
+    
     public Subscription<DATA> subscribe(Func1<DATA, Cancellation> subscribe) {
         return onNext(result -> {
             return result.map(subscribe).orElse(Subscription.Continue);
         });
     }
-
+    
     public Subscription<DATA> onNext(FuncUnit1<Result<DATA>> subscribe) {
         return onNext(subscribe.thenReturn(Subscription.Continue));
     }
-
+    
     public Subscription<DATA> onNext(Func1<Result<DATA>, Cancellation> subscribe) {
         requireNonNull(subscribe);
         val subscription = new Subscription<DATA>(this, subscribe);
@@ -134,7 +134,7 @@ public class Topic<DATA> {
         });
         return subscription;
     }
-
+    
     void unsubcribe(Subscription<DATA> subscription) {
         subscription.notifyNext(Result.ofNoMore());
         subscriptions.getAndUpdate(subs -> {

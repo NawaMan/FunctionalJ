@@ -39,9 +39,9 @@ import functionalj.function.IntObjBiFunction;
 import lombok.val;
 
 public interface StreamPlusWithFilter<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Map each value to an int and used it to filter the value.
      */
@@ -53,7 +53,7 @@ public interface StreamPlusWithFilter<DATA> {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to a long and used it to filter the value.
      */
@@ -65,7 +65,7 @@ public interface StreamPlusWithFilter<DATA> {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to a double and used it to filter the value.
      */
@@ -77,7 +77,7 @@ public interface StreamPlusWithFilter<DATA> {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to another object and used it to filter the value.
      */
@@ -85,7 +85,7 @@ public interface StreamPlusWithFilter<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.filter(mapper, predicate);
     }
-
+    
     /**
      * Map each value to another object and used it to filter the value.
      */
@@ -97,7 +97,7 @@ public interface StreamPlusWithFilter<DATA> {
             return isPass;
         });
     }
-
+    
     /**
      * Filter the element that is only the specific class.
      */
@@ -105,7 +105,7 @@ public interface StreamPlusWithFilter<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.filter(clzz::isInstance);
     }
-
+    
     /**
      * Case the value to the given class and used it to filter the value.
      * If the value is not of the type (null included), it will be filtered out.
@@ -120,7 +120,7 @@ public interface StreamPlusWithFilter<DATA> {
             return isPass;
         });
     }
-
+    
     /**
      * Filter value with its index.
      */
@@ -131,21 +131,21 @@ public interface StreamPlusWithFilter<DATA> {
             return (predicate != null) && predicate.apply(index.getAndIncrement(), each);
         });
     }
-
+    
     /**
      * Filter value that is not null.
      */
     public default StreamPlus<DATA> filterNonNull() {
         return excludeNull();
     }
-
+    
     /**
      * Map the value to another object and filter the one that is not null.
      */
     public default <T> StreamPlus<DATA> filterNonNull(Function<? super DATA, T> mapper) {
         return excludeNull(mapper);
     }
-
+    
     /**
      * Filter value that is not null.
      */
@@ -153,7 +153,7 @@ public interface StreamPlusWithFilter<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.filter(Objects::nonNull);
     }
-
+    
     /**
      * Map the value to another object and filter the one that is not null.
      */
@@ -165,7 +165,7 @@ public interface StreamPlusWithFilter<DATA> {
             return isNotNull;
         });
     }
-
+    
     /**
      * Filter only the value that is in the given items.
      */
@@ -173,7 +173,7 @@ public interface StreamPlusWithFilter<DATA> {
     public default StreamPlus<DATA> filterOnly(DATA... items) {
         return filterIn(asList((DATA[]) items));
     }
-
+    
     /**
      * Filter only the value that is in the given collections.
      */
@@ -185,7 +185,7 @@ public interface StreamPlusWithFilter<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.filter(data -> collection.contains(data));
     }
-
+    
     /**
      * Filter only the value that the predicate returns false.
      */
@@ -195,7 +195,7 @@ public interface StreamPlusWithFilter<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.filter(data -> !predicate.test(data));
     }
-
+    
     /**
      * Filter out any value that is in the given items.
      */
@@ -204,7 +204,7 @@ public interface StreamPlusWithFilter<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.excludeIn(asList((DATA[]) items));
     }
-
+    
     /**
      * Filter out any value that is in the given collection.
      */

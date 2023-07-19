@@ -41,22 +41,22 @@ import lombok.val;
 
 @FunctionalInterface
 public interface AsyncRunner extends FuncUnit1<Runnable> {
-
+    
     public static <EXCEPTION extends Exception> Promise<Object> run(RunBody<EXCEPTION> runnable) {
         return run(null, runnable);
     }
-
+    
     public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(ComputeBody<DATA, EXCEPTION> body) {
         return run(null, body);
     }
-
+    
     public static <EXCEPTION extends Exception> Promise<Object> run(AsyncRunner runner, RunBody<EXCEPTION> runnable) {
         return run(runner, () -> {
             runnable.run();
             return null;
         });
     }
-
+    
     public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
         val action = DeferAction.of((Class<DATA>) null).start();
         val theRunner = (runner != null) ? runner : Env.async();
@@ -86,31 +86,31 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
         val promise = action.getPromise();
         return promise;
     }
-
+    
     public static final AsyncRunner onSameThread = runnable -> {
         runnable.run();
     };
-
+    
     public static final AsyncRunner onNewThread = runnable -> {
         new Thread(runnable).start();
     };
-
+    
     public static final AsyncRunner threadFactory = runnable -> {
         Executors.defaultThreadFactory().newThread(runnable).start();
     };
-
+    
     public static final AsyncRunner completeableFuture = runnable -> {
         CompletableFuture.runAsync(runnable);
     };
-
+    
     public static final AsyncRunner forkJoinPool = runnable -> {
         ForkJoinPool.commonPool().execute(runnable);
     };
-
+    
     public static AsyncRunner threadFactory(ThreadFactory threadFactory) {
         return runnable -> threadFactory.newThread(runnable).start();
     }
-
+    
     public static AsyncRunner executorService(ExecutorService executorService) {
         return runnable -> executorService.execute(runnable);
     }

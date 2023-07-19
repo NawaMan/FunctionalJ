@@ -25,6 +25,6 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface ToCharBiCharFunction<DATA> {
-
+    
     public char applyAsChar(DATA data, char charValue);
 }

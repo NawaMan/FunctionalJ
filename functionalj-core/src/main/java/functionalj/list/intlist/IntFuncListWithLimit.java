@@ -28,84 +28,84 @@ import java.util.function.IntPredicate;
 import functionalj.function.IntBiPredicatePrimitive;
 
 public interface IntFuncListWithLimit extends AsIntFuncList {
-
+    
     /**
      * Limit the size of the stream to the given size.
      */
     public default IntFuncList limit(Long maxSize) {
         return deriveToInt(this, stream -> stream.limit(maxSize));
     }
-
+    
     /**
      * Skip to the given offset position.
      */
     public default IntFuncList skip(Long startAt) {
         return deriveToInt(this, stream -> stream.skip(startAt));
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
     public default IntFuncList skipWhile(IntPredicate condition) {
         return deriveToInt(this, stream -> stream.skipWhile(condition));
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
     public default IntFuncList skipWhile(IntBiPredicatePrimitive condition) {
         return deriveToInt(this, stream -> stream.skipWhile(condition));
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
     public default IntFuncList skipUntil(IntPredicate condition) {
         return deriveToInt(this, stream -> stream.skipUntil(condition));
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
     public default IntFuncList skipUntil(IntBiPredicatePrimitive condition) {
         return deriveToInt(this, stream -> stream.skipUntil(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
     public default IntFuncList acceptWhile(IntPredicate condition) {
         return deriveToInt(this, stream -> stream.acceptWhile(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
     public default IntFuncList acceptWhile(IntBiPredicatePrimitive condition) {
         return deriveToInt(this, stream -> stream.acceptWhile(condition));
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
     public default IntFuncList acceptUntil(IntPredicate condition) {
         return deriveToInt(this, stream -> stream.acceptUntil(condition));
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
     public default IntFuncList acceptUntil(IntBiPredicatePrimitive condition) {
         return deriveToInt(this, stream -> stream.acceptUntil(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
     public default IntFuncList dropAfter(IntPredicate condition) {
         return deriveToInt(this, stream -> stream.dropAfter(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */

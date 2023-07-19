@@ -29,66 +29,66 @@ import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.GrowOnlyDoubleArray;
 
 public class DoubleFuncListBuilder {
-
+    
     private final GrowOnlyDoubleArray list;
-
+    
     // This constructor must not be public or protected.
     DoubleFuncListBuilder(GrowOnlyDoubleArray list) {
         this.list = list;
     }
-
+    
     public DoubleFuncListBuilder() {
         list = new GrowOnlyDoubleArray();
     }
-
+    
     public DoubleFuncListBuilder(double... values) {
         list = new GrowOnlyDoubleArray(values);
     }
-
+    
     public DoubleFuncListBuilder add(double data) {
         list.add(data);
         return this;
     }
-
+    
     public DoubleFuncList build() {
         int length = list.length();
         return DoubleFuncList.from(() -> list.stream().limit(length));
     }
-
+    
     public DoubleFuncList toFuncList() {
         return build();
     }
-
+    
     public int size() {
         return list.length();
     }
-
+    
     public boolean isEmpty() {
         return size() == 0;
     }
-
+    
     public DoubleStreamPlus stream() {
         return DoubleStreamPlus.from(list.stream());
     }
-
+    
     public double get(int i) {
         return list.get(i);
     }
-
+    
     public OptionalDouble at(int i) {
         if (i < 0 || i >= list.length())
             return OptionalDouble.empty();
         return OptionalDouble.of(list.get(i));
     }
-
+    
     public String toString() {
         return list.toString();
     }
-
+    
     public int hashCode() {
         return list.hashCode();
     }
-
+    
     public boolean equals(DoubleFuncListBuilder array) {
         return Objects.equals(list, array.list);
     }

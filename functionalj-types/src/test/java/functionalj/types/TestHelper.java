@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import lombok.val;
 
 public class TestHelper {
-
+    
     /**
      * This assert changes the actual value to string and match it with the expected string value.
      *
@@ -22,7 +22,7 @@ public class TestHelper {
             return;
         assertEquals(expected, actualAsString);
     }
-
+    
     /**
      * This assert changes the actual value to string and match it with the expected string value.
      *
@@ -36,7 +36,7 @@ public class TestHelper {
             return;
         assertEquals(failureMessage, expected, actualAsString);
     }
-
+    
     /**
      * This assert changes the actual value to string and match it with the expected string value.
      *

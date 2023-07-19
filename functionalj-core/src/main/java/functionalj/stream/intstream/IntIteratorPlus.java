@@ -39,48 +39,48 @@ import lombok.val;
 
 @FunctionalInterface
 public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable, Pipeable<IntIteratorPlus> {
-
+    
     public static IntIteratorPlus of(int... ds) {
         return IntIteratorPlus.from(IntStreamPlus.of(ds));
     }
-
+    
     public static IntIteratorPlus from(IntStream stream) {
         if (stream instanceof IntStreamPlus) {
             return new StreamBackedIntIteratorPlus(((IntStreamPlus) stream).intStream());
         }
         return IntIteratorPlus.from(stream.iterator());
     }
-
+    
     public static IntIteratorPlus from(PrimitiveIterator.OfInt iterator) {
         if (iterator instanceof IntIteratorPlus)
             return (IntIteratorPlus) iterator;
         else
             return new IntIteratorPlus() {
-
+    
                 @Override
                 public OfInt asIterator() {
                     return iterator;
                 }
             };
     }
-
+    
     public default IntIteratorPlus __data() throws Exception {
         return this;
     }
-
+    
     public default void close() {
     }
-
+    
     public default IntIteratorPlus onClose(Runnable closeHandler) {
         return this;
     }
-
+    
     public PrimitiveIterator.OfInt asIterator();
-
+    
     public default IntIteratorPlus iterator() {
         return IntIteratorPlus.from(asIterator());
     }
-
+    
     @Override
     public default boolean hasNext() {
         val hasNext = asIterator().hasNext();
@@ -89,33 +89,33 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
         }
         return hasNext;
     }
-
+    
     @Override
     public default int nextInt() {
         return asIterator().nextInt();
     }
-
+    
     @Override
     public default Integer next() {
         return asIterator().next();
     }
-
+    
     public default IntStreamPlus stream() {
         val iterable = (IntIterable) () -> this;
         return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
-
+    
     public default IntFuncList toList() {
         return stream().toImmutableList();
     }
-
+    
     public default OptionalInt pullNext() {
         if (hasNext())
             return OptionalInt.of(nextInt());
         else
             return OptionalInt.empty();
     }
-
+    
     public default AutoCloseableResult<IntIteratorPlus> pullNext(int count) {
         int[] array = stream().limit(count).toArray();
         if ((array.length == 0) && count != 0)
@@ -123,7 +123,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
         val iterator = new ArrayBackedIntIteratorPlus(array);
         return AutoCloseableResult.valueOf(iterator);
     }
-
+    
     public default IntIteratorPlus useNext(IntConsumer usage) {
         if (hasNext()) {
             val next = nextInt();
@@ -131,7 +131,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
         }
         return this;
     }
-
+    
     public default IntIteratorPlus useNext(int count, Consumer<IntStreamPlus> usage) {
         int[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
@@ -142,7 +142,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
         }
         return this;
     }
-
+    
     public default <TARGET> Result<TARGET> mapNext(IntFunction<TARGET> mapper) {
         if (hasNext()) {
             val next = nextInt();
@@ -152,7 +152,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
             return Result.ofNoMore();
         }
     }
-
+    
     public default <TARGET> Result<TARGET> mapNext(int count, Function<IntStreamPlus, TARGET> mapper) {
         val array = stream().limit(count).toArray();
         if ((array.length == 0) && (count != 0))

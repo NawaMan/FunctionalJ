@@ -29,28 +29,28 @@ import lombok.val;
 
 @FunctionalInterface
 public interface LongLens<HOST> extends LongAccess<HOST>, ComparableLens<HOST, Long> {
-
+    
     public static class Impl<H> extends ComparableLens.Impl<H, Long> implements Named, LongLens<H> {
-
+    
         public Impl(String name, LensSpec<H, Long> spec) {
             super(name, spec);
         }
     }
-
+    
     public static <HOST> LongLens<HOST> of(String name, LensSpec<HOST, Long> spec) {
         return new Impl<>(name, spec);
     }
-
+    
     public static <HOST> LongLens<HOST> of(LensSpec<HOST, Long> spec) {
         return of(null, spec);
     }
-
+    
     @Override
     default Long apply(HOST host) {
         LensSpec<HOST, Long> lensSpec = lensSpec();
         return lensSpec.getRead().apply(host);
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public default long applyAsLong(HOST host) {
@@ -63,7 +63,7 @@ public interface LongLens<HOST> extends LongAccess<HOST>, ComparableLens<HOST, L
         val value = lensSpec.apply(host);
         return value;
     }
-
+    
     @Override
     public default Long applyUnsafe(HOST host) throws Exception {
         LensSpec<HOST, Long> lensSpec = lensSpec();

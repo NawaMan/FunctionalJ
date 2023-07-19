@@ -6,7 +6,7 @@ import functionalj.function.Func;
 import lombok.val;
 
 public class SubstituteTest {
-
+    
     @Test
     public void testSubstitute() {
         val value = Ref.ofValue("One");

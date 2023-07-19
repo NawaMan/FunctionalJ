@@ -27,85 +27,85 @@ import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 
 public class DoubleDoubleTuple implements Tuple2<Double, Double>, Map.Entry<Double, Double> {
-
+    
     public static DoubleDoubleTuple of(double v1, double v2) {
         return new DoubleDoubleTuple(v1, v2);
     }
-
+    
     public static DoubleDoubleTuple doubleTuple(double v1, double v2) {
         return new DoubleDoubleTuple(v1, v2);
     }
-
+    
     public final double _1;
-
+    
     public final double _2;
-
+    
     public DoubleDoubleTuple(double _1, double _2) {
         this._1 = _1;
         this._2 = _2;
     }
-
+    
     public double _double1() {
         return _1;
     }
-
+    
     public double _double2() {
         return _2;
     }
-
+    
     public Double _1() {
         return _1;
     }
-
+    
     public Double _2() {
         return _2;
     }
-
+    
     @Override
     public Double getKey() {
         return _1();
     }
-
+    
     @Override
     public Double getValue() {
         return _2();
     }
-
+    
     public DoubleDoubleTuple mapToDouble(DoubleUnaryOperator mapper1, DoubleUnaryOperator mapper2) {
         return DoubleDoubleTuple.of(mapper1.applyAsDouble(_1), mapper2.applyAsDouble(_2));
     }
-
+    
     public DoubleDoubleTuple map1ToDouble(DoubleUnaryOperator mapper) {
         return DoubleDoubleTuple.of(mapper.applyAsDouble(_1), _2);
     }
-
+    
     public DoubleDoubleTuple map2ToDouble(DoubleUnaryOperator mapper) {
         return DoubleDoubleTuple.of(_1, mapper.applyAsDouble(_2));
     }
-
+    
     public DoubleDoubleTuple mapKeyToDouble(DoubleUnaryOperator mapper) {
         return DoubleDoubleTuple.of(mapper.applyAsDouble(_1), _2);
     }
-
+    
     public DoubleDoubleTuple mapValueToDouble(DoubleUnaryOperator mapper) {
         return DoubleDoubleTuple.of(_1, mapper.applyAsDouble(_2));
     }
-
+    
     @Override
     public Double setValue(Double value) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public String toString() {
         return Tuple.toString(this);
     }
-
+    
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);

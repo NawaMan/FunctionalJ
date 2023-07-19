@@ -35,21 +35,21 @@ import functionalj.tuple.LongLongTuple;
 import functionalj.tuple.LongTuple2;
 
 public interface LongFuncListWithCombine extends AsLongFuncList {
-
+    
     /**
      * Concatenate the given head stream in front of this stream.
      */
     public default LongFuncList prependWith(LongFuncList head) {
         return deriveToLong(this, stream -> stream.prependWith(head.longStream()));
     }
-
+    
     /**
      * Concatenate the given tail stream to this stream.
      */
     public default LongFuncList appendWith(LongFuncList tail) {
         return deriveToLong(this, stream -> stream.appendWith(tail.longStream()));
     }
-
+    
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
@@ -62,7 +62,7 @@ public interface LongFuncListWithCombine extends AsLongFuncList {
     public default LongFuncList mergeWith(LongFuncList anotherFuncList) {
         return deriveToLong(this, stream -> stream.mergeWith(anotherFuncList.longStream()));
     }
-
+    
     // -- Zip --
     /**
      * Combine this stream with another stream into a stream of tuple pair.
@@ -76,7 +76,7 @@ public interface LongFuncListWithCombine extends AsLongFuncList {
     public default <ANOTHER> FuncList<LongTuple2<ANOTHER>> zipWith(FuncList<ANOTHER> anotherFuncList) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.stream()));
     }
-
+    
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -89,7 +89,7 @@ public interface LongFuncListWithCombine extends AsLongFuncList {
     public default <ANOTHER> FuncList<LongTuple2<ANOTHER>> zipWith(long defaultValue, FuncList<ANOTHER> anotherFuncList) {
         return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherFuncList.stream()));
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
@@ -103,7 +103,7 @@ public interface LongFuncListWithCombine extends AsLongFuncList {
     public default <ANOTHER, TARGET> FuncList<TARGET> zipWith(FuncList<ANOTHER> anotherFuncList, LongObjBiFunction<ANOTHER, TARGET> merger) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.stream(), merger));
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -117,7 +117,7 @@ public interface LongFuncListWithCombine extends AsLongFuncList {
     public default FuncList<LongLongTuple> zipWith(LongFuncList anotherFuncList) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.longStream()));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when any of the stream ended.
@@ -131,7 +131,7 @@ public interface LongFuncListWithCombine extends AsLongFuncList {
     public default FuncList<LongLongTuple> zipWith(LongFuncList anotherFuncList, long defaultValue) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.longStream(), defaultValue));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.
@@ -146,31 +146,31 @@ public interface LongFuncListWithCombine extends AsLongFuncList {
     public default FuncList<LongLongTuple> zipWith(long defaultValue1, LongFuncList anotherFuncList, long defaultValue2) {
         return deriveToObj(this, stream -> stream.zipWith(defaultValue1, anotherFuncList.longStream(), defaultValue2));
     }
-
+    
     public default LongFuncList zipWith(LongFuncList anotherFuncList, LongBinaryOperator merger) {
         return deriveToLong(this, stream -> stream.zipWith(anotherFuncList.longStream(), merger));
     }
-
+    
     public default LongFuncList zipWith(LongFuncList anotherFuncList, long defaultValue, LongBinaryOperator merger) {
         return deriveToLong(this, stream -> stream.zipWith(anotherFuncList.longStream(), defaultValue, merger));
     }
-
+    
     public default LongFuncList zipWith(long defaultValue1, LongFuncList anotherFuncList, long defaultValue2, LongBinaryOperator merger) {
         return deriveToLong(this, stream -> stream.zipWith(anotherFuncList.longStream(), defaultValue1, defaultValue2, merger));
     }
-
+    
     public default <T> FuncList<T> zipToObjWith(LongFuncList anotherFuncList, LongLongBiFunction<T> merger) {
         return deriveToObj(this, stream -> stream.zipToObjWith(anotherFuncList.longStream(), merger));
     }
-
+    
     public default <T> FuncList<T> zipToObjWith(long defaultValue1, LongFuncList anotherFuncList, long defaultValue2, LongLongBiFunction<T> merger) {
         return deriveToObj(this, stream -> stream.zipToObjWith(anotherFuncList.longStream(), defaultValue1, defaultValue2, merger));
     }
-
+    
     public default <ANOTHER, TARGET> FuncList<TARGET> zipToObjWith(long defaultValue, FuncList<ANOTHER> anotherFuncList, LongObjBiFunction<ANOTHER, TARGET> merger) {
         return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherFuncList.stream(), merger));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.
@@ -179,7 +179,7 @@ public interface LongFuncListWithCombine extends AsLongFuncList {
     public default LongFuncList choose(LongFuncList anotherFuncList, LongBiPredicatePrimitive selectThisNotAnother) {
         return deriveToLong(this, stream -> stream.choose(anotherFuncList.longStreamPlus(), selectThisNotAnother));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.

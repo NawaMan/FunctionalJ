@@ -28,7 +28,7 @@ import lombok.val;
 
 @FunctionalInterface
 public interface DoubleAccessBoxed<HOST> extends DoubleAccess<HOST> {
-
+    
     public default double applyAsDouble(HOST host) {
         try {
             val value = applyUnsafe(host);

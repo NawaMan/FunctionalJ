@@ -28,14 +28,14 @@ import java.util.Comparator;
 import java.util.function.IntFunction;
 
 public interface IntFuncListWithSort extends AsIntFuncList {
-
+    
     /**
      * Sort the values by the mapped value.
      */
     public default <T extends Comparable<? super T>> IntFuncList sortedBy(IntFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.sortedBy(mapper));
     }
-
+    
     /**
      * Sort the values by the mapped value using the comparator.
      */

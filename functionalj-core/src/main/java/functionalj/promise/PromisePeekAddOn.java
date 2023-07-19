@@ -30,21 +30,21 @@ import functionalj.result.Result;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public interface PromisePeekAddOn<DATA> {
-
+    
     public <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper);
-
+    
     public default <T extends DATA> Promise<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
         return mapResult(result -> result.peek(clzz, (Consumer) theConsumer));
     }
-
+    
     public default Promise<DATA> peek(Predicate<? super DATA> selector, Consumer<? super DATA> theConsumer) {
         return mapResult(result -> result.peek((Predicate) selector, (Consumer) theConsumer));
     }
-
+    
     public default <T> Promise<DATA> peek(Function<? super DATA, T> mapper, Consumer<? super T> theConsumer) {
         return mapResult(result -> result.peek((Function) mapper, (Consumer) theConsumer));
     }
-
+    
     public default <T> Promise<DATA> peek(Function<? super DATA, T> mapper, Predicate<? super T> selector, Consumer<? super T> theConsumer) {
         return mapResult(result -> result.peek((Function) mapper, (Predicate) selector, (Consumer) theConsumer));
     }

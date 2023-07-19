@@ -28,7 +28,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class NamedTest {
-
+    
     @Test
     public void test() {
         val namedSupplier = Named.Supplier("GetWord", () -> "Hello");

@@ -29,13 +29,13 @@ import functionalj.types.Struct;
 import lombok.val;
 
 public class DOWithSameClassName {
-
+    
     @Struct
     public static interface DOSameName {
-
+    
         public String name();
     }
-
+    
     @Test
     public void testSameName() {
         val obj = new functionalj.typestests.struct.DOSameName("Obj");

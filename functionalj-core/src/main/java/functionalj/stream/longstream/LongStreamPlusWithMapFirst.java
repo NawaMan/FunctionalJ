@@ -30,12 +30,12 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 class LongStreamPlusMapFirstAddOnHelper {
-
+    
     @SafeVarargs
     static final <T> StreamPlus<T> doMapFirst(LongStreamPlus streamPlus, LongFunction<T>... mappers) {
         return streamPlus.mapToObj((long data) -> eachMapFirst(data, mappers));
     }
-
+    
     private static <T> T eachMapFirst(long d, LongFunction<T>[] mappers) {
         Exception exception = null;
         boolean hasNull = false;
@@ -58,9 +58,9 @@ class LongStreamPlusMapFirstAddOnHelper {
 }
 
 public interface LongStreamPlusWithMapFirst {
-
+    
     public LongStreamPlus longStreamPlus();
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -68,7 +68,7 @@ public interface LongStreamPlusWithMapFirst {
         val streamPlus = longStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -76,7 +76,7 @@ public interface LongStreamPlusWithMapFirst {
         val streamPlus = longStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -84,7 +84,7 @@ public interface LongStreamPlusWithMapFirst {
         val streamPlus = longStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -92,7 +92,7 @@ public interface LongStreamPlusWithMapFirst {
         val streamPlus = longStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */

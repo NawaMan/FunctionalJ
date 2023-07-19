@@ -46,32 +46,32 @@ import lombok.val;
  */
 @FunctionalInterface
 public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, RuntimeException> {
-
+    
     public static <T> Func0<T> of(Func0<T> func0) {
         return func0;
     }
-
+    
     public static <T> Func0<T> from(Supplier<T> supplier) {
         if (supplier instanceof Func0)
             return (Func0<T>) supplier;
         return supplier::get;
     }
-
+    
     public static <T> Func0<T> from(IntFunction<T> generatorFunction) {
         return Func0.from(0, generatorFunction);
     }
-
+    
     public static <T> Func0<T> from(int start, IntFunction<T> generatorFunction) {
         val counter = new AtomicInteger(start);
         return () -> generatorFunction.apply(counter.getAndIncrement());
     }
-
+    
     public OUTPUT applyUnsafe() throws Exception;
-
+    
     public default OUTPUT getUnsafe() throws Exception {
         return applyUnsafe();
     }
-
+    
     public default OUTPUT get() {
         try {
             return applyUnsafe();
@@ -81,27 +81,27 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
-
+    
     public default OUTPUT compute() throws RuntimeException {
         return apply();
     }
-
+    
     public default OUTPUT apply() {
         return get();
     }
-
+    
     public default Result<OUTPUT> applySafely() {
         return Result.of(this);
     }
-
+    
     public default Result<OUTPUT> getSafely() {
         return Result.of(this);
     }
-
+    
     public default Func0<OUTPUT> memoize() {
         return Func0.from(Func.lazy(this));
     }
-
+    
     public default <TARGET> Func0<TARGET> then(Func1<OUTPUT, TARGET> mapper) {
         return () -> {
             val output = this.applyUnsafe();
@@ -109,7 +109,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             return target;
         };
     }
-
+    
     public default <TARGET> Func0<TARGET> map(Func1<OUTPUT, TARGET> mapper) {
         return () -> {
             val output = this.applyUnsafe();
@@ -117,7 +117,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             return target;
         };
     }
-
+    
     public default Func0<OUTPUT> ifException(Consumer<? super Exception> exceptionHandler) {
         return () -> {
             try {
@@ -129,7 +129,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default Func0<OUTPUT> ifExceptionThenPrint() {
         return () -> {
             try {
@@ -141,7 +141,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default Func0<OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
         return () -> {
             try {
@@ -153,7 +153,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default Func0<OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
         return () -> {
             try {
@@ -165,7 +165,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default Func0<OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return () -> {
             try {
@@ -177,7 +177,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default Func0<OUTPUT> whenAbsentGet(Supplier<? extends OUTPUT> defaultSupplier) {
         return () -> {
             try {
@@ -189,7 +189,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default Func0<OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
         return () -> {
             try {
@@ -201,7 +201,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default Func0<OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
         return () -> {
             try {
@@ -214,7 +214,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default Func0<OUTPUT> whenAbsentGet(Consumer<Exception> exceptionHandler, Supplier<OUTPUT> defaultSupplier) {
         return () -> {
             try {
@@ -227,7 +227,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default Func0<OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func1<Exception, OUTPUT> exceptionMapper) {
         return () -> {
             try {
@@ -240,19 +240,19 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default OUTPUT orElse(OUTPUT defaultValue) {
         return getSafely().orElse(defaultValue);
     }
-
+    
     public default OUTPUT orGet(Supplier<OUTPUT> defaultSupplier) {
         return getSafely().orGet(defaultSupplier);
     }
-
+    
     public default Func0<Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
     }
-
+    
     public default Func0<Optional<OUTPUT>> optionally() {
         return () -> {
             try {
@@ -262,19 +262,19 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
             }
         };
     }
-
+    
     public default DeferAction<OUTPUT> async() {
         return defer();
     }
-
+    
     public default DeferAction<OUTPUT> defer() {
         return DeferAction.from(this);
     }
-
+    
     public default Func0<Promise<OUTPUT>> forPromise() {
         return () -> defer().start().getPromise();
     }
-
+    
     public default FuncUnit0 ignoreResult() {
         return FuncUnit0.of(() -> applyUnsafe());
     }

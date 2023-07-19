@@ -30,59 +30,59 @@ import functionalj.stream.collect.Collected;
 import lombok.val;
 
 public interface DoubleCollected<ACCUMULATED, RESULT> extends Collected<Double, ACCUMULATED, RESULT> {
-
+    
     public static <ACC, RES> DoubleCollected<ACC, RES> collectedOf(DoubleAggregation<RES> aggregation) {
         requireNonNull(aggregation);
         @SuppressWarnings("unchecked")
         val collectorPlus = (DoubleCollectorPlus<ACC, RES>) aggregation.doubleCollectorPlus();
         return new DoubleCollected.Impl<>(collectorPlus);
     }
-
+    
     public static <ACC, RES> DoubleCollected<ACC, RES> collectedOf(DoubleCollectorPlus<ACC, RES> collector) {
         requireNonNull(collector);
         return new DoubleCollected.Impl<>(collector);
     }
-
+    
     public static <ACC, RES> DoubleCollected<ACC, RES> of(DoubleAggregation<RES> aggregation) {
         requireNonNull(aggregation);
         @SuppressWarnings("unchecked")
         val collectorPlus = (DoubleCollectorPlus<ACC, RES>) aggregation.doubleCollectorPlus();
         return new DoubleCollected.Impl<>(collectorPlus);
     }
-
+    
     public static <ACC, RES> DoubleCollected<ACC, RES> of(DoubleCollectorPlus<ACC, RES> collector) {
         requireNonNull(collector);
         return new DoubleCollected.Impl<>(collector);
     }
-
+    
     // == Instance ==
     public void accumulate(double each);
-
+    
     public RESULT finish();
-
+    
     public default void accumulate(Double each) {
         accumulate(each);
     }
-
+    
     // == Implementation ==
     public static class Impl<ACCUMULATED, RESULT> implements DoubleCollected<ACCUMULATED, RESULT> {
-
+    
         private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
-
+    
         private final ObjDoubleConsumer<ACCUMULATED> accumulator;
-
+    
         private final ACCUMULATED accumulated;
-
+    
         public Impl(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.doubleAccumulator();
         }
-
+    
         public void accumulate(double each) {
             accumulator.accept(accumulated, each);
         }
-
+    
         public RESULT finish() {
             return collector.finisher().apply(accumulated);
         }

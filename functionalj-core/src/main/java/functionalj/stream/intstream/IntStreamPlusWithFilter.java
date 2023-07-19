@@ -41,9 +41,9 @@ import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 
 public interface IntStreamPlusWithFilter {
-
+    
     public IntStreamPlus intStreamPlus();
-
+    
     /**
      * Map each value to an int and used it to filter the value.
      */
@@ -55,7 +55,7 @@ public interface IntStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to a long and used it to filter the value.
      */
@@ -67,7 +67,7 @@ public interface IntStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to a double and used it to filter the value.
      */
@@ -79,7 +79,7 @@ public interface IntStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to another object and used it to filter the value.
      */
@@ -91,7 +91,7 @@ public interface IntStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to another object and used it to filter the value.
      */
@@ -103,7 +103,7 @@ public interface IntStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Filter value with its index.
      */
@@ -115,14 +115,14 @@ public interface IntStreamPlusWithFilter {
             return predicate.testIntInt(i, each);
         });
     }
-
+    
     /**
      * Map the value to another object and filter the one that is not null.
      */
     public default <T> IntStreamPlus filterNonNull(IntFunction<T> mapper) {
         return excludeNull(mapper);
     }
-
+    
     /**
      * Map the value to another object and filter the one that is not null.
      */
@@ -134,7 +134,7 @@ public interface IntStreamPlusWithFilter {
             return isNotNull;
         });
     }
-
+    
     /**
      * Filter only the value that is in the given items.
      */
@@ -144,7 +144,7 @@ public interface IntStreamPlusWithFilter {
         val streamPlus = intStreamPlus();
         return streamPlus.filter(i -> binarySearch(items, i) >= 0);
     }
-
+    
     /**
      * Filter only the value that is in the given collections.
      */
@@ -156,7 +156,7 @@ public interface IntStreamPlusWithFilter {
         val streamPlus = intStreamPlus();
         return streamPlus.filter(data -> collection.contains(data));
     }
-
+    
     /**
      * Filter only the value that is in the given collections.
      */
@@ -168,7 +168,7 @@ public interface IntStreamPlusWithFilter {
         val streamPlus = intStreamPlus();
         return streamPlus.filter(data -> collection.contains(data));
     }
-
+    
     /**
      * Filter only the value that the predicate returns false.
      */
@@ -178,7 +178,7 @@ public interface IntStreamPlusWithFilter {
         val streamPlus = intStreamPlus();
         return streamPlus.filter(data -> !predicate.test(data));
     }
-
+    
     /**
      * Filter only the value that the predicate returns false.
      */
@@ -186,7 +186,7 @@ public interface IntStreamPlusWithFilter {
         val predicate = aggregation.newAggregator();
         return exclude(predicate);
     }
-
+    
     /**
      * Filter out any value that is in the given items.
      */
@@ -194,7 +194,7 @@ public interface IntStreamPlusWithFilter {
         val streamPlus = intStreamPlus();
         return streamPlus.filter(i -> binarySearch(items, i) < 0);
     }
-
+    
     /**
      * Filter out any value that is in the given collection.
      */
@@ -206,7 +206,7 @@ public interface IntStreamPlusWithFilter {
             return streamPlus;
         return streamPlus.filter(data -> !collection.contains(data));
     }
-
+    
     /**
      * Filter only the value that is in the given collections.
      */

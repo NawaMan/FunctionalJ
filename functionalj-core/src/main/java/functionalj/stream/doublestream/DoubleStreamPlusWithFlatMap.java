@@ -29,9 +29,9 @@ import java.util.stream.DoubleStream;
 import lombok.val;
 
 public interface DoubleStreamPlusWithFlatMap {
-
+    
     public DoubleStreamPlus doubleStreamPlus();
-
+    
     /**
      * FlatMap with the given mapper for only the value that pass the condition.
      */
@@ -43,7 +43,7 @@ public interface DoubleStreamPlusWithFlatMap {
             return mapped;
         });
     }
-
+    
     /**
      * FlatMap with the mapper if the condition is true, otherwise use another elseMapper.
      */

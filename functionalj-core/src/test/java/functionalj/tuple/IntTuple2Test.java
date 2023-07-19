@@ -32,10 +32,10 @@ import functionalj.lens.lenses.StringLens;
 import lombok.val;
 
 public class IntTuple2Test {
-
+    
     // Do not like this one bit. - Find the way to improve this!
     private static final IntTuple2Lens<IntTuple2<String>, String, StringLens<IntTuple2<String>>> theTuple = createTheTuple(StringLens::of);
-
+    
     @Test
     public void testLensRead() {
         val tuples = Arrays.asList(new IntTuple2<>(1, "One"), new IntTuple2<>(2, "Two"), new IntTuple2<>(3, "Three"));

@@ -37,13 +37,13 @@ import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class RefTest {
-
+    
     @Test
     public void testNull() {
         val ref = Ref.of(String.class).defaultToNull();
         assertNull(ref.value());
     }
-
+    
     @Test
     public void testValue() {
         val ref1 = Ref.ofValue("Value");
@@ -51,7 +51,7 @@ public class RefTest {
         val ref2 = Ref.ofValue(42);
         assertEquals(42, (int) ref2.value());
     }
-
+    
     @Test
     public void testFrom() {
         val ref1 = Ref.of(String.class).defaultFrom(() -> "Value");
@@ -64,7 +64,7 @@ public class RefTest {
         assertEquals(1, (int) ref3.value());
         assertEquals(2, (int) ref3.value());
     }
-
+    
     @Test
     public void testCurrentRef() {
         val ref1 = Ref.of(String.class).defaultFrom(() -> "OrgValue");
@@ -75,25 +75,25 @@ public class RefTest {
         });
         assertEquals("OrgValue", ref2.value());
     }
-
+    
     public static class Answer {
-
+    
         private final int number;
-
+    
         public Answer() {
             this(42);
         }
-
+    
         public Answer(int number) {
             this.number = number;
         }
-
+    
         @Override
         public String toString() {
             return "Answer [number=" + number + "]";
         }
     }
-
+    
     @Test
     public void testRefTo() {
         val ref1 = Ref.to(Answer.class);
@@ -107,7 +107,7 @@ public class RefTest {
         assertEquals("Answer [number=42]", "" + ref1.value());
         assertEquals("Answer [number=42]", "" + ref2.value());
     }
-
+    
     @Test
     public void testDictate() {
         val ref1 = Ref.ofValue("DICTATE!").dictate();
@@ -116,13 +116,13 @@ public class RefTest {
         val value = With(ref1.butWith("Weak!")).and(ref2.butWith("Weak!!")).run(() -> ref1.value() + " " + ref2.value());
         assertEquals("DICTATE! DICTATE!!", value);
     }
-
+    
     @Test
     public void testRefFunction() {
         Ref<Supplier<String>> ref = Ref.ofValue(() -> "Hello world!");
         assertEquals("Hello world!", ref.value().get());
     }
-
+    
     @Test
     public void testBasicRetain() {
         val counter0 = new AtomicInteger();
@@ -141,7 +141,7 @@ public class RefTest {
         assertEquals(1, ref2.value().intValue());
         assertEquals(2, ref2.value().intValue());
     }
-
+    
     @Test
     public void testRetainSame() {
         val state = new AtomicInteger(42);
@@ -171,7 +171,7 @@ public class RefTest {
         assertEquals(5, ref.value().intValue());
         assertEquals(6, ref.value().intValue());
     }
-
+    
     @Test
     public void testRetainEquals() {
         val state = new AtomicInteger(42);
@@ -202,7 +202,7 @@ public class RefTest {
         assertEquals(4, ref.value().intValue());
         assertEquals(4, ref.value().intValue());
     }
-
+    
     @Test
     public void testRetainMatch() {
         val state = new AtomicInteger(42);
@@ -224,7 +224,7 @@ public class RefTest {
         assertEquals(3, ref.value().intValue());
         assertEquals(3, ref.value().intValue());
     }
-
+    
     @Test
     public void testRetainPeriod() throws InterruptedException {
         val counter = new AtomicInteger(0);
@@ -237,7 +237,7 @@ public class RefTest {
         assertEquals(1, ref.value().intValue());
         assertEquals(1, ref.value().intValue());
     }
-
+    
     @Test
     public void testRetain_crossThread() throws InterruptedException {
         val state = new AtomicInteger(42);
@@ -268,7 +268,7 @@ public class RefTest {
         Time.sleep(200);
         assertEquals("2 - 2 - 4", resultRef.toString());
     }
-
+    
     // TODO - Fix this. :-(
     // @Ignore("Fail test, need fix first.")
     @Test
@@ -305,7 +305,7 @@ public class RefTest {
         // Async result stay the same the whole time
         assertEquals("2 - 2 - 2 - 2 - 2", asyncResultRef.get().value());
     }
-
+    
     @Test
     public void testMap() {
         val counter = new AtomicInteger(0);

@@ -39,63 +39,63 @@ import lombok.val;
 
 @FunctionalInterface
 public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> extends ObjectLens<HOST, Result<TYPE>>, ResultAccess<HOST, TYPE, SUBLENS> {
-
+    
     public static class Impl<H, T, SL extends AnyLens<H, T>> extends ObjectLens.Impl<H, Result<T>> implements ResultLens<H, T, SL> {
-
+    
         private LensSpecParameterized<H, Result<T>, T, SL> spec;
-
+    
         public final SL value() {
             return get();
         }
-
+    
         public Impl(String name, LensSpecParameterized<H, Result<T>, T, SL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;
         }
-
+    
         @Override
         public LensSpecParameterized<H, Result<T>, T, SL> lensSpecWithSub() {
             return spec;
         }
     }
-
+    
     public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ResultLens.Impl<HOST, TYPE, SUBLENS> of(String name, LensSpecParameterized<HOST, Result<TYPE>, TYPE, SUBLENS> spec) {
         return new Impl<>(name, spec);
     }
-
+    
     public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ResultLens.Impl<HOST, TYPE, SUBLENS> of(String name, LensSpec<HOST, Result<TYPE>> resultLensSpec, Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val read = resultLensSpec.getRead();
         val write = resultLensSpec.getWrite();
         val spec = createLensSpecParameterized(read, write, subCreator);
         return of(name, spec);
     }
-
+    
     public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ResultLens.Impl<HOST, TYPE, SUBLENS> of(LensSpec<HOST, Result<TYPE>> resultLensSpec, Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         return of(null, resultLensSpec, subCreator);
     }
-
+    
     public LensSpecParameterized<HOST, Result<TYPE>, TYPE, SUBLENS> lensSpecWithSub();
-
+    
     @Override
     default AccessParameterized<HOST, Result<TYPE>, TYPE, SUBLENS> accessWithSub() {
         return lensSpecWithSub();
     }
-
+    
     @Override
     public default SUBLENS createSubAccess(Function<Result<TYPE>, TYPE> accessToSub) {
         return lensSpecWithSub().createSubAccess(accessToSub);
     }
-
+    
     @Override
     public default LensSpec<HOST, Result<TYPE>> lensSpec() {
         return lensSpecWithSub().getSpec();
     }
-
+    
     @Override
     public default Result<TYPE> applyUnsafe(HOST host) throws Exception {
         return lensSpec().getRead().apply(host);
     }
-
+    
     public default SUBLENS get() {
         Function<HOST, TYPE> read = lensSpec().getRead().andThen(Result::get);
         WriteLens<HOST, TYPE> write = (HOST host, TYPE newValue) -> {
@@ -106,7 +106,7 @@ public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ext
         val lensName = whenBlank(Stream.of(thisName, "value").filter(Objects::nonNull).collect(joining(".")), (String) null);
         return lensSpecWithSub().createSubLens(lensName, subSpec);
     }
-
+    
     public default SUBLENS value() {
         return get();
     }

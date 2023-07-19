@@ -25,13 +25,13 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface ObjectObjectToIntFunctionPrimitive<INPUT1, INPUT2> extends Func2<INPUT1, INPUT2, Integer> {
-
+    
     public int applyToInt(INPUT1 input1, INPUT2 input2) throws Exception;
-
+    
     public default Integer applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception {
         return applyToInt(input1, input2);
     }
-
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <INPUT1, INPUT2> double apply(Func2<INPUT1, INPUT2, Integer> function, INPUT1 input1, INPUT2 input2) throws Exception {
         return (double) ((function instanceof ObjectObjectToIntFunctionPrimitive) ? ((ObjectObjectToIntFunctionPrimitive) function).applyToInt(input1, input2) : function.applyUnsafe(input1, input2));

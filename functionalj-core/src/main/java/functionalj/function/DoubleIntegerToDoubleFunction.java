@@ -28,23 +28,23 @@ import java.util.function.ToDoubleBiFunction;
 
 @FunctionalInterface
 public interface DoubleIntegerToDoubleFunction extends ToDoubleBiFunction<Integer, Double>, BiFunction<Integer, Double, Double> {
-
+    
     public double applyAsIntegerAndDouble(int intValue, double doubleValue);
-
+    
     @Override
     public default double applyAsDouble(Integer intValue, Double doubleValue) {
         return applyAsIntegerAndDouble(intValue, doubleValue);
     }
-
+    
     @Override
     public default Double apply(Integer intValue, Double doubleValue) {
         return applyAsIntegerAndDouble(intValue, doubleValue);
     }
-
+    
     public static double apply(ToDoubleBiFunction<Integer, Double> function, Integer intValue, double doubleValue) {
         return (function instanceof DoubleIntegerToDoubleFunction) ? ((DoubleIntegerToDoubleFunction) function).applyAsIntegerAndDouble(intValue, doubleValue) : function.applyAsDouble(intValue, doubleValue);
     }
-
+    
     public static double apply(BiFunction<Integer, Double, Double> function, Integer intValue, double doubleValue) {
         return (function instanceof DoubleIntegerToDoubleFunction) ? ((DoubleIntegerToDoubleFunction) function).applyAsIntegerAndDouble(intValue, doubleValue) : function.apply(intValue, doubleValue);
     }

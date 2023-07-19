@@ -26,13 +26,13 @@ package functionalj.function;
 import java.util.function.BiFunction;
 
 public interface ObjLongBiFunction<DATA, TARGET> extends Func2<DATA, Long, TARGET> {
-
+    
     public TARGET applyAsLong(DATA input1, long input2);
-
+    
     public default TARGET applyUnsafe(DATA input1, Long input2) throws Exception {
         return applyAsLong(input1, input2);
     }
-
+    
     public static <D, T> T apply(BiFunction<D, Long, T> function, D input1, long input2) {
         if (function instanceof ObjLongBiFunction) {
             return ((ObjLongBiFunction<D, T>) function).applyAsLong(input1, input2);

@@ -40,52 +40,52 @@ import lombok.val;
  */
 @FunctionalInterface
 public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Integer>, IntToLongFunction, IntFunction<Long> {
-
+    
     // == Constructor ==
     public static IntegerToLongAccessPrimitive of(IntegerToLongAccessPrimitive accessToValue) {
         return accessToValue;
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive newAccess(Function<Integer, Long> accessToValue) {
         return accessToValue::apply;
     }
-
+    
     // == abstract functionalities ==
     public long applyIntToLong(int host);
-
+    
     public default long applyAsLong(int operand) {
         return applyIntToLong(operand);
     }
-
+    
     public default long applyAsLong(Integer host) {
         return applyIntToLong(host);
     }
-
+    
     @Override
     public default Long apply(int host) {
         return applyIntToLong(host);
     }
-
+    
     @Override
     public default Long apply(Integer input) {
         return LongAccessPrimitive.super.apply(input);
     }
-
+    
     // -- conversion --
     public default LongAccessBoxed<Integer> boxed() {
         return host -> apply(host);
     }
-
+    
     @Override
     public default IntegerToIntegerAccessPrimitive asInteger() {
         return asInteger(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
-
+    
     public default IntegerToIntegerAccessPrimitive asInteger(int overflowValue) {
         return asInteger(overflowValue);
     }
-
+    
     public default IntegerToIntegerAccessPrimitive asInteger(int negativeOverflowValue, int positiveOverflowValue) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -96,22 +96,22 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return (int) Math.round(value);
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive asLong() {
         return host -> accessPrimitive(this, host);
     }
-
+    
     @Override
     public default IntegerToDoubleAccessPrimitive asDouble() {
         return host -> accessPrimitive(this, host);
     }
-
+    
     @Override
     public default IntegerToStringAccessPrimitive asString() {
         return host -> "" + accessPrimitive(this, host);
     }
-
+    
     @Override
     public default IntegerToStringAccessPrimitive asString(String template) {
         return host -> {
@@ -119,7 +119,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return String.format(template, value);
         };
     }
-
+    
     // -- Equality --
     @Override
     public default IntegerToBooleanAccessPrimitive that(LongPredicate checker) {
@@ -128,7 +128,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return checker.test(value);
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIs(long anotherValue) {
         return host -> {
@@ -136,7 +136,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value == anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIs(LongSupplier anotherSupplier) {
         return host -> {
@@ -145,7 +145,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value == anotherValue;
         };
     }
-
+    
     public default IntegerToBooleanAccessPrimitive thatIs(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -153,7 +153,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value == anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNot(long anotherValue) {
         return host -> {
@@ -161,7 +161,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value != anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNot(LongSupplier anotherSupplier) {
         return host -> {
@@ -170,7 +170,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value != anotherValue;
         };
     }
-
+    
     public default IntegerToBooleanAccessPrimitive thatIsNot(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -178,7 +178,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value != anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsAnyOf(long... otherValues) {
         return host -> {
@@ -191,7 +191,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return false;
         };
     }
-
+    
     // @Override
     // public default IntegerToBooleanAccessPrimitive thatIsAnyOf(LongFuncList otherValues) {
     // return host -> {
@@ -211,7 +211,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return true;
         };
     }
-
+    
     // @Override
     // public default IntegerToBooleanAccessPrimitive thatIsNoneOf(LongFuncList otherValues) {
     // return host -> {
@@ -223,37 +223,37 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
     public default IntegerToBooleanAccessPrimitive thatIsOne() {
         return thatIs(1);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsZero() {
         return thatIs(0);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsMinusOne() {
         return thatIs(-1);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsFourtyTwo() {
         return thatIs(42);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNotOne() {
         return thatIsNot(1);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNotZero() {
         return thatIsNot(0);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNotMinusOne() {
         return thatIsNot(-1);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsPositive() {
         return host -> {
@@ -261,7 +261,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value > 0;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNegative() {
         return host -> {
@@ -269,7 +269,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value < 0;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNotPositive() {
         return host -> {
@@ -277,7 +277,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value <= 0;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsNotNegative() {
         return host -> {
@@ -285,7 +285,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value >= 0;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatEquals(long anotherValue) {
         return host -> {
@@ -293,7 +293,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value == anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatEquals(LongSupplier anotherSupplier) {
         return host -> {
@@ -302,7 +302,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value == anotherValue;
         };
     }
-
+    
     public default IntegerToBooleanAccessPrimitive thatEquals(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -310,21 +310,21 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value == anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive eq(long anotherValue) {
         return thatEquals(anotherValue);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive eq(LongSupplier anotherSupplier) {
         return thatEquals(anotherSupplier);
     }
-
+    
     public default IntegerToBooleanAccessPrimitive eq(LongToIntegerAccessPrimitive anotherAccess) {
         return thatEquals(anotherAccess);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatNotEquals(long anotherValue) {
         return host -> {
@@ -332,7 +332,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value != anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatNotEquals(LongSupplier anotherSupplier) {
         return host -> {
@@ -341,7 +341,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value != anotherValue;
         };
     }
-
+    
     public default IntegerToBooleanAccessPrimitive thatNotEquals(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -349,56 +349,56 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value != anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive neq(long anotherValue) {
         return thatNotEquals(anotherValue);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive neq(LongSupplier anotherSupplier) {
         return thatNotEquals(anotherSupplier);
     }
-
+    
     public default IntegerToBooleanAccessPrimitive neq(LongToIntegerAccessPrimitive anotherAccess) {
         return thatNotEquals(anotherAccess);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatEqualsOne() {
         return thatEquals(1);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatEqualsZero() {
         return thatEquals(0);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatEqualsMinusOne() {
         return thatEquals(-1);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatEqualsFourtyTwo() {
         return thatEquals(42);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatNotEqualsOne() {
         return thatEquals(1);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatNotEqualsZero() {
         return thatEquals(0);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatNotEqualsMinusOne() {
         return thatEquals(-1);
     }
-
+    
     // -- Compare --
     @Override
     public default IntComparator inOrder() {
@@ -408,7 +408,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return comparePrimitive(aValue, bValue);
         };
     }
-
+    
     @Override
     public default IntComparator inReverseOrder() {
         return (a, b) -> {
@@ -417,7 +417,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return comparePrimitive(bValue, aValue);
         };
     }
-
+    
     @Override
     public default IntegerToIntegerAccessPrimitive compareTo(long anotherValue) {
         return host -> {
@@ -426,7 +426,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return compare;
         };
     }
-
+    
     @Override
     public default IntegerToIntegerAccessPrimitive compareTo(LongSupplier anotherSupplier) {
         return host -> {
@@ -436,7 +436,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return compare;
         };
     }
-
+    
     public default IntegerToIntegerAccessPrimitive compareTo(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -445,21 +445,21 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return compare;
         };
     }
-
+    
     @Override
     public default IntegerToIntegerAccessPrimitive cmp(long anotherValue) {
         return compareTo(anotherValue);
     }
-
+    
     @Override
     public default IntegerToIntegerAccessPrimitive cmp(LongSupplier anotherSupplier) {
         return compareTo(anotherSupplier);
     }
-
+    
     public default IntegerToIntegerAccessPrimitive cmp(LongToIntegerAccessPrimitive anotherAccess) {
         return compareTo(anotherAccess);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatGreaterThan(long anotherValue) {
         return host -> {
@@ -467,7 +467,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value > anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatGreaterThan(LongSupplier anotherSupplier) {
         return host -> {
@@ -476,7 +476,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value > anotherValue;
         };
     }
-
+    
     public default IntegerToBooleanAccessPrimitive thatGreaterThan(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -484,21 +484,21 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value > anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive gt(long anotherValue) {
         return thatGreaterThan(anotherValue);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive gt(LongSupplier anotherSupplier) {
         return thatGreaterThan(anotherSupplier);
     }
-
+    
     public default IntegerToBooleanAccessPrimitive gt(LongToIntegerAccessPrimitive anotherAccess) {
         return thatGreaterThan(anotherAccess);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatLessThan(long anotherValue) {
         return host -> {
@@ -506,7 +506,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value < anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatLessThan(LongSupplier anotherSupplier) {
         return host -> {
@@ -515,7 +515,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value < anotherValue;
         };
     }
-
+    
     public default IntegerToBooleanAccessPrimitive thatLessThan(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -523,21 +523,21 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value < anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive lt(long anotherValue) {
         return thatLessThan(anotherValue);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive lt(LongSupplier anotherSupplier) {
         return thatLessThan(anotherSupplier);
     }
-
+    
     public default IntegerToBooleanAccessPrimitive lt(LongToIntegerAccessPrimitive anotherAccess) {
         return thatLessThan(anotherAccess);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(long anotherValue) {
         return host -> {
@@ -545,7 +545,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value >= anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(LongSupplier anotherSupplier) {
         return host -> {
@@ -554,7 +554,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value >= anotherValue;
         };
     }
-
+    
     public default IntegerToBooleanAccessPrimitive thatGreaterThanOrEqualsTo(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -562,21 +562,21 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value >= anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive gteq(long anotherValue) {
         return thatGreaterThanOrEqualsTo(anotherValue);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive gteq(LongSupplier anotherSupplier) {
         return thatGreaterThanOrEqualsTo(anotherSupplier);
     }
-
+    
     public default IntegerToBooleanAccessPrimitive gteq(LongToIntegerAccessPrimitive anotherAccess) {
         return thatGreaterThanOrEqualsTo(anotherAccess);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatLessThanOrEqualsTo(long anotherValue) {
         return host -> {
@@ -584,7 +584,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value <= anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatLessThanOrEqualsTo(LongSupplier anotherSupplier) {
         return host -> {
@@ -593,7 +593,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value <= anotherValue;
         };
     }
-
+    
     public default IntegerToBooleanAccessPrimitive thatLessThanOrEqualsTo(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -601,21 +601,21 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value <= anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive lteq(long anotherValue) {
         return thatLessThanOrEqualsTo(anotherValue);
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive lteq(LongSupplier anotherSupplier) {
         return thatLessThanOrEqualsTo(anotherSupplier);
     }
-
+    
     public default IntegerToBooleanAccessPrimitive lteq(LongToIntegerAccessPrimitive anotherAccess) {
         return thatLessThanOrEqualsTo(anotherAccess);
     }
-
+    
     // -- Min+Max --
     @Override
     public default IntegerToLongAccessPrimitive min(long anotherValue) {
@@ -624,7 +624,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return Math.min(value, anotherValue);
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive min(LongSupplier valueSupplier) {
         return host -> {
@@ -633,7 +633,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return Math.min(value, anotherValue);
         };
     }
-
+    
     public default IntegerToLongAccessPrimitive min(IntegerToLongAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -641,7 +641,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return Math.min(value, anotherValue);
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive max(long anotherValue) {
         return host -> {
@@ -649,7 +649,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return Math.max(value, anotherValue);
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive max(LongSupplier valueSupplier) {
         return host -> {
@@ -658,7 +658,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return Math.max(value, anotherValue);
         };
     }
-
+    
     public default IntegerToLongAccessPrimitive max(IntegerToLongAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -666,7 +666,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return Math.max(value, anotherValue);
         };
     }
-
+    
     // -- Math --
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsOdd() {
@@ -675,7 +675,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value % 2 != 0;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsEven() {
         return host -> {
@@ -683,7 +683,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value % 2 == 0;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(long anotherValue) {
         return host -> {
@@ -691,7 +691,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value % anotherValue == 0;
         };
     }
-
+    
     @Override
     public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(LongSupplier anotherAccess) {
         return host -> {
@@ -700,7 +700,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value % anotherValue == 0;
         };
     }
-
+    
     public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(LongToIntegerAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -708,7 +708,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value % anotherValue == 0;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive abs() {
         return host -> {
@@ -716,7 +716,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return (value < 0) ? -value : value;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive negate() {
         return host -> {
@@ -724,7 +724,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return -value;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive signum() {
         return host -> {
@@ -732,7 +732,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return (value == 0) ? 0 : (value < 0) ? -1 : 1;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive plus(long anotherValue) {
         return host -> {
@@ -740,7 +740,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value + anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive plus(LongSupplier valueSupplier) {
         return host -> {
@@ -749,7 +749,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value + anotherValue;
         };
     }
-
+    
     public default IntegerToLongAccessPrimitive plus(IntegerToLongAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -757,7 +757,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value + anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive minus(long anotherValue) {
         return host -> {
@@ -765,7 +765,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value - anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive minus(LongSupplier valueSupplier) {
         return host -> {
@@ -774,7 +774,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value - anotherValue;
         };
     }
-
+    
     public default IntegerToLongAccessPrimitive minus(IntegerToLongAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -782,7 +782,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value - anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive time(long anotherValue) {
         return host -> {
@@ -790,7 +790,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value * anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive time(LongSupplier valueSupplier) {
         return host -> {
@@ -799,7 +799,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value * anotherValue;
         };
     }
-
+    
     public default IntegerToLongAccessPrimitive time(IntegerToLongAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -807,7 +807,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value * anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToDoubleAccessPrimitive dividedBy(long anotherValue) {
         return host -> {
@@ -815,7 +815,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return 1.0 * value / anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToDoubleAccessPrimitive dividedBy(LongSupplier valueSupplier) {
         return host -> {
@@ -824,7 +824,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return 1.0 * value / anotherValue;
         };
     }
-
+    
     public default IntegerToDoubleAccessPrimitive dividedBy(IntegerToLongAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -832,7 +832,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return 1.0 * value / anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive remainderBy(long anotherValue) {
         return host -> {
@@ -840,7 +840,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value % anotherValue;
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive remainderBy(LongSupplier valueSupplier) {
         return host -> {
@@ -849,7 +849,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value % anotherValue;
         };
     }
-
+    
     public default IntegerToLongAccessPrimitive remainderBy(IntegerToLongAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);
@@ -857,14 +857,14 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value % anotherValue;
         };
     }
-
+    
     public default IntegerToDoubleAccessPrimitive inverse() {
         return host -> {
             val value = access(this, host);
             return 1 / (value * 1.0);
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive square() {
         return host -> {
@@ -872,7 +872,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return value * value;
         };
     }
-
+    
     @Override
     public default IntegerToDoubleAccessPrimitive squareRoot() {
         return host -> {
@@ -880,7 +880,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return Math.sqrt(value);
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive factorial() {
         return host -> {
@@ -891,7 +891,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return factorialRef.get().applyAsLong(value);
         };
     }
-
+    
     // TODO - Make this Long once we are ready.
     @Override
     public default IntegerToLongAccessPrimitive pow(long anotherValue) {
@@ -900,7 +900,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return (long) Math.pow(value, anotherValue);
         };
     }
-
+    
     @Override
     public default IntegerToLongAccessPrimitive pow(LongSupplier valueSupplier) {
         return host -> {
@@ -909,7 +909,7 @@ public interface IntegerToLongAccessPrimitive extends LongAccessPrimitive<Intege
             return (long) Math.pow(value, anotherValue);
         };
     }
-
+    
     public default IntegerToLongAccessPrimitive pow(IntegerToLongAccessPrimitive anotherAccess) {
         return host -> {
             val value = accessPrimitive(this, host);

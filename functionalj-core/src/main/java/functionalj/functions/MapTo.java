@@ -34,19 +34,19 @@ import functionalj.tuple.Tuple;
 import lombok.val;
 
 public class MapTo {
-
+    
     public static <T> Func1<T, T> only(Predicate<? super T> checker) {
         return input -> checker.test(input) ? input : null;
     }
-
+    
     public static <T> Func1<T, T> forOnly(Predicate<? super T> checker, Func1<? super T, ? extends T> mapper) {
         return input -> checker.test(input) ? mapper.applyUnsafe(input) : input;
     }
-
+    
     public static <T> Func1<T, T> when(Predicate<? super T> checker, Function<? super T, ? extends T> mapper, Function<? super T, ? extends T> elseMapper) {
         return input -> checker.test(input) ? mapper.apply(input) : elseMapper.apply(input);
     }
-
+    
     // FirstOf
     public static <D, T> Func1<D, T> firstOf(FuncList<Function<? super D, ? extends T>> mappers) {
         return input -> {
@@ -69,13 +69,13 @@ public class MapTo {
             throw exception;
         };
     }
-
+    
     @SafeVarargs
     public static <D, T> Func1<D, T> firstOf(Function<? super D, ? extends T>... mappers) {
         FuncList<Function<? super D, ? extends T>> mappersArray = FuncList.from(mappers);
         return firstOf(mappersArray);
     }
-
+    
     // Tuple
     public static <D, T1, T2> ToTuple2Func<D, T1, T2> toTuple(Func1<? super D, ? extends T1> mapper1, Func1<? super D, ? extends T2> mapper2) {
         return input -> {
@@ -84,7 +84,7 @@ public class MapTo {
             return Tuple.of(v1, v2);
         };
     }
-
+    
     // Map
     public static <D, K, V> ToMapFunc<D, K, V> toMap(K key, Func1<? super D, ? extends V> mapper) {
         return data -> ImmutableFuncMap.of(key, mapper.apply(data));

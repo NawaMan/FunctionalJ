@@ -34,18 +34,18 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class CallerId {
-
+    
     /**
      * The default instance of the caller id.
      */
     public static final CallerId instance = new CallerId();
-
+    
     private static ThreadLocal<List<StackTraceElement>> callerTrace = ThreadLocal.withInitial(() -> new ArrayList<>(10));
-
+    
     static {
         callerTrace.get().add(null);
     }
-
+    
     private static StackTraceElement last() {
         val list = callerTrace.get();
         if (list.isEmpty()) {
@@ -54,7 +54,7 @@ public class CallerId {
         }
         return list.get(0);
     }
-
+    
     /**
      * Run the body and continue (or start) the tracing.
      *
@@ -81,7 +81,7 @@ public class CallerId {
                 callerTrace.get().set(0, null);
         }
     }
-
+    
     /**
      * Run the body but pause the tracing.
      *

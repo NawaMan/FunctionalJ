@@ -31,9 +31,9 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public interface IntStreamPlusWithMapToMap {
-
+    
     public IntStreamPlus intStreamPlus();
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -41,7 +41,7 @@ public interface IntStreamPlusWithMapToMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(data -> mapOf(key, mapper.apply(data)));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -49,7 +49,7 @@ public interface IntStreamPlusWithMapToMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(data -> mapOf(key1, mapper1.apply(data), key2, mapper2.apply(data)));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -57,7 +57,7 @@ public interface IntStreamPlusWithMapToMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(data -> mapOf(key1, mapper1.apply(data), key2, mapper2.apply(data), key3, mapper3.apply(data)));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -65,7 +65,7 @@ public interface IntStreamPlusWithMapToMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(data -> mapOf(key1, mapper1.apply(data), key2, mapper2.apply(data), key3, mapper3.apply(data), key4, mapper4.apply(data)));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -73,7 +73,7 @@ public interface IntStreamPlusWithMapToMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(data -> ImmutableFuncMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data), key3, mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data)));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -81,7 +81,7 @@ public interface IntStreamPlusWithMapToMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(data -> mapOf(key1, mapper1.apply(data), key2, mapper2.apply(data), key3, mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data), key6, mapper6.apply(data)));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -89,7 +89,7 @@ public interface IntStreamPlusWithMapToMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(data -> mapOf(key1, mapper1.apply(data), key2, mapper2.apply(data), key3, mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data), key6, mapper6.apply(data), key7, mapper7.apply(data)));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -97,7 +97,7 @@ public interface IntStreamPlusWithMapToMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(data -> mapOf(key1, mapper1.apply(data), key2, mapper2.apply(data), key3, mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data), key6, mapper6.apply(data), key7, mapper7.apply(data), key8, mapper8.apply(data)));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -105,7 +105,7 @@ public interface IntStreamPlusWithMapToMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(data -> mapOf(key1, mapper1.apply(data), key2, mapper2.apply(data), key3, mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data), key6, mapper6.apply(data), key7, mapper7.apply(data), key8, mapper8.apply(data), key9, mapper9.apply(data)));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */

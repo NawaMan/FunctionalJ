@@ -35,26 +35,26 @@ import functionalj.list.longlist.LongFuncList;
 import lombok.val;
 
 public interface IntFuncListWithMapMulti extends AsIntFuncList {
-
+    
     public default <T> IntFuncList mapMulti(IntObjBiConsumer<IntConsumer> mapper) {
         val funcList = funcListOf(this);
         return IntFuncList.deriveFrom(funcList, stream -> stream.mapMulti(mapper));
     }
-
+    
     public default IntFuncList mapMultiToInt(IntObjBiConsumer<IntConsumer> mapper) {
         return mapMulti(mapper);
     }
-
+    
     public default LongFuncList mapMultiToLong(IntObjBiConsumer<LongConsumer> mapper) {
         val funcList = funcListOf(this);
         return LongFuncList.deriveFrom(funcList, stream -> stream.mapMultiToLong(mapper));
     }
-
+    
     public default DoubleFuncList mapMultiToDouble(IntObjBiConsumer<DoubleConsumer> mapper) {
         val funcList = funcListOf(this);
         return DoubleFuncList.deriveFrom(funcList, stream -> stream.mapMultiToDouble(mapper));
     }
-
+    
     public default <T> FuncList<T> mapMultiToObj(IntObjBiConsumer<Consumer<? super T>> mapper) {
         val funcList = funcListOf(this);
         return FuncList.deriveFrom(funcList, stream -> stream.mapMultiToObj(mapper));

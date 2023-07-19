@@ -38,32 +38,32 @@ import lombok.val;
 // TODO - Generate Store that immitate an immutable type and have the changes store inside.
 // TODO - Must mention that this is not thread safe.
 public class Store<DATA> implements Func0<DATA> {
-
+    
     private final AtomicReference<DATA> dataRef = new AtomicReference<DATA>();
-
+    
     private final Func2<DATA, Func1<DATA, DATA>, ChangeNotAllowedException> approver;
-
+    
     private final Func2<DATA, Result<DATA>, ChangeResult<DATA>> accepter;
-
+    
     // Add onChange?, lock?
     public Store(DATA data) {
         this(data, null, null);
     }
-
+    
     public Store(DATA data, Func2<DATA, Result<DATA>, ChangeResult<DATA>> accepter) {
         this(data, accepter, null);
     }
-
+    
     public Store(DATA data, Func2<DATA, Result<DATA>, ChangeResult<DATA>> accepter, Func2<DATA, Func1<DATA, DATA>, ChangeNotAllowedException> approver) {
         this.dataRef.set(data);
         this.approver = (approver != null) ? approver : this::defaultApprover;
         this.accepter = (accepter != null) ? accepter : this::defaultAcceptor;
     }
-
+    
     private ChangeNotAllowedException defaultApprover(DATA oldData, Func1<DATA, DATA> changer) {
         return null;
     }
-
+    
     private ChangeResult<DATA> defaultAcceptor(DATA originalData, Result<DATA> newResult) {
         if (newResult.isValue()) {
             val changeResult = new ChangeResult<DATA>(this, originalData, Accepted(newResult.value()));
@@ -73,13 +73,13 @@ public class Store<DATA> implements Func0<DATA> {
         val failResult = new ChangeResult<DATA>(this, originalData, Failed(new ChangeFailException(exception)));
         return failResult;
     }
-
+    
     private ChangeResult<DATA> ensureStore(ChangeResult<DATA> changeResult) {
         if (changeResult.store() == this)
             return changeResult;
         return new ChangeResult<DATA>(this, changeResult.originalData(), changeResult.status());
     }
-
+    
     public ChangeResult<DATA> change(Func1<DATA, DATA> changer) {
         val originalData = dataRef.get();
         val approveResult = approver.applySafely(originalData, changer);
@@ -98,7 +98,7 @@ public class Store<DATA> implements Func0<DATA> {
         }
         return newResult;
     }
-
+    
     @SafeVarargs
     public final ChangeResult<DATA> change(Func1<DATA, DATA> changer, Func1<DATA, DATA>... moreChangers) {
         val result = new AtomicReference<>(this.change(changer));
@@ -109,7 +109,7 @@ public class Store<DATA> implements Func0<DATA> {
         });
         return result.get();
     }
-
+    
     public Store<DATA> use(FuncUnit1<DATA> consumer) {
         if (consumer == null)
             return this;
@@ -117,20 +117,20 @@ public class Store<DATA> implements Func0<DATA> {
         consumer.accept(value);
         return this;
     }
-
+    
     @Override
     public DATA applyUnsafe() throws Exception {
         return dataRef.get();
     }
-
+    
     public DATA value() {
         return dataRef.get();
     }
-
+    
     public Result<DATA> extract() {
         return Result.valueOf(dataRef.get());
     }
-
+    
     @Override
     public String toString() {
         return "Store [data=" + dataRef + "]";

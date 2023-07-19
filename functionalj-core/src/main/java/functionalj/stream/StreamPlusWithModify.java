@@ -41,9 +41,9 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface StreamPlusWithModify<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Accumulate the previous to the next element.
      *
@@ -74,7 +74,7 @@ public interface StreamPlusWithModify<DATA> {
             return next;
         }));
     }
-
+    
     /**
      * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
      *
@@ -112,7 +112,7 @@ public interface StreamPlusWithModify<DATA> {
         val seed = Tuple2.of((DATA) null, this.streamPlus());
         return StreamPlus.iterate(seed, func).acceptUntil(t -> t == null).skip(1).map(t -> t._1());
     }
-
+    
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.
      * The result stream will not be the same order with the original one

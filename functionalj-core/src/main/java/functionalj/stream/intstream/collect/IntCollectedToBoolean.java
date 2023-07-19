@@ -27,43 +27,43 @@ import java.util.function.ObjIntConsumer;
 import functionalj.stream.collect.Collected;
 
 public interface IntCollectedToBoolean<ACCUMULATED> extends Collected<Integer, ACCUMULATED, Boolean>, IntCollected<ACCUMULATED, Boolean> {
-
+    
     public static <ACC> IntCollectedToBoolean<ACC> of(IntCollectorToBooleanPlus<ACC> collector) {
         return new IntCollectedToBoolean.Impl<ACC>(collector);
     }
-
+    
     // == Instance ==
     public void accumulate(int each);
-
+    
     public boolean finishAsBoolean();
-
+    
     public default Boolean finish() {
         return finishAsBoolean();
     }
-
+    
     public default void accumulate(Integer each) {
         accumulate(each);
     }
-
+    
     // == Implementation ==
     public static class Impl<ACCUMULATED> implements IntCollectedToBoolean<ACCUMULATED> {
-
+    
         private final IntCollectorToBooleanPlus<ACCUMULATED> collector;
-
+    
         private final ObjIntConsumer<ACCUMULATED> accumulator;
-
+    
         private final ACCUMULATED accumulated;
-
+    
         public Impl(IntCollectorToBooleanPlus<ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.intAccumulator();
         }
-
+    
         public void accumulate(int each) {
             accumulator.accept(accumulated, each);
         }
-
+    
         @Override
         public boolean finishAsBoolean() {
             return collector.finisher().apply(accumulated);

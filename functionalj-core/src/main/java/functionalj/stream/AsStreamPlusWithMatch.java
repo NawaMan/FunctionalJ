@@ -37,79 +37,79 @@ import functionalj.stream.markers.Terminal;
 import lombok.val;
 
 public interface AsStreamPlusWithMatch<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     // -- Match --
     @Terminal
     public default boolean anyMatch(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
         return streamPlus.anyMatch(predicate);
     }
-
+    
     @Terminal
     public default boolean anyMatch(AggregationToBoolean<? super DATA> aggregation) {
         val aggregator = aggregation.newAggregator();
         return anyMatch(aggregator::test);
     }
-
+    
     @Terminal
     public default boolean allMatch(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
         return streamPlus.allMatch(predicate);
     }
-
+    
     @Terminal
     public default boolean allMatch(AggregationToBoolean<? super DATA> aggregation) {
         val aggregator = aggregation.newAggregator();
         return allMatch(aggregator::test);
     }
-
+    
     @Terminal
     public default boolean noneMatch(Predicate<? super DATA> predicate) {
         val streamPlus = streamPlus();
         return streamPlus.noneMatch(predicate);
     }
-
+    
     @Terminal
     public default boolean noneMatch(AggregationToBoolean<? super DATA> aggregation) {
         val aggregator = aggregation.newAggregator();
         return noneMatch(aggregator::test);
     }
-
+    
     @Terminal
     public default Optional<DATA> findFirst() {
         val streamPlus = streamPlus();
         return streamPlus.findFirst();
     }
-
+    
     @Terminal
     public default Optional<DATA> findAny() {
         val streamPlus = streamPlus();
         return streamPlus.findAny();
     }
-
+    
     @Sequential
     @Terminal
     public default Optional<DATA> findLast() {
         val streamPlus = streamPlus();
         return streamPlus.findLast();
     }
-
+    
     @Sequential
     @Terminal
     public default Result<DATA> firstResult() {
         val streamPlus = streamPlus();
         return streamPlus.firstResult();
     }
-
+    
     @Sequential
     @Terminal
     public default Result<DATA> lastResult() {
         val streamPlus = streamPlus();
         return streamPlus.lastResult();
     }
-
+    
     /**
      * Return the first element that matches the predicate.
      */
@@ -119,7 +119,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.filter(predicate).findFirst();
     }
-
+    
     /**
      * Return the first element that matches the predicate.
      */
@@ -129,7 +129,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val aggregator = aggregation.newAggregator();
         return findFirst(aggregator::test);
     }
-
+    
     /**
      * Return the any element that matches the predicate.
      */
@@ -138,7 +138,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.filter(predicate).findAny();
     }
-
+    
     /**
      * Return the any element that matches the predicate.
      */
@@ -147,7 +147,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val aggregator = aggregation.newAggregator();
         return findFirst(aggregator::test);
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -157,7 +157,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.filter(mapper, theCondition).findFirst();
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -167,7 +167,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val mapper = aggregation.newAggregator();
         return findFirst(mapper, theCondition);
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -177,7 +177,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val theCondition = theConditionAggregation.newAggregator();
         return findFirst(mapper, theCondition::test);
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -188,7 +188,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val theCondition = theConditionAggregation.newAggregator();
         return findFirst(mapper, theCondition::test);
     }
-
+    
     /**
      * Use the mapper, return the any element that its mapped value matches the predicate.
      */
@@ -197,7 +197,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.filter(mapper, theCondition).findAny();
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -207,7 +207,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val mapper = aggregation.newAggregator();
         return findAny(mapper, theCondition);
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -217,7 +217,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val theCondition = theConditionAggregation.newAggregator();
         return findAny(mapper, theCondition::test);
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -228,7 +228,7 @@ public interface AsStreamPlusWithMatch<DATA> {
         val theCondition = theConditionAggregation.newAggregator();
         return findAny(mapper, theCondition::test);
     }
-
+    
     // == Contains ==
     /**
      * Check if the list contains all the given values
@@ -242,12 +242,12 @@ public interface AsStreamPlusWithMatch<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.peek(set::remove).anyMatch(__ -> set.isEmpty());
     }
-
+    
     @SuppressWarnings("unchecked")
     public default boolean containsAnyOf(DATA... values) {
         return anyMatch(each -> streamOf(values).anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     @SuppressWarnings("unchecked")
     public default boolean containsNoneOf(DATA... values) {
         return noneMatch(each -> streamOf(values).anyMatch(o -> Objects.equals(each, o)));

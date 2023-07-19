@@ -47,52 +47,52 @@ import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
 
 public interface FuncMapLens<HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST, KEY>, VALUELENS extends AnyLens<HOST, VALUE>> extends ObjectLens<HOST, FuncMap<KEY, VALUE>>, FuncMapAccess<HOST, KEY, VALUE, KEYLENS, VALUELENS> {
-
+    
     public static class Impl<H, K, V, KL extends AnyLens<H, K>, VL extends AnyLens<H, V>> extends ObjectLens.Impl<H, FuncMap<K, V>> implements FuncMapLens<H, K, V, KL, VL> {
-
+    
         private LensSpecParameterized2<H, FuncMap<K, V>, K, V, KL, VL> spec;
-
+    
         public Impl(String name, LensSpecParameterized2<H, FuncMap<K, V>, K, V, KL, VL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;
         }
-
+    
         @Override
         public LensSpecParameterized2<H, FuncMap<K, V>, K, V, KL, VL> lensSpecParameterized2() {
             return spec;
         }
     }
-
+    
     public static <HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST, KEY>, VALUELENS extends AnyLens<HOST, VALUE>> FuncMapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> of(String name, Function<HOST, FuncMap<KEY, VALUE>> read, WriteLens<HOST, FuncMap<KEY, VALUE>> write, BiFunction<String, LensSpec<HOST, KEY>, KEYLENS> keyLensCreator, BiFunction<String, LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
         val spec = LensUtils.createFuncMapLensSpec(read, write, keyLensCreator, valueLensCreator);
         return new Impl<>(name, spec);
     }
-
+    
     public static <HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST, KEY>, VALUELENS extends AnyLens<HOST, VALUE>> FuncMapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> of(Function<HOST, FuncMap<KEY, VALUE>> read, WriteLens<HOST, FuncMap<KEY, VALUE>> write, BiFunction<String, LensSpec<HOST, KEY>, KEYLENS> keyLensCreator, BiFunction<String, LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
         return of(null, read, write, keyLensCreator, valueLensCreator);
     }
-
+    
     public static <HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST, KEY>, VALUELENS extends AnyLens<HOST, VALUE>> FuncMapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> of(Function<HOST, FuncMap<KEY, VALUE>> read, WriteLens<HOST, FuncMap<KEY, VALUE>> write, Function<LensSpec<HOST, KEY>, KEYLENS> keyLensCreator, Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
         return of(null, read, write, (__, spec) -> keyLensCreator.apply(spec), (__, spec) -> valueLensCreator.apply(spec));
     }
-
+    
     public LensSpecParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> lensSpecParameterized2();
-
+    
     @Override
     public default AccessParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> accessParameterized2() {
         return lensSpecParameterized2();
     }
-
+    
     @Override
     public default LensSpec<HOST, FuncMap<KEY, VALUE>> lensSpec() {
         return lensSpecParameterized2().getSpec();
     }
-
+    
     @Override
     public default FuncMap<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
         return ObjectLens.super.apply(host);
     }
-
+    
     public default VALUELENS get(KEY key) {
         Function<FuncMap<KEY, VALUE>, VALUE> read = map -> {
             return map.get(key);
@@ -106,7 +106,7 @@ public interface FuncMapLens<HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST, KEY
         val lensName = whenBlank(joinNonNull(".", name, "get(\"" + keyText + "\")"), (String) null);
         return LensUtils.createSubLens(this, lensName, read, write, lensSpecParameterized2()::createSubLens2);
     }
-
+    
     public default Function<HOST, HOST> changeTo(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
         val mapEntry = Func.from((Map.Entry<KEY, VALUE> each) -> {
             val key = each.getKey();
@@ -133,7 +133,7 @@ public interface FuncMapLens<HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST, KEY
             return newHost;
         };
     }
-
+    
     public default Function<HOST, HOST> changeTo(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
         val mapEntry = Func.from((Map.Entry<KEY, VALUE> each) -> {
             val key = each.getKey();

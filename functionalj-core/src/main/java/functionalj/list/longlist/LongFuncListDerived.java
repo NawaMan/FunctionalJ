@@ -34,32 +34,32 @@ import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
 public class LongFuncListDerived implements LongFuncList {
-
+    
     private static final LongBinaryOperator zeroForEquals = (long i1, long i2) -> i1 == i2 ? 0 : 1;
-
+    
     private static final LongPredicate notZero = (long i) -> i != 0;
-
+    
     // -- Data --
     private final Object source;
-
+    
     private final Function<LongStream, LongStream> action;
-
+    
     // -- Constructors --
     LongFuncListDerived(AsLongFuncList source, Function<LongStream, LongStream> action) {
         this.source = Objects.requireNonNull(source);
         this.action = Objects.requireNonNull(action);
     }
-
+    
     LongFuncListDerived(Supplier<LongStream> streams) {
         this.action = stream -> stream;
         this.source = streams;
     }
-
+    
     LongFuncListDerived(Supplier<LongStream> streams, Function<LongStream, LongStream> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streams;
     }
-
+    
     // -- Source Stream --
     @SuppressWarnings("unchecked")
     private LongStream getSourceStream() {
@@ -71,47 +71,47 @@ public class LongFuncListDerived implements LongFuncList {
             return ((Supplier<LongStream>) source).get();
         throw new IllegalStateException();
     }
-
+    
     @Override
     public LongStreamPlus longStream() {
         LongStream theStream = getSourceStream();
         LongStream newStream = action.apply(theStream);
         return LongStreamPlus.from(newStream);
     }
-
+    
     /**
      * Check if this list is a lazy list.
      */
     public Mode mode() {
         return Mode.lazy;
     }
-
+    
     @Override
     public LongFuncList toLazy() {
         return this;
     }
-
+    
     @Override
     public LongFuncList toEager() {
         val data = this.toArray();
         return new ImmutableLongFuncList(data, data.length, Mode.eager);
     }
-
+    
     @Override
     public LongFuncList toCache() {
         return LongFuncList.from(longStream());
     }
-
+    
     @Override
     public ImmutableLongFuncList toImmutableList() {
         return ImmutableLongFuncList.from(this);
     }
-
+    
     @Override
     public int hashCode() {
         return Long.hashCode(reduce(43, (hash, each) -> hash * 43 + each));
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof AsLongFuncList))
@@ -121,7 +121,7 @@ public class LongFuncListDerived implements LongFuncList {
             return false;
         return !LongFuncList.zipOf(this, anotherList.asLongFuncList(), zeroForEquals).anyMatch(notZero);
     }
-
+    
     @Override
     public String toString() {
         return asLongFuncList().toListString();

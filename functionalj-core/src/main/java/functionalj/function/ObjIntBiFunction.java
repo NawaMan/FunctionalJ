@@ -26,13 +26,13 @@ package functionalj.function;
 import java.util.function.BiFunction;
 
 public interface ObjIntBiFunction<DATA, TARGET> extends Func2<DATA, Integer, TARGET> {
-
+    
     public TARGET applyAsInt(DATA input1, int input2);
-
+    
     public default TARGET applyUnsafe(DATA input1, Integer input2) throws Exception {
         return applyAsInt(input1, input2);
     }
-
+    
     public static <D, T> T apply(BiFunction<D, Integer, T> function, D input1, int input2) {
         if (function instanceof ObjIntBiFunction) {
             return ((ObjIntBiFunction<D, T>) function).applyAsInt(input1, input2);

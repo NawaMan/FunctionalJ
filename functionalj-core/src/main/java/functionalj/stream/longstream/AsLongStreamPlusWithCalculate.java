@@ -41,14 +41,14 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 public interface AsLongStreamPlusWithCalculate {
-
+    
     /**
      * @return  the stream plus instance of this object.
      */
     public LongStreamPlus longStreamPlus();
-
+    
     public void forEach(LongConsumer action);
-
+    
     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
     // Still not sure how to do that properly.
     /**
@@ -66,7 +66,7 @@ public interface AsLongStreamPlusWithCalculate {
         val value = finisher.apply(accumulated);
         return (RESULT) value;
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -82,7 +82,7 @@ public interface AsLongStreamPlusWithCalculate {
         val value = finisher.applyAsLong(accumulated);
         return value;
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -96,7 +96,7 @@ public interface AsLongStreamPlusWithCalculate {
         });
         return Tuple.of(collected1.finish(), collected2.finish());
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -112,7 +112,7 @@ public interface AsLongStreamPlusWithCalculate {
         });
         return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish());
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -130,7 +130,7 @@ public interface AsLongStreamPlusWithCalculate {
         });
         return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish());
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -150,7 +150,7 @@ public interface AsLongStreamPlusWithCalculate {
         });
         return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish(), collected5.finish());
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */

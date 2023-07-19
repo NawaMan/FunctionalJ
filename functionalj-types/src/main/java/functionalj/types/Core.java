@@ -45,7 +45,7 @@ package functionalj.types;
  * @author NawaMan -- nawa@nawaman.net
  */
 public enum Core {
-
+    
     BigDecimalLens("BigDecimalLens"),
     BigIntegerLens("BigIntegerLens"),
     BooleanLens("BooleanLens"),
@@ -100,32 +100,32 @@ public enum Core {
     ZonedOffsetTransitionLens("ZonedOffsetTransitionLens", "functionalj.lens.lenses.java.time"),
     ZonedOffsetTransitionRuleLens("ZonedOffsetTransitionRuleLens", "functionalj.lens.lenses.java.time"),
     StrFunc("StrFuncs", "functionalj.functions");
-
+    
     private static final String LENSES_PACKAGE = "functionalj.lens.lenses";
-
+    
     private String simpleName;
-
+    
     private String packageName;
-
+    
     private Type type = null;
-
+    
     private Core(String simpleName) {
         this(simpleName, LENSES_PACKAGE);
     }
-
+    
     private Core(String simpleName, String packageName) {
         this.simpleName = simpleName;
         this.packageName = packageName;
     }
-
+    
     public String simpleName() {
         return simpleName;
     }
-
+    
     public String packageName() {
         return packageName;
     }
-
+    
     public Type type() {
         if (type == null)
             type = new Type(packageName, simpleName);

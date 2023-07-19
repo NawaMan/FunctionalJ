@@ -32,54 +32,54 @@ import functionalj.stream.intstream.collect.IntCollectorToDoublePlus;
 import lombok.val;
 
 public abstract class IntAggregationToDouble extends IntAggregation<Double> {
-
+    
     public static <A> IntAggregationToDouble from(IntCollectorToDoublePlus<A> collector) {
         return new IntAggregationToDouble.Impl(collector);
     }
-
+    
     // == Instance ==
     public abstract IntCollectorToDoublePlus<?> intCollectorToDoublePlus();
-
+    
     @Override
     public IntCollectorPlus<?, Double> intCollectorPlus() {
         return intCollectorToDoublePlus();
     }
-
+    
     public IntAggregatorToDouble newAggregator() {
         val collector = intCollectorToDoublePlus();
         return new IntAggregatorToDouble.Impl(collector);
     }
-
+    
     // == Derived ==
     public <INPUT> AggregationToDouble<INPUT> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorToDoublePlus().of(mapper);
         return new AggregationToDouble.Impl<INPUT>(newCollector);
     }
-
+    
     public IntAggregationToDouble ofInt(IntUnaryOperator mapper) {
         val newCollector = intCollectorToDoublePlus().of(mapper);
         return new IntAggregationToDouble.Impl(newCollector);
     }
-
+    
     public LongAggregationToDouble ofLong(LongToIntFunction mapper) {
         val newCollector = intCollectorToDoublePlus().of(mapper);
         return new LongAggregationToDouble.Impl(newCollector);
     }
-
+    
     public DoubleAggregationToDouble ofDouble(DoubleToIntFunction mapper) {
         val newCollector = intCollectorToDoublePlus().of(mapper);
         return new DoubleAggregationToDouble.Impl(newCollector);
     }
-
+    
     // == Implementation ==
     public static class Impl extends IntAggregationToDouble {
-
+    
         private final IntCollectorToDoublePlus<?> collector;
-
+    
         public Impl(IntCollectorToDoublePlus<?> collector) {
             this.collector = collector;
         }
-
+    
         @Override
         public IntCollectorToDoublePlus<?> intCollectorToDoublePlus() {
             return collector;

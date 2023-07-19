@@ -38,9 +38,9 @@ import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import lombok.val;
 
 public interface AsDoubleStreamPlusWithGroupingBy {
-
+    
     public DoubleStreamPlus doubleStreamPlus();
-
+    
     /**
      * Group the elements by determining the grouping keys
      */
@@ -66,7 +66,7 @@ public interface AsDoubleStreamPlusWithGroupingBy {
         val theMap = streamPlus.boxed().collect(supplier, accumulator, combiner);
         return ImmutableFuncMap.from(theMap).mapValue(toFuncList);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys
      */
@@ -74,14 +74,14 @@ public interface AsDoubleStreamPlusWithGroupingBy {
         val keyMapper = keyAggregation.newAggregator();
         return groupingBy(keyMapper);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(DoubleFunction<KEY> keyMapper, Function<DoubleFuncList, VALUE> aggregate) {
         return groupingBy(keyMapper).mapValue(aggregate);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
@@ -89,7 +89,7 @@ public interface AsDoubleStreamPlusWithGroupingBy {
         val keyMapper = keyAggregation.newAggregator();
         return groupingBy(keyMapper, aggregate);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
@@ -97,7 +97,7 @@ public interface AsDoubleStreamPlusWithGroupingBy {
         val valueMapper = f((DoubleFuncList list) -> list.aggregate(aggregate));
         return groupingBy(keyMapper).mapValue(valueMapper);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
@@ -105,7 +105,7 @@ public interface AsDoubleStreamPlusWithGroupingBy {
         val keyMapper = keyAggregation.newAggregator();
         return groupingBy(keyMapper, aggregate);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
@@ -113,7 +113,7 @@ public interface AsDoubleStreamPlusWithGroupingBy {
         val valueMapper = f((DoubleFuncList list) -> list.collect(collectorSupplier.get()));
         return groupingBy(keyMapper).mapValue(valueMapper);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */

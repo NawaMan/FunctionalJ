@@ -24,10 +24,10 @@
 package functionalj.types.choice;
 
 public class ChoiceTypes {
-
+    
     private ChoiceTypes() {
     }
-
+    
     public static <S> S Match(IChoice<S> choiceType) {
         return choiceType.match();
     }

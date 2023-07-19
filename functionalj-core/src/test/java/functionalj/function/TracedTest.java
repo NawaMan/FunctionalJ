@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class TracedTest {
-
+    
     @Test
     public void testTraced() {
         assertEquals("Predicate::Predicate1@functionalj.function.TracedConstants#28", TracedConstants.namedPredicate.toString());
@@ -36,7 +36,7 @@ public class TracedTest {
         assertEquals("F1::F2@functionalj.function.TracedConstants#34", TracedConstants.namedTracedFunc1.toString());
         assertEquals("F1@functionalj.function.TracedConstants#36", TracedConstants.nonameTracedFunc1.toString());
     }
-
+    
     @Test
     public void testName() {
         assertEquals("Predicate1", ((Named) TracedConstants.namedPredicate).getName());

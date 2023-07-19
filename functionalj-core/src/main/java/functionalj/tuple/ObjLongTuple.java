@@ -26,57 +26,57 @@ package functionalj.tuple;
 import java.util.Map;
 
 public class ObjLongTuple<T1> implements Tuple2<T1, Long>, Map.Entry<T1, Long> {
-
+    
     public static <T1> ObjLongTuple<T1> of(T1 t1, long i) {
         return new ObjLongTuple<>(t1, i);
     }
-
+    
     public final T1 _1;
-
+    
     public final long _2;
-
+    
     public ObjLongTuple(T1 _1, long _2) {
         this._1 = _1;
         this._2 = _2;
     }
-
+    
     public T1 _1() {
         return _1;
     }
-
+    
     public long _2long() {
         return _2;
     }
-
+    
     public Long _2() {
         return _2;
     }
-
+    
     @Override
     public T1 getKey() {
         return _1();
     }
-
+    
     @Override
     public Long getValue() {
         return _2();
     }
-
+    
     @Override
     public Long setValue(Long value) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public String toString() {
         return Tuple.toString(this);
     }
-
+    
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);

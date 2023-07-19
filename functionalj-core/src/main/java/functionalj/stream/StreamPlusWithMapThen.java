@@ -32,9 +32,9 @@ import functionalj.function.Func6;
 import lombok.val;
 
 public interface StreamPlusWithMapThen<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -47,7 +47,7 @@ public interface StreamPlusWithMapThen<DATA> {
             return v;
         });
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -61,7 +61,7 @@ public interface StreamPlusWithMapThen<DATA> {
             return v;
         });
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -76,7 +76,7 @@ public interface StreamPlusWithMapThen<DATA> {
             return v;
         });
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -92,7 +92,7 @@ public interface StreamPlusWithMapThen<DATA> {
             return v;
         });
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */

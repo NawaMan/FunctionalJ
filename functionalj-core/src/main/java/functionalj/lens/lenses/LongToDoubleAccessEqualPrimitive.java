@@ -31,14 +31,14 @@ import lombok.NonNull;
 import lombok.val;
 
 public class LongToDoubleAccessEqualPrimitive extends DoubleAccessEqual<Long> implements LongToBooleanAccessPrimitive {
-
+    
     final DoubleLongToDoubleFunction anotherValueFunction;
-
+    
     LongToDoubleAccessEqualPrimitive(boolean isNegate, @NonNull LongToDoubleAccessPrimitive access, @NonNull DoubleLongToDoubleFunction anotherValueFunction) {
         super(isNegate, access, (host, value) -> anotherValueFunction.applyAsDouble(host, value));
         this.anotherValueFunction = anotherValueFunction;
     }
-
+    
     @Override
     public boolean test(long host) {
         val value = access.applyAsDouble(host);
@@ -47,24 +47,24 @@ public class LongToDoubleAccessEqualPrimitive extends DoubleAccessEqual<Long> im
         val precision = equalPrecisionToUse.get().getAsDouble();
         return isNegate != (error <= precision);
     }
-
+    
     @Override
     public boolean applyLongToBoolean(long host) {
         return test(host);
     }
-
+    
     public LongToDoubleAccessEqualPrecisionPrimitive withIn(double precision) {
         return new LongToDoubleAccessEqualPrecisionPrimitive(this, error -> precision);
     }
-
+    
     public LongToDoubleAccessEqualPrecisionPrimitive withPrecision(double precision) {
         return new LongToDoubleAccessEqualPrecisionPrimitive(this, error -> precision);
     }
-
+    
     public LongToDoubleAccessEqualPrecisionPrimitive withPrecision(@NonNull DoubleSupplier precisionSupplier) {
         return new LongToDoubleAccessEqualPrecisionPrimitive(this, error -> precisionSupplier.getAsDouble());
     }
-
+    
     public LongToDoubleAccessEqualPrecisionPrimitive withPrecision(@NonNull DoubleUnaryOperator precisionFunction) {
         return new LongToDoubleAccessEqualPrecisionPrimitive(this, precisionFunction);
     }

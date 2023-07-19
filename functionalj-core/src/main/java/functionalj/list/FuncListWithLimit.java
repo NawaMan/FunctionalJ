@@ -31,7 +31,7 @@ import functionalj.function.aggregator.AggregationToBoolean;
 import lombok.val;
 
 public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Limit the size of the stream to the given size.
      */
@@ -39,7 +39,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.limit(maxSize));
     }
-
+    
     /**
      * Skip to the given offset position.
      */
@@ -47,7 +47,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.skip(startAt));
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
@@ -55,7 +55,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.skipWhile(condition));
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
@@ -63,7 +63,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.skipUntil(aggregationCondition));
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
@@ -71,7 +71,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.skipWhile(condition));
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
@@ -79,7 +79,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.skipUntil(condition));
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
@@ -87,7 +87,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.skipWhile(aggregationCondition));
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
@@ -95,7 +95,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.skipWhile(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
@@ -103,7 +103,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.acceptWhile(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
@@ -111,7 +111,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.acceptWhile(aggregationCondition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
@@ -119,7 +119,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.acceptWhile(condition));
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
@@ -127,7 +127,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.acceptUntil(condition));
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
@@ -135,7 +135,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.acceptUntil(aggregationCondition));
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
@@ -143,7 +143,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.acceptUntil(condition));
     }
-
+    
     /**
      * Accept any value until the condition is false - include the item that the condition is false.
      */
@@ -151,7 +151,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.dropAfter(condition));
     }
-
+    
     /**
      * Accept any value until the condition is false - include the item that the condition is false.
      */
@@ -159,7 +159,7 @@ public interface FuncListWithLimit<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.dropAfter(aggregationCondition));
     }
-
+    
     /**
      * Accept any value until the condition is false - include the item that the condition is false.
      */

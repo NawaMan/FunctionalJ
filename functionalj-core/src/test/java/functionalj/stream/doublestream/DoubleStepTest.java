@@ -8,7 +8,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class DoubleStepTest {
-
+    
     @Test
     public void testBasic() {
         val logs = new ArrayList<String>();

@@ -37,7 +37,7 @@ import functionalj.pipeable.PipeLine;
 import lombok.val;
 
 public class PromiseTest {
-
+    
     @Test
     public void testValue() {
         val promise = Promise.ofValue("Hello!");
@@ -47,7 +47,7 @@ public class PromiseTest {
         promise.onComplete(r -> ref.set(r.get()));
         assertAsString("Hello!", ref);
     }
-
+    
     @Test
     public void testException() {
         val promise = Promise.ofException(new IOException());
@@ -57,7 +57,7 @@ public class PromiseTest {
         promise.onComplete(r -> ref.set("" + r.get()));
         assertAsString("null", ref.get());
     }
-
+    
     @Test
     public void testCancel() {
         val promise = Promise.ofAborted();
@@ -67,7 +67,7 @@ public class PromiseTest {
         promise.onComplete(r -> ref.set("" + r.get()));
         assertAsString("null", ref.get());
     }
-
+    
     @Test
     public void testCreateNew_complete() {
         val list = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class PromiseTest {
         promise.onComplete(r -> list.add("2: " + r.toString()));
         assertAsString("[" + "1: Result:{ Value: Forty two }, " + "2: Result:{ Value: Forty two }" + "]", list);
     }
-
+    
     @Test
     public void testCreateNew_exception() {
         val promiseControl = DeferAction.of(String.class);
@@ -95,7 +95,7 @@ public class PromiseTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
     }
-
+    
     @Test
     public void testAbort() {
         val ref = new AtomicReference<String>(null);
@@ -104,7 +104,7 @@ public class PromiseTest {
         action.abort();
         assertEquals("Result:{ Cancelled }", ref.get());
     }
-
+    
     @Test
     public void testLifeCycle_multipleCall_noEffect() {
         val list = new ArrayList<String>();
@@ -127,7 +127,7 @@ public class PromiseTest {
         pendingAction.abort();
         assertAsString("[" + "1: Result:{ Value: Forty two }, " + "2: Result:{ Value: Forty two }" + "]", list);
     }
-
+    
     @Test
     public void testCreateNew_unsubscribed() {
         val list = new ArrayList<String>();
@@ -143,7 +143,7 @@ public class PromiseTest {
         sub2.unsubscribe();
         assertAsString("[2: Result:{ Value: Forty two }]", list);
     }
-
+    
     @Test
     public void testCreateNew_lastUnsubscribed() {
         val list = new ArrayList<String>();
@@ -162,7 +162,7 @@ public class PromiseTest {
         sub2.unsubscribe();
         assertAsString("[2: Result:{ Cancelled: No more listener. }]", list);
     }
-
+    
     @Test
     public void testCreateNew_unsubscribed_withEavesdrop() {
         val list = new ArrayList<String>();
@@ -180,20 +180,20 @@ public class PromiseTest {
         assertAsString("Result:{ Cancelled: No more listener. }", promise.getCurrentResult());
         assertAsString("[e: Result:{ Cancelled: No more listener. }]", list);
     }
-
+    
     @Test
     public void testCreateNew_abortNoSubsriptionAfter_withNoSubscription() {
         val list = new ArrayList<String>();
         val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
-
+    
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
         val wait = new WaitAwhile() {
-
+    
             @Override
             public WaitSession newSession() {
                 return session;
@@ -205,20 +205,20 @@ public class PromiseTest {
         assertEquals(PromiseStatus.ABORTED, promise.getStatus());
         assertAsString("[e: Result:{ Cancelled: No more listener. }]", list);
     }
-
+    
     @Test
     public void testCreateNew_abortNoSubsriptionAfter_withSubscription() {
         val list = new ArrayList<String>();
         val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
-
+    
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
         val wait = new WaitAwhile() {
-
+    
             @Override
             public WaitSession newSession() {
                 return session;
@@ -229,7 +229,7 @@ public class PromiseTest {
         onExpireds.forEach(c -> c.accept(null, null));
         assertEquals(PromiseStatus.PENDING, promise.getStatus());
     }
-
+    
     @Test
     public void testCreateNew_map_mapBeforeComplete() {
         val list = new ArrayList<String>();
@@ -238,7 +238,7 @@ public class PromiseTest {
         }).start().complete("Done!");
         assertAsString("[Result:{ Value: 5 }]", list);
     }
-
+    
     @Test
     public void testCreateNew_map2_mapAfterComplete() {
         val list = new ArrayList<String>();
@@ -247,7 +247,7 @@ public class PromiseTest {
         }).start().complete("Done!");
         assertAsString("[Result:{ Value: 5 }]", list);
     }
-
+    
     @Test
     public void testCreateNew_flatMap() {
         val list = new ArrayList<String>();
@@ -256,7 +256,7 @@ public class PromiseTest {
         }).start().complete("Done!!");
         assertAsString("[Result:{ Value: 6 }]", list);
     }
-
+    
     @Test
     public void testCreateNew_filter() {
         val list = new ArrayList<String>();
@@ -267,20 +267,20 @@ public class PromiseTest {
         assertTrue(list.toString().contains("Result:{ Value: null }"));
         assertTrue(list.toString().contains("Result:{ Value: Done! }"));
     }
-
+    
     @Test
     public void testCreateNew_waitOrDefault() {
         val list = new ArrayList<String>();
         val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
-
+    
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
         val wait = new WaitAwhile() {
-
+    
             @Override
             public WaitSession newSession() {
                 return session;
@@ -292,7 +292,7 @@ public class PromiseTest {
         });
         assertAsString("[Not done.]", list);
     }
-
+    
     @Test
     public void testParentStatus_complete() {
         val parentPromise = DeferAction.of(String.class).getPromise();
@@ -308,7 +308,7 @@ public class PromiseTest {
         assertAsString("Result:{ Value: HELLO }", parentPromise.getCurrentResult());
         assertAsString("Result:{ Value: 5 }", childPromise.getCurrentResult());
     }
-
+    
     @Test
     public void testParentStatus_exception() {
         val parentPromise = DeferAction.of(String.class).getPromise();
@@ -324,7 +324,7 @@ public class PromiseTest {
         assertAsString("Result:{ Exception: java.lang.NullPointerException }", parentPromise.getCurrentResult());
         assertAsString("Result:{ Exception: java.lang.NullPointerException }", childPromise.getCurrentResult());
     }
-
+    
     @Test
     public void testElseUse() {
         val promise = Promise.ofException(new IOException());
@@ -333,7 +333,7 @@ public class PromiseTest {
         val promise2 = promise.whenAbsentUse("Else");
         assertAsString("Result:{ Value: Else }", promise2.getResult());
     }
-
+    
     @Test
     public void testElseGet() {
         val promise = Promise.ofException(new IOException());
@@ -342,7 +342,7 @@ public class PromiseTest {
         val promise2 = promise.whenAbsentGet(() -> "Else");
         assertAsString("Result:{ Value: Else }", promise2.getResult());
     }
-
+    
     @Test
     public void testMapResult() {
         val promise = Promise.ofException(new IOException());
@@ -354,7 +354,7 @@ public class PromiseTest {
         promise.mapResult(result -> result.ifException(e -> ref.set(e.getClass().getName())));
         assertAsString("java.io.IOException", ref.get());
     }
-
+    
     @Test
     public void testDeferMethod() throws InterruptedException {
         val add = Func.f((Integer a, Integer b) -> (a + b));
@@ -376,7 +376,7 @@ public class PromiseTest {
         assertAsString("Result:{ Value: 42 }", r4.getResult());
         assertAsString("Result:{ Value: 42 }", r5.getResult());
     }
-
+    
     @Test
     public void testDeferMethod_PipeLine() throws InterruptedException {
         val add = Func.f((Integer a, Integer b) -> (a + b));
@@ -388,7 +388,7 @@ public class PromiseTest {
         val r6 = f6.apply(a);
         assertAsString("Result:{ Value: 42 }", r6.getResult());
     }
-
+    
     @Test
     public void testName() {
         val name = "ImportantPromise";

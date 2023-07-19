@@ -34,7 +34,7 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class PromisesTest {
-
+    
     @Test
     public void testOf2_happy() {
         val control1 = (PendingAction<String>) DeferAction.of(String.class).start();
@@ -49,7 +49,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Value: 8 }", promise.getCurrentResult());
     }
-
+    
     @Test
     public void testOf2_happy_comprehension() {
         val control1 = DeferAction.of(String.class).start();
@@ -64,7 +64,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Value: 8 }", promise.getCurrentResult());
     }
-
+    
     @Test
     public void testOf2_fail1() {
         val control1 = DeferAction.of(String.class).start();
@@ -77,7 +77,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }", promise.getCurrentResult());
     }
-
+    
     @Test
     public void testOf2_fail2() {
         val control1 = DeferAction.of(String.class).start();
@@ -90,7 +90,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #1 out of 2 fail. }", promise.getCurrentResult());
     }
-
+    
     @Test
     public void testOf2_fail1After2() {
         val control1 = DeferAction.of(String.class).start();
@@ -105,7 +105,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }", promise.getCurrentResult());
     }
-
+    
     @Test
     public void testOf6_happy() {
         val control1 = DeferAction.of(Integer.class).start();
@@ -133,7 +133,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Value: 42 }", promise.getCurrentResult());
     }
-
+    
     @Test
     public void testOf6_mix() throws InterruptedException {
         val promise = Promise.from(_1 -> run(Sleep(50).thenReturn(1)), _2 -> Result.valueOf(2), _3 -> run(Sleep(50).thenReturn(3)), _4 -> valueOf(4), _5 -> run(Sleep(50).thenReturn(5)), _6 -> valueOf(6), (_1, _2, _3, _4, _5, _6) -> {
@@ -143,7 +143,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Value: 21 }", promise.getCurrentResult());
     }
-
+    
     @Test
     public void testOf2_cancel_propagation() throws InterruptedException {
         val promise1 = DeferAction.of(Integer.class);

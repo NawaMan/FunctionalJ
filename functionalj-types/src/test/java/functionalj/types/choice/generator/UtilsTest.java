@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class UtilsTest {
-
+    
     @Test
     public void testCamelCase() {
         assertEquals("repeatAll", toCamelCase("RepeatAll"));
@@ -39,7 +39,7 @@ public class UtilsTest {
         assertEquals("repeat", toCamelCase("Repeat"));
         assertEquals("repeat", toCamelCase("REPEAT"));
     }
-
+    
     @Test
     public void testStringLiteral() {
         assertEquals("\"-\\n-\\r-\\'-\\\"-\\\\\"-\"", toStringLiteral("-\n-\r-\'-\"-\\\"-"));

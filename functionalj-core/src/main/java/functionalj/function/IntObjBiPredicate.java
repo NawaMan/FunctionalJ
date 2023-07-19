@@ -26,13 +26,13 @@ package functionalj.function;
 import java.util.function.BiPredicate;
 
 public interface IntObjBiPredicate<DATA> extends Func2<Integer, DATA, Boolean>, BiPredicate<Integer, DATA> {
-
+    
     public boolean testAsInt(int input1, DATA input2);
-
+    
     public default Boolean applyUnsafe(Integer input1, DATA input2) throws Exception {
         return testAsInt(input1, input2);
     }
-
+    
     public static <D> boolean test(BiPredicate<Integer, D> function, int input1, D input2) {
         if (function instanceof IntObjBiPredicate) {
             return ((IntObjBiPredicate<D>) function).testAsInt(input1, input2);

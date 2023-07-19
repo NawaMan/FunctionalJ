@@ -38,7 +38,7 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class Func1Test {
-
+    
     @Test
     public void testElevate() {
         val concat = Func.of(String::concat);
@@ -48,7 +48,7 @@ public class Func1Test {
         val str = StartWtih("Hello").pipeTo(appendSpace, appendWorld, appendExclamation);
         assertEquals("Hello World!", str);
     }
-
+    
     @Test
     public void testDefer() {
         val startTime = System.currentTimeMillis();
@@ -57,7 +57,7 @@ public class Func1Test {
         assertEquals(6, length.get().intValue());
         assertTrue(duration > 100);
     }
-
+    
     @Test
     public void testApply() {
         val result = Result.valueOf("Hello");

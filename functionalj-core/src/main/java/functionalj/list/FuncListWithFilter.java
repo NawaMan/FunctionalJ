@@ -38,7 +38,7 @@ import functionalj.function.IntObjBiFunction;
 import lombok.val;
 
 public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Map each value to an int and used it to filter the value.
      */
@@ -46,7 +46,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filterAsInt(mapper, predicate));
     }
-
+    
     /**
      * Map each value to a long and used it to filter the value.
      */
@@ -54,7 +54,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filterAsLong(mapper, predicate));
     }
-
+    
     /**
      * Map each value to a double and used it to filter the value.
      */
@@ -62,14 +62,14 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filterAsDouble(mapper, predicate));
     }
-
+    
     /**
      * Map each value to another object and used it to filter the value.
      */
     public default <T> FuncList<DATA> filterAsObject(Function<? super DATA, T> mapper, Predicate<? super T> predicate) {
         return filter(mapper, predicate);
     }
-
+    
     /**
      * Map each value to another object and used it to filter the value.
      */
@@ -77,7 +77,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filter(mapper, predicate));
     }
-
+    
     /**
      * Filter the element that is only the specific class.
      */
@@ -85,7 +85,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filter(clzz));
     }
-
+    
     /**
      * Case the value to the given class and used it to filter the value.
      * If the value is not of the type (null included), it will be filtered out.
@@ -94,7 +94,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filter(clzz, theCondition));
     }
-
+    
     /**
      * Filter value with its index.
      */
@@ -102,7 +102,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filterWithIndex(predicate));
     }
-
+    
     /**
      * Filter value that is not null.
      */
@@ -110,7 +110,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filterNonNull());
     }
-
+    
     /**
      * Map the value to another object and filter the one that is not null.
      */
@@ -118,7 +118,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filterNonNull(mapper));
     }
-
+    
     /**
      * Filter value that is not null.
      */
@@ -126,7 +126,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.excludeNull());
     }
-
+    
     /**
      * Map the value to another object and filter the one that is not null.
      */
@@ -134,7 +134,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.excludeNull(mapper));
     }
-
+    
     /**
      * Filter only the value that is in the given items.
      */
@@ -143,7 +143,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filterOnly(items));
     }
-
+    
     /**
      * Filter only the value that is in the given collections.
      */
@@ -151,7 +151,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.filterIn(collection));
     }
-
+    
     /**
      * Filter only the value that the predicate returns false.
      */
@@ -159,7 +159,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.exclude(predicate));
     }
-
+    
     /**
      * Filter out any value that is in the given items.
      */
@@ -168,7 +168,7 @@ public interface FuncListWithFilter<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.excludeAny(items));
     }
-
+    
     /**
      * Filter out any value that is in the given collection.
      */

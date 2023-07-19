@@ -32,7 +32,7 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Concatenate the given head stream in front of this stream.
      */
@@ -40,7 +40,7 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return FuncList.concat(FuncList.from(head), funcList);
     }
-
+    
     /**
      * Concatenate the given tail stream to this stream.
      */
@@ -48,7 +48,7 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return FuncList.concat(funcList, FuncList.from(tail));
     }
-
+    
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
@@ -62,7 +62,7 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mergeWith(anotherList.stream()));
     }
-
+    
     // -- Zip --
     /**
      * Combine this stream with another stream into a stream of tuple pair.
@@ -77,7 +77,7 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream()));
     }
-
+    
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -91,7 +91,7 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream(), option));
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
@@ -106,7 +106,7 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream(), combinator));
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -121,7 +121,7 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.zipWith(anotherList.stream(), option, combinator));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
@@ -136,7 +136,7 @@ public interface FuncListWithCombine<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.choose(anotherFuncList.stream(), selectThisNotAnother));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.

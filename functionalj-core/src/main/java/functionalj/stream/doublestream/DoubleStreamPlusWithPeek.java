@@ -31,9 +31,9 @@ import java.util.function.Predicate;
 import lombok.val;
 
 public interface DoubleStreamPlusWithPeek {
-
+    
     public DoubleStreamPlus doubleStreamPlus();
-
+    
     // -- Peek --
     /**
      * Peek only the value that is selected with selector.
@@ -46,7 +46,7 @@ public interface DoubleStreamPlusWithPeek {
             theConsumer.accept(value);
         });
     }
-
+    
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
     /**
@@ -59,7 +59,7 @@ public interface DoubleStreamPlusWithPeek {
             consumer.accept(target);
         });
     }
-
+    
     /**
      * Peek only the mapped value using the mapper.
      */
@@ -71,7 +71,7 @@ public interface DoubleStreamPlusWithPeek {
                 consumer.accept(value);
         });
     }
-
+    
     /**
      * Peek the mapped value using the mapper.
      */

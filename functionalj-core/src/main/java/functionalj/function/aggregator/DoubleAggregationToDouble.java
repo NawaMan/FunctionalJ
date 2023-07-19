@@ -33,40 +33,40 @@ import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;
 import lombok.val;
 
 public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double> {
-
+    
     public static <A> DoubleAggregationToDouble from(DoubleCollectorToDoublePlus<A> collector) {
         return new DoubleAggregationToDouble.Impl(collector);
     }
-
+    
     // == Instance ==
     public abstract DoubleCollectorToDoublePlus<?> doubleCollectorToDoublePlus();
-
+    
     @Override
     public DoubleCollectorPlus<?, Double> doubleCollectorPlus() {
         return doubleCollectorToDoublePlus();
     }
-
+    
     public DoubleAggregatorToDouble newAggregator() {
         val collector = doubleCollectorToDoublePlus();
         return new DoubleAggregatorToDouble.Impl(collector);
     }
-
+    
     // == Derived ==
     public <INPUT> AggregationToDouble<INPUT> of(ToDoubleFunction<INPUT> mapper) {
         val newCollector = doubleCollectorToDoublePlus().of(mapper);
         return new AggregationToDouble.Impl<INPUT>(newCollector);
     }
-
+    
     public IntAggregationToDouble ofInt(IntToDoubleFunction mapper) {
         val newCollector = doubleCollectorToDoublePlus().of(mapper);
         return new IntAggregationToDouble.Impl(newCollector);
     }
-
+    
     public LongAggregationToDouble ofLong(LongToDoubleFunction mapper) {
         val newCollector = doubleCollectorToDoublePlus().of(mapper);
         return new LongAggregationToDouble.Impl(newCollector);
     }
-
+    
     public DoubleAggregation<Double> ofDouble(DoubleFunction<Double> mapper) {
         if (mapper instanceof DoubleUnaryOperator) {
             return ofDoubleToDouble((DoubleUnaryOperator) mapper);
@@ -74,23 +74,23 @@ public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double
         val newCollector = doubleCollectorToDoublePlus().of(mapper);
         return new DoubleAggregation.Impl<>(newCollector);
     }
-
+    
     // This is a terrible name .... :-(
     // But if we use `ofDouble`, Java confuse this one and the one above
     public DoubleAggregationToDouble ofDoubleToDouble(DoubleUnaryOperator mapper) {
         val newCollector = doubleCollectorToDoublePlus().of(mapper);
         return new DoubleAggregationToDouble.Impl(newCollector);
     }
-
+    
     // == Implementation ==
     public static class Impl extends DoubleAggregationToDouble {
-
+    
         private final DoubleCollectorToDoublePlus<?> collector;
-
+    
         public Impl(DoubleCollectorToDoublePlus<?> collector) {
             this.collector = collector;
         }
-
+    
         @Override
         public DoubleCollectorToDoublePlus<?> doubleCollectorToDoublePlus() {
             return collector;

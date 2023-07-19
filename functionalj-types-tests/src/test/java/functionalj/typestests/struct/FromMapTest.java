@@ -11,11 +11,11 @@ import functionalj.types.Struct;
 import lombok.val;
 
 public class FromMapTest {
-
+    
     @Struct
     void Birthday(String name, LocalDate date) {
     }
-
+    
     @Test
     public void testToMap() {
         val car = new Car("Subaru", 2010, "Silver");
@@ -25,7 +25,7 @@ public class FromMapTest {
         assertEquals(2010, map.get("year"));
         assertEquals("Silver", map.get("color"));
     }
-
+    
     @Test
     public void testFromMap() {
         val car1 = new Car("Subaru", 2010, "Silver");
@@ -33,7 +33,7 @@ public class FromMapTest {
         val car2 = Car.fromMap(map);
         assertEquals(car1, car2);
     }
-
+    
     @Test
     public void testFromMapString() {
         val car1 = new Car("Subaru", 2010, "Silver");
@@ -53,7 +53,7 @@ public class FromMapTest {
         val bd3 = Birthday.fromMap(bd1_map);
         assertEquals(bd1, bd3);
     }
-
+    
     @Test
     public void testReadCsv() {
         val csvString = "Mazda,2008,Black\nBMW,2010,Black\nToyota,2012,White";

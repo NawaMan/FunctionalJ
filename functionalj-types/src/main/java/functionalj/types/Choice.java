@@ -37,27 +37,27 @@ import functionalj.types.choice.generator.model.SourceSpec;
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Choice {
-
+    
     /**
      * @return the name of the target class.
      */
     public String name() default "";
-
+    
     /**
      * @return the name of the static final field for the source spec.
      */
     public String specField() default "";
-
+    
     /**
      * @return the name of key in the map when do __toMap().
      */
     public String tagMapKeyName() default SourceSpec.TAG_MAP_KEY_NAME;
-
+    
     /**
      * @return the flag indicating that the fields should be made public - default to true.
      */
     public boolean publicFields() default false;
-
+    
     /**
      * @return the target serialization type.
      */

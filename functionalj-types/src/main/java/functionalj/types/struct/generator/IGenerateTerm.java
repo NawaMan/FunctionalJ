@@ -33,12 +33,12 @@ import functionalj.types.Type;
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface IGenerateTerm extends IRequireTypes {
-
+    
     @Override
     public default Stream<Type> requiredTypes() {
         return Stream.empty();
     }
-
+    
     /**
      * Generate term.
      *

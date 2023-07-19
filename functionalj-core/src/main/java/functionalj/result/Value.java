@@ -28,17 +28,17 @@ import functionalj.validator.Validator;
 import lombok.val;
 
 public class Value<DATA> extends Result<DATA> {
-
+    
     public static <D> Value<D> of(D data) {
         return new Value<D>(data);
     }
-
+    
     private final Object data;
-
+    
     public Value(DATA data) {
         this(data, (Exception) null);
     }
-
+    
     Value(DATA data, Exception exception) {
         if (exception != null) {
             this.data = new ExceptionHolder(exception);
@@ -46,7 +46,7 @@ public class Value<DATA> extends Result<DATA> {
             this.data = data;
         }
     }
-
+    
     Value(DATA data, FuncList<Validator<? super DATA>> validators) {
         Object theData = data;
         if (validators != null) {
@@ -73,7 +73,7 @@ public class Value<DATA> extends Result<DATA> {
         }
         this.data = theData;
     }
-
+    
     @Override
     Object __valueData() {
         return data;

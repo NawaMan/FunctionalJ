@@ -37,13 +37,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Sequential {
-
+    
     /**
      * This flag indicates that the implementation is know to NOT be sequential for some reason
      *   and it is planned to be fixed at later point.
      */
     boolean knownIssue() default false;
-
+    
     /**
      * Any comment for the marker
      */

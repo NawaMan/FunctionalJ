@@ -39,37 +39,37 @@ import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import lombok.val;
 
 public interface LongCollectorToIntPlus<ACCUMULATED> extends LongCollectorPlus<ACCUMULATED, Integer> {
-
+    
     public Supplier<ACCUMULATED> supplier();
-
+    
     public ObjLongConsumer<ACCUMULATED> longAccumulator();
-
+    
     public BinaryOperator<ACCUMULATED> combiner();
-
+    
     public ToIntFunction<ACCUMULATED> finisherToInt();
-
+    
     public Set<Characteristics> characteristics();
-
+    
     public default Function<ACCUMULATED, Integer> finisher() {
         val finisher = finisherToInt();
         return accumulated -> {
             return finisher.applyAsInt(accumulated);
         };
     }
-
+    
     // == Derived ==
     public default <SOURCE> CollectorToIntPlus<SOURCE, ACCUMULATED> of(ToLongFunction<SOURCE> mapper) {
         return new DerivedLongCollectorToIntPlus.FromObj<>(this, mapper);
     }
-
+    
     public default IntCollectorToIntPlus<ACCUMULATED> of(IntToLongFunction mapper) {
         return new DerivedLongCollectorToIntPlus.FromInt<>(this, mapper);
     }
-
+    
     public default LongCollectorToIntPlus<ACCUMULATED> of(LongUnaryOperator mapper) {
         return new DerivedLongCollectorToIntPlus.FromLong<>(this, mapper);
     }
-
+    
     public default DoubleCollectorToIntPlus<ACCUMULATED> of(DoubleToLongFunction mapper) {
         return new DerivedLongCollectorToIntPlus.FromDouble<>(this, mapper);
     }

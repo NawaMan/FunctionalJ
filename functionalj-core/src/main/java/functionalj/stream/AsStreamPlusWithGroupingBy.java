@@ -38,9 +38,9 @@ import functionalj.map.ImmutableFuncMap;
 import lombok.val;
 
 public interface AsStreamPlusWithGroupingBy<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Group the elements by determining the grouping keys
      */
@@ -66,7 +66,7 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
         val theMap = streamPlus.collect(supplier, accumulator, combiner);
         return ImmutableFuncMap.from(theMap).mapValue(toFuncList);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys
      */
@@ -74,7 +74,7 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
         val keyMapper = keyAggregation.newAggregator();
         return groupingBy(keyMapper);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
@@ -83,7 +83,7 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
         FuncMap<KEY, FuncList<? super DATA>> groupingBy = groupingBy(keyMapper);
         return (FuncMap<KEY, VALUE>) groupingBy.mapValue((Function) aggregate);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
@@ -91,14 +91,14 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
         val keyMapper = keyAggregation.newAggregator();
         return groupingBy(keyMapper, aggregate);
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(Function<DATA, KEY> keyMapper, Aggregation<? super DATA, VALUE> aggregation) {
         return groupingBy(keyMapper, stream -> stream.aggregate(aggregation));
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
@@ -106,7 +106,7 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
         val keyMapper = keyAggregation.newAggregator();
         return groupingBy(keyMapper, stream -> stream.aggregate(aggregation));
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */
@@ -115,7 +115,7 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
         val valueMapper = f((FuncList list) -> list.collect(collectorSupplier.get()));
         return ((FuncMap<KEY, VALUE>) groupingBy(keyMapper).mapValue(valueMapper));
     }
-
+    
     /**
      * Group the elements by determining the grouping keys and aggregate the result
      */

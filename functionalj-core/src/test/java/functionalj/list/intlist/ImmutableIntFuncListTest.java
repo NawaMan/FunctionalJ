@@ -5,7 +5,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class ImmutableIntFuncListTest {
-
+    
     @Test
     public void testAppend() {
         val orgList = ImmutableIntFuncList.of(1, 2, 3);
@@ -26,7 +26,7 @@ public class ImmutableIntFuncListTest {
         assertEquals("[1, 2, 3, 1002, 70001]", listTwoA.toString());
         assertEquals("[1, 2, 3, 1002, 70002]", listTwoB.toString());
     }
-
+    
     @Test
     public void testAppend_fromEmpty() {
         val orgList = ImmutableIntFuncList.empty();

@@ -42,23 +42,23 @@ import functionalj.tuple.DoubleTuple2;
 import lombok.val;
 
 public interface DoubleStreamPlusWithCombine {
-
+    
     public DoubleStreamPlus doubleStreamPlus();
-
+    
     /**
      * Concatenate the given head stream in front of this stream.
      */
     public default DoubleStreamPlus prependWith(DoubleStream head) {
         return DoubleStreamPlus.concat(DoubleStreamPlus.from(head), DoubleStreamPlus.from(doubleStreamPlus()));
     }
-
+    
     /**
      * Concatenate the given tail stream to this stream.
      */
     public default DoubleStreamPlus appendWith(DoubleStream tail) {
         return DoubleStreamPlus.concat(DoubleStreamPlus.from(doubleStreamPlus()), DoubleStreamPlus.from(tail));
     }
-
+    
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
@@ -79,7 +79,7 @@ public interface DoubleStreamPlusWithCombine {
         });
         return resultStream;
     }
-
+    
     // -- Zip --
     /**
      * Combine this stream with another stream into a stream of tuple pair.
@@ -95,7 +95,7 @@ public interface DoubleStreamPlusWithCombine {
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleWith((value, another) -> DoubleTuple2.of(value, another), iteratorA, iteratorB);
     }
-
+    
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -110,7 +110,7 @@ public interface DoubleStreamPlusWithCombine {
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleWith(defaultValue, (value, another) -> DoubleTuple2.of(value, another), iteratorA, iteratorB);
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
@@ -126,67 +126,67 @@ public interface DoubleStreamPlusWithCombine {
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleWith(merger, iteratorA, iteratorB);
     }
-
+    
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(double defaultValue, Stream<ANOTHER> anotherStream, DoubleObjBiFunction<ANOTHER, TARGET> merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleWith(defaultValue, merger, iteratorA, iteratorB);
     }
-
+    
     public default StreamPlus<DoubleDoubleTuple> zipWith(DoubleStream anotherStream) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleObjWith(DoubleDoubleTuple::new, iteratorA, iteratorB);
     }
-
+    
     public default StreamPlus<DoubleDoubleTuple> zipWith(DoubleStream anotherStream, double defaultValue) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleObjWith(DoubleDoubleTuple::new, iteratorA, iteratorB, defaultValue);
     }
-
+    
     public default StreamPlus<DoubleDoubleTuple> zipWith(DoubleStream anotherStream, double defaultValue1, double defaultValue2) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleObjWith(DoubleDoubleTuple::new, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
-
+    
     public default DoubleStreamPlus zipWith(DoubleStream anotherStream, DoubleBinaryOperator merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleWith(merger, iteratorA, iteratorB);
     }
-
+    
     public default DoubleStreamPlus zipWith(DoubleStream anotherStream, double defaultValue, DoubleBinaryOperator merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleWith(merger, iteratorA, iteratorB, defaultValue);
     }
-
+    
     public default DoubleStreamPlus zipWith(DoubleStream anotherStream, double defaultValue1, double defaultValue2, DoubleBinaryOperator merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
-
+    
     public default <T> StreamPlus<T> zipToObjWith(DoubleStream anotherStream, DoubleDoubleFunction<T> merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleObjWith(merger, iteratorA, iteratorB);
     }
-
+    
     public default <T> StreamPlus<T> zipToObjWith(DoubleStream anotherStream, double defaultValue, DoubleDoubleFunction<T> merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleObjWith(merger, iteratorA, iteratorB, defaultValue);
     }
-
+    
     public default <T> StreamPlus<T> zipToObjWith(DoubleStream anotherStream, double defaultValue1, double defaultValue2, DoubleDoubleFunction<T> merger) {
         DoubleIteratorPlus iteratorA = doubleStreamPlus().iterator();
         DoubleIteratorPlus iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         return DoubleStreamPlusHelper.doZipDoubleDoubleObjWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
@@ -200,7 +200,7 @@ public interface DoubleStreamPlusWithCombine {
     public default DoubleStreamPlus choose(DoubleStream anotherStream, DoubleDoublePredicatePrimitive selectThisNotAnother) {
         return choose(anotherStream, AllowUnpaired, selectThisNotAnother);
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The parameter option can be used to select when the stream should end.
@@ -217,17 +217,17 @@ public interface DoubleStreamPlusWithCombine {
         val iteratorA = this.doubleStreamPlus().iterator();
         val iteratorB = DoubleStreamPlus.from(anotherStream).iterator();
         val iterator = new PrimitiveIterator.OfDouble() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-
+    
             public double nextDouble() {
                 val nextA = hasNextA ? iteratorA.nextDouble() : Double.NaN;
                 val nextB = hasNextB ? iteratorB.nextDouble() : Double.NaN;
@@ -245,7 +245,7 @@ public interface DoubleStreamPlusWithCombine {
             }
         };
         val iterable = new DoubleIterable() {
-
+    
             @Override
             public DoubleIteratorPlus iterator() {
                 return DoubleIteratorPlus.from(iterator);

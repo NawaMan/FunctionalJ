@@ -34,9 +34,9 @@ import functionalj.list.FuncList;
  */
 @FunctionalInterface
 public interface IterablePlus<DATA> {
-
+    
     public IteratorPlus<DATA> iterator();
-
+    
     public default FuncList<DATA> FuncList() {
         return FuncList.from(() -> iterator().stream());
     }

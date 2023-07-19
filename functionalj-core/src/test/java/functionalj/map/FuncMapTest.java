@@ -33,7 +33,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class FuncMapTest {
-
+    
     @Test
     public void testMap() {
         val map1 = FuncMap.of(1, "One", 2, "Two", 3, "Three", 4, "Four");
@@ -42,7 +42,7 @@ public class FuncMapTest {
         assertEquals("{1:OneONE, 2:TwoTWO}", "" + map1.zipWith(map2, merger));
         assertEquals("{1:OneONE, 2:TwoTWO, 3:Threenull, 4:Fournull, 5:nullFIVE, 6:nullFOUR}", "" + map1.zipWith(map2, AllowUnpaired, merger));
     }
-
+    
     @Test
     public void testEquals() {
         val map = FuncMap.of(1, "One", 2, "Two", 3, "Three", 4, "Four");
@@ -50,7 +50,7 @@ public class FuncMapTest {
         val map2 = map.map(String::length);
         assertTrue(map1.equals(map2));
     }
-
+    
     @Test
     public void testLazy() {
         val counter = new AtomicInteger(0);
@@ -59,7 +59,7 @@ public class FuncMapTest {
         assertAsString("1=0, 2=1, 3=2, 4=3", value);
         assertAsString("4", counter.get());
     }
-
+    
     @Test
     public void testEager() {
         val counter = new AtomicInteger(0);

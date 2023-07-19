@@ -5,7 +5,7 @@ import org.junit.Test;
 import functionalj.stream.doublestream.DoubleStep;
 
 public class DoubleStepTest {
-
+    
     @Test
     public void testFromTo() {
         assertEquals("[0.0, 7.0, 14.0, 21.0, 28.0]", DoubleStep.of(7).to(34).toList().toString());

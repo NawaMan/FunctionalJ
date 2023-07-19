@@ -31,13 +31,13 @@ import lombok.val;
 
 @FunctionalInterface
 public interface LongIterable {
-
+    
     public LongIteratorPlus iterator();
-
+    
     public default LongIterable __data() throws Exception {
         return this;
     }
-
+    
     default void forEach(LongConsumer action) {
         Objects.requireNonNull(action);
         val iterator = iterator();
@@ -46,7 +46,7 @@ public interface LongIterable {
             action.accept(i);
         }
     }
-
+    
     default Spliterator.OfLong spliterator() {
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }

@@ -28,7 +28,7 @@ import lombok.val;
 
 @FunctionalInterface
 public interface CharacterAccessBoxed<HOST> extends CharacterAccess<HOST> {
-
+    
     public default char applyAsChar(HOST host) {
         try {
             val character = applyUnsafe(host);

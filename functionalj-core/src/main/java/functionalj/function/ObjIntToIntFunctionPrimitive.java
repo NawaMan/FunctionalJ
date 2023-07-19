@@ -28,14 +28,14 @@ import java.util.function.ToIntBiFunction;
 
 @FunctionalInterface
 public interface ObjIntToIntFunctionPrimitive<DATA> extends BiFunction<DATA, Integer, Integer>, ToIntBiFunction<DATA, Integer> {
-
+    
     public int applyObjInt(DATA data, int intValue);
-
+    
     @Override
     public default Integer apply(DATA data, Integer doubleValue) {
         return applyObjInt(data, doubleValue);
     }
-
+    
     @Override
     public default int applyAsInt(DATA data, Integer intValue) {
         return applyObjInt(data, intValue);

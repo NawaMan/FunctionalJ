@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 import lombok.val;
 
 public interface FuncListWithPeek<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Peek only the value that is an instance of the give class.
      */
@@ -39,7 +39,7 @@ public interface FuncListWithPeek<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.peek(clzz, theConsumer));
     }
-
+    
     /**
      * Peek only the value that is selected with selector.
      */
@@ -47,7 +47,7 @@ public interface FuncListWithPeek<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.peekBy(selector, theConsumer));
     }
-
+    
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
     /**
@@ -57,7 +57,7 @@ public interface FuncListWithPeek<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.peekAs(mapper, theConsumer));
     }
-
+    
     /**
      * Peek only the mapped value using the mapper.
      */
@@ -65,7 +65,7 @@ public interface FuncListWithPeek<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.peekBy(mapper, selector, theConsumer));
     }
-
+    
     /**
      * Peek only the mapped value using the mapper that is selected by the selector.
      */

@@ -26,56 +26,56 @@ package functionalj.types.input;
 import javax.lang.model.type.TypeVariable;
 
 public interface InputTypeVariable extends InputReferenceType {
-
+    
     public static InputTypeVariable of(Environment environment, TypeVariable typeVariable) {
         return new Impl(environment, typeVariable);
     }
-
+    
     public static class Impl extends InputReferenceType.Impl implements InputTypeVariable {
-
+    
         private final TypeVariable typeVariable;
-
+    
         Impl(Environment environment, TypeVariable typeVariable) {
             super(environment, typeVariable);
             this.typeVariable = typeVariable;
         }
-
+    
         @Override
         public InputType getLowerBound() {
             return InputType.of(environment, typeVariable.getLowerBound());
         }
-
+    
         @Override
         public InputType getUpperBound() {
             return InputType.of(environment, typeVariable.getUpperBound());
         }
     }
-
+    
     public default boolean isPrimitiveType() {
         return false;
     }
-
+    
     public default boolean isDeclaredType() {
         return false;
     }
-
+    
     public default boolean isTypeVariable() {
         return true;
     }
-
+    
     public default InputPrimitiveType asPrimitiveType() {
         return null;
     }
-
+    
     public default InputDeclaredType asDeclaredType() {
         return null;
     }
-
+    
     public default InputTypeVariable asTypeVariable() {
         return this;
     }
-
+    
     public InputType getLowerBound();
-
+    
     public InputType getUpperBound();
 }

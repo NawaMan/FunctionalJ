@@ -64,102 +64,102 @@ import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;
 import lombok.val;
 
 public class DoubleFuncListTest {
-
+    
     static final double MinusOne = -1;
-
+    
     static final double Zero = 0;
-
+    
     static final double One = 1;
-
+    
     static final double Two = 2;
-
+    
     static final double Three = 3;
-
+    
     static final double Four = 4;
-
+    
     static final double Five = 5;
-
+    
     static final double Six = 6;
-
+    
     static final double Seven = 7;
-
+    
     static final double Eight = 8;
-
+    
     static final double Nine = 9;
-
+    
     static final double Ten = 10;
-
+    
     static final double Eleven = 11;
-
+    
     static final double Twelve = 12;
-
+    
     static final double Thirteen = 13;
-
+    
     static final double Seventeen = 17;
-
+    
     static final double Nineteen = 19;
-
+    
     static final double TwentyThree = 23;
-
+    
     private void run(DoubleFuncList list, FuncUnit1<DoubleFuncList> action) {
         action.accept(list);
         action.accept(list);
     }
-
+    
     private void run(DoubleFuncList list1, DoubleFuncList list2, FuncUnit2<DoubleFuncList, DoubleFuncList> action) {
         action.accept(list1, list2);
         action.accept(list1, list2);
     }
-
+    
     @Test
     public void testEmpty() {
         run(DoubleFuncList.empty(), list -> {
             assertAsString("[]", list);
         });
     }
-
+    
     @Test
     public void testEmptyFuncList() {
         run(DoubleFuncList.emptyList(), list -> {
             assertAsString("[]", list);
         });
     }
-
+    
     @Test
     public void testEmpty_doubleFuncList() {
         run(DoubleFuncList.emptyDoubleList(), list -> {
             assertAsString("[]", list);
         });
     }
-
+    
     @Test
     public void testOf() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testAllOf() {
         run(DoubleFuncList.AllOf(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testDoubles() {
         run(DoubleFuncList.doubles(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testIntList() {
         run(DoubleFuncList.doubleList(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testListOf() {
         run(DoubleFuncList.ListOf(One, Two, Three), list -> {
@@ -169,7 +169,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     // -- From --
     @Test
     public void testFrom_array() {
@@ -177,7 +177,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testFrom_collection() {
         Collection<Double> collection = Arrays.asList(One, Two, Three, null);
@@ -199,7 +199,7 @@ public class DoubleFuncListTest {
             assertTrue(list.isEager());
         });
     }
-
+    
     @Test
     public void testFrom_funcList() {
         run(DoubleFuncList.from(Mode.lazy, DoubleFuncList.of(One, Two, Three)), list -> {
@@ -215,14 +215,14 @@ public class DoubleFuncListTest {
             assertTrue(list.isCache());
         });
     }
-
+    
     @Test
     public void testFrom_stream() {
         run(DoubleFuncList.from(DoubleStreamPlus.infiniteInt().limit(3)), list -> {
             assertAsString("[0.0, 1.0, 2.0]", list.limit(3));
         });
     }
-
+    
     @Test
     public void testFrom_streamSupplier() {
         run(DoubleFuncList.from(() -> DoubleStreamPlus.infiniteInt()), list -> {
@@ -230,7 +230,7 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]", list.limit(10));
         });
     }
-
+    
     @Test
     public void testZeroes() {
         run(DoubleFuncList.zeroes().limit(5), list -> {
@@ -242,7 +242,7 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 5.0, 0.0, 0.0, 0.0]", list.with(1, 5));
         });
     }
-
+    
     @Test
     public void testOnes() {
         run(DoubleFuncList.ones().limit(5), list -> {
@@ -254,7 +254,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 5.0, 1.0, 1.0, 1.0]", list.with(1, 5));
         });
     }
-
+    
     @Test
     public void testRepeat() {
         run(DoubleFuncList.repeat(0, 42), list -> {
@@ -266,7 +266,7 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 1.0, 2.0, 42.0, 0.0, 0.0, 1.0, 2.0, 42.0, 0.0]", list.limit(10));
         });
     }
-
+    
     @Test
     public void testCycle() {
         run(DoubleFuncList.cycle(0, 1, 42), list -> {
@@ -278,49 +278,49 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 1.0, 2.0, 42.0, 0.0, 0.0, 1.0, 2.0, 42.0, 0.0]", list.limit(10));
         });
     }
-
+    
     @Test
     public void testLoop() {
         run(DoubleFuncList.loop(), list -> assertAsString("[0.0, 1.0, 2.0, 3.0, 4.0]", list.limit(5)));
         run(DoubleFuncList.loop(5), list -> assertAsString("[0.0, 1.0, 2.0, 3.0, 4.0]", list));
     }
-
+    
     @Test
     public void testLoopBy() {
         run(DoubleFuncList.loopBy(3), list -> assertAsString("[0.0, 3.0, 6.0, 9.0, 12.0]", list.limit(5)));
         run(DoubleFuncList.loopBy(3, 5), list -> assertAsString("[0.0, 3.0, 6.0, 9.0, 12.0]", list));
     }
-
+    
     @Test
     public void testInfinite() {
         run(DoubleFuncList.infinite(), list -> assertAsString("[0.0, 1.0, 2.0, 3.0, 4.0]", list.limit(5)));
     }
-
+    
     @Test
     public void testNaturalNumbers() {
         run(DoubleFuncList.naturalNumbers(), list -> assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0]", list.limit(5)));
         run(DoubleFuncList.naturalNumbers(5), list -> assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0]", list));
     }
-
+    
     @Test
     public void testWholeNumbers() {
         run(DoubleFuncList.wholeNumbers(), list -> assertAsString("[0.0, 1.0, 2.0, 3.0, 4.0]", list.limit(5)));
         run(DoubleFuncList.wholeNumbers(5), list -> assertAsString("[0.0, 1.0, 2.0, 3.0, 4.0]", list));
     }
-
+    
     @Test
     public void testRange() {
         run(DoubleFuncList.range(3, 7), list -> assertAsString("[3.0, 4.0, 5.0, 6.0]", list.limit(5)));
         run(DoubleFuncList.range(-3, 3), list -> assertAsString("[-3.0, -2.0, -1.0, 0.0, 1.0, 2.0]", list.limit(10)));
     }
-
+    
     @Test
     public void testStepFrom() {
         run(DoubleFuncList.stepFrom(3, 1), list -> assertAsString("[3.0, 4.0, 5.0, 6.0, 7.0]", list.limit(5)));
         run(DoubleFuncList.stepFrom(-3, 1), list -> assertAsString("[-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0]", list.limit(7)));
         run(DoubleFuncList.stepFrom(3, -1), list -> assertAsString("[3.0, 2.0, 1.0, 0.0, -1.0, -2.0, -3.0]", list.limit(7)));
     }
-
+    
     @Test
     public void testEquals() {
         run(DoubleFuncList.of(One, Two, Three), DoubleFuncList.of(One, Two, Three), (list1, list2) -> {
@@ -347,7 +347,7 @@ public class DoubleFuncListTest {
             assertNotEquals(list1, list2);
         });
     }
-
+    
     @Test
     public void testHashCode() {
         run(DoubleFuncList.of(One, Two, Three), DoubleFuncList.of(One, Two, Three), (list1, list2) -> {
@@ -372,7 +372,7 @@ public class DoubleFuncListTest {
             assertNotEquals(list1.hashCode(), list2.hashCode());
         });
     }
-
+    
     @Test
     public void testToString() {
         run(DoubleFuncList.of(One, Two, Three), DoubleFuncList.of(One, Two, Three), (list1, list2) -> {
@@ -397,7 +397,7 @@ public class DoubleFuncListTest {
             assertNotEquals(list1.toString(), list2.toString());
         });
     }
-
+    
     // -- Concat + Combine --
     @Test
     public void testConcat() {
@@ -405,14 +405,14 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0]", list);
         });
     }
-
+    
     @Test
     public void testCombine() {
         run(DoubleFuncList.combine(DoubleFuncList.of(One, Two), DoubleFuncList.of(Three, Four)), list -> {
             assertAsString("[1.0, 2.0, 3.0, 4.0]", list);
         });
     }
-
+    
     // -- Generate --
     @Test
     public void testGenerate() {
@@ -436,7 +436,7 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 1.0, 2.0, 3.0, 4.0]", list);
         });
     }
-
+    
     // -- Iterate --
     @Test
     public void testIterate() {
@@ -447,7 +447,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 5.0, 8.0, 13.0, 21.0, 34.0, 55.0, 89.0]", list.limit(10));
         });
     }
-
+    
     // -- Compound --
     @Test
     public void testCompound() {
@@ -458,7 +458,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 5.0, 8.0, 13.0, 21.0, 34.0, 55.0, 89.0]", list.limit(10));
         });
     }
-
+    
     // -- zipOf --
     @Test
     public void testZipOf_toTuple() {
@@ -466,7 +466,7 @@ public class DoubleFuncListTest {
             assertAsString("[(1000.0,1.0), (2000.0,2.0), (3000.0,3.0), (4000.0,4.0)]", DoubleFuncList.zipOf(list1, list2));
         });
     }
-
+    
     @Test
     public void testZipOf_toTuple_default() {
         run(DoubleFuncList.of(1000, 2000, 3000, 4000, 5000), DoubleFuncList.of(1, 2, 3, 4), (list1, list2) -> {
@@ -476,14 +476,14 @@ public class DoubleFuncListTest {
             assertAsString("[(1000.0,1.0), (2000.0,2.0), (3000.0,3.0), (4000.0,4.0), (-1000.0,5.0)]", DoubleFuncList.zipOf(list1, -1000, list2, -1));
         });
     }
-
+    
     @Test
     public void testZipOf_merge() {
         run(DoubleFuncList.of(1000, 2000, 3000, 4000, 5000), DoubleFuncList.of(1, 2, 3, 4), (list1, list2) -> {
             assertAsString("[1001.0, 2002.0, 3003.0, 4004.0]", FuncList.zipOf(list1, list2, (a, b) -> a + +b));
         });
     }
-
+    
     @Test
     public void testZipOf_merge_default() {
         run(DoubleFuncList.of(1000, 2000, 3000, 4000, 5000), DoubleFuncList.of(1, 2, 3, 4), (list1, list2) -> {
@@ -493,7 +493,7 @@ public class DoubleFuncListTest {
             assertAsString("[1000.0, 4000.0, 9000.0, 16000.0, -5000.0]", DoubleFuncList.zipOf(list1, -1000, list2, -1, (a, b) -> a * b));
         });
     }
-
+    
     @Test
     public void testNew() {
         DoubleFuncListBuilder funcList1 = DoubleFuncList.newListBuilder();
@@ -509,7 +509,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     // -- Derive --
     @Test
     public void testDeriveFrom() {
@@ -523,7 +523,7 @@ public class DoubleFuncListTest {
             assertAsString("[-1.0, -2.0, -3.0]", list);
         });
     }
-
+    
     // @Test
     // public void testDeriveTo() {
     // run(DoubleFuncList.deriveToObj(DoubleFuncList.of(One, Two, Three), s -> s.mapToObj(v -> "-" + v + "-")), list -> {
@@ -549,7 +549,7 @@ public class DoubleFuncListTest {
             assertFalse(list.test(Six));
         });
     }
-
+    
     // -- Eager+Lazy --
     @Test
     public void testIsEagerIsLazy() {
@@ -592,7 +592,7 @@ public class DoubleFuncListTest {
             assertEquals("[1.0, 2.0, 3.0]", logs.toString());
         });
     }
-
+    
     @Test
     public void testEagerLazy() {
         {
@@ -616,7 +616,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]", logs);
         }
     }
-
+    
     @Test
     public void testEagerLazy_more() {
         {
@@ -653,7 +653,7 @@ public class DoubleFuncListTest {
             assertAsString("[4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]", logs2);
         }
     }
-
+    
     // -- List --
     @Test
     public void testToFuncList() {
@@ -663,7 +663,7 @@ public class DoubleFuncListTest {
             assertTrue(funcList instanceof DoubleFuncList);
         });
     }
-
+    
     @Test
     public void testToJavaList() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -672,7 +672,7 @@ public class DoubleFuncListTest {
             assertFalse(funcList instanceof FuncList);
         });
     }
-
+    
     @Test
     public void testToImmutableList() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -683,7 +683,7 @@ public class DoubleFuncListTest {
             assertTrue(funcList instanceof ImmutableDoubleFuncList);
         });
     }
-
+    
     @Test
     public void testIterable() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -697,7 +697,7 @@ public class DoubleFuncListTest {
             assertFalse(iterator.hasNext());
         });
     }
-
+    
     @Test
     public void testIterator() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -711,7 +711,7 @@ public class DoubleFuncListTest {
             assertFalse(iterator.hasNext());
         });
     }
-
+    
     @Test
     public void testSpliterator() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -721,7 +721,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", streamPlus.toListString());
         });
     }
-
+    
     @Test
     public void testContainsAllOf() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -729,7 +729,7 @@ public class DoubleFuncListTest {
             assertFalse(list.containsAllOf(One, Six));
         });
     }
-
+    
     @Test
     public void testContainsSomeOf() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -737,7 +737,7 @@ public class DoubleFuncListTest {
             assertFalse(list.containsSomeOf(Six, Seven));
         });
     }
-
+    
     @Test
     public void testContainsNoneOf() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -745,7 +745,7 @@ public class DoubleFuncListTest {
             assertFalse(list.containsNoneOf(One, Six));
         });
     }
-
+    
     @Test
     public void testJavaList_for() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -756,7 +756,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", logs);
         });
     }
-
+    
     @Test
     public void testJavaList_size_isEmpty() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -768,7 +768,7 @@ public class DoubleFuncListTest {
             assertTrue(list.isEmpty());
         });
     }
-
+    
     @Test
     public void testJavaList_contains() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -776,7 +776,7 @@ public class DoubleFuncListTest {
             assertFalse(list.contains(Five));
         });
     }
-
+    
     @Test
     public void testJavaList_containsAllOf() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -788,7 +788,7 @@ public class DoubleFuncListTest {
             assertFalse(list.containsAllOf(DoubleFuncList.listOf(Two, Five)));
         });
     }
-
+    
     @Test
     public void testJavaList_containsSomeOf() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -800,7 +800,7 @@ public class DoubleFuncListTest {
             assertFalse(list.containsSomeOf(DoubleFuncList.listOf(Five, Seven)));
         });
     }
-
+    
     @Test
     public void testJavaList_containsNoneOf() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -812,7 +812,7 @@ public class DoubleFuncListTest {
             assertFalse(list.containsNoneOf(DoubleFuncList.listOf(Two, Five)));
         });
     }
-
+    
     @Test
     public void testForEach() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -821,7 +821,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", logs);
         });
     }
-
+    
     @Test
     public void testForEachOrdered() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -830,7 +830,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", logs);
         });
     }
-
+    
     @Test
     public void testReduce() {
         run(DoubleFuncList.of(1, 2, 3), list -> {
@@ -838,47 +838,47 @@ public class DoubleFuncListTest {
             assertAsString("6.0", list.reduce((a, b) -> a + b).getAsDouble());
         });
     }
-
+    
     static class Sum extends DoubleAggregationToDouble {
-
+    
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-
+    
         private DoubleCollectorToDoublePlus<double[]> collectorPlus = new DoubleCollectorToDoublePlus<double[]>() {
-
+    
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0 };
             }
-
+    
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, s) -> {
                     a[0] += s;
                 };
             }
-
+    
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a1[1] };
             }
-
+    
             @Override
             public ToDoubleFunction<double[]> finisherToDouble() {
                 return a -> a[0];
             }
-
+    
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-
+    
         @Override
         public DoubleCollectorToDoublePlus<?> doubleCollectorToDoublePlus() {
             return collectorPlus;
         }
     }
-
+    
     @Test
     public void testCollect() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -890,35 +890,35 @@ public class DoubleFuncListTest {
             assertAsString("1.02.03.0", list.collect(supplier, accumulator, combiner));
         });
     }
-
+    
     @Test
     public void testSize() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
             assertAsString("4", list.size());
         });
     }
-
+    
     @Test
     public void testCount() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
             assertAsString("4", list.count());
         });
     }
-
+    
     @Test
     public void testSum() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("6.0", list.sum());
         });
     }
-
+    
     @Test
     public void testProduct() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("OptionalDouble[6.0]", list.product());
         });
     }
-
+    
     @Test
     public void testMinMax() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
@@ -932,7 +932,7 @@ public class DoubleFuncListTest {
             assertAsString("Optional[(4.0,1.0)]", list.minMax((a, b) -> Double.compare(b, a)));
         });
     }
-
+    
     @Test
     public void testMinByMaxBy() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
@@ -948,7 +948,7 @@ public class DoubleFuncListTest {
             assertAsString("OptionalDouble[1.0]", list.maxBy(a -> -a, (a, b) -> Double.compare(a, b)));
         });
     }
-
+    
     @Test
     public void testMinMaxBy() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
@@ -958,7 +958,7 @@ public class DoubleFuncListTest {
             assertAsString("Optional[(4.0,1.0)]", list.minMaxBy(a -> a, (a, b) -> Double.compare(b, a)));
         });
     }
-
+    
     @Test
     public void testMinOfMaxOf() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
@@ -968,28 +968,28 @@ public class DoubleFuncListTest {
             assertAsString("OptionalDouble[1.0]", list.maxOf(a -> -a));
         });
     }
-
+    
     @Test
     public void testMinIndex() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
             assertAsString("OptionalInt[0]", list.minIndex());
         });
     }
-
+    
     @Test
     public void testMaxIndex() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
             assertAsString("OptionalInt[5]", list.maxIndex());
         });
     }
-
+    
     @Test
     public void testMinIndexBy() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
             assertAsString("OptionalInt[0]", list.minIndexBy(value -> value));
         });
     }
-
+    
     @Test
     public void testMinIndexOf() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
@@ -998,14 +998,14 @@ public class DoubleFuncListTest {
             assertAsString("OptionalInt[2]", list.minIndexOf(condition, operator));
         });
     }
-
+    
     @Test
     public void testMaxIndexBy() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
             assertAsString("OptionalInt[5]", list.maxIndexBy(value -> value));
         });
     }
-
+    
     @Test
     public void testMaxIndexOf() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
@@ -1014,63 +1014,63 @@ public class DoubleFuncListTest {
             assertAsString("OptionalInt[5]", list.maxIndexOf(condition, operator));
         });
     }
-
+    
     @Test
     public void testAnyMatch() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertTrue(list.anyMatch(value -> value == One));
         });
     }
-
+    
     @Test
     public void testAllMatch() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertFalse(list.allMatch(value -> value == One));
         });
     }
-
+    
     @Test
     public void testNoneMatch() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertTrue(list.noneMatch(value -> value == Five));
         });
     }
-
+    
     @Test
     public void testFindFirst() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("OptionalDouble[1.0]", list.findFirst());
         });
     }
-
+    
     @Test
     public void testFindAny() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("OptionalDouble[1.0]", list.findAny());
         });
     }
-
+    
     @Test
     public void testFindLast() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("OptionalDouble[3.0]", list.findLast());
         });
     }
-
+    
     @Test
     public void testFirstResult() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("OptionalDouble[1.0]", list.first());
         });
     }
-
+    
     @Test
     public void testLastResult() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("OptionalDouble[3.0]", list.last());
         });
     }
-
+    
     @Test
     public void testJavaList_get() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1079,7 +1079,7 @@ public class DoubleFuncListTest {
             assertAsString("3.0", list.get(2));
         });
     }
-
+    
     @Test
     public void testJavaList_indexOf() {
         run(DoubleFuncList.of(One, Two, Three, Two, Three), list -> {
@@ -1087,7 +1087,7 @@ public class DoubleFuncListTest {
             assertAsString("-1", list.indexOf(Five));
         });
     }
-
+    
     @Test
     public void testJavaList_lastIndexOf() {
         run(DoubleFuncList.of(One, Two, Three, Two, Three), list -> {
@@ -1095,7 +1095,7 @@ public class DoubleFuncListTest {
             assertAsString("-1", list.lastIndexOf(Five));
         });
     }
-
+    
     @Test
     public void testJavaList_subList() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1103,7 +1103,7 @@ public class DoubleFuncListTest {
             assertAsString("[2.0, 3.0, 4.0, 5.0]", list.subList(1, 10));
         });
     }
-
+    
     // -- IntFuncListWithGroupingBy --
     @Test
     public void testGroupingBy() {
@@ -1111,14 +1111,14 @@ public class DoubleFuncListTest {
             assertAsString("{1:[1.0, 2.0], 2:[3.0, 4.0], 3:[5.0]}", list.groupingBy(theDouble.dividedBy(2).asInteger()).sortedByKey(theInteger));
         });
     }
-
+    
     @Test
     public void testGroupingBy_aggregate() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("{1:[1.0, 2.0], 2:[3.0, 4.0], 3:[5.0]}", list.groupingBy(theDouble.dividedBy(2).asInteger(), l -> l).sortedByKey(theInteger));
         });
     }
-
+    
     // @Test
     // public void testGroupingBy_collect() {
     // run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1153,35 +1153,35 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0]", list.mapToString());
         });
     }
-
+    
     @Test
     public void testMap() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[2.0, 4.0, 6.0, 8.0, 10.0]", list.map(theDouble.time(2)));
         });
     }
-
+    
     @Test
     public void testMapToInt() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[10.0, 20.0, 30.0]", list.map(theDouble.time(10)));
         });
     }
-
+    
     @Test
     public void testMapasDouble() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 1.4142135623730951, 1.7320508075688772]", list.mapToDouble(theDouble.squareRoot()));
         });
     }
-
+    
     @Test
     public void testMapToObj() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[-1.0-, -2.0-, -3.0-, -4.0-, -5.0-]", list.mapToObj(i -> "-" + i + "-"));
         });
     }
-
+    
     // -- FlatMap --
     @Test
     public void testFlatMap() {
@@ -1189,21 +1189,21 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 4.0]", list.flatMap(i -> DoubleFuncList.cycle(i).limit((int) i)));
         });
     }
-
+    
     @Test
     public void testFlatMapToInt() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
             assertAsString("[1, 2, 2, 3, 3, 3, 4, 4, 4, 4]", list.flatMapToInt(i -> IntFuncList.cycle((int) i).limit((int) i)));
         });
     }
-
+    
     @Test
     public void testFlatMapasDouble() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
             assertAsString("[1.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 4.0]", list.flatMapToDouble(i -> DoubleFuncList.cycle(i).limit((int) i)));
         });
     }
-
+    
     // -- Filter --
     @Test
     public void testFilter() {
@@ -1211,14 +1211,14 @@ public class DoubleFuncListTest {
             assertAsString("[3.0]", list.filter(theDouble.time(2).thatGreaterThan(4)));
         });
     }
-
+    
     @Test
     public void testFilter_mapper() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[3.0]", list.filter(theDouble.time(2), theDouble.thatGreaterThan(4)));
         });
     }
-
+    
     @Test
     public void testPeek() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1227,28 +1227,28 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", logs);
         });
     }
-
+    
     @Test
     public void testLimit() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list.limit(3));
         });
     }
-
+    
     @Test
     public void testSkip() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[3.0, 4.0, 5.0]", list.skip(2));
         });
     }
-
+    
     @Test
     public void testDistinct() {
         run(DoubleFuncList.of(One, Two, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list.distinct());
         });
     }
-
+    
     @Test
     public void testSorted() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1256,21 +1256,21 @@ public class DoubleFuncListTest {
             assertAsString("[10.0, 8.0, 6.0, 4.0, 2.0]", list.map(theDouble.time(2)).sorted((a, b) -> Double.compare(b, a)));
         });
     }
-
+    
     @Test
     public void testBoxed() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testToArray() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", Arrays.toString(list.toArray()));
         });
     }
-
+    
     @Test
     public void testNullableOptionalResult() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1279,21 +1279,21 @@ public class DoubleFuncListTest {
             assertAsString("Result:{ Value: [1.0, 2.0, 3.0] }", list.__result());
         });
     }
-
+    
     @Test
     public void testIndexOf() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Three), list -> {
             assertAsString("2", list.indexOf(Three));
         });
     }
-
+    
     @Test
     public void testLastIndexOf() {
         run(DoubleFuncList.of(Three, One, Two, Three, Four, Five), list -> {
             assertAsString("3", list.lastIndexOf(Three));
         });
     }
-
+    
     @Test
     public void testIndexesOf() {
         run(DoubleFuncList.of(One, Two, Three, Four, Two), list -> {
@@ -1301,14 +1301,14 @@ public class DoubleFuncListTest {
             assertAsString("[1, 4]", list.indexesOf(Two));
         });
     }
-
+    
     @Test
     public void testToBuilder() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0]", list.toBuilder().add(Four).add(Five).build());
         });
     }
-
+    
     @Test
     public void testFirst() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1316,7 +1316,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list.first(3));
         });
     }
-
+    
     @Test
     public void testLast() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1324,7 +1324,7 @@ public class DoubleFuncListTest {
             assertAsString("[3.0, 4.0, 5.0]", list.last(3));
         });
     }
-
+    
     @Test
     public void testAt() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1332,14 +1332,14 @@ public class DoubleFuncListTest {
             assertAsString("OptionalDouble.empty", list.at(10));
         });
     }
-
+    
     @Test
     public void testTail() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[2.0, 3.0, 4.0, 5.0]", list.tail());
         });
     }
-
+    
     @Test
     public void testAppend() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1348,7 +1348,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testAppendAll() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1359,7 +1359,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     // 
     // @Test
     // public void testPrepend() {
@@ -1380,7 +1380,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testWith() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1390,7 +1390,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testInsertAt() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1399,7 +1399,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testInsertAllAt() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1410,7 +1410,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     @Test
     public void testExclude() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1423,7 +1423,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0]", list);
         });
     }
-
+    
     @Test
     public void testReverse() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1432,7 +1432,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0]", list);
         });
     }
-
+    
     @Test
     public void testShuffle() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten), list -> {
@@ -1441,7 +1441,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]", list);
         });
     }
-
+    
     @Test
     public void testQuery() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
@@ -1450,7 +1450,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0, 6.0]", list);
         });
     }
-
+    
     // -- AsDoubleFuncListWithConversion --
     @Test
     public void testToDoubleArray() {
@@ -1458,7 +1458,7 @@ public class DoubleFuncListTest {
             assertAsString("[65.0, 66.0, 67.0, 68.0]", Arrays.toString(list.toDoubleArray(c -> (double) (int) c)));
         });
     }
-
+    
     @Test
     public void testToArrayList() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1467,7 +1467,7 @@ public class DoubleFuncListTest {
             assertTrue(newList instanceof ArrayList);
         });
     }
-
+    
     @Test
     public void testToList() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1476,7 +1476,7 @@ public class DoubleFuncListTest {
             assertTrue(newList instanceof List);
         });
     }
-
+    
     @Test
     public void testToMutableList() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1486,7 +1486,7 @@ public class DoubleFuncListTest {
             assertTrue(newList instanceof ArrayList);
         });
     }
-
+    
     // -- join --
     @Test
     public void testJoin() {
@@ -1494,21 +1494,21 @@ public class DoubleFuncListTest {
             assertAsString("1.02.03.0", list.join());
         });
     }
-
+    
     @Test
     public void testJoin_withDelimiter() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("1.0, 2.0, 3.0", list.join(", "));
         });
     }
-
+    
     @Test
     public void testToListString() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list);
         });
     }
-
+    
     // -- toMap --
     @Test
     public void testToMap() {
@@ -1516,14 +1516,14 @@ public class DoubleFuncListTest {
             assertAsString("{1.0:1.0, 5.0:5.0, 3.0:3.0}", list.toMap(theDouble));
         });
     }
-
+    
     @Test
     public void testToMap_withValue() {
         run(DoubleFuncList.of(One, Three, Five), list -> {
             assertAsString("{1.0:1.0, 5.0:25.0, 3.0:9.0}", list.toMap(theDouble, theDouble.square()));
         });
     }
-
+    
     @Test
     public void testToMap_withMappedMergedValue() {
         run(DoubleFuncList.of(One, Two, Three, Five), list -> {
@@ -1531,7 +1531,7 @@ public class DoubleFuncListTest {
             assertAsString("{0.0:2.0, 1.0:9.0}", list.toMap(theDouble.remainderBy(2), theDouble, (a, b) -> a + b));
         });
     }
-
+    
     @Test
     public void testToMap_withMergedValue() {
         run(DoubleFuncList.of(One, Two, Three, Five), list -> {
@@ -1539,7 +1539,7 @@ public class DoubleFuncListTest {
             assertAsString("{0.0:2.0, 1.0:15.0}", list.toMap(theDouble.remainderBy(2), (a, b) -> a * b));
         });
     }
-
+    
     @Test
     public void testToSet() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1548,7 +1548,7 @@ public class DoubleFuncListTest {
             assertTrue(set instanceof Set);
         });
     }
-
+    
     @Test
     public void testForEachWithIndex() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
@@ -1557,7 +1557,7 @@ public class DoubleFuncListTest {
             assertAsString("[0:1.0, 1:2.0, 2:3.0]", logs);
         });
     }
-
+    
     @Test
     public void testPopulateArray() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1566,7 +1566,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0]", Arrays.toString(array));
         });
     }
-
+    
     @Test
     public void testPopulateArray_withOffset() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1575,7 +1575,7 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 0.0, 1.0]", Arrays.toString(array));
         });
     }
-
+    
     @Test
     public void testPopulateArray_withOffsetLength() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -1584,7 +1584,7 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 1.0, 2.0, 3.0, 0.0]", Arrays.toString(array));
         });
     }
-
+    
     // -- AsIntFuncListWithMatch --
     @Test
     public void testFindFirst_withPredicate() {
@@ -1592,28 +1592,28 @@ public class DoubleFuncListTest {
             assertAsString("OptionalDouble[3.0]", list.findFirst(theDouble.square().thatGreaterThan(theDouble.time(2))));
         });
     }
-
+    
     @Test
     public void testFindAny_withPredicate() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("OptionalDouble[3.0]", list.findFirst(theDouble.square().thatGreaterThan(theDouble.time(2))));
         });
     }
-
+    
     @Test
     public void testFindFirst_withMapper_withPredicate() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("OptionalDouble[3.0]", list.findFirst(theDouble.square(), theDouble.thatGreaterThan(5)));
         });
     }
-
+    
     @Test
     public void testFindAny_withMapper_withPredicate() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("OptionalDouble[3.0]", list.findAny(theDouble.square(), theDouble.thatGreaterThan(5)));
         });
     }
-
+    
     // -- AsFuncListWithStatistic --
     @Test
     public void testMinBy() {
@@ -1621,94 +1621,94 @@ public class DoubleFuncListTest {
             assertAsString("OptionalDouble[3.0]", list.minBy(theDouble.minus(3).square()));
         });
     }
-
+    
     @Test
     public void testMaxBy() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("OptionalDouble[3.0]", list.maxBy(theDouble.minus(3).square().negate()));
         });
     }
-
+    
     @Test
     public void testMinBy_withMapper() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
             assertAsString("OptionalDouble[6.0]", list.minBy(theDouble.minus(3).square(), theDouble.inReverseOrder()));
         });
     }
-
+    
     @Test
     public void testMaxBy_withMapper() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("OptionalDouble[3.0]", list.maxBy(theDouble.minus(3).square(), theDouble.inReverseOrder()));
         });
     }
-
+    
     @Test
     public void testMinMaxBy_withMapper() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
             assertAsString("Optional[(3.0,6.0)]", list.minMaxBy(theDouble.minus(3).square()));
         });
     }
-
+    
     @Test
     public void testMinMaxBy_withMapper_withComparator() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
             assertAsString("Optional[(1.0,3.0)]", list.minMaxBy(theDouble.minus(3).square(), theDouble.inReverseOrder()));
         });
     }
-
+    
     // -- IntFuncListWithCalculate --
     static class SumHalf extends DoubleAggregation<Double> {
-
+    
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-
+    
         private DoubleCollectorPlus<double[], Double> collectorPlus = new DoubleCollectorPlus<double[], Double>() {
-
+    
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0.0 };
             }
-
+    
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
                     a[0] += i / 2.0;
                 };
             }
-
+    
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a2[0] };
             }
-
+    
             @Override
             public Function<double[], Double> finisher() {
                 return (a) -> a[0];
             }
-
+    
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-
+    
         @Override
         public DoubleCollectorPlus<?, Double> doubleCollectorPlus() {
             return collectorPlus;
         }
     }
-
+    
     static class Average extends DoubleAggregation<OptionalDouble> {
-
+    
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-
+    
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
-
+    
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0, 0 };
             }
-
+    
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
@@ -1716,40 +1716,40 @@ public class DoubleFuncListTest {
                     a[1] += 1;
                 };
             }
-
+    
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a2[0], a1[1] + a2[1] };
             }
-
+    
             @Override
             public Function<double[], OptionalDouble> finisher() {
                 return (a) -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]);
             }
-
+    
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-
+    
         @Override
         public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
             return collectorPlus;
         }
     }
-
+    
     static class MinDouble extends DoubleAggregation<OptionalDouble> {
-
+    
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-
+    
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
-
+    
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0, 0 };
             }
-
+    
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
@@ -1757,40 +1757,40 @@ public class DoubleFuncListTest {
                     a[1] = 1;
                 };
             }
-
+    
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { Math.min(a1[0], a2[0]), a1[1] + a2[1] };
             }
-
+    
             @Override
             public Function<double[], OptionalDouble> finisher() {
                 return (a) -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]);
             }
-
+    
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
         };
-
+    
         @Override
         public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
             return collectorPlus;
         }
     }
-
+    
     static class MaxDouble extends DoubleAggregation<OptionalDouble> {
-
+    
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-
+    
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
-
+    
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0, 0 };
             }
-
+    
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
@@ -1798,90 +1798,90 @@ public class DoubleFuncListTest {
                     a[1] = 1;
                 };
             }
-
+    
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { Math.max(a1[0], a2[0]), a1[1] + a2[1] };
             }
-
+    
             @Override
             public Function<double[], OptionalDouble> finisher() {
                 return (a) -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0]);
             }
-
+    
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
-
+    
             @Override
             public Collector<Double, double[], OptionalDouble> collector() {
                 return this;
             }
         };
-
+    
         @Override
         public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
             return collectorPlus;
         }
     }
-
+    
     static class SumDouble extends DoubleAggregation<Double> {
-
+    
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-
+    
         private DoubleCollectorPlus<double[], Double> collectorPlus = new DoubleCollectorPlus<double[], Double>() {
-
+    
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0 };
             }
-
+    
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
                     a[0] += i;
                 };
             }
-
+    
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a2[0] };
             }
-
+    
             @Override
             public Function<double[], Double> finisher() {
                 return (a) -> a[0];
             }
-
+    
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
-
+    
             @Override
             public Collector<Double, double[], Double> collector() {
                 return this;
             }
         };
-
+    
         @Override
         public DoubleCollectorPlus<?, Double> doubleCollectorPlus() {
             return collectorPlus;
         }
     }
-
+    
     static class AvgDouble extends DoubleAggregation<OptionalDouble> {
-
+    
         private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
-
+    
         private DoubleCollectorPlus<double[], OptionalDouble> collectorPlus = new DoubleCollectorPlus<double[], OptionalDouble>() {
-
+    
             @Override
             public Supplier<double[]> supplier() {
                 return () -> new double[] { 0, 0 };
             }
-
+    
             @Override
             public ObjDoubleConsumer<double[]> doubleAccumulator() {
                 return (a, i) -> {
@@ -1889,34 +1889,34 @@ public class DoubleFuncListTest {
                     a[1] += 1;
                 };
             }
-
+    
             @Override
             public BinaryOperator<double[]> combiner() {
                 return (a1, a2) -> new double[] { a1[0] + a2[0], a1[1] + a2[1] };
             }
-
+    
             @Override
             public Function<double[], OptionalDouble> finisher() {
                 return (a) -> (a[1] == 0) ? OptionalDouble.empty() : OptionalDouble.of(a[0] / a[1]);
             }
-
+    
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;
             }
-
+    
             @Override
             public Collector<Double, double[], OptionalDouble> collector() {
                 return this;
             }
         };
-
+    
         @Override
         public DoubleCollectorPlus<?, OptionalDouble> doubleCollectorPlus() {
             return collectorPlus;
         }
     }
-
+    
     @Test
     public void testCalculate() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -1924,7 +1924,7 @@ public class DoubleFuncListTest {
             assertAsString("10.0", list.calculate(sumHalf).doubleValue());
         });
     }
-
+    
     @Test
     public void testCalculate2() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -1933,7 +1933,7 @@ public class DoubleFuncListTest {
             assertAsString("(10.0,OptionalDouble[20.0])", list.calculate(sumHalf, average));
         });
     }
-
+    
     @Test
     public void testCalculate2_combine() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -1943,7 +1943,7 @@ public class DoubleFuncListTest {
             assertAsString("11.0", range);
         });
     }
-
+    
     @Test
     public void testCalculate3() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -1953,7 +1953,7 @@ public class DoubleFuncListTest {
             assertAsString("(10.0,OptionalDouble[20.0],OptionalDouble[0.0])", list.calculate(sumHalf, average, minDouble));
         });
     }
-
+    
     @Test
     public void testCalculate3_combine() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -1964,7 +1964,7 @@ public class DoubleFuncListTest {
             assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0]", value);
         });
     }
-
+    
     @Test
     public void testCalculate4() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -1975,7 +1975,7 @@ public class DoubleFuncListTest {
             assertAsString("(10.0,OptionalDouble[20.0],OptionalDouble[0.0],OptionalDouble[11.0])", list.calculate(sumHalf, average, minDouble, maxDouble));
         });
     }
-
+    
     @Test
     public void testCalculate4_combine() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -1987,7 +1987,7 @@ public class DoubleFuncListTest {
             assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0], max: OptionalDouble[11.0]", value);
         });
     }
-
+    
     @Test
     public void testCalculate5() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -1999,7 +1999,7 @@ public class DoubleFuncListTest {
             assertAsString("(10.0,OptionalDouble[20.0],OptionalDouble[0.0],OptionalDouble[11.0],20.0)", list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble));
         });
     }
-
+    
     @Test
     public void testCalculate5_combine() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -2014,7 +2014,7 @@ public class DoubleFuncListTest {
             assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0], max: OptionalDouble[11.0], max: OptionalDouble[11.0], sumI: 20.0", value);
         });
     }
-
+    
     @Test
     public void testCalculate6() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -2027,7 +2027,7 @@ public class DoubleFuncListTest {
             assertAsString("(10.0,OptionalDouble[20.0],OptionalDouble[0.0],OptionalDouble[11.0],20.0,OptionalDouble[5.0])", list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble, avgDouble));
         });
     }
-
+    
     @Test
     public void testCalculate6_combine() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -2043,7 +2043,7 @@ public class DoubleFuncListTest {
             assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0], max: OptionalDouble[11.0], max: OptionalDouble[11.0], sumI: 20.0, avgI: OptionalDouble[5.0]", value);
         });
     }
-
+    
     @Test
     public void testCalculate_of() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -2053,7 +2053,7 @@ public class DoubleFuncListTest {
             assertAsString("40.0", list.calculate(sum.ofDouble(theDouble.time(2))));
         });
     }
-
+    
     // -- FuncListWithCombine --
     @Test
     public void testAppendWith() {
@@ -2061,21 +2061,21 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0]", list1.appendWith(list2));
         });
     }
-
+    
     @Test
     public void testParependWith() {
         run(DoubleFuncList.of(One, Two), DoubleFuncList.of(Three, Four), (list1, list2) -> {
             assertAsString("[1.0, 2.0, 3.0, 4.0]", list2.prependWith(list1));
         });
     }
-
+    
     @Test
     public void testMerge() {
         run(DoubleFuncList.of(100, 200, 300), DoubleFuncList.infinite().limit(10), (list1, streamabl2) -> {
             assertAsString("100.0, 0.0, 200.0, 1.0, 300.0, 2.0, 3.0, 4.0, 5.0, 6.0", list1.mergeWith(streamabl2).limit(10).join(", "));
         });
     }
-
+    
     @Test
     public void testZipWith() {
         run(DoubleFuncList.of(100, 200, 300), DoubleFuncList.infinite().limit(10), (listA, listB) -> {
@@ -2107,7 +2107,7 @@ public class DoubleFuncListTest {
             "10000.0, 20001.0, 30002.0, 39999.0, 49999.0", listA.zipWith(-100, listB, -1, (a, b) -> a * 100 + b).join(", "));
         });
     }
-
+    
     @Test
     public void testZipWith_object() {
         run(DoubleFuncList.of(100, 200, 300), DoubleFuncList.infinite().limit(10), (listA, listB) -> {
@@ -2140,7 +2140,7 @@ public class DoubleFuncListTest {
             "100.0<->0.0, 200.0<->1.0, 300.0<->2.0, -100.0<->3.0, -100.0<->4.0, -100.0<->5.0, -100.0<->6.0, -100.0<->7.0, -100.0<->8.0, -100.0<->9.0", listA.zipToObjWith(-100, listB.boxed(), (iA, iB) -> iA + "<->" + iB).join(", "));
         });
     }
-
+    
     @Test
     public void testChoose() {
         run(DoubleFuncList.of(100, 200, 300), DoubleFuncList.infinite().limit(10), (listA, listB) -> {
@@ -2152,7 +2152,7 @@ public class DoubleFuncListTest {
             }).limit(5).join(", "));
         });
     }
-
+    
     @Test
     public void testChoose_AllowUnpaired() {
         run(DoubleFuncList.of(100, 200, 300), DoubleFuncList.infinite().limit(10), (listA, listB) -> {
@@ -2166,7 +2166,7 @@ public class DoubleFuncListTest {
             }).limit(7).join(", "));
         });
     }
-
+    
     // -- DoubleStreamPlusWithFilter --
     @Test
     public void testFilter_withMappter() {
@@ -2174,28 +2174,28 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 3.0, 5.0]", list.filter(theDouble.square(), theDouble.asInteger().thatIsOdd()));
         });
     }
-
+    
     @Test
     public void testFilterAsInt() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0, 3.0, 5.0]", list.filterAsInt(theDouble.square().asInteger(), theInteger.thatIsOdd()));
         });
     }
-
+    
     @Test
     public void testFilterAsLong() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0, 3.0, 5.0]", list.filterAsLong(theDouble.square().asLong(), theLong.thatIsOdd()));
         });
     }
-
+    
     @Test
     public void testFilterAsDouble() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0, 3.0, 5.0]", list.filterAsDouble(theDouble.square().asDouble(), theDouble.asInteger().thatIsOdd()));
         });
     }
-
+    
     @Test
     public void testFilterAsObject() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
@@ -2207,14 +2207,14 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 3.0, 5.0]", list.filterAsObject(mapper, checker));
         });
     }
-
+    
     @Test
     public void testFilterWithIndex() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[4.0]", list.filterWithIndex((index, value) -> (index > 2) && (value < 5)));
         });
     }
-
+    
     @Test
     public void testFilterNonNull() {
         val cars = new Car[] { new Car("Blue"), new Car("Green"), null, new Car(null), new Car("Red") };
@@ -2222,7 +2222,7 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 1.0, 3.0, 4.0]", list.filterNonNull(i -> cars[(int) i]));
         });
     }
-
+    
     @Test
     public void testExcludeNull() {
         val cars = new Car[] { new Car("Blue"), new Car("Green"), null, new Car(null), new Car("Red") };
@@ -2230,49 +2230,49 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 1.0, 3.0, 4.0]", list.excludeNull(i -> cars[(int) i]));
         });
     }
-
+    
     @Test
     public void testFilterIn_array() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[2.0, 5.0]", list.filterIn(Two, Five));
         });
     }
-
+    
     @Test
     public void testExcludeIn_array() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0, 3.0, 4.0]", list.excludeIn(Two, Five));
         });
     }
-
+    
     @Test
     public void testFilterIn_funcList() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[2.0, 5.0]", list.filterIn(DoubleFuncList.of(Two, Five)));
         });
     }
-
+    
     @Test
     public void testExcludeIn_funcList() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0, 3.0, 4.0]", list.excludeIn(DoubleFuncList.of(Two, Five)));
         });
     }
-
+    
     @Test
     public void testFilterIn_collection() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[2.0, 5.0]", list.filterIn(Arrays.asList(Two, Five)));
         });
     }
-
+    
     @Test
     public void testExcludeIn_collection() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0, 3.0, 4.0]", list.excludeIn(Arrays.asList(Two, Five)));
         });
     }
-
+    
     // -- FuncListWithFlatMap --
     @Test
     public void testFlatMapOnly() {
@@ -2280,14 +2280,14 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 3.0, 3.0]", list.flatMapOnly(theDouble.roundToInt().thatIsOdd(), i -> DoubleFuncList.cycle(i).limit((int) i)));
         });
     }
-
+    
     @Test
     public void testFlatMapIf() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, -2.0, -2.0, 3.0, 3.0, 3.0]", list.flatMapIf(theDouble.roundToInt().thatIsOdd(), i -> DoubleFuncList.cycle(i).limit((int) i), i -> DoubleFuncList.cycle(-i).limit((int) i)));
         });
     }
-
+    
     // -- FuncListWithLimit --
     @Test
     public void testSkipLimitLong() {
@@ -2295,21 +2295,21 @@ public class DoubleFuncListTest {
             assertAsString("[2.0]", list.skip((Long) 1L).limit((Long) 1L));
         });
     }
-
+    
     @Test
     public void testSkipLimitLongNull() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list.skip(null).limit(null));
         });
     }
-
+    
     @Test
     public void testSkipLimitLongMinus() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 2.0, 3.0]", list.skip(Long.valueOf(-1)).limit(Long.valueOf(-1)));
         });
     }
-
+    
     @Test
     public void testSkipWhile() {
         run(DoubleFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
@@ -2319,7 +2319,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0, 4.0, 3.0, 2.0, 1.0]", list.skipWhile((p, e) -> p == e - 1));
         });
     }
-
+    
     @Test
     public void testSkipUntil() {
         run(DoubleFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
@@ -2329,7 +2329,7 @@ public class DoubleFuncListTest {
             assertAsString("[5.0, 4.0, 3.0, 2.0, 1.0]", list.skipUntil((p, e) -> p == e - 1));
         });
     }
-
+    
     @Test
     public void testacceptWhile() {
         run(DoubleFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
@@ -2343,14 +2343,14 @@ public class DoubleFuncListTest {
             // ^--- Because it needs 1 to do the check in `acceptWhile`
         });
     }
-
+    
     @Test
     public void testacceptWhile_previous() {
         run(DoubleFuncList.of(1, 2, 3, 4, 6, 4, 3, 2, 1), list -> {
             assertAsString("[1.0, 2.0, 3.0, 4.0]", list.acceptWhile((a, b) -> b == a + 1));
         });
     }
-
+    
     @Test
     public void testTakeUtil() {
         run(DoubleFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
@@ -2364,14 +2364,14 @@ public class DoubleFuncListTest {
             // ^--- Because it needs 1 to do the check in `acceptUntil`
         });
     }
-
+    
     @Test
     public void testacceptUntil_previous() {
         run(DoubleFuncList.of(1, 2, 3, 4, 6, 4, 3, 2, 1), list -> {
             assertAsString("[1.0, 2.0, 3.0, 4.0]", list.acceptUntil((a, b) -> b > a + 1));
         });
     }
-
+    
     @Test
     public void testDropAfter() {
         run(DoubleFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
@@ -2379,7 +2379,7 @@ public class DoubleFuncListTest {
             // ^--- Include 4
         });
     }
-
+    
     @Test
     public void testDropAfter_previous() {
         run(DoubleFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
@@ -2387,7 +2387,7 @@ public class DoubleFuncListTest {
             // ^--- Include 4
         });
     }
-
+    
     @Test
     public void testSkipTake() {
         run(DoubleFuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1), list -> {
@@ -2397,7 +2397,7 @@ public class DoubleFuncListTest {
             // ^----^-----------------------------^--- Because it needs these number to do the check in `skipWhile` and `acceptWhile`
         });
     }
-
+    
     // -- FuncListWithMap --
     @Test
     public void testMapOnly() {
@@ -2405,21 +2405,21 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 9.0]", list.mapOnly(theDouble.asInteger().thatIsOdd(), theDouble.square()));
         });
     }
-
+    
     @Test
     public void testMapIf() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 1.414, 9.0]", list.mapIf(theDouble.asInteger().thatIsOdd(), theDouble.square(), theDouble.squareRoot().time(1000).round().dividedBy(1000)));
         });
     }
-
+    
     @Test
     public void testMapToObjIf() {
         run(DoubleFuncList.of(One, Two, Three), list -> {
             assertAsString("[1.0, 1, 9.0]", list.mapToObjIf(theDouble.asInteger().thatIsOdd(), theDouble.square().asString(), theDouble.squareRoot().round().asInteger().asString()));
         });
     }
-
+    
     // == Map First ==
     @Test
     public void testMapFirst_2() {
@@ -2427,35 +2427,35 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, Three, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0]", list.mapFirst(i -> i == 3.0 ? "Three" : null, i -> "" + i));
         });
     }
-
+    
     @Test
     public void testMapFirst_3() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
             assertAsString("[1.0, 2.0, Three, 4.0, 5.0, 6.0, Seven, 8.0, 9.0, 10.0, 11.0, 12.0]", list.mapFirst(i -> i == 3.0 ? "Three" : null, i -> i == 7.0 ? "Seven" : null, i -> "" + i));
         });
     }
-
+    
     @Test
     public void testMapFirst_4() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
             assertAsString("[1.0, 2.0, Three, 4.0, 5.0, 6.0, Seven, 8.0, 9.0, 10.0, Eleven, 12.0]", list.mapFirst(i -> i == 3 ? "Three" : null, i -> i == 7 ? "Seven" : null, i -> i == 11 ? "Eleven" : null, i -> "" + i));
         });
     }
-
+    
     @Test
     public void testMapFirst_5() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
             assertAsString("[One, 2.0, Three, 4.0, 5.0, 6.0, Seven, 8.0, 9.0, 10.0, Eleven, 12.0]", list.mapFirst(i -> i == 3.0 ? "Three" : null, i -> i == 7.0 ? "Seven" : null, i -> i == 11.0 ? "Eleven" : null, i -> i == 1.0 ? "One" : null, i -> "" + i));
         });
     }
-
+    
     @Test
     public void testMapFirst_6() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve), list -> {
             assertAsString("[One, 2.0, Three, 4.0, Five, 6.0, Seven, 8.0, 9.0, 10.0, Eleven, 12.0]", list.mapFirst(i -> i == 3.0 ? "Three" : null, i -> i == 7.0 ? "Seven" : null, i -> i == 11.0 ? "Eleven" : null, i -> i == 1.0 ? "One" : null, i -> i == 5.0 ? "Five" : null, i -> "" + i));
         });
     }
-
+    
     // == MapThen ==
     @Test
     public void testMapThen_2() {
@@ -2463,35 +2463,35 @@ public class DoubleFuncListTest {
             assertAsString("[1.0-2.0, 2.0-3.0, 3.0-4.0, 4.0-5.0, 5.0-6.0]", list.mapThen(theDouble, theDouble.plus(1), (a, b) -> a + "-" + b));
         });
     }
-
+    
     @Test
     public void testMapThen_3() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0-2.0-3.0, 2.0-3.0-6.0, 3.0-4.0-9.0, 4.0-5.0-12.0, 5.0-6.0-15.0]", list.mapThen(theDouble, theDouble.plus(1), theDouble.time(3), (a, b, c) -> a + "-" + b + "-" + c));
         });
     }
-
+    
     @Test
     public void testMapThen_4() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0-2.0-3.0-1.0, 2.0-3.0-6.0-4.0, 3.0-4.0-9.0-9.0, 4.0-5.0-12.0-16.0, 5.0-6.0-15.0-25.0]", list.mapThen(theDouble, theDouble.plus(1), theDouble.time(3), theDouble.square(), (a, b, c, d) -> a + "-" + b + "-" + c + "-" + d));
         });
     }
-
+    
     @Test
     public void testMapThen_5() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0-2.0-3.0-1.0-1.0, 2.0-3.0-6.0-4.0-2.0, 3.0-4.0-9.0-9.0-6.0, 4.0-5.0-12.0-16.0-24.0, 5.0-6.0-15.0-25.0-120.0]", list.mapThen(theDouble, theDouble.plus(1), theDouble.time(3), theDouble.square(), theDouble.asInteger().factorial().asDouble(), (a, b, c, d, e) -> a + "-" + b + "-" + c + "-" + d + "-" + e));
         });
     }
-
+    
     @Test
     public void testMapThen_6() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five), list -> {
             assertAsString("[1.0-2.0-3.0-1.0-1.0--1.0, 2.0-3.0-6.0-4.0-2.0--2.0, 3.0-4.0-9.0-9.0-6.0--3.0, 4.0-5.0-12.0-16.0-24.0--4.0, 5.0-6.0-15.0-25.0-120.0--5.0]", list.mapThen(theDouble, theDouble.plus(1), theDouble.time(3), theDouble.square(), theDouble.asInteger().factorial().asDouble(), theDouble.negate(), (a, b, c, d, e, f) -> a + "-" + b + "-" + c + "-" + d + "-" + e + "-" + f));
         });
     }
-
+    
     // -- FuncListWithMapGroup --
     // @Test
     // public void testMapGroup_specific() {
@@ -2525,14 +2525,14 @@ public class DoubleFuncListTest {
             assertAsString("[123456.0]", list.mapGroup(6, joiner));
         });
     }
-
+    
     @Test
     public void testMapGroup() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
             assertAsString("[12.0, 23.0, 34.0, 45.0, 56.0, 67.0, 78.0]", list.mapTwo((a, b) -> a * 10 + b));
         });
     }
-
+    
     @Test
     public void testMapGroupToInt() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
@@ -2540,7 +2540,7 @@ public class DoubleFuncListTest {
             assertAsString("[12, 23, 34, 45, 56, 67, 78]", list.mapGroupToInt(2, doubles -> Integer.parseInt(doubles.mapToInt().mapToString().join())));
         });
     }
-
+    
     @Test
     public void testMapGroupasDouble() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
@@ -2548,7 +2548,7 @@ public class DoubleFuncListTest {
             assertAsString("[12.0, 23.0, 34.0, 45.0, 56.0, 67.0, 78.0]", list.mapGroupToDouble(2, ints -> Integer.parseInt(ints.mapToInt().mapToString().join())));
         });
     }
-
+    
     @Test
     public void testMapGroupToObj() {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight), list -> {
@@ -2558,7 +2558,7 @@ public class DoubleFuncListTest {
             assertAsString("[123, 234, 345, 456, 567, 678]", list.mapGroupToObj(3, doubles -> Integer.parseInt(doubles.mapToInt().mapToString().join())));
         });
     }
-
+    
     // -- FuncListWithMapToMap --
     @Test
     public void testMapToMap_1() {
@@ -2566,70 +2566,70 @@ public class DoubleFuncListTest {
             assertAsString("[" + "{<1>:1.0}, " + "{<1>:3.0}, " + "{<1>:5.0}, " + "{<1>:7.0}, " + "{<1>:11.0}, " + "{<1>:13.0}, " + "{<1>:17.0}" + "]", list.mapToMap("<1>", theDouble).map(map -> map.sorted()));
         });
     }
-
+    
     @Test
     public void testMapToMap_2() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
             assertAsString("[" + "{<1>:1.0, <2>:-1.0}, " + "{<1>:3.0, <2>:-3.0}, " + "{<1>:5.0, <2>:-5.0}, " + "{<1>:7.0, <2>:-7.0}, " + "{<1>:11.0, <2>:-11.0}, " + "{<1>:13.0, <2>:-13.0}, " + "{<1>:17.0, <2>:-17.0}" + "]", list.mapToMap("<1>", theDouble, "<2>", theDouble.negate()).map(map -> map.sorted()));
         });
     }
-
+    
     @Test
     public void testMapToMap_3() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
             assertAsString("[" + "{<1>:1.0, <2>:-1.0, <3>:2.0}, " + "{<1>:3.0, <2>:-3.0, <3>:4.0}, " + "{<1>:5.0, <2>:-5.0, <3>:6.0}, " + "{<1>:7.0, <2>:-7.0, <3>:8.0}, " + "{<1>:11.0, <2>:-11.0, <3>:12.0}, " + "{<1>:13.0, <2>:-13.0, <3>:14.0}, " + "{<1>:17.0, <2>:-17.0, <3>:18.0}" + "]", list.mapToMap("<1>", theDouble, "<2>", theDouble.negate(), "<3>", theDouble.plus(1)).map(map -> map.sorted()));
         });
     }
-
+    
     @Test
     public void testMapToMap_4() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
             assertAsString("[" + "{<1>:1.0, <2>:-1.0, <3>:2.0, <4>:-1.0}, " + "{<1>:3.0, <2>:-3.0, <3>:4.0, <4>:1.0}, " + "{<1>:5.0, <2>:-5.0, <3>:6.0, <4>:3.0}, " + "{<1>:7.0, <2>:-7.0, <3>:8.0, <4>:5.0}, " + "{<1>:11.0, <2>:-11.0, <3>:12.0, <4>:9.0}, " + "{<1>:13.0, <2>:-13.0, <3>:14.0, <4>:11.0}, " + "{<1>:17.0, <2>:-17.0, <3>:18.0, <4>:15.0}" + "]", list.mapToMap("<1>", theDouble, "<2>", theDouble.negate(), "<3>", theDouble.plus(1), "<4>", theDouble.minus(2)).map(map -> map.sorted()));
         });
     }
-
+    
     @Test
     public void testMapToMap_5() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
             assertAsString("[" + "{<1>:1.0, <2>:-1.0, <3>:2.0, <4>:-1.0, <5>:3.0}, " + "{<1>:3.0, <2>:-3.0, <3>:4.0, <4>:1.0, <5>:9.0}, " + "{<1>:5.0, <2>:-5.0, <3>:6.0, <4>:3.0, <5>:15.0}, " + "{<1>:7.0, <2>:-7.0, <3>:8.0, <4>:5.0, <5>:21.0}, " + "{<1>:11.0, <2>:-11.0, <3>:12.0, <4>:9.0, <5>:33.0}, " + "{<1>:13.0, <2>:-13.0, <3>:14.0, <4>:11.0, <5>:39.0}, " + "{<1>:17.0, <2>:-17.0, <3>:18.0, <4>:15.0, <5>:51.0}" + "]", list.mapToMap("<1>", theDouble, "<2>", theDouble.negate(), "<3>", theDouble.plus(1), "<4>", theDouble.minus(2), "<5>", theDouble.time(3)).map(map -> map.sorted()));
         });
     }
-
+    
     @Test
     public void testMapToMap_6() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
             assertAsString("[" + "{<1>:1.0, <2>:-1.0, <3>:2.0, <4>:-1.0, <5>:3.0, <6>:1.0}, " + "{<1>:3.0, <2>:-3.0, <3>:4.0, <4>:1.0, <5>:9.0, <6>:81.0}, " + "{<1>:5.0, <2>:-5.0, <3>:6.0, <4>:3.0, <5>:15.0, <6>:625.0}, " + "{<1>:7.0, <2>:-7.0, <3>:8.0, <4>:5.0, <5>:21.0, <6>:2401.0}, " + "{<1>:11.0, <2>:-11.0, <3>:12.0, <4>:9.0, <5>:33.0, <6>:14641.0}, " + "{<1>:13.0, <2>:-13.0, <3>:14.0, <4>:11.0, <5>:39.0, <6>:28561.0}, " + "{<1>:17.0, <2>:-17.0, <3>:18.0, <4>:15.0, <5>:51.0, <6>:83521.0}" + "]", list.mapToMap("<1>", theDouble, "<2>", theDouble.negate(), "<3>", theDouble.plus(1), "<4>", theDouble.minus(2), "<5>", theDouble.time(3), "<6>", theDouble.pow(4)).map(map -> map.sorted()));
         });
     }
-
+    
     @Test
     public void testMapToMap_7() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
             assertAsString("[" + "{<1>:1.0, <2>:-1.0, <3>:2.0, <4>:-1.0, <5>:3.0, <6>:1.0, <7>:1.0}, " + "{<1>:3.0, <2>:-3.0, <3>:4.0, <4>:1.0, <5>:9.0, <6>:81.0, <7>:9.0}, " + "{<1>:5.0, <2>:-5.0, <3>:6.0, <4>:3.0, <5>:15.0, <6>:625.0, <7>:25.0}, " + "{<1>:7.0, <2>:-7.0, <3>:8.0, <4>:5.0, <5>:21.0, <6>:2401.0, <7>:49.0}, " + "{<1>:11.0, <2>:-11.0, <3>:12.0, <4>:9.0, <5>:33.0, <6>:14641.0, <7>:121.0}, " + "{<1>:13.0, <2>:-13.0, <3>:14.0, <4>:11.0, <5>:39.0, <6>:28561.0, <7>:169.0}, " + "{<1>:17.0, <2>:-17.0, <3>:18.0, <4>:15.0, <5>:51.0, <6>:83521.0, <7>:289.0}" + "]", list.mapToMap("<1>", theDouble, "<2>", theDouble.negate(), "<3>", theDouble.plus(1), "<4>", theDouble.minus(2), "<5>", theDouble.time(3), "<6>", theDouble.pow(4), "<7>", theDouble.square()).map(map -> map.sorted()));
         });
     }
-
+    
     @Test
     public void testMapToMap_8() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
             assertAsString("[" + "{<1>:1.0, <2>:-1.0, <3>:2.0, <4>:-1.0, <5>:3.0, <6>:1.0, <7>:1.0, <8>:1.0}, " + "{<1>:3.0, <2>:-3.0, <3>:4.0, <4>:1.0, <5>:9.0, <6>:81.0, <7>:9.0, <8>:1.7320508075688772}, " + "{<1>:5.0, <2>:-5.0, <3>:6.0, <4>:3.0, <5>:15.0, <6>:625.0, <7>:25.0, <8>:2.23606797749979}, " + "{<1>:7.0, <2>:-7.0, <3>:8.0, <4>:5.0, <5>:21.0, <6>:2401.0, <7>:49.0, <8>:2.6457513110645907}, " + "{<1>:11.0, <2>:-11.0, <3>:12.0, <4>:9.0, <5>:33.0, <6>:14641.0, <7>:121.0, <8>:3.3166247903554}, " + "{<1>:13.0, <2>:-13.0, <3>:14.0, <4>:11.0, <5>:39.0, <6>:28561.0, <7>:169.0, <8>:3.605551275463989}, " + "{<1>:17.0, <2>:-17.0, <3>:18.0, <4>:15.0, <5>:51.0, <6>:83521.0, <7>:289.0, <8>:4.123105625617661}" + "]", list.mapToMap("<1>", theDouble, "<2>", theDouble.negate(), "<3>", theDouble.plus(1), "<4>", theDouble.minus(2), "<5>", theDouble.time(3), "<6>", theDouble.pow(4), "<7>", theDouble.square(), "<8>", theDouble.squareRoot()).map(map -> map.sorted()));
         });
     }
-
+    
     @Test
     public void testMapToMap_9() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen), list -> {
             assertAsString("[" + "{<1>:1.0, <2>:-1.0, <3>:2.0, <4>:-1.0, <5>:3.0, <6>:1.0, <7>:1.0, <8>:1.0, <9>:1.0}, " + "{<1>:3.0, <2>:-3.0, <3>:4.0, <4>:1.0, <5>:9.0, <6>:81.0, <7>:9.0, <8>:1.7320508075688772, <9>:6.0}, " + "{<1>:5.0, <2>:-5.0, <3>:6.0, <4>:3.0, <5>:15.0, <6>:625.0, <7>:25.0, <8>:2.23606797749979, <9>:120.0}, " + "{<1>:7.0, <2>:-7.0, <3>:8.0, <4>:5.0, <5>:21.0, <6>:2401.0, <7>:49.0, <8>:2.6457513110645907, <9>:5040.0}, " + "{<1>:11.0, <2>:-11.0, <3>:12.0, <4>:9.0, <5>:33.0, <6>:14641.0, <7>:121.0, <8>:3.3166247903554, <9>:3.99168E7}, " + "{<1>:13.0, <2>:-13.0, <3>:14.0, <4>:11.0, <5>:39.0, <6>:28561.0, <7>:169.0, <8>:3.605551275463989, <9>:1.932053504E9}, " + "{<1>:17.0, <2>:-17.0, <3>:18.0, <4>:15.0, <5>:51.0, <6>:83521.0, <7>:289.0, <8>:4.123105625617661, <9>:-2.8852224E8}" + "]", list.mapToMap("<1>", theDouble, "<2>", theDouble.negate(), "<3>", theDouble.plus(1), "<4>", theDouble.minus(2), "<5>", theDouble.time(3), "<6>", theDouble.pow(4), "<7>", theDouble.square(), "<8>", theDouble.squareRoot(), "<9>", theDouble.asInteger().factorial().asDouble()).map(map -> map.sorted()));
         });
     }
-
+    
     @Test
     public void testMapToMap_10() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven, Thirteen, Seventeen, Nineteen, TwentyThree), list -> {
             assertAsString("{<10>:1, <1>:1.0, <2>:-1.0, <3>:2.0, <4>:-1.0, <5>:3.0, <6>:1.0, <7>:1.0, <8>:1.0, <9>:1.0},\n" + "{<10>:2, <1>:3.0, <2>:-3.0, <3>:4.0, <4>:1.0, <5>:9.0, <6>:81.0, <7>:9.0, <8>:1.7320508075688772, <9>:6.0},\n" + "{<10>:3, <1>:5.0, <2>:-5.0, <3>:6.0, <4>:3.0, <5>:15.0, <6>:625.0, <7>:25.0, <8>:2.23606797749979, <9>:120.0},\n" + "{<10>:4, <1>:7.0, <2>:-7.0, <3>:8.0, <4>:5.0, <5>:21.0, <6>:2401.0, <7>:49.0, <8>:2.6457513110645907, <9>:5040.0},\n" + "{<10>:6, <1>:11.0, <2>:-11.0, <3>:12.0, <4>:9.0, <5>:33.0, <6>:14641.0, <7>:121.0, <8>:3.3166247903554, <9>:3.99168E7},\n" + "{<10>:7, <1>:13.0, <2>:-13.0, <3>:14.0, <4>:11.0, <5>:39.0, <6>:28561.0, <7>:169.0, <8>:3.605551275463989, <9>:1.932053504E9},\n" + "{<10>:9, <1>:17.0, <2>:-17.0, <3>:18.0, <4>:15.0, <5>:51.0, <6>:83521.0, <7>:289.0, <8>:4.123105625617661, <9>:-2.8852224E8},\n" + "{<10>:10, <1>:19.0, <2>:-19.0, <3>:20.0, <4>:17.0, <5>:57.0, <6>:130321.0, <7>:361.0, <8>:4.358898943540674, <9>:1.09641728E8},\n" + "{<10>:12, <1>:23.0, <2>:-23.0, <3>:24.0, <4>:21.0, <5>:69.0, <6>:279841.0, <7>:529.0, <8>:4.795831523312719, <9>:8.6245376E8}", list.mapToMap("<1>", theDouble, "<2>", theDouble.negate(), "<3>", theDouble.plus(1), "<4>", theDouble.minus(2), "<5>", theDouble.time(3), "<6>", theDouble.pow(4), "<7>", theDouble.square(), "<8>", theDouble.squareRoot(), "<9>", theDouble.asInteger().factorial().asDouble(), "<10>", theDouble.dividedBy(2).asInteger()).map(map -> map.sorted()).join(",\n"));
         });
     }
-
+    
     // -- FuncListWithMapToTuple --
     @Test
     public void testMapToTuple_2() {
@@ -2637,35 +2637,35 @@ public class DoubleFuncListTest {
             assertAsString("[" + "(1.0,2.0), " + "(3.0,4.0), " + "(5.0,6.0), " + "(7.0,8.0), " + "(11.0,12.0)" + "]", list.mapToTuple(theDouble, theDouble.plus(1)));
         });
     }
-
+    
     @Test
     public void testMapToTuple_3() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven), list -> {
             assertAsString("[" + "(1.0,2.0,3.0), " + "(3.0,4.0,9.0), " + "(5.0,6.0,15.0), " + "(7.0,8.0,21.0), " + "(11.0,12.0,33.0)" + "]", list.mapToTuple(theDouble, theDouble.plus(1), theDouble.time(3)));
         });
     }
-
+    
     @Test
     public void testMapToTuple_4() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven), list -> {
             assertAsString("[" + "(1.0,2.0,3.0,1.0), " + "(3.0,4.0,9.0,9.0), " + "(5.0,6.0,15.0,25.0), " + "(7.0,8.0,21.0,49.0), " + "(11.0,12.0,33.0,121.0)" + "]", list.mapToTuple(theDouble, theDouble.plus(1), theDouble.time(3), theDouble.square()));
         });
     }
-
+    
     @Test
     public void testMapToTuple_5() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven), list -> {
             assertAsString("[" + "(1.0,2.0,3.0,1.0,1), " + "(3.0,4.0,9.0,9.0,6), " + "(5.0,6.0,15.0,25.0,120), " + "(7.0,8.0,21.0,49.0,5040), " + "(11.0,12.0,33.0,121.0,39916800)" + "]", list.mapToTuple(theDouble, theDouble.plus(1), theDouble.time(3), theDouble.square(), theDouble.asInteger().factorial()));
         });
     }
-
+    
     @Test
     public void testMapToTuple_6() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven), list -> {
             assertAsString("[" + "(1.0,2.0,3.0,1.0,1,-1.0), " + "(3.0,4.0,9.0,9.0,6,-3.0), " + "(5.0,6.0,15.0,25.0,120,-5.0), " + "(7.0,8.0,21.0,49.0,5040,-7.0), " + "(11.0,12.0,33.0,121.0,39916800,-11.0)" + "]", list.mapToTuple(theDouble, theDouble.plus(1), theDouble.time(3), theDouble.square(), theDouble.asInteger().factorial(), theDouble.negate()));
         });
     }
-
+    
     // -- StreamPlusWithMapWithIndex --
     @Test
     public void testMapWithIndex() {
@@ -2673,14 +2673,14 @@ public class DoubleFuncListTest {
             assertAsString("[(0,1.0), (1,3.0), (2,5.0), (3,7.0), (4,11.0)]", list.mapWithIndex());
         });
     }
-
+    
     @Test
     public void testMapWithIndex_combine() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven), list -> {
             assertAsString("[0.0, 3.0, 10.0, 21.0, 44.0]", list.mapWithIndex((i, each) -> i * each));
         });
     }
-
+    
     @Test
     public void testMapToObjWithIndex_combine() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven), list -> {
@@ -2690,7 +2690,7 @@ public class DoubleFuncListTest {
             assertAsString("[0.0: 2.0, 1.0: 6.0, 2.0: 10.0, 3.0: 14.0, 4.0: 22.0]", list.mapToObjWithIndex(i -> "" + i * 2, (i, each) -> i + ": " + each));
         });
     }
-
+    
     // -- FuncListWithModify --
     @Test
     public void testAccumulate() {
@@ -2699,21 +2699,21 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 12.0, 123.0, 1234.0, 12345.0]", list.accumulate((prev, current) -> prev * 10 + current));
         });
     }
-
+    
     @Test
     public void testRestate() {
         run(DoubleFuncList.wholeNumbers(20).map(i -> i % 5).toFuncList(), list -> {
             assertAsString("[0.0, 1.0, 2.0, 3.0, 4.0]", list.restate((head, tail) -> tail.filter(x -> x != head)));
         });
     }
-
+    
     @Test
     public void testRestate_sieveOfEratosthenes() {
         run(DoubleFuncList.naturalNumbers(300).filter(theDouble.thatIsNotOne()).toFuncList(), list -> {
             assertAsString("[2.0, 3.0, 5.0, 7.0, 11.0, 13.0, 17.0, 19.0, 23.0, 29.0, 31.0, 37.0, 41.0, 43.0, 47.0, 53.0, 59.0, 61.0, 67.0, " + "71.0, 73.0, 79.0, 83.0, 89.0, 97.0, 101.0, 103.0, 107.0, 109.0, 113.0, 127.0, 131.0, 137.0, 139.0, 149.0, " + "151.0, 157.0, 163.0, 167.0, 173.0, 179.0, 181.0, 191.0, 193.0, 197.0, 199.0, 211.0, 223.0, 227.0, 229.0, 233.0, " + "239.0, 241.0, 251.0, 257.0, 263.0, 269.0, 271.0, 277.0, 281.0, 283.0, 293.0]", list.restate((head, tail) -> tail.filter(x -> x % head != 0)));
         });
     }
-
+    
     @Test
     public void testSpawn() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -2746,7 +2746,7 @@ public class DoubleFuncListTest {
             assertEquals("[" + "Result:{ Value: 2 } -- 0, " + "Result:{ Value: 3 } -- " + (1 * timePrecision) + ", " + "Result:{ Value: 4 } -- " + (2 * timePrecision) + ", " + "Result:{ Value: 11 } -- " + (9 * timePrecision) + "" + "]", logs.toString());
         });
     }
-
+    
     @Test
     public void testSpawn_limit() {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
@@ -2768,7 +2768,7 @@ public class DoubleFuncListTest {
             assertEquals("Result:{ Value: 2 }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }", actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
         });
     }
-
+    
     // -- FuncListWithPeek --
     @Test
     public void testPeekAs() {
@@ -2779,7 +2779,7 @@ public class DoubleFuncListTest {
             assertAsString("[<0.0>, <1.0>, <2.0>, <3.0>, <4.0>, <5.0>]", elementStrings);
         });
     }
-
+    
     @Test
     public void testPeekBy_map() {
         run(DoubleFuncList.of(0, One, 2, Three, 4, Five), list -> {
@@ -2793,7 +2793,7 @@ public class DoubleFuncListTest {
             assertAsString("[0.0, 1.0, 3.0, 4.0, 5.0]", elementStrings);
         });
     }
-
+    
     @Test
     public void testPeekAs_map() {
         run(DoubleFuncList.of(0, One, 2, Three, 4, Five), list -> {
@@ -2803,7 +2803,7 @@ public class DoubleFuncListTest {
             assertAsString("[<0.0>, <1.0>, <3.0>, <4.0>, <5.0>]", elementStrings);
         });
     }
-
+    
     // 
     // -- FuncListWithPipe --
     @Test
@@ -2812,14 +2812,14 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 3.0, 5.0, 7.0, 11.0]", list.pipable().pipeTo(DoubleFuncList::toListString));
         });
     }
-
+    
     @Test
     public void testPipe() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven), list -> {
             assertAsString("[1.0, 3.0, 5.0, 7.0, 11.0]", list.pipe(DoubleFuncList::toListString));
         });
     }
-
+    
     // -- FuncListWithReshape --
     @Test
     public void testSegment() {
@@ -2827,7 +2827,7 @@ public class DoubleFuncListTest {
             assertAsString("[" + "[0.0, 1.0, 2.0, 3.0, 4.0, 5.0], " + "[6.0, 7.0, 8.0, 9.0, 10.0, 11.0], " + "[12.0, 13.0, 14.0, 15.0, 16.0, 17.0], " + "[18.0, 19.0]" + "]", list.segment(6).mapToObj(DoubleFuncList::toString));
         });
     }
-
+    
     @Test
     public void testSegment_sizeFunction() {
         run(DoubleFuncList.wholeNumbers(20), list -> {
@@ -2842,21 +2842,21 @@ public class DoubleFuncListTest {
             assertAsString("[" + "[1.0], " + "[2.0, 3.0], " + "[4.0, 5.0, 6.0, 7.0]" + "]", list.segment(i -> (int) i));
         });
     }
-
+    
     @Test
     public void testSegmentWhen() {
         run(DoubleFuncList.wholeNumbers(20), list -> {
             assertAsString("[" + "[0.0, 1.0, 2.0], " + "[3.0, 4.0, 5.0], " + "[6.0, 7.0, 8.0], " + "[9.0, 10.0, 11.0], " + "[12.0, 13.0, 14.0], " + "[15.0, 16.0, 17.0], " + "[18.0, 19.0]" + "]", list.segmentWhen(theDouble.remainderBy(3).thatIsZero()).map(DoubleFuncList::toListString));
         });
     }
-
+    
     @Test
     public void testSegmentAfter() {
         run(DoubleFuncList.wholeNumbers(20), list -> {
             assertAsString("[" + "[0.0], " + "[1.0, 2.0, 3.0], " + "[4.0, 5.0, 6.0], " + "[7.0, 8.0, 9.0], " + "[10.0, 11.0, 12.0], " + "[13.0, 14.0, 15.0], " + "[16.0, 17.0, 18.0], " + "[19.0]" + "]", list.segmentAfter(theDouble.remainderBy(3).thatIsZero()).map(DoubleFuncList::toListString));
         });
     }
-
+    
     @Test
     public void testSegmentBetween() {
         DoublePredicate startCondition = i -> (i % 10) == 3;
@@ -2898,7 +2898,7 @@ public class DoubleFuncListTest {
             assertAsString("[" + "[13.0, 14.0, 15.0, 16.0], " + "[23.0, 24.0, 25.0, 26.0]" + "]", list.segmentBetween(startCondition, endCondition, false));
         });
     }
-
+    
     @Test
     public void testSegmentByPercentiles() {
         run(DoubleFuncList.wholeNumbers(50).toFuncList(), list -> {
@@ -2908,7 +2908,7 @@ public class DoubleFuncListTest {
             assertAsString("[" + "[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0], " + "[15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0], " + "[40.0, 41.0, 42.0, 43.0, 44.0, 45.0, 46.0, 47.0, 48.0, 49.0]" + "]", list.segmentByPercentiles(DoubleFuncList.of(30.0, 80.0)));
         });
     }
-
+    
     @Test
     public void testSegmentByPercentiles_mapper() {
         run(DoubleFuncList.wholeNumbers(50), list -> {
@@ -2918,7 +2918,7 @@ public class DoubleFuncListTest {
             assertAsString("[" + "[49.0, 48.0, 47.0, 46.0, 45.0, 44.0, 43.0, 42.0, 41.0, 40.0, 39.0, 38.0, 37.0, 36.0, 35.0], " + "[34.0, 33.0, 32.0, 31.0, 30.0, 29.0, 28.0, 27.0, 26.0, 25.0, 24.0, 23.0, 22.0, 21.0, 20.0, 19.0, 18.0, 17.0, 16.0, 15.0, 14.0, 13.0, 12.0, 11.0, 10.0], " + "[9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 0.0]" + "]", list.segmentByPercentiles(x -> 100 - x, DoubleFuncList.of(30.0, 80.0)));
         });
     }
-
+    
     @Test
     public void testSegmentByPercentiles_mapper_comparator() {
         run(DoubleFuncList.wholeNumbers(50).toFuncList(), list -> {
@@ -2928,7 +2928,7 @@ public class DoubleFuncListTest {
             assertAsString("[" + "[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0], " + "[15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0], " + "[40.0, 41.0, 42.0, 43.0, 44.0, 45.0, 46.0, 47.0, 48.0, 49.0]" + "]", list.segmentByPercentiles(x -> 100 - x, theDouble.inReverseOrder(), DoubleFuncList.of(30.0, 80.0)));
         });
     }
-
+    
     // -- FuncListWithSort --
     @Test
     public void testSortedBy() {
@@ -2936,7 +2936,7 @@ public class DoubleFuncListTest {
             assertAsString("[1.0, 2.0, 3.0, 4.0]", list.sortedBy(theDouble.plus(2).square()));
         });
     }
-
+    
     @Test
     public void testSortedByComparator() {
         run(DoubleFuncList.of(One, Two, Three, Four), list -> {
@@ -2945,7 +2945,7 @@ public class DoubleFuncListTest {
             assertAsString("[4.0, 3.0, 2.0, 1.0]", list.sortedBy(theDouble.plus(2).square(), (a, b) -> Double.compare(b, a)));
         });
     }
-
+    
     // -- FuncListWithSplit --
     @Test
     public void testSplitTuple() {
@@ -2956,7 +2956,7 @@ public class DoubleFuncListTest {
             assertAsString("(" + "[0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0]," + "[1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0, 17.0, 19.0]" + ")", list.split(theDouble.remainderBy(2).thatIsZero()).toString());
         });
     }
-
+    
     @Test
     public void testSplit() {
         run(DoubleFuncList.wholeNumbers(20), list -> {
@@ -2976,7 +2976,7 @@ public class DoubleFuncListTest {
             assertAsString("{" + "Eleven:[11.0], " + "Five:[5.0], " + "Seven:[7.0], " + "Thirteen:[13.0], " + "Three:[3.0, 9.0, 15.0], " + "Two:[0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0]" + "}", list.split("Two", theDouble.remainderBy(2).thatIsZero(), "Three", theDouble.remainderBy(3).thatIsZero(), "Five", theDouble.remainderBy(5).thatIsZero(), "Seven", theDouble.remainderBy(7).thatIsZero(), "Eleven", theDouble.remainderBy(11).thatIsZero(), "Thirteen", theDouble.remainderBy(13).thatIsZero()).sorted().toString());
         });
     }
-
+    
     @Test
     public void testSplit_ignore() {
         run(DoubleFuncList.wholeNumbers(20), list -> {
@@ -2994,7 +2994,7 @@ public class DoubleFuncListTest {
             assertAsString("{}", list.split((String) null, theDouble.remainderBy(2).thatIsZero(), (String) null, theDouble.remainderBy(3).thatIsZero(), (String) null, theDouble.remainderBy(5).thatIsZero(), (String) null, theDouble.remainderBy(7).thatIsZero(), (String) null, theDouble.remainderBy(11).thatIsZero(), (String) null, theDouble.remainderBy(13).thatIsZero()).sorted().toString());
         });
     }
-
+    
     @Test
     public void testFizzBuzz() {
         Function<DoubleFuncList, DoubleFuncList> listToList = s -> s.toImmutableList();

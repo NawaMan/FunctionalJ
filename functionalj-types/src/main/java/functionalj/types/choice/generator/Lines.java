@@ -29,21 +29,21 @@ import java.util.stream.Stream;
 
 @FunctionalInterface
 public interface Lines {
-
+    
     public List<String> lines();
-
+    
     public default String string() {
         return lines().stream().collect(joining("\n"));
     }
-
+    
     public static String string(List<String> lines) {
         return lines.stream().collect(joining("\n"));
     }
-
+    
     public static String string(Stream<String> lines) {
         return lines.collect(joining("\n"));
     }
-
+    
     public static String string(Lines lines) {
         return lines.lines().stream().collect(joining("\n"));
     }

@@ -37,18 +37,18 @@ import functionalj.stream.StreamPlus;
  * @author nawaman
  */
 public class FuncListBuilder<DATA> {
-
+    
     private final List<DATA> list;
-
+    
     // This constructor must not be public or protected.
     FuncListBuilder(ArrayList<DATA> list) {
         this.list = list;
     }
-
+    
     public FuncListBuilder() {
         list = new ArrayList<DATA>();
     }
-
+    
     @SafeVarargs
     public FuncListBuilder(DATA... values) {
         list = new ArrayList<DATA>((values != null) ? values.length : 0);
@@ -58,51 +58,51 @@ public class FuncListBuilder<DATA> {
             }
         }
     }
-
+    
     public FuncListBuilder<DATA> add(DATA data) {
         list.add(data);
         return this;
     }
-
+    
     public FuncList<DATA> build() {
         int length = list.size();
         return new FuncListDerived<>(list, stream -> stream.limit(length));
     }
-
+    
     public FuncList<DATA> toFuncList() {
         return build();
     }
-
+    
     public int size() {
         return list.size();
     }
-
+    
     public boolean isEmpty() {
         return size() == 0;
     }
-
+    
     public StreamPlus<DATA> stream() {
         return StreamPlus.from(list.stream());
     }
-
+    
     public DATA get(int i) {
         return list.get(i);
     }
-
+    
     public Optional<DATA> at(int i) {
         if (i < 0 || i >= list.size())
             return Optional.empty();
         return Optional.ofNullable(list.get(i));
     }
-
+    
     public String toString() {
         return list.toString();
     }
-
+    
     public int hashCode() {
         return list.hashCode();
     }
-
+    
     public boolean equals(FuncListBuilder<DATA> array) {
         return Objects.equals(list, array.list);
     }

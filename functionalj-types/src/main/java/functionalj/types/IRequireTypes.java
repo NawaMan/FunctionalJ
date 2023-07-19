@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface IRequireTypes {
-
+    
     /**
      * Returns the stream of types that is required.
      *

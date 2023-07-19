@@ -30,19 +30,19 @@ import functionalj.types.Struct;
 import lombok.val;
 
 public class DOFromClassTest {
-
+    
     @Struct(name = "DOFromClass")
     public abstract static class DOFromClassDef {
-
+    
         public abstract String name();
-
+    
         public abstract int count();
-
+    
         public String nameUpperCase() {
             return name().toUpperCase();
         }
     }
-
+    
     @Test
     public void testFromClass() {
         val obj = new DOFromClass("Obj", 5);

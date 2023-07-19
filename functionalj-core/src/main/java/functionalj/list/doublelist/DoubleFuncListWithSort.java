@@ -28,14 +28,14 @@ import java.util.Comparator;
 import java.util.function.DoubleFunction;
 
 public interface DoubleFuncListWithSort extends AsDoubleFuncList {
-
+    
     /**
      * Sort the values by the mapped value.
      */
     public default <T extends Comparable<? super T>> DoubleFuncList sortedBy(DoubleFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.sortedBy(mapper));
     }
-
+    
     /**
      * Sort the values by the mapped value using the comparator.
      */

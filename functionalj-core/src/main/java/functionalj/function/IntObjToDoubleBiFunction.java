@@ -26,9 +26,9 @@ package functionalj.function;
 import functionalj.functions.ThrowFuncs;
 
 public interface IntObjToDoubleBiFunction<DATA> extends Func2<Integer, DATA, Double> {
-
+    
     public double applyAsDoubleUnsafe(int input1, DATA input2) throws Exception;
-
+    
     public default double applyAsDouble(int input1, DATA input2) {
         try {
             return applyAsDoubleUnsafe(input1, input2);
@@ -36,11 +36,11 @@ public interface IntObjToDoubleBiFunction<DATA> extends Func2<Integer, DATA, Dou
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
-
+    
     public default Double applyUnsafe(Integer input1, DATA input2) throws Exception {
         return applyAsDoubleUnsafe(input1, input2);
     }
-
+    
     @SuppressWarnings("unchecked")
     public static <D> double apply(IntObjBiFunction<D, Double> function, int input1, D input2) {
         if (function instanceof IntObjToDoubleBiFunction) {

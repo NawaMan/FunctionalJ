@@ -27,83 +27,83 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 
 public interface InputPrimitiveType extends InputType {
-
+    
     public static InputPrimitiveType of(Environment environment, PrimitiveType primitiveType) {
         return new Impl(environment, primitiveType);
     }
-
+    
     public static class Impl extends InputType.Impl implements InputPrimitiveType {
-
+    
         private final PrimitiveType primitiveType;
-
+    
         public Impl(Environment environment, PrimitiveType primitiveType) {
             super(environment, primitiveType);
             this.primitiveType = primitiveType;
         }
-
+    
         @Override
         public String primitiveName() {
             return primitiveType.toString();
         }
-
+    
         @Override
         public String toString() {
             return "Q_PRIMITIVE.toString()";
         }
     }
-
+    
     public static class Mock extends InputType.Mock implements InputPrimitiveType {
-
+    
         private final TypeKind kind;
-
+    
         Mock(TypeKind kind) {
             this.kind = kind;
         }
-
+    
         @Override
         public boolean isNoType() {
             return kind == TypeKind.NONE;
         }
-
+    
         @Override
         public TypeKind typeKind() {
             return kind;
         }
-
+    
         @Override
         public String primitiveName() {
             return kind.name().toLowerCase();
         }
-
+    
         @Override
         public String getToString() {
             return "Q_PRIMITIVE";
         }
     }
-
+    
     public default boolean isPrimitiveType() {
         return true;
     }
-
+    
     public default boolean isDeclaredType() {
         return false;
     }
-
+    
     public default boolean isTypeVariable() {
         return false;
     }
-
+    
     public default InputPrimitiveType asPrimitiveType() {
         return this;
     }
-
+    
     public default InputDeclaredType asDeclaredType() {
         return null;
     }
-
+    
     public default InputTypeVariable asTypeVariable() {
         return null;
     }
-
+    
     public String primitiveName();
 }

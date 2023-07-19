@@ -29,7 +29,7 @@ import java.util.Map;
 import functionalj.types.choice.generator.model.CaseParam;
 
 public class GetSchemaBuilder implements Lines {
-
+    
     @Override
     public List<String> lines() {
         String map = Map.class.getCanonicalName();

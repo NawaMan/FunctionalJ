@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 import lombok.val;
 
 public interface FuncListWithFlatMap<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * FlatMap with the given mapper for only the value that pass the condition.
      */
@@ -38,7 +38,7 @@ public interface FuncListWithFlatMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.flatMapOnly(checker, value -> mapper.apply(value).stream()));
     }
-
+    
     /**
      * FlatMap with the mapper if the condition is true, otherwise use another elseMapper.
      */

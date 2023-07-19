@@ -27,13 +27,13 @@ import lombok.val;
 
 @FunctionalInterface
 public interface ToIntBiDoubleFunctionPrimitive extends ToIntegerBiDoubleFunction<Double> {
-
+    
     public int applyAsDoubleAndDouble(double data, double longValue);
-
+    
     public default int applyAsInt(Double data, double longValue) {
         return applyAsDoubleAndDouble(data, longValue);
     }
-
+    
     public static int apply(ToIntegerBiDoubleFunction<Double> function, double value, double anotherValue) {
         val resValue = (function instanceof ToIntBiDoubleFunctionPrimitive) ? ((ToIntBiDoubleFunctionPrimitive) function).applyAsDoubleAndDouble(value, anotherValue) : function.applyAsInt(value, anotherValue);
         return resValue;

@@ -25,13 +25,13 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface LongLongToIntFunctionPrimitive extends LongComparator {
-
+    
     public int applyAsLongAndLong(long data, long longValue);
-
+    
     public default int applyAsInt(Long data, long longValue) {
         return applyAsLongAndLong(data, longValue);
     }
-
+    
     public default int compareLong(long o1, long o2) {
         return applyAsLongAndLong(o1, o2);
     }

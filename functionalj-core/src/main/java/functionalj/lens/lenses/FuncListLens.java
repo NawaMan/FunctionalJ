@@ -40,70 +40,70 @@ import functionalj.list.ImmutableFuncList;
 import lombok.val;
 
 public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> extends ObjectLens<HOST, FuncList<TYPE>>, FuncListAccess<HOST, TYPE, TYPELENS> {
-
+    
     public static class Impl<H, T, SL extends AnyLens<H, T>> extends ObjectLens.Impl<H, FuncList<T>> implements FuncListLens<H, T, SL> {
-
+    
         private LensSpecParameterized<H, FuncList<T>, T, SL> spec;
-
+    
         public Impl(String name, LensSpecParameterized<H, FuncList<T>, T, SL> spec) {
             super(name, spec.getSpec());
             this.spec = spec;
         }
-
+    
         @Override
         public LensSpecParameterized<H, FuncList<T>, T, SL> lensSpecParameterized() {
             return spec;
         }
     }
-
+    
     public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> FuncListLens<HOST, TYPE, TYPELENS> of(Function<HOST, FuncList<TYPE>> read, WriteLens<HOST, FuncList<TYPE>> write, Function<LensSpec<HOST, TYPE>, TYPELENS> subCreator) {
         return LensUtils.createFuncListLens(read, write, subCreator);
     }
-
+    
     public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> FuncListLens<HOST, TYPE, TYPELENS> of(String name, LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> spec) {
         return new Impl<>(name, spec);
     }
-
+    
     public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> FuncListLens<HOST, TYPE, TYPELENS> of(LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> spec) {
         return of(null, spec);
     }
-
+    
     // :-( Duplicate
     public LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> lensSpecParameterized();
-
+    
     public default AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> accessParameterized() {
         return lensSpecParameterized();
     }
-
+    
     @Override
     public default TYPELENS createSubAccess(Function<FuncList<TYPE>, TYPE> accessToSub) {
         return accessParameterized().createSubAccess(accessToSub);
     }
-
+    
     @Override
     public default LensSpec<HOST, FuncList<TYPE>> lensSpec() {
         return lensSpecParameterized().getSpec();
     }
-
+    
     @Override
     public default FuncList<TYPE> applyUnsafe(HOST host) throws Exception {
         return lensSpec().getRead().apply(host);
     }
-
+    
     public default TYPELENS createSubLens(String name, Function<FuncList<TYPE>, TYPE> readSub, WriteLens<FuncList<TYPE>, TYPE> writeSub) {
         return LensUtils.createSubLens(this, name, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
-
+    
     public default TYPELENS createSubLens(Function<FuncList<TYPE>, TYPE> readSub, WriteLens<FuncList<TYPE>, TYPE> writeSub) {
         return LensUtils.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
-
+    
     public default TYPELENS first() {
         val name = (this instanceof Named) ? ((Named) this).name() : null;
         val lensName = whenBlank(joinNonNull(".", name, "first()"), (String) null);
         return createSubLens(lensName, (list) -> list.first().get(), (list, newValue) -> list.with(0, newValue));
     }
-
+    
     public default TYPELENS last() {
         val name = (this instanceof Named) ? ((Named) this).name() : null;
         val lensName = whenBlank(joinNonNull(".", name, "last()"), (String) null);
@@ -119,7 +119,7 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             return ImmutableFuncList.from(newList);
         });
     }
-
+    
     public default TYPELENS at(int index) {
         val name = (this instanceof Named) ? ((Named) this).name() : null;
         val lensName = whenBlank(joinNonNull(".", name, "at(" + index + ")"), (String) null);
@@ -137,11 +137,11 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             return list.with(index, newValue);
         });
     }
-
+    
     public default ListLensEach<HOST, TYPE, TYPELENS> each() {
         return new ListLensEach<>(this, alwaysTrue());
     }
-
+    
     public default ListLensEach<HOST, TYPE, TYPELENS> eachOf(Predicate<TYPE> checker) {
         return new ListLensEach<>(this, checker);
     }

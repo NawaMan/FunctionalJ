@@ -30,47 +30,47 @@ import lombok.val;
 // This class along with ArrayBackedIntIteratorPlus helps improve performance when do pullNext, useNext and mapNext
 // with multiple value to run faster.
 public class ArrayBackedIntStreamPlus implements IntStreamPlus {
-
+    
     private final ArrayBackedIntIteratorPlus iterator;
-
+    
     private final IntStreamPlus stream;
-
+    
     @SafeVarargs
     public static IntStreamPlus of(int... array) {
         val iterator = ArrayBackedIntIteratorPlus.of(array);
         val stream = new ArrayBackedIntStreamPlus(iterator);
         return stream;
     }
-
+    
     public static IntStreamPlus from(int[] array) {
         val iterator = ArrayBackedIntIteratorPlus.of(array);
         val stream = new ArrayBackedIntStreamPlus(iterator);
         return stream;
     }
-
+    
     public static IntStreamPlus from(int[] array, int start, int length) {
         val iterator = (ArrayBackedIntIteratorPlus) ArrayBackedIntIteratorPlus.from(array, start, length);
         val stream = new ArrayBackedIntStreamPlus(iterator);
         return stream;
     }
-
+    
     ArrayBackedIntStreamPlus(ArrayBackedIntIteratorPlus iterator) {
         this.iterator = iterator;
         val iterable = (IntIterable) () -> iterator;
         this.stream = IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
-
+    
     @Override
     public IntStream intStream() {
         return stream;
     }
-
+    
     @Override
     public void close() {
         iterator.close();
         stream.close();
     }
-
+    
     @Override
     public IntStreamPlus onClose(Runnable closeHandler) {
         iterator.onClose(closeHandler);
@@ -79,11 +79,11 @@ public class ArrayBackedIntStreamPlus implements IntStreamPlus {
             return stream.onClose(closeHandler);
         });
     }
-
+    
     public IntIteratorPlus iterator() {
         return iterator;
     }
-
+    
     @Override
     public int[] toArray() {
         return iterator.toArray();

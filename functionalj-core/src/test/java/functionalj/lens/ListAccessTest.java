@@ -38,40 +38,40 @@ import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
 public class ListAccessTest {
-
+    
     public class WithNames {
-
+    
         private List<String> names = new ArrayList<>();
-
+    
         public WithNames(List<String> names) {
             this.names.addAll(names);
         }
-
+    
         public List<String> names() {
             return names;
         }
-
+    
         public WithNames withNames(List<String> newNames) {
             return new WithNames(newNames);
         }
     }
-
+    
     @Test
     public void testListAccess() {
         val accSub = new AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>>() {
-
+    
             @Override
             public List<String> applyUnsafe(WithNames input) throws Exception {
                 return input.names();
             }
-
+    
             @Override
             public StringAccess<WithNames> createSubAccessFromHost(Function<WithNames, String> accessToParameter) {
                 return accessToParameter::apply;
             }
         };
         val listAcc = new ListAccess<WithNames, String, StringAccess<WithNames>>() {
-
+    
             @Override
             public AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>> accessParameterized() {
                 return accSub;

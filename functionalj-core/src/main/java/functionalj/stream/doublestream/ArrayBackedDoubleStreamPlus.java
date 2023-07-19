@@ -30,47 +30,47 @@ import lombok.val;
 // This class along with ArrayBackedDoubleIteratorPlus helps improve performance when do pullNext, useNext and mapNext
 // with multiple value to run faster.
 public class ArrayBackedDoubleStreamPlus implements DoubleStreamPlus {
-
+    
     private final ArrayBackedDoubleIteratorPlus iterator;
-
+    
     private final DoubleStreamPlus stream;
-
+    
     @SafeVarargs
     public static DoubleStreamPlus of(double... array) {
         val iterator = ArrayBackedDoubleIteratorPlus.of(array);
         val stream = new ArrayBackedDoubleStreamPlus(iterator);
         return stream;
     }
-
+    
     public static DoubleStreamPlus from(double[] array) {
         val iterator = ArrayBackedDoubleIteratorPlus.of(array);
         val stream = new ArrayBackedDoubleStreamPlus(iterator);
         return stream;
     }
-
+    
     public static DoubleStreamPlus from(double[] array, int start, int length) {
         val iterator = (ArrayBackedDoubleIteratorPlus) ArrayBackedDoubleIteratorPlus.from(array, start, length);
         val stream = new ArrayBackedDoubleStreamPlus(iterator);
         return stream;
     }
-
+    
     ArrayBackedDoubleStreamPlus(ArrayBackedDoubleIteratorPlus iterator) {
         this.iterator = iterator;
         val iterable = (DoubleIterable) () -> iterator;
         this.stream = DoubleStreamPlus.from(StreamSupport.doubleStream(iterable.spliterator(), false));
     }
-
+    
     @Override
     public DoubleStream doubleStream() {
         return stream;
     }
-
+    
     @Override
     public void close() {
         iterator.close();
         stream.close();
     }
-
+    
     @Override
     public DoubleStreamPlus onClose(Runnable closeHandler) {
         iterator.onClose(closeHandler);
@@ -79,11 +79,11 @@ public class ArrayBackedDoubleStreamPlus implements DoubleStreamPlus {
             return stream.onClose(closeHandler);
         });
     }
-
+    
     public DoubleIteratorPlus iterator() {
         return iterator;
     }
-
+    
     @Override
     public double[] toArray() {
         return iterator.toArray();

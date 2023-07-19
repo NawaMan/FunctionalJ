@@ -48,7 +48,7 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -56,7 +56,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapTwo());
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -64,7 +64,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapThree());
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -72,7 +72,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapFour());
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -80,7 +80,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapFive());
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -88,7 +88,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapSix());
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -96,7 +96,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapGroup(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -104,7 +104,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapGroup(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -112,7 +112,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapGroup(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -120,7 +120,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapGroup(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -128,7 +128,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapGroup(combinator));
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -136,7 +136,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapGroup(count));
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
@@ -144,7 +144,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.mapGroup(count, combinator));
     }
-
+    
     // == Int ==
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
@@ -153,7 +153,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToInt(funcList, stream -> stream.mapTwoToInt(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
@@ -161,7 +161,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToInt(funcList, stream -> stream.mapGroupToInt(count, combinator));
     }
-
+    
     // == Double ==
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
@@ -170,7 +170,7 @@ public interface FuncListWithMapGroup<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToDouble(funcList, stream -> stream.mapTwoToDouble(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */

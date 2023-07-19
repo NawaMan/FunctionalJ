@@ -27,29 +27,29 @@ import java.util.Optional;
 import lombok.val;
 
 public class Either<VALUE, ERROR> extends Value<VALUE> {
-
+    
     public static <V, E> Either<V, E> value(V value) {
         return new Either<V, E>(value, null);
     }
-
+    
     public static <V, E> Either<V, E> error(E errorValue) {
         return new Either<V, E>(null, new ValueException(errorValue));
     }
-
+    
     private Either(VALUE value, Exception exception) {
         super(value, exception);
     }
-
+    
     public boolean isValue() {
         val exception = getException();
         return !(exception instanceof ValueException);
     }
-
+    
     public boolean isError() {
         val exception = getException();
         return (exception instanceof ValueException);
     }
-
+    
     @SuppressWarnings("unchecked")
     public ERROR errorValue() {
         val exception = getException();
@@ -57,7 +57,7 @@ public class Either<VALUE, ERROR> extends Value<VALUE> {
             return (ERROR) ((ValueException) exception).getErrorValue();
         return null;
     }
-
+    
     public Optional<ERROR> error() {
         return Optional.ofNullable(errorValue());
     }

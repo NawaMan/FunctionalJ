@@ -38,35 +38,35 @@ import functionalj.stream.longstream.collect.LongCollectorToBooleanPlus;
 import lombok.val;
 
 public interface DoubleCollectorToBooleanPlus<ACCUMULATED> extends DoubleCollectorPlus<ACCUMULATED, Boolean> {
-
+    
     public Supplier<ACCUMULATED> supplier();
-
+    
     public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator();
-
+    
     public BinaryOperator<ACCUMULATED> combiner();
-
+    
     public Predicate<ACCUMULATED> finisherToBoolean();
-
+    
     public default Function<ACCUMULATED, Boolean> finisher() {
         val finisherToBoolean = finisherToBoolean();
         return accumulated -> {
             return finisherToBoolean.test(accumulated);
         };
     }
-
+    
     // == Derived ==
     public default <SOURCE> CollectorToBooleanPlus<SOURCE, ACCUMULATED> of(ToDoubleFunction<SOURCE> mapper) {
         return new DerivedDoubleCollectorToBooleanPlus.FromObj<>(this, mapper);
     }
-
+    
     public default IntCollectorToBooleanPlus<ACCUMULATED> of(IntToDoubleFunction mapper) {
         return new DerivedDoubleCollectorToBooleanPlus.FromInt<>(this, mapper);
     }
-
+    
     public default LongCollectorToBooleanPlus<ACCUMULATED> of(LongToDoubleFunction mapper) {
         return new DerivedDoubleCollectorToBooleanPlus.FromLong<>(this, mapper);
     }
-
+    
     public default DoubleCollectorToBooleanPlus<ACCUMULATED> of(DoubleUnaryOperator mapper) {
         return new DerivedDoubleCollectorToBooleanPlus.FromDouble<>(this, mapper);
     }

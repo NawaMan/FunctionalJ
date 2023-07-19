@@ -32,11 +32,11 @@ import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 
 public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntFuncList {
-
+    
     public static class Size {
-
+    
         public final int size;
-
+    
         Size(int size) {
             if (size <= 0) {
                 throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
@@ -44,34 +44,34 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
             this.size = size;
         }
     }
-
+    
     public static class From {
-
+    
         public final int from;
-
+    
         From(int from) {
             this.from = from;
         }
-
+    
         public IntStep step(int size) {
             return new IntStep(size, from);
         }
     }
-
+    
     public static class IntStepToStream implements IntStreamPlus {
-
+    
         private final boolean distancePositive;
-
+    
         private final int end;
-
+    
         private final IntStreamPlus intStreamPlus;
-
+    
         IntStepToStream(IntStreamPlus intStreamPlus, int end, boolean distancePositive) {
             this.distancePositive = distancePositive;
             this.end = end;
             this.intStreamPlus = intStreamPlus;
         }
-
+    
         public IntStreamPlus inclusive() {
             if (distancePositive) {
                 return intStreamPlus.acceptUntil(i -> i > end);
@@ -79,7 +79,7 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
                 return intStreamPlus.acceptUntil(i -> i < end);
             }
         }
-
+    
         @Override
         public IntStream intStream() {
             if (distancePositive) {
@@ -89,63 +89,63 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
             }
         }
     }
-
+    
     public static IntStep step(int size) {
         return new IntStep(size, 0);
     }
-
+    
     public static IntStep ofSize(int size) {
         return new IntStep(size, 0);
     }
-
+    
     public static IntStep step(Size size) {
         return new IntStep(size.size, 0);
     }
-
+    
     public static IntStep step(Size size, From from) {
         return new IntStep(size.size, from.from);
     }
-
+    
     public static IntStep step(int size, From from) {
         return new IntStep(size, from.from);
     }
-
+    
     public static IntStep of(int size) {
         return new IntStep(size, 0);
     }
-
+    
     public static IntStep of(Size size) {
         return new IntStep(size.size, 0);
     }
-
+    
     public static IntStep of(Size size, From from) {
         return new IntStep(size.size, from.from);
     }
-
+    
     public static IntStep of(int size, From from) {
         return new IntStep(size, from.from);
     }
-
+    
     public static Size size(int size) {
         return new Size(size);
     }
-
+    
     public static From StartFrom(int start) {
         return new From(start);
     }
-
+    
     public static From IntFrom(int start) {
         return new From(start);
     }
-
+    
     public static From from(int start) {
         return new From(start);
     }
-
+    
     private final int size;
-
+    
     private final int start;
-
+    
     private IntStep(int size, int start) {
         if (size <= 0) {
             throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
@@ -153,11 +153,11 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         this.size = size;
         this.start = start;
     }
-
+    
     public IntStep startFrom(int start) {
         return new IntStep(size, start);
     }
-
+    
     public IntStepToStream to(int end) {
         val sizePositive = size > 0;
         val distancePositive = (end - start) > 0;
@@ -165,40 +165,40 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         val intStreamPlus = sameDirection ? IntStreamPlus.wholeNumbers().map(i -> i * size + start) : IntStreamPlus.wholeNumbers().map(i -> -i * size + start);
         return new IntStepToStream(intStreamPlus, end, distancePositive);
     }
-
+    
     public IntStreamPlus intStream() {
         return intStreamPlus();
     }
-
+    
     @Override
     public IntStreamPlus intStreamPlus() {
         return IntStreamPlus.wholeNumbers().map(i -> i * size + start);
     }
-
+    
     @Override
     public int applyAsInt(int operand) {
         return start + (int) (Math.round(1.0 * (operand - start) / size) * size);
     }
-
+    
     @Override
     public Integer apply(int operand) {
         return applyAsInt(operand);
     }
-
+    
     @Override
     public Integer apply(Integer operand) {
         return applyAsInt(operand);
     }
-
+    
     public Func1<Integer, Integer> function() {
         return i -> applyAsInt(i);
     }
-
+    
     @Override
     public IntFuncList toLazy() {
         return IntFuncList.from(() -> intStreamPlus());
     }
-
+    
     /**
      * Please don't call. This will blow up.
      */
@@ -206,7 +206,7 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     public IntFuncList toEager() {
         throw new UnsupportedOperationException("Infinite double step cannot be made an eager list: " + intStreamPlus().limit(5).join(", ") + "...");
     }
-
+    
     /**
      * Please don't call. This will blow up.
      */

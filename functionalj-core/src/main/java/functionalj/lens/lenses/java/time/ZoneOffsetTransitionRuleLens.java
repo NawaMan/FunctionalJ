@@ -5,21 +5,21 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.lenses.ObjectLensImpl;
 
 public class ZoneOffsetTransitionRuleLens<HOST> extends ObjectLensImpl<HOST, ZoneOffsetTransitionRule> implements ZoneOffsetTransitionRuleAccess<HOST> {
-
+    
     public static final ZoneOffsetTransitionRuleLens<ZoneOffsetTransitionRule> theZoneOffsetTransitionRule = new ZoneOffsetTransitionRuleLens<ZoneOffsetTransitionRule>(LensSpec.of(ZoneOffsetTransitionRule.class));
-
+    
     public static <H> ZoneOffsetTransitionRuleLens<H> of(String name, LensSpec<H, ZoneOffsetTransitionRule> spec) {
         return new ZoneOffsetTransitionRuleLens<H>(name, spec);
     }
-
+    
     public static <H> ZoneOffsetTransitionRuleLens<H> of(LensSpec<H, ZoneOffsetTransitionRule> spec) {
         return new ZoneOffsetTransitionRuleLens<H>(spec);
     }
-
+    
     public ZoneOffsetTransitionRuleLens(String name, LensSpec<HOST, ZoneOffsetTransitionRule> spec) {
         super(name, spec);
     }
-
+    
     public ZoneOffsetTransitionRuleLens(LensSpec<HOST, ZoneOffsetTransitionRule> spec) {
         this(null, spec);
     }

@@ -7,7 +7,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class TimeLensTest {
-
+    
     @Test
     public void testLocalDate() {
         val localDate1 = LocalDate.of(2019, 3, 3);

@@ -34,9 +34,9 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
-
+    
     public FuncList<DATA> toFuncList();
-
+    
     // TODO : Nawa Latest - Add insertBetween((prev, curr)->btwOrNull)
     /**
      * Accumulate the previous to the next element.
@@ -60,7 +60,7 @@ public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return FuncList.deriveFrom(funcList, stream -> stream.accumulate(accumulator));
     }
-
+    
     // == restate ==
     /**
      * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
@@ -99,7 +99,7 @@ public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
         val seed = Tuple2.of((DATA) null, this.toFuncList());
         return FuncList.iterate(seed, func).acceptUntil(t -> t == null).skip(1).map(t -> t._1());
     }
-
+    
     // == Spawn ==
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.

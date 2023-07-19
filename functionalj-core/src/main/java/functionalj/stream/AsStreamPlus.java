@@ -30,7 +30,7 @@ import functionalj.stream.markers.Terminal;
 import lombok.val;
 
 class AsStreamPlusHelper {
-
+    
     /**
      * @return  the stream plus instance of this object.
      */
@@ -48,19 +48,19 @@ class AsStreamPlusHelper {
  */
 @FunctionalInterface
 public interface AsStreamPlus<DATA> extends AsStreamPlusWithCalculate<DATA>, AsStreamPlusWithCollect<DATA>, AsStreamPlusWithConversion<DATA>, AsStreamPlusWithForEach<DATA>, AsStreamPlusWithGroupingBy<DATA>, AsStreamPlusWithMatch<DATA>, AsStreamPlusWithReduce<DATA>, AsStreamPlusWithStatistic<DATA> {
-
+    
     /**
      * @return  the stream plus instance of this object.
      */
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * @return  return the stream underneath the stream plus.
      */
     public default Stream<DATA> stream() {
         return streamPlus();
     }
-
+    
     /**
      * Iterate all element through the action
      */

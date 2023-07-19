@@ -35,21 +35,21 @@ import lombok.experimental.Delegate;
 
 @SuppressWarnings({ "unchecked" })
 public class RaceResult<DATA> implements HasPromise<DATA> {
-
+    
     @SafeVarargs
     public static <D> RaceResult<D> of(StartableAction<D>... actions) {
         return Race(FuncList.of(actions));
     }
-
+    
     public static <D> RaceResult<D> from(List<? extends StartableAction<D>> actions) {
         return Race(FuncList.from(actions));
     }
-
+    
     @SafeVarargs
     public static <D> RaceResult<D> Race(StartableAction<D>... actions) {
         return Race(FuncList.of(actions));
     }
-
+    
     public static <D> RaceResult<D> Race(List<? extends StartableAction<D>> actions) {
         DeferAction<D> deferAction = DeferAction.createNew();
         val pendingAction = deferAction.start();
@@ -78,21 +78,21 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
         val race = new RaceResult<D>(promise, promises);
         return race;
     }
-
+    
     private final Promise<DATA> promise;
-
+    
     private final ImmutableFuncList<Promise<DATA>> eachPromises;
-
+    
     RaceResult(Promise<DATA> promise, ImmutableFuncList<Promise<DATA>> eachPromises) {
         this.promise = requireNonNull(promise);
         this.eachPromises = requireNonNull(eachPromises);
     }
-
+    
     @Delegate
     public Promise<DATA> getResultPromise() {
         return promise;
     }
-
+    
     public FuncList<Promise<DATA>> getEachPromises() {
         return eachPromises;
     }

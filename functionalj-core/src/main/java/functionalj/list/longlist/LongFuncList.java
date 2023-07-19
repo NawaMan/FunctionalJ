@@ -82,7 +82,7 @@ import nullablej.nullable.Nullable;
 
 // TODO - Use this for byte, short and char
 public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicate, LongFuncListWithCombine, LongFuncListWithFilter, LongFuncListWithFlatMap, LongFuncListWithLimit, LongFuncListWithMap, LongFuncListWithMapFirst, LongFuncListWithMapGroup, LongFuncListWithMapMulti, LongFuncListWithMapThen, LongFuncListWithMapToMap, LongFuncListWithMapToTuple, LongFuncListWithMapWithIndex, LongFuncListWithModify, LongFuncListWithPeek, LongFuncListWithPipe, LongFuncListWithSegment, LongFuncListWithSort, LongFuncListWithSplit {
-
+    
     /**
      * Throw a no more element exception. This is used for generator.
      */
@@ -90,56 +90,56 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         SupplierBackedIterator.noMoreElement();
         return Long.MIN_VALUE;
     }
-
+    
     /**
      * Returns an empty LongFuncList.
      */
     public static ImmutableLongFuncList empty() {
         return ImmutableLongFuncList.empty();
     }
-
+    
     /**
      * Returns an empty functional list.
      */
     public static ImmutableLongFuncList emptyList() {
         return ImmutableLongFuncList.empty();
     }
-
+    
     /**
      * Returns an empty functional list.
      */
     public static ImmutableLongFuncList emptyLongList() {
         return ImmutableLongFuncList.empty();
     }
-
+    
     /**
      * Create a FuncList from the given longs.
      */
     public static ImmutableLongFuncList of(long... data) {
         return ImmutableLongFuncList.of(data);
     }
-
+    
     /**
      * Create a FuncList from the given longs.
      */
     public static ImmutableLongFuncList AllOf(long... data) {
         return ImmutableLongFuncList.of(data);
     }
-
+    
     /**
      * Create a FuncList from the given longs.
      */
     public static ImmutableLongFuncList longs(long... data) {
         return ImmutableLongFuncList.of(data);
     }
-
+    
     /**
      * Create a FuncList from the given longs.
      */
     public static ImmutableLongFuncList longList(long... data) {
         return ImmutableLongFuncList.of(data);
     }
-
+    
     /**
      * Create a FuncList from the given longs.
      */
@@ -147,7 +147,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static ImmutableLongFuncList ListOf(long... data) {
         return ImmutableLongFuncList.of(data);
     }
-
+    
     /**
      * Create a FuncList from the given longs.
      */
@@ -155,7 +155,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static ImmutableLongFuncList listOf(long... data) {
         return ImmutableLongFuncList.of(data);
     }
-
+    
     // -- From --
     /**
      * Create a FuncList from the given longs.
@@ -163,7 +163,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static ImmutableLongFuncList from(long[] datas) {
         return new ImmutableLongFuncList(datas, datas.length);
     }
-
+    
     /**
      * Create a FuncList from the given collection.
      */
@@ -172,7 +172,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         Mode mode = (data instanceof FuncList) ? ((FuncList<Long>) data).mode() : Mode.lazy;
         return ImmutableLongFuncList.from(mode, longStream);
     }
-
+    
     /**
      * Create a FuncList from the given FuncList.
      */
@@ -180,14 +180,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val funcList = asFuncList.asLongFuncList();
         return funcList.toMode(mode);
     }
-
+    
     /**
      * Create a FuncList from the given stream.
      */
     public static LongFuncList from(LongStream stream) {
         return new StreamBackedLongFuncList(stream);
     }
-
+    
     /**
      * Create a FuncList from the given supplier of stream.
      *
@@ -196,7 +196,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static LongFuncList from(Supplier<LongStream> supplier) {
         return new LongFuncListDerived(() -> LongStreamPlus.from(supplier.get()));
     }
-
+    
     // == Create ==
     /**
      * Returns the infinite streams of zeroes.
@@ -204,115 +204,115 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static LongFuncList zeroes() {
         return zeroes(Integer.MAX_VALUE);
     }
-
+    
     /**
      * Returns a list that contains zeroes.
      */
     public static LongFuncList zeroes(int count) {
         return LongFuncList.from(() -> LongStreamPlus.zeroes(count));
     }
-
+    
     /**
      * Returns the list of ones.
      */
     public static LongFuncList ones() {
         return ones(Integer.MAX_VALUE);
     }
-
+    
     /**
      * Returns a list that contains ones.
      */
     public static LongFuncList ones(int count) {
         return LongFuncList.from(() -> LongStreamPlus.ones(count));
     }
-
+    
     /**
      * Create a list that is the repeat of the given array of data.
      */
     public static LongFuncList repeat(long... data) {
         return LongFuncList.from(() -> LongStreamPlus.repeat(data));
     }
-
+    
     /**
      * Create a list that is the repeat of the given array of data.
      */
     public static LongFuncList cycle(long... data) {
         return LongFuncList.from(() -> LongStreamPlus.cycle(data));
     }
-
+    
     /**
      * Create a list that is the repeat of the given list of data.
      */
     public static LongFuncList repeat(LongFuncList data) {
         return LongFuncList.from(() -> LongStreamPlus.repeat(data));
     }
-
+    
     /**
      * Create a list that is the repeat of the given list of data.
      */
     public static LongFuncList cycle(LongFuncList data) {
         return LongFuncList.from(() -> LongStreamPlus.cycle(data));
     }
-
+    
     /**
      * Create a list that for a loop with the number of time given - the value is the index of the loop.
      */
     public static LongFuncList loop() {
         return LongFuncList.from(() -> LongStreamPlus.loop());
     }
-
+    
     /**
      * Create a list that for a loop with the number of time given - the value is the index of the loop.
      */
     public static LongFuncList loop(long times) {
         return LongFuncList.from(() -> LongStreamPlus.loop(times));
     }
-
+    
     public static LongFuncList loopBy(long step) {
         return LongFuncList.from(() -> LongStreamPlus.loopBy(step));
     }
-
+    
     public static LongFuncList loopBy(long step, int times) {
         return LongFuncList.from(() -> LongStreamPlus.loopBy(step, times));
     }
-
+    
     public static LongFuncList infinite() {
         return LongFuncList.from(() -> LongStreamPlus.infinite());
     }
-
+    
     public static LongFuncList infiniteInt() {
         return LongFuncList.from(() -> LongStreamPlus.infiniteInt());
     }
-
+    
     public static LongFuncList naturalNumbers() {
         return LongFuncList.from(() -> LongStreamPlus.naturalNumbers());
     }
-
+    
     public static LongFuncList naturalNumbers(int count) {
         return LongFuncList.from(() -> LongStreamPlus.naturalNumbers(count));
     }
-
+    
     /**
      * Returns the infinite streams of wholes numbers -- 0, 1, 2, 3, ....
      */
     public static LongFuncList wholeNumbers() {
         return LongFuncList.from(() -> LongStreamPlus.wholeNumbers());
     }
-
+    
     /**
      * Returns the infinite streams of wholes numbers -- 0, 1, 2, 3, ....
      */
     public static LongFuncList wholeNumbers(int count) {
         return LongFuncList.from(() -> LongStreamPlus.wholeNumbers(count));
     }
-
+    
     /**
      * Create a FuncList that for a loop with the number of time given - the value is the index of the loop.
      */
     public static LongFuncList range(int startInclusive, int endExclusive) {
         return LongFuncList.from(() -> LongStreamPlus.range(startInclusive, endExclusive));
     }
-
+    
     // -- Concat + Combine --
     /**
      * Concatenate all the given streams.
@@ -320,7 +320,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static LongFuncList concat(LongFuncList... lists) {
         return combine(lists);
     }
-
+    
     /**
      * Concatenate all the given lists.
      *
@@ -331,7 +331,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         ImmutableFuncList<LongFuncList> listOfList = FuncList.listOf(lists);
         return listOfList.flatMapToLong(Func.itself());
     }
-
+    
     // TODO - Rethink ... as this will generate un-repeatable stream.
     // we may want to do cache here.
     /**
@@ -344,7 +344,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return LongStreamPlus.generate(generator);
         });
     }
-
+    
     /**
      * Create a list from the supplier of suppliers.
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
@@ -352,7 +352,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static LongFuncList generateWith(Supplier<LongSupplier> suppliers) {
         return generate(suppliers);
     }
-
+    
     /**
      * Create a list by apply the compounder to the seed over and over.
      *
@@ -370,11 +370,11 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static LongFuncList iterate(long seed, LongUnaryOperator compounder) {
         return LongFuncList.from(() -> LongStreamPlus.iterate(seed, compounder));
     }
-
+    
     public static LongFuncList iterate(long seed, LongAggregationToLong aggregation) {
         return LongFuncList.from(() -> LongStreamPlus.iterate(seed, aggregation));
     }
-
+    
     /**
      * Create a list by apply the compounder to the seed over and over.
      *
@@ -392,11 +392,11 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static LongFuncList compound(long seed, LongUnaryOperator compounder) {
         return LongFuncList.from(() -> LongStreamPlus.compound(seed, compounder));
     }
-
+    
     public static LongFuncList compound(long seed, LongAggregationToLong compounder) {
         return LongFuncList.from(() -> LongStreamPlus.compound(seed, compounder));
     }
-
+    
     /**
      * Create a list by apply the compounder to the seeds over and over.
      *
@@ -415,7 +415,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static LongFuncList iterate(long seed1, long seed2, LongBinaryOperator compounder) {
         return LongFuncList.from(() -> LongStreamPlus.iterate(seed1, seed2, compounder));
     }
-
+    
     /**
      * Create a list by apply the compounder to the seeds over and over.
      *
@@ -434,7 +434,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static LongFuncList compound(long seed1, long seed2, LongBinaryOperator compounder) {
         return iterate(seed1, seed2, compounder);
     }
-
+    
     // == Zip ==
     /**
      * Create a FuncList by combining elements together into a FuncList of tuples.
@@ -451,13 +451,13 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return LongStreamPlus.zipOf(list1.longStream(), list2.longStream());
         });
     }
-
+    
     public static FuncList<LongLongTuple> zipOf(AsLongFuncList list1, long defaultValue1, AsLongFuncList list2, long defaultValue2) {
         return FuncList.from(() -> {
             return LongStreamPlus.zipOf(list1.longStream(), defaultValue1, list2.longStream(), defaultValue2);
         });
     }
-
+    
     /**
      * Zip integers from two LongFuncLists and combine it into another object.
      */
@@ -466,7 +466,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return LongStreamPlus.zipOf(list1.longStream(), list2.longStream(), merger);
         });
     }
-
+    
     /**
      * Zip integers from an int stream and another object stream and combine it into another object.
      * The result stream has the size of the shortest stream.
@@ -476,7 +476,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return LongStreamPlus.zipOf(list1.longStream(), defaultValue1, list2.longStream(), defaultValue2, merger);
         });
     }
-
+    
     // -- Builder --
     /**
      * Create a new FuncList.
@@ -484,34 +484,34 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public static LongFuncListBuilder newListBuilder() {
         return new LongFuncListBuilder();
     }
-
+    
     /**
      * Create a new list builder.
      */
     public static LongFuncListBuilder newBuilder() {
         return new LongFuncListBuilder();
     }
-
+    
     /**
      * Create a new FuncList.
      */
     public static LongFuncListBuilder newIntListBuilder() {
         return new LongFuncListBuilder();
     }
-
+    
     // == Core ==
     /**
      * Return the stream of data behind this LongFuncList.
      */
     public LongStreamPlus longStream();
-
+    
     /**
      * Return the stream of data behind this LongFuncList.
      */
     public default LongStreamPlus longStreamPlus() {
         return longStream();
     }
-
+    
     /**
      * Return the this as a FuncList.
      */
@@ -519,7 +519,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default LongFuncList asLongFuncList() {
         return this;
     }
-
+    
     // -- Derive --
     /**
      * Create a FuncList from the given FuncList.
@@ -553,7 +553,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         }
         throw new IllegalArgumentException("Unknown functional list mode: " + mode);
     }
-
+    
     /**
      * Create a FuncList from the given LongFuncList.
      */
@@ -580,7 +580,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
                 throw new IllegalArgumentException("Unknown functional list mode: " + mode);
         }
     }
-
+    
     /**
      * Create a FuncList from the given IntFuncList.
      */
@@ -607,7 +607,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
                 throw new IllegalArgumentException("Unknown functional list mode: " + mode);
         }
     }
-
+    
     /**
      * Create a FuncList from the given DoubleFuncList.
      */
@@ -634,35 +634,35 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
                 throw new IllegalArgumentException("Unknown functional list mode: " + mode);
         }
     }
-
+    
     /**
      * Create a FuncList from another FuncList.
      */
     public static IntFuncList deriveToInt(AsLongFuncList funcList, Function<LongStreamPlus, IntStream> action) {
         return IntFuncList.deriveFrom(funcList, action);
     }
-
+    
     /**
      * Create a FuncList from another FuncList.
      */
     public static LongFuncList deriveToLong(AsLongFuncList funcList, Function<LongStreamPlus, LongStream> action) {
         return LongFuncList.deriveFrom(funcList, action);
     }
-
+    
     /**
      * Create a FuncList from another FuncList.
      */
     public static DoubleFuncList deriveToDouble(AsLongFuncList funcList, Function<LongStreamPlus, DoubleStream> action) {
         return DoubleFuncList.deriveFrom(funcList, action);
     }
-
+    
     /**
      * Create a FuncList from another FuncList.
      */
     public static <TARGET> FuncList<TARGET> deriveToObj(AsLongFuncList funcList, Function<LongStreamPlus, Stream<TARGET>> action) {
         return FuncList.deriveFrom(funcList, action);
     }
-
+    
     // -- Predicate --
     /**
      * Test if the data is in the list
@@ -671,7 +671,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default boolean test(long value) {
         return contains(value);
     }
-
+    
     // -- Mode --
     /**
      * Check if this list is a lazy list.
@@ -679,7 +679,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default Mode mode() {
         return Mode.lazy;
     }
-
+    
     /**
      * Return a list with the specified mode.
      */
@@ -694,25 +694,25 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         }
         throw new IllegalArgumentException("Unknown list mode: " + mode);
     }
-
+    
     public default boolean isLazy() {
         return mode().isLazy();
     }
-
+    
     /**
      * Check if this list is an eager list.
      */
     public default boolean isEager() {
         return mode().isEager();
     }
-
+    
     /**
      * Check if this list is a cache list.
      */
     public default boolean isCache() {
         return mode().isCache();
     }
-
+    
     // -- Lazy + Eager --
     /**
      * Return a lazy list with the data of this list.
@@ -723,7 +723,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         }
         return new LongFuncListDerived(() -> longStreamPlus());
     }
-
+    
     /**
      * Return a eager list with the data of this list.
      */
@@ -735,7 +735,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         int size = size();
         return new ImmutableLongFuncList(this, size, Mode.eager);
     }
-
+    
     /**
      * Return a cache list with the data of this list.
      */
@@ -745,21 +745,21 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         }
         return new StreamBackedLongFuncList(longStreamPlus(), Mode.cache);
     }
-
+    
     /**
      * Freeze the data of this list as an immutable list and maintain the mode afterward.
      */
     public default ImmutableLongFuncList freeze() {
         return new ImmutableLongFuncList(this, -1, mode());
     }
-
+    
     /**
      * Create a cache list but maintain the mode afterward.
      */
     public default LongFuncList cache() {
         return new StreamBackedLongFuncList(longStreamPlus(), mode());
     }
-
+    
     // -- Iterable --
     /**
      * @return the iterable of this FuncList.
@@ -767,7 +767,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default LongIterable iterable() {
         return () -> iterator();
     }
-
+    
     // -- Iterator --
     /**
      * @return a iterator of this list.
@@ -776,7 +776,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default LongIteratorPlus iterator() {
         return LongIteratorPlus.from(longStream());
     }
-
+    
     /**
      * @return a spliterator of this list.
      */
@@ -784,7 +784,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
-
+    
     // -- Map --
     /**
      * Map each value into a string value.
@@ -792,14 +792,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default FuncList<String> mapToString() {
         return FuncList.deriveFrom(this, stream -> stream.mapToObj(i -> String.valueOf(i)));
     }
-
+    
     /**
      * Map each value into other value using the function.
      */
     public default LongFuncList map(LongUnaryOperator mapper) {
         return deriveFrom(this, streamble -> streamble.longStream().map(mapper));
     }
-
+    
     /**
      * Map each value into other value using the function.
      */
@@ -807,14 +807,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return map(mapper);
     }
-
+    
     /**
      * Map each value into an integer value using the function.
      */
     public default IntFuncList mapToInt(LongToIntFunction mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
-
+    
     /**
      * Map each value into an integer value using the function.
      */
@@ -822,14 +822,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return mapToInt(mapper);
     }
-
+    
     /**
      * Map each value into an integer value using the function.
      */
     public default LongFuncList mapToLong(LongUnaryOperator mapper) {
         return deriveFrom(this, stream -> stream.mapToLong(mapper));
     }
-
+    
     /**
      * Map each value into an integer value using the function.
      */
@@ -837,21 +837,21 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return mapToLong(mapper);
     }
-
+    
     /**
      * Map each value into a double value.
      */
     public default DoubleFuncList mapToDouble() {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(i -> i));
     }
-
+    
     /**
      * Map each value into a double value using the function.
      */
     public default DoubleFuncList mapToDouble(LongToDoubleFunction mapper) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(mapper));
     }
-
+    
     /**
      * Map each value into a double value using the function.
      */
@@ -859,16 +859,16 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return mapToDouble(mapper);
     }
-
+    
     public default <TARGET> FuncList<TARGET> mapToObj(LongFunction<? extends TARGET> mapper) {
         return FuncList.deriveFrom(this, stream -> stream.mapToObj(mapper));
     }
-
+    
     public default <TARGET> FuncList<TARGET> mapToObj(LongAggregation<? extends TARGET> aggregation) {
         val mapper = aggregation.newAggregator();
         return mapToObj(mapper);
     }
-
+    
     // -- FlatMap --
     /**
      * Map a value into a FuncList and then flatten that FuncList
@@ -876,7 +876,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default LongFuncList flatMap(LongFunction<? extends AsLongFuncList> mapper) {
         return LongFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).longStream()));
     }
-
+    
     /**
      * Map a value into a FuncList and then flatten that FuncList
      */
@@ -884,14 +884,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return flatMap(mapper);
     }
-
+    
     /**
      * Map a value into an integer FuncList and then flatten that FuncList
      */
     public default IntFuncList flatMapToInt(LongFunction<? extends AsIntFuncList> mapper) {
         return IntFuncList.deriveFrom(this, stream -> stream.flatMapToInt(value -> mapper.apply(value).intStream()));
     }
-
+    
     /**
      * Map a value into a FuncList and then flatten that FuncList
      */
@@ -899,14 +899,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return flatMapToInt(mapper);
     }
-
+    
     /**
      * Map a value into an integer FuncList and then flatten that list
      */
     public default LongFuncList flatMapToLong(LongFunction<? extends AsLongFuncList> mapper) {
         return LongFuncList.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).longStream()));
     }
-
+    
     /**
      * Map a value into an integer FuncList and then flatten that list
      */
@@ -914,14 +914,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return flatMapToLong(mapper);
     }
-
+    
     /**
      * Map a value into a double FuncList and then flatten that FuncList
      */
     public default DoubleFuncList flatMapToDouble(LongFunction<? extends AsDoubleFuncList> mapper) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
     }
-
+    
     /**
      * Map a value into an integer FuncList and then flatten that FuncList
      */
@@ -929,14 +929,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return flatMapToDouble(mapper);
     }
-
+    
     /**
      * Map a value into an integer FuncList and then flatten that FuncList
      */
     public default <D> FuncList<D> flatMapToObj(LongFunction<? extends AsFuncList<D>> mapper) {
         return FuncList.deriveFrom(this, stream -> stream.flatMapToObj(value -> mapper.apply(value).stream()));
     }
-
+    
     /**
      * Map a value into an integer FuncList and then flatten that FuncList
      */
@@ -944,7 +944,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return flatMapToObj(mapper);
     }
-
+    
     // -- Filter --
     /**
      * Select only the element that passes the predicate
@@ -952,7 +952,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default LongFuncList filter(LongPredicate predicate) {
         return deriveFrom(this, stream -> stream.filter(predicate));
     }
-
+    
     /**
      * Select only the element that passes the predicate
      */
@@ -960,14 +960,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val mapper = aggregation.newAggregator();
         return filter(mapper);
     }
-
+    
     /**
      * Select only the element that the mapped value passes the predicate
      */
     public default LongFuncList filter(LongUnaryOperator mapper, LongPredicate predicate) {
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
-
+    
     // -- Peek --
     /**
      * Consume each value using the action whenever a termination operation is called
@@ -975,7 +975,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default LongFuncList peek(LongConsumer action) {
         return deriveFrom(this, stream -> stream.peek(action));
     }
-
+    
     // -- Limit/Skip --
     /**
      * Limit the size
@@ -983,14 +983,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default LongFuncList limit(long maxSize) {
         return deriveFrom(this, stream -> stream.limit(maxSize));
     }
-
+    
     /**
      * Trim off the first n values
      */
     public default LongFuncList skip(long offset) {
         return deriveFrom(this, stream -> stream.skip(offset));
     }
-
+    
     // -- Distinct --
     /**
      * Remove duplicates
@@ -998,7 +998,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default LongFuncList distinct() {
         return deriveFrom(this, stream -> stream.distinct());
     }
-
+    
     // -- Sorted --
     /**
      * Sort the values in this stream
@@ -1006,14 +1006,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default LongFuncList sorted() {
         return deriveFrom(this, stream -> stream.sorted());
     }
-
+    
     /**
      * Sort the values in this stream using the given comparator
      */
     public default LongFuncList sorted(LongComparator comparator) {
         return deriveFrom(this, stream -> stream.sorted(comparator));
     }
-
+    
     // -- Terminate --
     /**
      * Process each value using the given action
@@ -1021,7 +1021,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default void forEach(LongConsumer action) {
         longStream().forEach(action);
     }
-
+    
     /**
      * Performs an action for each element of this stream,
      *   in the encounter order of the stream if the stream has a defined encounter order.
@@ -1029,55 +1029,55 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default void forEachOrdered(LongConsumer action) {
         longStream().forEachOrdered(action);
     }
-
+    
     // == Conversion ==
     public default LongFuncList toFuncList() {
         return this;
     }
-
+    
     /**
      * Convert this FuncList to an array.
      */
     public default long[] toArray() {
         return longStream().toArray();
     }
-
+    
     /**
      * Returns stream of Integer from the value of this list.
      */
     public default FuncList<Long> boxed() {
         return mapToObj(theLong.boxed());
     }
-
+    
     /**
      * Returns a functional list builder with the initial data of this func list.
      */
     public default LongFuncListBuilder toBuilder() {
         return new LongFuncListBuilder(toArray());
     }
-
+    
     // == Nullable, Optional and Result
     public default Nullable<LongFuncList> __nullable() {
         return Nullable.of(this);
     }
-
+    
     public default Optional<LongFuncList> __optional() {
         return Optional.of(this);
     }
-
+    
     public default Result<LongFuncList> __result() {
         return Result.valueOf(this);
     }
-
+    
     // -- List specific --
     public default int size() {
         return (int) longStream().count();
     }
-
+    
     public default IntFuncList indexesOf(LongPredicate check) {
         return mapWithIndex((index, data) -> check.test(data) ? index : -1).filter(i -> i != -1).mapToInt(l -> (int) l);
     }
-
+    
     /**
      * Find any indexes that the elements match the predicate
      */
@@ -1085,40 +1085,40 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val check = aggregation.newAggregator();
         return indexesOf(check);
     }
-
+    
     public default IntFuncList indexesOf(long value) {
         return mapWithIndex((index, data) -> (data == value) ? index : -1).filter(i -> i != -1).mapToInt(l -> (int) l);
     }
-
+    
     public default int indexOf(long o) {
         return indexesOf(each -> Objects.equals(o, each)).findFirst().orElse(-1);
     }
-
+    
     public default int lastIndexOf(long o) {
         return indexesOf(each -> Objects.equals(o, each)).last().orElse(-1);
     }
-
+    
     /**
      * Returns the first element.
      */
     public default OptionalLong first() {
         return longStream().limit(1).findFirst();
     }
-
+    
     /**
      * Returns the first elements
      */
     public default LongFuncList first(int count) {
         return limit(count);
     }
-
+    
     /**
      * Returns the last element.
      */
     public default OptionalLong last() {
         return last(1).findFirst();
     }
-
+    
     /**
      * Returns the last elements
      */
@@ -1127,42 +1127,42 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val offset = Math.max(0, size - count);
         return skip(offset);
     }
-
+    
     /**
      * Returns the element at the index.
      */
     public default OptionalLong at(int index) {
         return skip(index).limit(1).findFirst();
     }
-
+    
     /**
      * Returns the second to the last elements.
      */
     public default LongFuncList tail() {
         return skip(1);
     }
-
+    
     /**
      * Add the given value to the end of the list.
      */
     public default LongFuncList append(long value) {
         return LongFuncList.concat(this, LongFuncList.of(value));
     }
-
+    
     /**
      * Add the given values to the end of the list.
      */
     public default LongFuncList appendAll(long... values) {
         return LongFuncList.concat(this, LongFuncList.of(values));
     }
-
+    
     /**
      * Add the given value in the collection to the end of the list.
      */
     public default LongFuncList appendAll(LongFuncList values) {
         return LongFuncList.concat(this, values);
     }
-
+    
     /**
      * Add the given value in the collection to the end of the list.
      */
@@ -1173,7 +1173,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return LongStreamPlus.concat(thisStream, longStream);
         });
     }
-
+    
     /**
      * Add the given value in the collection to the end of the list.
      */
@@ -1184,21 +1184,21 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return LongStreamPlus.concat(thisStream, longStream);
         });
     }
-
+    
     /**
      * Add the given value to the beginning of the list
      */
     public default LongFuncList prepend(long value) {
         return LongFuncList.concat(LongFuncList.of(value), this);
     }
-
+    
     /**
      * Add the given values to the beginning of the list
      */
     public default LongFuncList prependAll(long... values) {
         return LongFuncList.concat(LongFuncList.of(values), this);
     }
-
+    
     /**
      * Add the given value in the collection to the beginning of the list
      */
@@ -1207,7 +1207,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return this;
         return LongFuncList.concat(prefixFuncList, this);
     }
-
+    
     /**
      * Add the given value in the collection to the end of the list.
      */
@@ -1218,7 +1218,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return LongStreamPlus.concat(longStream, thisStream);
         });
     }
-
+    
     /**
      * Add the given value in the collection to the end of the list.
      */
@@ -1229,7 +1229,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return LongStreamPlus.concat(longStream, thisStream);
         });
     }
-
+    
     /**
      * Returns a new functional list with the value replacing at the index.
      */
@@ -1240,7 +1240,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             throw new IndexOutOfBoundsException(index + " vs " + size());
         return mapWithIndex((i, orgValue) -> ((i == index) ? value : orgValue));
     }
-
+    
     /**
      * Returns a new functional list with the new value (calculated from the mapper) replacing at the index.
      */
@@ -1253,7 +1253,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             return (i == index) ? mapper.applyAsLong(value) : value;
         });
     }
-
+    
     /**
      * Returns a new list with the given elements inserts into at the given index.
      */
@@ -1264,7 +1264,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val tail = skip(index);
         return LongFuncList.concat(first, LongFuncList.of(elements), tail);
     }
-
+    
     /**
      * Returns a new list with the given elements inserts into at the given index.
      */
@@ -1276,14 +1276,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val tail = skip(index);
         return LongFuncList.concat(first, middle, tail);
     }
-
+    
     /**
      * Returns the new list from this list without the element.
      */
     public default LongFuncList exclude(long element) {
         return filter(each -> each != element);
     }
-
+    
     /**
      * Returns the new list from this list without the element at the index.
      */
@@ -1294,7 +1294,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val tail = skip(index + 1);
         return LongFuncList.concat(first, tail);
     }
-
+    
     /**
      * Returns the new list from this list without the `count` elements starting at `fromIndexInclusive`.
      */
@@ -1307,7 +1307,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val tail = skip(fromIndexInclusive + count);
         return LongFuncList.concat(first, tail);
     }
-
+    
     /**
      * Returns the new list from this list without the element starting at `fromIndexInclusive` to `toIndexExclusive`.
      */
@@ -1324,7 +1324,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val tail = skip(toIndexExclusive);
         return LongFuncList.concat(first, tail);
     }
-
+    
     /**
      * Returns the sub list from the index starting `fromIndexInclusive` to `toIndexExclusive`.
      */
@@ -1332,7 +1332,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val length = toIndexExclusive - fromIndexInclusive;
         return skip(fromIndexInclusive).limit(length);
     }
-
+    
     /**
      * Returns the new list with reverse order of this list.
      */
@@ -1351,7 +1351,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         }
         return new ImmutableLongFuncList(array, array.length, mode());
     }
-
+    
     /**
      * Returns the new list with random order of this list.
      */
@@ -1370,7 +1370,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         }
         return new ImmutableLongFuncList(array, array.length, mode());
     }
-
+    
     // -- Query --
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
@@ -1378,7 +1378,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default FuncList<IntLongTuple> query(LongPredicate check) {
         return mapToObjWithIndex((index, data) -> check.test(data) ? IntLongTuple.of(index, data) : null).filterNonNull();
     }
-
+    
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
      */
@@ -1386,51 +1386,51 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val check = aggregation.newAggregator();
         return query(check);
     }
-
+    
     public default boolean isEmpty() {
         return !iterator().hasNext();
     }
-
+    
     public default boolean contains(long value) {
         return longStream().anyMatch(i -> i == value);
     }
-
+    
     public default boolean containsAllOf(long... array) {
         return LongStreamPlus.of(array).allMatch(each -> longStream().anyMatch(value -> Objects.equals(each, value)));
     }
-
+    
     public default boolean containsSomeOf(long... c) {
         return LongStreamPlus.of(c).anyMatch(each -> longStream().anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     public default boolean containsNoneOf(long... c) {
         return LongStreamPlus.of(c).noneMatch(each -> longStream().anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     public default boolean containsAllOf(Collection<Long> c) {
         return c.stream().allMatch(each -> longStream().anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     public default boolean containsSomeOf(Collection<Long> c) {
         return c.stream().anyMatch(each -> longStream().anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     public default boolean containsNoneOf(Collection<Long> c) {
         return c.stream().noneMatch(each -> longStream().anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     public default boolean containsAllOf(LongFuncList c) {
         return c.longStream().allMatch(each -> longStream().anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     public default boolean containsSomeOf(LongFuncList c) {
         return c.longStream().anyMatch(each -> longStream().anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     public default boolean containsNoneOf(LongFuncList c) {
         return c.longStream().noneMatch(each -> longStream().anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     public default long get(int index) {
         val ref = new long[1][];
         val found = LongStreamPlusHelper.hasAt(this.longStream(), index, ref);
@@ -1438,7 +1438,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             throw new IndexOutOfBoundsException("" + index);
         return ref[0][0];
     }
-
+    
     // -- Match --
     /**
      * Check if any element match the predicate
@@ -1446,7 +1446,7 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     public default boolean anyMatch(LongPredicate predicate) {
         return longStream().anyMatch(predicate);
     }
-
+    
     /**
      * Check if any element match the predicate
      */
@@ -1454,14 +1454,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val predicate = aggregation.newAggregator();
         return longStream().anyMatch(predicate);
     }
-
+    
     /**
      * Check if all elements match the predicate
      */
     public default boolean allMatch(LongPredicate predicate) {
         return longStream().allMatch(predicate);
     }
-
+    
     /**
      * Check if all elements match the predicate
      */
@@ -1469,14 +1469,14 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val predicate = aggregation.newAggregator();
         return longStream().allMatch(predicate);
     }
-
+    
     /**
      * Check if none of the elements match the predicate
      */
     public default boolean noneMatch(LongPredicate predicate) {
         return longStream().noneMatch(predicate);
     }
-
+    
     /**
      * Check if none of the elements match the predicate
      */
@@ -1484,21 +1484,21 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val predicate = aggregation.newAggregator();
         return longStream().noneMatch(predicate);
     }
-
+    
     /**
      * Returns the sequentially first element
      */
     public default OptionalLong findFirst() {
         return longStream().findFirst();
     }
-
+    
     /**
      * Returns the sequentially first element
      */
     public default OptionalLong findFirst(LongPredicate predicate) {
         return longStream().filter(predicate).findFirst();
     }
-
+    
     /**
      * Returns the sequentially first element
      */
@@ -1506,21 +1506,21 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val predicate = aggregation.newAggregator();
         return longStream().filter(predicate).findFirst();
     }
-
+    
     /**
      * Returns the any element
      */
     public default OptionalLong findAny() {
         return longStream().findAny();
     }
-
+    
     /**
      * Returns the sequentially first element
      */
     public default OptionalLong findAny(LongPredicate predicate) {
         return longStream().filter(predicate).findFirst();
     }
-
+    
     /**
      * Returns the sequentially first element
      */
@@ -1528,19 +1528,19 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
         val predicate = aggregation.newAggregator();
         return longStream().filter(predicate).findFirst();
     }
-
+    
     @Sequential
     @Terminal
     public default OptionalLong findLast() {
         return longStream().findLast();
     }
-
+    
     @Sequential
     @Terminal
     public default OptionalLong findLast(LongPredicate predicate) {
         return longStream().filter(predicate).findLast();
     }
-
+    
     @Sequential
     @Terminal
     public default OptionalLong findLast(LongAggregationToBoolean aggregation) {

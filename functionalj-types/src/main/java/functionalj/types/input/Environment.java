@@ -35,48 +35,48 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 public class Environment {
-
+    
     final Elements elementUtils;
-
+    
     final Types typeUtils;
-
+    
     final Messager messager;
-
+    
     final Filer filer;
-
+    
     private final AtomicBoolean hasError = new AtomicBoolean(false);
-
+    
     public Environment(Elements elementUtils, Types typeUtils, Messager messager, Filer filer) {
         this.elementUtils = elementUtils;
         this.typeUtils = typeUtils;
         this.messager = messager;
         this.filer = filer;
     }
-
+    
     public void markHasError() {
         hasError.set(true);
     }
-
+    
     public boolean hasError() {
         return hasError.get();
     }
-
+    
     public InputElement element(Element element) {
         return new InputElement.Impl(this, element);
     }
-
+    
     public InputMethodElement element(ExecutableElement element) {
         return new InputMethodElement.Impl(this, element);
     }
-
+    
     public InputTypeElement element(TypeElement element) {
         return new InputTypeElement.Impl(this, element);
     }
-
+    
     public InputVariableElement element(VariableElement element) {
         return new InputVariableElement.Impl(this, element);
     }
-
+    
     public InputTypeParameterElement element(TypeParameterElement element) {
         return new InputTypeParameterElement.Impl(this, element);
     }

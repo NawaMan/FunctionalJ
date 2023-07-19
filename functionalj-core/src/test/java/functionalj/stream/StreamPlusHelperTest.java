@@ -9,7 +9,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class StreamPlusHelperTest {
-
+    
     @Test
     public void testSequential() {
         val stream = IntStreamPlus.infinite().limit(1000).boxed();

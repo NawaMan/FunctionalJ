@@ -31,28 +31,28 @@ import java.util.function.LongUnaryOperator;
 import functionalj.list.FuncList;
 
 public interface LongFuncListWithMap extends AsLongFuncList {
-
+    
     /**
      * Map the value using the mapper.
      */
     public default <T> FuncList<T> mapToObj(LongFunction<? extends T> mapper) {
         return deriveToObj(this, stream -> stream.mapToObj(mapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true.
      */
     public default LongFuncList mapOnly(LongPredicate condition, LongUnaryOperator mapper) {
         return deriveToLong(this, stream -> stream.mapOnly(condition, mapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */
     public default LongFuncList mapIf(LongPredicate condition, LongUnaryOperator mapper, LongUnaryOperator elseMapper) {
         return deriveToLong(this, stream -> stream.mapIf(condition, mapper, elseMapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */

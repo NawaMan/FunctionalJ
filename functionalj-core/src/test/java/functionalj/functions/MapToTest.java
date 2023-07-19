@@ -32,13 +32,13 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class MapToTest {
-
+    
     @Test
     public void testSelectThen() {
         // .then(s -> "--" + s + "")
         assertEquals("Result:{ Value: null }", "" + Result.valueOf("Hello").map(only(s -> s.length() < 4)));
     }
-
+    
     @Test
     public void testTuple() {
         val f1 = toTuple((String s) -> s, (String s) -> s.length()).thenReduce((a, b) -> a + " - " + b);

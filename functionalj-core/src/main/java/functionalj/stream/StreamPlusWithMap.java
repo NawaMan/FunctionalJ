@@ -28,14 +28,14 @@ import java.util.function.Predicate;
 import lombok.val;
 
 public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
-
+    
     /**
      * Map the value using the mapper.
      */
     public default <T> StreamPlus<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
         return StreamPlus.from(stream().map(each -> mapper.apply(each)));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true.
      */
@@ -47,7 +47,7 @@ public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
             return mapped;
         });
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */
@@ -59,7 +59,7 @@ public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
             return mapped;
         });
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */

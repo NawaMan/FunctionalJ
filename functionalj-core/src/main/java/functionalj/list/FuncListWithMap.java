@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 import lombok.val;
 
 public interface FuncListWithMap<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Map the value using the mapper only when the condition is true.
      */
@@ -38,7 +38,7 @@ public interface FuncListWithMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapOnly(checker, mapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */
@@ -46,7 +46,7 @@ public interface FuncListWithMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapIf(checker, mapper, elseMapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */

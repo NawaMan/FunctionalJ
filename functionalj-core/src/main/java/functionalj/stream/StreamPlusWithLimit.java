@@ -35,9 +35,9 @@ import functionalj.stream.markers.Sequential;
 import lombok.val;
 
 public interface StreamPlusWithLimit<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Limit the size of the stream to the given size.
      */
@@ -45,7 +45,7 @@ public interface StreamPlusWithLimit<DATA> {
         val streamPlus = streamPlus();
         return ((maxSize == null) || (maxSize.longValue() < 0)) ? streamPlus : streamPlus.limit((long) maxSize);
     }
-
+    
     /**
      * Skip to the given offset position.
      */
@@ -53,7 +53,7 @@ public interface StreamPlusWithLimit<DATA> {
         val streamPlus = streamPlus();
         return ((offset == null) || (offset.longValue() < 0)) ? streamPlus : streamPlus.skip((long) offset);
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
@@ -71,7 +71,7 @@ public interface StreamPlusWithLimit<DATA> {
             });
         });
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
@@ -80,7 +80,7 @@ public interface StreamPlusWithLimit<DATA> {
         val condition = aggregationCondition.newAggregator();
         return skipWhile(condition);
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
@@ -90,13 +90,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-
+    
                 boolean isStillSkipping = true;
-
+    
                 boolean isFirst = true;
-
+    
                 DATA prevValue = null;
-
+    
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     Consumer<? super DATA> action = elem -> {
@@ -128,7 +128,7 @@ public interface StreamPlusWithLimit<DATA> {
             return StreamPlus.from(newStream);
         });
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
@@ -146,7 +146,7 @@ public interface StreamPlusWithLimit<DATA> {
             });
         });
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
@@ -155,7 +155,7 @@ public interface StreamPlusWithLimit<DATA> {
         val condition = aggregationCondition.newAggregator();
         return skipUntil(condition);
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
@@ -165,13 +165,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-
+    
                 boolean isStillSkipping = true;
-
+    
                 boolean isFirst = true;
-
+    
                 DATA prevValue = null;
-
+    
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     Consumer<? super DATA> action = elem -> {
@@ -203,7 +203,7 @@ public interface StreamPlusWithLimit<DATA> {
             return StreamPlus.from(newStream);
         });
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
@@ -213,9 +213,9 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-
+    
                 boolean stillGoing = true;
-
+    
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -236,7 +236,7 @@ public interface StreamPlusWithLimit<DATA> {
             return StreamPlus.from(newStream);
         });
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
@@ -245,7 +245,7 @@ public interface StreamPlusWithLimit<DATA> {
         val condition = aggregationCondition.newAggregator();
         return acceptWhile(condition);
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
@@ -255,13 +255,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-
+    
                 boolean stillGoing = true;
-
+    
                 boolean isFirst = true;
-
+    
                 DATA prevValue = null;
-
+    
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -288,7 +288,7 @@ public interface StreamPlusWithLimit<DATA> {
             return StreamPlus.from(newStream);
         });
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
@@ -298,9 +298,9 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-
+    
                 boolean stillGoing = true;
-
+    
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -321,7 +321,7 @@ public interface StreamPlusWithLimit<DATA> {
             return StreamPlus.from(newStream);
         });
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
@@ -330,7 +330,7 @@ public interface StreamPlusWithLimit<DATA> {
         val condition = aggregationCondition.newAggregator();
         return acceptWhile(condition);
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
@@ -340,13 +340,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-
+    
                 boolean stillGoing = true;
-
+    
                 boolean isFirst = true;
-
+    
                 DATA prevValue = null;
-
+    
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -373,7 +373,7 @@ public interface StreamPlusWithLimit<DATA> {
             return StreamPlus.from(newStream);
         });
     }
-
+    
     /**
      * Accept any value until the condition is false - include the item that the condition is false.
      */
@@ -383,9 +383,9 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-
+    
                 boolean stillGoing = true;
-
+    
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
@@ -405,7 +405,7 @@ public interface StreamPlusWithLimit<DATA> {
             return StreamPlus.from(newStream);
         });
     }
-
+    
     /**
      * Accept any value until the condition is false - include the item that the condition is false.
      */
@@ -414,7 +414,7 @@ public interface StreamPlusWithLimit<DATA> {
         val condition = aggregationCondition.newAggregator();
         return dropAfter(condition);
     }
-
+    
     /**
      * Accept any value until the condition is false - include the item that the condition is false.
      */
@@ -424,13 +424,13 @@ public interface StreamPlusWithLimit<DATA> {
         return sequential(streamPlus, orgStreamPlus -> {
             val orgSpliterator = orgStreamPlus.spliterator();
             val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(orgSpliterator.estimateSize(), 0) {
-
+    
                 boolean stillGoing = true;
-
+    
                 boolean isFirst = true;
-
+    
                 DATA prevValue = null;
-
+    
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {

@@ -25,7 +25,7 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface CharToIntFunction {
-
+    
     /**
      * Applies this function to the given argument.
      *

@@ -21,11 +21,11 @@ import lombok.val;
 import nullablej.nullable.Nullable;
 
 public class StructToMapFromMapTest {
-
+    
     @Struct
     void MyPrimitiveStruct(byte myByte1, Byte myByte2, short myShort1, Short myShort2, int myInt1, Integer myInteger2, long myLong1, Long myLong2, float myFloat1, Float myFloat2, double myDouble1, Double myDouble2, boolean myBoolean1, Boolean myBoolean2, char myChar1, Character myCharacter2, BigInteger myBigInteger, BigDecimal myBigDecimal) {
     }
-
+    
     /**
      * This test aims to check if string can be used with primitive values.
      */
@@ -71,16 +71,16 @@ public class StructToMapFromMapTest {
         assertAsString("a", myStruct5.myChar1);
         assertAsString("C", myStruct5.myCharacter2);
     }
-
+    
     @Struct
     void SubData(String strValue, Integer intValue) {
     }
-
+    
     // Test optional
     @Struct
     void StructWithOptional(Optional<String> optStr, Optional<Integer> optInt1, OptionalInt optInt2, Optional<SubData> optSubData) {
     }
-
+    
     @Test
     public void testOptional() {
         val myStruct = new StructWithOptional(Optional.of("String"), Optional.of(42), OptionalInt.of(10), Optional.of(new SubData("str", 45)));
@@ -105,12 +105,12 @@ public class StructToMapFromMapTest {
         myMap.put("optSubData", Optional.of(new SubData("text", 42)));
         assertAsString("StructWithOptional[" + "optStr: Optional[Text], " + "optInt1: Optional[75], " + "optInt2: OptionalInt[175], " + "optSubData: Optional[" + "SubData[" + "strValue: text, " + "intValue: 42" + "]" + "]" + "]", StructWithOptional.fromMap(myMap));
     }
-
+    
     // Test nullable, result, promise
     @Struct
     void StructWithNullableResult(Nullable<String> optStr1, Nullable<Integer> optInt1, Nullable<SubData> optSubData1, Result<String> optStr2, Result<Integer> optInt2, Result<SubData> optSubData2) {
     }
-
+    
     @Test
     public void testNullableResultPromise() {
         val myStruct = new StructWithNullableResult(Nullable.of("One"), Nullable.of(10), Nullable.of(new SubData("str", 110)), Result.ofValue("One"), Result.ofValue(10), Result.ofValue(new SubData("str", 110)));
@@ -135,7 +135,7 @@ public class StructToMapFromMapTest {
         myMap.put("optSubData", Nullable.of(new SubData("text", 42)));
         assertAsString("StructWithNullableResult[" + "optStr1: Nullable.of(One), " + "optInt1: Nullable.of(69), " + "optSubData1: Nullable.of(SubData[strValue: str, intValue: 110]), " + "optStr2: Result:{ Value: One }, " + "optInt2: Result:{ Value: OptionalInt[175] }, " + "optSubData2: Result:{ Value: SubData[strValue: str, intValue: 110] }" + "]", StructWithNullableResult.fromMap(myMap));
     }
-
+    
     // Test validate
     @Struct
     static String StructValidate(String name, int age) {
@@ -145,7 +145,7 @@ public class StructToMapFromMapTest {
             return "The age cannot be negative: " + age;
         return null;
     }
-
+    
     @Test
     public void testValidate() {
         val myStruct = new StructValidate("name", 10);
@@ -169,17 +169,17 @@ public class StructToMapFromMapTest {
             assertAsString("functionalj.result.ValidationException: The age cannot be negative: -5", e);
         }
     }
-
+    
     // Test Acceptable
     @Rule("Int value must be positive: %s")
     static boolean IntPositive(int intValue) {
         return intValue >= 0;
     }
-
+    
     @Struct
     void StructWithAcceptable(IntPositive myInt) {
     }
-
+    
     @Test
     public void testAcceptable() {
         val myStruct = new StructWithAcceptable(new IntPositive(42));
@@ -199,11 +199,11 @@ public class StructToMapFromMapTest {
             assertAsString("functionalj.result.ValidationException: Int value must be positive: -5", e);
         }
     }
-
+    
     @Struct
     void StructWithTime(LocalDateTime dateTime, LocalDate date, LocalTime time) {
     }
-
+    
     @Test
     public void testTimeStruct() {
         val myStruct = new StructWithTime(LocalDateTime.of(2020, Month.OCTOBER, 31, 17, 30, 5), LocalDate.of(2020, Month.OCTOBER, 31), LocalTime.of(17, 30, 5));

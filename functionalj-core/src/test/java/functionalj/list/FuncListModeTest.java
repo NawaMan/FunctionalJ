@@ -7,7 +7,7 @@ import functionalj.list.FuncList.Mode;
 import lombok.val;
 
 public class FuncListModeTest {
-
+    
     @Test
     public void testMode_changeAndStay() {
         val orgList = FuncList.of(1, 2, 3, 4);
@@ -37,7 +37,7 @@ public class FuncListModeTest {
         assertEquals(Mode.cache, orgList.toCache().mapToDouble(i -> i * 2).mode());
         assertEquals(Mode.cache, orgList.toCache().mapToDouble(i -> i * 2).map(i -> i + 1).mode());
     }
-
+    
     @Test
     public void testMode_oneTimeThings() {
         val orgList = FuncList.of(1, 2, 3, 4);
@@ -72,7 +72,7 @@ public class FuncListModeTest {
         assertEquals(Mode.cache, orgList.toCache().mapToLong(i -> i * 2).cache().mode());
         assertEquals(Mode.cache, orgList.toCache().mapToDouble(i -> i * 2).cache().mode());
     }
-
+    
     @Test
     public void testLazy() {
         val logs = new ArrayList<String>();
@@ -84,7 +84,7 @@ public class FuncListModeTest {
         newList.limit(4).size();
         assertEquals("[1, 2, 3, 1, 2, 3, 4]", logs.toString());
     }
-
+    
     @Test
     public void testEager() {
         val logs = new ArrayList<String>();
@@ -96,7 +96,7 @@ public class FuncListModeTest {
         newList.limit(4).size();
         assertEquals("[1, 2, 3, 4, 5]", logs.toString());
     }
-
+    
     @Test
     public void testCache() {
         val logs = new ArrayList<String>();
@@ -108,7 +108,7 @@ public class FuncListModeTest {
         newList.limit(4).size();
         assertEquals("[1, 2, 3, 4]", logs.toString());
     }
-
+    
     @Test
     public void testLazy_thenFreeze() {
         val logs = new ArrayList<String>();
@@ -121,7 +121,7 @@ public class FuncListModeTest {
         newList.limit(4).size();
         assertEquals("[1, 2, 3, 4, 5]", logs.toString());
     }
-
+    
     @Test
     public void testEager_thenFreeze() {
         val logs = new ArrayList<String>();
@@ -134,7 +134,7 @@ public class FuncListModeTest {
         newList.limit(4).size();
         assertEquals("[1, 2, 3, 4, 5]", logs.toString());
     }
-
+    
     @Test
     public void testCache_thenFreeze() {
         val logs = new ArrayList<String>();
@@ -147,7 +147,7 @@ public class FuncListModeTest {
         newList.limit(4).size();
         assertEquals("[1, 2, 3, 4, 5]", logs.toString());
     }
-
+    
     @Test
     public void testLazy_thenCache() {
         val logs = new ArrayList<String>();
@@ -160,7 +160,7 @@ public class FuncListModeTest {
         newList.limit(4).size();
         assertEquals("[1, 2, 3, 4]", logs.toString());
     }
-
+    
     @Test
     public void testEager_thenCache() {
         val logs = new ArrayList<String>();
@@ -173,7 +173,7 @@ public class FuncListModeTest {
         newList.limit(4).size();
         assertEquals("[1, 2, 3, 4, 5]", logs.toString());
     }
-
+    
     @Test
     public void testCache_thenCache() {
         val logs = new ArrayList<String>();

@@ -1,7 +1,7 @@
 package functionalj.functions;
 
 public class LongFuncs {
-
+    
     public static long factorial(long value) {
         if (value <= 0) {
             return 1;

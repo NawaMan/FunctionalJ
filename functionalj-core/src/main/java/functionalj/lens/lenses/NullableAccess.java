@@ -33,15 +33,15 @@ import nullablej.nullable.Nullable;
 
 @FunctionalInterface
 public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> extends ObjectAccess<HOST, Nullable<TYPE>>, AccessParameterized<HOST, Nullable<TYPE>, TYPE, SUBACCESS> {
-
+    
     public static <H, T, A extends AnyAccess<H, T>> NullableAccess<H, T, A> of(Function<H, Nullable<T>> read, Function<Function<H, T>, A> createAccess) {
         val accessParameterized = new AccessParameterized<H, Nullable<T>, T, A>() {
-
+    
             @Override
             public Nullable<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
             }
-
+    
             @Override
             public A createSubAccessFromHost(Function<H, T> accessToParameter) {
                 return createAccess.apply(accessToParameter);
@@ -49,28 +49,28 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
         };
         return AccessUtils.createSubNullableAccess(accessParameterized, read);
     }
-
+    
     public AccessParameterized<HOST, Nullable<TYPE>, TYPE, SUBACCESS> accessWithSub();
-
+    
     @Override
     public default Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
         return accessWithSub().apply(host);
     }
-
+    
     @Override
     public default SUBACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToSub) {
         return accessWithSub().createSubAccessFromHost(accessToSub);
     }
-
+    
     public default SUBACCESS get() {
         return NullableAccess.this.accessWithSub().createSubAccess((Nullable<TYPE> nullable) -> {
             return nullable.get();
         });
     }
-
+    
     public default <TARGET> NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenMap(Function<TYPE, TARGET> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST, TARGET>>() {
-
+    
             @Override
             public Nullable<TARGET> applyUnsafe(HOST host) throws Exception {
                 Nullable<TYPE> nullable = NullableAccess.this.apply(host);
@@ -78,83 +78,83 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
                     nullable = Nullable.empty();
                 return nullable.map(Func1.from(mapper));
             }
-
+    
             @Override
             public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
                 return accessToParameter::apply;
             }
         };
         return new NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>>() {
-
+    
             @Override
             public AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST, TARGET>> accessWithSub() {
                 return accessWithSub;
             }
         };
     }
-
+    
     public default <TARGET> NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenFlatMap(Function<TYPE, Nullable<TARGET>> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST, TARGET>>() {
-
+    
             @Override
             public Nullable<TARGET> applyUnsafe(HOST host) throws Exception {
                 return NullableAccess.this.apply(host).flatMap(mapper);
             }
-
+    
             @Override
             public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
                 return accessToParameter::apply;
             }
         };
         return new NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>>() {
-
+    
             @Override
             public AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST, TARGET>> accessWithSub() {
                 return accessWithSub;
             }
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> isPresent() {
         return host -> {
             return NullableAccess.this.apply(host).isPresent();
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> isNotNull() {
         return host -> {
             return NullableAccess.this.apply(host).isNotNull();
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> isNull() {
         return host -> {
             return NullableAccess.this.apply(host).isNull();
         };
     }
-
+    
     public default SUBACCESS orElse(TYPE fallbackValue) {
         return NullableAccess.this.accessWithSub().createSubAccess((Nullable<TYPE> nullable) -> {
             return nullable.orElse(fallbackValue);
         });
     }
-
+    
     public default SUBACCESS orElseGet(Supplier<TYPE> fallbackValueSupplier) {
         return orGet(fallbackValueSupplier);
     }
-
+    
     public default SUBACCESS orGet(Supplier<TYPE> fallbackValueSupplier) {
         return NullableAccess.this.accessWithSub().createSubAccess((Nullable<TYPE> nullable) -> {
             return nullable.orElseGet(fallbackValueSupplier);
         });
     }
-
+    
     public default <EXCEPTION extends RuntimeException> SUBACCESS orElseThrow() {
         return NullableAccess.this.accessWithSub().createSubAccess((Nullable<TYPE> nullable) -> {
             return nullable.orElseThrow();
         });
     }
-
+    
     public default <EXCEPTION extends RuntimeException> SUBACCESS orElseThrow(Supplier<EXCEPTION> exceptionSupplier) {
         return NullableAccess.this.accessWithSub().createSubAccess((Nullable<TYPE> nullable) -> {
             return nullable.orElseThrow(exceptionSupplier);

@@ -30,12 +30,12 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 class IntStreamPlusMapFirstAddOnHelper {
-
+    
     @SafeVarargs
     static final <T> StreamPlus<T> doMapFirst(IntStreamPlus streamPlus, IntFunction<T>... mappers) {
         return streamPlus.mapToObj((int data) -> eachMapFirst(data, mappers));
     }
-
+    
     private static <T> T eachMapFirst(int d, IntFunction<T>[] mappers) {
         Exception exception = null;
         boolean hasNull = false;
@@ -58,9 +58,9 @@ class IntStreamPlusMapFirstAddOnHelper {
 }
 
 public interface IntStreamPlusWithMapFirst {
-
+    
     public IntStreamPlus intStreamPlus();
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -68,7 +68,7 @@ public interface IntStreamPlusWithMapFirst {
         val streamPlus = intStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -76,7 +76,7 @@ public interface IntStreamPlusWithMapFirst {
         val streamPlus = intStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -84,7 +84,7 @@ public interface IntStreamPlusWithMapFirst {
         val streamPlus = intStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -92,7 +92,7 @@ public interface IntStreamPlusWithMapFirst {
         val streamPlus = intStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */

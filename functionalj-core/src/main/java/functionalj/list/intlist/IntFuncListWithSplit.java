@@ -33,7 +33,7 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface IntFuncListWithSplit extends AsIntFuncList {
-
+    
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
     // == split ==
@@ -52,7 +52,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
         val list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
         return Tuple.of(list1, list2);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -68,7 +68,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
         val list1 = intStreamPlus().filter(predicate).toImmutableList();
         return FuncMap.of(key1, list1);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -83,7 +83,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
     public default <KEY> FuncMap<KEY, IntFuncList> split(KEY key1, IntPredicate predicate1, KEY key2, IntPredicate predicate2) {
         return split(key1, predicate1, key2, predicate2, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -98,7 +98,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
     public default <KEY> FuncMap<KEY, IntFuncList> split(KEY key1, IntPredicate predicate1, KEY key2, IntPredicate predicate2, KEY key3, IntPredicate predicate3) {
         return split(key1, predicate1, key2, predicate2, key3, predicate3, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -113,7 +113,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
     public default <KEY> FuncMap<KEY, IntFuncList> split(KEY key1, IntPredicate predicate1, KEY key2, IntPredicate predicate2, KEY key3, IntPredicate predicate3, KEY key4, IntPredicate predicate4) {
         return split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -128,7 +128,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
     public default <KEY> FuncMap<KEY, IntFuncList> split(KEY key1, IntPredicate predicate1, KEY key2, IntPredicate predicate2, KEY key3, IntPredicate predicate3, KEY key4, IntPredicate predicate4, KEY key5, IntPredicate predicate5) {
         return split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -150,7 +150,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
         val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(key1, list1, key2, list2, key3, list3, key4, list4, key5, list5, key6, list6.filter(predicate6));
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -168,7 +168,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
         val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(key1, list1, key2, list2);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -187,7 +187,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
         val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(key1, list1, key2, list2, key3, list3);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -207,7 +207,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
         val list4 = (otherKey != null) ? temp.filter(it -> it._1() == 3).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(key1, list1, key2, list2, key3, list3, otherKey, list4);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -228,7 +228,7 @@ public interface IntFuncListWithSplit extends AsIntFuncList {
         val list5 = (otherKey != null) ? temp.filter(it -> it._1() == 4).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(key1, list1, key2, list2, key3, list3, key4, list4, otherKey, list5);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *

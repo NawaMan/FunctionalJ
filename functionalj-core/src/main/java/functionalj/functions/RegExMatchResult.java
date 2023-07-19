@@ -38,177 +38,177 @@ import functionalj.lens.lenses.StringAccess;
 import functionalj.stream.StreamPlus;
 
 public class RegExMatchResult implements MatchResult {
-
+    
     public static final RegExMatchResultAccess<RegExMatchResult> theResult = new RegExMatchResultAccess<>(itself());
-
+    
     public static class RegExMatchResultAccess<HOST> implements AnyAccess<HOST, RegExMatchResult> {
-
+    
         public final StringAccess<HOST> sourceString = (HOST host) -> apply(host).sourceString();
-
+    
         public final AnyAccess<HOST, Pattern> pattern = (HOST host) -> apply(host).pattern();
-
+    
         public final IntegerAccessPrimitive<HOST> index = (HOST host) -> apply(host).index();
-
+    
         public final AnyAccess<HOST, MatchResult> result = (HOST host) -> apply(host).result();
-
+    
         public final IntegerAccessPrimitive<HOST> start = (HOST host) -> apply(host).start();
-
+    
         public final IntegerAccessPrimitive<HOST> end = (HOST host) -> apply(host).end();
-
+    
         public final StringAccess<HOST> group = (HOST host) -> apply(host).group();
-
+    
         public final IntegerAccessPrimitive<HOST> groupCount = (HOST host) -> apply(host).groupCount();
-
+    
         public final StringAccess<HOST> text = (HOST host) -> apply(host).text();
-
+    
         public final IntegerAccessPrimitive<HOST> start(int group) {
             return (HOST host) -> apply(host).start(group);
         }
-
+    
         public final IntegerAccessPrimitive<HOST> end(int group) {
             return (HOST host) -> apply(host).end(group);
         }
-
+    
         public final StringAccess<HOST> group(int group) {
             return (HOST host) -> apply(host).group(group);
         }
-
+    
         private final Func1<HOST, RegExMatchResult> access;
-
+    
         public RegExMatchResultAccess(Func1<HOST, RegExMatchResult> access) {
             this.access = access;
         }
-
+    
         @Override
         public RegExMatchResult applyUnsafe(HOST host) throws Exception {
             return access.applyUnsafe(host);
         }
     }
-
+    
     public static final RegExMatchResultStreamAccess<RegExMatchResultStream> theResults = new RegExMatchResultStreamAccess<>(itself());
-
+    
     public static class RegExMatchResultStreamAccess<HOST> implements StreamPlusAccess<HOST, RegExMatchResult, RegExMatchResultAccess<HOST>> {
-
+    
         private final Func1<HOST, RegExMatchResultStream> access;
-
+    
         private final AccessParameterized<HOST, StreamPlus<RegExMatchResult>, RegExMatchResult, RegExMatchResultAccess<HOST>> accessParameterized;
-
+    
         public RegExMatchResultStreamAccess(Func1<HOST, RegExMatchResultStream> access) {
             this.access = access;
             this.accessParameterized = new AccessParameterized<HOST, StreamPlus<RegExMatchResult>, RegExMatchResult, RegExMatchResultAccess<HOST>>() {
-
+    
                 @Override
                 public StreamPlus<RegExMatchResult> applyUnsafe(HOST host) throws Exception {
                     return access.apply(host);
                 }
-
+    
                 @Override
                 public RegExMatchResultAccess<HOST> createSubAccessFromHost(Function<HOST, RegExMatchResult> accessToParameter) {
                     return new RegExMatchResultAccess<>(accessToParameter::apply);
                 }
             };
         }
-
+    
         @Override
         public AccessParameterized<HOST, StreamPlus<RegExMatchResult>, RegExMatchResult, RegExMatchResultAccess<HOST>> accessParameterized() {
             return accessParameterized;
         }
-
+    
         public StreamPlusAccess<HOST, String, StringAccess<HOST>> texts() {
             return StreamPlusAccess.of(access.andThen(RegExMatchResultStream::texts), StringAccess::of);
         }
-
+    
         public StreamPlusAccess<HOST, Integer, IntegerAccess<HOST>> indexes() {
             return StreamPlusAccess.of(access.andThen(stream -> stream.map(RegExMatchResult::index)), IntegerAccess::of);
         }
-
+    
         public StreamPlusAccess<HOST, Integer, IntegerAccess<HOST>> starts() {
             return StreamPlusAccess.of(access.andThen(stream -> stream.map(RegExMatchResult::index)), IntegerAccess::of);
         }
-
+    
         public StreamPlusAccess<HOST, Integer, IntegerAccess<HOST>> ends() {
             return StreamPlusAccess.of(access.andThen(stream -> stream.map(RegExMatchResult::end)), IntegerAccess::of);
         }
-
+    
         public StreamPlusAccess<HOST, Integer, IntegerAccess<HOST>> groupCounts() {
             return StreamPlusAccess.of(access.andThen(stream -> stream.map(RegExMatchResult::groupCount)), IntegerAccess::of);
         }
     }
-
+    
     private final Supplier<? extends CharSequence> source;
-
+    
     private final Pattern pattern;
-
+    
     private final int index;
-
+    
     private final MatchResult result;
-
+    
     public RegExMatchResult(Supplier<? extends CharSequence> source, Pattern pattern, int index, MatchResult result) {
         this.source = source;
         this.pattern = pattern;
         this.index = index;
         this.result = result;
     }
-
+    
     public CharSequence source() {
         return source.get();
     }
-
+    
     public String sourceString() {
         return source().toString();
     }
-
+    
     public Pattern pattern() {
         return pattern;
     }
-
+    
     public int index() {
         return index;
     }
-
+    
     public MatchResult result() {
         return result;
     }
-
+    
     @Override
     public int start() {
         return result.start();
     }
-
+    
     @Override
     public int start(int group) {
         return result.start(group);
     }
-
+    
     @Override
     public int end() {
         return result.end();
     }
-
+    
     @Override
     public int end(int group) {
         return result.end(group);
     }
-
+    
     @Override
     public String group() {
         return result.group();
     }
-
+    
     @Override
     public String group(int group) {
         return result.group(group);
     }
-
+    
     @Override
     public int groupCount() {
         return result.groupCount();
     }
-
+    
     public String text() {
         return result.group();
     }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -219,7 +219,7 @@ public class RegExMatchResult implements MatchResult {
         result = prime * result + ((source == null) ? 0 : source.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -248,7 +248,7 @@ public class RegExMatchResult implements MatchResult {
             return false;
         return true;
     }
-
+    
     @Override
     public String toString() {
         return "RegExMatchResult [source=" + source + ", pattern=" + pattern + ", index=" + index + ", result=" + result + "]";

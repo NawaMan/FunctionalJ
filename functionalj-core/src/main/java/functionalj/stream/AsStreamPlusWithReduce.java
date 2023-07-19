@@ -29,19 +29,19 @@ import java.util.function.BinaryOperator;
 import lombok.val;
 
 public interface AsStreamPlusWithReduce<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     public default DATA reduce(DATA identity, BinaryOperator<DATA> reducer) {
         val streamPlus = streamPlus();
         return streamPlus.reduce(identity, reducer);
     }
-
+    
     public default Optional<DATA> reduce(BinaryOperator<DATA> reducer) {
         val streamPlus = streamPlus();
         return streamPlus.reduce(reducer);
     }
-
+    
     public default <U> U reduce(U identity, BiFunction<U, ? super DATA, U> accumulator, BinaryOperator<U> combiner) {
         val streamPlus = streamPlus();
         return streamPlus.reduce(identity, accumulator, combiner);

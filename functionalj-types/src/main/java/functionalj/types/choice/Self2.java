@@ -24,16 +24,16 @@
 package functionalj.types.choice;
 
 public interface Self2<T1, T2> {
-
+    
     @SuppressWarnings("unchecked")
     public default <TARGET> TARGET unwrap() {
         return (TARGET) this;
     }
-
+    
     public static <TARGET, T1, T2> TARGET unwrap(Self2<T1, T2> self) {
         return self == null ? null : self.unwrap();
     }
-
+    
     @SuppressWarnings("unchecked")
     public static <TARGET, T1, T2> Self2<T1, T2> wrap(TARGET t) {
         return (Self2<T1, T2>) t;

@@ -29,9 +29,9 @@ import java.util.stream.Stream;
 import lombok.val;
 
 public interface StreamPlusWithFlatMap<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * FlatMap with the given mapper for only the value that pass the condition.
      */
@@ -43,7 +43,7 @@ public interface StreamPlusWithFlatMap<DATA> {
             return mapped;
         });
     }
-
+    
     /**
      * FlatMap with the mapper if the condition is true, otherwise use another elseMapper.
      */

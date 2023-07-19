@@ -30,7 +30,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class BlockingQueueIteratorPlusTest {
-
+    
     @Test
     public void testBasic() throws InterruptedException {
         val endValue = (String) UUID.randomUUID().toString();
@@ -43,7 +43,7 @@ public class BlockingQueueIteratorPlusTest {
             assertEquals("Result:{ Value: [Two, Three] }", iterator.pullNext(2).map(IteratorPlus::stream).map(StreamPlus::toJavaList).map(String::valueOf).toString());
         }
     }
-
+    
     @Test
     public void testBlocking() throws InterruptedException {
         val endValue = (String) UUID.randomUUID().toString();
@@ -64,7 +64,7 @@ public class BlockingQueueIteratorPlusTest {
             assertEquals("Result:{ Value: [One, Two, Three, Four, Five] }", iterator.pullNext(5).map(IteratorPlus::stream).map(StreamPlus::toJavaList).map(String::valueOf).toString());
         }
     }
-
+    
     @Test
     public void testBlockingStream() throws InterruptedException {
         val endValue = (String) UUID.randomUUID().toString();

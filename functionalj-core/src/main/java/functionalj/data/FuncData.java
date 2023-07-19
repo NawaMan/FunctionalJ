@@ -33,7 +33,7 @@ import functionalj.list.FuncList;
 import functionalj.result.Result;
 
 public class FuncData {
-
+    
     // == Read text file ==
     /**
      * Read lines from file. This method will read lines in lazily and ensure the file is closed.
@@ -47,7 +47,7 @@ public class FuncData {
     public static Result<FuncList<String>> readLines(String path) {
         return readLines(Paths.get(path), StandardCharsets.UTF_8);
     }
-
+    
     /**
      * Read lines from file. This method will read lines in lazily and ensure the file is closed.
      *
@@ -60,7 +60,7 @@ public class FuncData {
     public static Result<FuncList<String>> readLines(String path, Charset charset) {
         return readLines(Paths.get(path), charset);
     }
-
+    
     /**
      * Read lines from file. This method will read lines in lazily and ensure the file is closed.
      *
@@ -73,7 +73,7 @@ public class FuncData {
     public static Result<FuncList<String>> readLines(Path path) {
         return readLines(path, StandardCharsets.UTF_8);
     }
-
+    
     /**
      * Read lines from file. This method will read lines in lazily and ensure the file is closed.
      *

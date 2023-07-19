@@ -46,13 +46,13 @@ import lombok.val;
 // TODO - Override methods in FuncListWithMapGroup to make it faster
 // TODO - Override methods in FuncListWithMapWithIndex to make it faster
 public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
-
+    
     private static final ObjectObjectToIntegerFunction<Object, Object> zeroForEquals = (Object i1, Object i2) -> Objects.equals(i1, i2) ? 0 : 1;
-
+    
     private static final Predicate<Integer> toZero = (Integer i) -> i == 0;
-
+    
     private final static ImmutableFuncList<?> EMPTY = new ImmutableFuncList<>(Collections.emptyList(), 0);
-
+    
     /**
      * @return an empty list
      */
@@ -60,7 +60,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     public static final <T> ImmutableFuncList<T> empty() {
         return (ImmutableFuncList<T>) EMPTY;
     }
-
+    
     /**
      * @return the list containing the given elements
      */
@@ -70,7 +70,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         for (val each : data) list.add(each);
         return new ImmutableFuncList<>(list, list.size());
     }
-
+    
     /**
      * @return the list containing the given elements
      */
@@ -80,21 +80,21 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         for (val each : data) list.add(each);
         return new ImmutableFuncList<T>(list, list.size());
     }
-
+    
     /**
      * Create a FuncList from the given array.
      */
     public static <TARGET> ImmutableFuncList<TARGET> from(TARGET[] datas) {
         return from(Mode.lazy, datas);
     }
-
+    
     /**
      * Create a FuncList from the given array.
      */
     public static <TARGET> ImmutableFuncList<TARGET> from(Mode mode, TARGET[] datas) {
         return ImmutableFuncList.of(datas);
     }
-
+    
     /**
      * @return the list containing the given elements
      */
@@ -104,7 +104,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         FuncList<T> list = funcList.asFuncList();
         return new ImmutableFuncList<T>(list, list.size(), mode);
     }
-
+    
     /**
      * @return the list containing the element from the given stream
      */
@@ -112,7 +112,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         val list = stream.collect(Collectors.toList());
         return new ImmutableFuncList<T>(list, list.size());
     }
-
+    
     /**
      * @return the list containing the element from the given stream
      */
@@ -120,7 +120,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         val list = stream.collect(Collectors.toList());
         return new ImmutableFuncList<T>(list, list.size(), mode);
     }
-
+    
     /**
      * @return the list containing the element from the given list.
      */
@@ -132,7 +132,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         val list = readOnlyList.toJavaList();
         return new ImmutableFuncList<T>(list, list.size());
     }
-
+    
     /**
      * @return the list containing the element from the given collections.
      */
@@ -152,23 +152,23 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         val list = (List<T>) collection.stream().collect(Collectors.toList());
         return new ImmutableFuncList<T>(list, list.size(), Mode.lazy);
     }
-
+    
     // -- Data --
     private final List<DATA> data;
-
+    
     private final FuncList.Mode mode;
-
+    
     private final int size;
-
+    
     private volatile String toStringCache = null;
-
+    
     private volatile Integer hashcodeCache = null;
-
+    
     // -- Constructors --
     ImmutableFuncList(Collection<DATA> data, int size) {
         this(data, size, Mode.lazy);
     }
-
+    
     ImmutableFuncList(Collection<DATA> data, int size, Mode mode) {
         if (data == null) {
             this.data = Collections.emptyList();
@@ -182,7 +182,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         this.size = (size != -1) ? size : this.data.size();
         this.mode = mode;
     }
-
+    
     @Override
     public StreamPlus<DATA> stream() {
         if (size == -1) {
@@ -191,12 +191,12 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             return StreamPlus.from(data.stream().limit(size));
         }
     }
-
+    
     @Override
     public Mode mode() {
         return mode;
     }
-
+    
     @Override
     public FuncList<DATA> toLazy() {
         if (mode().isLazy())
@@ -204,7 +204,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         // Do this to not duplicate the data
         return new ImmutableFuncList<DATA>(data, size, Mode.lazy);
     }
-
+    
     @Override
     public FuncList<DATA> toEager() {
         if (mode().isEager())
@@ -212,7 +212,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         // Do this to not duplicate the data
         return new ImmutableFuncList<DATA>(data, size, Mode.eager);
     }
-
+    
     @Override
     public FuncList<DATA> toCache() {
         if (mode().isCache())
@@ -220,12 +220,12 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         // Do this to not duplicate the data
         return new ImmutableFuncList<DATA>(data, size, Mode.cache);
     }
-
+    
     @Override
     public ImmutableFuncList<DATA> toImmutableList() {
         return this;
     }
-
+    
     @Override
     public String toString() {
         if (toStringCache != null)
@@ -237,7 +237,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             return toStringCache;
         }
     }
-
+    
     @Override
     public int hashCode() {
         if (hashcodeCache != null)
@@ -249,7 +249,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             return hashcodeCache;
         }
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean equals(Object o) {
@@ -262,18 +262,18 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             return false;
         return FuncList.zipOf(this, anotherList, (BiFunction) zeroForEquals).allMatch(toZero);
     }
-
+    
     // -- Short cut --
     @Override
     public int size() {
         return size;
     }
-
+    
     @Override
     public boolean isEmpty() {
         return (size == 0);
     }
-
+    
     @SuppressWarnings("unchecked")
     @Override
     public <TARGET> TARGET[] toArray(TARGET[] seed) {
@@ -287,7 +287,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         });
         return seed;
     }
-
+    
     @Override
     public DATA get(int index) {
         if ((index < 0) || (index >= size)) {
@@ -295,7 +295,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         }
         return data.get(index);
     }
-
+    
     @Override
     public int indexOf(Object o) {
         int index = data.indexOf(o);
@@ -304,39 +304,39 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         }
         return index;
     }
-
+    
     @Override
     public int lastIndexOf(Object o) {
         // TODO - Improve this efficiency
         return data.subList(0, size).lastIndexOf(o);
     }
-
+    
     @Override
     public ListIterator<DATA> listIterator() {
         // TODO - Improve this efficiency
         return data.subList(0, size).listIterator();
     }
-
+    
     @Override
     public ListIterator<DATA> listIterator(int index) {
         // TODO - Improve this efficiency
         return data.subList(0, size).listIterator();
     }
-
+    
     @Sequential
     @Terminal
     @Override
     public Result<DATA> firstResult() {
         return (size == 0) ? Result.ofNotExist() : Result.ofValue(this.data.get(0));
     }
-
+    
     @Sequential
     @Terminal
     @Override
     public Result<DATA> lastResult() {
         return (size == 0) ? Result.ofNotExist() : Result.ofValue(this.data.get(size - 1));
     }
-
+    
     // -- Append
     /**
      * Add the given value to the end of the list.
@@ -355,7 +355,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             return FuncList.super.append(value);
         });
     }
-
+    
     /**
      * Add the given values to the end of the list.
      */
@@ -377,7 +377,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             return FuncList.super.appendAll(values);
         });
     }
-
+    
     /**
      * Add the given value in the collection to the end of the list.
      */
@@ -394,7 +394,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
             return FuncList.super.appendAll(collection);
         });
     }
-
+    
     private FuncList<DATA> syncIf(BooleanSupplier condition, Supplier<FuncList<DATA>> matchAction, Supplier<FuncList<DATA>> elseAction) {
         synchronized (this) {
             if (condition.getAsBoolean()) {

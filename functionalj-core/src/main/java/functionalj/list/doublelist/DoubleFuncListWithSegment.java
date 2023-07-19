@@ -38,7 +38,7 @@ import functionalj.stream.markers.Sequential;
 import lombok.val;
 
 public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
-
+    
     /**
      * Segment the stream into sub stream with the fix length of count.
      *
@@ -54,7 +54,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segment(count));
     }
-
+    
     /**
      * Create a stream of sub-stream which size is derived from the value.
      *
@@ -65,7 +65,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segment(segmentSize));
     }
-
+    
     /**
      * Segment the stream into sub stream whenever the start condition is true.
      * The tail sub stream will always be included.
@@ -74,7 +74,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segmentWhen(startCondition));
     }
-
+    
     /**
      * Segment the stream into sub stream starting the element after the precondition is true.
      */
@@ -83,7 +83,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segmentAfter(endCondition));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -99,7 +99,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
     public default FuncList<DoubleFuncList> segmentBetween(DoublePredicate startCondition, DoublePredicate endCondition) {
         return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -113,7 +113,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
     public default FuncList<DoubleFuncList> segmentBetween(DoublePredicate startCondition, DoublePredicate endCondition, boolean includeIncompletedSegment) {
         return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition, includeIncompletedSegment));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -128,7 +128,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val includeTail = (incompletedSegment == IncompletedSegment.included);
         return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition, includeTail));
     }
-
+    
     // -- segmentByPercentiles --
     /**
      * Split the stream into segment based on the given percentiles. *
@@ -136,28 +136,28 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
     public default <T> FuncList<DoubleFuncList> segmentByPercentiles(int... percentiles) {
         return DoubleFuncListHelper.segmentByPercentiles(this, IntFuncList.of(percentiles).mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
     public default <T> FuncList<DoubleFuncList> segmentByPercentiles(IntFuncList percentiles) {
         return DoubleFuncListHelper.segmentByPercentiles(this, percentiles.mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
     public default <T> FuncList<DoubleFuncList> segmentByPercentiles(double... percentiles) {
         return DoubleFuncListHelper.segmentByPercentiles(this, DoubleFuncList.of(percentiles));
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
     public default <T> FuncList<DoubleFuncList> segmentByPercentiles(DoubleFuncList percentiles) {
         return DoubleFuncListHelper.segmentByPercentiles(this, percentiles);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -165,7 +165,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val percentileList = DoubleFuncList.of(percentiles);
         return segmentByPercentiles(mapper, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -173,7 +173,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(mapper, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -181,7 +181,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -189,7 +189,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -197,7 +197,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val list = doubleStreamPlus().sortedBy(mapper).toImmutableList();
         return DoubleFuncListHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -205,7 +205,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val list = doubleStreamPlus().sortedBy(mapper).toImmutableList();
         return DoubleFuncListHelper.segmentByPercentiles(list, percentiles);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -213,7 +213,7 @@ public interface DoubleFuncListWithSegment extends AsDoubleFuncList {
         val list = doubleStreamPlus().sortedBy(mapper, comparator).toImmutableList();
         return DoubleFuncListHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */

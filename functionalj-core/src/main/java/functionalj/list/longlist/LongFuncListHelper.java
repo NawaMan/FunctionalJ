@@ -30,7 +30,7 @@ import functionalj.stream.longstream.GrowOnlyLongArray;
 import lombok.val;
 
 public class LongFuncListHelper {
-
+    
     static <D> FuncList<LongFuncList> segmentByPercentiles(AsLongFuncList asList, DoubleFuncList percentiles) {
         val list = asList.asLongFuncList();
         val size = list.size();

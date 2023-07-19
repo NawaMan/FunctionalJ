@@ -28,14 +28,14 @@ import java.util.Comparator;
 import java.util.function.LongFunction;
 
 public interface LongFuncListWithSort extends AsLongFuncList {
-
+    
     /**
      * Sort the values by the mapped value.
      */
     public default <T extends Comparable<? super T>> LongFuncList sortedBy(LongFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.sortedBy(mapper));
     }
-
+    
     /**
      * Sort the values by the mapped value using the comparator.
      */

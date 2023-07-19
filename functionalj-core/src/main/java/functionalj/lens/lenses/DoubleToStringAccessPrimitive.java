@@ -27,22 +27,22 @@ import java.util.function.DoubleFunction;
 
 @FunctionalInterface
 public interface DoubleToStringAccessPrimitive extends StringAccess<Double>, DoubleFunction<String> {
-
+    
     public String applyDoubleToString(double host);
-
+    
     public default String applyAsDouble(double host) {
         return applyDoubleToString(host);
     }
-
+    
     public default String applyAsDouble(Double host) {
         return applyDoubleToString(host);
     }
-
+    
     @Override
     public default String apply(double host) {
         return applyDoubleToString(host);
     }
-
+    
     @Override
     public default String applyUnsafe(Double input) throws Exception {
         return applyAsDouble(input);

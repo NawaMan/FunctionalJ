@@ -28,28 +28,28 @@ import functionalj.stream.intstream.collect.IntCollectedToBoolean;
 import functionalj.stream.intstream.collect.IntCollectorToBooleanPlus;
 
 public interface IntAggregatorToBoolean extends IntegerToBooleanAccessPrimitive, IntAggregator<Boolean> {
-
+    
     public IntCollectedToBoolean<?> asCollected();
-
+    
     // == Implementation ==
     public static class Impl implements IntAggregatorToBoolean {
-
+    
         private final IntCollectedToBoolean<?> collected;
-
+    
         public Impl(IntCollectorToBooleanPlus<?> collector) {
             this.collected = IntCollectedToBoolean.of(collector);
         }
-
+    
         public IntCollectedToBoolean<?> asCollected() {
             return collected;
         }
-
+    
         @Override
         public boolean applyIntToBoolean(int input) {
             collected.accumulate(input);
             return collected.finish();
         }
-
+    
         @Override
         public Boolean apply(int input) {
             return applyIntToBoolean(input);

@@ -7,7 +7,7 @@ import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
 
 public class DoubleToDoubleAccessPrimitiveTest {
-
+    
     @Test
     public void testGreaterThan() {
         DoubleFuncList numbers = IntFuncList.range(0, 10).mapToDouble();

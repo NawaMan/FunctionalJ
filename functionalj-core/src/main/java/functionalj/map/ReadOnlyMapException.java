@@ -27,13 +27,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ReadOnlyMapException extends UnsupportedOperationException {
-
+    
     private static final long serialVersionUID = 3110853798441402736L;
-
+    
     public ReadOnlyMapException(@SuppressWarnings("rawtypes") ReadOnlyMap map) {
         super(message(map));
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static String message(ReadOnlyMap map) {
         Objects.requireNonNull(map);

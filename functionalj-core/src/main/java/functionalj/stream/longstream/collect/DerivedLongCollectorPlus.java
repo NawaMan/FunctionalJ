@@ -20,44 +20,44 @@ import functionalj.stream.intstream.collect.IntCollectorPlus;
 import lombok.val;
 
 abstract public class DerivedLongCollectorPlus<ACCUMULATED, TARGET> {
-
+    
     final LongCollectorPlus<ACCUMULATED, TARGET> collector;
-
+    
     protected DerivedLongCollectorPlus(LongCollectorPlus<ACCUMULATED, TARGET> collector) {
         this.collector = collector;
     }
-
+    
     public Supplier<ACCUMULATED> supplier() {
         return collector.supplier();
     }
-
+    
     public BinaryOperator<ACCUMULATED> combiner() {
         return collector.combiner();
     }
-
+    
     public Function<ACCUMULATED, TARGET> finisher() {
         return collector.finisher();
     }
-
+    
     public Set<Characteristics> characteristics() {
         return collector.characteristics();
     }
-
+    
     // == Implementations ==
     public static class FromObj<INPUT, ACCUMULATED, TARGET> extends DerivedLongCollectorPlus<ACCUMULATED, TARGET> implements CollectorPlus<INPUT, ACCUMULATED, TARGET> {
-
+    
         private final ToLongFunction<INPUT> mapper;
-
+    
         public <SOURCE> FromObj(LongCollectorPlus<ACCUMULATED, TARGET> collector, ToLongFunction<INPUT> mapper) {
             super(collector);
             this.mapper = mapper;
         }
-
+    
         @Override
         public Collector<INPUT, ACCUMULATED, TARGET> collector() {
             return this;
         }
-
+    
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public BiConsumer<ACCUMULATED, INPUT> accumulator() {
@@ -68,16 +68,16 @@ abstract public class DerivedLongCollectorPlus<ACCUMULATED, TARGET> {
             };
         }
     }
-
+    
     public static class FromInt<ACCUMULATED, TARGET> extends DerivedLongCollectorPlus<ACCUMULATED, TARGET> implements IntCollectorPlus<ACCUMULATED, TARGET> {
-
+    
         private final IntToLongFunction mapper;
-
+    
         public FromInt(LongCollectorPlus<ACCUMULATED, TARGET> collector, IntToLongFunction mapper) {
             super(collector);
             this.mapper = mapper;
         }
-
+    
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public ObjIntConsumer<ACCUMULATED> intAccumulator() {
@@ -88,16 +88,16 @@ abstract public class DerivedLongCollectorPlus<ACCUMULATED, TARGET> {
             };
         }
     }
-
+    
     public static class FromLong<ACCUMULATED, TARGET> extends DerivedLongCollectorPlus<ACCUMULATED, TARGET> implements LongCollectorPlus<ACCUMULATED, TARGET> {
-
+    
         private final LongUnaryOperator mapper;
-
+    
         public FromLong(LongCollectorPlus<ACCUMULATED, TARGET> collector, LongUnaryOperator mapper) {
             super(collector);
             this.mapper = mapper;
         }
-
+    
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public ObjLongConsumer<ACCUMULATED> longAccumulator() {
@@ -108,16 +108,16 @@ abstract public class DerivedLongCollectorPlus<ACCUMULATED, TARGET> {
             };
         }
     }
-
+    
     public static class FromDouble<ACCUMULATED, TARGET> extends DerivedLongCollectorPlus<ACCUMULATED, TARGET> implements DoubleCollectorPlus<ACCUMULATED, TARGET> {
-
+    
         private final DoubleToLongFunction mapper;
-
+    
         public FromDouble(LongCollectorPlus<ACCUMULATED, TARGET> collector, DoubleToLongFunction mapper) {
             super(collector);
             this.mapper = mapper;
         }
-
+    
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator() {

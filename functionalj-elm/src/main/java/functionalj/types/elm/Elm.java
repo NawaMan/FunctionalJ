@@ -37,12 +37,12 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Elm {
-
+    
     public static final String FROM_PACAKGE_NAME = "FROM_PACAKGE_NAME";
-
+    
     public static final String DEFAULT_GENERATED_DIRECTORY = "./generated/elm/";
-
+    
     String baseModule() default FROM_PACAKGE_NAME;
-
+    
     String generatedDirectory() default DEFAULT_GENERATED_DIRECTORY;
 }

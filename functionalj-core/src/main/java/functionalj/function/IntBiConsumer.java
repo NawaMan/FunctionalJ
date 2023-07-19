@@ -27,17 +27,17 @@ import java.util.function.BiConsumer;
 
 @FunctionalInterface
 public interface IntBiConsumer extends IntObjBiConsumer<Integer> {
-
+    
     public void acceptAsIntInt(int input1, int input2);
-
+    
     public default void acceptAsInt(int input1, Integer input2) {
         acceptAsIntInt(input1, input2);
     }
-
+    
     public default void acceptUnsafe(Integer input1, Integer input2) throws Exception {
         acceptAsIntInt(input1, input2);
     }
-
+    
     @SuppressWarnings("unchecked")
     public static void accept(BiConsumer<? super Integer, ? super Integer> consumer, int input1, int input2) {
         if (consumer instanceof IntBiConsumer) {

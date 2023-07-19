@@ -31,9 +31,9 @@ import functionalj.stream.markers.Terminal;
 import lombok.val;
 
 public interface AsStreamPlusWithForEach<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Iterate in order all element through the action
      */
@@ -41,7 +41,7 @@ public interface AsStreamPlusWithForEach<DATA> {
         val streamPlus = streamPlus();
         streamPlus.forEachOrdered(action);
     }
-
+    
     /**
      * For each with the index.
      */
@@ -55,7 +55,7 @@ public interface AsStreamPlusWithForEach<DATA> {
             action.accept(currentIndex, each);
         });
     }
-
+    
     /**
      * Populate the array with the population in the stream from 0 to length or until run out of elements.
      */
@@ -66,7 +66,7 @@ public interface AsStreamPlusWithForEach<DATA> {
             array[index] = element;
         });
     }
-
+    
     /**
      * Populate the array with the population in the stream from offset to length or until run out of elements.
      */
@@ -77,7 +77,7 @@ public interface AsStreamPlusWithForEach<DATA> {
             array[offset + index] = element;
         });
     }
-
+    
     /**
      * Populate the array with the population in the stream from offset to length or until run out of elements.
      */

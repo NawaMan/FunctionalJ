@@ -35,9 +35,9 @@ import functionalj.stream.markers.Sequential;
 import lombok.val;
 
 public interface StreamPlusWithSegment<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Segment the stream into sub stream with the fix length of count.
      * The last portion may be shorter.
@@ -53,7 +53,7 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-
+    
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 val eachListBuilder = FuncList.<DATA>newBuilder();
@@ -72,7 +72,7 @@ public interface StreamPlusWithSegment<DATA> {
         };
         return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
-
+    
     /**
      * Create a stream of sub-stream which size is derived from the value.
      *
@@ -85,9 +85,9 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-
+    
             int count = -1;
-
+    
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 val eachListBuilder = FuncList.<DATA>newBuilder();
@@ -112,7 +112,7 @@ public interface StreamPlusWithSegment<DATA> {
         };
         return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
-
+    
     /**
      * Segment the stream into sub stream whenever the start condition is true.
      */
@@ -122,11 +122,11 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-
+    
             FuncListBuilder<DATA> eachListBuilder = FuncList.newBuilder();
-
+    
             boolean hasNewList = false;
-
+    
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 boolean hasThis;
@@ -158,7 +158,7 @@ public interface StreamPlusWithSegment<DATA> {
         };
         return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
-
+    
     /**
      * Segment the stream into sub stream starting the element after the precondition is true.
      */
@@ -168,11 +168,11 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-
+    
             FuncListBuilder<DATA> eachListBuilder = FuncList.newBuilder();
-
+    
             boolean hasNewList = false;
-
+    
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 boolean hasThis;
@@ -204,7 +204,7 @@ public interface StreamPlusWithSegment<DATA> {
         };
         return StreamPlus.from(StreamSupport.stream(spliterator, isSequence));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -221,7 +221,7 @@ public interface StreamPlusWithSegment<DATA> {
     public default StreamPlus<FuncList<DATA>> segmentBetween(Predicate<? super DATA> startCondition, Predicate<? super DATA> endCondition) {
         return segmentBetween(startCondition, endCondition, false);
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -237,7 +237,7 @@ public interface StreamPlusWithSegment<DATA> {
         val includeIncompletedSegment = incompletedSegment == IncompletedSegment.included;
         return segmentBetween(startCondition, endCondition, includeIncompletedSegment);
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -254,11 +254,11 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-
+    
             FuncListBuilder<DATA> eachListBuilder = null;
-
+    
             boolean hasNewList = false;
-
+    
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 boolean hasThis;

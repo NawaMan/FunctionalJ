@@ -43,29 +43,29 @@ import lombok.val;
 // TODO - Override methods in FuncListWithMapGroup to make it faster
 // TODO - Override methods in FuncListWithMapWithIndex to make it faster
 public class ImmutableDoubleFuncList implements DoubleFuncList {
-
+    
     private static final DoubleDoubleToDoubleFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
-
+    
     private static final DoublePredicate toZero = (double i) -> i == 0;
-
+    
     private static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
-
+    
     private static ImmutableDoubleFuncList emptyList = new ImmutableDoubleFuncList(new double[0], 0, Mode.lazy);
-
+    
     /**
      * @return an empty list
      */
     public static ImmutableDoubleFuncList empty() {
         return emptyList;
     }
-
+    
     /**
      * @return an empty list
      */
     public static ImmutableDoubleFuncList emptyDoubleList() {
         return emptyList;
     }
-
+    
     /**
      * @return the list containing the given elements
      */
@@ -75,7 +75,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         val newArray = source.clone();
         return new ImmutableDoubleFuncList(newArray, newArray.length, Mode.lazy);
     }
-
+    
     /**
      * @return the list containing the given elements
      */
@@ -85,21 +85,21 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         val newArray = source.clone();
         return new ImmutableDoubleFuncList(newArray, newArray.length, Mode.lazy);
     }
-
+    
     /**
      * Create a FuncList from the given array.
      */
     public static ImmutableDoubleFuncList from(double[] data) {
         return from(Mode.lazy, data);
     }
-
+    
     public static ImmutableDoubleFuncList from(Mode mode, double[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;
         val array = data.clone();
         return new ImmutableDoubleFuncList(array, array.length, mode);
     }
-
+    
     /**
      * @return the list containing the given elements
      */
@@ -112,7 +112,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         val data = asFuncList.asDoubleFuncList().toArray();
         return new ImmutableDoubleFuncList(data, data.length, mode);
     }
-
+    
     /**
      * @return the list containing the element from the given stream
      */
@@ -122,7 +122,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         double[] array = source.toArray();
         return new ImmutableDoubleFuncList(array, array.length, Mode.lazy);
     }
-
+    
     /**
      * @return the list containing the element from the given stream
      */
@@ -132,7 +132,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         double[] array = source.toArray();
         return new ImmutableDoubleFuncList(array, array.length, mode);
     }
-
+    
     /**
      * @return the list containing the element from the given list.
      */
@@ -144,7 +144,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         val mode = funcList.asDoubleFuncList().mode();
         return ImmutableDoubleFuncList.from(mode, funcList);
     }
-
+    
     /**
      * @return the list containing the element from the given collections.
      */
@@ -157,41 +157,41 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         }
         return new ImmutableDoubleFuncList(doubles, doubles.length, Mode.lazy);
     }
-
+    
     // -- Data --
     private final GrowOnlyDoubleArray data;
-
+    
     private final FuncList.Mode mode;
-
+    
     private final int size;
-
+    
     private volatile String toStringCache = null;
-
+    
     private volatile Integer hashcodeCache = null;
-
+    
     // -- Constructors --
     ImmutableDoubleFuncList(double[] data, int size) {
         this(data, size, Mode.lazy);
     }
-
+    
     ImmutableDoubleFuncList(double[] data, int size, Mode mode) {
         this.data = new GrowOnlyDoubleArray((data == null) ? EMPTY_DOUBLE_ARRAY : data);
         this.mode = mode;
         this.size = size;
     }
-
+    
     ImmutableDoubleFuncList(GrowOnlyDoubleArray data, int size, Mode mode) {
         this.data = data;
         this.mode = mode;
         this.size = size;
     }
-
+    
     ImmutableDoubleFuncList(DoubleFuncList list, int size, Mode mode) {
         this.mode = mode;
         this.size = size;
         this.data = (list instanceof ImmutableDoubleFuncList) ? ((ImmutableDoubleFuncList) list).data : new GrowOnlyDoubleArray(list.toArray());
     }
-
+    
     @Override
     public DoubleStreamPlus doubleStream() {
         if (size == -1) {
@@ -200,12 +200,12 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return IntStreamPlus.infinite().limit(size).mapToDouble(i -> data.get(i));
         }
     }
-
+    
     @Override
     public Mode mode() {
         return mode;
     }
-
+    
     @Override
     public DoubleFuncList toLazy() {
         if (mode().isLazy())
@@ -213,7 +213,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         // Do this to not duplicate the data
         return new ImmutableDoubleFuncList(data, size, Mode.lazy);
     }
-
+    
     @Override
     public DoubleFuncList toEager() {
         if (mode().isEager())
@@ -221,7 +221,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         // Do this to not duplicate the data
         return new ImmutableDoubleFuncList(data, size, Mode.eager);
     }
-
+    
     @Override
     public DoubleFuncList toCache() {
         if (mode().isCache())
@@ -229,12 +229,12 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         // Do this to not duplicate the data
         return new ImmutableDoubleFuncList(data, size, Mode.cache);
     }
-
+    
     @Override
     public ImmutableDoubleFuncList toImmutableList() {
         return this;
     }
-
+    
     @Override
     public String toString() {
         if (toStringCache != null)
@@ -246,7 +246,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return toStringCache;
         }
     }
-
+    
     @Override
     public int hashCode() {
         if (hashcodeCache != null)
@@ -258,7 +258,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return hashcodeCache;
         }
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof DoubleFuncList))
@@ -270,23 +270,23 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return false;
         return DoubleFuncList.zipOf(this, anotherList, zeroForEquals).allMatch(toZero);
     }
-
+    
     // -- Short cut --
     @Override
     public int size() {
         return size;
     }
-
+    
     @Override
     public boolean isEmpty() {
         return (size == 0);
     }
-
+    
     @Override
     public double[] toArray() {
         return data.stream().toArray();
     }
-
+    
     @Override
     public double get(int index) {
         if ((index < 0) || (index >= size)) {
@@ -294,7 +294,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         }
         return data.get(index);
     }
-
+    
     @Override
     public int indexOf(double value) {
         for (int i = 0; i < size; i++) {
@@ -303,7 +303,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         }
         return -1;
     }
-
+    
     @Override
     public int lastIndexOf(double value) {
         for (int i = size; i-- > 0; ) {
@@ -312,19 +312,19 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
         }
         return -1;
     }
-
+    
     @Sequential
     @Terminal
     public OptionalDouble first() {
         return (this.size == 0) ? OptionalDouble.empty() : OptionalDouble.of(this.data.get(0));
     }
-
+    
     @Sequential
     @Terminal
     public OptionalDouble last() {
         return (size == 0) ? OptionalDouble.empty() : OptionalDouble.of(this.data.get(size - 1));
     }
-
+    
     // -- Append
     /**
      * Add the given value to the end of the list.
@@ -343,7 +343,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return DoubleFuncList.super.append(value);
         });
     }
-
+    
     /**
      * Add the given values to the end of the list.
      */
@@ -364,7 +364,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return DoubleFuncList.super.appendAll(values);
         });
     }
-
+    
     /**
      * Add the given value in the collection to the end of the list.
      */
@@ -381,7 +381,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return DoubleFuncList.super.appendAll(array.toArray());
         });
     }
-
+    
     /**
      * Add the given value in the collection to the end of the list.
      */
@@ -401,7 +401,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return DoubleFuncList.super.appendAll(funcList);
         });
     }
-
+    
     /**
      * Add the given value in the collection to the end of the list.
      */
@@ -418,7 +418,7 @@ public class ImmutableDoubleFuncList implements DoubleFuncList {
             return DoubleFuncList.super.appendAll(doubles);
         });
     }
-
+    
     private DoubleFuncList syncIf(BooleanSupplier condition, Supplier<DoubleFuncList> matchAction, Supplier<DoubleFuncList> elseAction) {
         synchronized (this) {
             if (condition.getAsBoolean()) {

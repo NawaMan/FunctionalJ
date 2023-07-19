@@ -28,15 +28,15 @@ import java.util.function.Predicate;
 import lombok.val;
 
 public interface ResultFilterAddOn<DATA> {
-
+    
     public Result<DATA> asResult();
-
+    
     public Result<DATA> filter(Predicate<? super DATA> theCondition);
-
+    
     public default <T extends DATA> Result<DATA> filter(Class<T> clzz) {
         return filter(clzz::isInstance);
     }
-
+    
     public default <T extends DATA> Result<DATA> filter(Class<T> clzz, Predicate<? super T> theCondition) {
         return filter(value -> {
             if (clzz.isInstance(value))
@@ -46,7 +46,7 @@ public interface ResultFilterAddOn<DATA> {
             return isPass;
         });
     }
-
+    
     public default <T> Result<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
         return filter(value -> {
             val target = mapper.apply(value);

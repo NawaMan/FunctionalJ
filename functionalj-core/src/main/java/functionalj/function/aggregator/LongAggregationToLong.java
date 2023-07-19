@@ -32,35 +32,35 @@ import functionalj.stream.longstream.collect.LongCollectorToLongPlus;
 import lombok.val;
 
 public abstract class LongAggregationToLong extends LongAggregation<Long> {
-
+    
     public static <A> LongAggregationToLong from(LongCollectorToLongPlus<A> collector) {
         return new LongAggregationToLong.Impl(collector);
     }
-
+    
     // == Instance ==
     public abstract LongCollectorToLongPlus<?> longCollectorToLongPlus();
-
+    
     @Override
     public LongCollectorPlus<?, Long> longCollectorPlus() {
         return longCollectorToLongPlus();
     }
-
+    
     public LongAggregatorToLong newAggregator() {
         val collector = longCollectorToLongPlus();
         return new LongAggregatorToLong.Impl(collector);
     }
-
+    
     // == Derived ==
     public <INPUT> AggregationToLong<INPUT> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorToLongPlus().of(mapper);
         return new AggregationToLong.Impl<>(newCollector);
     }
-
+    
     public IntAggregationToLong ofInt(IntToLongFunction mapper) {
         val newCollector = longCollectorToLongPlus().of(mapper);
         return new IntAggregationToLong.Impl(newCollector);
     }
-
+    
     public LongAggregation<Long> ofLong(LongFunction<Long> mapper) {
         if (mapper instanceof LongUnaryOperator) {
             val newCollector = longCollectorToLongPlus().of((LongUnaryOperator) mapper);
@@ -69,23 +69,23 @@ public abstract class LongAggregationToLong extends LongAggregation<Long> {
         val newCollector = longCollectorToLongPlus().of(mapper);
         return new LongAggregation.Impl<>(newCollector);
     }
-
+    
     // This is a terrible name .... :-(
     // But if we just use `ofLong`, Java confuse this one and the one above
     public LongAggregationToLong ofLongToLong(LongUnaryOperator mapper) {
         val newCollector = longCollectorToLongPlus().of(mapper);
         return new LongAggregationToLong.Impl(newCollector);
     }
-
+    
     // == Implementation ==
     public static class Impl extends LongAggregationToLong {
-
+    
         private final LongCollectorToLongPlus<?> collector;
-
+    
         public Impl(LongCollectorToLongPlus<?> collector) {
             this.collector = collector;
         }
-
+    
         @Override
         public LongCollectorToLongPlus<?> longCollectorToLongPlus() {
             return collector;

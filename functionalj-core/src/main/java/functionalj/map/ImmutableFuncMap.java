@@ -31,61 +31,61 @@ import lombok.val;
 
 // TODO - Make Native-map-backed ImmutableFuncMap.
 public final class ImmutableFuncMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, VALUE> {
-
+    
     @SuppressWarnings("unchecked")
     public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> from(Map<? extends KEY, ? extends VALUE> map) {
         return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<KEY, VALUE>) map : new ImmutableFuncMap<KEY, VALUE>(map);
     }
-
+    
     @SuppressWarnings("unchecked")
     public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> from(FuncMap<? extends KEY, ? extends VALUE> map) {
         return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<KEY, VALUE>) map : new ImmutableFuncMap<KEY, VALUE>(map);
     }
-
+    
     @SuppressWarnings("unchecked")
     public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> empty() {
         return empty;
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static final ImmutableFuncMap empty = new ImmutableFuncMap(Collections.emptyMap());
-
+    
     private final boolean isLazy;
-
+    
     ImmutableFuncMap(Map<? extends KEY, ? extends VALUE> map) {
         this(map, true);
     }
-
+    
     ImmutableFuncMap(Map<? extends KEY, ? extends VALUE> map, boolean isLazy) {
         super(createBaseMap(map), null);
         this.isLazy = isLazy;
     }
-
+    
     @SuppressWarnings("unchecked")
     private static <K, V> Map<K, V> createBaseMap(Map<? extends K, ? extends V> map) {
         return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<K, V>) map : new LinkedHashMap<K, V>(map);
     }
-
+    
     public boolean isLazy() {
         return isLazy;
     }
-
+    
     public boolean isEager() {
         return !isLazy;
     }
-
+    
     public FuncMap<KEY, VALUE> lazy() {
         if (isLazy)
             return this;
         return new ImmutableFuncMap<KEY, VALUE>(this, true);
     }
-
+    
     public FuncMap<KEY, VALUE> eager() {
         if (!isLazy)
             return this;
         return new ImmutableFuncMap<KEY, VALUE>(this, false);
     }
-
+    
     @Override
     public FuncMap<KEY, VALUE> sorted() {
         if (map instanceof TreeMap)

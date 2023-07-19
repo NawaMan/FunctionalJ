@@ -39,13 +39,13 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public class IntStreamPlusHelper {
-
+    
     static final Object dummy = new Object();
-
+    
     public static <T> boolean hasAt(IntStream stream, long index) {
         return hasAt(stream, index, null);
     }
-
+    
     public static <T> boolean hasAt(IntStream stream, long index, int[][] valueRef) {
         // Note: It is done this way to avoid interpreting 'null' as no-value
         val ref = new int[1][];
@@ -56,7 +56,7 @@ public class IntStreamPlusHelper {
         valueRef[0] = ref[0];
         return found;
     }
-
+    
     // -- Terminal --
     static <TARGET> TARGET terminate(AsIntStreamPlus asStreamPlus, Function<IntStream, TARGET> action) {
         val streamPlus = asStreamPlus.intStreamPlus();
@@ -68,7 +68,7 @@ public class IntStreamPlusHelper {
             streamPlus.close();
         }
     }
-
+    
     static void terminate(AsIntStreamPlus asStreamPlus, Consumer<IntStream> action) {
         val streamPlus = asStreamPlus.intStreamPlus();
         try {
@@ -78,7 +78,7 @@ public class IntStreamPlusHelper {
             streamPlus.close();
         }
     }
-
+    
     /**
      * Run the given action sequentially, make sure to set the parallelity of the result back.
      */
@@ -93,14 +93,14 @@ public class IntStreamPlusHelper {
             return newIntStreamPlus.parallel();
         return newIntStreamPlus.sequential();
     }
-
+    
     /**
      * Run the given action sequentially, make sure to set the parallelity of the result back.
      */
     static <T> IntStreamPlus sequentialToInt(AsIntStreamPlus asStreamPlus, Function<IntStreamPlus, IntStreamPlus> action) {
         return sequential(asStreamPlus, action);
     }
-
+    
     /**
      * Run the given action sequentially, make sure to set the parallelity of the result back.
      */
@@ -115,20 +115,20 @@ public class IntStreamPlusHelper {
             return newIntStreamPlus.parallel();
         return newIntStreamPlus.sequential();
     }
-
+    
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipIntWith(IntObjBiFunction<B, TARGET> merger, IntIteratorPlus iteratorA, IteratorPlus<B> iteratorB) {
         val targetIterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
-
+    
             public TARGET next() {
                 if (!hasNextA)
                     throw new NoSuchElementException();
@@ -146,20 +146,20 @@ public class IntStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipIntWith(int defaultValue, IntObjBiFunction<B, TARGET> merger, IntIteratorPlus iteratorA, IteratorPlus<B> iteratorB) {
         val targetIterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return hasNextA || hasNextB;
             }
-
+    
             public TARGET next() {
                 val nextA = hasNextA ? iteratorA.nextInt() : defaultValue;
                 B nextB = hasNextB ? iteratorB.next() : null;
@@ -175,20 +175,20 @@ public class IntStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static IntStreamPlus doZipIntIntWith(IntBinaryOperator merger, IntIteratorPlus iteratorA, IntIteratorPlus iteratorB) {
         val iterator = new PrimitiveIterator.OfInt() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
-
+    
             public int nextInt() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextInt();
@@ -209,20 +209,20 @@ public class IntStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static <TARGET> StreamPlus<TARGET> doZipIntIntObjWith(IntIntBiFunction<TARGET> merger, IntIteratorPlus iteratorA, IntIteratorPlus iteratorB) {
         val iterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
-
+    
             public TARGET next() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextInt();
@@ -243,20 +243,20 @@ public class IntStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static <TARGET> StreamPlus<TARGET> doZipIntIntObjWith(IntIntBiFunction<TARGET> merger, IntIteratorPlus iteratorA, IntIteratorPlus iteratorB, int defaultValue) {
         val iterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-
+    
             public TARGET next() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextInt();
@@ -286,20 +286,20 @@ public class IntStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static IntStreamPlus doZipIntIntWith(IntBinaryOperator merger, IntIteratorPlus iteratorA, IntIteratorPlus iteratorB, int defaultValue) {
         val iterator = new PrimitiveIterator.OfInt() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-
+    
             public int nextInt() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextInt();
@@ -330,20 +330,20 @@ public class IntStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static <TARGET> StreamPlus<TARGET> doZipIntIntObjWith(IntIntBiFunction<TARGET> merger, IntIteratorPlus iteratorA, IntIteratorPlus iteratorB, int defaultValueA, int defaultValueB) {
         val iterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-
+    
             public TARGET next() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextInt();
@@ -374,20 +374,20 @@ public class IntStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static IntStreamPlus doZipIntIntWith(IntBinaryOperator merger, IntIteratorPlus iteratorA, IntIteratorPlus iteratorB, int defaultValueA, int defaultValueB) {
         val iterator = new PrimitiveIterator.OfInt() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-
+    
             public int nextInt() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextInt();
@@ -418,12 +418,12 @@ public class IntStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static IntStreamPlus doMergeInt(IntIteratorPlus iteratorA, IntIteratorPlus iteratorB) {
         val iterator = new IntIteratorPlus() {
-
+    
             private boolean isA = true;
-
+    
             public boolean hasNext() {
                 if (isA) {
                     if (iteratorA.hasNext())
@@ -440,13 +440,13 @@ public class IntStreamPlusHelper {
                     return true;
                 return false;
             }
-
+    
             public int nextInt() {
                 val next = isA ? iteratorA.next() : iteratorB.next();
                 isA = !isA;
                 return next;
             }
-
+    
             @Override
             public OfInt asIterator() {
                 return this;

@@ -34,22 +34,22 @@ import lombok.val;
 
 @SuppressWarnings("rawtypes")
 public class CombineResult<D> {
-
+    
     private final Func1<FuncList<Result>, Result<D>> mergeFunc;
-
+    
     // TODO - Add Else ... which will be called with the current value when unsuccessfull.
     private final DeferAction<D> action;
-
+    
     private final int count;
-
+    
     private final Result[] results;
-
+    
     private final SubscriptionRecord[] subscriptions;
-
+    
     private final AtomicBoolean isDone;
-
+    
     private final Promise<D> promise;
-
+    
     CombineResult(FuncList<NamedExpression<HasPromise<Object>>> hasPromises, Func1<FuncList<Result>, Result<D>> mergeFunc) {
         this.mergeFunc = mergeFunc;
         this.count = hasPromises.size();
@@ -68,11 +68,11 @@ public class CombineResult<D> {
             }
         });
     }
-
+    
     DeferAction<D> getDeferAction() {
         return action;
     }
-
+    
     @SuppressWarnings("unchecked")
     private <T> void processResult(int index, Result<T> result) {
         if (isDone.get())
@@ -92,28 +92,28 @@ public class CombineResult<D> {
         val mergedResult = mergeFunc.apply(resultList);
         action.completeWith((Result) mergedResult);
     }
-
+    
     private void unsbscribeAll() {
         for (val subscription : subscriptions) {
             if (subscription != null)
                 subscription.unsubscribe();
         }
     }
-
+    
     private void doneAsCancelled(int index) {
         if (!isDone.compareAndSet(false, true))
             return;
         action.abort("Promise#" + index);
         unsbscribeAll();
     }
-
+    
     private void doneAsNotReady(int index, Result result) {
         if (!isDone.compareAndSet(false, true))
             return;
         action.abort("Promise#" + index, new IllegalStateException("Result cannot be in 'not ready' at this point: " + result.getStatus(), result.getException()));
         unsbscribeAll();
     }
-
+    
     private void doneAsException(int index, Result result) {
         if (!isDone.compareAndSet(false, true))
             return;

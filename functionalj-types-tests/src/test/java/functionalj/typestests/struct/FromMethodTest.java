@@ -40,24 +40,24 @@ import functionalj.types.Struct;
 import lombok.val;
 
 public class FromMethodTest {
-
+    
     @Struct(specField = "spec")
     static boolean Car(String make, int year, @Nullable @DefaultTo(NULL) String color) {
         return true;
     }
-
+    
     @Struct
     public void Inventory(@DefaultTo(EMPTY) FuncList<CarForSale> cars) {
     }
-
+    
     @Struct
     public void Price(int price, @DefaultTo(ZERO) int discountPercent) {
     }
-
+    
     @Struct
     public void CarForSale(Car car, Price price) {
     }
-
+    
     @Test
     public void tests() {
         val inventory = new Inventory();
@@ -75,7 +75,7 @@ public class FromMethodTest {
         assertEquals("CarForSale[car: Car[make: Subaru, year: 2010, color: Silver], price: Price[price: 20000, discountPercent: 0]]", newCfS.toString());
         assertEquals(orgCfS.toString(), newCfS.toString());
     }
-
+    
     @Test
     public void test() {
         val car = new Car("Toyota", 2008, "White");

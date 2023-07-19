@@ -28,7 +28,7 @@ import org.junit.Test;
 import functionalj.types.Type;
 
 public class TypeTest {
-
+    
     @Test
     public void testPredicateType() {
         assertEquals("java.lang.Integer", Type.INTEGER.toString());

@@ -27,43 +27,43 @@ import java.util.function.ObjLongConsumer;
 import functionalj.stream.collect.Collected;
 
 public interface LongCollectedToBoolean<ACCUMULATED> extends Collected<Long, ACCUMULATED, Boolean>, LongCollected<ACCUMULATED, Boolean> {
-
+    
     public static <ACC> LongCollectedToBoolean<ACC> of(LongCollectorToBooleanPlus<ACC> collector) {
         return new LongCollectedToBoolean.Impl<ACC>(collector);
     }
-
+    
     // == Instance ==
     public void accumulate(long each);
-
+    
     public boolean finishAsBoolean();
-
+    
     public default Boolean finish() {
         return finishAsBoolean();
     }
-
+    
     public default void accumulate(Long each) {
         accumulate(each);
     }
-
+    
     // == Implementation ==
     public static class Impl<ACCUMULATED> implements LongCollectedToBoolean<ACCUMULATED> {
-
+    
         private final LongCollectorToBooleanPlus<ACCUMULATED> collector;
-
+    
         private final ObjLongConsumer<ACCUMULATED> accumulator;
-
+    
         private final ACCUMULATED accumulated;
-
+    
         public Impl(LongCollectorToBooleanPlus<ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.longAccumulator();
         }
-
+    
         public void accumulate(long each) {
             accumulator.accept(accumulated, each);
         }
-
+    
         @Override
         public boolean finishAsBoolean() {
             return collector.finisher().apply(accumulated);

@@ -31,25 +31,25 @@ import functionalj.ref.Ref;
 import lombok.val;
 
 public interface ThrowFuncs {
-
+    
     public static final Ref<Func1<Exception, RuntimeException>> exceptionTransformer = Ref.ofValue(e -> {
         val throwable = (e instanceof RuntimeException) ? (RuntimeException) e : new FunctionInvocationException(e);
         return throwable;
     });
-
+    
     public static <T extends Throwable> T doThrow(T throwable) throws T {
         throw throwable;
     }
-
+    
     public static <T extends Throwable> T doThrowFrom(Supplier<T> supplier) throws T {
         throw supplier.get();
     }
-
+    
     public static void handleNoThrow(Exception exception) {
         // TODO - Make a ref.
         Log.logErr(exception);
     }
-
+    
     public static void handleThrowRuntime(Exception exception) {
         val throwable = exceptionTransformer.value().apply(exception);
         handleNoThrow(throwable);

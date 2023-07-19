@@ -27,43 +27,43 @@ import java.util.function.ObjDoubleConsumer;
 import functionalj.stream.collect.Collected;
 
 public interface DoubleCollectedToLong<ACCUMULATED> extends Collected<Double, ACCUMULATED, Long>, DoubleCollected<ACCUMULATED, Long> {
-
+    
     public static <ACC> DoubleCollectedToLong<ACC> of(DoubleCollectorToLongPlus<ACC> collector) {
         return new DoubleCollectedToLong.Impl<>(collector);
     }
-
+    
     // == Instance ==
     public void accumulate(double each);
-
+    
     public long finishAsLong();
-
+    
     public default Long finish() {
         return finishAsLong();
     }
-
+    
     public default void accumulate(Double each) {
         accumulate(each);
     }
-
+    
     // == Implementation ==
     public static class Impl<ACCUMULATED> implements DoubleCollectedToLong<ACCUMULATED> {
-
+    
         private final DoubleCollectorToLongPlus<ACCUMULATED> collector;
-
+    
         private final ObjDoubleConsumer<ACCUMULATED> accumulator;
-
+    
         private final ACCUMULATED accumulated;
-
+    
         public Impl(DoubleCollectorToLongPlus<ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.doubleAccumulator();
         }
-
+    
         public void accumulate(double each) {
             accumulator.accept(accumulated, each);
         }
-
+    
         @Override
         public long finishAsLong() {
             return collector.finisher().apply(accumulated);

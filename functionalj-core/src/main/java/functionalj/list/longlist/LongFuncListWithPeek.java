@@ -31,14 +31,14 @@ import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 public interface LongFuncListWithPeek extends AsLongFuncList {
-
+    
     /**
      * Peek only the value that is selected with selector.
      */
     public default LongFuncList peekBy(LongPredicate selector, LongConsumer theConsumer) {
         return LongFuncList.from(() -> longStreamPlus().peekBy(selector, theConsumer));
     }
-
+    
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
     /**
@@ -47,14 +47,14 @@ public interface LongFuncListWithPeek extends AsLongFuncList {
     public default <T> LongFuncList peekAs(LongFunction<T> mapper, Consumer<? super T> theConsumer) {
         return deriveFrom(this, stream -> stream.peekAs(mapper, theConsumer));
     }
-
+    
     /**
      * Peek only the mapped value using the mapper.
      */
     public default <T> LongFuncList peekBy(LongFunction<T> mapper, Predicate<? super T> selector, LongConsumer theConsumer) {
         return deriveFrom(this, stream -> stream.peekBy(mapper, selector, theConsumer));
     }
-
+    
     /**
      * Peek only the mapped value using the mapper that is selected by the selector.
      */

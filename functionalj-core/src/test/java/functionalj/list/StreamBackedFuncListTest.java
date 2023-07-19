@@ -11,7 +11,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class StreamBackedFuncListTest {
-
+    
     @Test
     public void testPeekOne() {
         // This test is to check that the stream is only used once.
@@ -38,7 +38,7 @@ public class StreamBackedFuncListTest {
         // One, Two, Three, Four, Five, Six, Seven are not peeked again.
         assertEquals("[Eight, Nine, Ten]", logs.toString());
     }
-
+    
     @Test
     public void testAppend() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
@@ -50,7 +50,7 @@ public class StreamBackedFuncListTest {
         assertEquals("[One, Two, Three, Four, Five, Six]", list2.limit(6).toListString());
         assertEquals("[One, Two, Three, Four, Five, Six, Seven]", list2.toListString());
     }
-
+    
     @Test
     public void testThreadSafety() {
         val size = 100_000;

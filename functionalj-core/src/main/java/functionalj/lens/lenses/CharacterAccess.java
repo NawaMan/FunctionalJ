@@ -32,7 +32,7 @@ import functionalj.function.ToCharFunction;
 import lombok.val;
 
 public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, ToCharFunction<HOST>, Func1<HOST, Character> {
-
+    
     public static <H> CharacterAccess<H> of(Function<H, Character> accessToValue) {
         requireNonNull(accessToValue);
         if (accessToValue instanceof CharacterAccess) {
@@ -53,29 +53,29 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
         val access = (CharacterAccessBoxed<H>) (host -> func.apply(host));
         return access;
     }
-
+    
     public static <H> CharacterAccess<H> ofPrimitive(ToCharFunction<H> accessToValue) {
         requireNonNull(accessToValue);
         val access = (CharacterAccessPrimitive<H>) accessToValue::applyAsChar;
         return access;
     }
-
+    
     public char applyAsChar(HOST host);
-
+    
     public Character applyUnsafe(HOST host) throws Exception;
-
+    
     @Override
     public default CharacterAccess<HOST> newAccess(Function<HOST, Character> accessToValue) {
         return of(accessToValue);
     }
-
+    
     public default IntegerAccessPrimitive<HOST> asInteger() {
         return host -> {
             char charValue = applyAsChar(host);
             return (int) charValue;
         };
     }
-
+    
     public default IntegerAccessPrimitive<HOST> compareTo(char anotherValue) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -83,7 +83,7 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return compare;
         };
     }
-
+    
     public default IntegerAccessPrimitive<HOST> compareTo(CharSupplier anotherSupplier) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -92,7 +92,7 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return compare;
         };
     }
-
+    
     public default IntegerAccessPrimitive<HOST> compareTo(CharacterAccess<HOST> anotherAccess) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -101,7 +101,7 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return compare;
         };
     }
-
+    
     public default IntegerAccessPrimitive<HOST> compareTo(ToCharBiCharFunction<HOST> anotherFunction) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -110,14 +110,14 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return compare;
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> thatEquals(char anotherValue) {
         return host -> {
             char charValue = applyAsChar(host);
             return charValue == anotherValue;
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> thatEquals(CharSupplier anotherSupplier) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -125,7 +125,7 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return charValue == anotherValue;
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> thatEquals(CharacterAccess<HOST> anotherAccess) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -133,7 +133,7 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return charValue == anotherValue;
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> thatEquals(ToCharBiCharFunction<HOST> anotherFunction) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -141,14 +141,14 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return charValue == anotherValue;
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> thatNotEquals(int anotherValue) {
         return host -> {
             char charValue = applyAsChar(host);
             return charValue != anotherValue;
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> thatNotEquals(CharSupplier anotherSupplier) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -156,7 +156,7 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return charValue != anotherValue;
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> thatNotEquals(CharacterAccess<HOST> anotherAccess) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -164,7 +164,7 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return charValue != anotherValue;
         };
     }
-
+    
     public default BooleanAccessPrimitive<HOST> thatNotEquals(ToCharBiCharFunction<HOST> anotherFunction) {
         return host -> {
             char charValue = applyAsChar(host);
@@ -172,7 +172,7 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return charValue != anotherValue;
         };
     }
-
+    
     // boolean isHighSurrogate(char ch)
     // boolean isLowSurrogate(char ch)
     // boolean isSurrogate(char ch)
@@ -194,14 +194,14 @@ public interface CharacterAccess<HOST> extends ObjectAccess<HOST, Character>, To
             return Character.toLowerCase(charValue);
         };
     }
-
+    
     public default CharacterAccessPrimitive<HOST> toUpperCase() {
         return host -> {
             char charValue = applyAsChar(host);
             return Character.toUpperCase(charValue);
         };
     }
-
+    
     public default CharacterAccessPrimitive<HOST> toTitleCase() {
         return host -> {
             char charValue = applyAsChar(host);

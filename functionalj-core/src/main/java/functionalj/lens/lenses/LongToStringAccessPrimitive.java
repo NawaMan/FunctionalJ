@@ -27,14 +27,14 @@ import java.util.function.LongFunction;
 
 @FunctionalInterface
 public interface LongToStringAccessPrimitive extends StringAccess<Long>, LongFunction<String> {
-
+    
     public String applyLongToString(long host);
-
+    
     @Override
     public default String applyUnsafe(Long input) throws Exception {
         return applyLongToString(input);
     }
-
+    
     @Override
     public default String apply(long value) {
         return applyLongToString(value);

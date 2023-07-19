@@ -27,16 +27,16 @@ import java.util.function.Function;
 import functionalj.pipeable.Pipeable;
 
 public interface FuncListWithPipe<DATA> {
-
+    
     public FuncList<DATA> toFuncList();
-
+    
     /**
      * @return the pipeable of this stream.
      */
     public default <T> Pipeable<FuncList<DATA>> pipable() {
         return Pipeable.of(this.toFuncList());
     }
-
+    
     /**
      * Pipe this stream plus through the given function.
      */

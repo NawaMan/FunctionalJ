@@ -34,7 +34,7 @@ import functionalj.result.Result;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 
 public interface DoubleFuncListWithModify extends AsDoubleFuncList {
-
+    
     /**
      * Accumulate the previous to the next element.
      *
@@ -55,7 +55,7 @@ public interface DoubleFuncListWithModify extends AsDoubleFuncList {
     public default DoubleFuncList accumulate(DoubleDoubleToDoubleFunctionPrimitive accumulator) {
         return deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
-
+    
     // == restate ==
     /**
      * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
@@ -77,7 +77,7 @@ public interface DoubleFuncListWithModify extends AsDoubleFuncList {
     public default DoubleFuncList restate(DoubleObjBiFunction<DoubleStreamPlus, DoubleStreamPlus> restater) {
         return deriveFrom(this, stream -> stream.restate(restater));
     }
-
+    
     // == Spawn ==
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.

@@ -31,9 +31,9 @@ import org.junit.Test;
 import lombok.val;
 
 public class ValueTest {
-
+    
     private static final Result<String> value = Result.valueOf("Test");
-
+    
     @Test
     public void testGet() {
         // NOTE - Not exactly efficient ... but will do for now.
@@ -42,7 +42,7 @@ public class ValueTest {
         });
         assertAsString("Result:{ Value: 4 }", length);
     }
-
+    
     @Test
     public void testLazy() {
         val logs = new ArrayList<String>();
@@ -60,7 +60,7 @@ public class ValueTest {
         assertAsString("Result:{ Value: 4 }", length);
         assertAsString("[--- After map but logged first ---, Test]", logs);
     }
-
+    
     @Test
     public void testPrintException() {
         val buffer = new StringWriter();

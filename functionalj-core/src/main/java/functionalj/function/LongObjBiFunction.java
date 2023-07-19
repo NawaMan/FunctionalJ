@@ -27,9 +27,9 @@ import java.util.function.BiFunction;
 import functionalj.functions.ThrowFuncs;
 
 public interface LongObjBiFunction<DATA, TARGET> extends Func2<Long, DATA, TARGET> {
-
+    
     public TARGET applyAsLongUnsafe(long input1, DATA input2) throws Exception;
-
+    
     public default TARGET applyAsLong(long input1, DATA input2) {
         try {
             return applyAsLongUnsafe(input1, input2);
@@ -37,11 +37,11 @@ public interface LongObjBiFunction<DATA, TARGET> extends Func2<Long, DATA, TARGE
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
-
+    
     public default TARGET applyUnsafe(Long input1, DATA input2) throws Exception {
         return applyAsLong(input1, input2);
     }
-
+    
     public static <D, T> T apply(BiFunction<Long, D, T> function, long input1, D input2) {
         if (function instanceof LongObjBiPredicate) {
             return ((LongObjBiFunction<D, T>) function).applyAsLong(input1, input2);

@@ -30,28 +30,28 @@ import lombok.val;
 
 @FunctionalInterface
 public interface BooleanLens<HOST> extends BooleanAccess<HOST>, AnyLens<HOST, Boolean>, Predicate<HOST> {
-
+    
     public static class Impl<H> extends AnyLens.Impl<H, Boolean> implements Named, BooleanLens<H> {
-
+    
         public Impl(String name, LensSpec<H, Boolean> spec) {
             super(name, spec);
         }
     }
-
+    
     public static <HOST> BooleanLens<HOST> of(String name, LensSpec<HOST, Boolean> spec) {
         return new Impl<>(name, spec);
     }
-
+    
     public static <HOST> BooleanLens<HOST> of(LensSpec<HOST, Boolean> spec) {
         return of(null, spec);
     }
-
+    
     @Override
     default Boolean apply(HOST host) {
         LensSpec<HOST, Boolean> lensSpec = lensSpec();
         return lensSpec.getRead().apply(host);
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public default boolean test(HOST host) {
@@ -64,7 +64,7 @@ public interface BooleanLens<HOST> extends BooleanAccess<HOST>, AnyLens<HOST, Bo
         val value = lensSpec.apply(host);
         return value;
     }
-
+    
     @Override
     default Boolean applyUnsafe(HOST host) throws Exception {
         LensSpec<HOST, Boolean> lensSpec = lensSpec();

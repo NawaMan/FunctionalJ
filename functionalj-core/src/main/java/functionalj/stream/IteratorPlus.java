@@ -36,49 +36,49 @@ import lombok.val;
 
 @FunctionalInterface
 public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipeable<IteratorPlus<DATA>> {
-
+    
     @SuppressWarnings("unchecked")
     public static <D> IteratorPlus<D> of(D... ds) {
         return IteratorPlus.from(StreamPlus.of(ds));
     }
-
+    
     public static <D> IteratorPlus<D> from(Stream<D> stream) {
         if (stream instanceof StreamPlus) {
             return new StreamBackedIteratorPlus<>(((StreamPlus<D>) stream).stream());
         }
         return IteratorPlus.from(stream.iterator());
     }
-
+    
     public static <D> IteratorPlus<D> from(Iterator<D> iterator) {
         if (iterator instanceof IteratorPlus)
             return (IteratorPlus<D>) iterator;
         else
             return new IteratorPlus<D>() {
-
+    
                 @Override
                 public Iterator<D> asIterator() {
                     return iterator;
                 }
             };
     }
-
+    
     public default IteratorPlus<DATA> __data() throws Exception {
         return this;
     }
-
+    
     public default void close() {
     }
-
+    
     public default IteratorPlus<DATA> onClose(Runnable closeHandler) {
         return this;
     }
-
+    
     public Iterator<DATA> asIterator();
-
+    
     public default IteratorPlus<DATA> iterator() {
         return IteratorPlus.from(asIterator());
     }
-
+    
     @Override
     public default boolean hasNext() {
         val hasNext = asIterator().hasNext();
@@ -87,28 +87,28 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
         }
         return hasNext;
     }
-
+    
     @Override
     public default DATA next() {
         return asIterator().next();
     }
-
+    
     public default StreamPlus<DATA> stream() {
         val iterable = (Iterable<DATA>) () -> this;
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
-
+    
     public default FuncList<DATA> toList() {
         return stream().toList();
     }
-
+    
     public default Result<DATA> pullNext() {
         if (hasNext())
             return Result.valueOf(next());
         else
             return Result.ofNoMore();
     }
-
+    
     @SuppressWarnings("unchecked")
     public default AutoCloseableResult<IteratorPlus<DATA>> pullNext(int count) {
         Object[] array = stream().limit(count).toArray();
@@ -118,7 +118,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
         val iterator = (ArrayBackedIteratorPlus<DATA>) new ArrayBackedIteratorPlus<Object>(array);
         return AutoCloseableResult.valueOf(iterator);
     }
-
+    
     public default IteratorPlus<DATA> useNext(FuncUnit1<DATA> usage) {
         if (hasNext()) {
             val next = next();
@@ -126,7 +126,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
         }
         return this;
     }
-
+    
     @SuppressWarnings("unchecked")
     public default IteratorPlus<DATA> useNext(int count, FuncUnit1<StreamPlus<DATA>> usage) {
         Object[] array = stream().limit(count).toArray();
@@ -138,7 +138,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
         }
         return this;
     }
-
+    
     public default <TARGET> Result<TARGET> mapNext(Func1<DATA, TARGET> mapper) {
         if (hasNext()) {
             val next = next();
@@ -148,7 +148,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
             return Result.ofNoMore();
         }
     }
-
+    
     public default <TARGET> Result<TARGET> mapNext(int count, Func1<StreamPlus<DATA>, TARGET> mapper) {
         val array = stream().limit(count).toArray();
         if ((array.length == 0) && (count != 0))

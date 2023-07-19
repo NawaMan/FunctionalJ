@@ -6,7 +6,7 @@ import functionalj.functions.ThrowFuncs;
 import functionalj.result.NoMoreResultException;
 
 public class SupplierBackedIterator<DATA> implements Iterator<DATA> {
-
+    
     /**
      * Throw a no more element exception. This is used for generator.
      */
@@ -14,15 +14,15 @@ public class SupplierBackedIterator<DATA> implements Iterator<DATA> {
         ThrowFuncs.doThrowFrom(() -> new NoMoreResultException());
         return (D) null;
     }
-
+    
     private final Supplier<DATA> supplier;
-
+    
     private DATA next;
-
+    
     public SupplierBackedIterator(Supplier<DATA> supplier) {
         this.supplier = supplier;
     }
-
+    
     @Override
     public boolean hasNext() {
         try {
@@ -32,7 +32,7 @@ public class SupplierBackedIterator<DATA> implements Iterator<DATA> {
             return false;
         }
     }
-
+    
     @Override
     public DATA next() {
         return next;

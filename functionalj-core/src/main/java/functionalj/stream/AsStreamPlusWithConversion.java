@@ -47,9 +47,9 @@ import functionalj.stream.markers.Terminal;
 import lombok.val;
 
 public interface AsStreamPlusWithConversion<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * @return a iterator of this FuncList.
      */
@@ -57,7 +57,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.iterator();
     }
-
+    
     /**
      * @return a spliterator of this FuncList.
      */
@@ -65,7 +65,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
-
+    
     /**
      * @return a functional list containing the elements.
      *
@@ -76,7 +76,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     public default FuncList<DATA> toFuncList() {
         return FuncList.from(streamPlus());
     }
-
+    
     // -- toArray --
     @Eager
     @Terminal
@@ -84,14 +84,14 @@ public interface AsStreamPlusWithConversion<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.toArray();
     }
-
+    
     @Eager
     @Terminal
     public default <A> A[] toArray(IntFunction<A[]> generator) {
         val streamPlus = streamPlus();
         return streamPlus.toArray(generator);
     }
-
+    
     // -- toArray --
     /**
      * Map the data to byte and return the byte array of all the results.
@@ -107,7 +107,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         });
         return byteArray.toByteArray();
     }
-
+    
     /**
      * Map the data to int and return the int array of all the results.
      */
@@ -117,7 +117,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.mapToInt(toInt).toArray();
     }
-
+    
     /**
      * Map the data to double and return the byte array of all the results.
      */
@@ -127,7 +127,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.mapToDouble(toDouble).toArray();
     }
-
+    
     // -- toList --
     /**
      * @return the array list containing the elements.
@@ -140,7 +140,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         streamPlus.forEach(value -> newList.add(value));
         return newList;
     }
-
+    
     /**
      * @return an immutable list containing the elements.
      */
@@ -150,7 +150,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val streamPlus = streamPlus();
         return ImmutableFuncList.from(streamPlus);
     }
-
+    
     /**
      * @return an Java list containing the elements.
      */
@@ -160,7 +160,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.collect(Collectors.toList());
     }
-
+    
     /**
      * @return a list containing the elements.
      */
@@ -169,7 +169,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     public default FuncList<DATA> toList() {
         return toImmutableList();
     }
-
+    
     /**
      * @return a mutable list containing the elements.
      */
@@ -178,7 +178,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     public default List<DATA> toMutableList() {
         return toArrayList();
     }
-
+    
     // -- join --
     /**
      * @return the concatenate of toString() of each elements.
@@ -189,7 +189,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.mapToObj(StrFuncs::toStr).collect(Collectors.joining());
     }
-
+    
     /**
      * @return the concatenate of toString() of each elements with the given delimiter.
      */
@@ -199,7 +199,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.mapToObj(StrFuncs::toStr).collect(Collectors.joining(delimiter));
     }
-
+    
     // -- toListString --
     /**
      * @return the to string as a list for this stream.
@@ -211,7 +211,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val strValue = streamPlus.mapToObj(String::valueOf).collect(Collectors.joining(", "));
         return "[" + strValue + "]";
     }
-
+    
     // -- toMap --
     /**
      * Create a map from the data using the keyMapper.
@@ -224,7 +224,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val theMap = streamPlus.collect(Collectors.toMap(keyMapper, data -> data));
         return ImmutableFuncMap.from(theMap);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * This method throw an exception with duplicate keys.
@@ -236,7 +236,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val theMap = streamPlus.collect(Collectors.toMap(keyMapper, valueMapper));
         return ImmutableFuncMap.from(theMap);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * When a value mapped to the same key, use the merge function to merge the value.
@@ -248,7 +248,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val theMap = streamPlus.collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
         return ImmutableFuncMap.from(theMap);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper.
      * When a value mapped to the same key, use the merge function to merge the value.
@@ -260,7 +260,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val theMap = streamPlus.collect(Collectors.toMap(keyMapper, value -> value, mergeFunction));
         return (FuncMap<KEY, DATA>) ImmutableFuncMap.from(theMap);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper.
      * This method throw an exception with duplicate keys.
@@ -271,7 +271,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val aggregator = keyAggregation.newAggregator();
         return toMap(aggregator);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * This method throw an exception with duplicate keys.
@@ -282,7 +282,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val keyAggregator = keyAggregation.newAggregator();
         return toMap(keyAggregator, valueMapper);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * This method throw an exception with duplicate keys.
@@ -293,7 +293,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val valueAggregator = valueAggregation.newAggregator();
         return toMap(keyMapper, valueAggregator);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * This method throw an exception with duplicate keys.
@@ -305,7 +305,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val valueAggregator = valueAggregation.newAggregator();
         return toMap(keyAggregator, valueAggregator);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * When a value mapped to the same key, use the merge function to merge the value.
@@ -316,7 +316,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val keyAggregator = keyAggregation.newAggregator();
         return toMap(keyAggregator, valueMapper, mergeFunction);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * When a value mapped to the same key, use the merge function to merge the value.
@@ -327,7 +327,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val valueAggregator = valueAggregation.newAggregator();
         return toMap(keyMapper, valueAggregator, mergeFunction);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * When a value mapped to the same key, use the merge function to merge the value.
@@ -339,7 +339,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val valueAggregator = valueAggregation.newAggregator();
         return toMap(keyAggregator, valueAggregator, mergeFunction);
     }
-
+    
     /**
      * Create a map from the data using the keyMapper.
      * When a value mapped to the same key, use the merge function to merge the value.
@@ -350,7 +350,7 @@ public interface AsStreamPlusWithConversion<DATA> {
         val keyAggregator = keyAggregation.newAggregator();
         return toMap(keyAggregator, mergeFunction);
     }
-
+    
     // -- toSet --
     /**
      * @return  a set of the elements.

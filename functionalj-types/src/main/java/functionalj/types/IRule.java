@@ -27,15 +27,15 @@ import java.util.Map;
 import functionalj.map.ImmutableFuncMap;
 
 public interface IRule<D> extends IData {
-
+    
     public String __dataName();
-
+    
     public Class<D> __dataType();
-
+    
     public D __dataValue();
-
+    
     public <R extends IRule<D>> Class<R> __superRule();
-
+    
     @Override
     public default Map<String, Object> __toMap() {
         try {

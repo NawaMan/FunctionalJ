@@ -37,7 +37,7 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public class ConsoleTest {
-
+    
     @Test
     public void testOut() {
         val sysOut = System.out;
@@ -51,7 +51,7 @@ public class ConsoleTest {
             assertEquals("One\n" + "Two\n", buffer.toString());
         }
     }
-
+    
     @Test
     public void testReadIn() {
         val sysIn = System.in;
@@ -65,7 +65,7 @@ public class ConsoleTest {
             System.setIn(sysIn);
         }
     }
-
+    
     @Ignore("This fails sometimes. Need to investigate.")
     @Test
     public void testPollIn() {
@@ -80,7 +80,7 @@ public class ConsoleTest {
             System.setIn(sysIn);
         }
     }
-
+    
     @Test
     public void testStub_out() {
         val stub = new Console.Stub();
@@ -91,7 +91,7 @@ public class ConsoleTest {
             stub.clearOutLines();
         });
     }
-
+    
     @Test
     public void testStub_out2() {
         val stub = new Console.Stub();
@@ -102,7 +102,7 @@ public class ConsoleTest {
             stub.clearOutLines();
         });
     }
-
+    
     @Test
     public void testStub_err() {
         val stub = new Console.Stub();
@@ -114,7 +114,7 @@ public class ConsoleTest {
             stub.clear();
         });
     }
-
+    
     @Test
     public void testStub_in() {
         val stub = new Console.Stub();
@@ -127,7 +127,7 @@ public class ConsoleTest {
             stub.clearInLines();
         });
     }
-
+    
     @Test
     public void testUseStub_Done() {
         val records = Console.useStub(StreamPlus.of("One", "Two", "Three", "Four"), () -> {
@@ -138,7 +138,7 @@ public class ConsoleTest {
         });
         assertEquals("++++++++++++++++++++\n" + "Data: null\n" + "outLines(1): \n" + "    OneThree\n" + "errLines(1): \n" + "    TwoFour\n" + "inLines(4): \n" + "    One\n" + "    Two\n" + "    Three\n" + "    Four\n" + "--------------------", records.toString());
     }
-
+    
     @Test
     public void testUseStub_Delay() {
         val queue = new ConsoleInQueue();
@@ -161,7 +161,7 @@ public class ConsoleTest {
         });
         assertEquals("++++++++++++++++++++\n" + "Data: null\n" + "outLines(1): \n" + "    OneThree\n" + "errLines(1): \n" + "    TwoFour\n" + "inLines(4): \n" + "    One\n" + "    Two\n" + "    Three\n" + "    Four\n" + "--------------------", records.toString());
     }
-
+    
     @Test
     public void testUseStub_NoIn() {
         val records = Console.useStub(() -> {
@@ -170,7 +170,7 @@ public class ConsoleTest {
         });
         assertEquals("++++++++++++++++++++\n" + "Data: null\n" + "outLines(1): \n" + "    out.\n" + "errLines(1): \n" + "    ERR!\n" + "inLines(0): \n" + "    \n" + "--------------------", records.toString());
     }
-
+    
     @Test
     public void testUseStub_Holder() {
         // Umm - Not as easy to use as first thought. -- We have to wait until the queue is set.
@@ -196,7 +196,7 @@ public class ConsoleTest {
         });
         assertEquals("++++++++++++++++++++\n" + "Data: null\n" + "outLines(2): \n" + "    out.\n" + "    Three\n" + "errLines(2): \n" + "    ERR!\n" + "    Four\n" + "inLines(2): \n" + "    Three\n" + "    Four\n" + "--------------------", records.toString());
     }
-
+    
     @Test
     public void testUseStub_Holder_Promise() {
         // This might be a bit more useful as we can have UI interact with this.

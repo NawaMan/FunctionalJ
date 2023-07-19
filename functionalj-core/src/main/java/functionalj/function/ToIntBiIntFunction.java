@@ -25,6 +25,6 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface ToIntBiIntFunction<DATA> {
-
+    
     public int applyAsInt(DATA data, int intValue);
 }

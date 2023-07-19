@@ -9,7 +9,7 @@ import java.util.Objects;
 import lombok.val;
 
 public class Tests {
-
+    
     public static void assertAsString(String expected, Object actual) {
         String actualString = null;
         if (actual != null) {

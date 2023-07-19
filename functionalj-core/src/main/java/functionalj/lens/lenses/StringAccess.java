@@ -49,18 +49,18 @@ import functionalj.result.Result;
 import lombok.val;
 
 class StringAccessHelper {
-
+    
     static StringAccess<String> $(Object... objs) {
         return str -> {
             val eachToString = stringFrom(str);
             return Stream.of(objs).map(eachToString).collect(joining());
         };
     }
-
+    
     static Func1<Object, String> stringFrom(String str) {
         return each -> stringFrom(each, str);
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static String stringFrom(Object each, String str) {
         if (each instanceof Supplier) {
@@ -75,7 +75,7 @@ class StringAccessHelper {
         }
         return toStr(each);
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static Function<String, Object> fromString(Object object) {
         if (object instanceof AnyAccess) {
@@ -90,7 +90,7 @@ class StringAccessHelper {
  */
 @FunctionalInterface
 public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, ConcreteAccess<HOST, String, StringAccess<HOST>> {
-
+    
     public static <H> StringAccess<H> of(Function<H, String> accessToValue) {
         requireNonNull(accessToValue);
         if (accessToValue instanceof StringAccess) {
@@ -105,12 +105,12 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
         val access = (StringAccess<H>) (host -> func.apply(host));
         return access;
     }
-
+    
     @Override
     public default StringAccess<HOST> newAccess(Function<HOST, String> access) {
         return access::apply;
     }
-
+    
     // == functionalities ==
     public default CharacterAccessPrimitive<HOST> charAt(int index) {
         return host -> {
@@ -119,16 +119,16 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return charValue;
         };
     }
-
+    
     // Extra
     public default BooleanAccess<HOST> thatIsBlank() {
         return booleanAccess(true, str -> str.trim().isEmpty());
     }
-
+    
     public default BooleanAccess<HOST> thatIsNotBlank() {
         return booleanAccess(true, str -> !str.trim().isEmpty());
     }
-
+    
     // java.lang.String
     public default IntegerAccess<HOST> compareToIgnoreCase(String anotherString) {
         return IntegerAccess.of(host -> {
@@ -140,7 +140,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.compareToIgnoreCase(anotherString);
         });
     }
-
+    
     public default IntegerAccess<HOST> compareToIgnoreCase(Function<HOST, String> anotherStringFunction) {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -154,7 +154,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.compareToIgnoreCase(another);
         });
     }
-
+    
     public default StringAccess<HOST> concat(Object... suffixes) {
         return stringAccess("", str -> {
             val eachToString = StringAccessHelper.stringFrom(str);
@@ -162,7 +162,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return str + suffix;
         });
     }
-
+    
     public default StringAccess<HOST> withPrefix(Object... prefixes) {
         return stringAccess("", str -> {
             val eachToString = StringAccessHelper.stringFrom(str);
@@ -170,7 +170,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return prefix + str;
         });
     }
-
+    
     public default StringAccess<HOST> withSuffix(Object... suffixes) {
         return stringAccess("", str -> {
             val eachToString = StringAccessHelper.stringFrom(str);
@@ -178,7 +178,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return str + prefix;
         });
     }
-
+    
     public default StringAccess<HOST> wrapBy(Object prefix, Object suffix) {
         return stringAccess("", str -> {
             val eachToString = StringAccessHelper.stringFrom(str);
@@ -187,7 +187,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return prefixStr + str + suffixStr;
         });
     }
-
+    
     public default BooleanAccess<HOST> thatEqualsIgnoreCase(String anotherString) {
         boolean isAnotherStringEmpty = (anotherString == null) || anotherString.isEmpty();
         return BooleanAccess.of(host -> {
@@ -199,7 +199,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.equalsIgnoreCase(anotherString);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatEqualsIgnoreCase(Function<HOST, String> anotherStringFunction) {
         return BooleanAccess.of(host -> {
             val anotherString = anotherStringFunction.apply(host);
@@ -212,7 +212,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.equalsIgnoreCase(anotherString);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatContentEquals(CharSequence charSequence) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -223,7 +223,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.contentEquals(charSequence);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatContentEquals(Function<HOST, String> anotherStringFunction) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -237,7 +237,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.contentEquals(another);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatContains(CharSequence charSequence) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -248,7 +248,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.contains(charSequence);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatContains(Function<HOST, String> anotherStringFunction) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -262,7 +262,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.contains(another);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatNotContains(CharSequence charSequence) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -273,7 +273,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return !value.contains(charSequence);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatNotContains(Function<HOST, String> anotherStringFunction) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -285,7 +285,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return !value.contains(another);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatContainsIgnoreCase(CharSequence charSequence) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -296,7 +296,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.toLowerCase().contains(charSequence.toString().toLowerCase());
         });
     }
-
+    
     public default BooleanAccess<HOST> thatContainsIgnoreCase(Function<HOST, String> anotherStringFunction) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -308,7 +308,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.toLowerCase().contains(another.toString().toLowerCase());
         });
     }
-
+    
     public default BooleanAccess<HOST> thatNotContainsIgnoreCase(CharSequence charSequence) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -319,7 +319,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return !value.toLowerCase().contains(charSequence.toString().toLowerCase());
         });
     }
-
+    
     public default BooleanAccess<HOST> thatNotContainsIgnoreCase(Function<HOST, String> anotherStringFunction) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -331,7 +331,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return !value.toLowerCase().contains(another.toString().toLowerCase());
         });
     }
-
+    
     public default BooleanAccess<HOST> thatEndsWith(String suffix) {
         boolean isSuffixEmpty = (suffix == null) || suffix.isEmpty();
         return BooleanAccess.of(host -> {
@@ -343,7 +343,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.endsWith(suffix);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatEndsWith(Function<HOST, String> suffixFunction) {
         return BooleanAccess.of(host -> {
             val suffix = suffixFunction.apply(host);
@@ -356,7 +356,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.endsWith(suffix);
         });
     }
-
+    
     /**
      * Giving the format create a final string using {@link String#format(String, Object...)}.
      * The string value from this access will be the first parameter for the formatting.
@@ -377,7 +377,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return String.format(format, argStrs);
         });
     }
-
+    
     /**
      * Similar to another formatWith method but the format is derived from the string value.
      */
@@ -389,7 +389,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return String.format(format, argStrs);
         });
     }
-
+    
     public default IntegerAccess<HOST> indexOf(int chr) {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -400,7 +400,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.indexOf(chr);
         });
     }
-
+    
     public default IntegerAccess<HOST> indexOf(ToIntFunction<HOST> chrFunction) {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -412,11 +412,11 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.indexOf(chr);
         });
     }
-
+    
     public default IntegerAccess<HOST> indexOf(int ch, int fromIndex) {
         return intPrimitiveAccess(-1, str -> str.indexOf(ch, fromIndex));
     }
-
+    
     public default IntegerAccess<HOST> indexOf(String needle) {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -427,7 +427,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.indexOf(needle);
         });
     }
-
+    
     public default IntegerAccess<HOST> indexOf(Function<HOST, String> needleFunction) {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -439,19 +439,19 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.indexOf(needle);
         });
     }
-
+    
     public default IntegerAccess<HOST> indexOf(String needle, int fromIndex) {
         return intPrimitiveAccess(-1, str -> str.indexOf(needle, fromIndex));
     }
-
+    
     public default BooleanAccess<HOST> thatIsEmpty() {
         return booleanAccess(true, str -> str.isEmpty());
     }
-
+    
     public default BooleanAccess<HOST> thatIsNotEmpty() {
         return booleanAccess(true, str -> !str.isEmpty());
     }
-
+    
     public default IntegerAccess<HOST> lastIndexOf(int ch) {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -462,7 +462,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.indexOf(ch);
         });
     }
-
+    
     public default IntegerAccess<HOST> lastIndexOf(ToIntFunction<HOST> chrFunction) {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -474,11 +474,11 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.lastIndexOf(chr);
         });
     }
-
+    
     public default IntegerAccess<HOST> lastIndexOf(int ch, int fromIndex) {
         return intPrimitiveAccess(-1, str -> str.lastIndexOf(ch, fromIndex));
     }
-
+    
     public default IntegerAccess<HOST> lastIndexOf(String needle) {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -489,7 +489,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.lastIndexOf(needle);
         });
     }
-
+    
     public default IntegerAccess<HOST> lastIndexOf(Function<HOST, String> needleFunction) {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -501,11 +501,11 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.lastIndexOf(needle);
         });
     }
-
+    
     public default IntegerAccess<HOST> lastIndexOf(String needle, int fromIndex) {
         return intPrimitiveAccess(-1, str -> str.lastIndexOf(needle, fromIndex));
     }
-
+    
     public default IntegerAccess<HOST> length() {
         return IntegerAccess.of(host -> {
             if (host == null)
@@ -516,7 +516,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.length();
         });
     }
-
+    
     public default BooleanAccess<HOST> thatMatches(String regex) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -527,7 +527,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.matches(regex);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatMatches(Function<HOST, String> regexFunction) {
         return BooleanAccess.of(host -> {
             val regex = regexFunction.apply(host);
@@ -539,7 +539,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.matches(regex);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatMatchesIgnoreCase(String regex) {
         return BooleanAccess.of(host -> {
             val lowerCaseRegEx = regex.toLowerCase();
@@ -551,7 +551,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.toLowerCase().matches(lowerCaseRegEx);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatMatchesIgnoreCase(Function<HOST, String> regexFunction) {
         return BooleanAccess.of(host -> {
             val regex = regexFunction.apply(host);
@@ -564,15 +564,15 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.toLowerCase().matches(lowerCaseRegEx);
         });
     }
-
+    
     public default StringAccess<HOST> replace(char oldChar, char newChar) {
         return stringAccess(null, str -> str.replace(oldChar, newChar));
     }
-
+    
     public default StringAccess<HOST> replace(CharSequence target, CharSequence replacement) {
         return stringAccess(null, str -> str.replace(target, replacement));
     }
-
+    
     public default StringAccess<HOST> replaceAll(String regEx, String replacement) {
         return StringAccess.of(host -> {
             if (host == null)
@@ -583,7 +583,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.replaceAll(regEx, replacement);
         });
     }
-
+    
     public default StringAccess<HOST> replaceAll(Function<HOST, String> regexFunction, Function<HOST, String> replacementFunction) {
         return StringAccess.of(host -> {
             if (host == null)
@@ -596,7 +596,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.replaceAll(regex, replacement);
         });
     }
-
+    
     public default StringAccess<HOST> replaceFirst(String regEx, String replacement) {
         return StringAccess.of(host -> {
             if (host == null)
@@ -607,7 +607,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.replaceFirst(regEx, replacement);
         });
     }
-
+    
     public default StringAccess<HOST> replaceFirst(Function<HOST, String> regexFunction, Function<HOST, String> replacementFunction) {
         return StringAccess.of(host -> {
             if (host == null)
@@ -620,14 +620,14 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.replaceFirst(regex, replacement);
         });
     }
-
+    
     public default FuncListAccess<HOST, String, StringAccess<HOST>> split(String regex) {
         return FuncListAccess.of(host -> {
             val strValue = StringAccess.this.apply(host);
             return FuncList.from(strValue.split(regex));
         }, func -> StringAccess.this.newAccess(func));
     }
-
+    
     public default FuncListAccess<HOST, String, StringAccess<HOST>> split(Function<HOST, String> regexFunction) {
         return FuncListAccess.of(host -> {
             val strValue = StringAccess.this.apply(host);
@@ -635,7 +635,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return FuncList.from(strValue.split(regex));
         }, func -> StringAccess.this.newAccess(func));
     }
-
+    
     public default BooleanAccess<HOST> thatStartsWith(String prefix) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -646,7 +646,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.startsWith(prefix);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatStartsWith(Function<HOST, String> prefixFunction) {
         return BooleanAccess.of(host -> {
             if (host == null)
@@ -658,11 +658,11 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.startsWith(prefix);
         });
     }
-
+    
     public default BooleanAccess<HOST> thatStartsWith(String prefix, int offset) {
         return booleanAccess(false, str -> str.startsWith(prefix, offset));
     }
-
+    
     public default StringAccess<HOST> substring(int beginIndex) {
         return StringAccess.of(host -> {
             if (host == null)
@@ -673,7 +673,7 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.substring(beginIndex);
         });
     }
-
+    
     public default StringAccess<HOST> substring(ToIntFunction<HOST> beginIndexFunction) {
         return StringAccess.of(host -> {
             if (host == null)
@@ -685,31 +685,31 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return value.substring(beginIndex);
         });
     }
-
+    
     public default StringAccess<HOST> substring(int beginIndex, int endIndex) {
         return stringAccess(null, str -> str.substring(beginIndex, endIndex));
     }
-
+    
     public default StringAccess<HOST> toLowerCase() {
         return stringAccess(null, str -> str.toLowerCase());
     }
-
+    
     public default StringAccess<HOST> toLowerCase(Locale locale) {
         return stringAccess(null, str -> str.toLowerCase(locale));
     }
-
+    
     public default StringAccess<HOST> toUpperCase() {
         return stringAccess(null, str -> str.toUpperCase());
     }
-
+    
     public default StringAccess<HOST> toUpperCase(Locale locale) {
         return stringAccess(null, str -> str.toUpperCase(locale));
     }
-
+    
     public default StringAccess<HOST> trim() {
         return stringAccess(null, str -> str.trim());
     }
-
+    
     // == parse ==
     // -- integer --
     public default IntegerAccessPrimitive<HOST> asInteger() {
@@ -718,28 +718,28 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return Integer.parseInt(valueStr);
         };
     }
-
+    
     public default IntegerAccessPrimitive<HOST> asInteger(int radix) {
         return host -> {
             val valueStr = apply(host);
             return Integer.parseInt(valueStr, radix);
         };
     }
-
+    
     public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> parseInteger() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> Integer.parseInt(valueStr));
         }, func -> (IntegerAccessBoxed<HOST>) (func::apply));
     }
-
+    
     public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> parseInteger(int radix) {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> Integer.parseInt(valueStr, radix));
         }, func -> (IntegerAccessBoxed<HOST>) (func::apply));
     }
-
+    
     // -- long --
     public default LongAccessPrimitive<HOST> asLong() {
         return host -> {
@@ -747,28 +747,28 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return Long.parseLong(valueStr);
         };
     }
-
+    
     public default LongAccessPrimitive<HOST> asLong(int radix) {
         return host -> {
             val valueStr = apply(host);
             return Long.parseLong(valueStr, radix);
         };
     }
-
+    
     public default ResultAccess<HOST, Long, LongAccess<HOST>> parseLong() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> Long.parseLong(valueStr));
         }, func -> (LongAccessBoxed<HOST>) (func::apply));
     }
-
+    
     public default ResultAccess<HOST, Long, LongAccess<HOST>> parseLong(int radix) {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> Long.parseLong(valueStr, radix));
         }, func -> (LongAccessBoxed<HOST>) (func::apply));
     }
-
+    
     // -- double --
     public default DoubleAccessPrimitive<HOST> asDouble() {
         return host -> {
@@ -776,14 +776,14 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return Double.parseDouble(valueStr);
         };
     }
-
+    
     public default ResultAccess<HOST, Double, DoubleAccess<HOST>> parseDouble() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> Double.parseDouble(valueStr));
         }, func -> (DoubleAccessBoxed<HOST>) (func::apply));
     }
-
+    
     // -- big integer --
     public default BigIntegerAccess<HOST> asBigInteger() {
         return host -> {
@@ -791,14 +791,14 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return new BigInteger(valueStr);
         };
     }
-
+    
     public default ResultAccess<HOST, BigInteger, BigIntegerAccess<HOST>> parseBigInteger() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> new BigInteger(valueStr));
         }, func -> (BigIntegerAccess<HOST>) (func::apply));
     }
-
+    
     // -- big decimal --
     public default BigDecimalAccess<HOST> asBigDecimal() {
         return host -> {
@@ -806,14 +806,14 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return new BigDecimal(valueStr);
         };
     }
-
+    
     public default ResultAccess<HOST, BigDecimal, BigDecimalAccess<HOST>> parseBigDecimal() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> new BigDecimal(valueStr));
         }, func -> (BigDecimalAccess<HOST>) (func::apply));
     }
-
+    
     // -- local date --
     public default LocalDateAccess<HOST> asLocalDate() {
         return host -> {
@@ -821,38 +821,38 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return LocalDate.parse(valueStr);
         };
     }
-
+    
     public default LocalDateAccess<HOST> asLocalDate(DateTimeFormatter formatter) {
         return host -> {
             val valueStr = apply(host);
             return LocalDate.parse(valueStr, formatter);
         };
     }
-
+    
     public default LocalDateAccess<HOST> asLocalDate(String formatterPattern) {
         val formatter = DateTimeFormatter.ofPattern(formatterPattern);
         return asLocalDate(formatter);
     }
-
+    
     public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> parseLocalDate() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> LocalDate.parse(valueStr));
         }, func -> (LocalDateAccess<HOST>) (func::apply));
     }
-
+    
     public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> parseLocalDate(DateTimeFormatter formatter) {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> LocalDate.parse(valueStr, formatter));
         }, func -> (LocalDateAccess<HOST>) (func::apply));
     }
-
+    
     public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> parseLocalDate(String formatterPattern) {
         val formatter = DateTimeFormatter.ofPattern(formatterPattern);
         return parseLocalDate(formatter);
     }
-
+    
     // -- local date time --
     public default LocalDateTimeAccess<HOST> asLocalDateTime() {
         return host -> {
@@ -860,111 +860,111 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
             return LocalDateTime.parse(valueStr);
         };
     }
-
+    
     public default LocalDateTimeAccess<HOST> asLocalDateTime(DateTimeFormatter formatter) {
         return host -> {
             val valueStr = apply(host);
             return LocalDateTime.parse(valueStr, formatter);
         };
     }
-
+    
     public default LocalDateTimeAccess<HOST> asLocalDateTime(String formatterPattern) {
         val formatter = DateTimeFormatter.ofPattern(formatterPattern);
         return asLocalDateTime(formatter);
     }
-
+    
     public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> parseLocalDateTime() {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> LocalDateTime.parse(valueStr));
         }, func -> (LocalDateTimeAccess<HOST>) (func::apply));
     }
-
+    
     public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> parseLocalDateTime(DateTimeFormatter formatter) {
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(() -> LocalDateTime.parse(valueStr, formatter));
         }, func -> (LocalDateTimeAccess<HOST>) (func::apply));
     }
-
+    
     public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> parseLocalDateTime(String formatterPattern) {
         val formatter = DateTimeFormatter.ofPattern(formatterPattern);
         return parseLocalDateTime(formatter);
     }
-
+    
     // -- TODO Add Zoned date and stuff.
     // -- RegEx --
     public default RegExMatchResultStreamAccess<HOST> matches(String regex) {
         return matches(regex, -1);
     }
-
+    
     public default RegExMatchResultStreamAccess<HOST> matches(String regex, RegExFlag flags) {
         return matches(regex, flags.getIntValue());
     }
-
+    
     public default RegExMatchResultStreamAccess<HOST> matches(String regex, int flags) {
         return new RegExMatchResultStreamAccess<>(host -> {
             val value = apply(host);
             return StrFuncs.matches(value, regex, flags);
         });
     }
-
+    
     public default RegExMatchResultStreamAccess<HOST> matches(Pattern pattern) {
         return new RegExMatchResultStreamAccess<>(host -> {
             val value = apply(host);
             return StrFuncs.matches(value, pattern);
         });
     }
-
+    
     public default FuncListAccess<HOST, String, StringAccess<HOST>> grab(String regex) {
         return FuncListAccess.of(host -> {
             val value = apply(host);
             return StrFuncs.grab(value, regex);
         }, StringAccess::of);
     }
-
+    
     public default FuncListAccess<HOST, String, StringAccess<HOST>> grab(String regex, RegExFlag flags) {
         return FuncListAccess.of(host -> {
             val value = apply(host);
             return StrFuncs.grab(value, regex, flags);
         }, StringAccess::of);
     }
-
+    
     public default FuncListAccess<HOST, String, StringAccess<HOST>> grab(String regex, int flags) {
         return FuncListAccess.of(host -> {
             val value = apply(host);
             return StrFuncs.grab(value, regex, flags);
         }, StringAccess::of);
     }
-
+    
     public default FuncListAccess<HOST, String, StringAccess<HOST>> grab(Pattern pattern) {
         return FuncListAccess.of(host -> {
             val value = apply(host);
             return StrFuncs.grab(value, pattern);
         }, StringAccess::of);
     }
-
+    
     public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(String regex) {
         return FuncMapAccess.of(host -> {
             val value = apply(host);
             return StrFuncs.capture(value, regex);
         }, StringAccess::of, StringAccess::of);
     }
-
+    
     public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(String regex, RegExFlag flags) {
         return FuncMapAccess.of(host -> {
             val value = apply(host);
             return StrFuncs.capture(value, regex, flags);
         }, StringAccess::of, StringAccess::of);
     }
-
+    
     public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(String regex, int flags) {
         return FuncMapAccess.of(host -> {
             val value = apply(host);
             return StrFuncs.capture(value, regex, flags);
         }, StringAccess::of, StringAccess::of);
     }
-
+    
     public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(Pattern pattern) {
         return FuncMapAccess.of(host -> {
             val value = apply(host);

@@ -17,13 +17,13 @@ import lombok.NonNull;
 import lombok.val;
 
 public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
-
+    
     private final Mode mode;
-
+    
     private final List<DATA> cache = new ArrayList<DATA>();
-
+    
     private final Spliterator<DATA> spliterator;
-
+    
     StreamBackedFuncList(@NonNull Stream<DATA> stream, @NonNull Mode mode) {
         this.spliterator = stream.spliterator();
         this.mode = mode;
@@ -31,15 +31,15 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
             size();
         }
     }
-
+    
     public StreamBackedFuncList(@NonNull Stream<DATA> stream) {
         this(stream, Mode.cache);
     }
-
+    
     public Mode mode() {
         return mode;
     }
-
+    
     @Override
     public FuncList<DATA> toLazy() {
         if (mode.isLazy()) {
@@ -47,14 +47,14 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
         }
         return new StreamBackedFuncList<>(streamPlus(), Mode.lazy);
     }
-
+    
     @Override
     public FuncList<DATA> toEager() {
         // Just materialize all value.
         int size = size();
         return new ImmutableFuncList<DATA>(cache, size);
     }
-
+    
     @Override
     public FuncList<DATA> toCache() {
         if (mode.isCache()) {
@@ -62,13 +62,13 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
         }
         return new StreamBackedFuncList<>(streamPlus(), Mode.cache);
     }
-
+    
     @Override
     public StreamPlus<DATA> stream() {
         val indexRef = new AtomicInteger(0);
         val valueConsumer = (Consumer<DATA>) ((DATA v) -> cache.add(v));
         val newSpliterator = new Spliterators.AbstractSpliterator<DATA>(Long.MAX_VALUE, 0) {
-
+    
             @Override
             public boolean tryAdvance(Consumer<? super DATA> consumer) {
                 int index = indexRef.getAndIncrement();
@@ -84,7 +84,7 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
                     return true;
                 return hadNext;
             }
-
+    
             private boolean fromCache(Consumer<? super DATA> consumer, int index) {
                 if (index >= cache.size())
                     return false;
@@ -96,12 +96,12 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
         val newStream = StreamSupport.stream(newSpliterator, false);
         return StreamPlus.from(newStream);
     }
-
+    
     @Override
     public int hashCode() {
         return StreamPlusUtils.hashCode(this.stream());
     }
-
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public boolean equals(Object o) {
@@ -110,7 +110,7 @@ public class StreamBackedFuncList<DATA> implements FuncList<DATA> {
         val anotherList = FuncList.from((Collection) o);
         return !zipWith(anotherList, AllowUnpaired, Objects::equals).findFirst(Boolean.FALSE::equals).isPresent();
     }
-
+    
     @Override
     public String toString() {
         return asFuncList().toListString();

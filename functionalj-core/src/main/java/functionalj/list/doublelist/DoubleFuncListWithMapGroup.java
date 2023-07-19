@@ -35,21 +35,21 @@ import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.tuple.DoubleDoubleTuple;
 
 public interface DoubleFuncListWithMapGroup extends AsDoubleFuncList {
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     public default DoubleFuncList mapTwo(DoubleBinaryOperator combinator) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapTwoToDouble(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     public default DoubleFuncList mapGroup(int count, ToDoubleFunction<DoubleStreamPlus> combinator) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapGroupToDouble(count, combinator));
     }
-
+    
     // == Object ==
     /**
      * @return  the stream of  each previous value and each current value.
@@ -57,28 +57,28 @@ public interface DoubleFuncListWithMapGroup extends AsDoubleFuncList {
     public default FuncList<DoubleDoubleTuple> mapTwoToObj() {
         return FuncList.deriveFrom(this, stream -> stream.mapTwoToObj());
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     public default <TARGET> FuncList<TARGET> mapGroupToObj(DoubleDoubleFunction<TARGET> combinator) {
         return FuncList.deriveFrom(this, stream -> stream.mapGroupToObj(combinator));
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
     public default FuncList<DoubleStreamPlus> mapGroupToObj(int count) {
         return FuncList.deriveFrom(this, stream -> stream.mapGroupToObj(count));
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
     public default <TARGET> FuncList<TARGET> mapGroupToObj(int count, Func1<DoubleStreamPlus, ? extends TARGET> combinator) {
         return FuncList.deriveFrom(this, stream -> stream.mapGroupToObj(count, combinator));
     }
-
+    
     // == Int ==
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
@@ -86,14 +86,14 @@ public interface DoubleFuncListWithMapGroup extends AsDoubleFuncList {
     public default IntFuncList mapTwoToInt(DoubleDoubleToIntFunctionPrimitive combinator) {
         return IntFuncList.deriveFrom(this, stream -> stream.mapTwoToInt(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     public default IntFuncList mapGroupToInt(int count, ToIntFunction<DoubleStreamPlus> combinator) {
         return IntFuncList.deriveFrom(this, stream -> stream.mapGroupToInt(count, combinator));
     }
-
+    
     // == Double ==
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
@@ -101,7 +101,7 @@ public interface DoubleFuncListWithMapGroup extends AsDoubleFuncList {
     public default DoubleFuncList mapTwoToDouble(DoubleBinaryOperator combinator) {
         return DoubleFuncList.deriveFrom(this, stream -> stream.mapTwoToDouble(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */

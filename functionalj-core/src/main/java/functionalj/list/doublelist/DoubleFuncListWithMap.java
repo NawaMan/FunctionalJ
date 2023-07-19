@@ -31,28 +31,28 @@ import java.util.function.DoubleUnaryOperator;
 import functionalj.list.FuncList;
 
 public interface DoubleFuncListWithMap extends AsDoubleFuncList {
-
+    
     /**
      * Map the value using the mapper.
      */
     public default <T> FuncList<T> mapToObj(DoubleFunction<? extends T> mapper) {
         return deriveToObj(this, stream -> stream.mapToObj(mapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true.
      */
     public default DoubleFuncList mapOnly(DoublePredicate condition, DoubleUnaryOperator mapper) {
         return deriveToDouble(this, stream -> stream.mapOnly(condition, mapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */
     public default DoubleFuncList mapIf(DoublePredicate condition, DoubleUnaryOperator mapper, DoubleUnaryOperator elseMapper) {
         return deriveToDouble(this, stream -> stream.mapIf(condition, mapper, elseMapper));
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */

@@ -8,7 +8,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class NamedLensTest {
-
+    
     // Use choice from ChoiceToMapTest
     @Test
     public void testChoice() {

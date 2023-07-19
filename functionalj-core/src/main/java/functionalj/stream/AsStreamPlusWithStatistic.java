@@ -54,9 +54,9 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface AsStreamPlusWithStatistic<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * @return  the size of the stream
      */
@@ -66,24 +66,24 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val streamPlus = streamPlus();
         return (int) streamPlus.count();
     }
-
+    
     @Eager
     @Terminal
     public default long count() {
         val streamPlus = streamPlus();
         return streamPlus.count();
     }
-
+    
     public default Optional<DATA> min(Comparator<? super DATA> comparator) {
         val streamPlus = streamPlus();
         return streamPlus.min(comparator);
     }
-
+    
     public default Optional<DATA> max(Comparator<? super DATA> comparator) {
         val streamPlus = streamPlus();
         return streamPlus.max(comparator);
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest.
      */
@@ -97,7 +97,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
             return mappedA.compareTo(mappedB);
         });
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest.
      */
@@ -107,7 +107,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val mapper = aggregation.newAggregator();
         return minBy(mapper);
     }
-
+    
     /**
      * Return the value whose mapped value is the biggest.
      */
@@ -121,7 +121,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
             return mappedA.compareTo(mappedB);
         });
     }
-
+    
     /**
      * Return the value whose mapped value is the biggest.
      */
@@ -131,7 +131,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val mapper = aggregation.newAggregator();
         return maxBy(mapper);
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest using the comparator.
      */
@@ -145,7 +145,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
             return comparator.compare(mappedA, mappedB);
         });
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest using the comparator.
      */
@@ -155,7 +155,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val mapper = aggregation.newAggregator();
         return minBy(mapper, comparator);
     }
-
+    
     /**
      * Return the value whose mapped value is the biggest using the comparator.
      */
@@ -169,7 +169,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
             return comparator.compare(mappedA, mappedB);
         });
     }
-
+    
     /**
      * Return the value whose mapped value is the biggest using the comparator.
      */
@@ -179,7 +179,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val mapper = aggregation.newAggregator();
         return maxBy(mapper, comparator);
     }
-
+    
     /**
      * Return the value is the smallest and the biggest using the comparator.
      */
@@ -198,7 +198,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val max = maxRef.get();
         return (dummy.equals(min) || dummy.equals(max)) ? Optional.empty() : Optional.of(Tuple2.of((DATA) min, (DATA) max));
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest and the biggest.
      */
@@ -217,7 +217,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val max = maxRef.get();
         return (dummy.equals(min) || dummy.equals(max)) ? Optional.empty() : Optional.of(Tuple2.of((DATA) min, (DATA) max));
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest and the biggest.
      */
@@ -227,7 +227,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
         val mapper = aggregation.newAggregator();
         return minMaxBy(mapper);
     }
-
+    
     /**
      * Return the value whose mapped value is the smallest and the biggest using the comparator.
      */
@@ -486,7 +486,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
                     return running;
                 };
             }
-
+    
             @Override
             public Function<RunningData, Result<BigDecimal>> finisher() {
                 return running -> {
@@ -494,7 +494,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
                     return (count == 0) ? Result.ofNull() : Result.valueOf(running.sum.divide(BigDecimal.valueOf(count)));
                 };
             }
-
+    
             @Override
             public Set<Characteristics> characteristics() {
                 return characteristics;

@@ -35,32 +35,32 @@ import functionalj.stream.doublestream.DoubleStreamPlus;
 import lombok.val;
 
 public class DoubleFuncListDerived implements DoubleFuncList {
-
+    
     private static final DoubleDoubleToDoubleFunctionPrimitive zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
-
+    
     private static final DoublePredicate notZero = (double d) -> d != 0;
-
+    
     // -- Data --
     private final Object source;
-
+    
     private final Function<DoubleStream, DoubleStream> action;
-
+    
     // -- Constructors --
     DoubleFuncListDerived(AsDoubleFuncList source, Function<DoubleStream, DoubleStream> action) {
         this.source = Objects.requireNonNull(source);
         this.action = Objects.requireNonNull(action);
     }
-
+    
     DoubleFuncListDerived(Supplier<DoubleStream> streams) {
         this.action = stream -> stream;
         this.source = streams;
     }
-
+    
     DoubleFuncListDerived(Supplier<DoubleStream> streams, Function<DoubleStream, DoubleStream> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streams;
     }
-
+    
     // -- Source Stream --
     @SuppressWarnings("unchecked")
     private DoubleStream getSourceStream() {
@@ -72,47 +72,47 @@ public class DoubleFuncListDerived implements DoubleFuncList {
             return ((Supplier<DoubleStream>) source).get();
         throw new IllegalStateException();
     }
-
+    
     @Override
     public DoubleStreamPlus doubleStream() {
         DoubleStream theStream = getSourceStream();
         DoubleStream newStream = action.apply(theStream);
         return DoubleStreamPlus.from(newStream);
     }
-
+    
     /**
      * Check if this list is a lazy list.
      */
     public Mode mode() {
         return Mode.lazy;
     }
-
+    
     @Override
     public DoubleFuncList toLazy() {
         return this;
     }
-
+    
     @Override
     public DoubleFuncList toEager() {
         val data = this.toArray();
         return new ImmutableDoubleFuncList(data, data.length, Mode.eager);
     }
-
+    
     @Override
     public DoubleFuncList toCache() {
         return DoubleFuncList.from(doubleStream());
     }
-
+    
     @Override
     public ImmutableDoubleFuncList toImmutableList() {
         return ImmutableDoubleFuncList.from(this);
     }
-
+    
     @Override
     public int hashCode() {
         return mapToInt(Double::hashCode).reduce(43, (hash, each) -> hash * 43 + each);
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof DoubleFuncList))
@@ -122,7 +122,7 @@ public class DoubleFuncListDerived implements DoubleFuncList {
             return false;
         return !DoubleFuncList.zipOf(this, anotherList.asDoubleFuncList(), zeroForEquals).allMatch(notZero);
     }
-
+    
     @Override
     public String toString() {
         return asDoubleFuncList().toListString();

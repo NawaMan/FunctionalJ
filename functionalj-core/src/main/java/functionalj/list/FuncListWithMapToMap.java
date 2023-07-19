@@ -30,7 +30,7 @@ import functionalj.map.FuncMap;
 import lombok.val;
 
 public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -38,7 +38,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key, mapper));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -46,7 +46,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key1, mapper1, key2, mapper2));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -54,7 +54,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -62,7 +62,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -70,7 +70,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -78,7 +78,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -86,7 +86,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6, key7, mapper7));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -94,7 +94,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6, key7, mapper7, key8, mapper8));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -102,7 +102,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6, key7, mapper7, key8, mapper8, key9, mapper9));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */
@@ -110,7 +110,7 @@ public interface FuncListWithMapToMap<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6, key7, mapper7, key8, mapper8, key9, mapper9, key10, mapper10));
     }
-
+    
     /**
      * Put mapped value and put it in the map with specific keys.
      */

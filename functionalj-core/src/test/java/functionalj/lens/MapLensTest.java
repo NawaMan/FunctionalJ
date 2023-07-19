@@ -33,7 +33,7 @@ import functionalj.lens.lenses.StringLens;
 import lombok.val;
 
 public class MapLensTest {
-
+    
     @Test
     public void testMapLens() {
         val mapLens = MapLens.<Map<String, String>, String, String, StringLens<Map<String, String>>, StringLens<Map<String, String>>>of(map -> map, (map, newMap) -> newMap, spec -> () -> spec, spec -> () -> spec);

@@ -29,33 +29,33 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class DictatedRef<DATA> extends Ref<DATA> {
-
+    
     private final Ref<DATA> ref;
-
+    
     DictatedRef(Ref<DATA> ref) {
         super(ref.getDataType(), ref.getElseSupplier());
         this.ref = requireNonNull(ref);
     }
-
+    
     @Override
     Result<DATA> findResult() {
         return ref.findResult();
     }
-
+    
     final Result<DATA> findOverrideResult() {
         return null;
     }
-
+    
     final Ref<DATA> whenAbsent(Func0<DATA> defaultValue) {
         // No effect
         return this;
     }
-
+    
     @Override
     public int hashCode() {
         return ref.hashCode();
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null)

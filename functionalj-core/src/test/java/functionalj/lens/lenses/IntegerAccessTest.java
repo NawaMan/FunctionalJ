@@ -9,7 +9,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class IntegerAccessTest {
-
+    
     /**
      * The aim of this test is to check if IntegerAccess perform boxing or not.
      * If the boxing is done, large amount of memory will be used as we are running 100000 ints.
@@ -44,16 +44,16 @@ public class IntegerAccessTest {
         assertEquals(delta2, delta3);
         assertEquals(delta4, delta5);
     }
-
+    
     private long currentUsedMemory() {
         return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     }
-
+    
     private long memoryUsed(long beforeUsedMem) {
         long afterUsedMem = currentUsedMemory();
         return afterUsedMem - beforeUsedMem;
     }
-
+    
     @Ignore("This test should be run manually in debug with break point in the constructor of Integer.")
     @Test
     public void testPrimitive2() {

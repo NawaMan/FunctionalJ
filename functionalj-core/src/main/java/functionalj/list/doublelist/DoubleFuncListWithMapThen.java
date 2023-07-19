@@ -33,35 +33,35 @@ import functionalj.function.Func6;
 import functionalj.list.FuncList;
 
 public interface DoubleFuncListWithMapThen extends AsDoubleFuncList {
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
     public default <T1, T2, T> FuncList<T> mapThen(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, BiFunction<T1, T2, T> function) {
         return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, function));
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
     public default <T1, T2, T3, T> FuncList<T> mapThen(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, DoubleFunction<? extends T3> mapper3, Func3<T1, T2, T3, T> function) {
         return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, function));
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
     public default <T1, T2, T3, T4, T> FuncList<T> mapThen(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, DoubleFunction<? extends T3> mapper3, DoubleFunction<? extends T4> mapper4, Func4<T1, T2, T3, T4, T> function) {
         return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, function));
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
     public default <T1, T2, T3, T4, T5, T> FuncList<T> mapThen(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, DoubleFunction<? extends T3> mapper3, DoubleFunction<? extends T4> mapper4, DoubleFunction<? extends T5> mapper5, Func5<T1, T2, T3, T4, T5, T> function) {
         return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, function));
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */

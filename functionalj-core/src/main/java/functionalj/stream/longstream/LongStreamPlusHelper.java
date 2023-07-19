@@ -39,13 +39,13 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public class LongStreamPlusHelper {
-
+    
     static final Object dummy = new Object();
-
+    
     public static <T> boolean hasAt(LongStream stream, long index) {
         return hasAt(stream, index, null);
     }
-
+    
     public static <T> boolean hasAt(LongStream stream, long index, long[][] valueRef) {
         // Note: It is done this way to avoid interpreting 'null' as no-value
         val ref = new long[1][];
@@ -56,7 +56,7 @@ public class LongStreamPlusHelper {
         valueRef[0] = ref[0];
         return found;
     }
-
+    
     // -- Terminal --
     static <TARGET> TARGET terminate(AsLongStreamPlus asStreamPlus, Function<LongStream, TARGET> action) {
         val streamPlus = asStreamPlus.longStreamPlus();
@@ -68,7 +68,7 @@ public class LongStreamPlusHelper {
             streamPlus.close();
         }
     }
-
+    
     static void terminate(AsLongStreamPlus asStreamPlus, Consumer<LongStream> action) {
         val streamPlus = asStreamPlus.longStreamPlus();
         try {
@@ -78,7 +78,7 @@ public class LongStreamPlusHelper {
             streamPlus.close();
         }
     }
-
+    
     /**
      * Run the given action sequentially, make sure to set the parallelity of the result back.
      */
@@ -93,14 +93,14 @@ public class LongStreamPlusHelper {
             return newLongStreamPlus.parallel();
         return newLongStreamPlus.sequential();
     }
-
+    
     /**
      * Run the given action sequentially, make sure to set the parallelity of the result back.
      */
     static <T> LongStreamPlus sequentialToInt(AsLongStreamPlus asStreamPlus, Function<LongStreamPlus, LongStreamPlus> action) {
         return sequential(asStreamPlus, action);
     }
-
+    
     /**
      * Run the given action sequentially, make sure to set the parallelity of the result back.
      */
@@ -115,20 +115,20 @@ public class LongStreamPlusHelper {
             return newLongStreamPlus.parallel();
         return newLongStreamPlus.sequential();
     }
-
+    
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipLongWith(LongObjBiFunction<B, TARGET> merger, LongIteratorPlus iteratorA, IteratorPlus<B> iteratorB) {
         val targetIterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
-
+    
             public TARGET next() {
                 if (!hasNextA)
                     throw new NoSuchElementException();
@@ -146,20 +146,20 @@ public class LongStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipLongWith(long defaultValue, LongObjBiFunction<B, TARGET> merger, LongIteratorPlus iteratorA, IteratorPlus<B> iteratorB) {
         val targetIterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return hasNextA || hasNextB;
             }
-
+    
             public TARGET next() {
                 val nextA = hasNextA ? iteratorA.nextLong() : defaultValue;
                 B nextB = hasNextB ? iteratorB.next() : null;
@@ -175,20 +175,20 @@ public class LongStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static LongStreamPlus doZipLongLongWith(LongBinaryOperator merger, LongIteratorPlus iteratorA, LongIteratorPlus iteratorB) {
         val iterator = new PrimitiveIterator.OfLong() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
-
+    
             public long nextLong() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextLong();
@@ -209,20 +209,20 @@ public class LongStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static <TARGET> StreamPlus<TARGET> doZipLongLongObjWith(LongLongBiFunction<TARGET> merger, LongIteratorPlus iteratorA, LongIteratorPlus iteratorB) {
         val iterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
-
+    
             public TARGET next() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextLong();
@@ -243,20 +243,20 @@ public class LongStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static <TARGET> StreamPlus<TARGET> doZipLongLongObjWith(LongLongBiFunction<TARGET> merger, LongIteratorPlus iteratorA, LongIteratorPlus iteratorB, long defaultValue) {
         val iterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-
+    
             public TARGET next() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextLong();
@@ -286,20 +286,20 @@ public class LongStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static LongStreamPlus doZipLongLongWith(LongBinaryOperator merger, LongIteratorPlus iteratorA, LongIteratorPlus iteratorB, long defaultValue) {
         val iterator = new PrimitiveIterator.OfLong() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-
+    
             public long nextLong() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextLong();
@@ -330,20 +330,20 @@ public class LongStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static <TARGET> StreamPlus<TARGET> doZipLongLongObjWith(LongLongBiFunction<TARGET> merger, LongIteratorPlus iteratorA, LongIteratorPlus iteratorB, long defaultValueA, long defaultValueB) {
         val iterator = new Iterator<TARGET>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-
+    
             public TARGET next() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextLong();
@@ -374,20 +374,20 @@ public class LongStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static LongStreamPlus doZipLongLongWith(LongBinaryOperator merger, LongIteratorPlus iteratorA, LongIteratorPlus iteratorB, long defaultValueA, long defaultValueB) {
         val iterator = new PrimitiveIterator.OfLong() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
-
+    
             public long nextLong() {
                 if (hasNextA && hasNextB) {
                     val nextA = iteratorA.nextLong();
@@ -418,12 +418,12 @@ public class LongStreamPlusHelper {
         });
         return targetStream;
     }
-
+    
     static LongStreamPlus doMergeLong(LongIteratorPlus iteratorA, LongIteratorPlus iteratorB) {
         val iterator = new LongIteratorPlus() {
-
+    
             private boolean isA = true;
-
+    
             public boolean hasNext() {
                 if (isA) {
                     if (iteratorA.hasNext())
@@ -440,13 +440,13 @@ public class LongStreamPlusHelper {
                     return true;
                 return false;
             }
-
+    
             public long nextLong() {
                 val next = isA ? iteratorA.next() : iteratorB.next();
                 isA = !isA;
                 return next;
             }
-
+    
             @Override
             public OfLong asIterator() {
                 return this;

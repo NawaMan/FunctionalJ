@@ -27,48 +27,48 @@ import java.util.function.ObjIntConsumer;
 import functionalj.stream.collect.Collected;
 
 public interface IntCollectedToInt<ACCUMULATED> extends Collected<Integer, ACCUMULATED, Integer>, IntCollected<ACCUMULATED, Integer> {
-
+    
     public static <ACC> IntCollectedToInt<ACC> of(IntCollectorToIntPlus<ACC> collector) {
         return new IntCollectedToInt.Impl<ACC>(collector);
     }
-
+    
     // == Instance ==
     public void accumulateAsInt(int each);
-
+    
     public int finishAsInt();
-
+    
     public default Integer finish() {
         return finishAsInt();
     }
-
+    
     public default void accumulate(Integer each) {
         accumulateAsInt(each);
     }
-
+    
     // == Implementation ==
     public static class Impl<ACCUMULATED> implements IntCollectedToInt<ACCUMULATED> {
-
+    
         private final IntCollectorToIntPlus<ACCUMULATED> collector;
-
+    
         private final ObjIntConsumer<ACCUMULATED> accumulator;
-
+    
         private final ACCUMULATED accumulated;
-
+    
         public Impl(IntCollectorToIntPlus<ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.intAccumulator();
         }
-
+    
         public void accumulateAsInt(int each) {
             accumulator.accept(accumulated, each);
         }
-
+    
         @Override
         public int finishAsInt() {
             return collector.finisher().apply(accumulated);
         }
-
+    
         @Override
         public void accumulate(int each) {
             accumulateAsInt(each);

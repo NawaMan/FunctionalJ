@@ -25,9 +25,9 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface IntIntToLongFunctionPrimitive extends ToLongBiIntFunction<Integer> {
-
+    
     public int applyAsIntAndInt(int data, int intValue);
-
+    
     public default double applyAsLong(Integer data, int intValue) {
         return applyAsIntAndInt(data, intValue);
     }

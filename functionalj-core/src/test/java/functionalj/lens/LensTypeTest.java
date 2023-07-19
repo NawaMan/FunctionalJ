@@ -30,7 +30,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class LensTypeTest {
-
+    
     @Test
     public void testLensCreator() {
         val lists = listOf(listOf("ONE", "TWO", "THREE"), listOf("AE", "BEE", "SEE"));

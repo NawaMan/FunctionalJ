@@ -39,48 +39,48 @@ import lombok.val;
 
 @FunctionalInterface
 public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoCloseable, Pipeable<DoubleIteratorPlus> {
-
+    
     public static DoubleIteratorPlus of(double... ds) {
         return DoubleIteratorPlus.from(DoubleStreamPlus.of(ds));
     }
-
+    
     public static DoubleIteratorPlus from(DoubleStream stream) {
         if (stream instanceof DoubleStreamPlus) {
             return new StreamBackedDoubleIteratorPlus(((DoubleStreamPlus) stream).doubleStream());
         }
         return DoubleIteratorPlus.from(stream.iterator());
     }
-
+    
     public static DoubleIteratorPlus from(PrimitiveIterator.OfDouble iterator) {
         if (iterator instanceof DoubleIteratorPlus)
             return (DoubleIteratorPlus) iterator;
         else
             return new DoubleIteratorPlus() {
-
+    
                 @Override
                 public OfDouble asIterator() {
                     return iterator;
                 }
             };
     }
-
+    
     public default DoubleIteratorPlus __data() throws Exception {
         return this;
     }
-
+    
     public default void close() {
     }
-
+    
     public default DoubleIteratorPlus onClose(Runnable closeHandler) {
         return this;
     }
-
+    
     public PrimitiveIterator.OfDouble asIterator();
-
+    
     public default DoubleIteratorPlus iterator() {
         return DoubleIteratorPlus.from(asIterator());
     }
-
+    
     @Override
     public default boolean hasNext() {
         val hasNext = asIterator().hasNext();
@@ -89,33 +89,33 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
         }
         return hasNext;
     }
-
+    
     @Override
     public default double nextDouble() {
         return asIterator().nextDouble();
     }
-
+    
     @Override
     public default Double next() {
         return asIterator().next();
     }
-
+    
     public default DoubleStreamPlus stream() {
         val iterable = (DoubleIterable) () -> this;
         return DoubleStreamPlus.from(StreamSupport.doubleStream(iterable.spliterator(), false));
     }
-
+    
     public default DoubleFuncList toList() {
         return stream().toImmutableList();
     }
-
+    
     public default OptionalDouble pullNext() {
         if (hasNext())
             return OptionalDouble.of(nextDouble());
         else
             return OptionalDouble.empty();
     }
-
+    
     public default AutoCloseableResult<DoubleIteratorPlus> pullNext(int count) {
         double[] array = stream().limit(count).toArray();
         if ((array.length == 0) && count != 0)
@@ -123,7 +123,7 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
         val iterator = new ArrayBackedDoubleIteratorPlus(array);
         return AutoCloseableResult.valueOf(iterator);
     }
-
+    
     public default DoubleIteratorPlus useNext(DoubleConsumer usage) {
         if (hasNext()) {
             val next = nextDouble();
@@ -131,7 +131,7 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
         }
         return this;
     }
-
+    
     public default DoubleIteratorPlus useNext(int count, Consumer<DoubleStreamPlus> usage) {
         double[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
@@ -142,7 +142,7 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
         }
         return this;
     }
-
+    
     public default <TARGET> Result<TARGET> mapNext(DoubleFunction<TARGET> mapper) {
         if (hasNext()) {
             val next = nextDouble();
@@ -152,7 +152,7 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
             return Result.ofNoMore();
         }
     }
-
+    
     public default <TARGET> Result<TARGET> mapNext(int count, Function<DoubleStreamPlus, TARGET> mapper) {
         val array = stream().limit(count).toArray();
         if ((array.length == 0) && (count != 0))

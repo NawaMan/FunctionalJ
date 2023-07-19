@@ -31,7 +31,7 @@ import org.junit.Test;
 import functionalj.list.ImmutableFuncList;
 
 public class NumberAccessTest {
-
+    
     @Test
     public void testAdd() {
         assertEquals(15, (int) theInteger.plus(5).apply(10));

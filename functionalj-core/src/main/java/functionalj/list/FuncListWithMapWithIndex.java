@@ -35,7 +35,7 @@ import functionalj.tuple.IntTuple2;
 import lombok.val;
 
 public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * @return  the stream of each value and index.
      */
@@ -43,7 +43,7 @@ public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapWithIndex());
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -51,7 +51,7 @@ public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapWithIndex(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -59,7 +59,7 @@ public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToObjWithIndex(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -68,7 +68,7 @@ public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return IntFuncList.deriveFrom(funcList, stream -> stream.mapToIntWithIndex(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */

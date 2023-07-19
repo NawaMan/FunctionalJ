@@ -37,7 +37,7 @@ import functionalj.promise.Promise;
 import lombok.val;
 
 public class FuncTest {
-
+    
     @Test
     public void test() throws Exception {
         assertEquals("Test", Func.of(() -> "Test").get());
@@ -80,26 +80,26 @@ public class FuncTest {
             // Expected
         }
     }
-
+    
     @Test
     public void testCompactApply() throws Exception {
         Func4<Integer, Integer, Integer, Integer, Integer> sum = f((a, b, c, d) -> a + b + c + d);
         assertEquals(14, $($($($(sum, 5), 4), 3), 2).intValue());
     }
-
+    
     @Test
     public void testAutoCurry() throws Exception {
         val sum4 = f((a, b, c, d) -> "" + a + b + c + d);
         assertEquals("5432", sum4.applyTo(5).applyTo(4).applyTo(3).apply(2));
     }
-
+    
     @Test
     public void testElevate() throws Exception {
         assertEquals(true, Func.elevate(String::contains, "Hello").apply("Hello World!"));
         assertEquals("Hello World!!!", Func.elevate(String::concat, "!!").apply("Hello World!"));
         assertEquals("Hello-World!", Func.elevate(String::replaceAll, "[ ]", "-").apply("Hello World!"));
     }
-
+    
     @Test
     public void testDefer() {
         val func = ((Func2<Integer, Integer, Integer>) (a, b) -> a + b).forPromise();
@@ -108,7 +108,7 @@ public class FuncTest {
         val c = func.apply(a, b);
         assertEquals(12, c.getResult().value().intValue());
     }
-
+    
     @Test
     public void testWhenAbsent() {
         val divide = Func.F((Integer a, Integer b) -> a / b);

@@ -6,7 +6,7 @@ import org.junit.Test;
 import functionalj.list.intlist.IntFuncList;
 
 public class IntegerToIntegerAccessPrimitiveTest {
-
+    
     @Test
     public void testGreaterThan() {
         IntFuncList numbers = IntFuncList.range(0, 10);

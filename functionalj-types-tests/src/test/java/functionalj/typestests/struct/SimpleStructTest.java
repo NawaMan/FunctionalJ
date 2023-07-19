@@ -33,24 +33,24 @@ import functionalj.types.DefaultTo;
 import lombok.val;
 
 public class SimpleStructTest {
-
+    
     @functionalj.types.Struct(name = "SimpleFromInteface", generateNoArgConstructor = true)
     public static interface SimpleDOInterface {
-
+    
         @DefaultTo(NULL)
         public String name();
-
+    
         public default String nameUpperCase() {
             return name().toUpperCase();
         }
     }
-
+    
     @Test
     public void testReadLens_getProperty() {
         val obj1 = new SimpleFromInteface("Obj1");
         assertEquals("Obj1", theSimpleFromInteface.name.apply(obj1));
     }
-
+    
     @Test
     public void testWriteLens_createNewObject() {
         val obj1 = new SimpleFromInteface("Obj1");
@@ -60,7 +60,7 @@ public class SimpleStructTest {
         assertEquals("Object1", obj1.withName("Object1").name());
         assertEquals("Obj1", obj1.name());
     }
-
+    
     @Test
     public void testWithStream_createNewObject() {
         val list = Arrays.asList(new SimpleFromInteface("Obj1"), new SimpleFromInteface("Obj2"), new SimpleFromInteface("Obj3"));
@@ -68,7 +68,7 @@ public class SimpleStructTest {
         assertEquals("[Obj1, Obj2, Obj3]", names.toString());
         assertEquals(1, list.stream().filter(theSimpleFromInteface.name.thatEquals("Obj2")).count());
     }
-
+    
     @Test
     public void testDefaultMethod_callNormally() {
         assertEquals("OBJ1", new SimpleFromInteface("Obj1").nameUpperCase());

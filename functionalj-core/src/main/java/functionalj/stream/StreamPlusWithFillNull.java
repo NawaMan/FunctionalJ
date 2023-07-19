@@ -34,9 +34,9 @@ import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
 public interface StreamPlusWithFillNull<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Replace any null value with the given replacement.
      */
@@ -48,14 +48,14 @@ public interface StreamPlusWithFillNull<DATA> {
             return replaced;
         });
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given lens) with the given replacement.
      */
     public default <VALUE> StreamPlus<DATA> fillNull(AnyLens<DATA, VALUE> lens, VALUE replacement) {
         return fillNull((Func1<DATA, VALUE>) lens, ((WriteLens<DATA, VALUE>) lens)::apply, replacement);
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given getter and setter) with the given replacement.
      */
@@ -72,14 +72,14 @@ public interface StreamPlusWithFillNull<DATA> {
             });
         });
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier.
      */
     public default <VALUE> StreamPlus<DATA> fillNullWith(AnyLens<DATA, VALUE> lens, Supplier<VALUE> replacementSupplier) {
         return fillNullWith((Func1<DATA, VALUE>) lens, ((WriteLens<DATA, VALUE>) lens)::apply, replacementSupplier);
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier.
      */
@@ -97,14 +97,14 @@ public interface StreamPlusWithFillNull<DATA> {
             });
         });
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given lens) with the replacement value from the function.
      */
     public default <VALUE> StreamPlus<DATA> fillNullBy(AnyLens<DATA, VALUE> lens, Function<DATA, VALUE> replacementFunction) {
         return fillNullBy((Func1<DATA, VALUE>) lens, ((WriteLens<DATA, VALUE>) lens)::apply, replacementFunction);
     }
-
+    
     /**
      * Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function.
      */

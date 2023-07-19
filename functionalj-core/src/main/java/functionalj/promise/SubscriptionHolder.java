@@ -29,11 +29,11 @@ import java.util.function.Consumer;
 import functionalj.result.Result;
 
 public class SubscriptionHolder<DATA> extends SubscriptionRecord<DATA> {
-
+    
     private final AtomicReference<Consumer<Result<DATA>>> consumer = new AtomicReference<Consumer<Result<DATA>>>(null);
-
+    
     private final SubscriptionRecord<DATA> subscription;
-
+    
     SubscriptionHolder(boolean isEavesdropping, Wait wait, Promise<DATA> promise) {
         super(promise);
         this.subscription = promise.doSubscribe(isEavesdropping, requireNonNull(wait), result -> {
@@ -42,11 +42,11 @@ public class SubscriptionHolder<DATA> extends SubscriptionRecord<DATA> {
                 consumer.accept(result);
         });
     }
-
+    
     public Consumer<Result<DATA>> getConsumer() {
         return this.consumer.get();
     }
-
+    
     public SubscriptionHolder<DATA> assign(Consumer<Result<DATA>> consumer) {
         Result<DATA> result = subscription.getPromise().getCurrentResult();
         this.consumer.set(consumer);
@@ -55,7 +55,7 @@ public class SubscriptionHolder<DATA> extends SubscriptionRecord<DATA> {
         }
         return this;
     }
-
+    
     public SubscriptionHolder<DATA> unsubscribe() {
         subscription.unsubscribe();
         return this;

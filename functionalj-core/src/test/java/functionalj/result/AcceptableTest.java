@@ -30,14 +30,14 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class AcceptableTest {
-
+    
     public static class ThreeDigitString extends Acceptable<String> {
-
+    
         public ThreeDigitString(String value) {
             super(value, Validation.ToBoolean(str -> str.matches("^[0-9]{3}$"), "Three digit string is required."));
         }
     }
-
+    
     @Test
     public void test() throws Exception {
         assertTrue(new ThreeDigitString("123").isPresent());
@@ -48,11 +48,11 @@ public class AcceptableTest {
         assertEquals("ThreeDigitString:{ Invalid: Three digit string is required. }", "" + new ThreeDigitString("ABC"));
         assertEquals("ThreeDigitString:{ Invalid: java.lang.NullPointerException }", "" + new ThreeDigitString(null));
     }
-
+    
     private Result<Integer> lengthOf(ThreeDigitString str) {
         return str.map(theString.length());
     }
-
+    
     @Test
     public void testParam() {
         assertTrue(lengthOf(new ThreeDigitString("123")).isPresent());
@@ -64,15 +64,15 @@ public class AcceptableTest {
         assertTrue(new ThreeDigitString("123").isPresent());
         assertFalse(new ThreeDigitString(null).isPresent());
     }
-
+    
     // Notice the null value is passed to the checker
     public static class ThreeDigitStringOrNull extends Acceptable<String> {
-
+    
         public ThreeDigitStringOrNull(String value) {
             super(value, Validation.ToBoolean(str -> (str != null) && str.matches("^[0-9]{3}$"), "Three digit string is required."));
         }
     }
-
+    
     @Test
     public void testNullSafe() {
         assertTrue(new ThreeDigitStringOrNull("123").isPresent());

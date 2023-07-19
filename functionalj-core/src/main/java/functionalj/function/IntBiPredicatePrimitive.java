@@ -27,29 +27,29 @@ import java.util.function.BiPredicate;
 
 @FunctionalInterface
 public interface IntBiPredicatePrimitive extends Func2<Integer, Integer, Boolean>, BiPredicate<Integer, Integer> {
-
+    
     public boolean testIntInt(int i1, int i2);
-
+    
     @Override
     public default boolean test(Integer i1, Integer i2) {
         return testIntInt(i1, i2);
     }
-
+    
     public default BiPredicate<Integer, Integer> toPredicate() {
         return (value1, value2) -> test(value1, value2);
     }
-
+    
     @Override
     public default Boolean applyUnsafe(Integer input1, Integer input2) throws Exception {
         return test(input1, input2);
     }
-
+    
     public static IntBiPredicatePrimitive intBiPredicate(Func2<Integer, Integer, Boolean> predicate) {
         if (predicate instanceof IntBiPredicatePrimitive)
             return ((IntBiPredicatePrimitive) predicate);
         return predicate::apply;
     }
-
+    
     public static IntBiPredicatePrimitive intPredicate(BiPredicate<Integer, Integer> predicate) {
         if (predicate instanceof IntPredicatePrimitive)
             return ((IntBiPredicatePrimitive) predicate);

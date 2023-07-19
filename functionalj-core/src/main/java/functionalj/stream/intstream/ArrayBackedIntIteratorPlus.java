@@ -36,35 +36,35 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIterator.OfInt {
-
+    
     private final int[] array;
-
+    
     private final int start;
-
+    
     private final int end;
-
+    
     private final PrimitiveIterator.OfInt iterator;
-
+    
     private AtomicInteger current = new AtomicInteger();
-
+    
     private volatile Runnable closeHandler = null;
-
+    
     @SafeVarargs
     public static ArrayBackedIntIteratorPlus of(int... array) {
         val copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedIntIteratorPlus(copiedArray);
     }
-
+    
     public static ArrayBackedIntIteratorPlus from(int[] array) {
         val copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedIntIteratorPlus(copiedArray);
     }
-
+    
     public static ArrayBackedIntIteratorPlus from(int[] array, int start, int length) {
         val copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedIntIteratorPlus(copiedArray, start, length);
     }
-
+    
     ArrayBackedIntIteratorPlus(int[] array, int start, int length) {
         this.array = array;
         this.start = Math.max(0, Math.min(array.length - 1, start));
@@ -72,19 +72,19 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
         this.iterator = createIterator(array);
         this.current.set(this.start - 1);
     }
-
+    
     ArrayBackedIntIteratorPlus(int[] array) {
         this(array, 0, array.length);
     }
-
+    
     private PrimitiveIterator.OfInt createIterator(int[] array) {
         return new PrimitiveIterator.OfInt() {
-
+    
             @Override
             public boolean hasNext() {
                 return current.incrementAndGet() < ArrayBackedIntIteratorPlus.this.end;
             }
-
+    
             @Override
             public int nextInt() {
                 val index = current.get();
@@ -96,25 +96,25 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
             }
         };
     }
-
+    
     public IntIteratorPlus newIterator() {
         return new ArrayBackedIntIteratorPlus(array, start, start + end);
     }
-
+    
     public int getStart() {
         return start;
     }
-
+    
     public int getLength() {
         return end - start;
     }
-
+    
     public void close() {
         if (this.closeHandler != null) {
             this.closeHandler.run();
         }
     }
-
+    
     public IntIteratorPlus onClose(Runnable closeHandler) {
         if (closeHandler != null) {
             synchronized (this) {
@@ -123,7 +123,7 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
                 } else {
                     val thisCloseHandler = this.closeHandler;
                     this.closeHandler = new Runnable() {
-
+    
                         @Override
                         public void run() {
                             thisCloseHandler.run();
@@ -135,16 +135,16 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
         }
         return this;
     }
-
+    
     @Override
     public PrimitiveIterator.OfInt asIterator() {
         return iterator;
     }
-
+    
     public IntStreamPlus stream() {
         return new ArrayBackedIntStreamPlus(this);
     }
-
+    
     public AutoCloseableResult<IntIteratorPlus> pullNext(int count) {
         val oldIndex = current.getAndAccumulate(count, (o, n) -> o + n) + 1;
         int newIndex = current.get();
@@ -152,7 +152,7 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
             return AutoCloseableResult.from(Result.ofNoMore());
         return AutoCloseableResult.valueOf(new ArrayBackedIntIteratorPlus(array, oldIndex, oldIndex + count));
     }
-
+    
     public <TARGET> Result<TARGET> mapNext(int count, Func1<IntStreamPlus, TARGET> mapper) {
         val old = current.getAndAccumulate(count, (o, n) -> o + n) + 1;
         if ((current.get() >= end) && (count != 0))
@@ -163,19 +163,19 @@ public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIte
             return Result.valueOf(value);
         }
     }
-
+    
     public IntFuncList funcList() {
         return IntFuncList.from(() -> {
             val iterable = (IntIterable) () -> newIterator();
             return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
         });
     }
-
+    
     public int[] toArray() {
         int[] copiedArray = Arrays.copyOfRange(array, start, end);
         return copiedArray;
     }
-
+    
     public <A> A[] toArray(IntFunction<A[]> generator) {
         int length = end - start;
         A[] newArray = generator.apply(length);

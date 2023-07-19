@@ -29,9 +29,9 @@ import java.util.function.Predicate;
 import lombok.val;
 
 public interface StreamPlusWithPeek<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Peek only the value that is an instance of the give class.
      */
@@ -44,7 +44,7 @@ public interface StreamPlusWithPeek<DATA> {
             theConsumer.accept(target);
         });
     }
-
+    
     /**
      * Peek only the value that is selected with selector.
      */
@@ -56,7 +56,7 @@ public interface StreamPlusWithPeek<DATA> {
             theConsumer.accept(value);
         });
     }
-
+    
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
     /**
@@ -69,7 +69,7 @@ public interface StreamPlusWithPeek<DATA> {
             consumer.accept(target);
         });
     }
-
+    
     /**
      * Peek only the mapped value using the mapper.
      */
@@ -81,7 +81,7 @@ public interface StreamPlusWithPeek<DATA> {
                 consumer.accept(value);
         });
     }
-
+    
     /**
      * Peek only the mapped value using the mapper that is selected by the selector.
      */

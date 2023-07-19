@@ -29,20 +29,20 @@ import lombok.val;
 
 @FunctionalInterface
 public interface LongToIntegerAccessBoxed extends IntegerAccessBoxed<Long>, LongFunction<Integer> {
-
+    
     public Integer apply(long value);
-
+    
     public default Integer applyUnsafe(Long host) throws Exception {
         return apply(host);
     }
-
+    
     public default LongToIntegerAccessPrimitive orElse(int fallback) {
         return value -> {
             val result = apply(value);
             return (result != null) ? result : fallback;
         };
     }
-
+    
     public default LongToIntegerAccessPrimitive orGet(IntSupplier fallback) {
         return value -> {
             val result = apply(value);

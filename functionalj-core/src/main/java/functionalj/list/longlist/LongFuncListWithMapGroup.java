@@ -42,21 +42,21 @@ import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.tuple.LongLongTuple;
 
 public interface LongFuncListWithMapGroup extends AsLongFuncList {
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     public default LongFuncList mapTwo(LongBinaryOperator combinator) {
         return deriveToLong(this, stream -> stream.mapTwo(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     public default LongFuncList mapGroup(int count, ToLongFunction<LongStreamPlus> combinator) {
         return deriveToLong(this, stream -> stream.mapGroup(count, combinator));
     }
-
+    
     // == Object ==
     /**
      * @return  the stream of  each previous value and each current value.
@@ -64,28 +64,28 @@ public interface LongFuncListWithMapGroup extends AsLongFuncList {
     public default FuncList<LongLongTuple> mapTwoToObj() {
         return deriveToObj(this, stream -> stream.mapTwoToObj());
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     public default <TARGET> FuncList<TARGET> mapTwoToObj(LongLongBiFunction<TARGET> combinator) {
         return deriveToObj(this, stream -> stream.mapTwoToObj(combinator));
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
     public default FuncList<LongStreamPlus> mapGroupToObj(int count) {
         return deriveToObj(this, stream -> stream.mapGroupToObj(count));
     }
-
+    
     /**
      * @return  the stream of  each previous value and each current value.
      */
     public default <TARGET> FuncList<TARGET> mapGroupToObj(int count, Func1<LongStreamPlus, ? extends TARGET> combinator) {
         return mapGroupToObj(count).map(combinator);
     }
-
+    
     // == Int ==
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
@@ -93,14 +93,14 @@ public interface LongFuncListWithMapGroup extends AsLongFuncList {
     public default IntFuncList mapTwoToInt(LongLongToIntFunctionPrimitive combinator) {
         return deriveToInt(this, stream -> stream.mapTwoToInt(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     public default IntFuncList mapGroupToInt(int count, ToIntFunction<LongStreamPlus> combinator) {
         return deriveToInt(this, stream -> stream.mapGroupToInt(count, combinator));
     }
-
+    
     // == Long ==
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
@@ -108,14 +108,14 @@ public interface LongFuncListWithMapGroup extends AsLongFuncList {
     public default LongFuncList mapTwoToLong(LongBinaryOperator combinator) {
         return deriveToLong(this, stream -> stream.mapTwoToLong(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     public default LongFuncList mapGroupToLong(int count, ToLongFunction<LongStreamPlus> combinator) {
         return deriveToLong(this, stream -> stream.mapGroupToLong(count, combinator));
     }
-
+    
     // == Double ==
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
@@ -123,7 +123,7 @@ public interface LongFuncListWithMapGroup extends AsLongFuncList {
     public default DoubleFuncList mapTwoToDouble(LongLongToDoubleFunctionPrimitive combinator) {
         return deriveToDouble(this, stream -> stream.mapTwoToDouble(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */

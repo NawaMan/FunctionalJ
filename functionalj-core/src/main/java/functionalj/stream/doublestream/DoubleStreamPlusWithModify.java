@@ -45,9 +45,9 @@ import functionalj.tuple.DoubleTuple2;
 import lombok.val;
 
 public interface DoubleStreamPlusWithModify {
-
+    
     public DoubleStreamPlus doubleStreamPlus();
-
+    
     /**
      * Accumulate the previous to the next element.
      *
@@ -69,11 +69,11 @@ public interface DoubleStreamPlusWithModify {
     public default DoubleStreamPlus accumulate(DoubleDoubleToDoubleFunctionPrimitive accumulator) {
         val splitr = doubleStreamPlus().spliterator();
         val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-
+    
             double acc = 0;
-
+    
             boolean used = false;
-
+    
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 DoubleConsumer action = elem -> {
@@ -90,7 +90,7 @@ public interface DoubleStreamPlusWithModify {
         };
         return DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
     }
-
+    
     /**
      * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
      *
@@ -126,7 +126,7 @@ public interface DoubleStreamPlusWithModify {
         val seed = DoubleTuple2.of(0, this.doubleStreamPlus());
         return StreamPlus.iterate(seed, func).acceptUntil(t -> t == null).skip(1).mapToDouble(t -> t._1());
     }
-
+    
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.
      * The result stream will not be the same order with the original one

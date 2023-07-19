@@ -31,7 +31,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class PublishTest {
-
+    
     @Test
     public void testBasic() {
         val logsValue = new ArrayList<String>();
@@ -61,7 +61,7 @@ public class PublishTest {
         assertFalse(subscription2.isActive());
         assertFalse(subscription3.isActive());
     }
-
+    
     @Test
     public void testUnsubscribe() {
         val logs = new ArrayList<String>();
@@ -80,7 +80,7 @@ public class PublishTest {
         publisher.done();
         assertEquals("[3, 3]", logs.toString());
     }
-
+    
     @Test
     public void testMap() {
         val logs = new ArrayList<String>();
@@ -95,7 +95,7 @@ public class PublishTest {
         publisher.done();
         assertEquals("[3, 3, 5]", logs.toString());
     }
-
+    
     @Test
     public void testSubUnsubscribe() {
         val logs = new ArrayList<String>();

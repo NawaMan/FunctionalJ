@@ -32,25 +32,25 @@ import java.util.stream.Collector;
 
 @FunctionalInterface
 public interface CollectorExtensible<DATA, ACCUMULATED, RESULT> extends Collector<DATA, ACCUMULATED, RESULT> {
-
+    
     Collector<DATA, ACCUMULATED, RESULT> collector();
-
+    
     default Supplier<ACCUMULATED> supplier() {
         return collector().supplier();
     }
-
+    
     default BiConsumer<ACCUMULATED, DATA> accumulator() {
         return collector().accumulator();
     }
-
+    
     default BinaryOperator<ACCUMULATED> combiner() {
         return collector().combiner();
     }
-
+    
     default Function<ACCUMULATED, RESULT> finisher() {
         return collector().finisher();
     }
-
+    
     default Set<Characteristics> characteristics() {
         return collector().characteristics();
     }

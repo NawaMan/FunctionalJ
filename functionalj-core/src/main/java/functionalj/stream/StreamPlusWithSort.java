@@ -30,9 +30,9 @@ import functionalj.stream.markers.Eager;
 import lombok.val;
 
 public interface StreamPlusWithSort<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Sort the values by the mapped value.
      */
@@ -45,7 +45,7 @@ public interface StreamPlusWithSort<DATA> {
             return vA.compareTo(vB);
         });
     }
-
+    
     /**
      * Sort the values by the mapped value using the comparator.
      */

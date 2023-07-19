@@ -29,17 +29,17 @@ package functionalj.types;
  * @author NawaMan -- nawa@nawaman.net
  */
 public final class Absent {
-
+    
     /**
      * The absent instance indicating that a parameter is absent.
      */
     public static final Absent absent = new Absent();
-
+    
     /**
      * The absent instance indicating that a parameter is absent.
      */
     public static final Absent __ = absent;
-
+    
     /**
      * The absent instance indicating that a parameter is absent.
      */

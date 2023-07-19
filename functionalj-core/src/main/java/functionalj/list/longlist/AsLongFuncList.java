@@ -27,11 +27,11 @@ import functionalj.stream.longstream.AsLongStreamPlus;
 import functionalj.stream.longstream.LongStreamPlus;
 
 class AsLongFuncListHelper {
-
+    
     static LongFuncList funcListOf(AsLongFuncList asFuncList) {
         return asFuncList.asLongFuncList();
     }
-
+    
     static LongStreamPlus streamPlusOf(AsLongFuncList asFuncList) {
         return asFuncList.asLongFuncList().longStreamPlus();
     }
@@ -39,9 +39,9 @@ class AsLongFuncListHelper {
 
 @FunctionalInterface
 public interface AsLongFuncList extends AsLongStreamPlus {
-
+    
     public LongFuncList asLongFuncList();
-
+    
     @Override
     public default LongStreamPlus longStreamPlus() {
         return asLongFuncList().longStreamPlus();

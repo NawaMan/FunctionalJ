@@ -15,17 +15,17 @@ import lombok.NonNull;
 import lombok.val;
 
 public class StreamBackedDoubleFuncList implements DoubleFuncList {
-
+    
     private static final DoubleBinaryOperator zeroForEquals = (double i1, double i2) -> i1 == i2 ? 0 : 1;
-
+    
     private static final DoublePredicate notZero = (double i) -> i != 0;
-
+    
     private final Mode mode;
-
+    
     private final GrowOnlyDoubleArray cache = new GrowOnlyDoubleArray();
-
+    
     private final Spliterator.OfDouble spliterator;
-
+    
     public StreamBackedDoubleFuncList(@NonNull DoubleStream stream, @NonNull Mode mode) {
         this.spliterator = stream.spliterator();
         this.mode = mode;
@@ -33,15 +33,15 @@ public class StreamBackedDoubleFuncList implements DoubleFuncList {
             size();
         }
     }
-
+    
     public StreamBackedDoubleFuncList(@NonNull DoubleStream stream) {
         this(stream, Mode.cache);
     }
-
+    
     public Mode mode() {
         return mode;
     }
-
+    
     @Override
     public DoubleFuncList toLazy() {
         if (mode.isLazy()) {
@@ -49,14 +49,14 @@ public class StreamBackedDoubleFuncList implements DoubleFuncList {
         }
         return new StreamBackedDoubleFuncList(doubleStreamPlus(), Mode.lazy);
     }
-
+    
     @Override
     public DoubleFuncList toEager() {
         // Just materialize all value.
         int size = size();
         return new ImmutableDoubleFuncList(cache, size, Mode.eager);
     }
-
+    
     @Override
     public DoubleFuncList toCache() {
         if (mode.isCache()) {
@@ -64,13 +64,13 @@ public class StreamBackedDoubleFuncList implements DoubleFuncList {
         }
         return new StreamBackedDoubleFuncList(doubleStreamPlus(), Mode.cache);
     }
-
+    
     @Override
     public DoubleStreamPlus doubleStream() {
         val indexRef = new AtomicInteger(0);
         val valueConsumer = (DoubleConsumer) ((double v) -> cache.add(v));
         val newSpliterator = new Spliterators.AbstractDoubleSpliterator(Long.MAX_VALUE, 0) {
-
+    
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 int index = indexRef.getAndIncrement();
@@ -86,7 +86,7 @@ public class StreamBackedDoubleFuncList implements DoubleFuncList {
                     return true;
                 return hadNext;
             }
-
+    
             private boolean fromCache(DoubleConsumer consumer, int index) {
                 if (index >= cache.length())
                     return false;
@@ -98,12 +98,12 @@ public class StreamBackedDoubleFuncList implements DoubleFuncList {
         val newStream = StreamSupport.doubleStream(newSpliterator, false);
         return DoubleStreamPlus.from(newStream);
     }
-
+    
     @Override
     public int hashCode() {
         return Double.hashCode(reduce(43, (hash, each) -> hash * 43 + each));
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof AsDoubleFuncList))
@@ -113,7 +113,7 @@ public class StreamBackedDoubleFuncList implements DoubleFuncList {
             return false;
         return !DoubleFuncList.zipOf(this, anotherList.asDoubleFuncList(), zeroForEquals).anyMatch(notZero);
     }
-
+    
     @Override
     public String toString() {
         return asDoubleFuncList().toListString();

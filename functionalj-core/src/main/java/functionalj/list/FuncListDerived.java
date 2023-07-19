@@ -34,34 +34,34 @@ import functionalj.stream.StreamPlusUtils;
 import lombok.val;
 
 public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
-
+    
     // -- Data --
     private final Object source;
-
+    
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
-
+    
     // -- Constructors --
     FuncListDerived(Iterable<SOURCE> iterable, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = iterable;
     }
-
+    
     FuncListDerived(FuncList<SOURCE> FuncList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = FuncList;
     }
-
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     FuncListDerived(Supplier<Stream<SOURCE>> streams) {
         this.action = stream -> (Stream) stream;
         this.source = streams;
     }
-
+    
     FuncListDerived(Supplier<Stream<SOURCE>> streams, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streams;
     }
-
+    
     // -- Source Stream --
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Stream<SOURCE> getSourceStream() {
@@ -75,37 +75,37 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
             return ((Supplier<Stream<SOURCE>>) source).get();
         throw new IllegalStateException();
     }
-
+    
     @Override
     public StreamPlus<DATA> stream() {
         Stream<SOURCE> theStream = getSourceStream();
         Stream<DATA> newStream = action.apply(theStream);
         return StreamPlus.from(newStream);
     }
-
+    
     /**
      * Check if this list is a lazy list.
      */
     public Mode mode() {
         return Mode.lazy;
     }
-
+    
     @Override
     public FuncList<DATA> toLazy() {
         return this;
     }
-
+    
     @Override
     public FuncList<DATA> toEager() {
         val list = this.toArrayList();
         return new ImmutableFuncList<DATA>(list, list.size(), Mode.eager);
     }
-
+    
     @Override
     public FuncList<DATA> toCache() {
         return FuncList.from(stream());
     }
-
+    
     /**
      * Returns an immutable list containing the data of this list. Maintaining the mode.
      */
@@ -113,12 +113,12 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
     public ImmutableFuncList<DATA> toImmutableList() {
         return new ImmutableFuncList<>(this, -1, Mode.lazy);
     }
-
+    
     @Override
     public int hashCode() {
         return StreamPlusUtils.hashCode(this.stream());
     }
-
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public boolean equals(Object o) {
@@ -127,7 +127,7 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
         val anotherList = FuncList.from((Collection) o);
         return !zipWith(anotherList, AllowUnpaired, Objects::equals).findFirst(Boolean.FALSE::equals).isPresent();
     }
-
+    
     @Override
     public String toString() {
         return asFuncList().toListString();

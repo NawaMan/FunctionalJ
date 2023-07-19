@@ -30,47 +30,47 @@ import lombok.val;
 // This class along with ArrayBackedIntIteratorPlus helps improve performance when do pullNext, useNext and mapNext
 // with multiple value to run faster.
 public class ArrayBackedLongStreamPlus implements LongStreamPlus {
-
+    
     private final ArrayBackedLongIteratorPlus iterator;
-
+    
     private final LongStreamPlus stream;
-
+    
     @SafeVarargs
     public static LongStreamPlus of(long... array) {
         val iterator = ArrayBackedLongIteratorPlus.of(array);
         val stream = new ArrayBackedLongStreamPlus(iterator);
         return stream;
     }
-
+    
     public static LongStreamPlus from(long[] array) {
         val iterator = ArrayBackedLongIteratorPlus.of(array);
         val stream = new ArrayBackedLongStreamPlus(iterator);
         return stream;
     }
-
+    
     public static LongStreamPlus from(long[] array, int start, int length) {
         val iterator = (ArrayBackedLongIteratorPlus) ArrayBackedLongIteratorPlus.from(array, start, length);
         val stream = new ArrayBackedLongStreamPlus(iterator);
         return stream;
     }
-
+    
     ArrayBackedLongStreamPlus(ArrayBackedLongIteratorPlus iterator) {
         this.iterator = iterator;
         val iterable = (LongIterable) () -> iterator;
         this.stream = LongStreamPlus.from(StreamSupport.longStream(iterable.spliterator(), false));
     }
-
+    
     @Override
     public LongStream longStream() {
         return stream;
     }
-
+    
     @Override
     public void close() {
         iterator.close();
         stream.close();
     }
-
+    
     @Override
     public LongStreamPlus onClose(Runnable closeHandler) {
         iterator.onClose(closeHandler);
@@ -79,11 +79,11 @@ public class ArrayBackedLongStreamPlus implements LongStreamPlus {
             return stream.onClose(closeHandler);
         });
     }
-
+    
     public LongIteratorPlus iterator() {
         return iterator;
     }
-
+    
     @Override
     public long[] toArray() {
         return iterator.toArray();

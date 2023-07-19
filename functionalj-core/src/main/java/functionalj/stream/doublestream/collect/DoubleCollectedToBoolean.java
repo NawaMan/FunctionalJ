@@ -27,43 +27,43 @@ import java.util.function.ObjDoubleConsumer;
 import functionalj.stream.collect.Collected;
 
 public interface DoubleCollectedToBoolean<ACCUMULATED> extends Collected<Double, ACCUMULATED, Boolean>, DoubleCollected<ACCUMULATED, Boolean> {
-
+    
     public static <ACC> DoubleCollectedToBoolean<ACC> of(DoubleCollectorToBooleanPlus<ACC> collector) {
         return new DoubleCollectedToBoolean.Impl<>(collector);
     }
-
+    
     // == Instance ==
     public void accumulate(double each);
-
+    
     public boolean finishAsBoolean();
-
+    
     public default Boolean finish() {
         return finishAsBoolean();
     }
-
+    
     public default void accumulate(Double each) {
         accumulate(each);
     }
-
+    
     // == Implementation ==
     public static class Impl<ACCUMULATED> implements DoubleCollectedToBoolean<ACCUMULATED> {
-
+    
         private final DoubleCollectorToBooleanPlus<ACCUMULATED> collector;
-
+    
         private final ObjDoubleConsumer<ACCUMULATED> accumulator;
-
+    
         private final ACCUMULATED accumulated;
-
+    
         public Impl(DoubleCollectorToBooleanPlus<ACCUMULATED> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.doubleAccumulator();
         }
-
+    
         public void accumulate(double each) {
             accumulator.accept(accumulated, each);
         }
-
+    
         @Override
         public boolean finishAsBoolean() {
             return collector.finisher().apply(accumulated);

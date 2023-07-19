@@ -30,59 +30,59 @@ import functionalj.stream.collect.Collected;
 import lombok.val;
 
 public interface LongCollected<ACCUMULATED, RESULT> extends Collected<Long, ACCUMULATED, RESULT> {
-
+    
     public static <ACC, RES> LongCollected<ACC, RES> collectedOf(LongAggregation<RES> aggregation) {
         requireNonNull(aggregation);
         @SuppressWarnings("unchecked")
         val collectorPlus = (LongCollectorPlus<ACC, RES>) aggregation.longCollectorPlus();
         return new LongCollected.Impl<>(collectorPlus);
     }
-
+    
     public static <ACC, RES> LongCollected<ACC, RES> collectedOf(LongCollectorPlus<ACC, RES> collector) {
         requireNonNull(collector);
         return new LongCollected.Impl<>(collector);
     }
-
+    
     public static <ACC, RES> LongCollected<ACC, RES> of(LongAggregation<RES> aggregation) {
         requireNonNull(aggregation);
         @SuppressWarnings("unchecked")
         val collectorPlus = (LongCollectorPlus<ACC, RES>) aggregation.longCollectorPlus();
         return new LongCollected.Impl<>(collectorPlus);
     }
-
+    
     public static <ACC, RES> LongCollected<ACC, RES> of(LongCollectorPlus<ACC, RES> collector) {
         requireNonNull(collector);
         return new LongCollected.Impl<>(collector);
     }
-
+    
     // == Instance ==
     public void accumulate(long each);
-
+    
     public RESULT finish();
-
+    
     public default void accumulate(Long each) {
         accumulate(each);
     }
-
+    
     // == Implementation ==
     public static class Impl<ACCUMULATED, RESULT> implements LongCollected<ACCUMULATED, RESULT> {
-
+    
         private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
-
+    
         private final ObjLongConsumer<ACCUMULATED> accumulator;
-
+    
         private final ACCUMULATED accumulated;
-
+    
         public Impl(LongCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.longAccumulator();
         }
-
+    
         public void accumulate(long each) {
             accumulator.accept(accumulated, each);
         }
-
+    
         public RESULT finish() {
             return collector.finisher().apply(accumulated);
         }

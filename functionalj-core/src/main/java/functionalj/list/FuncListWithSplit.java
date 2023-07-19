@@ -32,7 +32,7 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
-
+    
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give.
     // That because we can use regular filter if evaluating once is not important.
@@ -51,7 +51,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
         val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
         return Tuple.of(list1, list2);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -67,7 +67,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
         val list1 = streamPlus().filter(predicate).toImmutableList();
         return FuncMap.of(key1, list1);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -82,7 +82,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(KEY key1, Predicate<? super DATA> predicate1, KEY key2, Predicate<? super DATA> predicate2) {
         return split(key1, predicate1, key2, predicate2, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -97,7 +97,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(KEY key1, Predicate<? super DATA> predicate1, KEY key2, Predicate<? super DATA> predicate2, KEY key3, Predicate<? super DATA> predicate3) {
         return split(key1, predicate1, key2, predicate2, key3, predicate3, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -112,7 +112,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(KEY key1, Predicate<? super DATA> predicate1, KEY key2, Predicate<? super DATA> predicate2, KEY key3, Predicate<? super DATA> predicate3, KEY key4, Predicate<? super DATA> predicate4) {
         return split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -127,7 +127,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(KEY key1, Predicate<? super DATA> predicate1, KEY key2, Predicate<? super DATA> predicate2, KEY key3, Predicate<? super DATA> predicate3, KEY key4, Predicate<? super DATA> predicate4, KEY key5, Predicate<? super DATA> predicate5) {
         return split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -147,7 +147,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
         }
         return splittedMap;
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -165,7 +165,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
         val list2 = (otherKey != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(key1, list1, otherKey, list2);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -184,7 +184,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
         val list3 = (otherKey != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(key1, list1, key2, list2, otherKey, list3);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -204,7 +204,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
         val list4 = (otherKey != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(key1, list1, key2, list2, key3, list3, otherKey, list4);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -225,7 +225,7 @@ public interface FuncListWithSplit<DATA> extends FuncListWithMapToTuple<DATA> {
         val list5 = (otherKey != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(key1, list1, key2, list2, key3, list3, key4, list4, otherKey, list5);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *

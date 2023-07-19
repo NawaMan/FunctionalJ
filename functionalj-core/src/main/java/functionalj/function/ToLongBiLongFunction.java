@@ -25,6 +25,6 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface ToLongBiLongFunction<DATA> {
-
+    
     public long applyAsLong(DATA data, long intValue);
 }

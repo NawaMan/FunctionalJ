@@ -32,54 +32,54 @@ import functionalj.stream.intstream.collect.IntCollectorToLongPlus;
 import lombok.val;
 
 public abstract class IntAggregationToLong extends IntAggregation<Long> {
-
+    
     public static <A> IntAggregationToLong from(IntCollectorToLongPlus<A> collector) {
         return new IntAggregationToLong.Impl(collector);
     }
-
+    
     // == Instance ==
     public abstract IntCollectorToLongPlus<?> intCollectorToLongPlus();
-
+    
     @Override
     public IntCollectorPlus<?, Long> intCollectorPlus() {
         return intCollectorToLongPlus();
     }
-
+    
     public IntAggregatorToLong newAggregator() {
         val collector = intCollectorToLongPlus();
         return new IntAggregatorToLong.Impl(collector);
     }
-
+    
     // == Derived ==
     public <INPUT> AggregationToLong<INPUT> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorToLongPlus().of(mapper);
         return new AggregationToLong.Impl<>(newCollector);
     }
-
+    
     public IntAggregationToLong ofInt(IntUnaryOperator mapper) {
         val newCollector = intCollectorToLongPlus().of(mapper);
         return new IntAggregationToLong.Impl(newCollector);
     }
-
+    
     public LongAggregationToLong ofLong(LongToIntFunction mapper) {
         val newCollector = intCollectorToLongPlus().of(mapper);
         return new LongAggregationToLong.Impl(newCollector);
     }
-
+    
     public DoubleAggregationToLong ofDouble(DoubleToIntFunction mapper) {
         val newCollector = intCollectorToLongPlus().of(mapper);
         return new DoubleAggregationToLong.Impl(newCollector);
     }
-
+    
     // == Implementation ==
     public static class Impl extends IntAggregationToLong {
-
+    
         private final IntCollectorToLongPlus<?> collector;
-
+    
         public Impl(IntCollectorToLongPlus<?> collector) {
             this.collector = collector;
         }
-
+    
         @Override
         public IntCollectorToLongPlus<?> intCollectorToLongPlus() {
             return collector;

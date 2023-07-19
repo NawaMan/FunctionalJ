@@ -38,9 +38,9 @@ import functionalj.stream.markers.Terminal;
 import lombok.val;
 
 public interface AsIntStreamPlusWithCollect {
-
+    
     public IntStreamPlus intStreamPlus();
-
+    
     /**
      * Performs a mutable reduction operation on the elements of this stream. A mutable reduction is one in which the reduced value is
      * a mutable result container, such as an {@code ArrayList}, and elements are incorporated by updating the state of the result rather
@@ -52,7 +52,7 @@ public interface AsIntStreamPlusWithCollect {
         val streamPlus = intStreamPlus();
         return streamPlus.collect(supplier, accumulator, combiner);
     }
-
+    
     @Eager
     @Terminal
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -75,28 +75,28 @@ public interface AsIntStreamPlusWithCollect {
         val result = finisher.apply((ACCUMULATOR) accumulated);
         return result;
     }
-
+    
     @Eager
     @Terminal
     public default <RESULT> RESULT aggregate(IntAggregation<RESULT> aggregation) {
         val collector = aggregation.intCollectorPlus();
         return collect(collector);
     }
-
+    
     @Eager
     @Terminal
     public default int aggregateToInt(IntAggregationToInt aggregation) {
         val collector = aggregation.intCollectorPlus();
         return collect(collector);
     }
-
+    
     @Eager
     @Terminal
     public default long aggregateToLong(IntAggregationToLong aggregation) {
         val collector = aggregation.intCollectorPlus();
         return collect(collector);
     }
-
+    
     @Eager
     @Terminal
     public default double aggregateToDouble(IntAggregationToDouble aggregation) {

@@ -32,43 +32,43 @@ import defaultj.core.bindings.TypeBinding;
 import lombok.val;
 
 public class RefToTest {
-
+    
     // == Bind use in the dependency ==
     public static class Car {
-
+    
         public String zoom() {
             return "FLASH!";
         }
     }
-
+    
     public static class SuperCar extends Car {
-
+    
         public String zoom() {
             return "SUPER FLASH!!!!";
         }
     }
-
+    
     public static class Person {
-
+    
         private Car car;
-
+    
         public Person(Car car) {
             this.car = car;
         }
-
+    
         public String zoom() {
             return (car != null) ? car.zoom() : "Meh";
         }
     }
-
+    
     static final Ref<Person> personRef = Ref.to(Person.class);
-
+    
     @Test
     public void testBasic() {
         val person = personRef.get();
         assertEquals("FLASH!", person.zoom());
     }
-
+    
     @Test
     public void testOverride1() {
         val typeBinding = new TypeBinding<Car>(SuperCar.class);
@@ -79,19 +79,19 @@ public class RefToTest {
         });
         assertEquals("SUPER FLASH!!!!", zoom);
     }
-
+    
     @Test
     public void testOverride2() {
         val zoom = With(personRef.butFrom(() -> new Person(new SuperCar()))).run(() -> personRef.get().zoom());
         assertEquals("SUPER FLASH!!!!", zoom);
     }
-
+    
     @Test
     public void testDefaultToDefault() {
         val r = Ref.of(Person.class).defaultToTypeDefault();
         assertEquals("FLASH!", r.value().zoom().toString());
     }
-
+    
     @Test
     public void testWhenAbsent() {
         val r = Ref.of(Person.class).whenAbsentUseTypeDefault().defaultTo(new Person(new SuperCar()));

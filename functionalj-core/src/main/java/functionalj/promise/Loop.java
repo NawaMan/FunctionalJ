@@ -33,23 +33,23 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class Loop<DATA> extends Retry<DATA> {
-
+    
     private final Integer count;
-
+    
     private final Func1<Result<DATA>, Boolean> breakCondition;
-
+    
     public Loop(int count) {
         super(Retry.RETRY_FOREVER, Retry.NO_WAIT);
         this.count = count;
         this.breakCondition = null;
     }
-
+    
     public Loop(Func1<Result<DATA>, Boolean> breakCondition) {
         super(Retry.RETRY_FOREVER, Retry.NO_WAIT);
         this.count = null;
         this.breakCondition = requireNonNull(breakCondition);
     }
-
+    
     @Override
     DeferAction<DATA> create(DeferActionBuilder<DATA> builder) {
         val interruptOnCancel = builder.interruptOnCancel();
@@ -68,7 +68,7 @@ public class Loop<DATA> extends Retry<DATA> {
         action.start();
         return finalAction;
     }
-
+    
     private Func1<Result<DATA>, Boolean> shouldStop() {
         if (breakCondition != null)
             return breakCondition;
@@ -78,24 +78,24 @@ public class Loop<DATA> extends Retry<DATA> {
         };
         return stopPredicate;
     }
-
+    
     static class OnComplete<DATA> implements FuncUnit1<Result<DATA>> {
-
+    
         private final DeferActionBuilder<DATA> actionBuilder;
-
+    
         private final Func1<Result<DATA>, Boolean> shouldStop;
-
+    
         private final DeferAction<DATA> finalAction;
-
+    
         private final Supplier<SubscriptionRecord<DATA>> subscriptionRef;
-
+    
         public OnComplete(DeferActionBuilder<DATA> actionBuilder, Func1<Result<DATA>, Boolean> shouldStop, DeferAction<DATA> finalAction, Supplier<SubscriptionRecord<DATA>> subscriptionRef) {
             this.actionBuilder = actionBuilder;
             this.shouldStop = shouldStop;
             this.finalAction = finalAction;
             this.subscriptionRef = subscriptionRef;
         }
-
+    
         @Override
         public void acceptUnsafe(Result<DATA> result) throws Exception {
             val shouldBreak = shouldStop.apply(result);

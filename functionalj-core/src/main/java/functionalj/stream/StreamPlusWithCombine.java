@@ -35,23 +35,23 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface StreamPlusWithCombine<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     /**
      * Concatenate the given head stream in front of this stream.
      */
     public default StreamPlus<DATA> prependWith(Stream<DATA> head) {
         return StreamPlus.concat(StreamPlus.from(head), streamPlus());
     }
-
+    
     /**
      * Concatenate the given tail stream to this stream.
      */
     public default StreamPlus<DATA> appendWith(Stream<DATA> tail) {
         return StreamPlus.concat(streamPlus(), StreamPlus.from(tail));
     }
-
+    
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
@@ -72,7 +72,7 @@ public interface StreamPlusWithCombine<DATA> {
         });
         return resultStream;
     }
-
+    
     // -- Zip --
     /**
      * Combine this stream with another stream into a stream of tuple pair.
@@ -86,7 +86,7 @@ public interface StreamPlusWithCombine<DATA> {
     public default <ANOTHER> StreamPlus<Tuple2<DATA, ANOTHER>> zipWith(Stream<ANOTHER> anotherStream) {
         return zipWith(anotherStream, RequireBoth, Tuple2::of);
     }
-
+    
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -99,7 +99,7 @@ public interface StreamPlusWithCombine<DATA> {
     public default <ANOTHER> StreamPlus<Tuple2<DATA, ANOTHER>> zipWith(Stream<ANOTHER> anotherStream, ZipWithOption option) {
         return zipWith(anotherStream, option, Tuple2::of);
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
@@ -113,7 +113,7 @@ public interface StreamPlusWithCombine<DATA> {
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(Stream<ANOTHER> anotherStream, BiFunction<DATA, ANOTHER, TARGET> combinator) {
         return zipWith(anotherStream, RequireBoth, combinator);
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -129,7 +129,7 @@ public interface StreamPlusWithCombine<DATA> {
         val iteratorB = IteratorPlus.from(anotherStream.iterator());
         return StreamPlusHelper.doZipWith(option, combinator, iteratorA, iteratorB);
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
@@ -143,7 +143,7 @@ public interface StreamPlusWithCombine<DATA> {
     public default StreamPlus<DATA> choose(Stream<DATA> anotherStream, BiFunction<DATA, DATA, Boolean> selectThisNotAnother) {
         return choose(anotherStream, AllowUnpaired, selectThisNotAnother);
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
@@ -158,17 +158,17 @@ public interface StreamPlusWithCombine<DATA> {
         val iteratorA = this.streamPlus().iterator();
         val iteratorB = anotherStream.iterator();
         val iterator = new Iterator<DATA>() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-
+    
             public DATA next() {
                 val nextA = hasNextA ? iteratorA.next() : null;
                 val nextB = hasNextB ? iteratorB.next() : null;
@@ -186,7 +186,7 @@ public interface StreamPlusWithCombine<DATA> {
             }
         };
         val iterable = new Iterable<DATA>() {
-
+    
             @Override
             public Iterator<DATA> iterator() {
                 return iterator;

@@ -27,26 +27,26 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 
 public interface IntFunctionPrimitive<TARGET> extends IntFunction<TARGET>, Func1<Integer, TARGET> {
-
+    
     public static <T> IntFunctionPrimitive<T> of(Function<Integer, T> function) {
         if (function instanceof IntFunctionPrimitive)
             return (IntFunctionPrimitive<T>) function;
         return i -> function.apply(i);
     }
-
+    
     public static <T> IntFunctionPrimitive<T> intFunction(Function<Integer, T> function) {
         if (function instanceof IntFunctionPrimitive)
             return (IntFunctionPrimitive<T>) function;
         return i -> function.apply(i);
     }
-
+    
     public TARGET applyInt(int value);
-
+    
     @Override
     public default TARGET apply(int value) {
         return applyInt(value);
     }
-
+    
     @Override
     public default TARGET applyUnsafe(Integer input) throws Exception {
         return applyInt(input);

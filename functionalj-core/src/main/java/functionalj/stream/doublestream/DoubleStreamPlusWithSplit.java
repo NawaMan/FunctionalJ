@@ -30,7 +30,7 @@ import functionalj.map.FuncMap;
 import functionalj.tuple.Tuple2;
 
 public interface DoubleStreamPlusWithSplit extends DoubleStreamPlusWithMapToTuple {
-
+    
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
     // == split ==
@@ -47,7 +47,7 @@ public interface DoubleStreamPlusWithSplit extends DoubleStreamPlusWithMapToTupl
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
         return DoubleFuncList.from(() -> doubleStreamPlus()).split(predicate).map(toStreamPlus, toStreamPlus);
     }
-
+    
     /**
      * Split the stream using the predicate and return as part of a map.
      *
@@ -57,7 +57,7 @@ public interface DoubleStreamPlusWithSplit extends DoubleStreamPlusWithMapToTupl
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
         return DoubleFuncList.from(() -> doubleStreamPlus()).split(key1, predicate, key2).mapValue(toStreamPlus);
     }
-
+    
     /**
      * Split the stream using the predicate and return as part of a map.
      *
@@ -67,7 +67,7 @@ public interface DoubleStreamPlusWithSplit extends DoubleStreamPlusWithMapToTupl
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
         return DoubleFuncList.from(() -> doubleStreamPlus()).split(key1, predicate1, key2, predicate2, key3).mapValue(toStreamPlus);
     }
-
+    
     /**
      * Split the stream using the predicate and return as part of a map.
      *
@@ -77,7 +77,7 @@ public interface DoubleStreamPlusWithSplit extends DoubleStreamPlusWithMapToTupl
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
         return DoubleFuncList.from(() -> doubleStreamPlus()).split(key1, predicate1, key2, predicate2, key3, predicate3, key4).mapValue(toStreamPlus);
     }
-
+    
     /**
      * Split the stream using the predicate and return as part of a map.
      *
@@ -87,7 +87,7 @@ public interface DoubleStreamPlusWithSplit extends DoubleStreamPlusWithMapToTupl
         Function<DoubleFuncList, DoubleStreamPlus> toStreamPlus = DoubleFuncList::doubleStreamPlus;
         return DoubleFuncList.from(() -> doubleStreamPlus()).split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5).mapValue(toStreamPlus);
     }
-
+    
     /**
      * Split the stream using the predicate and return as part of a map.
      *

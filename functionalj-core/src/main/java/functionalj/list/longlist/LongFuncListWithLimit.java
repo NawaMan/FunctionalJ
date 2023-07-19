@@ -28,84 +28,84 @@ import java.util.function.LongPredicate;
 import functionalj.function.LongBiPredicatePrimitive;
 
 public interface LongFuncListWithLimit extends AsLongFuncList {
-
+    
     /**
      * Limit the size of the stream to the given size.
      */
     public default LongFuncList limit(Long maxSize) {
         return deriveToLong(this, stream -> stream.limit(maxSize));
     }
-
+    
     /**
      * Skip to the given offset position.
      */
     public default LongFuncList skip(Long startAt) {
         return deriveToLong(this, stream -> stream.skip(startAt));
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
     public default LongFuncList skipWhile(LongPredicate condition) {
         return deriveToLong(this, stream -> stream.skipWhile(condition));
     }
-
+    
     /**
      * Skip any value while the condition is true.
      */
     public default LongFuncList skipWhile(LongBiPredicatePrimitive condition) {
         return deriveToLong(this, stream -> stream.skipWhile(condition));
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
     public default LongFuncList skipUntil(LongPredicate condition) {
         return deriveToLong(this, stream -> stream.skipUntil(condition));
     }
-
+    
     /**
      * Skip any value until the condition is true.
      */
     public default LongFuncList skipUntil(LongBiPredicatePrimitive condition) {
         return deriveToLong(this, stream -> stream.skipUntil(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
     public default LongFuncList acceptWhile(LongPredicate condition) {
         return deriveToLong(this, stream -> stream.acceptWhile(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
     public default LongFuncList acceptWhile(LongBiPredicatePrimitive condition) {
         return deriveToLong(this, stream -> stream.acceptWhile(condition));
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
     public default LongFuncList acceptUntil(LongPredicate condition) {
         return deriveToLong(this, stream -> stream.acceptUntil(condition));
     }
-
+    
     /**
      * Accept any value until the condition is true.
      */
     public default LongFuncList acceptUntil(LongBiPredicatePrimitive condition) {
         return deriveToLong(this, stream -> stream.acceptUntil(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */
     public default LongFuncList dropAfter(LongPredicate condition) {
         return deriveToLong(this, stream -> stream.dropAfter(condition));
     }
-
+    
     /**
      * Accept any value while the condition is true.
      */

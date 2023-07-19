@@ -62,7 +62,7 @@ import functionalj.ref.Substitution;
 import lombok.val;
 
 public class DeferActionTest {
-
+    
     @Test
     public void testLazyStart() throws InterruptedException {
         val action = DeferAction.from(() -> 40).map(i -> i + 1);
@@ -79,7 +79,7 @@ public class DeferActionTest {
         assertEquals("Result:{ Value: 41 }", promise.getCurrentResult().toString());
         assertEquals("Result:{ Value: 42 }", answer.getResult().toString());
     }
-
+    
     @Test
     public void testDeferAction() throws InterruptedException {
         val log = new ArrayList<String>();
@@ -96,7 +96,7 @@ public class DeferActionTest {
         Thread.sleep(150);
         assertAsString("[Start: 0, End: 100, Result: Result:{ Value: Hello }]", log);
     }
-
+    
     @Test
     public void testDeferAction_abort() throws InterruptedException {
         val deferAction = DeferAction.from(() -> {
@@ -114,7 +114,7 @@ public class DeferActionTest {
         assertTrue(endRef.get() < 150);
         assertAsString("Result:{ Cancelled }", action.getResult());
     }
-
+    
     @Test
     public void testDeferAction_exception() throws InterruptedException {
         val log = new ArrayList<String>();
@@ -135,7 +135,7 @@ public class DeferActionTest {
         assertTrue(endRef.get() >= 100);
         assertAsString("[Result: Result:{ Exception: java.io.IOException: Fail hard! }]", log);
     }
-
+    
     @Test
     public void testGetResult() {
         val log = new ArrayList<String>();
@@ -150,7 +150,7 @@ public class DeferActionTest {
         log.add("Result: " + result);
         assertEquals("[Start: 0, End: 200, Result: Result:{ Value: Hello }]", log.toString());
     }
-
+    
     @Test
     public void testGetResult_abort() {
         val log = new ArrayList<String>();
@@ -167,7 +167,7 @@ public class DeferActionTest {
             assertAsString("[Start: 0, End: 500, Result: Result:{ NotReady }]", log);
         }
     }
-
+    
     @Test
     public void testGetResult_interrupt() {
         val start = System.currentTimeMillis();
@@ -189,7 +189,7 @@ public class DeferActionTest {
         assertTrue((System.currentTimeMillis() - start) < 150);
         assertAsString("Result:{ Exception: java.lang.InterruptedException: sleep interrupted }", action.getResult());
     }
-
+    
     @Test
     public void testDeferAction_lifeCycle() throws InterruptedException {
         // NOTE: This test demonstrates that it is possible to detect the phrase and thread that the task run on.
@@ -217,7 +217,7 @@ public class DeferActionTest {
         latch.await();
         assertAsString("[" + "Init ..., " + "... onStart ..., " + "Running ..., " + "Done2: Result:{ Value: Hello }, " + "Done: Result:{ Value: Hello }" + "]", log);
     }
-
+    
     @Test
     public void testDeferAction_lifeCycle_exceptionSafe() throws InterruptedException {
         // NOTE: This test demonstrates that it is possible to detect the phrase and thread that the task run on.
@@ -243,7 +243,7 @@ public class DeferActionTest {
         latch.await();
         assertAsString("[" + "Init ..., " + "... onStart ..., " + "Running ..., " + "Done2: Result:{ Value: Hello }, " + "Done: Result:{ Value: Hello }" + "]", log);
     }
-
+    
     @Test
     public void testDeferAction_sameThread() throws InterruptedException {
         // NOTE: It also demonstrates that onStart, task and notification are run on the same thread.
@@ -286,7 +286,7 @@ public class DeferActionTest {
         assertAsString(onStartThread.get(), onDoneThread.get());
         assertAsString(onStartThread.get(), onDone2Thread.get());
     }
-
+    
     @Test
     public void testDeferAction_chain() throws InterruptedException {
         val log = new ArrayList<String>();
@@ -320,7 +320,7 @@ public class DeferActionTest {
         latch.await();
         assertEquals("[" + "Init #0..., " + "Start #1 ..., " + "Running #1..., " + "Start #2 ..., " + "Running #2..., " + "Done #1: Result:{ Value: 5 }" + "]", log.toString());
     }
-
+    
     @Test
     public void testDeferAction_moreChain() throws InterruptedException {
         val log = new ArrayList<String>();
@@ -347,7 +347,7 @@ public class DeferActionTest {
         Thread.sleep(50);
         assertAsString("[" + "Acion 1 started., " + "Eavesdrop: false, " + "Eavesdrop: Result:{ Value: Hello }, " + "Done: Result:{ Value: Total=47 }" + "]", log);
     }
-
+    
     @Test
     public void testDeferAction_moreChainAbort() throws InterruptedException {
         val log = new ArrayList<String>();
@@ -377,23 +377,23 @@ public class DeferActionTest {
         assertTrue(logString.contains("Done: Result:{ Cancelled }"));
         assertTrue(logString.contains("Eavesdrop: false, Eavesdrop: Result:{ Value: Hello }"));
     }
-
+    
     static class LoggedCreator extends DeferActionCreator {
-
+    
         private final List<String> logs = Collections.synchronizedList(new ArrayList<String>());
-
+    
         private final AtomicInteger deferActionCount = new AtomicInteger(0);
-
+    
         private final AsyncRunner runner;
-
+    
         public LoggedCreator() {
             this(null);
         }
-
+    
         public LoggedCreator(AsyncRunner runner) {
             this.runner = runner;
         }
-
+    
         @Override
         public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, boolean interruptOnCancel, AsyncRunner runner) {
             val id = deferActionCount.getAndIncrement();
@@ -412,12 +412,12 @@ public class DeferActionTest {
             val theRunner = (this.runner != null) ? this.runner : runner;
             return DeferActionCreator.instance.create(wrappedSupplier, onStart, interruptOnCancel, theRunner);
         }
-
+    
         public List<String> logs() {
             return FuncList.from(logs);
         }
     }
-
+    
     @Test
     public void testCreator() throws InterruptedException {
         val creator = new LoggedCreator();
@@ -428,7 +428,7 @@ public class DeferActionTest {
         });
         assertAsString("[" + "New defer action: 0, Start #0: , End #0: null, " + "New defer action: 1, Start #1: , End #1: null, " + "New defer action: 2, Start #2: , End #2: null" + "]", creator.logs);
     }
-
+    
     @Test
     public void testStreamAction() {
         val creator = new LoggedCreator();
@@ -436,7 +436,7 @@ public class DeferActionTest {
         assertNotEquals("[" + "New defer action: 0, Start #0: , End #0: 0, " + "New defer action: 1, Start #1: , End #1: 1, " + "New defer action: 2, Start #2: , End #2: 2, " + "New defer action: 3, Start #3: , End #3: 3, " + "New defer action: 4, Start #4: , End #4: 4" + "]", creator.logs().toString());
         assertNotEquals("[" + "New defer action: 0, " + "New defer action: 1, " + "New defer action: 2, " + "New defer action: 3, " + "New defer action: 4, " + "Start #0: , End #0: 0, " + "Start #1: , End #1: 1, " + "Start #2: , End #2: 2, " + "Start #3: , End #3: 3, " + "Start #4: , End #4: 4" + "]", creator.logs().toString());
     }
-
+    
     @Test
     public void testStreamAction_SingleThread() {
         val executor = Executors.newSingleThreadExecutor();
@@ -446,7 +446,7 @@ public class DeferActionTest {
         runActions(creator);
         assertEquals("[" + "New defer action: 0, " + "New defer action: 1, " + "New defer action: 2, " + "New defer action: 3, " + "New defer action: 4, " + "Start #0: , End #0: 0, " + "Start #1: , End #1: 2, " + "Start #2: , End #2: 4, " + "Start #3: , End #3: 6, " + "Start #4: , End #4: 8" + "]", creator.logs().toString());
     }
-
+    
     @Test
     public void testStreamAction_TwoThreads() {
         val executor = Executors.newFixedThreadPool(2);
@@ -464,7 +464,7 @@ public class DeferActionTest {
         }
         assertTrue(zeroOneDone01 || oneZeroDone01 || zeroOneDone10 || oneZeroDone10);
     }
-
+    
     private void runActions(final functionalj.promise.DeferActionTest.LoggedCreator creator) {
         val list = Run.with(DeferActionCreator.current.butWith(creator)).run(() -> {
             val actions = FuncList.from(FuncList.iterate(0, i -> i + 2).limit(5)).map(i -> DeferAction.from(Sleep(100).thenReturn(i))).toImmutableList();
@@ -475,7 +475,7 @@ public class DeferActionTest {
         });
         assertAsString("[0, 2, 4, 6, 8]", list);
     }
-
+    
     @Test
     public void testCancelableStream() throws InterruptedException {
         val executor = Executors.newFixedThreadPool(2);
@@ -499,7 +499,7 @@ public class DeferActionTest {
         assertFalse(creator.logs.contains("End #4: 4"));
         assertAsString("[" + "New defer action: 0, " + "New defer action: 1, " + "New defer action: 2, " + "New defer action: 3, " + "Start #0: , " + "End #0: 0, " + "Start #1: , " + "End #1: 1" + "]", creator.logs.toString());
     }
-
+    
     @Test
     public void testInterrupt() throws InterruptedException {
         val stub = new Console.Stub();
@@ -529,7 +529,7 @@ public class DeferActionTest {
         });
         assertEquals("java.lang.InterruptedException: sleep interrupted", stub.errLines().limit(1).join(", "));
     }
-
+    
     @Test
     public void testRace() {
         val startTime = System.currentTimeMillis();
@@ -539,7 +539,7 @@ public class DeferActionTest {
         val diffTime = System.currentTimeMillis() - startTime;
         assertTrue("Taking too long ... interrupt not working.", diffTime < 500);
     }
-
+    
     @Test
     public void testRace_confirmCancel() {
         val action1 = DeferAction.run(TimeFuncs.Sleep(60000).thenReturn("60000"));
@@ -547,7 +547,7 @@ public class DeferActionTest {
         assertEquals("10", DeferAction.race(action1, action2).getResult().get());
         assertEquals("Result:{ Cancelled }", action1.getResult().toString());
     }
-
+    
     @Test
     public void testRace_cancelFirst() {
         val action1 = DeferAction.run(TimeFuncs.Sleep(200).thenReturn("200"));
@@ -557,7 +557,7 @@ public class DeferActionTest {
         val result = action.getResult();
         assertEquals("200", result.get());
     }
-
+    
     @Test
     public void testRace_cancelAll() {
         val action1 = DeferAction.run(TimeFuncs.Sleep(200).thenReturn("200"));
@@ -569,7 +569,7 @@ public class DeferActionTest {
         assertAsString("Result:{ Cancelled }", action2.getResult());
         assertAsString("Result:{ Cancelled: Finish without non-null result. }", action.getResult());
     }
-
+    
     @Test
     public void testRace_null() {
         val action1 = DeferAction.run(TimeFuncs.Sleep(100).thenReturn((String) null));
@@ -579,7 +579,7 @@ public class DeferActionTest {
         val result = action.getResult();
         assertNull(result.get());
     }
-
+    
     @Test
     public void testRetry_allFail() {
         val counter = new AtomicInteger(0);
@@ -590,7 +590,7 @@ public class DeferActionTest {
         assertAsString("Result:{ Cancelled: Retry exceed: 5 }", action.getResult());
         assertEquals(5, counter.get());
     }
-
+    
     @Test
     public void testRetry_finallySuccess() {
         val counter = new AtomicInteger(0);
@@ -603,7 +603,7 @@ public class DeferActionTest {
         assertAsString("Result:{ Value: Three }", action.getResult());
         assertEquals(3, counter.get());
     }
-
+    
     @Test
     public void testRetry_waitTime() {
         val counter = new AtomicInteger(0);
@@ -621,7 +621,7 @@ public class DeferActionTest {
         assertTrue(diff1 < 2);
         assertTrue(diff2 > 2);
     }
-
+    
     @Test
     public void testRetry_abort() throws InterruptedException {
         val counter = new AtomicInteger(0);
@@ -634,7 +634,7 @@ public class DeferActionTest {
         action.abort("Can't wait.");
         assertAsString("Result:{ Cancelled: Can't wait. }", action.getResult());
     }
-
+    
     @Test
     public void testDeferLoopTimes() throws InterruptedException {
         val counter = new AtomicInteger(0);
@@ -643,7 +643,7 @@ public class DeferActionTest {
         assertAsString("5", counter.get());
         assertAsString("Result:{ Value: 10 }", action.build().getResult());
     }
-
+    
     @Test
     public void testDeferLoopCondition() throws InterruptedException {
         val counter = new AtomicInteger(0);
@@ -651,7 +651,7 @@ public class DeferActionTest {
         assertAsString("Result:{ Value: 5 }", action.build().getResult());
         assertAsString("5", counter.get());
     }
-
+    
     @Test
     public void testDelayMethod() throws InterruptedException {
         val logs = new ArrayList<String>();
@@ -676,7 +676,7 @@ public class DeferActionTest {
         logs.add("Result: " + result.getResult());
         assertEquals("Before getting result!,\n" + "A,\n" + "a,\n" + "Result: Result:{ Value: Aa },\n" + "Result: Result:{ Value: Aa }", logs.stream().collect(joining(",\n")));
     }
-
+    
     @Test
     public void testValidate() throws InterruptedException {
         val action1 = DeferAction.from(() -> {
@@ -690,7 +690,7 @@ public class DeferActionTest {
         assertEquals("Result:{ Value: 10 }", "" + action1.getResult());
         assertEquals("Result:{ Invalid: java.lang.NullPointerException }", "" + action2.getResult());
     }
-
+    
     @Test
     public void testRecover() {
         val action1 = DeferAction.from(() -> {

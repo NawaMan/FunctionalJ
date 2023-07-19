@@ -33,7 +33,7 @@ import org.junit.Test;
 import lombok.val;
 
 public class PipeLineTest {
-
+    
     @Test
     public void testBasic() {
         val pipeLine = PipeLine.from(theString.length()).then(theInteger.time(2)).then(theInteger.asString()).thenReturn();
@@ -51,7 +51,7 @@ public class PipeLineTest {
         assertEquals(null, strNull.pipeTo(pipeLine2));
         assertEquals(null, strNull.pipeTo(pipeLine, pipeLine2));
     }
-
+    
     @Test
     public void testHandlingNull() {
         val pipeLine = PipeLine.ofNullable(String.class).then(theString.length()).then(theInteger.time(2)).then(theInteger.asString()).thenReturnOrElse("<none>");
@@ -63,7 +63,7 @@ public class PipeLineTest {
         assertEquals(null, str.pipeTo(pipeLine2));
         assertEquals("<NONE>", str.pipeTo(pipeLine, pipeLine2));
     }
-
+    
     @Test
     public void testHandlingNullCombine() {
         val pipeLine = PipeLine.ofNullable(String.class).then($S.length()).then($I.time(2)).then($I.asString()).then(defaultTo("<none>")).then($S.toUpperCase()).thenReturn();

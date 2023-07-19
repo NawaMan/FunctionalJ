@@ -26,16 +26,16 @@ package functionalj.promise;
 import lombok.NonNull;
 
 public class DeferValueAlreadyCompletedException extends Exception {
-
+    
     private static final long serialVersionUID = 132558572228073374L;
-
+    
     private final DeferValue<?> deferValue;
-
+    
     DeferValueAlreadyCompletedException(@NonNull DeferValue<?> deferValue) {
         super(deferValue + " is already completed with status: " + deferValue.getStatus());
         this.deferValue = deferValue;
     }
-
+    
     public DeferValue<?> deferValue() {
         return deferValue;
     }

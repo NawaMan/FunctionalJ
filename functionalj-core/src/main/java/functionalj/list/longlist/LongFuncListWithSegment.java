@@ -39,7 +39,7 @@ import functionalj.stream.markers.Sequential;
 import lombok.val;
 
 public interface LongFuncListWithSegment extends AsLongFuncList {
-
+    
     /**
      * Segment the stream into sub stream with the fix length of count.
      *
@@ -55,7 +55,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segment(count));
     }
-
+    
     /**
      * Create a stream of sub-stream which size is derived from the value.
      *
@@ -66,7 +66,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segment(segmentSize));
     }
-
+    
     /**
      * Segment the stream into sub stream whenever the start condition is true.
      * The tail sub stream will always be included.
@@ -75,7 +75,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segmentWhen(startCondition));
     }
-
+    
     /**
      * Segment the stream into sub stream starting the element after the precondition is true.
      */
@@ -84,7 +84,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segmentAfter(endCondition));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -100,7 +100,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
     public default FuncList<LongFuncList> segmentBetween(LongPredicate startCondition, LongPredicate endCondition) {
         return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -114,7 +114,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
     public default FuncList<LongFuncList> segmentBetween(LongPredicate startCondition, LongPredicate endCondition, boolean includeIncompletedSegment) {
         return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition, includeIncompletedSegment));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -129,7 +129,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val includeTail = (incompletedSegment == IncompletedSegment.included);
         return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition, includeTail));
     }
-
+    
     // -- segmentByPercentiles --
     /**
      * Split the stream into segment based on the given percentiles. *
@@ -137,28 +137,28 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
     public default <T> FuncList<LongFuncList> segmentByPercentiles(int... percentiles) {
         return LongFuncListHelper.segmentByPercentiles(this, IntFuncList.of(percentiles).mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
     public default <T> FuncList<LongFuncList> segmentByPercentiles(IntFuncList percentiles) {
         return LongFuncListHelper.segmentByPercentiles(this, percentiles.mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
     public default <T> FuncList<LongFuncList> segmentByPercentiles(double... percentiles) {
         return LongFuncListHelper.segmentByPercentiles(this, DoubleFuncList.of(percentiles));
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
     public default <T> FuncList<LongFuncList> segmentByPercentiles(DoubleFuncList percentiles) {
         return LongFuncListHelper.segmentByPercentiles(this, percentiles);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -166,7 +166,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val percentileList = DoubleFuncList.of(percentiles);
         return segmentByPercentiles(mapper, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -174,7 +174,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(mapper, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -182,7 +182,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -190,7 +190,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -198,7 +198,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val list = longStreamPlus().sortedBy(mapper).toImmutableList();
         return LongFuncListHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -206,7 +206,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val list = longStreamPlus().sortedBy(mapper).toImmutableList();
         return LongFuncListHelper.segmentByPercentiles(list, percentiles);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -214,7 +214,7 @@ public interface LongFuncListWithSegment extends AsLongFuncList {
         val list = longStreamPlus().sortedBy(mapper, comparator).toImmutableList();
         return LongFuncListHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */

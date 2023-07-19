@@ -32,7 +32,7 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
-
+    
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
     // == split ==
@@ -51,7 +51,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
         val list2 = temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2());
         return Tuple.of(list1, list2);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -67,7 +67,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
         val list1 = doubleStreamPlus().filter(predicate).toImmutableList();
         return FuncMap.of(key1, list1);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -82,7 +82,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
     public default <KEY> FuncMap<KEY, DoubleFuncList> split(KEY key1, DoublePredicate predicate1, KEY key2, DoublePredicate predicate2) {
         return split(key1, predicate1, key2, predicate2, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -97,7 +97,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
     public default <KEY> FuncMap<KEY, DoubleFuncList> split(KEY key1, DoublePredicate predicate1, KEY key2, DoublePredicate predicate2, KEY key3, DoublePredicate predicate3) {
         return split(key1, predicate1, key2, predicate2, key3, predicate3, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -112,7 +112,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
     public default <KEY> FuncMap<KEY, DoubleFuncList> split(KEY key1, DoublePredicate predicate1, KEY key2, DoublePredicate predicate2, KEY key3, DoublePredicate predicate3, KEY key4, DoublePredicate predicate4) {
         return split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -127,7 +127,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
     public default <KEY> FuncMap<KEY, DoubleFuncList> split(KEY key1, DoublePredicate predicate1, KEY key2, DoublePredicate predicate2, KEY key3, DoublePredicate predicate3, KEY key4, DoublePredicate predicate4, KEY key5, DoublePredicate predicate5) {
         return split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, null);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -147,7 +147,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
         }
         return splittedMap;
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -165,7 +165,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
         val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
         return FuncMap.of(key1, list1, key2, list2);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -184,7 +184,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
         val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
         return FuncMap.of(key1, list1, key2, list2, key3, list3);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -204,7 +204,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
         val list4 = (otherKey != null) ? temp.filter(it -> it._1() == 3).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
         return FuncMap.of(key1, list1, key2, list2, key3, list3, otherKey, list4);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *
@@ -225,7 +225,7 @@ public interface DoubleFuncListWithSplit extends DoubleFuncListWithMapToTuple {
         val list5 = (otherKey != null) ? temp.filter(it -> it._1() == 4).mapToDouble(it -> it._2()) : DoubleFuncList.empty();
         return FuncMap.of(key1, list1, key2, list2, key3, list3, key4, list4, otherKey, list5);
     }
-
+    
     /**
      * Partitioning the stream using the predicates and return as a map of each partition.
      *

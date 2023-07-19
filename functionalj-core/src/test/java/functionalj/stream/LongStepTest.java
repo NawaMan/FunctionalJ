@@ -5,7 +5,7 @@ import org.junit.Test;
 import functionalj.stream.longstream.LongStep;
 
 public class LongStepTest {
-
+    
     @Test
     public void testFromTo() {
         assertEquals("[0, 7, 14, 21, 28]", LongStep.of(7).to(34).toList().toString());

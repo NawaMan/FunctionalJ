@@ -29,17 +29,17 @@ import functionalj.result.Result;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public interface PromiseFilterAddOn<DATA> {
-
+    
     public <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper);
-
+    
     public default <T extends DATA> Promise<DATA> filter(Class<T> clzz) {
         return (Promise) mapResult(result -> result.filter(clzz));
     }
-
+    
     public default <T extends DATA> Promise<DATA> filter(Class<T> clzz, Predicate<? super T> theCondition) {
         return (Promise) mapResult(result -> result.filter(clzz, theCondition));
     }
-
+    
     public default <T> Promise<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
         return (Promise) mapResult(result -> result.filter((Function) mapper, (Predicate) theCondition));
     }

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class DefaultValueTest {
-
+    
     @Test
     public void test() {
         assertTrue(DefaultValue.isSuitable(Type.STR, DefaultValue.NULL));

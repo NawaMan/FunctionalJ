@@ -29,7 +29,7 @@ import java.util.function.Function;
 import lombok.val;
 
 public interface FuncListWithMapFirst<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -37,7 +37,7 @@ public interface FuncListWithMapFirst<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapFirst(mapper1, mapper2));
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -45,7 +45,7 @@ public interface FuncListWithMapFirst<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapFirst(mapper1, mapper2, mapper3));
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -53,7 +53,7 @@ public interface FuncListWithMapFirst<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4));
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */
@@ -61,7 +61,7 @@ public interface FuncListWithMapFirst<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5));
     }
-
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      */

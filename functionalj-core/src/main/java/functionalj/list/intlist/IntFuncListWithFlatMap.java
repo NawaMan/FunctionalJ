@@ -29,7 +29,7 @@ import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
 public interface IntFuncListWithFlatMap extends AsIntFuncList {
-
+    
     /**
      * FlatMap with the given mapper for only the value that pass the condition.
      */
@@ -39,7 +39,7 @@ public interface IntFuncListWithFlatMap extends AsIntFuncList {
             return stream.flatMapOnly(checker, newMapper);
         });
     }
-
+    
     /**
      * FlatMap with the mapper if the condition is true, otherwise use another elseMapper.
      */

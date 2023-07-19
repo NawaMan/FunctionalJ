@@ -36,35 +36,35 @@ import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
 public class MapAccessTest {
-
+    
     @Test
     public void testMapAccess() {
         val mapAccess = new MapAccess<Map<String, Integer>, String, Integer, StringAccess<Map<String, Integer>>, IntegerAccess<Map<String, Integer>>>() {
-
+    
             @Override
             public AccessParameterized2<Map<String, Integer>, Map<String, Integer>, String, Integer, StringAccess<Map<String, Integer>>, IntegerAccess<Map<String, Integer>>> accessParameterized2() {
                 return new AccessParameterized2<Map<String, Integer>, Map<String, Integer>, String, Integer, StringAccess<Map<String, Integer>>, IntegerAccess<Map<String, Integer>>>() {
-
+    
                     @Override
                     public Map<String, Integer> applyUnsafe(Map<String, Integer> host) throws Exception {
                         return host;
                     }
-
+    
                     @Override
                     public StringAccess<Map<String, Integer>> createSubAccess1(Function<Map<String, Integer>, String> accessToParameter) {
                         return map -> accessToParameter.apply(map);
                     }
-
+    
                     @Override
                     public IntegerAccess<Map<String, Integer>> createSubAccess2(Function<Map<String, Integer>, Integer> accessToParameter) {
                         return IntegerAccess.of(accessToParameter);
                     }
-
+    
                     @Override
                     public StringAccess<Map<String, Integer>> createSubAccessFromHost1(Function<Map<String, Integer>, String> accessToParameter) {
                         return accessToParameter::apply;
                     }
-
+    
                     @Override
                     public IntegerAccess<Map<String, Integer>> createSubAccessFromHost2(Function<Map<String, Integer>, Integer> accessToParameter) {
                         return IntegerAccess.of(accessToParameter);

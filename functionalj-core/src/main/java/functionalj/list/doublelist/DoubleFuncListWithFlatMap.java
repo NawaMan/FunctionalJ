@@ -29,7 +29,7 @@ import java.util.function.DoublePredicate;
 import java.util.stream.DoubleStream;
 
 public interface DoubleFuncListWithFlatMap extends AsDoubleFuncList {
-
+    
     /**
      * FlatMap with the given mapper for only the value that pass the condition.
      */
@@ -39,7 +39,7 @@ public interface DoubleFuncListWithFlatMap extends AsDoubleFuncList {
             return stream.flatMapOnly(checker, newMapper);
         });
     }
-
+    
     /**
      * FlatMap with the mapper if the condition is true, otherwise use another elseMapper.
      */

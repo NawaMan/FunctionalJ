@@ -25,7 +25,7 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface ToCharFunction<T> {
-
+    
     /**
      * Applies this function to the given argument.
      *

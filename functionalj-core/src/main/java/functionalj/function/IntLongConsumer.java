@@ -27,9 +27,9 @@ import functionalj.functions.ThrowFuncs;
 
 @FunctionalInterface
 public interface IntLongConsumer extends FuncUnit2<Integer, Long> {
-
+    
     public void acceptLongUnsafe(int input1, long input2) throws Exception;
-
+    
     public default void acceptDouble(int input1, long input2) {
         try {
             acceptLongUnsafe(input1, input2);
@@ -37,7 +37,7 @@ public interface IntLongConsumer extends FuncUnit2<Integer, Long> {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
-
+    
     @Override
     public default void acceptUnsafe(Integer input1, Long input2) throws Exception {
         acceptLongUnsafe(input1, input2);

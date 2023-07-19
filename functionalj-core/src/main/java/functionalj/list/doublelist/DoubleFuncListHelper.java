@@ -29,7 +29,7 @@ import functionalj.stream.doublestream.GrowOnlyDoubleArray;
 import lombok.val;
 
 public class DoubleFuncListHelper {
-
+    
     static <D> FuncList<DoubleFuncList> segmentByPercentiles(AsDoubleFuncList asList, DoubleFuncList percentiles) {
         val list = asList.asDoubleFuncList();
         val size = list.size();

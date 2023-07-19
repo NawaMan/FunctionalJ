@@ -33,30 +33,30 @@ import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import lombok.val;
 
 public abstract class IntAggregationToInt extends IntAggregation<Integer> {
-
+    
     public static <A> IntAggregationToInt from(IntCollectorToIntPlus<A> collector) {
         return new IntAggregationToInt.Impl(collector);
     }
-
+    
     // == Instance ==
     public abstract IntCollectorToIntPlus<?> intCollectorToIntPlus();
-
+    
     @Override
     public IntCollectorPlus<?, Integer> intCollectorPlus() {
         return intCollectorToIntPlus();
     }
-
+    
     public IntAggregatorToInt newAggregator() {
         val collector = intCollectorToIntPlus();
         return new IntAggregatorToInt.Impl(collector);
     }
-
+    
     // == Derived ==
     public <INPUT> AggregationToInt<INPUT> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorToIntPlus().of(mapper);
         return new AggregationToInt.Impl<>(newCollector);
     }
-
+    
     public IntAggregation<Integer> ofInt(IntFunction<Integer> mapper) {
         if (mapper instanceof IntUnaryOperator) {
             return ofIntToInt((IntUnaryOperator) mapper);
@@ -64,33 +64,33 @@ public abstract class IntAggregationToInt extends IntAggregation<Integer> {
         val newCollector = intCollectorToIntPlus().of(mapper);
         return new IntAggregation.Impl<>(newCollector);
     }
-
+    
     public LongAggregationToInt ofLong(LongToIntFunction mapper) {
         val newCollector = intCollectorToIntPlus().of(mapper);
         return new LongAggregationToInt.Impl(newCollector);
     }
-
+    
     public DoubleAggregationToInt ofDouble(DoubleToIntFunction mapper) {
         val newCollector = intCollectorToIntPlus().of(mapper);
         return new DoubleAggregationToInt.Impl(newCollector);
     }
-
+    
     // This is a terrible name .... :-(
     // But if we use ofInt, Java confuse this one and the one above
     public IntAggregationToInt ofIntToInt(IntUnaryOperator mapper) {
         val newCollector = intCollectorToIntPlus().of(mapper);
         return new IntAggregationToInt.Impl(newCollector);
     }
-
+    
     // == Implementation ==
     public static class Impl extends IntAggregationToInt {
-
+    
         private final IntCollectorToIntPlus<?> collector;
-
+    
         public Impl(IntCollectorToIntPlus<?> collector) {
             this.collector = collector;
         }
-
+    
         @Override
         public IntCollectorToIntPlus<?> intCollectorToIntPlus() {
             return collector;

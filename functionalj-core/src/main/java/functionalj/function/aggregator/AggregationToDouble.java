@@ -31,54 +31,54 @@ import functionalj.stream.collect.CollectorToDoublePlus;
 import lombok.val;
 
 public abstract class AggregationToDouble<SOURCE> extends Aggregation<SOURCE, Double> {
-
+    
     public static <S, A> AggregationToDouble<S> from(CollectorToDoublePlus<S, A> collector) {
         return new AggregationToDouble.Impl<S>(collector);
     }
-
+    
     // == Instance ==
     public abstract CollectorToDoublePlus<SOURCE, ?> collectorToDoublePlus();
-
+    
     @Override
     public CollectorToDoublePlus<SOURCE, ?> collectorPlus() {
         return collectorToDoublePlus();
     }
-
+    
     public AggregatorToDouble<SOURCE> newAggregator() {
         val collector = collectorToDoublePlus();
         return new AggregatorToDouble.Impl<>(collector);
     }
-
+    
     // == Derived ==
     public <INPUT> AggregationToDouble<INPUT> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorToDoublePlus().of(mapper);
         return new AggregationToDouble.Impl<>(newCollector);
     }
-
+    
     public IntAggregationToDouble ofInt(IntFunction<SOURCE> mapper) {
         val newCollector = collectorToDoublePlus().of(mapper);
         return new IntAggregationToDouble.Impl(newCollector);
     }
-
+    
     public LongAggregationToDouble ofLong(LongFunction<SOURCE> mapper) {
         val newCollector = collectorToDoublePlus().of(mapper);
         return new LongAggregationToDouble.Impl(newCollector);
     }
-
+    
     public DoubleAggregationToDouble ofDouble(DoubleFunction<SOURCE> mapper) {
         val newCollector = collectorToDoublePlus().of(mapper);
         return new DoubleAggregationToDouble.Impl(newCollector);
     }
-
+    
     // == Implementation ==
     public static class Impl<SRC> extends AggregationToDouble<SRC> {
-
+    
         private final CollectorToDoublePlus<SRC, ?> collector;
-
+    
         public Impl(CollectorToDoublePlus<SRC, ?> collector) {
             this.collector = collector;
         }
-
+    
         @Override
         public CollectorToDoublePlus<SRC, ?> collectorToDoublePlus() {
             return collector;

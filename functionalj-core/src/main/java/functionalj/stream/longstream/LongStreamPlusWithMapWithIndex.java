@@ -37,10 +37,10 @@ import functionalj.tuple.IntLongTuple;
 import lombok.val;
 
 public interface LongStreamPlusWithMapWithIndex {
-
+    
     // // TODO - to int, long, double
     public LongStreamPlus longStreamPlus();
-
+    
     /**
      * @return  the stream of each value and index.
      */
@@ -53,7 +53,7 @@ public interface LongStreamPlusWithMapWithIndex {
             return tuple;
         });
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -66,7 +66,7 @@ public interface LongStreamPlusWithMapWithIndex {
             return target;
         });
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -79,7 +79,7 @@ public interface LongStreamPlusWithMapWithIndex {
             return target;
         });
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -92,7 +92,7 @@ public interface LongStreamPlusWithMapWithIndex {
             return target;
         });
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
@@ -106,7 +106,7 @@ public interface LongStreamPlusWithMapWithIndex {
             return target;
         });
     }
-
+    
     /**
      * Create a stream whose value is the combination between the mapped value of this stream and its index.
      */

@@ -29,16 +29,16 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class RefTo<DATA> extends Ref<DATA> {
-
+    
     public static final Ref<IProvideDefault> defaultProvider = Ref.of(IProvideDefault.class).defaultFrom(IProvideDefault.defaultProvider()::get).whenAbsentGet(IProvideDefault.defaultProvider()::get);
-
+    
     private final int hashCode;
-
+    
     RefTo(Class<DATA> dataClass) {
         super(dataClass, null);
         hashCode = dataClass.hashCode();
     }
-
+    
     @Override
     protected Result<DATA> findResult() {
         val result = Result.of(() -> {
@@ -49,16 +49,16 @@ public class RefTo<DATA> extends Ref<DATA> {
         });
         return result;
     }
-
+    
     final Ref<DATA> whenAbsent(Func0<DATA> defaultSupplier) {
         // No effect
         return this;
     }
-
+    
     public final int hashCode() {
         return hashCode;
     }
-
+    
     public final boolean equals(Object another) {
         if (this == another)
             return true;

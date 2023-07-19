@@ -35,21 +35,21 @@ import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.IntTuple2;
 
 public interface IntFuncListWithCombine extends AsIntFuncList {
-
+    
     /**
      * Concatenate the given head stream in front of this stream.
      */
     public default IntFuncList prependWith(IntFuncList head) {
         return deriveToInt(this, stream -> stream.prependWith(head.intStream()));
     }
-
+    
     /**
      * Concatenate the given tail stream to this stream.
      */
     public default IntFuncList appendWith(IntFuncList tail) {
         return deriveToInt(this, stream -> stream.appendWith(tail.intStream()));
     }
-
+    
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
@@ -62,7 +62,7 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
     public default IntFuncList mergeWith(IntFuncList anotherFuncList) {
         return deriveToInt(this, stream -> stream.mergeWith(anotherFuncList.intStream()));
     }
-
+    
     // -- Zip --
     /**
      * Combine this stream with another stream into a stream of tuple pair.
@@ -76,7 +76,7 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
     public default <ANOTHER> FuncList<IntTuple2<ANOTHER>> zipWith(FuncList<ANOTHER> anotherFuncList) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.stream()));
     }
-
+    
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -89,7 +89,7 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
     public default <ANOTHER> FuncList<IntTuple2<ANOTHER>> zipWith(int defaultValue, FuncList<ANOTHER> anotherFuncList) {
         return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherFuncList.stream()));
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
@@ -103,7 +103,7 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
     public default <ANOTHER, TARGET> FuncList<TARGET> zipWith(FuncList<ANOTHER> anotherFuncList, IntObjBiFunction<ANOTHER, TARGET> merger) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.stream(), merger));
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -117,7 +117,7 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
     public default FuncList<IntIntTuple> zipWith(IntFuncList anotherFuncList) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.intStream()));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when any of the stream ended.
@@ -131,7 +131,7 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
     public default FuncList<IntIntTuple> zipWith(IntFuncList anotherFuncList, int defaultValue) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.intStream(), defaultValue));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.
@@ -146,31 +146,31 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
     public default FuncList<IntIntTuple> zipWith(int defaultValue1, IntFuncList anotherFuncList, int defaultValue2) {
         return deriveToObj(this, stream -> stream.zipWith(defaultValue1, anotherFuncList.intStream(), defaultValue2));
     }
-
+    
     public default IntFuncList zipWith(IntFuncList anotherFuncList, IntBinaryOperator merger) {
         return deriveToInt(this, stream -> stream.zipWith(anotherFuncList.intStream(), merger));
     }
-
+    
     public default IntFuncList zipWith(IntFuncList anotherFuncList, int defaultValue, IntBinaryOperator merger) {
         return deriveToInt(this, stream -> stream.zipWith(anotherFuncList.intStream(), defaultValue, merger));
     }
-
+    
     public default IntFuncList zipWith(int defaultValue1, IntFuncList anotherFuncList, int defaultValue2, IntBinaryOperator merger) {
         return deriveToInt(this, stream -> stream.zipWith(anotherFuncList.intStream(), defaultValue1, defaultValue2, merger));
     }
-
+    
     public default <T> FuncList<T> zipToObjWith(IntFuncList anotherFuncList, IntIntBiFunction<T> merger) {
         return deriveToObj(this, stream -> stream.zipToObjWith(anotherFuncList.intStream(), merger));
     }
-
+    
     public default <T> FuncList<T> zipToObjWith(int defaultValue1, IntFuncList anotherFuncList, int defaultValue2, IntIntBiFunction<T> merger) {
         return deriveToObj(this, stream -> stream.zipToObjWith(anotherFuncList.intStream(), defaultValue1, defaultValue2, merger));
     }
-
+    
     public default <ANOTHER, TARGET> FuncList<TARGET> zipToObjWith(int defaultValue, FuncList<ANOTHER> anotherFuncList, IntObjBiFunction<ANOTHER, TARGET> merger) {
         return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherFuncList.stream(), merger));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.
@@ -179,7 +179,7 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
     public default IntFuncList choose(IntFuncList anotherFuncList, IntBiPredicatePrimitive selectThisNotAnother) {
         return deriveToInt(this, stream -> stream.choose(anotherFuncList.intStreamPlus(), selectThisNotAnother));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.

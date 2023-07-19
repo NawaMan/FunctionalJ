@@ -28,21 +28,21 @@ import java.util.Objects;
 
 @FunctionalInterface
 public interface DoubleComparator extends Comparator<Double> {
-
+    
     public int compareDouble(double o1, double o2);
-
+    
     public default int compare(Double o1, Double o2) {
         return compareDouble(o1, o2);
     }
-
+    
     public default DoubleComparator reverse() {
         return (o1, o2) -> compareDouble(o2, o1);
     }
-
+    
     public static DoubleComparator compare(DoubleComparator comparator) {
         return Objects.requireNonNull(comparator);
     }
-
+    
     public static int compare(double a, double b, Comparator<Double> comparator) {
         if (!(comparator instanceof DoubleComparator)) {
             return comparator.compare(a, b);

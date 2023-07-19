@@ -41,14 +41,14 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 public interface AsIntStreamPlusWithCalculate {
-
+    
     /**
      * @return  the stream plus instance of this object.
      */
     public IntStreamPlus intStreamPlus();
-
+    
     public void forEach(IntConsumer action);
-
+    
     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
     // Still not sure how to do that.
     /**
@@ -66,7 +66,7 @@ public interface AsIntStreamPlusWithCalculate {
         val value = finisher.apply(accumulated);
         return (RESULT) value;
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -82,7 +82,7 @@ public interface AsIntStreamPlusWithCalculate {
         val value = finisher.applyAsInt(accumulated);
         return value;
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -96,7 +96,7 @@ public interface AsIntStreamPlusWithCalculate {
         });
         return Tuple.of(collected1.finish(), collected2.finish());
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -112,7 +112,7 @@ public interface AsIntStreamPlusWithCalculate {
         });
         return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish());
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -130,7 +130,7 @@ public interface AsIntStreamPlusWithCalculate {
         });
         return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish());
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */
@@ -150,7 +150,7 @@ public interface AsIntStreamPlusWithCalculate {
         });
         return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish(), collected5.finish());
     }
-
+    
     /**
      * Perform the calculation using the data of this stream
      */

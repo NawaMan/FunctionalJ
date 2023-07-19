@@ -25,7 +25,7 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface CharSupplier {
-
+    
     /**
      * Gets a result.
      *

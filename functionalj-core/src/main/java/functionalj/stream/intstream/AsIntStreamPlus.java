@@ -42,7 +42,7 @@ import functionalj.stream.markers.Terminal;
 import lombok.val;
 
 class AsIntStreamPlusHelper {
-
+    
     /**
      * @return  the stream plus instance of this object.
      */
@@ -58,19 +58,19 @@ class AsIntStreamPlusHelper {
  */
 @FunctionalInterface
 public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStreamPlusWithConversion, AsIntStreamPlusWithCollect, AsIntStreamPlusWithForEach, AsIntStreamPlusWithGroupingBy, AsIntStreamPlusWithReduce, AsIntStreamPlusWithStatistic {
-
+    
     /**
      * @return  the stream plus instance of this object.
      */
     public IntStreamPlus intStreamPlus();
-
+    
     /**
      * @return  return the stream underneath the stream plus.
      */
     public default IntStream intStream() {
         return intStreamPlus();
     }
-
+    
     /**
      * Iterate all element through the action
      */
@@ -79,7 +79,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
     public default void forEach(IntConsumer action) {
         intStreamPlus().forEach(action);
     }
-
+    
     // -- Match --
     /**
      * Return the first element that matches the predicate.
@@ -90,7 +90,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filter(predicate).findFirst();
     }
-
+    
     /**
      * Return the first element that matches the predicate.
      */
@@ -100,7 +100,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val aggregator = aggregation.newAggregator();
         return findFirst(aggregator::test);
     }
-
+    
     /**
      * Return the any element that matches the predicate.
      */
@@ -109,7 +109,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filter(predicate).findAny();
     }
-
+    
     /**
      * Return the any element that matches the predicate.
      */
@@ -118,7 +118,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val aggregator = aggregation.newAggregator();
         return findFirst(aggregator::apply);
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -128,7 +128,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filter(mapper, theCondition).findFirst();
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -138,7 +138,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val mapper = aggregation.newAggregator();
         return findFirst(mapper, theCondition);
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -148,7 +148,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filterAsObject(mapper, theCondition).findFirst();
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -159,7 +159,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filterAsObject(mapper, theCondition::test).findFirst();
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -170,7 +170,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filterAsObject(mapper, theCondition).findFirst();
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -182,7 +182,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filterAsObject((IntFunction<T>) mapper, (Predicate<T>) theCondition::test).findFirst();
     }
-
+    
     /**
      * Use the mapper, return the any element that its mapped value matches the predicate.
      */
@@ -191,7 +191,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filter(mapper, theCondition).findAny();
     }
-
+    
     /**
      * Use the mapper, return the any element that its mapped value matches the predicate.
      */
@@ -200,7 +200,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filterAsObject(mapper, theCondition).findAny();
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -211,7 +211,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filterAsObject((IntFunction<T>) mapper, (Predicate<T>) theCondition::test).findAny();
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -222,7 +222,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filterAsObject((IntFunction<T>) mapper, (Predicate<T>) theCondition::test).findAny();
     }
-
+    
     /**
      * Use the mapper, return the first element that its mapped value matches the predicate.
      */
@@ -234,7 +234,7 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.filterAsObject((IntFunction<T>) mapper, (Predicate<T>) theCondition::test).findAny();
     }
-
+    
     // == Contains ==
     /**
      * Check if the list contains all the given values
@@ -247,11 +247,11 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         val streamPlus = intStreamPlus();
         return streamPlus.peek(set::remove).anyMatch(__ -> set.isEmpty());
     }
-
+    
     public default boolean containsAnyOf(int... values) {
         return intStreamPlus().anyMatch(each -> IntStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }
-
+    
     public default boolean containsNoneOf(int... values) {
         return intStreamPlus().noneMatch(each -> IntStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }

@@ -9,7 +9,7 @@ import functionalj.list.FuncList;
 import lombok.val;
 
 public class TestHelper {
-
+    
     /**
      * This assert changes the actual value to string and match it with the expected string value.
      *
@@ -23,7 +23,7 @@ public class TestHelper {
             return;
         assertEquals(expected, actualAsString);
     }
-
+    
     /**
      * This assert changes the actual value to string and match it with the expected string value.
      *
@@ -37,7 +37,7 @@ public class TestHelper {
             return;
         assertEquals(failureMessage, expected, actualAsString);
     }
-
+    
     /**
      * This assert changes the actual value to string and match it with the expected string value.
      *
@@ -54,28 +54,28 @@ public class TestHelper {
         val message = failureMessage.get();
         assertEquals(message, expected, actualAsString);
     }
-
+    
     // == Tests for the above ==
     @Test
     public void testExact() {
         assertAsString("Should match exacty", "[One, 2, 3.0]", FuncList.of("One", 2, 3.0));
     }
-
+    
     @Test(expected = ComparisonFailure.class)
     public void testExact_unmatch() {
         assertAsString("Should not match", "[One, Two, 3.0]", FuncList.of("One", 2, 3.0));
     }
-
+    
     @Test
     public void testExact_regExLiked() {
         assertAsString("When not use RegEx, any text that look like RegEx should still match exactly.", "[One, [0-9]+, 3.0]", FuncList.of("One", "[0-9]+", 3.0));
     }
-
+    
     @Test
     public void testRegEx() {
         assertAsString("Match as RegEx.", "[One, \\E[0-9]+\\Q, 3.0]", FuncList.of("One", 2, 3.0));
     }
-
+    
     @Test(expected = ComparisonFailure.class)
     public void testRegEx_unmatch() {
         assertAsString("RegEx but not match.", "[One, \\E[0-9]+\\Q, 3.0]", FuncList.of("One", "Two", 3.0));

@@ -31,14 +31,14 @@ import lombok.NonNull;
 import lombok.val;
 
 public class IntegerToDoubleAccessEqualPrimitive extends DoubleAccessEqual<Integer> implements IntegerToBooleanAccessPrimitive {
-
+    
     final DoubleIntegerToDoubleFunction anotherValueFunction;
-
+    
     IntegerToDoubleAccessEqualPrimitive(boolean isNegate, @NonNull IntegerToDoubleAccessPrimitive access, @NonNull DoubleIntegerToDoubleFunction anotherValueFunction) {
         super(isNegate, access, (host, value) -> anotherValueFunction.applyAsDouble(host, value));
         this.anotherValueFunction = anotherValueFunction;
     }
-
+    
     @Override
     public boolean test(int host) {
         val value = access.applyAsDouble(host);
@@ -47,24 +47,24 @@ public class IntegerToDoubleAccessEqualPrimitive extends DoubleAccessEqual<Integ
         val precision = equalPrecisionToUse.get().getAsDouble();
         return isNegate != (error <= precision);
     }
-
+    
     @Override
     public boolean applyIntToBoolean(int host) {
         return test(host);
     }
-
+    
     public IntegerToDoubleAccessEqualPrecisionPrimitive withIn(double precision) {
         return new IntegerToDoubleAccessEqualPrecisionPrimitive(this, error -> precision);
     }
-
+    
     public IntegerToDoubleAccessEqualPrecisionPrimitive withPrecision(double precision) {
         return new IntegerToDoubleAccessEqualPrecisionPrimitive(this, error -> precision);
     }
-
+    
     public IntegerToDoubleAccessEqualPrecisionPrimitive withPrecision(@NonNull DoubleSupplier precisionSupplier) {
         return new IntegerToDoubleAccessEqualPrecisionPrimitive(this, error -> precisionSupplier.getAsDouble());
     }
-
+    
     public IntegerToDoubleAccessEqualPrecisionPrimitive withPrecision(@NonNull DoubleUnaryOperator precisionFunction) {
         return new IntegerToDoubleAccessEqualPrecisionPrimitive(this, precisionFunction);
     }

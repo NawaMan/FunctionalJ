@@ -35,21 +35,21 @@ import functionalj.tuple.DoubleDoubleTuple;
 import functionalj.tuple.DoubleTuple2;
 
 public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
-
+    
     /**
      * Concatenate the given head stream in front of this stream.
      */
     public default DoubleFuncList prependWith(DoubleFuncList head) {
         return deriveToDouble(this, stream -> stream.prependWith(head.doubleStream()));
     }
-
+    
     /**
      * Concatenate the given tail stream to this stream.
      */
     public default DoubleFuncList appendWith(DoubleFuncList tail) {
         return deriveToDouble(this, stream -> stream.appendWith(tail.doubleStream()));
     }
-
+    
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
@@ -62,7 +62,7 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
     public default DoubleFuncList mergeWith(DoubleFuncList anotherFuncList) {
         return deriveToDouble(this, stream -> stream.mergeWith(anotherFuncList.doubleStream()));
     }
-
+    
     // -- Zip --
     /**
      * Combine this stream with another stream into a stream of tuple pair.
@@ -76,7 +76,7 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
     public default <ANOTHER> FuncList<DoubleTuple2<ANOTHER>> zipWith(FuncList<ANOTHER> anotherFuncList) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.stream()));
     }
-
+    
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -89,7 +89,7 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
     public default <ANOTHER> FuncList<DoubleTuple2<ANOTHER>> zipWith(int defaultValue, FuncList<ANOTHER> anotherFuncList) {
         return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherFuncList.stream()));
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
@@ -103,7 +103,7 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
     public default <ANOTHER, TARGET> FuncList<TARGET> zipWith(FuncList<ANOTHER> anotherFuncList, DoubleObjBiFunction<ANOTHER, TARGET> merger) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.stream(), merger));
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -117,7 +117,7 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
     public default FuncList<DoubleDoubleTuple> zipWith(DoubleFuncList anotherFuncList) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.doubleStream()));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when any of the stream ended.
@@ -131,7 +131,7 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
     public default FuncList<DoubleDoubleTuple> zipWith(DoubleFuncList anotherFuncList, double defaultValue) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.doubleStream(), defaultValue));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.
@@ -146,31 +146,31 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
     public default FuncList<DoubleDoubleTuple> zipWith(double defaultValue1, DoubleFuncList anotherFuncList, double defaultValue2) {
         return deriveToObj(this, stream -> stream.zipWith(anotherFuncList.doubleStream(), defaultValue1, defaultValue2));
     }
-
+    
     public default DoubleFuncList zipWith(DoubleFuncList anotherFuncList, DoubleDoubleToDoubleFunctionPrimitive merger) {
         return deriveToDouble(this, stream -> stream.zipWith(anotherFuncList.doubleStream(), merger));
     }
-
+    
     public default DoubleFuncList zipWith(DoubleFuncList anotherFuncList, double defaultValue, DoubleDoubleToDoubleFunctionPrimitive merger) {
         return deriveToDouble(this, stream -> stream.zipWith(anotherFuncList.doubleStream(), defaultValue, merger));
     }
-
+    
     public default DoubleFuncList zipWith(double defaultValue1, DoubleFuncList anotherFuncList, double defaultValue2, DoubleDoubleToDoubleFunctionPrimitive merger) {
         return deriveToDouble(this, stream -> stream.zipWith(anotherFuncList.doubleStream(), defaultValue1, defaultValue2, merger));
     }
-
+    
     public default <T> FuncList<T> zipToObjWith(DoubleFuncList anotherFuncList, DoubleDoubleFunction<T> merger) {
         return deriveToObj(this, stream -> stream.zipToObjWith(anotherFuncList.doubleStream(), merger));
     }
-
+    
     public default <T> FuncList<T> zipToObjWith(double defaultValue1, DoubleFuncList anotherFuncList, double defaultValue2, DoubleDoubleFunction<T> merger) {
         return deriveToObj(this, stream -> stream.zipToObjWith(anotherFuncList.doubleStream(), defaultValue1, defaultValue2, merger));
     }
-
+    
     public default <ANOTHER, TARGET> FuncList<TARGET> zipToObjWith(double defaultValue, FuncList<ANOTHER> anotherFuncList, DoubleObjBiFunction<ANOTHER, TARGET> merger) {
         return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherFuncList.stream(), merger));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.
@@ -179,7 +179,7 @@ public interface DoubleFuncListWithCombine extends AsDoubleFuncList {
     public default DoubleFuncList choose(DoubleFuncList anotherFuncList, DoubleDoublePredicatePrimitive selectThisNotAnother) {
         return deriveToDouble(this, stream -> stream.choose(anotherFuncList.doubleStreamPlus(), selectThisNotAnother));
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.

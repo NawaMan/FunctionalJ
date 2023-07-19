@@ -27,22 +27,22 @@ import java.util.function.BiFunction;
 
 @FunctionalInterface
 public interface DoubleDoubleFunction<TARGET> extends Func2<Double, Double, TARGET> {
-
+    
     public static <T> DoubleDoubleFunction<T> of(DoubleDoubleFunction<T> function) {
         return function;
     }
-
+    
     public static <T> DoubleDoubleFunction<T> from(BiFunction<Double, Double, T> function) {
         return (function instanceof DoubleDoubleFunction) ? (DoubleDoubleFunction<T>) function : ((d1, d2) -> function.apply(d1, d2));
     }
-
+    
     // -- functionality --
     public TARGET applyDoubleDouble(double input1, double input2);
-
+    
     public default TARGET apply(double input1, double input2) {
         return applyDoubleDouble(input1, input2);
     }
-
+    
     // -- override functionality --
     @Override
     public default TARGET applyUnsafe(Double input1, Double input2) throws Exception {

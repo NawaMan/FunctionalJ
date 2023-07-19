@@ -12,7 +12,7 @@ import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.val;
 
 public class ElmChoiceBuilderTest {
-
+    
     private static ElmChoiceBuilder setupBuilder() {
         val genericYear = new Generic("year", null, asList(Type.INTEGER));
         val caseParams = asList(new CaseParam("name", Type.STRING, false), new CaseParam("age", Type.INTEGER, false), new CaseParam("years", new Type("java.util", null, "List", asList(genericYear)), false), new CaseParam("wealth", Type.DOUBLE, true), new CaseParam("user", new Type("functionalj.types.elm", null, "User"), false));
@@ -23,19 +23,19 @@ public class ElmChoiceBuilderTest {
         val builder = new ElmChoiceBuilder(spec, emptyList(), emptyList());
         return builder;
     }
-
+    
     @Test
     public void testChoiceTypeDefinition() {
         val builder = setupBuilder();
         assertEquals("type LoginStatus\n" + "    = LoggedIn String Int (List Int) (Maybe Float) Functionalj.Types.Elm.User\n" + "    | LoggedOut", builder.typeDefinition().toText());
     }
-
+    
     @Test
     public void testChoiceTypeEncoder() {
         val builder = setupBuilder();
         assertEquals("loginStatusEncoder : LoginStatus -> Json.Encode.Value\n" + "loginStatusEncoder loginStatus = \n" + "    case loginStatus of\n" + "        LoggedIn name age years wealth user ->\n" + "            Json.Encode.object\n" + "                [ ( \"__tagged\", Json.Encode.string \"LoggedIn\" )\n" + "                , ( \"name\", Json.Encode.string name )\n" + "                , ( \"age\", Json.Encode.int age )\n" + "                , ( \"years\", Json.Encode.list Json.Encode.int years )\n" + "                , ( \"wealth\", Maybe.withDefault Json.Encode.null (Maybe.map Json.Encode.float wealth) )\n" + "                , ( \"user\", userEncoder user )\n" + "                ]\n" + "        LoggedOut  ->\n" + "            Json.Encode.object\n" + "                [ ( \"__tagged\", Json.Encode.string \"LoggedOut\" )\n" + "                ]", builder.encoder().toText());
     }
-
+    
     @Test
     public void testChoiceTypeDecoder() {
         val builder = setupBuilder();

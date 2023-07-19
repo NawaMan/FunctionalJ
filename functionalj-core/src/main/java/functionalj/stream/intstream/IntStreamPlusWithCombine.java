@@ -42,23 +42,23 @@ import functionalj.tuple.IntTuple2;
 import lombok.val;
 
 public interface IntStreamPlusWithCombine {
-
+    
     public IntStreamPlus intStreamPlus();
-
+    
     /**
      * Concatenate the given head stream in front of this stream.
      */
     public default IntStreamPlus prependWith(IntStream head) {
         return IntStreamPlus.concat(IntStreamPlus.from(head), IntStreamPlus.from(intStreamPlus()));
     }
-
+    
     /**
      * Concatenate the given tail stream to this stream.
      */
     public default IntStreamPlus appendWith(IntStream tail) {
         return IntStreamPlus.concat(IntStreamPlus.from(intStreamPlus()), IntStreamPlus.from(tail));
     }
-
+    
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
@@ -79,7 +79,7 @@ public interface IntStreamPlusWithCombine {
         });
         return resultStream;
     }
-
+    
     // -- Zip --
     /**
      * Combine this stream with another stream into a stream of tuple pair.
@@ -95,7 +95,7 @@ public interface IntStreamPlusWithCombine {
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntWith((value, another) -> IntTuple2.of(value, another), iteratorA, iteratorB);
     }
-
+    
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
@@ -110,7 +110,7 @@ public interface IntStreamPlusWithCombine {
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntWith(defaultValue, (value, another) -> IntTuple2.of(value, another), iteratorA, iteratorB);
     }
-
+    
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
@@ -126,61 +126,61 @@ public interface IntStreamPlusWithCombine {
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntWith(merger, iteratorA, iteratorB);
     }
-
+    
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(int defaultValue, Stream<ANOTHER> anotherStream, IntObjBiFunction<ANOTHER, TARGET> merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntWith(defaultValue, merger, iteratorA, iteratorB);
     }
-
+    
     public default StreamPlus<IntIntTuple> zipWith(IntStream anotherStream) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB);
     }
-
+    
     public default StreamPlus<IntIntTuple> zipWith(IntStream anotherStream, int defaultValue) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB, defaultValue);
     }
-
+    
     public default StreamPlus<IntIntTuple> zipWith(int defaultValue1, IntStream anotherStream, int defaultValue2) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
-
+    
     public default IntStreamPlus zipWith(IntStream anotherStream, IntBinaryOperator merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB);
     }
-
+    
     public default IntStreamPlus zipWith(IntStream anotherStream, int defaultValue, IntBinaryOperator merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue);
     }
-
+    
     public default IntStreamPlus zipWith(IntStream anotherStream, int defaultValue1, int defaultValue2, IntBinaryOperator merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
-
+    
     public default <T> StreamPlus<T> zipToObjWith(IntStream anotherStream, IntIntBiFunction<T> merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB);
     }
-
+    
     public default <T> StreamPlus<T> zipToObjWith(IntStream anotherStream, int defaultValue1, int defaultValue2, IntIntBiFunction<T> merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The value from the longer stream is automatically used after the shorter stream ended.
@@ -194,7 +194,7 @@ public interface IntStreamPlusWithCombine {
     public default IntStreamPlus choose(IntStream anotherStream, IntBiPredicatePrimitive selectThisNotAnother) {
         return choose(anotherStream, AllowUnpaired, selectThisNotAnother);
     }
-
+    
     /**
      * Create a new stream by choosing value from each stream using the selector.
      * The parameter option can be used to select when the stream should end.
@@ -211,17 +211,17 @@ public interface IntStreamPlusWithCombine {
         val iteratorA = this.intStreamPlus().iterator();
         val iteratorB = IntStreamPlus.from(anotherStream).iterator();
         val iterator = new PrimitiveIterator.OfInt() {
-
+    
             private boolean hasNextA;
-
+    
             private boolean hasNextB;
-
+    
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
-
+    
             public int nextInt() {
                 val nextA = hasNextA ? iteratorA.nextInt() : Integer.MIN_VALUE;
                 val nextB = hasNextB ? iteratorB.nextInt() : Integer.MIN_VALUE;
@@ -239,7 +239,7 @@ public interface IntStreamPlusWithCombine {
             }
         };
         val iterable = new IntIterable() {
-
+    
             @Override
             public IntIteratorPlus iterator() {
                 return IntIteratorPlus.from(iterator);

@@ -8,31 +8,31 @@ import functionalj.types.Choice;
 import lombok.val;
 
 public class ChoiceToMapFromMapTest {
-
+    
     @Choice
     interface MyPrimitiveChoiceSpec {
-
+    
         void ByteValue(byte myByte1, Byte myByte2);
-
+    
         void ShortValue(short myShort1, Short myShort2);
-
+    
         void IntValue(int myInt1, Integer myInteger2);
-
+    
         void LongValue(long myLong1, Long myLong2);
-
+    
         void FloatValue(float myFloat1, Float myFloat2);
-
+    
         void DoubleValue(double myDouble1, Double myDouble2);
-
+    
         void BooleanValue(boolean myBoolean1, Boolean myBoolean2);
-
+    
         void CharValue(char myChar1, Character myCharacter2);
-
+    
         void BigIntegerValue(BigInteger myBigInteger);
-
+    
         void BigDecimalValue(BigDecimal myBigDecimal);
     }
-
+    
     /**
      * This test aims to check if string can be used with primitive values.
      */

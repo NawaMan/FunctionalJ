@@ -34,7 +34,7 @@ import functionalj.list.FuncList;
 import functionalj.tuple.IntIntTuple;
 
 public interface IntFuncListWithMapWithIndex extends AsIntFuncList {
-
+    
     // TODO - to int, long, double
     /**
      * @return  the stream of each value and index.
@@ -42,28 +42,28 @@ public interface IntFuncListWithMapWithIndex extends AsIntFuncList {
     public default FuncList<IntIntTuple> mapWithIndex() {
         return deriveToObj(this, stream -> stream.mapWithIndex());
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
     public default IntFuncList mapWithIndex(IntBinaryOperator combinator) {
         return deriveToInt(this, stream -> stream.mapWithIndex(combinator::applyAsInt));
     }
-
+    
     /**
      * Create a stream whose value is the combination between value of this stream and its index.
      */
     public default <T> FuncList<T> mapToObjWithIndex(IntIntBiFunction<T> combinator) {
         return deriveToObj(this, stream -> stream.mapToObjWithIndex(combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the mapped value of this stream and its index.
      */
     public default <T1, T> FuncList<T> mapWithIndex(IntUnaryOperator valueMapper, IntIntBiFunction<T> combinator) {
         return deriveToObj(this, stream -> stream.mapWithIndex(valueMapper, combinator));
     }
-
+    
     /**
      * Create a stream whose value is the combination between the mapped value of this stream and its index.
      */

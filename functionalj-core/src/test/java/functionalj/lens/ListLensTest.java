@@ -39,42 +39,42 @@ import functionalj.lens.lenses.ObjectLensImpl;
 import lombok.val;
 
 public class ListLensTest {
-
+    
     public static class WithCars {
-
+    
         private List<Car> cars = new ArrayList<>();
-
+    
         public WithCars(List<Car> cars) {
             this.cars.addAll(cars);
         }
-
+    
         public List<Car> cars() {
             return cars;
         }
-
+    
         public WithCars withCars(List<Car> newCars) {
             return new WithCars(newCars);
         }
-
+    
         @Override
         public String toString() {
             return "WithCars [cars=" + cars + "]";
         }
-
+    
         public static class WithCarLens<HOST> extends ObjectLensImpl<HOST, WithCars> {
-
+    
             public final ListLens<HOST, Car, Car.CarLens<HOST>> cars = createSubListLens(WithCars::cars, WithCars::withCars, Car.CarLens::new);
-
+    
             public WithCarLens(LensSpec<HOST, WithCars> spec) {
                 super(spec);
             }
-
+    
             public final Func1<HOST, HOST> withCars(List<Car> newCars) {
                 return WithCarLens.this.cars.changeTo(newCars);
             }
         }
     }
-
+    
     @Test
     public void testListLens() {
         val listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
@@ -93,7 +93,7 @@ public class ListLensTest {
         assertEquals("WithCars [cars=[Car(color=Blue), Car(color=Red)]]", listLens.last().withColor("Red").apply(withTwoCars).toString());
         assertEquals("[Car(color=Blue)]", listLens.filter(theCar.color.thatEquals("Blue")).apply(withTwoCars).toString());
     }
-
+    
     @Test
     public void testListLensChangeTo() {
         val withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));

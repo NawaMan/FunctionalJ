@@ -38,25 +38,25 @@ import lombok.val;
 import nullablej.nullable.Nullable;
 
 public class PipeableTest {
-
+    
     @Test
     public void testBasic() {
         val str1 = (Pipeable<String>) () -> "Test";
         assertEquals((Integer) 4, str1.pipeTo(String::length));
     }
-
+    
     @Test
     public void testBasicNull() {
         val str1 = (Pipeable<String>) () -> null;
         assertEquals(null, str1.pipeTo(String::length));
     }
-
+    
     @Test
     public void testNullSelf() {
         val str1 = (Pipeable<String>) () -> null;
         assertEquals("0", "" + str1.pipeTo(NullSafeOperator.of(str -> Nullable.of(str).map(String::length).orElse(0))));
     }
-
+    
     @Test
     public void testRuntimeException() {
         val src1 = nullString();
@@ -68,11 +68,11 @@ public class PipeableTest {
             // Expected
         }
     }
-
+    
     private String nullString() {
         return (String) null;
     }
-
+    
     @Test
     public void testException() {
         val str1 = (Pipeable<String>) (() -> {
@@ -84,7 +84,7 @@ public class PipeableTest {
             // Expected
         }
     }
-
+    
     @Test
     public void testToResult() {
         val str1 = (Pipeable<String>) (() -> "Test");
@@ -96,14 +96,14 @@ public class PipeableTest {
         });
         assertEquals("Result:{ Exception: java.io.IOException }", str3.pipeTo(String::length, toResult()) + "");
     }
-
+    
     @Test
     public void testFilter() {
         assertEquals("Nullable.EMPTY", "" + ListOf(1, 2, 3, 4, 5).__nullable().filter(theList.size().thatIs(3)));
         assertEquals("Optional.empty", "" + ListOf(1, 2, 3, 4, 5).__optional().filter(theList.size().thatIs(3)));
         assertEquals("Result:{ Value: null }", "" + ListOf(1, 2, 3, 4, 5).__result().filter(theList.size().thatIs(3)));
     }
-
+    
     @Test
     public void testOrElse() {
         assertEquals("Test", StartBy(f(() -> "Test")).__orElse("This the test"));
@@ -112,7 +112,7 @@ public class PipeableTest {
             throw new IOException();
         })).__orElse("This the test"));
     }
-
+    
     @Test
     public void testOrElse_Catch() {
         val str1 = (Pipeable<String>) (() -> "Test");
@@ -124,7 +124,7 @@ public class PipeableTest {
         });
         assertEquals("0", str3.pipeTo(String::length, Catch.thenReturn(0)) + "");
     }
-
+    
     @Test
     public void testOrElseGet() {
         val str1 = (Pipeable<String>) (() -> "Test");
@@ -136,7 +136,7 @@ public class PipeableTest {
         });
         assertEquals("0", str3.pipeTo(String::length, Catch.thenGet(() -> 0)) + "");
     }
-
+    
     @Test
     public void testAll() {
         val str = (Pipeable<String>) (() -> "Four");

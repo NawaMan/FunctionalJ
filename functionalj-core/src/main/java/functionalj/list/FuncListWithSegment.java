@@ -38,7 +38,7 @@ import functionalj.stream.markers.Sequential;
 import lombok.val;
 
 public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Segment the stream into sub stream with the fix length of count.
      *
@@ -55,7 +55,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segment(count));
     }
-
+    
     /**
      * Create a stream of sub-stream which size is derived from the value.
      *
@@ -66,7 +66,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segment(segmentSize));
     }
-
+    
     /**
      * Segment the stream into sub stream whenever the start condition is true.
      */
@@ -75,7 +75,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segmentWhen(startCondition));
     }
-
+    
     /**
      * Segment the stream into sub stream starting the element after the precondition is true.
      */
@@ -84,7 +84,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segmentAfter(endCondition));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -102,7 +102,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segmentBetween(startCondition, endCondition));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -118,7 +118,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segmentBetween(startCondition, endCondition, incompletedSegment));
     }
-
+    
     /**
      * Segment the stream into sub stream
      *   starting when the start condition is true
@@ -133,7 +133,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segmentBetween(startCondition, endCondition, includeIncompletedSegment));
     }
-
+    
     // -- segmentByPercentiles --
     /**
      * Split the stream into segment based on the given percentiles. *
@@ -142,7 +142,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -150,7 +150,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
         return segmentByPercentiles(percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -158,7 +158,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val list = streamPlus().sorted().toImmutableList();
         return FuncListHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -166,7 +166,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val list = streamPlus().sorted().toImmutableList();
         return FuncListHelper.segmentByPercentiles(list, percentiles);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -174,7 +174,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(mapper, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -182,7 +182,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -190,7 +190,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
         return segmentByPercentiles(mapper, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -198,7 +198,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -206,7 +206,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val list = streamPlus().sortedBy(mapper).toImmutableList();
         return FuncListHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -214,7 +214,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val list = streamPlus().sortedBy(mapper, comparator).toImmutableList();
         return FuncListHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */
@@ -222,7 +222,7 @@ public interface FuncListWithSegment<DATA> extends AsFuncList<DATA> {
         val list = streamPlus().sortedBy(mapper).toImmutableList();
         return FuncListHelper.segmentByPercentiles(list, percentiles);
     }
-
+    
     /**
      * Split the stream into segment based on the given percentiles. *
      */

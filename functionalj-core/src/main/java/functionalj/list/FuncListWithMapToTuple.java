@@ -34,7 +34,7 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 public interface FuncListWithMapToTuple<DATA> extends AsFuncList<DATA> {
-
+    
     /**
      * Map the value into different values and then combine them into a tuple.
      */
@@ -42,7 +42,7 @@ public interface FuncListWithMapToTuple<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToTuple(mapper1, mapper2));
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -50,7 +50,7 @@ public interface FuncListWithMapToTuple<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToTuple(mapper1, mapper2, mapper3));
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -58,7 +58,7 @@ public interface FuncListWithMapToTuple<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4));
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -66,7 +66,7 @@ public interface FuncListWithMapToTuple<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5));
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */

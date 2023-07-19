@@ -26,9 +26,9 @@ package functionalj.lens;
 import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
 
 public class TheDouble implements DoubleToDoubleAccessPrimitive {
-
+    
     public static final TheDouble theDouble = new TheDouble();
-
+    
     @Override
     public double applyToDouble(double host) {
         return host;

@@ -39,15 +39,15 @@ import functionalj.validator.Validator;
 import lombok.val;
 
 public class ResultTest {
-
+    
     private static final Result<String> result = Result.valueOf("Test");
-
+    
     @Test
     public void testMap() {
         assertAsString("Result:{ Value: Test }", result);
         assertAsString("Result:{ Value: 4 }", result.map(str -> str.length()));
     }
-
+    
     @Test
     public void testMapWith() {
         result.mapWith(Func.f((a, b) -> a + b), Result.valueOf("-Value")).ifException(e -> {
@@ -56,7 +56,7 @@ public class ResultTest {
         assertAsString("Result:{ Value: Test-Value }", result.mapWith(f((a, b) -> a + b), Result.valueOf("-Value")));
         assertAsString("Result:{ Exception: java.lang.IllegalAccessException }", result.mapWith(f((a, b) -> a + b), Result.ofException(new IllegalAccessException())));
     }
-
+    
     @Test
     public void testResultFom() {
         assertEquals("Result:{ Value: VALUE }", "" + Result.of(() -> "VALUE"));
@@ -64,7 +64,7 @@ public class ResultTest {
             throw new IOException();
         })));
     }
-
+    
     @Test
     public void testResult_value() {
         val result = Result.valueOf("VALUE");
@@ -74,7 +74,7 @@ public class ResultTest {
         assertTrue(result.isPresent());
         assertFalse(result.isNull());
     }
-
+    
     @Test
     public void testResult_null() {
         val result = Result.valueOf(null);
@@ -84,7 +84,7 @@ public class ResultTest {
         assertFalse(result.isPresent());
         assertTrue(result.isNull());
     }
-
+    
     @Test
     public void testResult_exception() {
         val result = Result.valueOf((String) null).ensureNotNull();
@@ -94,7 +94,7 @@ public class ResultTest {
         assertFalse(result.isPresent());
         assertFalse(result.isNull());
     }
-
+    
     @Test
     public void testResult_map() {
         val result = Result.valueOf("VALUE").map(str -> str.length());
@@ -104,7 +104,7 @@ public class ResultTest {
         assertTrue(result.isPresent());
         assertFalse(result.isNull());
     }
-
+    
     @Test
     public void testResult_failableMap() {
         val result = Result.valueOf("VALUE").map(str -> new UnsupportedOperationException("Not support."));
@@ -114,13 +114,13 @@ public class ResultTest {
         assertTrue(result.isPresent());
         assertFalse(result.isNull());
     }
-
+    
     @Test
     public void testResult_map_null() {
         val result = Result.valueOf("VALUE").map(str -> (String) null).map(String::length);
         assertEquals("Result:{ Value: null }", "" + result);
     }
-
+    
     @Test
     public void testResult_validate() {
         val validator1 = Validator.of((String s) -> s.toUpperCase().equals(s), "Not upper case");
@@ -131,32 +131,32 @@ public class ResultTest {
         assertEquals("Result:{ Value: (,[" + "functionalj.result.ValidationException: No upper case, " + "functionalj.result.ValidationException: Empty]) }", "" + Result.valueOf("").validate(validator1, validator2, validator3));
         assertEquals("Result:{ Value: (null,[" + "functionalj.result.ValidationException: java.lang.NullPointerException, " + "functionalj.result.ValidationException: java.lang.NullPointerException, " + "functionalj.result.ValidationException: java.lang.NullPointerException" + "]) }", "" + Result.valueOf((String) null).validate(validator1, validator2, validator3));
     }
-
+    
     @Test
     public void testResult_validate_oneline() throws Exception {
         assertEquals("Result:{ Invalid: Has upper case: \"VALUE\" }", Result.valueOf("VALUE").validate("Has upper case: \"%s\"", s -> !s.matches("^.*[A-Z].*$")).toString());
         assertEquals("Result:{ Invalid: Too long: \"VALUE\" }", Result.valueOf("VALUE").validate("Too long: \"%s\"", String::length, l -> l < 3).toString());
     }
-
+    
     @Test
     public void testResultOf() {
         assertAsString("Result:{ Value: One }", Result.valueOf("One"));
         assertAsString("Result:{ Value: One,Two }", Result.of("One", "Two", (a, b) -> a + "," + b));
         assertAsString("Result:{ Value: One,Two,Three }", Result.of("One", "Two", "Three", (a, b, c) -> a + "," + b + "," + c));
     }
-
+    
     @Test
     public void testResultResult() {
         assertAsString("Result:{ Value: One }", Result.ofResult(Result.valueOf("One")));
         assertAsString("Result:{ Value: One,Two }", Result.ofResults(Result.valueOf("One"), Result.valueOf("Two"), (a, b) -> a + "," + b));
         assertAsString("Result:{ Value: One,Two,Three }", Result.ofResults(Result.valueOf("One"), Result.valueOf("Two"), Result.valueOf("Three"), (a, b, c) -> a + "," + b + "," + c));
     }
-
+    
     @Test
     public void testResultResult_withException() {
         assertAsString("Result:{ Exception: functionalj.function.FunctionInvocationException: Test fail }", Result.ofResults(Result.valueOf("One"), Result.ofException("Test fail"), Result.valueOf("Three"), (a, b, c) -> a + "," + b + "," + c));
     }
-
+    
     @Test
     public void testResultPeek() {
         val logs = new ArrayList<String>();
@@ -164,18 +164,18 @@ public class ResultTest {
         // Two of them are logged ... one from `peek` and another from `forValue`.
         assertAsString("[One, One]", logs);
     }
-
+    
     @Test
     public void testResultPipeTo() {
         assertAsString("Result:{ Value: 3 }", Result.valueOf("One").pipeTo(r -> r.map(String::length), String::valueOf));
     }
-
+    
     @Test
     public void testResultDo() {
         assertAsString("Result:{ Value: One }", Result.ofResult(Result.valueOf("One")));
         assertAsString("Result:{ Value: One,Two }", Do(() -> "One", () -> "Two", (a, b) -> a + "," + b));
     }
-
+    
     @Test
     public void testResultDo_withException() {
         assertAsString("Result:{ Exception: java.lang.RuntimeException: Test exception }", Result.ofResult(Result.ofException(new RuntimeException("Test exception"))));
@@ -183,14 +183,14 @@ public class ResultTest {
             throw new RuntimeException("Test exception");
         }, (a, b) -> a + "," + b));
     }
-
+    
     @Test
     public void testResultMapFirst() {
         val nums = IntFuncList.loop(13).map(i -> i * i * i).boxed().toList();
         val guess = nums.map(num -> (String) Result.valueOf(num).mapFirst(i -> ((i < 10) ? (i + " ONES") : null), i -> ((i < 100) ? (i + " TENS") : null), i -> ((i < 1000) ? (i + " HUNDRED") : (i + " THOUSANDS"))).orElse("UNKNOWN")).toList();
         assertEquals("[" + "0 ONES, 1 ONES, 8 ONES, " + "27 TENS, 64 TENS, " + "125 HUNDRED, 216 HUNDRED, 343 HUNDRED, 512 HUNDRED, 729 HUNDRED, " + "1000 THOUSANDS, 1331 THOUSANDS, 1728 THOUSANDS]", guess.toString());
     }
-
+    
     @Test
     public void testResultMapFirst_Exception() {
         // An exception is threaded as a return null -- or next case.
@@ -202,14 +202,14 @@ public class ResultTest {
         }, i -> ((i < 1000) ? (i + " HUNDRED") : (i + " THOUSANDS"))).orElse("UNKNOWN")).toList();
         assertEquals("[" + "0 ONES, 1 ONES, 8 ONES, " + "27 TENS, 64 TENS, " + "125 HUNDRED, 216 HUNDRED, 343 HUNDRED, 512 HUNDRED, 729 HUNDRED, " + "1000 THOUSANDS, 1331 THOUSANDS, 1728 THOUSANDS]", guess.toString());
     }
-
+    
     @Test
     public void testResultMapFirst_AllNull() {
         val nums = IntFuncList.loop(13).map(i -> i * i * i).boxed().toList();
         val guess = nums.map(num -> (String) Result.valueOf(num).mapFirst(i -> null, i -> null, i -> null).get()).toList();
         assertEquals("[null, null, null, null, null, null, null, null, null, null, null, null, null]", guess.toString());
     }
-
+    
     @Test
     public void testResultMapFirst_AllException() {
         // The first one is used.
@@ -223,7 +223,7 @@ public class ResultTest {
         }).toString()).toList();
         assertEquals("[" + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, " + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }" + "]", guess.toString());
     }
-
+    
     @Test
     public void testResultMapFirst_OneNullAllException() {
         val nums = IntFuncList.loop(13).map(i -> i * i * i).boxed().toList();
@@ -232,7 +232,7 @@ public class ResultTest {
         }, i -> null).get()).toList();
         assertEquals("[null, null, null, null, null, null, null, null, null, null, null, null, null]", guess.toString());
     }
-
+    
     @Test
     public void testExceptionInIf() {
         // Exception thrown in ifXXX is propagated out.
@@ -245,7 +245,7 @@ public class ResultTest {
             assertEquals("java.lang.IndexOutOfBoundsException: -1", "" + exception);
         }
     }
-
+    
     @Test
     public void testExceptionInWhen() {
         // Exception thrown in whenXXX is captured as the result.

@@ -32,19 +32,19 @@ import functionalj.types.Struct;
 import lombok.val;
 
 public class WithPostConstruct {
-
+    
     private static List<String> logs = new ArrayList<>();
-
+    
     @Struct(name = "SimpleWithPostReConstruct")
     public static interface SimpleDOWithPostReConstruct extends IPostConstruct {
-
+    
         public String name();
-
+    
         public default void postConstruct() {
             logs.add("Hello: " + name());
         }
     }
-
+    
     @Test
     public void testPostConstruct_runAfterWith() {
         val object = new SimpleWithPostReConstruct("Obj1");

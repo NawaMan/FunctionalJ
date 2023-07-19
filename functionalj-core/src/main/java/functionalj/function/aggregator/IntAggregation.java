@@ -32,54 +32,54 @@ import functionalj.stream.intstream.collect.IntCollectorPlus;
 import lombok.val;
 
 public abstract class IntAggregation<TARGET> extends Aggregation<Integer, TARGET> {
-
+    
     public static <A, T> IntAggregation<T> from(IntCollectorPlus<A, T> collector) {
         return new IntAggregation.Impl<T>(collector);
     }
-
+    
     // == Instance ==
     public abstract IntCollectorPlus<?, TARGET> intCollectorPlus();
-
+    
     @Override
     public CollectorPlus<Integer, ?, TARGET> collectorPlus() {
         return intCollectorPlus();
     }
-
+    
     public IntAggregator<TARGET> newAggregator() {
         val collector = intCollectorPlus();
         return new IntAggregator.Impl<>(collector);
     }
-
+    
     // == Derived ==
     public <INPUT> Aggregation<INPUT, TARGET> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorPlus().of(mapper);
         return new Aggregation.Impl<INPUT, TARGET>(newCollector);
     }
-
+    
     public IntAggregation<TARGET> ofInt(IntFunction<Integer> mapper) {
         val newCollector = intCollectorPlus().of(mapper);
         return new IntAggregation.Impl<TARGET>(newCollector);
     }
-
+    
     public LongAggregation<TARGET> ofLong(LongToIntFunction mapper) {
         val newCollector = intCollectorPlus().of(mapper);
         return new LongAggregation.Impl<TARGET>(newCollector);
     }
-
+    
     public DoubleAggregation<TARGET> ofDouble(DoubleToIntFunction mapper) {
         val newCollector = intCollectorPlus().of(mapper);
         return new DoubleAggregation.Impl<TARGET>(newCollector);
     }
-
+    
     // == Implementation ==
     public static class Impl<TRG> extends IntAggregation<TRG> {
-
+    
         private final IntCollectorPlus<?, TRG> collector;
-
+    
         public Impl(IntCollectorPlus<?, TRG> collector) {
             this.collector = collector;
         }
-
+    
         @Override
         public IntCollectorPlus<?, TRG> intCollectorPlus() {
             return collector;

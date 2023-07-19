@@ -30,44 +30,44 @@ import functionalj.result.Result;
 
 @SuppressWarnings({ "rawtypes" })
 public class ChangeResult<D> implements Pipeable<ChangeResult<D>> {
-
+    
     private Store<D> store;
-
+    
     private D originalData;
-
+    
     private ResultStatus<D> status;
-
+    
     public ChangeResult(D originalData, ResultStatus<D> status) {
         this(null, originalData, status);
     }
-
+    
     ChangeResult(Store<D> store, D originalData, ResultStatus<D> status) {
         this.store = store;
         this.originalData = originalData;
         this.status = status;
     }
-
+    
     public Store<D> store() {
         return store;
     }
-
+    
     public D originalData() {
         return originalData;
     }
-
+    
     public ResultStatus<D> status() {
         return status;
     }
-
+    
     public ChangeResult<D> __data() throws Exception {
         return this;
     }
-
+    
     @Override
     public String toString() {
         return "ChangeResult [store=" + store + ", originalData=" + originalData + ", status=" + status + "]";
     }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -77,7 +77,7 @@ public class ChangeResult<D> implements Pipeable<ChangeResult<D>> {
         result = prime * result + ((store == null) ? 0 : store.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -104,23 +104,23 @@ public class ChangeResult<D> implements Pipeable<ChangeResult<D>> {
             return false;
         return true;
     }
-
+    
     public boolean hasChanged() {
         return status.match().notAllowed(false).accepted(true).adjusted(true).rejected(false).failed(false);
     }
-
+    
     public Result<D> result() {
         return status.match().notAllowed(n -> Result.<D>ofNotExist()).accepted(a -> Result.valueOf(a.newData())).adjusted(a -> Result.valueOf(a.adjustedData())).rejected(() -> Result.<D>ofNotExist()).failed(() -> Result.<D>ofNotExist());
     }
-
+    
     public D value() {
         return result().value();
     }
-
+    
     public ChangeResult<D> change(Func1<D, D> changer) {
         return hasChanged() ? store.change(changer) : this;
     }
-
+    
     public ChangeResult<D> use(FuncUnit1<D> consumer) {
         store.use(consumer);
         return this;

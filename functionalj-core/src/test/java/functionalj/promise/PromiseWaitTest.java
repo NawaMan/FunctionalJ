@@ -35,7 +35,7 @@ import functionalj.tuple.Tuple;
 import lombok.val;
 
 public class PromiseWaitTest {
-
+    
     @Test
     public void testWaitAWhile_complete() throws InterruptedException {
         val list = new ArrayList<String>();
@@ -44,7 +44,7 @@ public class PromiseWaitTest {
         action.complete("Complete!");
         assertAsString("[Complete!]", list);
     }
-
+    
     @Test
     public void testWaitAWhile_abort() throws InterruptedException {
         val list = new ArrayList<String>();
@@ -53,7 +53,7 @@ public class PromiseWaitTest {
         action.complete("Complete!");
         assertAsString("[Not done.]", list);
     }
-
+    
     @Test
     public void testWaitAWhile_neverStart() throws InterruptedException {
         val list = new ArrayList<String>();
@@ -61,11 +61,11 @@ public class PromiseWaitTest {
         Thread.sleep(100);
         assertAsString("[Not done.]", list);
     }
-
+    
     @Test
     public void testWaitAWhile_differentRunners_complete() throws InterruptedException {
         val runners = FuncList.of(Tuple.of("asyncRunnerOnNewThread", AsyncRunner.onNewThread), Tuple.of("asyncRunnerThreadFactory", AsyncRunner.threadFactory), Tuple.of("asyncRunnerCompleteableFuture", AsyncRunner.completeableFuture), Tuple.of("asyncRunnerExecutorService", AsyncRunner.executorService(Executors.newSingleThreadExecutor())), Tuple.of("asyncRunnerThreadFactory()", AsyncRunner.threadFactory(new ThreadFactory() {
-
+    
             @Override
             public Thread newThread(Runnable runnable) {
                 return new Thread(runnable);
@@ -83,11 +83,11 @@ public class PromiseWaitTest {
             assertAsString("Name: " + tuple._1(), "[Complete!]", list);
         });
     }
-
+    
     @Test
     public void testWaitAWhile_differentRunners_abort() throws InterruptedException {
         val runners = FuncList.of(Tuple.of("asyncRunnerOnNewThread", AsyncRunner.onNewThread), Tuple.of("asyncRunnerThreadFactory", AsyncRunner.threadFactory), Tuple.of("asyncRunnerCompleteableFuture", AsyncRunner.completeableFuture), Tuple.of("asyncRunnerExecutorService", AsyncRunner.executorService(Executors.newSingleThreadExecutor())), Tuple.of("asyncRunnerThreadFactory()", AsyncRunner.threadFactory(new ThreadFactory() {
-
+    
             @Override
             public Thread newThread(Runnable runnable) {
                 return new Thread(runnable);
@@ -105,7 +105,7 @@ public class PromiseWaitTest {
             assertAsString("Name: " + tuple._1(), "[Not done.]", list);
         });
     }
-
+    
     @Test
     public void testWaitAWhile_interrupt() throws InterruptedException {
         val threadRef = new AtomicReference<Thread>();
@@ -125,7 +125,7 @@ public class PromiseWaitTest {
         assertAsString("[Not done.]", list);
         // The abort should be initiated at 150 but that was interrupted at 50.
     }
-
+    
     @Test
     public void testWaitAWhile_interrupt_late() throws InterruptedException {
         val threadRef = new AtomicReference<Thread>();

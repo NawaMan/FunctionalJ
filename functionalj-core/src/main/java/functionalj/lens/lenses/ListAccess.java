@@ -35,15 +35,15 @@ import lombok.val;
 
 @FunctionalInterface
 public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> extends CollectionAccess<HOST, List<TYPE>, TYPE, TYPEACCESS> {
-
+    
     public static <H, T, A extends AnyAccess<H, T>> ListAccess<H, T, A> of(Function<H, List<T>> read, Function<Function<H, T>, A> createAccess) {
         val accessParameterized = new AccessParameterized<H, List<T>, T, A>() {
-
+    
             @Override
             public List<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
             }
-
+    
             @Override
             public A createSubAccessFromHost(Function<H, T> accessToParameter) {
                 return createAccess.apply(accessToParameter);
@@ -51,16 +51,16 @@ public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>
         };
         return AccessUtils.createSubListAccess(accessParameterized, read);
     }
-
+    
     public default StreamPlusAccess<HOST, TYPE, TYPEACCESS> stream() {
         val accessParameterized = accessParameterized();
         return StreamPlusAccess.of(f(accessParameterized::apply).andThen(StreamPlus::from), accessParameterized::createSubAccessFromHost);
     }
-
+    
     public default TYPEACCESS first() {
         return at(0);
     }
-
+    
     public default TYPEACCESS last() {
         return accessParameterized().createSubAccess((List<TYPE> list) -> {
             if (list == null)
@@ -70,7 +70,7 @@ public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>
             return list.get(list.size() - 1);
         });
     }
-
+    
     public default TYPEACCESS at(int index) {
         return accessParameterized().createSubAccess((List<TYPE> list) -> {
             if (list == null)
@@ -84,7 +84,7 @@ public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>
             return list.get(index);
         });
     }
-
+    
     public default ListAccess<HOST, TYPE, TYPEACCESS> filter(Predicate<TYPE> checker) {
         return AccessUtils.createSubListAccess(this.accessParameterized(), host -> {
             return apply(host).stream().filter(checker).collect(Collectors.toList());

@@ -30,59 +30,59 @@ import functionalj.function.aggregator.Aggregation;
 import lombok.val;
 
 public interface Collected<DATA, ACCUMULATED, RESULT> {
-
+    
     public static <INP, ACC, RES> Collected<INP, ACC, RES> collectedOf(Aggregation<? extends INP, RES> aggregation) {
         requireNonNull(aggregation);
         @SuppressWarnings("unchecked")
         val collectorPlus = (Collector<INP, ACC, RES>) aggregation.collectorPlus();
         return new Collected.Impl<>(collectorPlus);
     }
-
+    
     public static <INP, ACC, RES> Collected<INP, ACC, RES> collectedOf(Collector<? extends INP, ACC, RES> collector) {
         requireNonNull(collector);
         @SuppressWarnings("unchecked")
         val collectorPlus = (Collector<INP, ACC, RES>) collector;
         return new Collected.Impl<>(collectorPlus);
     }
-
+    
     public static <INP, ACC, RES> Collected<INP, ACC, RES> of(Aggregation<? extends INP, RES> aggregation) {
         requireNonNull(aggregation);
         @SuppressWarnings("unchecked")
         val collectorPlus = (Collector<INP, ACC, RES>) aggregation.collectorPlus();
         return new Collected.Impl<>(collectorPlus);
     }
-
+    
     public static <INP, ACC, RES> Collected<INP, ACC, RES> of(Collector<? extends INP, ACC, RES> collector) {
         requireNonNull(collector);
         @SuppressWarnings("unchecked")
         val collectorPlus = (Collector<INP, ACC, RES>) collector;
         return new Collected.Impl<>(collectorPlus);
     }
-
+    
     // == Instance ==
     public void accumulate(DATA each);
-
+    
     public RESULT finish();
-
+    
     // == Implementation ==
     public static class Impl<DATA, ACCUMULATED, RESULT> implements Collected<DATA, ACCUMULATED, RESULT> {
-
+    
         private final Collector<DATA, ACCUMULATED, RESULT> collector;
-
+    
         private final BiConsumer<ACCUMULATED, DATA> accumulator;
-
+    
         private final ACCUMULATED accumulated;
-
+    
         public Impl(Collector<DATA, ACCUMULATED, RESULT> collector) {
             this.collector = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.accumulator();
         }
-
+    
         public void accumulate(DATA each) {
             accumulator.accept(accumulated, each);
         }
-
+    
         public RESULT finish() {
             return collector.finisher().apply(accumulated);
         }

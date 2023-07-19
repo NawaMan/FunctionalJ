@@ -31,14 +31,14 @@ import functionalj.types.struct.generator.IGenerateTerm;
  * @author NawaMan -- nawa@nawaman.net
  */
 public enum Accessibility implements IGenerateTerm {
-
+    
     PUBLIC, PRIVATE, PROTECTED, PACKAGE;
-
+    
     @Override
     public String toTerm(String currentPackage) {
         return (this == PACKAGE) ? null : name().toLowerCase();
     }
-
+    
     @Override
     public String toString() {
         return toTerm(null);

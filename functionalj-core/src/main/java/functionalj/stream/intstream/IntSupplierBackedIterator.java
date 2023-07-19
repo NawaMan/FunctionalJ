@@ -28,7 +28,7 @@ import functionalj.functions.ThrowFuncs;
 import functionalj.result.NoMoreResultException;
 
 public class IntSupplierBackedIterator implements IntIteratorPlus {
-
+    
     /**
      * Throw a no more element exception. This is used for generator.
      */
@@ -36,15 +36,15 @@ public class IntSupplierBackedIterator implements IntIteratorPlus {
         ThrowFuncs.doThrowFrom(() -> new NoMoreResultException());
         return (D) null;
     }
-
+    
     private final IntSupplier supplier;
-
+    
     private volatile int next;
-
+    
     public IntSupplierBackedIterator(IntSupplier supplier) {
         this.supplier = supplier;
     }
-
+    
     @Override
     public boolean hasNext() {
         try {
@@ -54,12 +54,12 @@ public class IntSupplierBackedIterator implements IntIteratorPlus {
             return false;
         }
     }
-
+    
     @Override
     public int nextInt() {
         return next;
     }
-
+    
     @Override
     public OfInt asIterator() {
         return this;

@@ -38,12 +38,12 @@ import lombok.val;
 // Any customization from Configure or Builder will have to go through this to create DeferAction in the same way.
 // This way the customization can be done in a limited way.
 public class DeferActionCreator {
-
+    
     @Default
     public static final DeferActionCreator instance = new DeferActionCreator();
-
+    
     public static final Ref<DeferActionCreator> current = Ref.of(DeferActionCreator.class).orTypeDefaultOrGet(DeferActionCreator::new);
-
+    
     public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, boolean interruptOnCancel, AsyncRunner runner) {
         val promiseRef = new AtomicReference<Promise<D>>();
         val runTask = new RunTask<D>(interruptOnCancel, supplier, onStart, runner, promiseRef::get);
@@ -52,21 +52,21 @@ public class DeferActionCreator {
         promiseRef.set(promise);
         return action;
     }
-
+    
     private static class RunTask<D> implements Runnable {
-
+    
         private final boolean interruptOnCancel;
-
+    
         private final Func0<D> supplier;
-
+    
         private final Runnable onStart;
-
+    
         private final AsyncRunner runner;
-
+    
         private final Func0<Promise<D>> promiseRef;
-
+    
         private final AtomicReference<Thread> threadRef = new AtomicReference<Thread>();
-
+    
         public RunTask(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, AsyncRunner runner, Func0<Promise<D>> promiseRef) {
             this.interruptOnCancel = interruptOnCancel;
             this.supplier = supplier;
@@ -74,7 +74,7 @@ public class DeferActionCreator {
             this.runner = runner;
             this.promiseRef = promiseRef;
         }
-
+    
         @Override
         public void run() {
             AsyncRunner.run(runner, new Body()).onComplete(result -> {
@@ -88,9 +88,9 @@ public class DeferActionCreator {
                     action.fail(result.exception());
             });
         }
-
+    
         class Body implements ComputeBody<Void, RuntimeException> {
-
+    
             public void prepared() {
                 val promise = promiseRef.get();
                 if (!promise.isNotDone())
@@ -98,7 +98,7 @@ public class DeferActionCreator {
                 setupInterruptOnCancel(promise);
                 carelessly(onStart);
             }
-
+    
             @Override
             public Void compute() throws RuntimeException {
                 val promise = promiseRef.get();
@@ -107,7 +107,7 @@ public class DeferActionCreator {
                 action.completeWith(result);
                 return null;
             }
-
+    
             private D runSupplier() {
                 try {
                     return supplier.get();
@@ -115,7 +115,7 @@ public class DeferActionCreator {
                     doInterruptOnCancel();
                 }
             }
-
+    
             private void setupInterruptOnCancel(Promise<D> promise) {
                 if (!interruptOnCancel)
                     return;
@@ -130,7 +130,7 @@ public class DeferActionCreator {
                 });
             }
         }
-
+    
         private void doInterruptOnCancel() {
             if (!interruptOnCancel)
                 return;

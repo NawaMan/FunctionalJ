@@ -50,9 +50,9 @@ import functionalj.tuple.IntTuple2;
 import lombok.val;
 
 public interface IntStreamPlusWithModify {
-
+    
     public IntStreamPlus intStreamPlus();
-
+    
     /**
      * Accumulate the previous to the next element.
      *
@@ -74,11 +74,11 @@ public interface IntStreamPlusWithModify {
     public default IntStreamPlus accumulate(IntBinaryOperator accumulator) {
         val splitr = intStreamPlus().spliterator();
         val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-
+    
             int acc = 0;
-
+    
             boolean used = false;
-
+    
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 IntConsumer action = elem -> {
@@ -95,7 +95,7 @@ public interface IntStreamPlusWithModify {
         };
         return IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
     }
-
+    
     /**
      * Given a collector, create a stream that each element is an accumulation from the previous.
      *
@@ -109,7 +109,7 @@ public interface IntStreamPlusWithModify {
         val isPrimitive = (collector instanceof IntCollectorToIntPlus);
         val collected = isPrimitive ? IntCollected.collectedOf((IntCollectorToIntPlus) collector) : IntCollected.collectedOf(collector);
         val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-
+    
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 IntConsumer action = elem -> {
@@ -127,7 +127,7 @@ public interface IntStreamPlusWithModify {
         };
         return IntStreamPlus.from(intStream(spliterator, false));
     }
-
+    
     /**
      * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
      *
@@ -163,7 +163,7 @@ public interface IntStreamPlusWithModify {
         val seed = IntTuple2.of(0, this.intStreamPlus());
         return StreamPlus.iterate(seed, func).acceptUntil(t -> t == null).skip(1).mapToInt(t -> t._1());
     }
-
+    
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.
      * The result stream will not be the same order with the original one

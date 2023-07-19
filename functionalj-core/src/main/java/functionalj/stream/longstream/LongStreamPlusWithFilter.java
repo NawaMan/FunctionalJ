@@ -40,9 +40,9 @@ import functionalj.list.longlist.LongFuncList;
 import lombok.val;
 
 public interface LongStreamPlusWithFilter {
-
+    
     public LongStreamPlus longStreamPlus();
-
+    
     /**
      * Map each value to an int and used it to filter the value.
      */
@@ -54,7 +54,7 @@ public interface LongStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to a long and used it to filter the value.
      */
@@ -66,7 +66,7 @@ public interface LongStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to a double and used it to filter the value.
      */
@@ -78,7 +78,7 @@ public interface LongStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to another object and used it to filter the value.
      */
@@ -90,7 +90,7 @@ public interface LongStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Map each value to another object and used it to filter the value.
      */
@@ -102,7 +102,7 @@ public interface LongStreamPlusWithFilter {
             return isPass;
         });
     }
-
+    
     /**
      * Filter value with its index.
      */
@@ -114,14 +114,14 @@ public interface LongStreamPlusWithFilter {
             return predicate.testIntLong(i, each);
         });
     }
-
+    
     /**
      * Map the value to another object and filter the one that is not null.
      */
     public default <T> LongStreamPlus filterNonNull(LongFunction<T> mapper) {
         return excludeNull(mapper);
     }
-
+    
     /**
      * Map the value to another object and filter the one that is not null.
      */
@@ -133,7 +133,7 @@ public interface LongStreamPlusWithFilter {
             return isNotNull;
         });
     }
-
+    
     /**
      * Filter only the value that is in the given items.
      */
@@ -143,7 +143,7 @@ public interface LongStreamPlusWithFilter {
         val streamPlus = longStreamPlus();
         return streamPlus.filter(i -> binarySearch(items, i) >= 0);
     }
-
+    
     /**
      * Filter only the value that is in the given collections.
      */
@@ -155,7 +155,7 @@ public interface LongStreamPlusWithFilter {
         val streamPlus = longStreamPlus();
         return streamPlus.filter(data -> collection.contains(data));
     }
-
+    
     /**
      * Filter only the value that is in the given collections.
      */
@@ -167,7 +167,7 @@ public interface LongStreamPlusWithFilter {
         val streamPlus = longStreamPlus();
         return streamPlus.filter(data -> collection.contains(data));
     }
-
+    
     /**
      * Filter only the value that the predicate returns false.
      */
@@ -177,7 +177,7 @@ public interface LongStreamPlusWithFilter {
         val streamPlus = longStreamPlus();
         return streamPlus.filter(data -> !predicate.test(data));
     }
-
+    
     /**
      * Filter out any value that is in the given items.
      */
@@ -185,7 +185,7 @@ public interface LongStreamPlusWithFilter {
         val streamPlus = longStreamPlus();
         return streamPlus.filter(i -> binarySearch(items, i) < 0);
     }
-
+    
     /**
      * Filter out any value that is in the given collection.
      */
@@ -197,7 +197,7 @@ public interface LongStreamPlusWithFilter {
             return streamPlus;
         return streamPlus.filter(data -> !collection.contains(data));
     }
-
+    
     /**
      * Filter only the value that is in the given collections.
      */

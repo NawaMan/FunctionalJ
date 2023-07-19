@@ -30,9 +30,9 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public interface IntStreamPlusWithMap {
-
+    
     public IntStreamPlus intStreamPlus();
-
+    
     /**
      * Map the value using the mapper.
      */
@@ -40,7 +40,7 @@ public interface IntStreamPlusWithMap {
         val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(mapper);
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true.
      */
@@ -52,7 +52,7 @@ public interface IntStreamPlusWithMap {
             return mapped;
         });
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */
@@ -64,7 +64,7 @@ public interface IntStreamPlusWithMap {
             return mapped;
         });
     }
-
+    
     /**
      * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
      */

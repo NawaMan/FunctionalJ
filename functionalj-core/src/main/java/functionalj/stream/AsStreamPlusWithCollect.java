@@ -35,23 +35,23 @@ import functionalj.stream.markers.Terminal;
 import lombok.val;
 
 public interface AsStreamPlusWithCollect<DATA> {
-
+    
     public StreamPlus<DATA> streamPlus();
-
+    
     @Eager
     @Terminal
     public default <RESULT> RESULT collect(Supplier<RESULT> supplier, BiConsumer<RESULT, ? super DATA> accumulator, BiConsumer<RESULT, RESULT> combiner) {
         val streamPlus = streamPlus();
         return streamPlus.collect(supplier, accumulator, combiner);
     }
-
+    
     @Eager
     @Terminal
     public default <RESULT, ACCUMULATOR> RESULT collect(Collector<? super DATA, ACCUMULATOR, RESULT> collector) {
         val streamPlus = streamPlus();
         return streamPlus.collect(collector);
     }
-
+    
     @Eager
     @Terminal
     public default <RESULT> RESULT aggregate(Aggregation<? super DATA, RESULT> aggregation) {
@@ -59,7 +59,7 @@ public interface AsStreamPlusWithCollect<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.collect(collector);
     }
-
+    
     @Eager
     @Terminal
     public default int aggregateToInt(AggregationToInt<? super DATA> aggregation) {
@@ -67,7 +67,7 @@ public interface AsStreamPlusWithCollect<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.collect(collector);
     }
-
+    
     @Eager
     @Terminal
     public default long aggregateToLong(AggregationToLong<? super DATA> aggregation) {
@@ -75,7 +75,7 @@ public interface AsStreamPlusWithCollect<DATA> {
         val streamPlus = streamPlus();
         return streamPlus.collect(collector);
     }
-
+    
     @Eager
     @Terminal
     public default double aggregateToDouble(AggregationToDouble<? super DATA> aggregation) {

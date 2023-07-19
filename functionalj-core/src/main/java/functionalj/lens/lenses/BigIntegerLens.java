@@ -29,22 +29,22 @@ import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
 public interface BigIntegerLens<HOST> extends BigIntegerAccess<HOST>, ComparableLens<HOST, BigInteger> {
-
+    
     public static class Impl<H> extends ComparableLens.Impl<H, BigInteger> implements Named, BigIntegerLens<H> {
-
+    
         public Impl(String name, LensSpec<H, BigInteger> spec) {
             super(name, spec);
         }
     }
-
+    
     public static <HOST> BigIntegerLens<HOST> of(String name, LensSpec<HOST, BigInteger> spec) {
         return new Impl<>(name, spec);
     }
-
+    
     public static <HOST> BigIntegerLens<HOST> of(LensSpec<HOST, BigInteger> spec) {
         return of(null, spec);
     }
-
+    
     @Override
     public default BigInteger apply(HOST host) {
         return lensSpec().getRead().apply(host);

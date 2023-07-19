@@ -33,9 +33,9 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public interface DoubleStreamPlusWithMapThen {
-
+    
     public DoubleStreamPlus doubleStreamPlus();
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -48,7 +48,7 @@ public interface DoubleStreamPlusWithMapThen {
             return v;
         });
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -62,7 +62,7 @@ public interface DoubleStreamPlusWithMapThen {
             return v;
         });
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -77,7 +77,7 @@ public interface DoubleStreamPlusWithMapThen {
             return v;
         });
     }
-
+    
     /**
      * Map the value into different values and then combine them with the combinator.
      */
@@ -93,7 +93,7 @@ public interface DoubleStreamPlusWithMapThen {
             return v;
         });
     }
-
+    
     public default <T1, T2, T3, T4, T5, T6, T> StreamPlus<T> mapThen(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, DoubleFunction<? extends T3> mapper3, DoubleFunction<? extends T4> mapper4, DoubleFunction<? extends T5> mapper5, DoubleFunction<? extends T6> mapper6, Func6<T1, T2, T3, T4, T5, T6, T> function) {
         val streamPlus = doubleStreamPlus();
         return streamPlus.mapToObj(each -> {

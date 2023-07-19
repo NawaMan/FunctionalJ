@@ -8,16 +8,16 @@ import lombok.NonNull;
 import lombok.val;
 
 public class DoubleAccessEqualPrecision<HOST> implements BooleanAccessPrimitive<HOST> {
-
+    
     final DoubleAccessEqual<HOST> equals;
-
+    
     final DoubleUnaryOperator precisionFromErrorFunction;
-
+    
     public DoubleAccessEqualPrecision(@NonNull DoubleAccessEqual<HOST> equals, @NonNull DoubleUnaryOperator precisionFromErrorFunction) {
         this.equals = requireNonNull(equals);
         this.precisionFromErrorFunction = nullable(precisionFromErrorFunction).orElse((error) -> equalPrecisionToUse.get().getAsDouble());
     }
-
+    
     @Override
     public boolean test(HOST host) {
         val value = equals.access.applyAsDouble(host);
