@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,12 +24,10 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.AsDoubleFuncListHelper.funcListOf;
-
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
-
 import functionalj.function.DoubleObjBiConsumer;
 import functionalj.list.FuncList;
 import functionalj.list.intlist.IntFuncList;
@@ -61,5 +59,4 @@ public interface DoubleFuncListWithMapMulti extends AsDoubleFuncList {
         val funcList = funcListOf(this);
         return FuncList.deriveFrom(funcList, stream -> stream.mapMultiToObj(mapper));
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,9 @@ import java.util.function.DoubleToLongFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorToDoublePlus;
 import lombok.val;
-
 
 public abstract class LongAggregationToDouble extends LongAggregation<Double> {
     
@@ -39,10 +37,8 @@ public abstract class LongAggregationToDouble extends LongAggregation<Double> {
         return new LongAggregationToDouble.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract LongCollectorToDoublePlus<?> longCollectorToDoublePlus();
-    
     
     @Override
     public LongCollectorPlus<?, Double> longCollectorPlus() {
@@ -54,8 +50,7 @@ public abstract class LongAggregationToDouble extends LongAggregation<Double> {
         return new LongAggregatorToDouble.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToDouble<INPUT> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorToDoublePlus().of(mapper);
         return new AggregationToDouble.Impl<INPUT>(newCollector);
@@ -76,8 +71,7 @@ public abstract class LongAggregationToDouble extends LongAggregation<Double> {
         return new DoubleAggregationToDouble.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends LongAggregationToDouble {
         
         private final LongCollectorToDoublePlus<?> collector;
@@ -90,7 +84,5 @@ public abstract class LongAggregationToDouble extends LongAggregation<Double> {
         public LongCollectorToDoublePlus<?> longCollectorToDoublePlus() {
             return collector;
         }
-        
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,8 +31,7 @@ public interface IntAggregatorToDouble extends IntegerToDoubleAccessPrimitive, I
     
     public IntCollectedToDouble<?> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl implements IntAggregatorToDouble {
         
         private final IntCollectedToDouble<?> collected;
@@ -51,5 +50,4 @@ public interface IntAggregatorToDouble extends IntegerToDoubleAccessPrimitive, I
             return collected;
         }
     }
-    
 }

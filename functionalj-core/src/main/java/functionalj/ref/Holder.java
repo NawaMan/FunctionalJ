@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -39,16 +39,17 @@ class Holder<STATE> {
     
     @SuppressWarnings("unchecked")
     public STATE get() {
-        if (isLocal()) 
-            return ((ThreadLocal<STATE>)data).get();
-       else return ((AtomicReference<STATE>)data).get();
+        if (isLocal())
+            return ((ThreadLocal<STATE>) data).get();
+        else
+            return ((AtomicReference<STATE>) data).get();
     }
     
     @SuppressWarnings("unchecked")
     public void set(STATE oldState, STATE newState) {
-        if (isLocal()) 
-             ((ThreadLocal<STATE>)data).set(newState);
-        else ((AtomicReference<STATE>)data).compareAndSet(oldState, newState);
+        if (isLocal())
+            ((ThreadLocal<STATE>) data).set(newState);
+        else
+            ((AtomicReference<STATE>) data).compareAndSet(oldState, newState);
     }
-    
 }

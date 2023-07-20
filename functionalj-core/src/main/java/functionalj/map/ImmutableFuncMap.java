@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,25 +27,19 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
 import lombok.val;
 
-
 // TODO - Make Native-map-backed ImmutableFuncMap.
-
 public final class ImmutableFuncMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, VALUE> {
     
     @SuppressWarnings("unchecked")
     public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> from(Map<? extends KEY, ? extends VALUE> map) {
-        return (map instanceof ImmutableFuncMap)
-                ? (ImmutableFuncMap<KEY, VALUE>)map
-                : new ImmutableFuncMap<KEY, VALUE>(map);
+        return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<KEY, VALUE>) map : new ImmutableFuncMap<KEY, VALUE>(map);
     }
+    
     @SuppressWarnings("unchecked")
     public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> from(FuncMap<? extends KEY, ? extends VALUE> map) {
-        return (map instanceof ImmutableFuncMap)
-                ? (ImmutableFuncMap<KEY, VALUE>)map
-                : new ImmutableFuncMap<KEY, VALUE>(map);
+        return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<KEY, VALUE>) map : new ImmutableFuncMap<KEY, VALUE>(map);
     }
     
     @SuppressWarnings("unchecked")
@@ -61,13 +55,14 @@ public final class ImmutableFuncMap<KEY, VALUE> extends FuncMapDerived<KEY, VALU
     ImmutableFuncMap(Map<? extends KEY, ? extends VALUE> map) {
         this(map, true);
     }
+    
     ImmutableFuncMap(Map<? extends KEY, ? extends VALUE> map, boolean isLazy) {
         super(createBaseMap(map), null);
         this.isLazy = isLazy;
     }
     
     @SuppressWarnings("unchecked")
-    private static <K,V> Map<K, V> createBaseMap(Map<? extends K, ? extends V> map) {
+    private static <K, V> Map<K, V> createBaseMap(Map<? extends K, ? extends V> map) {
         return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<K, V>) map : new LinkedHashMap<K, V>(map);
     }
     
@@ -82,13 +77,12 @@ public final class ImmutableFuncMap<KEY, VALUE> extends FuncMapDerived<KEY, VALU
     public FuncMap<KEY, VALUE> lazy() {
         if (isLazy)
             return this;
-        
         return new ImmutableFuncMap<KEY, VALUE>(this, true);
     }
+    
     public FuncMap<KEY, VALUE> eager() {
         if (!isLazy)
             return this;
-        
         return new ImmutableFuncMap<KEY, VALUE>(this, false);
     }
     
@@ -96,11 +90,8 @@ public final class ImmutableFuncMap<KEY, VALUE> extends FuncMapDerived<KEY, VALU
     public FuncMap<KEY, VALUE> sorted() {
         if (map instanceof TreeMap)
             return this;
-        
         val sortedMap = new TreeMap<KEY, VALUE>();
-        entryStream()
-            .forEach(e -> sortedMap.put(e.getKey(), e.getValue()));
+        entryStream().forEach(e -> sortedMap.put(e.getKey(), e.getValue()));
         return new ImmutableFuncMap<KEY, VALUE>(sortedMap, isLazy());
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,7 +28,6 @@ import static functionalj.function.Apply.applyPrimitive;
 import static functionalj.function.Apply.getPrimitive;
 import static functionalj.function.Compare.compareOrNull;
 import static java.util.Objects.requireNonNull;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -40,7 +39,6 @@ import java.util.function.LongPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
-
 import functionalj.function.Func1;
 import functionalj.functions.LongFuncs;
 import functionalj.lens.lenses.java.time.InstantAccess;
@@ -48,45 +46,37 @@ import functionalj.lens.lenses.java.time.LocalDateTimeAccess;
 import functionalj.ref.Ref;
 import lombok.val;
 
-
-public interface LongAccess<HOST> 
-                    extends 
-                        NumberAccess<HOST, Long, LongAccess<HOST>>, 
-                        ToLongFunction<HOST>,
-                        ConcreteAccess<HOST, Long, LongAccess<HOST>> {
+public interface LongAccess<HOST> extends NumberAccess<HOST, Long, LongAccess<HOST>>, ToLongFunction<HOST>, ConcreteAccess<HOST, Long, LongAccess<HOST>> {
     
-    /** The reference to a function to calculate factorial for integer. **/
+    /**
+     * The reference to a function to calculate factorial for integer. *
+     */
     public static final Ref<LongUnaryOperator> factorialRef = Ref.ofValue(value -> LongFuncs.factorial(value));
-    
     
     public static <H> LongAccess<H> of(Function<H, Long> accessToValue) {
         requireNonNull(accessToValue);
-        
         if (accessToValue instanceof LongAccess) {
-            return (LongAccess<H>)accessToValue;
+            return (LongAccess<H>) accessToValue;
         }
-        
         if (accessToValue instanceof ToLongFunction) {
             @SuppressWarnings("unchecked")
-            val func1  = (ToLongFunction<H>)accessToValue;
+            val func1 = (ToLongFunction<H>) accessToValue;
             val access = ofPrimitive(func1);
             return access;
         }
-        
         if (accessToValue instanceof Func1) {
-            val func1  = (Func1<H, Long>)accessToValue;
-            val access = (LongAccessBoxed<H>)func1::applyUnsafe;
+            val func1 = (Func1<H, Long>) accessToValue;
+            val access = (LongAccessBoxed<H>) func1::applyUnsafe;
             return access;
         }
-        
-        val func   = (Function<H, Long>)accessToValue;
-        val access = (LongAccessBoxed<H>)(host -> func.apply(host));
+        val func = (Function<H, Long>) accessToValue;
+        val access = (LongAccessBoxed<H>) (host -> func.apply(host));
         return access;
     }
     
     public static <H> LongAccess<H> ofPrimitive(ToLongFunction<H> accessToValue) {
         requireNonNull(accessToValue);
-        val access = (LongAccessPrimitive<H>)accessToValue::applyAsLong;
+        val access = (LongAccessPrimitive<H>) accessToValue::applyAsLong;
         return access;
     }
     
@@ -95,16 +85,12 @@ public interface LongAccess<HOST>
         return of(accessToValue);
     }
     
-    //== abstract functionalities ==
-    
+    // == abstract functionalities ==
     public long applyAsLong(HOST host);
-    
     
     public Long applyUnsafe(HOST host) throws Exception;
     
-    
-    //-- conversion --
-    
+    // -- conversion --
     public default LongAccessBoxed<HOST> boxed() {
         return host -> apply(host);
     }
@@ -123,11 +109,9 @@ public interface LongAccess<HOST>
             val value = access(this, host);
             if (value < Integer.MIN_VALUE)
                 return negativeOverflowValue;
-            
             if (value > Integer.MAX_VALUE)
                 return positiveOverflowValue;
-            
-            return (int)Math.round(value);
+            return (int) Math.round(value);
         });
     }
     
@@ -135,7 +119,7 @@ public interface LongAccess<HOST>
     public default LongAccessPrimitive<HOST> asLong() {
         return host -> {
             long longValue = applyAsLong(host);
-            return (long)longValue;
+            return (long) longValue;
         };
     }
     
@@ -143,7 +127,7 @@ public interface LongAccess<HOST>
     public default DoubleAccessPrimitive<HOST> asDouble() {
         return host -> {
             long longValue = applyAsLong(host);
-            return (double)longValue;
+            return (double) longValue;
         };
     }
     
@@ -151,6 +135,7 @@ public interface LongAccess<HOST>
     public default StringAccess<HOST> asString() {
         return host -> "" + access(this, host);
     }
+    
     @Override
     public default StringAccess<HOST> asString(String template) {
         return host -> {
@@ -158,12 +143,14 @@ public interface LongAccess<HOST>
             return String.format(template, value);
         };
     }
+    
     public default BigIntegerAccess<HOST> asBitInteger() {
         return host -> {
             val value = access(this, host);
             return BigInteger.valueOf(value);
         };
     }
+    
     public default BigDecimalAccess<HOST> asBitDecimal() {
         return host -> {
             val value = access(this, host);
@@ -190,8 +177,7 @@ public interface LongAccess<HOST>
         };
     }
     
-    //-- Equality --
-    
+    // -- Equality --
     public default BooleanAccessPrimitive<HOST> that(LongPredicate checker) {
         return host -> {
             val value = access(this, host);
@@ -205,16 +191,18 @@ public interface LongAccess<HOST>
             return value == anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatIs(LongSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value == anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatIs(ToLongFunction<HOST> anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(anotherAccess, host);
             return value == anotherValue;
         };
@@ -226,22 +214,24 @@ public interface LongAccess<HOST>
             return value != anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatIsNot(LongSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value != anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatIsNot(ToLongFunction<HOST> anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(anotherAccess, host);
             return value != anotherValue;
         };
     }
     
-    public default BooleanAccessPrimitive<HOST> thatIsAnyOf(long ... otherValues) {
+    public default BooleanAccessPrimitive<HOST> thatIsAnyOf(long... otherValues) {
         return host -> {
             val value = access(this, host);
             for (val anotherValue : otherValues) {
@@ -252,14 +242,14 @@ public interface LongAccess<HOST>
             return false;
         };
     }
-//    public default BooleanAccessPrimitive<HOST> thatIsAnyOf(LongFuncList otherValues) {
-//        return host -> {
-//            val value = access(this, host);
-//            return otherValues.anyMatch(anotherValue -> value == anotherValue);
-//        };
-//    }
     
-    public default BooleanAccessPrimitive<HOST> thatIsNoneOf(long ... otherValues) {
+    // public default BooleanAccessPrimitive<HOST> thatIsAnyOf(LongFuncList otherValues) {
+    // return host -> {
+    // val value = access(this, host);
+    // return otherValues.anyMatch(anotherValue -> value == anotherValue);
+    // };
+    // }
+    public default BooleanAccessPrimitive<HOST> thatIsNoneOf(long... otherValues) {
         return host -> {
             val value = access(this, host);
             for (val anotherValue : otherValues) {
@@ -270,13 +260,13 @@ public interface LongAccess<HOST>
             return true;
         };
     }
-//    public default BooleanAccessPrimitive<HOST> thatIsNoneOf(LongFuncList otherValues) {
-//        return host -> {
-//            val value = access(this, host);
-//            return otherValues.noneMatch(anotherValue -> value == anotherValue);
-//        };
-//    }
     
+    // public default BooleanAccessPrimitive<HOST> thatIsNoneOf(LongFuncList otherValues) {
+    // return host -> {
+    // val value = access(this, host);
+    // return otherValues.noneMatch(anotherValue -> value == anotherValue);
+    // };
+    // }
     public default BooleanAccessPrimitive<HOST> thatIsOne() {
         return thatIs(1);
     }
@@ -311,18 +301,21 @@ public interface LongAccess<HOST>
             return value > 0;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatIsNegative() {
         return host -> {
             val value = access(this, host);
             return value < 0;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatIsNotPositive() {
         return host -> {
             val value = access(this, host);
             return value <= 0;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatIsNotNegative() {
         return host -> {
             val value = access(this, host);
@@ -333,9 +326,11 @@ public interface LongAccess<HOST>
     public default BooleanAccessPrimitive<HOST> thatEquals(long anotherValue) {
         return thatIs(anotherValue);
     }
+    
     public default BooleanAccessPrimitive<HOST> thatEquals(LongSupplier anotherSupplier) {
         return thatIs(anotherSupplier);
     }
+    
     public default BooleanAccessPrimitive<HOST> thatEquals(ToLongFunction<HOST> anotherAccess) {
         return thatIs(anotherAccess);
     }
@@ -343,9 +338,11 @@ public interface LongAccess<HOST>
     public default BooleanAccessPrimitive<HOST> eq(long anotherValue) {
         return thatEquals(anotherValue);
     }
+    
     public default BooleanAccessPrimitive<HOST> eq(LongSupplier anotherSupplier) {
         return thatEquals(anotherSupplier);
     }
+    
     public default BooleanAccessPrimitive<HOST> eq(ToLongFunction<HOST> anotherAccess) {
         return thatEquals(anotherAccess);
     }
@@ -353,9 +350,11 @@ public interface LongAccess<HOST>
     public default BooleanAccessPrimitive<HOST> thatNotEquals(long anotherValue) {
         return thatNotEquals(anotherValue);
     }
+    
     public default BooleanAccessPrimitive<HOST> thatNotEquals(LongSupplier anotherSupplier) {
         return thatNotEquals(anotherSupplier);
     }
+    
     public default BooleanAccessPrimitive<HOST> thatNotEquals(ToLongFunction<HOST> anotherAccess) {
         return thatNotEquals(anotherAccess);
     }
@@ -363,9 +362,11 @@ public interface LongAccess<HOST>
     public default BooleanAccessPrimitive<HOST> neq(long anotherValue) {
         return thatNotEquals(anotherValue);
     }
+    
     public default BooleanAccessPrimitive<HOST> neq(LongSupplier anotherSupplier) {
         return thatNotEquals(anotherSupplier);
     }
+    
     public default BooleanAccessPrimitive<HOST> neq(ToLongFunction<HOST> anotherAccess) {
         return thatNotEquals(anotherAccess);
     }
@@ -398,8 +399,7 @@ public interface LongAccess<HOST>
         return thatEquals(-1);
     }
     
-    //-- Compare --
-    
+    // -- Compare --
     public default Comparator<HOST> inOrder() {
         return (a, b) -> {
             val aValue = this.apply(a);
@@ -418,24 +418,26 @@ public interface LongAccess<HOST>
     
     public default IntegerAccessPrimitive<HOST> compareTo(long anotherValue) {
         return host -> {
-            val value   = access(this, host);
+            val value = access(this, host);
             val compare = compareOrNull(value, anotherValue);
             return compare;
         };
     }
+    
     public default IntegerAccessPrimitive<HOST> compareTo(LongSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
-            val compare      = compareOrNull(value, anotherValue);
+            val compare = compareOrNull(value, anotherValue);
             return compare;
         };
     }
+    
     public default IntegerAccessPrimitive<HOST> compareTo(ToLongFunction<HOST> anotherFunction) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(anotherFunction, host);
-            val compare      = compareOrNull(value, anotherValue);
+            val compare = compareOrNull(value, anotherValue);
             return compare;
         };
     }
@@ -443,9 +445,11 @@ public interface LongAccess<HOST>
     public default IntegerAccessPrimitive<HOST> cmp(long anotherValue) {
         return compareTo(anotherValue);
     }
+    
     public default IntegerAccessPrimitive<HOST> cmp(LongSupplier anotherSupplier) {
         return compareTo(anotherSupplier);
     }
+    
     public default IntegerAccessPrimitive<HOST> cmp(ToLongFunction<HOST> anotherAccess) {
         return compareTo(anotherAccess);
     }
@@ -456,16 +460,18 @@ public interface LongAccess<HOST>
             return value > anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatGreaterThan(LongSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value > anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatGreaterThan(ToLongFunction<HOST> anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(anotherAccess, host);
             return value > anotherValue;
         };
@@ -474,9 +480,11 @@ public interface LongAccess<HOST>
     public default BooleanAccessPrimitive<HOST> gt(long anotherValue) {
         return thatGreaterThan(anotherValue);
     }
+    
     public default BooleanAccessPrimitive<HOST> gt(LongSupplier anotherSupplier) {
         return thatGreaterThan(anotherSupplier);
     }
+    
     public default BooleanAccessPrimitive<HOST> gt(ToLongFunction<HOST> anotherAccess) {
         return thatGreaterThan(anotherAccess);
     }
@@ -487,16 +495,18 @@ public interface LongAccess<HOST>
             return value < anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatLessThan(LongSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value < anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatLessThan(ToLongFunction<HOST> anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(anotherAccess, host);
             return value < anotherValue;
         };
@@ -505,9 +515,11 @@ public interface LongAccess<HOST>
     public default BooleanAccessPrimitive<HOST> lt(long anotherValue) {
         return thatLessThan(anotherValue);
     }
+    
     public default BooleanAccessPrimitive<HOST> lt(LongSupplier anotherSupplier) {
         return thatLessThan(anotherSupplier);
     }
+    
     public default BooleanAccessPrimitive<HOST> lt(ToLongFunction<HOST> anotherAccess) {
         return thatLessThan(anotherAccess);
     }
@@ -518,16 +530,18 @@ public interface LongAccess<HOST>
             return value >= anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatGreaterThanOrEqualsTo(LongSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value >= anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatGreaterThanOrEqualsTo(ToLongFunction<HOST> anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(anotherAccess, host);
             return value >= anotherValue;
         };
@@ -536,9 +550,11 @@ public interface LongAccess<HOST>
     public default BooleanAccessPrimitive<HOST> gteq(long anotherValue) {
         return thatGreaterThanOrEqualsTo(anotherValue);
     }
+    
     public default BooleanAccessPrimitive<HOST> gteq(LongSupplier anotherSupplier) {
         return thatGreaterThanOrEqualsTo(anotherSupplier);
     }
+    
     public default BooleanAccessPrimitive<HOST> gteq(ToLongFunction<HOST> anotherAccess) {
         return thatGreaterThanOrEqualsTo(anotherAccess);
     }
@@ -549,16 +565,18 @@ public interface LongAccess<HOST>
             return value <= anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatLessThanOrEqualsTo(LongSupplier anotherSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(anotherSupplier);
             return value <= anotherValue;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatLessThanOrEqualsTo(ToLongFunction<HOST> anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(anotherAccess, host);
             return value <= anotherValue;
         };
@@ -567,31 +585,34 @@ public interface LongAccess<HOST>
     public default BooleanAccessPrimitive<HOST> lteq(long anotherValue) {
         return thatLessThanOrEqualsTo(anotherValue);
     }
+    
     public default BooleanAccessPrimitive<HOST> lteq(LongSupplier anotherSupplier) {
         return thatLessThanOrEqualsTo(anotherSupplier);
     }
+    
     public default BooleanAccessPrimitive<HOST> lteq(ToLongFunction<HOST> anotherAccess) {
         return thatLessThanOrEqualsTo(anotherAccess);
     }
     
-    //-- Min+Max --
-    
+    // -- Min+Max --
     public default LongAccessPrimitive<HOST> min(long anotherValue) {
         return host -> {
             val value = access(this, host);
             return Math.min(value, anotherValue);
         };
     }
+    
     public default LongAccessPrimitive<HOST> min(LongSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return Math.min(value, anotherValue);
         };
     }
+    
     public default LongAccessPrimitive<HOST> min(ToLongFunction<HOST> valueFunction) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(valueFunction, host);
             return Math.min(value, anotherValue);
         };
@@ -603,23 +624,24 @@ public interface LongAccess<HOST>
             return Math.max(value, anotherValue);
         };
     }
+    
     public default LongAccessPrimitive<HOST> max(LongSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return Math.max(value, anotherValue);
         };
     }
+    
     public default LongAccessPrimitive<HOST> max(ToLongFunction<HOST> valueFunction) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(valueFunction, host);
             return Math.max(value, anotherValue);
         };
     }
     
-    //-- Math --
-    
+    // -- Math --
     public default MathOperators<Long> __mathOperators() {
         return LongMathOperators.instance;
     }
@@ -644,16 +666,18 @@ public interface LongAccess<HOST>
             return value % anotherValue == 0;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatIsDivisibleBy(LongSupplier anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = anotherAccess.getAsLong();
             return value % anotherValue == 0;
         };
     }
+    
     public default BooleanAccessPrimitive<HOST> thatIsDivisibleBy(ToLongFunction<HOST> anotherAccess) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(anotherAccess, host);
             return value % anotherValue == 0;
         };
@@ -686,16 +710,18 @@ public interface LongAccess<HOST>
             return value + anotherValue;
         };
     }
+    
     public default LongAccessPrimitive<HOST> plus(LongSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value + anotherValue;
         };
     }
+    
     public default LongAccessPrimitive<HOST> plus(ToLongFunction<HOST> valueFunction) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(valueFunction, host);
             return value + anotherValue;
         };
@@ -707,16 +733,18 @@ public interface LongAccess<HOST>
             return value - anotherValue;
         };
     }
+    
     public default LongAccessPrimitive<HOST> minus(LongSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value - anotherValue;
         };
     }
+    
     public default LongAccessPrimitive<HOST> minus(ToLongFunction<HOST> valueFunction) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(valueFunction, host);
             return value - anotherValue;
         };
@@ -728,16 +756,18 @@ public interface LongAccess<HOST>
             return value * anotherValue;
         };
     }
+    
     public default LongAccessPrimitive<HOST> time(LongSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value * anotherValue;
         };
     }
+    
     public default LongAccessPrimitive<HOST> time(ToLongFunction<HOST> valueFunction) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(valueFunction, host);
             return value * anotherValue;
         };
@@ -749,18 +779,20 @@ public interface LongAccess<HOST>
             return 1.0 * value / anotherValue;
         };
     }
+    
     public default DoubleAccessPrimitive<HOST> dividedBy(LongSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return 1.0 * value / anotherValue;
         };
     }
+    
     public default DoubleAccessPrimitive<HOST> dividedBy(ToLongFunction<HOST> valueFunction) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(valueFunction, host);
-            return 1.0*value / anotherValue;
+            return 1.0 * value / anotherValue;
         };
     }
     
@@ -770,16 +802,18 @@ public interface LongAccess<HOST>
             return value % anotherValue;
         };
     }
+    
     public default LongAccessPrimitive<HOST> remainderBy(LongSupplier valueSupplier) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = getPrimitive(valueSupplier);
             return value % anotherValue;
         };
     }
+    
     public default LongAccessPrimitive<HOST> remainderBy(ToLongFunction<HOST> valueFunction) {
         return host -> {
-            val value        = access(this, host);
+            val value = access(this, host);
             val anotherValue = applyPrimitive(valueFunction, host);
             return value % anotherValue;
         };
@@ -788,7 +822,7 @@ public interface LongAccess<HOST>
     public default DoubleAccessPrimitive<HOST> inverse() {
         return host -> {
             val value = access(this, host);
-            return 1/(value * 1.0);
+            return 1 / (value * 1.0);
         };
     }
     
@@ -799,7 +833,7 @@ public interface LongAccess<HOST>
         };
     }
     
-    public default DoubleAccessPrimitive<HOST> squareRoot () {
+    public default DoubleAccessPrimitive<HOST> squareRoot() {
         return host -> {
             val value = access(this, host);
             return Math.sqrt(value);
@@ -812,32 +846,31 @@ public interface LongAccess<HOST>
             if (value <= 0) {
                 return 1;
             }
-            
             return factorialRef.get().applyAsLong(value);
         };
     }
     
     // TODO - Make this Long once we are ready.
-    
     public default LongAccessPrimitive<HOST> pow(long anotherValue) {
         return host -> {
             val value = access(this, host);
-            return (long)Math.pow(value, anotherValue);
-        };
-    }
-    public default LongAccessPrimitive<HOST> pow(LongSupplier valueSupplier) {
-        return host -> {
-            val value        = access(this, host);
-            val anotherValue = getPrimitive(valueSupplier);
-            return (long)Math.pow(value, anotherValue);
-        };
-    }
-    public default LongAccessPrimitive<HOST> pow(ToLongFunction<HOST> valueFunction) {
-        return host -> {
-            val value        = access(this, host);
-            val anotherValue = applyPrimitive(valueFunction, host);
-            return (long)Math.pow(value, anotherValue);
+            return (long) Math.pow(value, anotherValue);
         };
     }
     
+    public default LongAccessPrimitive<HOST> pow(LongSupplier valueSupplier) {
+        return host -> {
+            val value = access(this, host);
+            val anotherValue = getPrimitive(valueSupplier);
+            return (long) Math.pow(value, anotherValue);
+        };
+    }
+    
+    public default LongAccessPrimitive<HOST> pow(ToLongFunction<HOST> valueFunction) {
+        return host -> {
+            val value = access(this, host);
+            val anotherValue = applyPrimitive(valueFunction, host);
+            return (long) Math.pow(value, anotherValue);
+        };
+    }
 }

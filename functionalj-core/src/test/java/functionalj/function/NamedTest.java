@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,19 +24,14 @@
 package functionalj.function;
 
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
-
 import lombok.val;
 
-
-
 public class NamedTest {
-
+    
     @Test
     public void test() {
-        val namedSupplier = Named.Supplier("GetWord", ()->"Hello");
+        val namedSupplier = Named.Supplier("GetWord", () -> "Hello");
         assertEquals("Supplier::GetWord", namedSupplier.toString());
     }
-
 }

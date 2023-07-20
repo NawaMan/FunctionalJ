@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,7 +26,6 @@ package functionalj.function;
 import java.util.function.BiFunction;
 import java.util.function.ToDoubleBiFunction;
 
-
 @FunctionalInterface
 public interface DoubleIntegerToDoubleFunction extends ToDoubleBiFunction<Integer, Double>, BiFunction<Integer, Double, Double> {
     
@@ -42,17 +41,11 @@ public interface DoubleIntegerToDoubleFunction extends ToDoubleBiFunction<Intege
         return applyAsIntegerAndDouble(intValue, doubleValue);
     }
     
-    
     public static double apply(ToDoubleBiFunction<Integer, Double> function, Integer intValue, double doubleValue) {
-        return (function instanceof DoubleIntegerToDoubleFunction)
-                ? ((DoubleIntegerToDoubleFunction)function).applyAsIntegerAndDouble(intValue, doubleValue)
-                : function.applyAsDouble(intValue, doubleValue);
+        return (function instanceof DoubleIntegerToDoubleFunction) ? ((DoubleIntegerToDoubleFunction) function).applyAsIntegerAndDouble(intValue, doubleValue) : function.applyAsDouble(intValue, doubleValue);
     }
     
-    
     public static double apply(BiFunction<Integer, Double, Double> function, Integer intValue, double doubleValue) {
-        return (function instanceof DoubleIntegerToDoubleFunction)
-                ? ((DoubleIntegerToDoubleFunction)function).applyAsIntegerAndDouble(intValue, doubleValue)
-                : function.apply(intValue, doubleValue);
+        return (function instanceof DoubleIntegerToDoubleFunction) ? ((DoubleIntegerToDoubleFunction) function).applyAsIntegerAndDouble(intValue, doubleValue) : function.apply(intValue, doubleValue);
     }
 }

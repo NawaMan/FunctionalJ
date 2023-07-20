@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -38,21 +38,19 @@ public final class Time {
         Env.time().sleep(millisecond);
     }
     
-    
     public static interface Instance {
         
         public long currentMilliSecond();
-        public void sleep(long millisecond);
         
+        public void sleep(long millisecond);
     }
     
     public static class System implements Instance {
         
         public static final Time.Instance instance = new Time.System();
         
-//        private final ScheduledExecutorService scheduler =
-//                Executors.newScheduledThreadPool(1);
-        
+        // private final ScheduledExecutorService scheduler =
+        // Executors.newScheduledThreadPool(1);
         public long currentMilliSecond() {
             return java.lang.System.currentTimeMillis();
         }
@@ -64,18 +62,14 @@ public final class Time {
                 throw new InterruptedRuntimeException(e);
             }
         }
-        
-//        public <EXECUTION extends Exception> 
-//                Promise<Object> schedule(RunBody<EXECUTION> callable, long delay, TimeUnit unit) {
-//        }
-//        public <DATA, EXECUTION extends Exception> 
-//                Promise<Object> schedule(ComputeBody<DATA, EXECUTION> callable, long delay, TimeUnit unit) {
-//        }
+        // public <EXECUTION extends Exception>
+        // Promise<Object> schedule(RunBody<EXECUTION> callable, long delay, TimeUnit unit) {
+        // }
+        // public <DATA, EXECUTION extends Exception>
+        // Promise<Object> schedule(ComputeBody<DATA, EXECUTION> callable, long delay, TimeUnit unit) {
+        // }
         // Schedule that start with absolute time
-        
         // Schedule periodic tasks.
     }
-    
     // TODO - Implement that allow fake
-    
 }

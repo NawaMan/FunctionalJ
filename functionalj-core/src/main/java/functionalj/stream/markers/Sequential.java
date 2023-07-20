@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 /**
  * Method with this marker is forced to be sequential.
  * The parallelism is only applied with in the method and it will be restored afterward.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -41,10 +41,11 @@ public @interface Sequential {
     /**
      * This flag indicates that the implementation is know to NOT be sequential for some reason
      *   and it is planned to be fixed at later point.
-     **/
+     */
     boolean knownIssue() default false;
     
-    /** Any comment for the marker */
+    /**
+     * Any comment for the marker
+     */
     String comment() default "";
-    
 }

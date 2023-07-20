@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,11 +28,9 @@ import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
-
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToBooleanPlus;
 import lombok.val;
-
 
 public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
     
@@ -40,10 +38,8 @@ public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
         return new IntAggregationToBoolean.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract IntCollectorToBooleanPlus<?> intCollectorToBooleanPlus();
-    
     
     @Override
     public IntCollectorPlus<?, Boolean> intCollectorPlus() {
@@ -55,8 +51,7 @@ public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
         return new IntAggregatorToBoolean.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToBoolean<INPUT> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorToBooleanPlus().of(mapper);
         return new AggregationToBoolean.Impl<>(newCollector);
@@ -64,9 +59,8 @@ public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
     
     public IntAggregation<Boolean> ofInt(IntFunction<Integer> mapper) {
         if (mapper instanceof IntUnaryOperator) {
-            return ofIntToBoolean((IntUnaryOperator)mapper);
+            return ofIntToBoolean((IntUnaryOperator) mapper);
         }
-        
         val newCollector = intCollectorToBooleanPlus().of(mapper);
         return new IntAggregation.Impl<>(newCollector);
     }
@@ -88,8 +82,7 @@ public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
         return new IntAggregationToBoolean.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends IntAggregationToBoolean {
         
         private final IntCollectorToBooleanPlus<?> collector;
@@ -102,7 +95,5 @@ public abstract class IntAggregationToBoolean extends IntAggregation<Boolean> {
         public IntCollectorToBooleanPlus<?> intCollectorToBooleanPlus() {
             return collector;
         }
-        
     }
-    
 }

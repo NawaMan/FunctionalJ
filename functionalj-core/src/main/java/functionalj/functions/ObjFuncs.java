@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.functions;
 
 import java.util.Objects;
-
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 
@@ -34,13 +33,13 @@ public class ObjFuncs {
     public static <I1, I2> Func2<I1, I2, Boolean> areEqual() {
         return (i1, i2) -> Objects.equals(i1, i2);
     }
+    
     @SuppressWarnings("unlikely-arg-type")
     public static <I1, I2> Func2<I1, I2, Boolean> notEqual() {
         return (i1, i2) -> !Objects.equals(i1, i2);
     }
     
     public static <I> Func1<I, Boolean> equalsTo(I i1) {
-        
         return i -> Objects.equals(i1, i);
     }
     
@@ -59,5 +58,4 @@ public class ObjFuncs {
     public static <I extends Comparable<I>> Func1<I, Boolean> greaterThanOrEqualsTo(I i1) {
         return i -> i.compareTo(i1) >= 0;
     }
-    
 }

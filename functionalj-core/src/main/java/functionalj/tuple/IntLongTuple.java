@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,14 +30,16 @@ import java.util.function.LongUnaryOperator;
 
 public class IntLongTuple implements Tuple2<Integer, Long>, Map.Entry<Integer, Long> {
     
-    public static  IntLongTuple of(int i1, long i2) {
+    public static IntLongTuple of(int i1, long i2) {
         return new IntLongTuple(i1, i2);
     }
-    public static  IntLongTuple tuple(int i1, long i2) {
+    
+    public static IntLongTuple tuple(int i1, long i2) {
         return new IntLongTuple(i1, i2);
     }
     
     public final int _1;
+    
     public final long _2;
     
     public IntLongTuple(int _1, long _2) {
@@ -48,6 +50,7 @@ public class IntLongTuple implements Tuple2<Integer, Long>, Map.Entry<Integer, L
     public int _int1() {
         return _1;
     }
+    
     public long _long2() {
         return _2;
     }
@@ -55,6 +58,7 @@ public class IntLongTuple implements Tuple2<Integer, Long>, Map.Entry<Integer, L
     public Integer _1() {
         return _1;
     }
+    
     public Long _2() {
         return _2;
     }
@@ -98,13 +102,14 @@ public class IntLongTuple implements Tuple2<Integer, Long>, Map.Entry<Integer, L
     public String toString() {
         return Tuple.toString(this);
     }
+    
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
+    
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);
     }
-    
 }

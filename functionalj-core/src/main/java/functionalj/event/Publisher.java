@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,11 +28,13 @@ import functionalj.function.FuncUnit1;
 public class Publisher<DATA> {
     
     private final Topic<DATA> topic = new Topic<>();
+    
     private final FuncUnit1<Publisher<DATA>> onDone;
     
     public Publisher() {
         this(null);
     }
+    
     public Publisher(FuncUnit1<Publisher<DATA>> onDone) {
         this.onDone = onDone;
     }
@@ -46,7 +48,6 @@ public class Publisher<DATA> {
     public void done() {
         if (!topic.isActive())
             return;
-        
         topic.done();
         if (onDone != null) {
             onDone.accept(this);
@@ -60,5 +61,4 @@ public class Publisher<DATA> {
     public boolean isActive() {
         return topic.isActive();
     }
-    
 }

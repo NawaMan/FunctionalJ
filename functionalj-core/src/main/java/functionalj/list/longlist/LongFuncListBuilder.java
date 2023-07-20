@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,12 +25,11 @@ package functionalj.list.longlist;
 
 import java.util.Objects;
 import java.util.OptionalLong;
-
 import functionalj.stream.longstream.GrowOnlyLongArray;
 import functionalj.stream.longstream.LongStreamPlus;
 
 public class LongFuncListBuilder {
-
+    
     private final GrowOnlyLongArray list;
     
     // This constructor must not be public or protected.
@@ -42,7 +41,7 @@ public class LongFuncListBuilder {
         list = new GrowOnlyLongArray();
     }
     
-    public LongFuncListBuilder(long ... values) {
+    public LongFuncListBuilder(long... values) {
         list = new GrowOnlyLongArray(values);
     }
     
@@ -63,6 +62,7 @@ public class LongFuncListBuilder {
     public int size() {
         return list.length();
     }
+    
     public boolean isEmpty() {
         return size() == 0;
     }
@@ -78,7 +78,6 @@ public class LongFuncListBuilder {
     public OptionalLong at(int i) {
         if (i < 0 || i >= list.length())
             return OptionalLong.empty();
-        
         return OptionalLong.of(list.get(i));
     }
     
@@ -93,5 +92,4 @@ public class LongFuncListBuilder {
     public boolean equals(LongFuncListBuilder array) {
         return Objects.equals(list, array.list);
     }
-    
 }

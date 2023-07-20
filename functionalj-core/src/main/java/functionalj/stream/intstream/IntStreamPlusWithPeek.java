@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,74 +28,60 @@ import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
-
 import lombok.val;
-
-
 
 public interface IntStreamPlusWithPeek {
     
-     public IntStreamPlus intStreamPlus();
+    public IntStreamPlus intStreamPlus();
     
-    //-- Peek --
-    
-    /** Peek only the value that is selected with selector. */
-    public default IntStreamPlus peekBy(
-            IntPredicate selector,
-            IntConsumer  theConsumer) {
+    // -- Peek --
+    /**
+     * Peek only the value that is selected with selector.
+     */
+    public default IntStreamPlus peekBy(IntPredicate selector, IntConsumer theConsumer) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    if (!selector.test(value))
-                        return;
-                    
-                    theConsumer.accept(value);
-                });
+        return streamPlus.peek(value -> {
+            if (!selector.test(value))
+                return;
+            theConsumer.accept(value);
+        });
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
-    
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
-    
-    /** Peek the mapped value using the mapper. */
-    public default <T> IntStreamPlus peekAs(
-            IntFunction<T>      mapper,
-            Consumer<? super T> consumer) {
+    /**
+     * Peek the mapped value using the mapper.
+     */
+    public default <T> IntStreamPlus peekAs(IntFunction<T> mapper, Consumer<? super T> consumer) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    consumer.accept(target);
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            consumer.accept(target);
+        });
     }
     
-    /** Peek only the mapped value using the mapper. */
-    public default <T> IntStreamPlus peekBy(
-            IntFunction<T>       mapper,
-            Predicate<? super T> selector,
-            IntConsumer          consumer) {
+    /**
+     * Peek only the mapped value using the mapper.
+     */
+    public default <T> IntStreamPlus peekBy(IntFunction<T> mapper, Predicate<? super T> selector, IntConsumer consumer) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    if (selector.test(target))
-                        consumer.accept(value);
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            if (selector.test(target))
+                consumer.accept(value);
+        });
     }
     
-    /** Peek the mapped value using the mapper. */
-    public default <T> IntStreamPlus peekAs(
-            IntFunction<T>       mapper,
-            Predicate<? super T> selector,
-            Consumer<? super T>  consumer) {
+    /**
+     * Peek the mapped value using the mapper.
+     */
+    public default <T> IntStreamPlus peekAs(IntFunction<T> mapper, Predicate<? super T> selector, Consumer<? super T> consumer) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    if (selector.test(target)) {
-                        consumer.accept(target);
-                    }
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            if (selector.test(target)) {
+                consumer.accept(target);
+            }
+        });
     }
-    
 }

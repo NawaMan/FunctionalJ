@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,22 +24,22 @@
 package functionalj.list.intlist;
 
 import static functionalj.list.intlist.IntFuncList.deriveFrom;
-
 import java.util.Comparator;
 import java.util.function.IntFunction;
 
 public interface IntFuncListWithSort extends AsIntFuncList {
     
-    /** Sort the values by the mapped value. */
+    /**
+     * Sort the values by the mapped value.
+     */
     public default <T extends Comparable<? super T>> IntFuncList sortedBy(IntFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.sortedBy(mapper));
     }
     
-    /** Sort the values by the mapped value using the comparator. */
-    public default <T> IntFuncList sortedBy(
-            IntFunction<T> mapper,
-            Comparator<T>  comparator) {
+    /**
+     * Sort the values by the mapped value using the comparator.
+     */
+    public default <T> IntFuncList sortedBy(IntFunction<T> mapper, Comparator<T> comparator) {
         return deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
     }
-    
 }

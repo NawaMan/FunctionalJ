@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,7 +33,6 @@ import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
-
 import functionalj.function.aggregator.DoubleAggregation;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
@@ -47,26 +46,29 @@ import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
 
-
 public interface AsDoubleStreamPlusWithConversion {
     
     public DoubleStreamPlus doubleStreamPlus();
     
-    /** @return a iterator of this FuncList. */
+    /**
+     * @return a iterator of this FuncList.
+     */
     public default DoubleIteratorPlus iterator() {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .iterator();
+        return streamPlus.iterator();
     }
     
-    /** @return a spliterator of this FuncList. */
+    /**
+     * @return a spliterator of this FuncList.
+     */
     public default Spliterator.OfDouble spliterator() {
         val iterator = iterator();
-        return Spliterators
-                .spliteratorUnknownSize(iterator, 0);
+        return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
-    /** @return a functional list containing the elements. */
+    /**
+     * @return a functional list containing the elements.
+     */
     @Eager
     @Terminal
     public default DoubleFuncList toFuncList() {
@@ -74,33 +76,35 @@ public interface AsDoubleStreamPlusWithConversion {
         return new StreamBackedDoubleFuncList(streamPlus);
     }
     
-    //-- toArray --
-    
-    /** Map the data to double and return the byte array of all the results. */
+    // -- toArray --
+    /**
+     * Map the data to double and return the byte array of all the results.
+     */
     @Eager
     @Terminal
     public default double[] toDoubleArray(DoubleUnaryOperator toDouble) {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .map(toDouble)
-                .toArray    ();
+        return streamPlus.map(toDouble).toArray();
     }
-
-    //-- toList --
-
-    /** @return the array list containing the elements. */
+    
+    // -- toList --
+    /**
+     * @return the array list containing the elements.
+     */
     @Eager
     @Terminal
     public default ArrayList<Double> toArrayList() {
-        //TODO - This is not efficient but without knowing the size, it is not so easy to do efficiently
-        //       The proper solution for this is to have the stream itself contain the marker if it knows its size.
-        //       May be by using peekSize() method to check the size and the forEach to populate it.
+        // TODO - This is not efficient but without knowing the size, it is not so easy to do efficiently
+        // The proper solution for this is to have the stream itself contain the marker if it knows its size.
+        // May be by using peekSize() method to check the size and the forEach to populate it.
         val streamPlus = doubleStreamPlus();
         val javaList = streamPlus.boxed().toJavaList();
         return new ArrayList<Double>(javaList);
     }
     
-    /** @return an immutable list containing the elements. */
+    /**
+     * @return an immutable list containing the elements.
+     */
     @Eager
     @Terminal
     public default ImmutableDoubleFuncList toImmutableList() {
@@ -108,70 +112,69 @@ public interface AsDoubleStreamPlusWithConversion {
         return ImmutableDoubleFuncList.from(streamPlus);
     }
     
-    /** @return an Java list containing the elements. */
+    /**
+     * @return an Java list containing the elements.
+     */
     @Eager
     @Terminal
     public default List<Double> toJavaList() {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .mapToObj(Double::valueOf)
-                .collect(Collectors.toList());
+        return streamPlus.mapToObj(Double::valueOf).collect(Collectors.toList());
     }
     
-    /** @return a list containing the elements. */
+    /**
+     * @return a list containing the elements.
+     */
     @Eager
     @Terminal
     public default FuncList<Double> toList() {
         val streamPlus = doubleStreamPlus();
-        return ImmutableFuncList.from(
-                streamPlus.boxed());
+        return ImmutableFuncList.from(streamPlus.boxed());
     }
     
-    /** @return a mutable list containing the elements. */
+    /**
+     * @return a mutable list containing the elements.
+     */
     @Eager
     @Terminal
     public default List<Double> toMutableList() {
         return toArrayList();
     }
     
-    //-- join --
-    
-    /** @return the concatenate of toString() of each elements. */
+    // -- join --
+    /**
+     * @return the concatenate of toString() of each elements.
+     */
     @Eager
     @Terminal
     public default String join() {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .mapToObj(StrFuncs::toStr)
-                .collect (Collectors.joining());
+        return streamPlus.mapToObj(StrFuncs::toStr).collect(Collectors.joining());
     }
     
-    /** @return the concatenate of toString() of each elements with the given delimiter. */
+    /**
+     * @return the concatenate of toString() of each elements with the given delimiter.
+     */
     @Eager
     @Terminal
     public default String join(String delimiter) {
         val streamPlus = doubleStreamPlus();
-        return streamPlus
-                .mapToObj(StrFuncs::toStr)
-                .collect (Collectors.joining(delimiter));
+        return streamPlus.mapToObj(StrFuncs::toStr).collect(Collectors.joining(delimiter));
     }
     
-    //-- toListString --
-    
-    /** @return the to string as a list for this stream. */
+    // -- toListString --
+    /**
+     * @return the to string as a list for this stream.
+     */
     @Eager
     @Terminal
     public default String toListString() {
         val streamPlus = doubleStreamPlus();
-        val strValue
-                = streamPlus
-                .mapToObj(String::valueOf)
-                .collect (Collectors.joining(", "));
+        val strValue = streamPlus.mapToObj(String::valueOf).collect(Collectors.joining(", "));
         return "[" + strValue + "]";
     }
     
-    //-- toMap --
-    
+    // -- toMap --
     /**
      * Create a map from the data using the keyMapper.
      * This method throw an exception with duplicate keys.
@@ -180,7 +183,7 @@ public interface AsDoubleStreamPlusWithConversion {
     @Terminal
     public default <KEY> FuncMap<KEY, Double> toMap(DoubleFunction<KEY> keyMapper) {
         val streamPlus = doubleStreamPlus();
-        val theMap     = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> i));
+        val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> i));
         return ImmutableFuncMap.from(theMap);
     }
     
@@ -190,9 +193,7 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            DoubleFunction<KEY>   keyMapper,
-            DoubleFunction<VALUE> valueMapper) {
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(DoubleFunction<KEY> keyMapper, DoubleFunction<VALUE> valueMapper) {
         val streamPlus = doubleStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i)));
         return ImmutableFuncMap.from(theMap);
@@ -204,10 +205,7 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            DoubleFunction<KEY>   keyMapper,
-            DoubleFunction<VALUE> valueMapper,
-            BinaryOperator<VALUE> mergeFunction) {
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(DoubleFunction<KEY> keyMapper, DoubleFunction<VALUE> valueMapper, BinaryOperator<VALUE> mergeFunction) {
         val streamPlus = doubleStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i), mergeFunction));
         return ImmutableFuncMap.from(theMap);
@@ -219,16 +217,9 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY> FuncMap<KEY, Double> toMap(
-            DoubleFunction<KEY>  keyMapper,
-            DoubleBinaryOperator mergeFunction) {
+    public default <KEY> FuncMap<KEY, Double> toMap(DoubleFunction<KEY> keyMapper, DoubleBinaryOperator mergeFunction) {
         val streamPlus = doubleStreamPlus();
-        val theMap = streamPlus
-                .boxed()
-                .collect(Collectors.toMap(
-                        i -> keyMapper.apply(i),
-                        i -> i,
-                        (a, b) -> mergeFunction.applyAsDouble(a, b)));
+        val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> i, (a, b) -> mergeFunction.applyAsDouble(a, b)));
         return ImmutableFuncMap.from(theMap);
     }
     
@@ -249,9 +240,7 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            DoubleAggregation<KEY> keyAggregation,
-            DoubleFunction<VALUE>  valueMapper) {
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(DoubleAggregation<KEY> keyAggregation, DoubleFunction<VALUE> valueMapper) {
         val keyAggregator = keyAggregation.newAggregator();
         return toMap(keyAggregator, valueMapper);
     }
@@ -262,9 +251,7 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            DoubleFunction<KEY>      keyMapper,
-            DoubleAggregation<VALUE> valueAggregation) {
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(DoubleFunction<KEY> keyMapper, DoubleAggregation<VALUE> valueAggregation) {
         val valueAggregator = valueAggregation.newAggregator();
         return toMap(keyMapper, valueAggregator);
     }
@@ -275,10 +262,8 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            DoubleAggregation<KEY>   keyAggregation,
-            DoubleAggregation<VALUE> valueAggregation) {
-        val keyAggregator   = keyAggregation.newAggregator();
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(DoubleAggregation<KEY> keyAggregation, DoubleAggregation<VALUE> valueAggregation) {
+        val keyAggregator = keyAggregation.newAggregator();
         val valueAggregator = valueAggregation.newAggregator();
         return toMap(keyAggregator, valueAggregator);
     }
@@ -289,10 +274,7 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            DoubleAggregation<KEY> keyAggregation,
-            DoubleFunction<VALUE>  valueMapper,
-            BinaryOperator<VALUE>  mergeFunction) {
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(DoubleAggregation<KEY> keyAggregation, DoubleFunction<VALUE> valueMapper, BinaryOperator<VALUE> mergeFunction) {
         val keyAggregator = keyAggregation.newAggregator();
         return toMap(keyAggregator, valueMapper, mergeFunction);
     }
@@ -303,10 +285,7 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            DoubleFunction<KEY>      keyMapper,
-            DoubleAggregation<VALUE> valueAggregation,
-            BinaryOperator<VALUE>    mergeFunction) {
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(DoubleFunction<KEY> keyMapper, DoubleAggregation<VALUE> valueAggregation, BinaryOperator<VALUE> mergeFunction) {
         val valueAggregator = valueAggregation.newAggregator();
         return toMap(keyMapper, valueAggregator, mergeFunction);
     }
@@ -317,11 +296,8 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            DoubleAggregation<KEY>   keyAggregation,
-            DoubleAggregation<VALUE> valueAggregation,
-            BinaryOperator<VALUE>    mergeFunction) {
-        val keyAggregator   = keyAggregation.newAggregator();
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(DoubleAggregation<KEY> keyAggregation, DoubleAggregation<VALUE> valueAggregation, BinaryOperator<VALUE> mergeFunction) {
+        val keyAggregator = keyAggregation.newAggregator();
         val valueAggregator = valueAggregation.newAggregator();
         return toMap(keyAggregator, valueAggregator, mergeFunction);
     }
@@ -332,21 +308,19 @@ public interface AsDoubleStreamPlusWithConversion {
      */
     @Eager
     @Terminal
-    public default <KEY> FuncMap<KEY, Double> toMap(
-            DoubleAggregation<KEY> keyAggregation,
-            DoubleBinaryOperator   mergeFunction) {
+    public default <KEY> FuncMap<KEY, Double> toMap(DoubleAggregation<KEY> keyAggregation, DoubleBinaryOperator mergeFunction) {
         val keyAggregator = keyAggregation.newAggregator();
         return toMap(keyAggregator, mergeFunction);
     }
     
-    //-- toSet --
-    
-    /** @return  a set of the elements. */
+    // -- toSet --
+    /**
+     * @return  a set of the elements.
+     */
     @Eager
     @Terminal
     public default Set<Double> toSet() {
         val streamPlus = doubleStreamPlus();
         return streamPlus.boxed().collect(Collectors.toSet());
     }
-    
 }

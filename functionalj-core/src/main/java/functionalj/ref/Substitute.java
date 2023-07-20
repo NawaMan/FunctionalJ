@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.ref;
 
 import java.util.List;
-
 import functionalj.function.Func;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
@@ -43,15 +42,15 @@ import lombok.val;
 
 public class Substitute {
     
-    
-    public static Substitute Using(Substitution<?> ... substitutions) {
+    public static Substitute Using(Substitution<?>... substitutions) {
         return Using(ImmutableFuncList.of(substitutions));
     }
+    
     public static Substitute Using(List<Substitution<?>> substitutions) {
         return new Substitute(substitutions);
     }
     
-    public static Substitute using(Substitution<?> ... substitutions) {
+    public static Substitute using(Substitution<?>... substitutions) {
         return Using(ImmutableFuncList.of(substitutions));
     }
     
@@ -59,12 +58,12 @@ public class Substitute {
         return new Substitute(substitutions);
     }
     
-    
     private final FuncList<Substitution<?>> substitutions;
     
     Substitute() {
         this.substitutions = FuncList.empty();
     }
+    
     Substitute(List<Substitution<?>> substitutions) {
         this.substitutions = FuncList.from(substitutions);
     }
@@ -73,15 +72,15 @@ public class Substitute {
         return this.substitutions;
     }
     
-    public Substitute and(Substitution<?> ... newSubstitutions) {
+    public Substitute and(Substitution<?>... newSubstitutions) {
         return new Substitute(substitutions.appendAll(newSubstitutions));
     }
+    
     public Substitute and(List<Substitution<?>> newSubstitutions) {
         return new Substitute(substitutions.appendAll(newSubstitutions));
     }
     
-    //== Around ==
-    
+    // == Around ==
     public Runnable arround(Runnable runnable) {
         return () -> {
             val substitutions = substitutions();
@@ -168,8 +167,7 @@ public class Substitute {
         });
     }
     
-    //== Within ==
-    
+    // == Within ==
     public <O> Func0<O> withIn(Func0<O> supplier) {
         return Func.f(() -> {
             val substitutions = substitutions();
@@ -246,5 +244,4 @@ public class Substitute {
             Ref.runWith(substitutions, () -> function.acceptUnsafe(input1, input2, input3));
         });
     }
-    
 }

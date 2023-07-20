@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,13 +34,11 @@ public interface DoubleObjBiConsumer<DATA> extends FuncUnit2<Double, DATA> {
         acceptAsDouble(input1, input2);
     }
     
-    
     public static <D> void accept(BiConsumer<Double, D> function, double input1, D input2) {
         if (function instanceof DoubleObjBiConsumer) {
-            ((DoubleObjBiConsumer<D>)function).acceptAsDouble(input1, input2);
+            ((DoubleObjBiConsumer<D>) function).acceptAsDouble(input1, input2);
         } else {
             function.accept(input1, input2);
         }
     }
-    
 }

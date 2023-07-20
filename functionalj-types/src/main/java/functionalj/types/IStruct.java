@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,25 +23,23 @@
 // ============================================================================
 package functionalj.types;
 
+import java.lang.reflect.Method;
 import java.util.Map;
-
 import functionalj.types.struct.generator.Getter;
-import lombok.val;
-
 
 public interface IStruct extends IData {
     
     public Map<String, Object> __toMap();
+    
     public Map<String, Getter> __getSchema();
     
     public static <S extends IStruct> S fromMap(Map<String, Object> map, Class<S> clazz) {
         try {
-            val method = clazz.getMethod("fromMap", Map.class);
-            val struct = method.invoke(clazz, map);
+            Method method = clazz.getMethod("fromMap", Map.class);
+            Object struct = method.invoke(clazz, map);
             return clazz.cast(struct);
         } catch (Exception cause) {
             throw new StructConversionException(cause);
         }
     }
-    
 }

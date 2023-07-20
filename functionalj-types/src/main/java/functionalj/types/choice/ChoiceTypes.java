@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,10 +25,10 @@ package functionalj.types.choice;
 
 public class ChoiceTypes {
     
-    private ChoiceTypes() {}
+    private ChoiceTypes() {
+    }
     
     public static <S> S Match(IChoice<S> choiceType) {
         return choiceType.match();
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,14 +27,14 @@ import functionalj.types.IRequireTypes;
 
 /**
  * Classes implementing this interface as a definition in code.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface IGenerateDefinition extends IRequireTypes {
     
     /**
      * Generate definition.
-     * 
+     *
      * @param currentPackage  the current package.
      * @return  the definition.
      */

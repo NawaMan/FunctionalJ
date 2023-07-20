@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,56 +24,43 @@
 package functionalj.list.longlist;
 
 import static functionalj.list.longlist.LongFuncList.deriveToObj;
-
 import java.util.function.LongFunction;
-
 import functionalj.list.FuncList;
 
 public interface LongFuncListWithMapFirst extends AsLongFuncList {
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            LongFunction<T> mapper1,
-            LongFunction<T> mapper2) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(LongFunction<T> mapper1, LongFunction<T> mapper2) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            LongFunction<T> mapper1,
-            LongFunction<T> mapper2,
-            LongFunction<T> mapper3) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(LongFunction<T> mapper1, LongFunction<T> mapper2, LongFunction<T> mapper3) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            LongFunction<T> mapper1,
-            LongFunction<T> mapper2,
-            LongFunction<T> mapper3,
-            LongFunction<T> mapper4) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(LongFunction<T> mapper1, LongFunction<T> mapper2, LongFunction<T> mapper3, LongFunction<T> mapper4) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            LongFunction<T> mapper1,
-            LongFunction<T> mapper2,
-            LongFunction<T> mapper3,
-            LongFunction<T> mapper4,
-            LongFunction<T> mapper5) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(LongFunction<T> mapper1, LongFunction<T> mapper2, LongFunction<T> mapper3, LongFunction<T> mapper4, LongFunction<T> mapper5) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            LongFunction<T> mapper1,
-            LongFunction<T> mapper2,
-            LongFunction<T> mapper3,
-            LongFunction<T> mapper4,
-            LongFunction<T> mapper5,
-            LongFunction<T> mapper6) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(LongFunction<T> mapper1, LongFunction<T> mapper2, LongFunction<T> mapper3, LongFunction<T> mapper4, LongFunction<T> mapper5, LongFunction<T> mapper6) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.function;
 
 import java.util.function.BiFunction;
-
 import functionalj.functions.ThrowFuncs;
 
 public interface IntObjBiFunction<DATA, TARGET> extends Func2<Integer, DATA, TARGET> {
@@ -34,7 +33,7 @@ public interface IntObjBiFunction<DATA, TARGET> extends Func2<Integer, DATA, TAR
     public default TARGET applyAsInt(int input1, DATA input2) {
         try {
             return applyAsIntUnsafe(input1, input2);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
@@ -45,11 +44,9 @@ public interface IntObjBiFunction<DATA, TARGET> extends Func2<Integer, DATA, TAR
     
     public static <D, T> T apply(BiFunction<Integer, D, T> function, int input1, D input2) {
         if (function instanceof IntObjBiPredicate) {
-            return ((IntObjBiFunction<D, T>)function).applyAsInt(input1, input2);
+            return ((IntObjBiFunction<D, T>) function).applyAsInt(input1, input2);
         } else {
             return function.apply(input1, input2);
         }
     }
-    
 }
-

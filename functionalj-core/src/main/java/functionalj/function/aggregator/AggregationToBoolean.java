@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,20 +27,17 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
-
 import functionalj.stream.collect.CollectorToBooleanPlus;
 import lombok.val;
 
-public abstract class  AggregationToBoolean<SOURCE> extends Aggregation<SOURCE, Boolean> {
+public abstract class AggregationToBoolean<SOURCE> extends Aggregation<SOURCE, Boolean> {
     
     public static <S, A> AggregationToBoolean<S> from(CollectorToBooleanPlus<S, A> collector) {
         return new AggregationToBoolean.Impl<>(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract CollectorToBooleanPlus<SOURCE, ?> collectorToBooleanPlus();
-    
     
     @Override
     public CollectorToBooleanPlus<SOURCE, ?> collectorPlus() {
@@ -52,8 +49,7 @@ public abstract class  AggregationToBoolean<SOURCE> extends Aggregation<SOURCE, 
         return new AggregatorToBoolean.Impl<>(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToBoolean<INPUT> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorToBooleanPlus().of(mapper);
         return new AggregationToBoolean.Impl<>(newCollector);
@@ -74,8 +70,7 @@ public abstract class  AggregationToBoolean<SOURCE> extends Aggregation<SOURCE, 
         return new DoubleAggregationToBoolean.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<SRC> extends AggregationToBoolean<SRC> {
         
         private final CollectorToBooleanPlus<SRC, ?> collector;
@@ -88,7 +83,5 @@ public abstract class  AggregationToBoolean<SOURCE> extends Aggregation<SOURCE, 
         public CollectorToBooleanPlus<SRC, ?> collectorToBooleanPlus() {
             return collector;
         }
-        
     }
-    
 }

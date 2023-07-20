@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,10 @@ import functionalj.map.FuncMap;
 import functionalj.types.Struct;
 
 public class WithFuncMapTest {
-
-    @Struct(name="ParentWithFuncMap")
+    
+    @Struct(name = "ParentWithFuncMap")
     public static interface IParent4 {
         
         public FuncMap<String, Child> children();
-        
     }
 }

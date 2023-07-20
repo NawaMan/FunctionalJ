@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,10 +31,9 @@ public interface AggregatorToDouble<SOURCE> extends DoubleAccessPrimitive<SOURCE
     
     public CollectedToDouble<SOURCE, ?> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<SOURCE> implements AggregatorToDouble<SOURCE>, Aggregator<SOURCE, Double> {
-    
+        
         private final CollectedToDouble<SOURCE, ?> collected;
         
         public Impl(CollectorToDoublePlus<SOURCE, ?> collector) {
@@ -50,7 +49,5 @@ public interface AggregatorToDouble<SOURCE> extends DoubleAccessPrimitive<SOURCE
         public CollectedToDouble<SOURCE, ?> asCollected() {
             return collected;
         }
-        
     }
-    
 }

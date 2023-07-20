@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,87 +26,72 @@ package functionalj.stream;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
 import lombok.val;
-
-
 
 public interface StreamPlusWithPeek<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /** Peek only the value that is an instance of the give class. */
-    public default <T extends DATA> StreamPlus<DATA> peek(
-            Class<T>            clzz,
-            Consumer<? super T> theConsumer) {
+    /**
+     * Peek only the value that is an instance of the give class.
+     */
+    public default <T extends DATA> StreamPlus<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .peek(value -> {
-                    if (!clzz.isInstance(value))
-                        return;
-                    
-                    val target = clzz.cast(value);
-                    theConsumer.accept(target);
-                });
+        return streamPlus.peek(value -> {
+            if (!clzz.isInstance(value))
+                return;
+            val target = clzz.cast(value);
+            theConsumer.accept(target);
+        });
     }
     
-    /** Peek only the value that is selected with selector. */
-    public default StreamPlus<DATA> peekBy(
-            Predicate<? super DATA> selector,
-            Consumer<? super DATA>  theConsumer) {
+    /**
+     * Peek only the value that is selected with selector.
+     */
+    public default StreamPlus<DATA> peekBy(Predicate<? super DATA> selector, Consumer<? super DATA> theConsumer) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .peek(value -> {
-                    if (!selector.test(value))
-                        return;
-                    
-                    theConsumer.accept(value);
-                });
+        return streamPlus.peek(value -> {
+            if (!selector.test(value))
+                return;
+            theConsumer.accept(value);
+        });
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
-    
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
-    
-    /** Peek the mapped value using the mapper. */
-    public default <T> StreamPlus<DATA> peekAs(
-            Function<? super DATA, T> mapper,
-            Consumer<? super T>       consumer) {
+    /**
+     * Peek the mapped value using the mapper.
+     */
+    public default <T> StreamPlus<DATA> peekAs(Function<? super DATA, T> mapper, Consumer<? super T> consumer) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    consumer.accept(target);
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            consumer.accept(target);
+        });
     }
     
-    /** Peek only the mapped value using the mapper. */
-    public default <T> StreamPlus<DATA> peekBy(
-            Function<? super DATA, T> mapper,
-            Predicate<? super T>      selector,
-            Consumer<? super DATA>    consumer) {
+    /**
+     * Peek only the mapped value using the mapper.
+     */
+    public default <T> StreamPlus<DATA> peekBy(Function<? super DATA, T> mapper, Predicate<? super T> selector, Consumer<? super DATA> consumer) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    if (selector.test(target))
-                        consumer.accept(value);
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            if (selector.test(target))
+                consumer.accept(value);
+        });
     }
     
-    /** Peek only the mapped value using the mapper that is selected by the selector. */
-    public default <T> StreamPlus<DATA> peekAs(
-            Function<? super DATA, T> mapper,
-            Predicate<? super T>      selector,
-            Consumer<? super T>       consumer) {
+    /**
+     * Peek only the mapped value using the mapper that is selected by the selector.
+     */
+    public default <T> StreamPlus<DATA> peekAs(Function<? super DATA, T> mapper, Predicate<? super T> selector, Consumer<? super T> consumer) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    if (selector.test(target)) {
-                        consumer.accept(target);
-                    }
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            if (selector.test(target)) {
+                consumer.accept(target);
+            }
+        });
     }
-    
 }

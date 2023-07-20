@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.function;
 
 import java.util.function.BiFunction;
-
 import functionalj.functions.ThrowFuncs;
 
 public interface LongObjBiFunction<DATA, TARGET> extends Func2<Long, DATA, TARGET> {
@@ -34,7 +33,7 @@ public interface LongObjBiFunction<DATA, TARGET> extends Func2<Long, DATA, TARGE
     public default TARGET applyAsLong(long input1, DATA input2) {
         try {
             return applyAsLongUnsafe(input1, input2);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
@@ -45,11 +44,9 @@ public interface LongObjBiFunction<DATA, TARGET> extends Func2<Long, DATA, TARGE
     
     public static <D, T> T apply(BiFunction<Long, D, T> function, long input1, D input2) {
         if (function instanceof LongObjBiPredicate) {
-            return ((LongObjBiFunction<D, T>)function).applyAsLong(input1, input2);
+            return ((LongObjBiFunction<D, T>) function).applyAsLong(input1, input2);
         } else {
             return function.apply(input1, input2);
         }
     }
-    
 }
-

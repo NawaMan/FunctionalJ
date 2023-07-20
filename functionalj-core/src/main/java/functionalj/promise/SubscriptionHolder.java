@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,15 +24,14 @@
 package functionalj.promise;
 
 import static java.util.Objects.requireNonNull;
-
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-
 import functionalj.result.Result;
 
 public class SubscriptionHolder<DATA> extends SubscriptionRecord<DATA> {
     
     private final AtomicReference<Consumer<Result<DATA>>> consumer = new AtomicReference<Consumer<Result<DATA>>>(null);
+    
     private final SubscriptionRecord<DATA> subscription;
     
     SubscriptionHolder(boolean isEavesdropping, Wait wait, Promise<DATA> promise) {
@@ -61,5 +60,4 @@ public class SubscriptionHolder<DATA> extends SubscriptionRecord<DATA> {
         subscription.unsubscribe();
         return this;
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,12 +34,8 @@ public interface ToIntBiDoubleFunctionPrimitive extends ToIntegerBiDoubleFunctio
         return applyAsDoubleAndDouble(data, longValue);
     }
     
-    
     public static int apply(ToIntegerBiDoubleFunction<Double> function, double value, double anotherValue) {
-        val resValue 
-            = (function instanceof ToIntBiDoubleFunctionPrimitive)
-            ? ((ToIntBiDoubleFunctionPrimitive)function).applyAsDoubleAndDouble(value, anotherValue)
-            : function.applyAsInt(value, anotherValue);
+        val resValue = (function instanceof ToIntBiDoubleFunctionPrimitive) ? ((ToIntBiDoubleFunctionPrimitive) function).applyAsDoubleAndDouble(value, anotherValue) : function.applyAsInt(value, anotherValue);
         return resValue;
     }
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,11 +29,13 @@ public class WaitForever extends Wait {
     
     public static WaitForever instance = new WaitForever();
     
-    private WaitForever() {}
+    private WaitForever() {
+    }
     
     @Override
     public WaitSession newSession() {
         return new WaitSession() {
+        
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
             }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,13 +24,10 @@
 package functionalj.promise;
 
 public class UncheckedInterruptedException extends RuntimeException {
-
+    
     private static final long serialVersionUID = 4126941862149908606L;
-
+    
     public UncheckedInterruptedException(InterruptedException cause) {
         super(cause);
     }
-    
-    
-    
 }

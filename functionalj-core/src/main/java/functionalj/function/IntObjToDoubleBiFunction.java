@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,7 +32,7 @@ public interface IntObjToDoubleBiFunction<DATA> extends Func2<Integer, DATA, Dou
     public default double applyAsDouble(int input1, DATA input2) {
         try {
             return applyAsDoubleUnsafe(input1, input2);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
@@ -44,11 +44,9 @@ public interface IntObjToDoubleBiFunction<DATA> extends Func2<Integer, DATA, Dou
     @SuppressWarnings("unchecked")
     public static <D> double apply(IntObjBiFunction<D, Double> function, int input1, D input2) {
         if (function instanceof IntObjToDoubleBiFunction) {
-            return ((IntObjToDoubleBiFunction<D>)function).applyAsDouble(input1, input2);
+            return ((IntObjToDoubleBiFunction<D>) function).applyAsDouble(input1, input2);
         } else {
             return function.applyAsInt(input1, input2);
         }
     }
-    
 }
-

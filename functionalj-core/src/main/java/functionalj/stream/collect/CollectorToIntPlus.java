@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,21 +32,22 @@ import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorToIntPlus;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
 import lombok.val;
 
-
-public interface CollectorToIntPlus<DATA, ACCUMULATED> 
-                    extends CollectorPlus<DATA, ACCUMULATED, Integer> {
+public interface CollectorToIntPlus<DATA, ACCUMULATED> extends CollectorPlus<DATA, ACCUMULATED, Integer> {
     
-    public Supplier<ACCUMULATED>          supplier();
-    public BiConsumer<ACCUMULATED, DATA>  accumulator();
-    public BinaryOperator<ACCUMULATED>    combiner();
-    public ToIntFunction<ACCUMULATED>     finisherToInt();
-    public Set<Characteristics>           characteristics();
+    public Supplier<ACCUMULATED> supplier();
+    
+    public BiConsumer<ACCUMULATED, DATA> accumulator();
+    
+    public BinaryOperator<ACCUMULATED> combiner();
+    
+    public ToIntFunction<ACCUMULATED> finisherToInt();
+    
+    public Set<Characteristics> characteristics();
     
     public default Function<ACCUMULATED, Integer> finisher() {
         val finisher = finisherToInt();
@@ -55,8 +56,7 @@ public interface CollectorToIntPlus<DATA, ACCUMULATED>
         };
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public default <SOURCE> CollectorToIntPlus<SOURCE, ACCUMULATED> of(Function<SOURCE, DATA> mapper) {
         return new DerivedCollectorToIntPlus.FromObj<>(this, mapper);
     }

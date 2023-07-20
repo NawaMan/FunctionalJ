@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,7 +32,7 @@ public interface IntObjToIntBiFunction<DATA> extends Func2<Integer, DATA, Intege
     public default int applyAsInt(int input1, DATA input2) {
         try {
             return applyAsIntUnsafe(input1, input2);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }
@@ -44,11 +44,9 @@ public interface IntObjToIntBiFunction<DATA> extends Func2<Integer, DATA, Intege
     @SuppressWarnings("unchecked")
     public static <D> int apply(IntObjBiFunction<D, Integer> function, int input1, D input2) {
         if (function instanceof IntObjToIntBiFunction) {
-            return ((IntObjToIntBiFunction<D>)function).applyAsInt(input1, input2);
+            return ((IntObjToIntBiFunction<D>) function).applyAsInt(input1, input2);
         } else {
             return function.applyAsInt(input1, input2);
         }
     }
-    
 }
-

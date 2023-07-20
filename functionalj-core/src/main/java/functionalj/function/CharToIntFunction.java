@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,7 @@ package functionalj.function;
 
 @FunctionalInterface
 public interface CharToIntFunction {
-
+    
     /**
      * Applies this function to the given argument.
      *
@@ -33,5 +33,4 @@ public interface CharToIntFunction {
      * @return the function result
      */
     int applyAsInt(char value);
-    
 }

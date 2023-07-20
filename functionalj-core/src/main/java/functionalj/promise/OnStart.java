@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,13 +28,12 @@ import functionalj.function.FuncUnit0;
 // This interface is used to document the second parameter on DeferAction.run and DeferAction.from.
 public interface OnStart extends FuncUnit0 {
     
-    public static final OnStart DoNothing = ()->{};
+    public static final OnStart DoNothing = () -> {
+    };
     
     public static OnStart run(FuncUnit0 runnable) {
         if (runnable == null)
             return null;
-        
         return runnable::run;
     }
-    
 }

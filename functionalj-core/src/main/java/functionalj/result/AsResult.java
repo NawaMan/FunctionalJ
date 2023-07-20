@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,11 +25,10 @@ package functionalj.result;
 
 @FunctionalInterface
 public interface AsResult<DATA> extends HasResult<DATA> {
-
+    
     public Result<DATA> asResult();
     
     public default Result<DATA> getResult() {
         return asResult();
     }
-    
 }

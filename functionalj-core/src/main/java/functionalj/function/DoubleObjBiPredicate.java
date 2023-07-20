@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,12 +33,10 @@ public interface DoubleObjBiPredicate<DATA> extends Func2<Double, DATA, Boolean>
         return testAsDouble(input1, input2);
     }
     
-    
     public static <D> boolean test(BiPredicate<Double, D> function, double input1, D input2) {
         if (function instanceof DoubleObjBiPredicate) {
-            return ((DoubleObjBiPredicate<D>)function).testAsDouble(input1, input2);
+            return ((DoubleObjBiPredicate<D>) function).testAsDouble(input1, input2);
         }
         return function.test(input1, input2);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,27 +26,28 @@ package functionalj.stream.longstream;
 import java.util.function.Function;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
-
 import functionalj.function.Func1;
 import functionalj.list.longlist.LongFuncList;
 import lombok.val;
 
-
 public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function<Long, Long>, LongFuncList {
     
     public static class Size {
+        
         public final long size;
+        
         Size(long size) {
             if (size <= 0) {
                 throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
             }
-            
             this.size = size;
         }
     }
     
     public static class From {
+        
         public final long from;
+        
         From(long from) {
             this.from = from;
         }
@@ -58,14 +59,16 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
     
     public static class LongStepToStream implements LongStreamPlus {
         
-        private final boolean        distancePositive;
-        private final long           end;
+        private final boolean distancePositive;
+        
+        private final long end;
+        
         private final LongStreamPlus longStreamPlus;
         
         LongStepToStream(LongStreamPlus longStreamPlus, long end, boolean distancePositive) {
             this.distancePositive = distancePositive;
-            this.end              = end;
-            this.longStreamPlus   = longStreamPlus;
+            this.end = end;
+            this.longStreamPlus = longStreamPlus;
         }
         
         public LongStreamPlus inclusive() {
@@ -139,14 +142,13 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
     }
     
     private final long size;
-    private final long start;
     
+    private final long start;
     
     private LongStep(long size, long start) {
         if (size <= 0) {
             throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
         }
-        
         this.size = size;
         this.start = start;
     }
@@ -156,13 +158,10 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
     }
     
     public LongStepToStream to(long end) {
-        val sizePositive     = size > 0;
+        val sizePositive = size > 0;
         val distancePositive = (end - start) > 0;
-        val sameDirection    = sizePositive == distancePositive;
-        val longStreamPlus
-                = sameDirection 
-                ? LongStreamPlus.wholeNumbers().map(i ->  i * size + start)
-                : LongStreamPlus.wholeNumbers().map(i -> -i * size + start);
+        val sameDirection = sizePositive == distancePositive;
+        val longStreamPlus = sameDirection ? LongStreamPlus.wholeNumbers().map(i -> i * size + start) : LongStreamPlus.wholeNumbers().map(i -> -i * size + start);
         return new LongStepToStream(longStreamPlus, end, distancePositive);
     }
     
@@ -172,12 +171,12 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
     
     @Override
     public LongStreamPlus longStreamPlus() {
-        return LongStreamPlus.wholeNumbers().map(i -> i *size + start);
+        return LongStreamPlus.wholeNumbers().map(i -> i * size + start);
     }
     
     @Override
     public long applyAsLong(long operand) {
-        return start + (long)(Math.round(1.0 * (operand - start) / size) * size);
+        return start + (long) (Math.round(1.0 * (operand - start) / size) * size);
     }
     
     @Override
@@ -199,20 +198,19 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
         return LongFuncList.from(() -> longStreamPlus());
     }
     
-    /** Please don't call. This will blow up. */
+    /**
+     * Please don't call. This will blow up.
+     */
     @Override
     public LongFuncList toEager() {
-        throw new UnsupportedOperationException(
-                "Infinite double step cannot be made an eager list: " 
-                    + longStreamPlus().limit(5).join(", ") + "...");
+        throw new UnsupportedOperationException("Infinite double step cannot be made an eager list: " + longStreamPlus().limit(5).join(", ") + "...");
     }
     
-    /** Please don't call. This will blow up. */
+    /**
+     * Please don't call. This will blow up.
+     */
     @Override
     public LongFuncList toCache() {
-        throw new UnsupportedOperationException(
-                "Infinite double step cannot be made a cache list: " 
-                    + longStreamPlus().limit(5).join(", ") + "...");
+        throw new UnsupportedOperationException("Infinite double step cannot be made a cache list: " + longStreamPlus().limit(5).join(", ") + "...");
     }
-    
 }

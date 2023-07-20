@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,12 +24,10 @@
 package functionalj.lens.core;
 
 import java.util.function.Function;
-
 import functionalj.lens.lenses.AnyAccess;
 
 @FunctionalInterface
 public interface AccessCreator<HOST, TYPE, TYPEACCESS extends AnyAccess<?, TYPE>> {
     
     public TYPEACCESS newAccess(Function<HOST, TYPE> accessToValue);
-    
 }

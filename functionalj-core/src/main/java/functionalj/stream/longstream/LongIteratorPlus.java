@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,35 +31,37 @@ import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
-
 import functionalj.list.longlist.LongFuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import lombok.val;
 
-
 @FunctionalInterface
-public interface LongIteratorPlus extends PrimitiveIterator.OfLong, AutoCloseable, Pipeable<LongIteratorPlus>  {
+public interface LongIteratorPlus extends PrimitiveIterator.OfLong, AutoCloseable, Pipeable<LongIteratorPlus> {
     
-    public static LongIteratorPlus of(long ... ds) {
+    public static LongIteratorPlus of(long... ds) {
         return LongIteratorPlus.from(LongStreamPlus.of(ds));
     }
+    
     public static LongIteratorPlus from(LongStream stream) {
         if (stream instanceof LongStreamPlus) {
-            return new StreamBackedLongIteratorPlus(((LongStreamPlus)stream).longStream());
+            return new StreamBackedLongIteratorPlus(((LongStreamPlus) stream).longStream());
         }
         return LongIteratorPlus.from(stream.iterator());
     }
+    
     public static LongIteratorPlus from(PrimitiveIterator.OfLong iterator) {
         if (iterator instanceof LongIteratorPlus)
-             return (LongIteratorPlus)iterator;
-        else return new LongIteratorPlus() {
-            @Override
-            public PrimitiveIterator.OfLong asIterator() {
-                return iterator;
-            }
-        };
+            return (LongIteratorPlus) iterator;
+        else
+            return new LongIteratorPlus() {
+        
+                @Override
+                public PrimitiveIterator.OfLong asIterator() {
+                    return iterator;
+                }
+            };
     }
     
     public default LongIteratorPlus __data() throws Exception {
@@ -67,7 +69,6 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong, AutoCloseabl
     }
     
     public default void close() {
-        
     }
     
     public default LongIteratorPlus onClose(Runnable closeHandler) {
@@ -100,7 +101,7 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong, AutoCloseabl
     }
     
     public default LongStreamPlus stream() {
-        val iterable = (LongIterable)()->this;
+        val iterable = (LongIterable) () -> this;
         return LongStreamPlus.from(StreamSupport.longStream(iterable.spliterator(), false));
     }
     
@@ -110,15 +111,15 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong, AutoCloseabl
     
     public default OptionalLong pullNext() {
         if (hasNext())
-             return OptionalLong.of(nextLong());
-        else return OptionalLong.empty();
+            return OptionalLong.of(nextLong());
+        else
+            return OptionalLong.empty();
     }
     
     public default AutoCloseableResult<LongIteratorPlus> pullNext(int count) {
         long[] array = stream().limit(count).toArray();
         if ((array.length == 0) && count != 0)
             return AutoCloseableResult.from(Result.ofNoMore());
-        
         val iterator = new ArrayBackedLongIteratorPlus(array);
         return AutoCloseableResult.valueOf(iterator);
     }
@@ -128,7 +129,6 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong, AutoCloseabl
             val next = nextLong();
             usage.accept(next);
         }
-        
         return this;
     }
     
@@ -136,17 +136,16 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong, AutoCloseabl
         long[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
             try (val iterator = new ArrayBackedLongIteratorPlus(array)) {
-                val stream   = iterator.stream();
+                val stream = iterator.stream();
                 usage.accept(stream);
             }
         }
-        
         return this;
     }
     
     public default <TARGET> Result<TARGET> mapNext(LongFunction<TARGET> mapper) {
         if (hasNext()) {
-            val next  = nextLong();
+            val next = nextLong();
             val value = mapper.apply(next);
             return Result.valueOf(value);
         } else {
@@ -158,11 +157,9 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong, AutoCloseabl
         val array = stream().limit(count).toArray();
         if ((array.length == 0) && (count != 0))
             return Result.ofNoMore();
-        
-        val input  = ArrayBackedLongIteratorPlus.from(array);
+        val input = ArrayBackedLongIteratorPlus.from(array);
         val stream = input.stream();
         val value = mapper.apply(stream);
         return Result.valueOf(value);
     }
-    
 }

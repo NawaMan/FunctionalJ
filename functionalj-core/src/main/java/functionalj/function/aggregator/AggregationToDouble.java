@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,7 +27,6 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
-
 import functionalj.stream.collect.CollectorToDoublePlus;
 import lombok.val;
 
@@ -37,10 +36,8 @@ public abstract class AggregationToDouble<SOURCE> extends Aggregation<SOURCE, Do
         return new AggregationToDouble.Impl<S>(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract CollectorToDoublePlus<SOURCE, ?> collectorToDoublePlus();
-    
     
     @Override
     public CollectorToDoublePlus<SOURCE, ?> collectorPlus() {
@@ -52,8 +49,7 @@ public abstract class AggregationToDouble<SOURCE> extends Aggregation<SOURCE, Do
         return new AggregatorToDouble.Impl<>(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToDouble<INPUT> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorToDoublePlus().of(mapper);
         return new AggregationToDouble.Impl<>(newCollector);
@@ -74,8 +70,7 @@ public abstract class AggregationToDouble<SOURCE> extends Aggregation<SOURCE, Do
         return new DoubleAggregationToDouble.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<SRC> extends AggregationToDouble<SRC> {
         
         private final CollectorToDoublePlus<SRC, ?> collector;
@@ -88,7 +83,5 @@ public abstract class AggregationToDouble<SOURCE> extends Aggregation<SOURCE, Do
         public CollectorToDoublePlus<SRC, ?> collectorToDoublePlus() {
             return collector;
         }
-        
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,15 +24,13 @@
 package functionalj.typestests.struct;
 
 import java.util.Map;
-
 import functionalj.types.Struct;
 
 public class WithMapTest {
-
-    @Struct(name="ParentWithMap")
+    
+    @Struct(name = "ParentWithMap")
     public static interface IParent4 {
         
         public Map<String, Child> children();
-        
     }
 }

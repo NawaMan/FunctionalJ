@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,5 +35,4 @@ public interface DoubleDoubleToIntFunctionPrimitive extends ToIntegerBiDoubleFun
     public default int compareDouble(double o1, double o2) {
         return applyAsDoubleAndDouble(o1, o2);
     }
-    
 }

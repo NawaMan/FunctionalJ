@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,41 +26,37 @@ package functionalj.stream.intstream;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.IntFunction;
-
 import functionalj.stream.markers.Eager;
 import lombok.val;
-
 
 public interface IntStreamPlusWithSort {
     
     public IntStreamPlus intStreamPlus();
     
-    /** Sort the values by the mapped value. */
+    /**
+     * Sort the values by the mapped value.
+     */
     @Eager
     public default <T extends Comparable<? super T>> IntStreamPlus sortedBy(IntFunction<T> mapper) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .sorted((a, b) -> {
-                    T vA = mapper.apply(a);
-                    T vB = mapper.apply(b);
-                    return vA.compareTo(vB);
-                });
+        return streamPlus.sorted((a, b) -> {
+            T vA = mapper.apply(a);
+            T vB = mapper.apply(b);
+            return vA.compareTo(vB);
+        });
     }
     
-    /** Sort the values by the mapped value using the comparator. */
+    /**
+     * Sort the values by the mapped value using the comparator.
+     */
     @Eager
-    public default <T> IntStreamPlus sortedBy(
-            IntFunction<T> mapper, 
-            Comparator<T>  comparator) {
+    public default <T> IntStreamPlus sortedBy(IntFunction<T> mapper, Comparator<T> comparator) {
         val streamPlus = intStreamPlus();
-        return streamPlus
-                .sorted((a, b) -> {
-                    T vA = mapper.apply(a);
-                    T vB = mapper.apply(b);
-                    return Objects.compare(vA, vB, comparator);
-                });
+        return streamPlus.sorted((a, b) -> {
+            T vA = mapper.apply(a);
+            T vB = mapper.apply(b);
+            return Objects.compare(vA, vB, comparator);
+        });
     }
-    
     // TODO - sortedAsIntBy, sortedAsLongBy, sortedAsDoubleBy
-    
 }

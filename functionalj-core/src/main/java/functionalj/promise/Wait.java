@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -47,13 +47,12 @@ public abstract class Wait {
         return new WaitAwhile.WaitAsync(seconds * 1000, asyncRunner);
     }
     
-    
-    Wait() {}
+    Wait() {
+    }
     
     public abstract WaitSession newSession();
     
     protected final void expire(WaitSession session, String message, Exception throwable) {
         session.expire(message, throwable);
     }
-    
 }

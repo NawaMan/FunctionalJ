@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.lens.lenses;
 
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleSupplier;
-
 import lombok.val;
 
 @FunctionalInterface
@@ -50,5 +49,4 @@ public interface DoubleToDoubleAccessBoxed extends DoubleAccessBoxed<Double>, Do
             return (result != null) ? result : fallback.getAsDouble();
         };
     }
-    
 }

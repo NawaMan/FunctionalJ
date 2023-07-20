@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,7 +26,6 @@ package functionalj.stream;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-
 import functionalj.function.aggregator.Aggregation;
 import functionalj.function.aggregator.AggregationToDouble;
 import functionalj.function.aggregator.AggregationToInt;
@@ -39,24 +38,18 @@ public interface AsStreamPlusWithCollect<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    
     @Eager
     @Terminal
-    public default <RESULT> RESULT collect(
-            Supplier<RESULT>                 supplier,
-            BiConsumer<RESULT, ? super DATA> accumulator,
-            BiConsumer<RESULT, RESULT>       combiner) {
+    public default <RESULT> RESULT collect(Supplier<RESULT> supplier, BiConsumer<RESULT, ? super DATA> accumulator, BiConsumer<RESULT, RESULT> combiner) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .collect(supplier, accumulator, combiner);
+        return streamPlus.collect(supplier, accumulator, combiner);
     }
     
     @Eager
     @Terminal
     public default <RESULT, ACCUMULATOR> RESULT collect(Collector<? super DATA, ACCUMULATOR, RESULT> collector) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .collect(collector);
+        return streamPlus.collect(collector);
     }
     
     @Eager
@@ -64,8 +57,7 @@ public interface AsStreamPlusWithCollect<DATA> {
     public default <RESULT> RESULT aggregate(Aggregation<? super DATA, RESULT> aggregation) {
         val collector = aggregation.collectorPlus();
         val streamPlus = streamPlus();
-        return streamPlus
-                .collect(collector);
+        return streamPlus.collect(collector);
     }
     
     @Eager
@@ -73,8 +65,7 @@ public interface AsStreamPlusWithCollect<DATA> {
     public default int aggregateToInt(AggregationToInt<? super DATA> aggregation) {
         val collector = aggregation.collectorPlus();
         val streamPlus = streamPlus();
-        return streamPlus
-                .collect(collector);
+        return streamPlus.collect(collector);
     }
     
     @Eager
@@ -82,8 +73,7 @@ public interface AsStreamPlusWithCollect<DATA> {
     public default long aggregateToLong(AggregationToLong<? super DATA> aggregation) {
         val collector = aggregation.collectorPlus();
         val streamPlus = streamPlus();
-        return streamPlus
-                .collect(collector);
+        return streamPlus.collect(collector);
     }
     
     @Eager
@@ -91,7 +81,6 @@ public interface AsStreamPlusWithCollect<DATA> {
     public default double aggregateToDouble(AggregationToDouble<? super DATA> aggregation) {
         val collector = aggregation.collectorPlus();
         val streamPlus = streamPlus();
-        return streamPlus
-                .collect(collector);
+        return streamPlus.collect(collector);
     }
 }

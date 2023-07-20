@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,12 +23,10 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-
 @FunctionalInterface
 public interface CharacterAccessPrimitive<HOST> extends CharacterAccess<HOST> {
     
     public default Character applyUnsafe(HOST host) throws Exception {
         return applyAsChar(host);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,14 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import functionalj.stream.StreamPlus;
 
 /**
  * Builder for FuncList.
  *
  * @param <DATA>  the data type.
- * 
+ *
  * @author nawaman
  */
 public class FuncListBuilder<DATA> {
@@ -51,7 +50,7 @@ public class FuncListBuilder<DATA> {
     }
     
     @SafeVarargs
-    public FuncListBuilder(DATA ... values) {
+    public FuncListBuilder(DATA... values) {
         list = new ArrayList<DATA>((values != null) ? values.length : 0);
         if (values != null) {
             for (DATA value : values) {
@@ -77,6 +76,7 @@ public class FuncListBuilder<DATA> {
     public int size() {
         return list.size();
     }
+    
     public boolean isEmpty() {
         return size() == 0;
     }
@@ -92,7 +92,6 @@ public class FuncListBuilder<DATA> {
     public Optional<DATA> at(int i) {
         if (i < 0 || i >= list.size())
             return Optional.empty();
-        
         return Optional.ofNullable(list.get(i));
     }
     

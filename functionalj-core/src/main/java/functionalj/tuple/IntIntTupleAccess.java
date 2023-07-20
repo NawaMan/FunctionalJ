@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,8 +27,7 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.IntegerAccess;
 
 @FunctionalInterface
-public interface IntIntTupleAccess<HOST>
-        extends AnyAccess<HOST, IntIntTuple> {
+public interface IntIntTupleAccess<HOST> extends AnyAccess<HOST, IntIntTuple> {
     
     @Override
     public IntIntTuple applyUnsafe(HOST host) throws Exception;
@@ -36,8 +35,8 @@ public interface IntIntTupleAccess<HOST>
     public default IntegerAccess<HOST> _1() {
         return intPrimitiveAccess(0, IntIntTuple::_1);
     }
+    
     public default IntegerAccess<HOST> _2() {
         return intPrimitiveAccess(0, IntIntTuple::_2);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,33 +25,20 @@ package functionalj.tuple;
 
 import static functionalj.tuple.Tuple.createTheTuple;
 import static org.junit.Assert.assertEquals;
-
 import java.util.Arrays;
 import java.util.stream.Collectors;
-
 import org.junit.Test;
-
 import functionalj.lens.lenses.StringLens;
 import lombok.val;
 
-
 public class IntTuple2Test {
-
     
     // Do not like this one bit. - Find the way to improve this!
-    private static final IntTuple2Lens<IntTuple2<String>, String, StringLens<IntTuple2<String>>> 
-            theTuple = createTheTuple(StringLens::of);
+    private static final IntTuple2Lens<IntTuple2<String>, String, StringLens<IntTuple2<String>>> theTuple = createTheTuple(StringLens::of);
     
     @Test
     public void testLensRead() {
-        val tuples = Arrays.asList(
-                new IntTuple2<>(1, "One"),
-                new IntTuple2<>(2, "Two"),
-                new IntTuple2<>(3, "Three")
-            );
-        assertEquals("[1, 2, 3]", tuples.stream()
-                            .map(theTuple._1())
-                            .collect(Collectors.toList()).toString());
+        val tuples = Arrays.asList(new IntTuple2<>(1, "One"), new IntTuple2<>(2, "Two"), new IntTuple2<>(3, "Three"));
+        assertEquals("[1, 2, 3]", tuples.stream().map(theTuple._1()).collect(Collectors.toList()).toString());
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,28 +26,17 @@ package functionalj.lens;
 import static functionalj.lens.Access.theList;
 import static functionalj.list.ImmutableFuncList.listOf;
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
-
 import lombok.val;
-
-
 
 public class LensTypeTest {
     
     @Test
     public void testLensCreator() {
-        val lists = listOf(
-                    listOf("ONE", "TWO", "THREE"),
-                    listOf("AE", "BEE", "SEE")
-                );
-
+        val lists = listOf(listOf("ONE", "TWO", "THREE"), listOf("AE", "BEE", "SEE"));
         assertEquals("[true, false]", "" + lists.map(theList.first().thatEquals("ONE")));
-        
         val theStrListLens = theList.of(LensTypes.STRING());
-        
-        assertEquals("[one, ae]", "" + lists.map(theStrListLens     .first().toLowerCase()));
+        assertEquals("[one, ae]", "" + lists.map(theStrListLens.first().toLowerCase()));
         assertEquals("[one, ae]", "" + lists.map(theList.of(LensTypes.STRING()).first().toLowerCase()));
     }
-    
 }

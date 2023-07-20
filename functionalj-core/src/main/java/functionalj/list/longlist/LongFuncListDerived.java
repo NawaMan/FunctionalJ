@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,54 +23,52 @@
 // ============================================================================
 package functionalj.list.longlist;
 
-
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.Supplier;
 import java.util.stream.LongStream;
-
 import functionalj.list.FuncList.Mode;
 import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
-
 public class LongFuncListDerived implements LongFuncList {
     
     private static final LongBinaryOperator zeroForEquals = (long i1, long i2) -> i1 == i2 ? 0 : 1;
-    private static final LongPredicate      notZero       = (long i)           -> i  != 0;
     
-    //-- Data --
+    private static final LongPredicate notZero = (long i) -> i != 0;
     
+    // -- Data --
     private final Object source;
+    
     private final Function<LongStream, LongStream> action;
     
-    //-- Constructors --
-    
+    // -- Constructors --
     LongFuncListDerived(AsLongFuncList source, Function<LongStream, LongStream> action) {
         this.source = Objects.requireNonNull(source);
         this.action = Objects.requireNonNull(action);
     }
+    
     LongFuncListDerived(Supplier<LongStream> streams) {
         this.action = stream -> stream;
         this.source = streams;
     }
+    
     LongFuncListDerived(Supplier<LongStream> streams, Function<LongStream, LongStream> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streams;
     }
     
-    //-- Source Stream --
-    
+    // -- Source Stream --
     @SuppressWarnings("unchecked")
     private LongStream getSourceStream() {
         if (source == null)
             return LongStream.empty();
         if (source instanceof LongFuncList)
-            return (LongStream)((LongFuncList)source).longStream();
+            return (LongStream) ((LongFuncList) source).longStream();
         if (source instanceof Supplier)
-            return ((Supplier<LongStream>)source).get();
+            return ((Supplier<LongStream>) source).get();
         throw new IllegalStateException();
     }
     
@@ -81,7 +79,9 @@ public class LongFuncListDerived implements LongFuncList {
         return LongStreamPlus.from(newStream);
     }
     
-    /** Check if this list is a lazy list. */
+    /**
+     * Check if this list is a lazy list.
+     */
     public Mode mode() {
         return Mode.lazy;
     }
@@ -109,25 +109,21 @@ public class LongFuncListDerived implements LongFuncList {
     
     @Override
     public int hashCode() {
-        return Long.hashCode(reduce(43, (hash, each) -> hash*43 + each));
+        return Long.hashCode(reduce(43, (hash, each) -> hash * 43 + each));
     }
     
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof AsLongFuncList))
             return false;
-        
-        val anotherList = (LongFuncList)o;
+        val anotherList = (LongFuncList) o;
         if (size() != anotherList.size())
             return false;
-        
-        return !LongFuncList.zipOf(this, anotherList.asLongFuncList(), zeroForEquals)
-                .anyMatch(notZero);
+        return !LongFuncList.zipOf(this, anotherList.asLongFuncList(), zeroForEquals).anyMatch(notZero);
     }
     
     @Override
     public String toString() {
         return asLongFuncList().toListString();
     }
-    
 }

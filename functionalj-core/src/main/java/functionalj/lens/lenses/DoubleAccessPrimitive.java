@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,5 +29,4 @@ public interface DoubleAccessPrimitive<HOST> extends DoubleAccess<HOST> {
     public default Double applyUnsafe(HOST host) throws Exception {
         return applyAsDouble(host);
     }
-    
 }

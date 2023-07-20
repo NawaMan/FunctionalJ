@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,7 +33,6 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToIntPlus;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
@@ -41,11 +40,15 @@ import lombok.val;
 
 public interface LongCollectorToIntPlus<ACCUMULATED> extends LongCollectorPlus<ACCUMULATED, Integer> {
     
-    public Supplier<ACCUMULATED>        supplier();
+    public Supplier<ACCUMULATED> supplier();
+    
     public ObjLongConsumer<ACCUMULATED> longAccumulator();
-    public BinaryOperator<ACCUMULATED>  combiner();
-    public ToIntFunction<ACCUMULATED>   finisherToInt();
-    public Set<Characteristics>         characteristics();
+    
+    public BinaryOperator<ACCUMULATED> combiner();
+    
+    public ToIntFunction<ACCUMULATED> finisherToInt();
+    
+    public Set<Characteristics> characteristics();
     
     public default Function<ACCUMULATED, Integer> finisher() {
         val finisher = finisherToInt();
@@ -54,8 +57,7 @@ public interface LongCollectorToIntPlus<ACCUMULATED> extends LongCollectorPlus<A
         };
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public default <SOURCE> CollectorToIntPlus<SOURCE, ACCUMULATED> of(ToLongFunction<SOURCE> mapper) {
         return new DerivedLongCollectorToIntPlus.FromObj<>(this, mapper);
     }

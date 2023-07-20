@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,20 +32,22 @@ import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorToBooleanPlus;
 import functionalj.stream.intstream.collect.IntCollectorToBooleanPlus;
 import functionalj.stream.longstream.collect.LongCollectorToBooleanPlus;
 import lombok.val;
 
-public interface CollectorToBooleanPlus<DATA, ACCUMULATED> 
-                    extends CollectorPlus<DATA, ACCUMULATED, Boolean> {
-        
-    public Supplier<ACCUMULATED>         supplier();
+public interface CollectorToBooleanPlus<DATA, ACCUMULATED> extends CollectorPlus<DATA, ACCUMULATED, Boolean> {
+    
+    public Supplier<ACCUMULATED> supplier();
+    
     public BiConsumer<ACCUMULATED, DATA> accumulator();
-    public BinaryOperator<ACCUMULATED>   combiner();
-    public Predicate<ACCUMULATED>        finisherToBoolean();
-    public Set<Characteristics>          characteristics();
+    
+    public BinaryOperator<ACCUMULATED> combiner();
+    
+    public Predicate<ACCUMULATED> finisherToBoolean();
+    
+    public Set<Characteristics> characteristics();
     
     public default Function<ACCUMULATED, Boolean> finisher() {
         val finisherToBoolean = finisherToBoolean();
@@ -54,8 +56,7 @@ public interface CollectorToBooleanPlus<DATA, ACCUMULATED>
         };
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public default <SOURCE> CollectorToBooleanPlus<SOURCE, ACCUMULATED> of(Function<SOURCE, DATA> mapper) {
         return new DerivedCollectorToBooleanPlus.FromObj<>(this, mapper);
     }

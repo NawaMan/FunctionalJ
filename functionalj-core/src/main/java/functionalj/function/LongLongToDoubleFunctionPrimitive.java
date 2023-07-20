@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.function;
 
-
 @FunctionalInterface
 public interface LongLongToDoubleFunctionPrimitive extends ToDoubleBiLongFunction<Long> {
     
@@ -34,8 +33,6 @@ public interface LongLongToDoubleFunctionPrimitive extends ToDoubleBiLongFunctio
     }
     
     public static double apply(ToDoubleBiLongFunction<Long> function, long value, long anotherValue) {
-        return (function instanceof LongLongToDoubleFunctionPrimitive)
-                ? ((LongLongToDoubleFunctionPrimitive)function).applyAsLongAndLong(value, anotherValue)
-                : function.applyAsDouble(value, anotherValue);
+        return (function instanceof LongLongToDoubleFunctionPrimitive) ? ((LongLongToDoubleFunctionPrimitive) function).applyAsLongAndLong(value, anotherValue) : function.applyAsDouble(value, anotherValue);
     }
 }

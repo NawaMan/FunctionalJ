@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,8 +31,7 @@ public interface DoubleAggregatorToBoolean extends DoubleToBooleanAccessPrimitiv
     
     public DoubleCollectedToBoolean<?> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl implements DoubleAggregatorToBoolean {
         
         private final DoubleCollectedToBoolean<?> collected;
@@ -56,5 +55,4 @@ public interface DoubleAggregatorToBoolean extends DoubleToBooleanAccessPrimitiv
             return applyDoubleToBoolean(input);
         }
     }
-    
 }

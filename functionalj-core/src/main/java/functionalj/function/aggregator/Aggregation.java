@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,18 +23,15 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
-
 import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
-
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.collect.CollectorToDoublePlus;
 import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.collect.CollectorToLongPlus;
 import lombok.val;
-
 
 public abstract class Aggregation<SOURCE, TARGET> {
     
@@ -66,18 +63,15 @@ public abstract class Aggregation<SOURCE, TARGET> {
         return AggregationToDouble.from(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract CollectorPlus<SOURCE, ?, TARGET> collectorPlus();
-    
     
     public Aggregator<SOURCE, TARGET> newAggregator() {
         val collector = collectorPlus();
         return new Aggregator.Impl<>(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> Aggregation<INPUT, TARGET> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorPlus().of(mapper);
         return new Aggregation.Impl<>(newCollector);
@@ -98,8 +92,7 @@ public abstract class Aggregation<SOURCE, TARGET> {
         return new DoubleAggregation.Impl<>(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<SRC, TRG> extends Aggregation<SRC, TRG> {
         
         private final CollectorPlus<SRC, ?, TRG> collector;
@@ -112,7 +105,5 @@ public abstract class Aggregation<SOURCE, TARGET> {
         public CollectorPlus<SRC, ?, TRG> collectorPlus() {
             return collector;
         }
-        
     }
-    
 }

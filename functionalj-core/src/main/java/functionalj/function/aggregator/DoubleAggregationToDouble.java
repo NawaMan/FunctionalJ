@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,11 +28,9 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;
 import lombok.val;
-
 
 public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double> {
     
@@ -40,10 +38,8 @@ public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double
         return new DoubleAggregationToDouble.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract DoubleCollectorToDoublePlus<?> doubleCollectorToDoublePlus();
-    
     
     @Override
     public DoubleCollectorPlus<?, Double> doubleCollectorPlus() {
@@ -55,8 +51,7 @@ public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double
         return new DoubleAggregatorToDouble.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToDouble<INPUT> of(ToDoubleFunction<INPUT> mapper) {
         val newCollector = doubleCollectorToDoublePlus().of(mapper);
         return new AggregationToDouble.Impl<INPUT>(newCollector);
@@ -74,9 +69,8 @@ public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double
     
     public DoubleAggregation<Double> ofDouble(DoubleFunction<Double> mapper) {
         if (mapper instanceof DoubleUnaryOperator) {
-            return ofDoubleToDouble((DoubleUnaryOperator)mapper);
+            return ofDoubleToDouble((DoubleUnaryOperator) mapper);
         }
-        
         val newCollector = doubleCollectorToDoublePlus().of(mapper);
         return new DoubleAggregation.Impl<>(newCollector);
     }
@@ -88,8 +82,7 @@ public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double
         return new DoubleAggregationToDouble.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends DoubleAggregationToDouble {
         
         private final DoubleCollectorToDoublePlus<?> collector;
@@ -102,7 +95,5 @@ public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double
         public DoubleCollectorToDoublePlus<?> doubleCollectorToDoublePlus() {
             return collector;
         }
-        
     }
-    
 }

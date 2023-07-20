@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,9 @@ import java.util.function.DoubleToLongFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
 import lombok.val;
-
 
 public abstract class LongAggregationToInt extends LongAggregation<Integer> {
     
@@ -39,10 +37,8 @@ public abstract class LongAggregationToInt extends LongAggregation<Integer> {
         return new LongAggregationToInt.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract LongCollectorToIntPlus<?> longCollectorToIntPlus();
-    
     
     @Override
     public LongCollectorPlus<?, Integer> longCollectorPlus() {
@@ -54,8 +50,7 @@ public abstract class LongAggregationToInt extends LongAggregation<Integer> {
         return new LongAggregatorToInt.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToInt<INPUT> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorToIntPlus().of(mapper);
         return new AggregationToInt.Impl<>(newCollector);
@@ -76,8 +71,7 @@ public abstract class LongAggregationToInt extends LongAggregation<Integer> {
         return new DoubleAggregationToInt.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends LongAggregationToInt {
         
         private final LongCollectorToIntPlus<?> collector;
@@ -90,7 +84,5 @@ public abstract class LongAggregationToInt extends LongAggregation<Integer> {
         public LongCollectorToIntPlus<?> longCollectorToIntPlus() {
             return collector;
         }
-        
     }
-    
 }

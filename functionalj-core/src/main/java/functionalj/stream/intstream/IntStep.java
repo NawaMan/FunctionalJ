@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,27 +27,28 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
-
 import functionalj.function.Func1;
 import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 
-
 public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntFuncList {
     
     public static class Size {
+        
         public final int size;
+        
         Size(int size) {
             if (size <= 0) {
                 throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
             }
-            
             this.size = size;
         }
     }
     
     public static class From {
+        
         public final int from;
+        
         From(int from) {
             this.from = from;
         }
@@ -59,14 +60,16 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     
     public static class IntStepToStream implements IntStreamPlus {
         
-        private final boolean       distancePositive;
-        private final int           end;
+        private final boolean distancePositive;
+        
+        private final int end;
+        
         private final IntStreamPlus intStreamPlus;
         
         IntStepToStream(IntStreamPlus intStreamPlus, int end, boolean distancePositive) {
             this.distancePositive = distancePositive;
-            this.end              = end;
-            this.intStreamPlus    = intStreamPlus;
+            this.end = end;
+            this.intStreamPlus = intStreamPlus;
         }
         
         public IntStreamPlus inclusive() {
@@ -140,13 +143,13 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     }
     
     private final int size;
+    
     private final int start;
     
     private IntStep(int size, int start) {
         if (size <= 0) {
             throw new IllegalArgumentException("Step size cannot be zero or negative: " + size);
         }
-        
         this.size = size;
         this.start = start;
     }
@@ -156,13 +159,10 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     }
     
     public IntStepToStream to(int end) {
-        val sizePositive     = size > 0;
+        val sizePositive = size > 0;
         val distancePositive = (end - start) > 0;
-        val sameDirection    = sizePositive == distancePositive;
-        val intStreamPlus
-                = sameDirection 
-                ? IntStreamPlus.wholeNumbers().map(i ->  i * size + start)
-                : IntStreamPlus.wholeNumbers().map(i -> -i * size + start);
+        val sameDirection = sizePositive == distancePositive;
+        val intStreamPlus = sameDirection ? IntStreamPlus.wholeNumbers().map(i -> i * size + start) : IntStreamPlus.wholeNumbers().map(i -> -i * size + start);
         return new IntStepToStream(intStreamPlus, end, distancePositive);
     }
     
@@ -177,7 +177,7 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     
     @Override
     public int applyAsInt(int operand) {
-        return start + (int)(Math.round(1.0 * (operand - start) / size) * size);
+        return start + (int) (Math.round(1.0 * (operand - start) / size) * size);
     }
     
     @Override
@@ -199,20 +199,19 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         return IntFuncList.from(() -> intStreamPlus());
     }
     
-    /** Please don't call. This will blow up. */
+    /**
+     * Please don't call. This will blow up.
+     */
     @Override
     public IntFuncList toEager() {
-        throw new UnsupportedOperationException(
-                "Infinite double step cannot be made an eager list: " 
-                    + intStreamPlus().limit(5).join(", ") + "...");
+        throw new UnsupportedOperationException("Infinite double step cannot be made an eager list: " + intStreamPlus().limit(5).join(", ") + "...");
     }
     
-    /** Please don't call. This will blow up. */
+    /**
+     * Please don't call. This will blow up.
+     */
     @Override
     public IntFuncList toCache() {
-        throw new UnsupportedOperationException(
-                "Infinite double step cannot be made a cache list: " 
-                    + intStreamPlus().limit(5).join(", ") + "...");
+        throw new UnsupportedOperationException("Infinite double step cannot be made a cache list: " + intStreamPlus().limit(5).join(", ") + "...");
     }
-    
 }

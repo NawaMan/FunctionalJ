@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,8 +31,7 @@ public interface LongAggregatorToInt extends LongToIntegerAccessPrimitive, LongA
     
     public LongCollectedToInt<?> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl implements LongAggregatorToInt {
         
         private final LongCollectedToInt<?> collected;
@@ -51,5 +50,4 @@ public interface LongAggregatorToInt extends LongToIntegerAccessPrimitive, LongA
             return collected;
         }
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,7 +32,8 @@ public class DoubleTuple2<T2> implements Tuple2<Double, T2>, Map.Entry<Double, T
     }
     
     public final double _1;
-    public final T2  _2;
+    
+    public final T2 _2;
     
     public DoubleTuple2(double _1, T2 T2) {
         this._1 = _1;
@@ -42,9 +43,11 @@ public class DoubleTuple2<T2> implements Tuple2<Double, T2>, Map.Entry<Double, T
     public double _double() {
         return _1;
     }
+    
     public Double _1() {
         return _1;
     }
+    
     public T2 _2() {
         return _2;
     }
@@ -68,13 +71,14 @@ public class DoubleTuple2<T2> implements Tuple2<Double, T2>, Map.Entry<Double, T
     public String toString() {
         return Tuple.toString(this);
     }
+    
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
+    
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);
     }
-    
 }

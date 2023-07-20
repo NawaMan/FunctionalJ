@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,21 +32,21 @@ public class ValidationException extends RuntimeException {
     public static <DATA> ValidationException from(boolean checkResult, String template, DATA data) {
         if (checkResult)
             return null;
-        
         return ValidationException.from(template, data);
     }
+    
     public static <DATA> ValidationException from(boolean checkResult, DATA data) {
         if (checkResult)
             return null;
-        
         return ValidationException.from(((data == null) ? "Invalid value: " : data.getClass().getSimpleName() + ": ") + "%s", data);
     }
+    
     public static <DATA> ValidationException from(String template, DATA data) {
         if (template == null)
             return null;
-        
         return new ValidationException(String.format(template, data));
     }
+    
     public static <DATA> ValidationException from(ValidationException validationException) {
         return validationException;
     }
@@ -56,21 +56,23 @@ public class ValidationException extends RuntimeException {
         if (exception != null)
             throw exception;
     }
+    
     public static <DATA> void ensure(boolean checkResult, String template, DATA data) {
         val exception = ValidationException.from(checkResult, template, data);
         if (exception != null)
             throw exception;
     }
+    
     public static <DATA> void ensure(String template, DATA data) {
         val exception = ValidationException.from(template, data);
         if (exception != null)
             throw exception;
     }
+    
     public static <DATA> void ensure(ValidationException validationException, DATA data) {
         if (validationException != null)
             throw validationException;
     }
-    
     
     public ValidationException(String message) {
         super(message);
@@ -100,5 +102,4 @@ public class ValidationException extends RuntimeException {
             return (ValidationException) e;
         return new ValidationException(e);
     }
-    
 }

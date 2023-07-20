@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,13 +24,10 @@
 package functionalj.lens.core;
 
 import java.util.function.Function;
-
 import functionalj.lens.lenses.AnyAccess;
 import lombok.val;
 
-
-public interface AccessParameterized<HOST, TYPE, PARAMETER, PARAMETERACCESS extends AnyAccess<HOST, PARAMETER>>
-                extends AnyAccess<HOST, TYPE> {
+public interface AccessParameterized<HOST, TYPE, PARAMETER, PARAMETERACCESS extends AnyAccess<HOST, PARAMETER>> extends AnyAccess<HOST, TYPE> {
     
     public TYPE applyUnsafe(HOST host) throws Exception;
     
@@ -38,10 +35,9 @@ public interface AccessParameterized<HOST, TYPE, PARAMETER, PARAMETERACCESS exte
     
     public default PARAMETERACCESS createSubAccess(Function<TYPE, PARAMETER> accessToParameter) {
         return createSubAccessFromHost(host -> {
-            val list  = apply(host);
+            val list = apply(host);
             val value = accessToParameter.apply(list);
             return value;
         });
     }
-    
 }

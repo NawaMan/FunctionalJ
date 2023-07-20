@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,14 +30,16 @@ import java.util.function.DoubleUnaryOperator;
 
 public class IntDoubleTuple implements Tuple2<Integer, Double>, Map.Entry<Integer, Double> {
     
-    public static  IntDoubleTuple of(int i1, double i2) {
+    public static IntDoubleTuple of(int i1, double i2) {
         return new IntDoubleTuple(i1, i2);
     }
-    public static  IntDoubleTuple intDoubleTuple(int i1, double i2) {
+    
+    public static IntDoubleTuple intDoubleTuple(int i1, double i2) {
         return new IntDoubleTuple(i1, i2);
     }
     
     public final int _1;
+    
     public final double _2;
     
     public IntDoubleTuple(int _1, double _2) {
@@ -48,6 +50,7 @@ public class IntDoubleTuple implements Tuple2<Integer, Double>, Map.Entry<Intege
     public int _int1() {
         return _1;
     }
+    
     public double _double2() {
         return _2;
     }
@@ -55,6 +58,7 @@ public class IntDoubleTuple implements Tuple2<Integer, Double>, Map.Entry<Intege
     public Integer _1() {
         return _1;
     }
+    
     public Double _2() {
         return _2;
     }
@@ -98,13 +102,14 @@ public class IntDoubleTuple implements Tuple2<Integer, Double>, Map.Entry<Intege
     public String toString() {
         return Tuple.toString(this);
     }
+    
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
+    
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);
     }
-    
 }

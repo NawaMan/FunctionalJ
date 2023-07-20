@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,9 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToLongPlus;
 import lombok.val;
-
 
 public abstract class DoubleAggregationToLong extends DoubleAggregation<Long> {
     
@@ -39,10 +37,8 @@ public abstract class DoubleAggregationToLong extends DoubleAggregation<Long> {
         return new DoubleAggregationToLong.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract DoubleCollectorToLongPlus<?> doubleCollectorToLongPlus();
-    
     
     @Override
     public DoubleCollectorPlus<?, Long> doubleCollectorPlus() {
@@ -54,8 +50,7 @@ public abstract class DoubleAggregationToLong extends DoubleAggregation<Long> {
         return new DoubleAggregatorToLong.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToLong<INPUT> of(ToDoubleFunction<INPUT> mapper) {
         val newCollector = doubleCollectorToLongPlus().of(mapper);
         return new AggregationToLong.Impl<>(newCollector);
@@ -76,8 +71,7 @@ public abstract class DoubleAggregationToLong extends DoubleAggregation<Long> {
         return new DoubleAggregationToLong.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends DoubleAggregationToLong {
         
         private final DoubleCollectorToLongPlus<?> collector;
@@ -90,7 +84,5 @@ public abstract class DoubleAggregationToLong extends DoubleAggregation<Long> {
         public DoubleCollectorToLongPlus<?> doubleCollectorToLongPlus() {
             return collector;
         }
-        
     }
-    
 }

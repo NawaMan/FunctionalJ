@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,28 +24,28 @@
 package functionalj.function;
 
 import static java.util.Objects.requireNonNull;
-
 import java.util.function.Consumer;
-
 import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import lombok.val;
 
-
 public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     
     public static <D> FuncUnit1<D> doNothing() {
-        return (item) -> {};
-        
+        return (item) -> {
+        };
     }
+    
     public static <INPUT> FuncUnit1<INPUT> of(FuncUnit1<INPUT> consumer) {
         return consumer;
     }
+    
     public static <INPUT> FuncUnit1<INPUT> funcUnit1(FuncUnit1<INPUT> consumer) {
         return consumer;
     }
+    
     public static <INPUT> FuncUnit1<INPUT> from(Consumer<INPUT> consumer) {
         return consumer::accept;
     }
@@ -76,6 +76,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
             after.runUnsafe();
         };
     }
+    
     public default FuncUnit1<INPUT> then(FuncUnit1<? super INPUT> after) {
         requireNonNull(after);
         return input -> {
@@ -87,6 +88,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     public default <T> Func1<INPUT, T> thenReturnNull() {
         return thenReturn(null);
     }
+    
     public default <T> Func1<INPUT, T> thenReturn(T value) {
         return input -> {
             acceptUnsafe(input);

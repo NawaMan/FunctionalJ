@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,22 +24,22 @@
 package functionalj.list.longlist;
 
 import static functionalj.list.longlist.LongFuncList.deriveFrom;
-
 import java.util.Comparator;
 import java.util.function.LongFunction;
 
 public interface LongFuncListWithSort extends AsLongFuncList {
     
-    /** Sort the values by the mapped value. */
+    /**
+     * Sort the values by the mapped value.
+     */
     public default <T extends Comparable<? super T>> LongFuncList sortedBy(LongFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.sortedBy(mapper));
     }
     
-    /** Sort the values by the mapped value using the comparator. */
-    public default <T> LongFuncList sortedBy(
-            LongFunction<T> mapper,
-            Comparator<T>   comparator) {
+    /**
+     * Sort the values by the mapped value using the comparator.
+     */
+    public default <T> LongFuncList sortedBy(LongFunction<T> mapper, Comparator<T> comparator) {
         return deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
     }
-    
 }

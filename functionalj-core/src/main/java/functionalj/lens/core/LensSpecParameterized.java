@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,16 +24,14 @@
 package functionalj.lens.core;
 
 import java.util.function.Function;
-
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
-
-public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<HOST, SUB>>
-            extends AccessParameterized<HOST, TYPE, SUB, SUBLENS> {
+public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<HOST, SUB>> extends AccessParameterized<HOST, TYPE, SUB, SUBLENS> {
     
     public LensSpec<HOST, TYPE> getSpec();
-    public SUBLENS              createSubLens(String subName, LensSpec<HOST, SUB> subSpec);
+    
+    public SUBLENS createSubLens(String subName, LensSpec<HOST, SUB> subSpec);
     
     @Override
     public default TYPE applyUnsafe(HOST host) throws Exception {

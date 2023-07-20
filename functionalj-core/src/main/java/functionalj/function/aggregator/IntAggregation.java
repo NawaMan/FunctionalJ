@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,12 +27,9 @@ import java.util.function.DoubleToIntFunction;
 import java.util.function.IntFunction;
 import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
-
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import lombok.val;
-
-
 
 public abstract class IntAggregation<TARGET> extends Aggregation<Integer, TARGET> {
     
@@ -40,8 +37,7 @@ public abstract class IntAggregation<TARGET> extends Aggregation<Integer, TARGET
         return new IntAggregation.Impl<T>(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract IntCollectorPlus<?, TARGET> intCollectorPlus();
     
     @Override
@@ -54,8 +50,7 @@ public abstract class IntAggregation<TARGET> extends Aggregation<Integer, TARGET
         return new IntAggregator.Impl<>(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> Aggregation<INPUT, TARGET> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorPlus().of(mapper);
         return new Aggregation.Impl<INPUT, TARGET>(newCollector);
@@ -76,8 +71,7 @@ public abstract class IntAggregation<TARGET> extends Aggregation<Integer, TARGET
         return new DoubleAggregation.Impl<TARGET>(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<TRG> extends IntAggregation<TRG> {
         
         private final IntCollectorPlus<?, TRG> collector;
@@ -90,7 +84,5 @@ public abstract class IntAggregation<TARGET> extends Aggregation<Integer, TARGET
         public IntCollectorPlus<?, TRG> intCollectorPlus() {
             return collector;
         }
-        
     }
-    
 }

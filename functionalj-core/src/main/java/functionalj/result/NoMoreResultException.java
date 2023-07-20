@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,14 +30,16 @@ public class NoMoreResultException extends ResultNotAvailableException {
     public NoMoreResultException() {
         this(null, null);
     }
+    
     public NoMoreResultException(String message) {
         this(message, null);
     }
+    
     public NoMoreResultException(Throwable cause) {
         this(null, cause);
     }
+    
     public NoMoreResultException(String message, Throwable cause) {
         super(message, cause);
     }
-    
 }

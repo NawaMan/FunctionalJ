@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,12 +25,11 @@ package functionalj.list.intlist;
 
 import java.util.Objects;
 import java.util.OptionalInt;
-
 import functionalj.stream.intstream.GrowOnlyIntArray;
 import functionalj.stream.intstream.IntStreamPlus;
 
 public class IntFuncListBuilder {
-
+    
     private final GrowOnlyIntArray list;
     
     // This constructor must not be public or protected.
@@ -42,7 +41,7 @@ public class IntFuncListBuilder {
         list = new GrowOnlyIntArray();
     }
     
-    public IntFuncListBuilder(int ... values) {
+    public IntFuncListBuilder(int... values) {
         list = new GrowOnlyIntArray(values);
     }
     
@@ -63,6 +62,7 @@ public class IntFuncListBuilder {
     public int size() {
         return list.length();
     }
+    
     public boolean isEmpty() {
         return size() == 0;
     }
@@ -78,7 +78,6 @@ public class IntFuncListBuilder {
     public OptionalInt at(int i) {
         if (i < 0 || i >= list.length())
             return OptionalInt.empty();
-        
         return OptionalInt.of(list.get(i));
     }
     
@@ -93,5 +92,4 @@ public class IntFuncListBuilder {
     public boolean equals(IntFuncListBuilder array) {
         return Objects.equals(list, array.list);
     }
-    
 }

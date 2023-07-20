@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,11 +35,9 @@ public interface ObjIntBiFunction<DATA, TARGET> extends Func2<DATA, Integer, TAR
     
     public static <D, T> T apply(BiFunction<D, Integer, T> function, D input1, int input2) {
         if (function instanceof ObjIntBiFunction) {
-            return ((ObjIntBiFunction<D, T>)function).applyAsInt(input1, input2);
+            return ((ObjIntBiFunction<D, T>) function).applyAsInt(input1, input2);
         } else {
             return function.apply(input1, input2);
         }
     }
-    
 }
-

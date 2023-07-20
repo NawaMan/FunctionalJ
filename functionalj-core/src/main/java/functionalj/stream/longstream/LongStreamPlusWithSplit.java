@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,115 +25,76 @@ package functionalj.stream.longstream;
 
 import java.util.function.Function;
 import java.util.function.LongPredicate;
-
 import functionalj.list.longlist.LongFuncList;
 import functionalj.map.FuncMap;
 import functionalj.tuple.Tuple2;
 
-public interface LongStreamPlusWithSplit
-            extends LongStreamPlusWithMapToTuple {
+public interface LongStreamPlusWithSplit extends LongStreamPlusWithMapToTuple {
     
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
-    
-    //== split ==
-    
-    // TODO - Try to make it lazy 
+    // == split ==
+    // TODO - Try to make it lazy
     // It is not easy as it seems as there has to be buffer for one branch when go through with another branch.
     // We may need a dynamic collection of all branch as we goes along.
-    
     /**
      * Split the stream using the predicate.
      * The result is a tuple of streams where the first stream is for those element that the predicate returns true.
-     * 
+     *
      * The elements in this stream is guaranteed to be in one of the result stream.
      */
-    public default Tuple2<LongStreamPlus, LongStreamPlus> split(
-            LongPredicate predicate) {
+    public default Tuple2<LongStreamPlus, LongStreamPlus> split(LongPredicate predicate) {
         Function<LongFuncList, LongStreamPlus> toStreamPlus = LongFuncList::longStreamPlus;
-        return LongFuncList.from(()->longStreamPlus())
-                .split(predicate)
-                .map(toStreamPlus, toStreamPlus);
+        return LongFuncList.from(() -> longStreamPlus()).split(predicate).map(toStreamPlus, toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with that associated key.
      */
-    public default <KEY> FuncMap<KEY, LongStreamPlus> split(
-            KEY key1, LongPredicate predicate,
-            KEY key2) {
+    public default <KEY> FuncMap<KEY, LongStreamPlus> split(KEY key1, LongPredicate predicate, KEY key2) {
         Function<LongFuncList, LongStreamPlus> toStreamPlus = LongFuncList::longStreamPlus;
-        return LongFuncList.from(()->longStreamPlus())
-                .split(key1, predicate, key2)
-                .mapValue(toStreamPlus);
+        return LongFuncList.from(() -> longStreamPlus()).split(key1, predicate, key2).mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with that associated key.
      */
-    public default <KEY> FuncMap<KEY, LongStreamPlus> split(
-            KEY key1, LongPredicate predicate1,
-            KEY key2, LongPredicate predicate2,
-            KEY key3) {
+    public default <KEY> FuncMap<KEY, LongStreamPlus> split(KEY key1, LongPredicate predicate1, KEY key2, LongPredicate predicate2, KEY key3) {
         Function<LongFuncList, LongStreamPlus> toStreamPlus = LongFuncList::longStreamPlus;
-        return LongFuncList.from(()->longStreamPlus())
-                .split(key1, predicate1, key2, predicate2, key3)
-                .mapValue(toStreamPlus);
+        return LongFuncList.from(() -> longStreamPlus()).split(key1, predicate1, key2, predicate2, key3).mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with that associated key.
      */
-    public default <KEY> FuncMap<KEY, LongStreamPlus> split(
-            KEY key1, LongPredicate predicate1,
-            KEY key2, LongPredicate predicate2,
-            KEY key3, LongPredicate predicate3,
-            KEY key4) {
+    public default <KEY> FuncMap<KEY, LongStreamPlus> split(KEY key1, LongPredicate predicate1, KEY key2, LongPredicate predicate2, KEY key3, LongPredicate predicate3, KEY key4) {
         Function<LongFuncList, LongStreamPlus> toStreamPlus = LongFuncList::longStreamPlus;
-        return LongFuncList.from(()->longStreamPlus())
-                .split(key1, predicate1, key2, predicate2, key3, predicate3, key4)
-                .mapValue(toStreamPlus);
+        return LongFuncList.from(() -> longStreamPlus()).split(key1, predicate1, key2, predicate2, key3, predicate3, key4).mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with that associated key.
      */
-    public default <KEY> FuncMap<KEY, LongStreamPlus> split(
-            KEY key1, LongPredicate predicate1,
-            KEY key2, LongPredicate predicate2,
-            KEY key3, LongPredicate predicate3,
-            KEY key4, LongPredicate predicate4,
-            KEY key5) {
+    public default <KEY> FuncMap<KEY, LongStreamPlus> split(KEY key1, LongPredicate predicate1, KEY key2, LongPredicate predicate2, KEY key3, LongPredicate predicate3, KEY key4, LongPredicate predicate4, KEY key5) {
         Function<LongFuncList, LongStreamPlus> toStreamPlus = LongFuncList::longStreamPlus;
-        return LongFuncList.from(()->longStreamPlus())
-                .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5)
-                .mapValue(toStreamPlus);
+        return LongFuncList.from(() -> longStreamPlus()).split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5).mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with that associated key.
      */
-    public default <KEY> FuncMap<KEY, LongStreamPlus> split(
-            KEY key1, LongPredicate predicate1,
-            KEY key2, LongPredicate predicate2,
-            KEY key3, LongPredicate predicate3,
-            KEY key4, LongPredicate predicate4,
-            KEY key5, LongPredicate predicate5,
-            KEY key6) {
+    public default <KEY> FuncMap<KEY, LongStreamPlus> split(KEY key1, LongPredicate predicate1, KEY key2, LongPredicate predicate2, KEY key3, LongPredicate predicate3, KEY key4, LongPredicate predicate4, KEY key5, LongPredicate predicate5, KEY key6) {
         Function<LongFuncList, LongStreamPlus> toStreamPlus = LongFuncList::longStreamPlus;
-        return LongFuncList.from(()->longStreamPlus())
-                .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6)
-                .mapValue(toStreamPlus);
+        return LongFuncList.from(() -> longStreamPlus()).split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6).mapValue(toStreamPlus);
     }
-    
 }

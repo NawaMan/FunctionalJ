@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,16 +30,17 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation marks a method to create a rule type.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Rule {
     
-    /** The error message used in the case of boolean validation */
+    /** @return  the error message used in the case of boolean validation or <code>null</code> if no error. */
     public String value() default "";
     
+    /** @return  the name of the super class that is also a {@link Rule}. */
     public String extendRule() default "";
     
 }

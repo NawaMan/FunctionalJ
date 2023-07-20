@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,56 +24,43 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.DoubleFuncList.deriveToObj;
-
 import java.util.function.DoubleFunction;
-
 import functionalj.list.FuncList;
 
 public interface DoubleFuncListWithMapFirst extends AsDoubleFuncList {
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            DoubleFunction<T> mapper1,
-            DoubleFunction<T> mapper2) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(DoubleFunction<T> mapper1, DoubleFunction<T> mapper2) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            DoubleFunction<T> mapper1,
-            DoubleFunction<T> mapper2,
-            DoubleFunction<T> mapper3) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(DoubleFunction<T> mapper1, DoubleFunction<T> mapper2, DoubleFunction<T> mapper3) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            DoubleFunction<T> mapper1,
-            DoubleFunction<T> mapper2,
-            DoubleFunction<T> mapper3,
-            DoubleFunction<T> mapper4) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(DoubleFunction<T> mapper1, DoubleFunction<T> mapper2, DoubleFunction<T> mapper3, DoubleFunction<T> mapper4) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            DoubleFunction<T> mapper1,
-            DoubleFunction<T> mapper2,
-            DoubleFunction<T> mapper3,
-            DoubleFunction<T> mapper4,
-            DoubleFunction<T> mapper5) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(DoubleFunction<T> mapper1, DoubleFunction<T> mapper2, DoubleFunction<T> mapper3, DoubleFunction<T> mapper4, DoubleFunction<T> mapper5) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            DoubleFunction<T> mapper1,
-            DoubleFunction<T> mapper2,
-            DoubleFunction<T> mapper3,
-            DoubleFunction<T> mapper4,
-            DoubleFunction<T> mapper5,
-            DoubleFunction<T> mapper6) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(DoubleFunction<T> mapper1, DoubleFunction<T> mapper2, DoubleFunction<T> mapper3, DoubleFunction<T> mapper4, DoubleFunction<T> mapper5, DoubleFunction<T> mapper6) {
         return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
     }
-    
 }

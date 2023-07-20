@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.types.choice.generator;
 
 import static java.util.stream.Collectors.joining;
-
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -48,5 +47,4 @@ public interface Lines {
     public static String string(Lines lines) {
         return lines.lines().stream().collect(joining("\n"));
     }
-    
 }

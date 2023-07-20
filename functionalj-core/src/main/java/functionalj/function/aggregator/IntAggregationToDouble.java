@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,9 @@ import java.util.function.DoubleToIntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
-
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToDoublePlus;
 import lombok.val;
-
 
 public abstract class IntAggregationToDouble extends IntAggregation<Double> {
     
@@ -39,10 +37,8 @@ public abstract class IntAggregationToDouble extends IntAggregation<Double> {
         return new IntAggregationToDouble.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract IntCollectorToDoublePlus<?> intCollectorToDoublePlus();
-    
     
     @Override
     public IntCollectorPlus<?, Double> intCollectorPlus() {
@@ -54,8 +50,7 @@ public abstract class IntAggregationToDouble extends IntAggregation<Double> {
         return new IntAggregatorToDouble.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToDouble<INPUT> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorToDoublePlus().of(mapper);
         return new AggregationToDouble.Impl<INPUT>(newCollector);
@@ -76,8 +71,7 @@ public abstract class IntAggregationToDouble extends IntAggregation<Double> {
         return new DoubleAggregationToDouble.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends IntAggregationToDouble {
         
         private final IntCollectorToDoublePlus<?> collector;
@@ -90,7 +84,5 @@ public abstract class IntAggregationToDouble extends IntAggregation<Double> {
         public IntCollectorToDoublePlus<?> intCollectorToDoublePlus() {
             return collector;
         }
-        
     }
-    
 }

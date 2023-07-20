@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,11 +25,9 @@ package functionalj.ref;
 
 import java.util.Random;
 import java.util.function.Supplier;
-
 import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
-
 
 public abstract class RefOf<DATA> extends Ref<DATA> {
     
@@ -40,6 +38,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
     public RefOf(Class<DATA> dataClass) {
         super(dataClass, null);
     }
+    
     RefOf(Class<DATA> dataClass, Supplier<DATA> elseSupplier) {
         super(dataClass, elseSupplier);
     }
@@ -55,26 +54,21 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
             return false;
         if (!(another instanceof RefOf))
             return false;
-        
         @SuppressWarnings("unchecked")
-        val anotherRef = (RefOf<DATA>)another;
+        val anotherRef = (RefOf<DATA>) another;
         if (!anotherRef.getDataType().equals(this.getDataType()))
             return false;
-        
         return this.hashCode() == another.hashCode();
     }
     
-    //== Sub classes ==
-    
+    // == Sub classes ==
     public static class FromResult<DATA> extends RefOf<DATA> {
         
         private final Result<DATA> result;
         
         FromResult(Class<DATA> dataClass, Result<DATA> result, Supplier<DATA> elseSupplier) {
             super(dataClass, elseSupplier);
-            this.result = (result != null)
-                    ? result
-                    : Result.ofNull();
+            this.result = (result != null) ? result : Result.ofNull();
         }
         
         @Override
@@ -90,16 +84,14 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
     public static class FromSupplier<DATA> extends RefOf<DATA> {
         
         @SuppressWarnings("rawtypes")
-        private static final Func0 notExist = ()->Result.ofNotExist();
+        private static final Func0 notExist = () -> Result.ofNotExist();
         
         private final Func0<DATA> supplier;
         
         @SuppressWarnings("unchecked")
         FromSupplier(Class<DATA> dataClass, Func0<DATA> supplier, Supplier<DATA> elseSupplier) {
             super(dataClass, elseSupplier);
-            this.supplier = (supplier != null)
-                    ? supplier
-                    : notExist;
+            this.supplier = (supplier != null) ? supplier : notExist;
         }
         
         @Override
@@ -111,7 +103,6 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
             return new RefOf.FromSupplier<>(getDataType(), supplier, whenAbsent);
         }
-        
     }
     
     public static class FromRef<DATA> extends RefOf<DATA> {
@@ -133,5 +124,4 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
             return new RefOf.FromRef<>(getDataType(), anotherRef, whenAbsent);
         }
     }
-    
 }

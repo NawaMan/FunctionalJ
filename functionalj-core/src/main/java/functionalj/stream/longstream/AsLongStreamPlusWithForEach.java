@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,18 +25,15 @@ package functionalj.stream.longstream;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.LongConsumer;
-
 import functionalj.function.IntLongConsumer;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
 import lombok.val;
 
-
 public interface AsLongStreamPlusWithForEach {
     
     public LongStreamPlus longStreamPlus();
-    
     
     @Eager
     @Terminal
@@ -45,50 +42,50 @@ public interface AsLongStreamPlusWithForEach {
         longStreamPlus().forEachOrdered(action);
     }
     
-    /** For each with the index. */
+    /**
+     * For each with the index.
+     */
     @Eager
     @Terminal
     public default void forEachWithIndex(IntLongConsumer action) {
         val streamPlus = longStreamPlus();
-        val index      = new AtomicInteger();
-        streamPlus
-        .forEach(each -> {
+        val index = new AtomicInteger();
+        streamPlus.forEach(each -> {
             val currentIndex = index.getAndIncrement();
             action.accept(currentIndex, each);
         });
     }
     
-    /** Populate the array with the population in the stream from 0 to length or until run out of elements. */
+    /**
+     * Populate the array with the population in the stream from 0 to length or until run out of elements.
+     */
     @Terminal
     public default void populateArray(long[] array) {
         val streamPlus = longStreamPlus();
-        streamPlus
-        .limit           (array.length)
-        .forEachWithIndex((index, element) -> {
+        streamPlus.limit(array.length).forEachWithIndex((index, element) -> {
             array[index] = element;
         });
     }
     
-    /** Populate the array with the population in the stream from offset to length or until run out of elements. */
+    /**
+     * Populate the array with the population in the stream from offset to length or until run out of elements.
+     */
     @Terminal
     public default void populateArray(long[] array, int offset) {
         val streamPlus = longStreamPlus();
-        streamPlus
-        .limit           (array.length - offset)
-        .forEachWithIndex((index, element) -> {
+        streamPlus.limit(array.length - offset).forEachWithIndex((index, element) -> {
             array[offset + index] = element;
         });
     }
     
-    /** Populate the array with the population in the stream from offset to length or until run out of elements. */
+    /**
+     * Populate the array with the population in the stream from offset to length or until run out of elements.
+     */
     @Terminal
     public default void populateArray(long[] array, int offset, int length) {
         val streamPlus = longStreamPlus();
-        streamPlus
-        .limit           (Math.min(length, array.length - offset))
-        .forEachWithIndex((index, element) -> {
+        streamPlus.limit(Math.min(length, array.length - offset)).forEachWithIndex((index, element) -> {
             array[offset + index] = element;
         });
     }
-    
 }

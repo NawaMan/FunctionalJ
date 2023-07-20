@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -41,12 +41,11 @@ public interface IntBiConsumer extends IntObjBiConsumer<Integer> {
     @SuppressWarnings("unchecked")
     public static void accept(BiConsumer<? super Integer, ? super Integer> consumer, int input1, int input2) {
         if (consumer instanceof IntBiConsumer) {
-            ((IntBiConsumer)consumer).acceptAsIntInt(input1, input2);
+            ((IntBiConsumer) consumer).acceptAsIntInt(input1, input2);
         } else if (consumer instanceof IntObjBiConsumer) {
-            ((IntObjBiConsumer<Integer>)consumer).acceptAsInt(input1, input2);
+            ((IntObjBiConsumer<Integer>) consumer).acceptAsInt(input1, input2);
         } else {
             consumer.accept(input1, input2);
         }
     }
-    
 }

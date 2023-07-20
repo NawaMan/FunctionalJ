@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,7 +26,6 @@ package functionalj.lens.lenses;
 import functionalj.functions.ThrowFuncs;
 import lombok.val;
 
-
 @FunctionalInterface
 public interface DoubleAccessBoxed<HOST> extends DoubleAccess<HOST> {
     
@@ -40,5 +39,4 @@ public interface DoubleAccessBoxed<HOST> extends DoubleAccess<HOST> {
             throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
-    
 }

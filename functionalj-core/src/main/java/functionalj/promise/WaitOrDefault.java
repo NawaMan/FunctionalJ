@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,16 +24,16 @@
 package functionalj.promise;
 
 import java.util.function.Supplier;
-
 import functionalj.result.Result;
 
 public class WaitOrDefault<DATA> extends Wait {
     
-    private Wait                   wait;
+    private Wait wait;
+    
     private Supplier<Result<DATA>> supplier;
     
     public WaitOrDefault(Wait wait, Supplier<Result<DATA>> supplier) {
-        this.wait     = wait;
+        this.wait = wait;
         this.supplier = supplier;
     }
     
@@ -45,5 +45,4 @@ public class WaitOrDefault<DATA> extends Wait {
     public WaitSession newSession() {
         return this.wait.newSession();
     }
-    
 }

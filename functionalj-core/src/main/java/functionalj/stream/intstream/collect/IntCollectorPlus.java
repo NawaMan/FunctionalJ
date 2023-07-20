@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,26 +34,27 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
-
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.intstream.CollectorPlusHelper;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
 
-
 public interface IntCollectorPlus<ACCUMULATED, RESULT> extends CollectorPlus<Integer, ACCUMULATED, RESULT> {
     
-    Supplier<ACCUMULATED>         supplier();
-    ObjIntConsumer<ACCUMULATED>   intAccumulator();
-    BinaryOperator<ACCUMULATED>   combiner();
+    Supplier<ACCUMULATED> supplier();
+    
+    ObjIntConsumer<ACCUMULATED> intAccumulator();
+    
+    BinaryOperator<ACCUMULATED> combiner();
+    
     Function<ACCUMULATED, RESULT> finisher();
     
     public default Set<Characteristics> characteristics() {
         return CollectorPlusHelper.unorderedConcurrent();
     }
     
-    public default Collector<Integer, ACCUMULATED, RESULT> collector() { 
+    public default Collector<Integer, ACCUMULATED, RESULT> collector() {
         return this;
     }
     
@@ -61,8 +62,7 @@ public interface IntCollectorPlus<ACCUMULATED, RESULT> extends CollectorPlus<Int
         return intAccumulator()::accept;
     }
     
-    //== Derive == 
-    
+    // == Derive ==
     public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToIntFunction<SOURCE> mapper) {
         val collector = new DerivedIntCollectorPlus.FromObj<>(this, mapper);
         return CollectorPlus.from(collector);
@@ -79,5 +79,4 @@ public interface IntCollectorPlus<ACCUMULATED, RESULT> extends CollectorPlus<Int
     public default DoubleCollectorPlus<ACCUMULATED, RESULT> of(DoubleToIntFunction mapper) {
         return new DerivedIntCollectorPlus.FromDouble<>(this, mapper);
     }
-    
 }

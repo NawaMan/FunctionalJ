@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,20 +30,24 @@ public enum PromiseStatus {
     public boolean isStarted() {
         return !PromiseStatus.NOT_STARTED.equals(this);
     }
+    
     public boolean isPending() {
         return PromiseStatus.PENDING.equals(this);
     }
+    
     public boolean isAborted() {
         return PromiseStatus.ABORTED.equals(this);
     }
+    
     public boolean isComplete() {
         return PromiseStatus.COMPLETED.equals(this);
     }
+    
     public boolean isDone() {
         return ABORTED.equals(this) || COMPLETED.equals(this);
     }
+    
     public boolean isNotDone() {
         return !this.isDone();
     }
-    
 }

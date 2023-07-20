@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,10 +24,9 @@
 package functionalj.result;
 
 public class UnacceptableForUnknownReasonException extends Exception {
-
-	private static final long serialVersionUID = 1361955593036029932L;
-
-	public UnacceptableForUnknownReasonException() {
-    }
     
+    private static final long serialVersionUID = 1361955593036029932L;
+    
+    public UnacceptableForUnknownReasonException() {
+    }
 }

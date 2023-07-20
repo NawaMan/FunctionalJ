@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.list;
 
 import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
-
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.IntObjToDoubleBiFunction;
 import functionalj.function.IntObjToIntBiFunction;
@@ -37,36 +36,45 @@ import lombok.val;
 
 public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
     
-    /** @return  the stream of each value and index. */
+    /**
+     * @return  the stream of each value and index.
+     */
     public default FuncList<IntTuple2<DATA>> mapWithIndex() {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapWithIndex());
     }
     
-    /** Create a stream whose value is the combination between value of this stream and its index. */
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
     public default <TARGET> FuncList<TARGET> mapWithIndex(IntObjBiFunction<? super DATA, TARGET> combinator) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapWithIndex(combinator));
     }
     
-    /** Create a stream whose value is the combination between value of this stream and its index. */
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
     public default <TARGET> FuncList<TARGET> mapToObjWithIndex(IntObjBiFunction<? super DATA, TARGET> combinator) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToObjWithIndex(combinator));
     }
     
-    /** Create a stream whose value is the combination between value of this stream and its index. */
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
     @Sequential
     public default IntFuncList mapToIntWithIndex(IntObjToIntBiFunction<? super DATA> combinator) {
         val funcList = funcListOf(this);
         return IntFuncList.deriveFrom(funcList, stream -> stream.mapToIntWithIndex(combinator));
     }
     
-    /** Create a stream whose value is the combination between value of this stream and its index. */
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
     @Sequential
     public default DoubleFuncList mapToDoubleWithIndex(IntObjToDoubleBiFunction<? super DATA> combinator) {
         val funcList = funcListOf(this);
         return DoubleFuncList.deriveFrom(funcList, stream -> stream.mapToDoubleWithIndex(combinator));
     }
-    
 }

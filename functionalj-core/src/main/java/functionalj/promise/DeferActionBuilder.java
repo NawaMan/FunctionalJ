@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,10 +24,8 @@
 package functionalj.promise;
 
 import static java.util.Objects.requireNonNull;
-
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-
 import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
@@ -36,7 +34,6 @@ import functionalj.list.FuncList;
 import functionalj.result.Result;
 import functionalj.task.Task;
 import lombok.val;
-
 
 public class DeferActionBuilder<DATA> implements Task<DATA> {
     
@@ -51,32 +48,40 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
     public static <DATA> Function<DeferActionBuilder<DATA>, DeferActionBuilder<DATA>> OnStart(FuncUnit0 onStart) {
         return builder -> builder.onStart(onStart);
     }
+    
     public static <DATA> Function<DeferActionBuilder<DATA>, DeferActionBuilder<DATA>> Runner(AsyncRunner runner) {
         return builder -> builder.runner(runner);
     }
     
     // TODO - Add other configuration.
+    private static final FuncUnit0 DO_NOTHING = () -> {
+    };
     
-    private static final FuncUnit0 DO_NOTHING = ()->{};
+    private final String toString;
     
-    private final String      toString;
     private final Func0<DATA> supplier;
-    private boolean           interruptOnCancel = true;
-    private FuncUnit0         onStart           = DO_NOTHING;
-    private AsyncRunner       runner            = null;
+    
+    private boolean interruptOnCancel = true;
+    
+    private FuncUnit0 onStart = DO_NOTHING;
+    
+    private AsyncRunner runner = null;
     
     @SuppressWarnings("unchecked")
-    private Retry<DATA> retry = (Retry<DATA>)Retry.noRetry;
+    private Retry<DATA> retry = (Retry<DATA>) Retry.noRetry;
     
     public static final <D> DeferActionBuilder<D> from(FuncUnit0 runnable) {
         return new DeferActionBuilder<>(runnable);
     }
+    
     public static final <D> DeferActionBuilder<D> from(Func0<D> supplier) {
         return new DeferActionBuilder<>(supplier);
     }
+    
     public static final <D> DeferActionBuilder<D> from(String toString, FuncUnit0 runnable) {
         return new DeferActionBuilder<>(toString, runnable);
     }
+    
     public static final <D> DeferActionBuilder<D> from(String toString, Func0<D> supplier) {
         return new DeferActionBuilder<>(toString, supplier);
     }
@@ -84,6 +89,7 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
     public DeferActionBuilder(FuncUnit0 runnable) {
         this(null, runnable);
     }
+    
     public DeferActionBuilder(String toString, FuncUnit0 runnable) {
         this(toString, runnable.thenReturnNull());
     }
@@ -91,6 +97,7 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
     public DeferActionBuilder(Func0<DATA> supplier) {
         this(null, supplier);
     }
+    
     public DeferActionBuilder(String toString, Func0<DATA> supplier) {
         this.toString = (toString != null) ? toString : "Task#" + supplier.toString();
         this.supplier = requireNonNull(supplier);
@@ -99,19 +106,15 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
     // TODO - Find the way to make this work without resorting to "Object"
     @SafeVarargs
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public final DeferActionBuilder<DATA> config(Function<DeferActionBuilder<Object> , DeferActionBuilder<Object>> ... configs) {
+    public final DeferActionBuilder<DATA> config(Function<DeferActionBuilder<Object>, DeferActionBuilder<Object>>... configs) {
         if (configs == null)
             return this;
-        
         val configList = FuncList.of(configs).filterNonNull();
-        val current    = new AtomicReference<>(this);
+        val current = new AtomicReference<>(this);
         configList.forEach(config -> {
             val curBuilder = current.get();
-            val newBuilder = config.apply((DeferActionBuilder)curBuilder);
-            val nextBuilder
-                    = (newBuilder == null)
-                    ? curBuilder
-                    : (DeferActionBuilder<DATA>)newBuilder;
+            val newBuilder = config.apply((DeferActionBuilder) curBuilder);
+            val nextBuilder = (newBuilder == null) ? curBuilder : (DeferActionBuilder<DATA>) newBuilder;
             current.set(nextBuilder);
         });
         return current.get();
@@ -152,6 +155,7 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
         this.retry = new Loop<DATA>(times);
         return this;
     }
+    
     public DeferActionBuilder<DATA> loopUntil(Func1<Result<DATA>, Boolean> stopPredicate) {
         this.retry = new Loop<DATA>(stopPredicate);
         return this;
@@ -161,6 +165,7 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
         this.retry = new Retry<DATA>(times, periodMillisecond);
         return this;
     }
+    
     public DeferActionBuilder<DATA> retry(Retry<DATA> retry) {
         this.retry = (retry != null) ? retry : Retry.defaultRetry();
         return this;
@@ -193,30 +198,32 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
         return toString;
     }
     
-    //== Aux classes ==
-    
+    // == Aux classes ==
     public static class RetryBuilderTimes<DATA> {
+        
         private final DeferActionBuilder<DATA> actionBuilder;
-        private final int                      times;
+        
+        private final int times;
         
         RetryBuilderTimes(DeferActionBuilder<DATA> actionBuilder, int times) {
             this.actionBuilder = actionBuilder;
-            this.times         = times;
+            this.times = times;
         }
         
         public WaitRetryBuilder<DATA> times() {
             return new WaitRetryBuilder<DATA>(actionBuilder, times);
         }
-        
     }
     
     public static class WaitRetryBuilder<DATA> {
+        
         private final DeferActionBuilder<DATA> actionBuilder;
-        private final int                      times;
+        
+        private final int times;
         
         WaitRetryBuilder(DeferActionBuilder<DATA> actionBuilder, int times) {
             this.actionBuilder = actionBuilder;
-            this.times         = times;
+            this.times = times;
         }
         
         public DeferActionBuilder<DATA> noWaitInBetween() {
@@ -227,18 +234,20 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
         public WaitRetryBuilderUnit<DATA> waitFor(long period) {
             return new WaitRetryBuilderUnit<DATA>(actionBuilder, times, period);
         }
-        
     }
     
     public static class WaitRetryBuilderUnit<DATA> {
+        
         private final DeferActionBuilder<DATA> actionBuilder;
-        private final int                      times;
-        private final long                     period;
+        
+        private final int times;
+        
+        private final long period;
         
         WaitRetryBuilderUnit(DeferActionBuilder<DATA> actionBuilder, int times, long period) {
             this.actionBuilder = actionBuilder;
-            this.times         = times;
-            this.period        = period;
+            this.times = times;
+            this.period = period;
         }
         
         public DeferActionBuilder<DATA> milliseconds() {
@@ -276,7 +285,5 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
             actionBuilder.retry = retry;
             return actionBuilder;
         }
-        
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,32 +26,25 @@ package functionalj.function;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
-
 @FunctionalInterface
 public interface DoubleDoublePredicatePrimitive extends Func2<Double, Double, Boolean>, BiPredicate<Double, Double> {
     
     public static DoubleDoublePredicatePrimitive of(DoubleDoublePredicatePrimitive function) {
         return function;
-        
     }
+    
     public static DoubleDoublePredicatePrimitive from(BiFunction<Double, Double, Boolean> function) {
-        return (function instanceof DoubleDoublePredicatePrimitive)
-                ? (DoubleDoublePredicatePrimitive)function
-                : ((d1, d2) -> function.apply(d1, d2));
+        return (function instanceof DoubleDoublePredicatePrimitive) ? (DoubleDoublePredicatePrimitive) function : ((d1, d2) -> function.apply(d1, d2));
     }
+    
     public static DoubleDoublePredicatePrimitive from(BiPredicate<Double, Double> function) {
-        return (function instanceof DoubleDoublePredicatePrimitive)
-                ? (DoubleDoublePredicatePrimitive)function
-                : ((d1, d2) -> function.test(d1, d2));
+        return (function instanceof DoubleDoublePredicatePrimitive) ? (DoubleDoublePredicatePrimitive) function : ((d1, d2) -> function.test(d1, d2));
     }
     
-    //-- functionality --
-    
+    // -- functionality --
     public boolean testDoubleDouble(double i1, double i2);
     
-    
-    //-- default functionality --
-    
+    // -- default functionality --
     @Override
     public default boolean test(Double i1, Double i2) {
         return testDoubleDouble(i1, i2);
@@ -61,5 +54,4 @@ public interface DoubleDoublePredicatePrimitive extends Func2<Double, Double, Bo
     public default Boolean applyUnsafe(Double input1, Double input2) throws Exception {
         return testDoubleDouble(input1, input2);
     }
-    
 }

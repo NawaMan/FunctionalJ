@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,22 +27,20 @@ import functionalj.types.struct.generator.IGenerateTerm;
 
 /**
  * Representation of scope.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public enum Scope implements IGenerateTerm {
+    
     STATIC, INSTANCE, NONE;
     
     @Override
     public String toTerm(String currentPackage) {
-        return ((this == INSTANCE) || (this == NONE))
-                ? null
-                : name().toLowerCase();
+        return ((this == INSTANCE) || (this == NONE)) ? null : name().toLowerCase();
     }
     
     @Override
     public String toString() {
         return toTerm(null);
     }
-    
 }

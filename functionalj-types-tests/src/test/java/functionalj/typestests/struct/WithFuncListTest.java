@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,37 +25,25 @@ package functionalj.typestests.struct;
 
 import static functionalj.lens.Access.theString;
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
-
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
 import functionalj.types.Struct;
 
 public class WithFuncListTest {
-
-    @Struct(name="ParentWithFuncList")
+    
+    @Struct(name = "ParentWithFuncList")
     public static interface IParent2 {
         
         public FuncList<String> names();
-        public FuncList<Child>  children();
         
+        public FuncList<Child> children();
     }
     
     @Test
     public void testAccessToLens() {
-        ParentWithFuncList parent = new ParentWithFuncList(
-                ImmutableFuncList.of("One", "Two", "Three", "Four"), 
-                ImmutableFuncList.empty());
-        assertEquals(
-                "[One, Two, Three, Four]",
-                "" + ParentWithFuncList.theParentWithFuncList
-                    .names
-                    .apply(parent));
-        
-        assertEquals(
-                "[(One,3), (Two,3), (Three,5), (Four,4)]",
-                "" + parent.names().mapToTuple(theString, theString.length()));
+        ParentWithFuncList parent = new ParentWithFuncList(ImmutableFuncList.of("One", "Two", "Three", "Four"), ImmutableFuncList.empty());
+        assertEquals("[One, Two, Three, Four]", "" + ParentWithFuncList.theParentWithFuncList.names.apply(parent));
+        assertEquals("[(One,3), (Two,3), (Three,5), (Four,4)]", "" + parent.names().mapToTuple(theString, theString.length()));
     }
-    
 }

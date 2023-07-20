@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,19 +26,15 @@ package functionalj.environments;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.junit.Ignore;
 import org.junit.Test;
-
 import functionalj.promise.DeferAction;
 import functionalj.stream.StreamPlus;
 import lombok.val;
-
 
 public class ConsoleTest {
     
@@ -49,15 +45,10 @@ public class ConsoleTest {
         val stream = new PrintStream(buffer);
         System.setOut(stream);
         try {
-            Console
-            .outPrintln("One")
-            .outPrintln("Two");
+            Console.outPrintln("One").outPrintln("Two");
         } finally {
             System.setOut(sysOut);
-            assertEquals(
-                    "One\n" + 
-                    "Two\n",
-                    buffer.toString());
+            assertEquals("One\n" + "Two\n", buffer.toString());
         }
     }
     
@@ -83,12 +74,7 @@ public class ConsoleTest {
         System.setIn(stream);
         try {
             val console = Env.console();
-            val result  = StreamPlus
-                        .generate     (() -> console.pollln())
-                        .peek         (__ -> Sleep(10))
-                        .limit        (20)
-                        .filterNonNull()
-                        .toList       ();
+            val result = StreamPlus.generate(() -> console.pollln()).peek(__ -> Sleep(10)).limit(20).filterNonNull().toList();
             assertEquals("[One, Two]", result.toString());
         } finally {
             System.setIn(sysIn);
@@ -98,17 +84,10 @@ public class ConsoleTest {
     @Test
     public void testStub_out() {
         val stub = new Console.Stub();
-        With(Env.refs.console.butWith(stub))
-        .run(()->{
-            Console
-            .println("One")
-            .println("Two");
-            
+        With(Env.refs.console.butWith(stub)).run(() -> {
+            Console.println("One").println("Two");
             val outLines = StreamPlus.from(stub.outLines()).toJavaList();
-            assertEquals(
-                    "[One, Two]",
-                    outLines.toString());
-            
+            assertEquals("[One, Two]", outLines.toString());
             stub.clearOutLines();
         });
     }
@@ -116,17 +95,10 @@ public class ConsoleTest {
     @Test
     public void testStub_out2() {
         val stub = new Console.Stub();
-        With(Env.refs.console.butWith(stub))
-        .run(()->{
-            Console
-            .outPrintln("Three")
-            .outPrintln("Four");
-            
+        With(Env.refs.console.butWith(stub)).run(() -> {
+            Console.outPrintln("Three").outPrintln("Four");
             val outLines = StreamPlus.from(stub.outLines()).toJavaList();
-            assertEquals(
-                    "[Three, Four]",
-                    outLines.toString());
-            
+            assertEquals("[Three, Four]", outLines.toString());
             stub.clearOutLines();
         });
     }
@@ -134,19 +106,11 @@ public class ConsoleTest {
     @Test
     public void testStub_err() {
         val stub = new Console.Stub();
-        With(Env.refs.console.butWith(stub))
-        .run(()->{
+        With(Env.refs.console.butWith(stub)).run(() -> {
             stub.clear();
-            
-            Console
-            .errPrintln("Five")
-            .errPrintln("Six");
-            
+            Console.errPrintln("Five").errPrintln("Six");
             val outLines = StreamPlus.from(stub.errLines()).toJavaList();
-            assertEquals(
-                    "[Five, Six]",
-                    outLines.toString());
-            
+            assertEquals("[Five, Six]", outLines.toString());
             stub.clear();
         });
     }
@@ -154,41 +118,25 @@ public class ConsoleTest {
     @Test
     public void testStub_in() {
         val stub = new Console.Stub();
-        With(Env.refs.console.butWith(stub))
-        .run(()->{
+        With(Env.refs.console.butWith(stub)).run(() -> {
             stub.addInLines("One", "Two");
             stub.endInStream();
-            
             assertEquals("One", Console.readln());
             assertEquals("Two", Console.readln());
-            assertEquals(0L,    stub.remainingInLines().count());
-            
+            assertEquals(0L, stub.remainingInLines().count());
             stub.clearInLines();
         });
     }
     
     @Test
     public void testUseStub_Done() {
-        val records = Console.useStub(StreamPlus.of("One", "Two", "Three", "Four"), ()->{
+        val records = Console.useStub(StreamPlus.of("One", "Two", "Three", "Four"), () -> {
             Console.outPrint(Console.readln());
             Console.errPrint(Console.readln());
             Console.outPrintln(Console.readln());
             Console.errPrintln(Console.readln());
         });
-        assertEquals(
-                "++++++++++++++++++++\n" + 
-                "Data: null\n" + 
-                "outLines(1): \n" + 
-                "    OneThree\n" + 
-                "errLines(1): \n" + 
-                "    TwoFour\n" + 
-                "inLines(4): \n" + 
-                "    One\n" + 
-                "    Two\n" + 
-                "    Three\n" + 
-                "    Four\n" + 
-                "--------------------",
-                records.toString());
+        assertEquals("++++++++++++++++++++\n" + "Data: null\n" + "outLines(1): \n" + "    OneThree\n" + "errLines(1): \n" + "    TwoFour\n" + "inLines(4): \n" + "    One\n" + "    Two\n" + "    Three\n" + "    Four\n" + "--------------------", records.toString());
     }
     
     @Test
@@ -196,8 +144,7 @@ public class ConsoleTest {
         val queue = new ConsoleInQueue();
         queue.add("One");
         queue.add("Two");
-        
-        new Thread(()->{
+        new Thread(() -> {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -206,53 +153,29 @@ public class ConsoleTest {
             queue.add("Four");
             queue.end();
         }).start();
-        
-        val records = Console.useStub(queue, ()->{
+        val records = Console.useStub(queue, () -> {
             Console.outPrint(Console.readln());
             Console.errPrint(Console.readln());
             Console.outPrintln(Console.readln());
             Console.errPrintln(Console.readln());
         });
-        assertEquals(
-                "++++++++++++++++++++\n" + 
-                "Data: null\n" + 
-                "outLines(1): \n" + 
-                "    OneThree\n" + 
-                "errLines(1): \n" + 
-                "    TwoFour\n" + 
-                "inLines(4): \n" + 
-                "    One\n" + 
-                "    Two\n" + 
-                "    Three\n" + 
-                "    Four\n" + 
-                "--------------------",
-                records.toString());
+        assertEquals("++++++++++++++++++++\n" + "Data: null\n" + "outLines(1): \n" + "    OneThree\n" + "errLines(1): \n" + "    TwoFour\n" + "inLines(4): \n" + "    One\n" + "    Two\n" + "    Three\n" + "    Four\n" + "--------------------", records.toString());
     }
     
     @Test
     public void testUseStub_NoIn() {
-        val records = Console.useStub(()->{
+        val records = Console.useStub(() -> {
             Console.outPrintln("out.");
             Console.errPrintln("ERR!");
         });
-        assertEquals(
-                "++++++++++++++++++++\n" + 
-                "Data: null\n" + 
-                "outLines(1): \n" + 
-                "    out.\n" + 
-                "errLines(1): \n" + 
-                "    ERR!\n" + 
-                "inLines(0): \n" + 
-                "    \n" + 
-                "--------------------",
-                records.toString());
+        assertEquals("++++++++++++++++++++\n" + "Data: null\n" + "outLines(1): \n" + "    out.\n" + "errLines(1): \n" + "    ERR!\n" + "inLines(0): \n" + "    \n" + "--------------------", records.toString());
     }
     
     @Test
     public void testUseStub_Holder() {
         // Umm - Not as easy to use as first thought. -- We have to wait until the queue is set.
         val inQueue = new AtomicReference<ConsoleInQueue>();
-        new Thread(()->{
+        new Thread(() -> {
             try {
                 Thread.sleep(50);
                 while (inQueue.get() == null) {
@@ -265,27 +188,13 @@ public class ConsoleTest {
             queue.add("Four");
             queue.end();
         }).start();
-        
-        val records = Console.useStub(inQueue::set, ()->{
+        val records = Console.useStub(inQueue::set, () -> {
             Console.outPrintln("out.");
             Console.errPrintln("ERR!");
             Console.outPrintln(Console.readln());
             Console.errPrintln(Console.readln());
         });
-        assertEquals(
-                "++++++++++++++++++++\n" + 
-                "Data: null\n" + 
-                "outLines(2): \n" + 
-                "    out.\n" + 
-                "    Three\n" + 
-                "errLines(2): \n" + 
-                "    ERR!\n" + 
-                "    Four\n" + 
-                "inLines(2): \n" + 
-                "    Three\n" + 
-                "    Four\n" + 
-                "--------------------",
-                records.toString());
+        assertEquals("++++++++++++++++++++\n" + "Data: null\n" + "outLines(2): \n" + "    out.\n" + "    Three\n" + "errLines(2): \n" + "    ERR!\n" + "    Four\n" + "inLines(2): \n" + "    Three\n" + "    Four\n" + "--------------------", records.toString());
     }
     
     @Test
@@ -293,7 +202,7 @@ public class ConsoleTest {
         // This might be a bit more useful as we can have UI interact with this.
         val action = DeferAction.of(ConsoleInQueue.class).onComplete(inQueueResult -> {
             inQueueResult.ifPresent(inQueue -> {
-                new Thread(()->{
+                new Thread(() -> {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
@@ -303,29 +212,13 @@ public class ConsoleTest {
                     inQueue.end();
                 }).start();
             });
-        })
-        .start();
-        
-        val records = Console.useStub(action::complete, ()->{
+        }).start();
+        val records = Console.useStub(action::complete, () -> {
             Console.outPrintln("out.");
             Console.errPrintln("ERR!");
             Console.outPrintln(Console.readln());
             Console.errPrintln(Console.readln());
         });
-        assertEquals(
-                "++++++++++++++++++++\n" + 
-                "Data: null\n" + 
-                "outLines(2): \n" + 
-                "    out.\n" + 
-                "    Three\n" + 
-                "errLines(2): \n" + 
-                "    ERR!\n" + 
-                "    Four\n" + 
-                "inLines(2): \n" + 
-                "    Three\n" + 
-                "    Four\n" + 
-                "--------------------",
-                records.toString());
+        assertEquals("++++++++++++++++++++\n" + "Data: null\n" + "outLines(2): \n" + "    out.\n" + "    Three\n" + "errLines(2): \n" + "    ERR!\n" + "    Four\n" + "inLines(2): \n" + "    Three\n" + "    Four\n" + "--------------------", records.toString());
     }
-    
 }

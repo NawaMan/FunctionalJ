@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -43,6 +43,4 @@ public interface DoubleToLongAccessPrimitive extends LongAccessPrimitive<Double>
     public default Long apply(double value) {
         return null;
     }
-    
-
 }

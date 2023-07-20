@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,13 +27,10 @@ import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
-public interface StringLens<HOST>
-        extends
-            StringAccess<HOST>,
-            AnyLens<HOST, String> {
-    
+public interface StringLens<HOST> extends StringAccess<HOST>, AnyLens<HOST, String> {
     
     public static class Impl<H> extends AnyLens.Impl<H, String> implements Named, StringLens<H> {
+        
         public Impl(String name, LensSpec<H, String> spec) {
             super(name, spec);
         }
@@ -46,5 +43,4 @@ public interface StringLens<HOST>
     public static <HOST> StringLens<HOST> of(LensSpec<HOST, String> spec) {
         return of(null, spec);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,7 @@ package functionalj.types;
 
 /**
  * Classes implements this interface requires post construct processing.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface IPostConstruct {
@@ -34,5 +34,4 @@ public interface IPostConstruct {
      * This method should be called after a construction.
      */
     public void postConstruct();
-    
 }

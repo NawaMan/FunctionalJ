@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,12 +25,11 @@ package functionalj.list.doublelist;
 
 import java.util.Objects;
 import java.util.OptionalDouble;
-
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.GrowOnlyDoubleArray;
 
 public class DoubleFuncListBuilder {
-
+    
     private final GrowOnlyDoubleArray list;
     
     // This constructor must not be public or protected.
@@ -42,7 +41,7 @@ public class DoubleFuncListBuilder {
         list = new GrowOnlyDoubleArray();
     }
     
-    public DoubleFuncListBuilder(double ... values) {
+    public DoubleFuncListBuilder(double... values) {
         list = new GrowOnlyDoubleArray(values);
     }
     
@@ -63,6 +62,7 @@ public class DoubleFuncListBuilder {
     public int size() {
         return list.length();
     }
+    
     public boolean isEmpty() {
         return size() == 0;
     }
@@ -78,7 +78,6 @@ public class DoubleFuncListBuilder {
     public OptionalDouble at(int i) {
         if (i < 0 || i >= list.length())
             return OptionalDouble.empty();
-        
         return OptionalDouble.of(list.get(i));
     }
     

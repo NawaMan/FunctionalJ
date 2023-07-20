@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,20 +27,17 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
-
 import functionalj.stream.collect.CollectorToIntPlus;
 import lombok.val;
 
-public abstract class  AggregationToInt<SOURCE> extends Aggregation<SOURCE, Integer> {
+public abstract class AggregationToInt<SOURCE> extends Aggregation<SOURCE, Integer> {
     
     public static <S, A> AggregationToInt<S> from(CollectorToIntPlus<S, A> collector) {
         return new AggregationToInt.Impl<S>(collector);
     }
     
-    //== Instance ==
-    
+    // == Instance ==
     public abstract CollectorToIntPlus<SOURCE, ?> collectorToIntPlus();
-    
     
     @Override
     public CollectorToIntPlus<SOURCE, ?> collectorPlus() {
@@ -52,8 +49,7 @@ public abstract class  AggregationToInt<SOURCE> extends Aggregation<SOURCE, Inte
         return new AggregatorToInt.Impl<>(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToInt<INPUT> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorToIntPlus().of(mapper);
         return new AggregationToInt.Impl<>(newCollector);
@@ -74,8 +70,7 @@ public abstract class  AggregationToInt<SOURCE> extends Aggregation<SOURCE, Inte
         return new DoubleAggregationToInt.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<SRC> extends AggregationToInt<SRC> {
         
         private final CollectorToIntPlus<SRC, ?> collector;
@@ -88,7 +83,5 @@ public abstract class  AggregationToInt<SOURCE> extends Aggregation<SOURCE, Inte
         public CollectorToIntPlus<SRC, ?> collectorToIntPlus() {
             return collector;
         }
-        
     }
-    
 }

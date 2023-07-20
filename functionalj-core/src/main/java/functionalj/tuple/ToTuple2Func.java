@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -36,5 +36,4 @@ public interface ToTuple2Func<D, T1, T2> extends Func1<D, Tuple2<T1, T2>> {
     public default Func1<D, T1> thenDrop() {
         return this.then(Tuple2::drop);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.functions;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import functionalj.function.Func1;
 
 public class PathFuncs {
@@ -41,5 +40,4 @@ public class PathFuncs {
     public static Func1<String, Path> strToPath(Path basePath) {
         return str -> Paths.get(basePath.toString(), str);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -42,23 +42,19 @@ public interface IntPredicatePrimitive extends IntPredicate, Func1<Integer, Bool
     
     public static IntPredicatePrimitive intPredicate(IntPredicate predicate) {
         if (predicate instanceof IntPredicatePrimitive)
-            return ((IntPredicatePrimitive)predicate);
-        
+            return ((IntPredicatePrimitive) predicate);
         return predicate::test;
     }
     
     public static IntPredicatePrimitive intPredicate(Func1<Integer, Boolean> predicate) {
         if (predicate instanceof IntPredicatePrimitive)
-            return ((IntPredicatePrimitive)predicate);
-        
+            return ((IntPredicatePrimitive) predicate);
         return predicate::apply;
     }
     
     public static IntPredicatePrimitive intPredicate(Predicate<Integer> predicate) {
         if (predicate instanceof IntPredicatePrimitive)
-            return ((IntPredicatePrimitive)predicate);
-        
+            return ((IntPredicatePrimitive) predicate);
         return predicate::test;
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,11 +25,9 @@ package functionalj.stream;
 
 public enum ZipWithOption {
     
-    RequireBoth,
-    AllowUnpaired;
+    RequireBoth, AllowUnpaired;
     
     public boolean isRequireBoth() {
         return this == ZipWithOption.RequireBoth;
     }
-    
 }

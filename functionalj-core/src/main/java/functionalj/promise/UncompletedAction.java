@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,10 +24,8 @@
 package functionalj.promise;
 
 import java.util.concurrent.TimeUnit;
-
 import functionalj.result.Result;
 import lombok.val;
-
 
 public abstract class UncompletedAction<DATA> extends StartableAction<DATA> implements HasPromise<DATA> {
     
@@ -40,6 +38,7 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
             this.promise = new Promise<DATA>(this);
         }
     }
+    
     UncompletedAction(Promise<DATA> promise) {
         this.promise = promise;
     }
@@ -48,14 +47,17 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
         promise.abort();
         return new CompletedAction<DATA>(promise);
     }
+    
     public final CompletedAction<DATA> abort(String message) {
         promise.abort(message);
         return new CompletedAction<DATA>(promise);
     }
+    
     public final CompletedAction<DATA> abort(Exception cause) {
         promise.abort(cause);
         return new CompletedAction<DATA>(promise);
     }
+    
     public final CompletedAction<DATA> abort(String message, Exception cause) {
         promise.abort(message, cause);
         return new CompletedAction<DATA>(promise);
@@ -64,9 +66,9 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
     // For internal use only -- This will be wrong if the result is not ready.
     final CompletedAction<DATA> completeWith(Result<DATA> result) {
         if (result.isException())
-             promise.makeFail    (result.getException());
-        else promise.makeComplete(result.get());
-        
+            promise.makeFail(result.getException());
+        else
+            promise.makeComplete(result.get());
         return new CompletedAction<DATA>(promise);
     }
     
@@ -83,18 +85,19 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
     public Promise<DATA> getPromise() {
         return promise;
     }
+    
     public final Result<DATA> getCurrentResult() {
         return promise.getCurrentResult();
     }
+    
     public final Result<DATA> getResult() {
         if (!promise.isStarted() && this instanceof DeferAction)
-            ((DeferAction<DATA>)this).start();
-        
+            ((DeferAction<DATA>) this).start();
         val result = promise.getResult();
         return result;
     }
+    
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         return promise.getResult(timeout, unit);
     }
-    
 }

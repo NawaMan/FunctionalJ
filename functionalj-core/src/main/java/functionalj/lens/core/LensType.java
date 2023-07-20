@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,12 +24,10 @@
 package functionalj.lens.core;
 
 import java.util.function.Function;
-
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
 
-public interface LensType<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>, TYPELENS extends AnyLens<HOST, TYPE>> 
-                    extends AccessCreator<HOST, TYPE, TYPEACCESS>{
+public interface LensType<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>, TYPELENS extends AnyLens<HOST, TYPE>> extends AccessCreator<HOST, TYPE, TYPEACCESS> {
     
     public Class<TYPE> getDataClass();
     
@@ -41,5 +39,4 @@ public interface LensType<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>, 
     
     @Override
     public TYPEACCESS newAccess(Function<HOST, TYPE> accessToValue);
-    
 }

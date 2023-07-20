@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,115 +23,78 @@
 // ============================================================================
 package functionalj.stream;
 
- import java.util.function.Function;
+import java.util.function.Function;
 import java.util.function.Predicate;
-
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.tuple.Tuple2;
 
-public interface StreamPlusWithSplit<DATA>
-            extends StreamPlusWithMapToTuple<DATA> {
+public interface StreamPlusWithSplit<DATA> extends StreamPlusWithMapToTuple<DATA> {
     
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
-    
-    //== split ==
-    
-    // TODO - Try to make it lazy 
+    // == split ==
+    // TODO - Try to make it lazy
     // It is not easy as it seems as there has to be buffer for one branch when go through with another branch.
     // We may need a dynamic collection of all branch as we goes along.
-    
     /**
      * Split the stream using the predicate.
      * The result is a tuple of streams where the first stream is for those element that the predicate returns true.
-     * 
+     *
      * The elements in this stream is guaranteed to be in one of the result stream.
      */
     public default Tuple2<StreamPlus<DATA>, StreamPlus<DATA>> split(Predicate<DATA> predicate) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        return FuncList.from(()->streamPlus())
-                .split(predicate)
-                .map(toStreamPlus, toStreamPlus);
+        return FuncList.from(() -> streamPlus()).split(predicate).map(toStreamPlus, toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
      */
-    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate,
-            KEY key2) {
+    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(KEY key1, Predicate<? super DATA> predicate, KEY key2) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        return FuncList.from(()->streamPlus())
-                .split(key1, predicate, key2)
-                .mapValue(toStreamPlus);
+        return FuncList.from(() -> streamPlus()).split(key1, predicate, key2).mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
      */
-    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate1,
-            KEY key2, Predicate<? super DATA> predicate2,
-            KEY key3) {
+    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(KEY key1, Predicate<? super DATA> predicate1, KEY key2, Predicate<? super DATA> predicate2, KEY key3) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        return FuncList.from(()->streamPlus())
-                .split(key1, predicate1, key2, predicate2, key3)
-                .mapValue(toStreamPlus);
+        return FuncList.from(() -> streamPlus()).split(key1, predicate1, key2, predicate2, key3).mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
      */
-    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate1,
-            KEY key2, Predicate<? super DATA> predicate2,
-            KEY key3, Predicate<? super DATA> predicate3,
-            KEY key4) {
+    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(KEY key1, Predicate<? super DATA> predicate1, KEY key2, Predicate<? super DATA> predicate2, KEY key3, Predicate<? super DATA> predicate3, KEY key4) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        return FuncList.from(()->streamPlus())
-                .split(key1, predicate1, key2, predicate2, key3, predicate3, key4)
-                .mapValue(toStreamPlus);
+        return FuncList.from(() -> streamPlus()).split(key1, predicate1, key2, predicate2, key3, predicate3, key4).mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
      */
-    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate1,
-            KEY key2, Predicate<? super DATA> predicate2,
-            KEY key3, Predicate<? super DATA> predicate3,
-            KEY key4, Predicate<? super DATA> predicate4,
-            KEY key5) {
+    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(KEY key1, Predicate<? super DATA> predicate1, KEY key2, Predicate<? super DATA> predicate2, KEY key3, Predicate<? super DATA> predicate3, KEY key4, Predicate<? super DATA> predicate4, KEY key5) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        return FuncList.from(()->streamPlus())
-                .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5)
-                .mapValue(toStreamPlus);
+        return FuncList.from(() -> streamPlus()).split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5).mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
-     * 
+     *
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
      */
-    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate1,
-            KEY key2, Predicate<? super DATA> predicate2,
-            KEY key3, Predicate<? super DATA> predicate3,
-            KEY key4, Predicate<? super DATA> predicate4,
-            KEY key5, Predicate<? super DATA> predicate5,
-            KEY key6) {
+    public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(KEY key1, Predicate<? super DATA> predicate1, KEY key2, Predicate<? super DATA> predicate2, KEY key3, Predicate<? super DATA> predicate3, KEY key4, Predicate<? super DATA> predicate4, KEY key5, Predicate<? super DATA> predicate5, KEY key6) {
         Function<? super FuncList<DATA>, StreamPlus<DATA>> toStreamPlus = FuncList::streamPlus;
-        return FuncList.from(()->streamPlus())
-                .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6)
-                .mapValue(toStreamPlus);
+        return FuncList.from(() -> streamPlus()).split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6).mapValue(toStreamPlus);
     }
 }

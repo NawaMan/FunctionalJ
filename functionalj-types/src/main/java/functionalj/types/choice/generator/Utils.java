@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,36 +28,34 @@ import static java.util.stream.IntStream.range;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import functionalj.types.choice.generator.model.Case;
-import lombok.val;
-
 
 public class Utils {
     
     public static String templateRange(int fromInclusive, int toExclusive, String delimiter) {
-        return range(fromInclusive, toExclusive).mapToObj(i -> "%" + i + "$s") .collect(joining(delimiter));
+        return range(fromInclusive, toExclusive).mapToObj(i -> "%" + i + "$s").collect(joining(delimiter));
     }
     
     public static String toTitleCase(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
+    
     public static String toCamelCase(String str) {
         if (str.equals(str.toUpperCase()))
             return str.toLowerCase();
-        
         if (str.length() <= 2)
             return str.toLowerCase();
-        
-        val firstTwo = str.substring(0, 2);
+        String firstTwo = str.substring(0, 2);
         if (firstTwo.equals(firstTwo.toUpperCase())) {
-            val first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
-            val rest = str.substring(first.length());
+            String first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
+            String rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         } else {
-            val first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
-            val rest = str.substring(first.length());
+            String first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
+            String rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         }
     }
@@ -65,6 +63,7 @@ public class Utils {
     public static String switchClassName(String targetName, List<Case> choices) {
         return targetName + "Switch" + choices.stream().map(c -> c.name).collect(joining());
     }
+    
     public static String switchClassName(String targetName, List<Case> choices, int skip) {
         return targetName + "Switch" + choices.stream().skip(skip).map(c -> c.name).collect(joining());
     }
@@ -74,8 +73,7 @@ public class Utils {
             return "null";
         if (list.isEmpty())
             return "java.util.Collections.emptyList()";
-        
-        val str = list.stream().map(toCode).collect(joining(", "));
+        String str = list.stream().map(toCode).collect(joining(", "));
         return "java.util.Arrays.asList(" + str + ")";
     }
     
@@ -86,15 +84,13 @@ public class Utils {
             return "null";
         if (str.isEmpty())
             return "\"\"";
-        
-        val matcher = pattern.matcher(str);
-        val buffer  = new StringBuffer();
+        Matcher      matcher = pattern.matcher(str);
+        StringBuffer buffer = new StringBuffer();
         while (matcher.find()) {
-            val original = matcher.group();
-            if(original.length() == 0)
+            String original = matcher.group();
+            if (original.length() == 0)
                 continue;
-            
-            val replacement = findReplacement(original);
+            String replacement = findReplacement(original);
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);
@@ -102,15 +98,20 @@ public class Utils {
     }
     
     private static String findReplacement(String original) {
-        switch (original) {
-            case "\"":   return "\\\\\"";
-            case "\'":   return "\\\\\'";
-            case "\\\\": return "\\\\";
-            case "\b":   return "\\\\b";
-            case "\r":   return "\\\\r";
-            case "\n":   return "\\\\n";
+        switch(original) {
+            case "\"":
+                return "\\\\\"";
+            case "\'":
+                return "\\\\\'";
+            case "\\\\":
+                return "\\\\";
+            case "\b":
+                return "\\\\b";
+            case "\r":
+                return "\\\\r";
+            case "\n":
+                return "\\\\n";
         }
         throw new UnsupportedOperationException("Unknown string escape: " + original);
     }
-    
 }

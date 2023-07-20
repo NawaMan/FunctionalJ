@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,12 +26,10 @@ package functionalj.function;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 
-
 @FunctionalInterface
 public interface ObjIntToIntFunctionPrimitive<DATA> extends BiFunction<DATA, Integer, Integer>, ToIntBiFunction<DATA, Integer> {
     
     public int applyObjInt(DATA data, int intValue);
-    
     
     @Override
     public default Integer apply(DATA data, Integer doubleValue) {

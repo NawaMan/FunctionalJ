@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,7 +26,7 @@ package functionalj.function;
 @FunctionalInterface
 public interface ObjectObjectToDoubleFunctionPrimitive<INPUT1, INPUT2> extends Func2<INPUT1, INPUT2, Double> {
     
-    public double applyToDouble(INPUT1 input1, INPUT2 input2)  throws Exception;
+    public double applyToDouble(INPUT1 input1, INPUT2 input2) throws Exception;
     
     public default Double applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception {
         return applyToDouble(input1, input2);
@@ -34,8 +34,6 @@ public interface ObjectObjectToDoubleFunctionPrimitive<INPUT1, INPUT2> extends F
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <INPUT1, INPUT2> double apply(Func2<INPUT1, INPUT2, Double> function, INPUT1 input1, INPUT2 input2) throws Exception {
-        return (function instanceof ObjectObjectToDoubleFunctionPrimitive)
-                ? ((ObjectObjectToDoubleFunctionPrimitive)function).applyToDouble(input1, input2)
-                : function.applyUnsafe(input1, input2);
+        return (function instanceof ObjectObjectToDoubleFunctionPrimitive) ? ((ObjectObjectToDoubleFunctionPrimitive) function).applyToDouble(input1, input2) : function.applyUnsafe(input1, input2);
     }
 }

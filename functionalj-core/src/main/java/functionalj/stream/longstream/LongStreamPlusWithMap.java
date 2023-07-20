@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,67 +26,54 @@ package functionalj.stream.longstream;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
-
 import functionalj.stream.StreamPlus;
 import lombok.val;
-
 
 public interface LongStreamPlusWithMap {
     
     public LongStreamPlus longStreamPlus();
     
-    
-    /** Map the value using the mapper. */
+    /**
+     * Map the value using the mapper.
+     */
     public default <T> StreamPlus<T> mapToObj(LongFunction<? extends T> mapper) {
         val streamPlus = longStreamPlus();
         return streamPlus.mapToObj(mapper);
     }
     
-    /** Map the value using the mapper only when the condition is true. */
-    public default LongStreamPlus mapOnly(
-            LongPredicate     condition, 
-            LongUnaryOperator mapper) {
+    /**
+     * Map the value using the mapper only when the condition is true.
+     */
+    public default LongStreamPlus mapOnly(LongPredicate condition, LongUnaryOperator mapper) {
         val streamPlus = longStreamPlus();
-        return streamPlus
-                .map(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
-                            ? mapper.applyAsLong(value)
-                            : value;
-                    return mapped;
-                });
+        return streamPlus.map(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.applyAsLong(value) : value;
+            return mapped;
+        });
     }
     
-    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
-    public default LongStreamPlus mapIf(
-            LongPredicate     condition, 
-            LongUnaryOperator mapper, 
-            LongUnaryOperator elseMapper) {
+    /**
+     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
+     */
+    public default LongStreamPlus mapIf(LongPredicate condition, LongUnaryOperator mapper, LongUnaryOperator elseMapper) {
         val streamPlus = longStreamPlus();
-        return streamPlus
-                .map(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue 
-                            ? mapper    .applyAsLong(value) 
-                            : elseMapper.applyAsLong(value);
-                    return mapped;
-                });
+        return streamPlus.map(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.applyAsLong(value) : elseMapper.applyAsLong(value);
+            return mapped;
+        });
     }
     
-    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
-    public default <T> StreamPlus<T> mapToObjIf(
-            LongPredicate   condition, 
-            LongFunction<T> mapper, 
-            LongFunction<T> elseMapper) {
+    /**
+     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
+     */
+    public default <T> StreamPlus<T> mapToObjIf(LongPredicate condition, LongFunction<T> mapper, LongFunction<T> elseMapper) {
         val streamPlus = longStreamPlus();
-        return streamPlus
-                .mapToObj(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue 
-                            ? mapper    .apply(value) 
-                            : elseMapper.apply(value);
-                    return mapped;
-                });
+        return streamPlus.mapToObj(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.apply(value) : elseMapper.apply(value);
+            return mapped;
+        });
     }
-    
 }

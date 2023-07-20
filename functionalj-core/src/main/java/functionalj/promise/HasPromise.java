@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -43,5 +43,4 @@ public interface HasPromise<DATA> extends NamedExpression<HasPromise<DATA>> {
     public default Result<DATA> getResult() {
         return getPromise().getResult();
     }
-    
 }

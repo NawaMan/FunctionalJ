@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,12 +26,12 @@ package functionalj.result;
 public class ResultNotExistException extends ResultNotAvailableException {
     
     private static final long serialVersionUID = -1710800832797536830L;
-
+    
     public ResultNotExistException() {
         super();
     }
+    
     public ResultNotExistException(String message, Throwable cause) {
         super(message, cause);
     }
-    
 }

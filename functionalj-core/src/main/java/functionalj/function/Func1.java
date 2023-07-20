@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,7 +33,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
@@ -64,34 +63,28 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func1.
-     **/
-    public static <INPUT, OUTPUT>
-            Func1<INPUT, OUTPUT> of(Func1<INPUT, OUTPUT> function) {
+     */
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> of(Func1<INPUT, OUTPUT> function) {
         return function;
     }
-    public static <INPUT, OUTPUT>
-            Func1<INPUT, OUTPUT> func1(Func1<INPUT, OUTPUT> function) {
+    
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> func1(Func1<INPUT, OUTPUT> function) {
         return function;
     }
     
     public static <I1, O> Func1<I1, O> from(Function<I1, O> func) {
         return func::apply;
     }
-    public static <O, I, I1, I2> Func1<I, O> from(
-            Func2<I1, I2, O> func,
-            Func1<I, I1> input1,
-            Func1<I, I2> input2) {
+    
+    public static <O, I, I1, I2> Func1<I, O> from(Func2<I1, I2, O> func, Func1<I, I1> input1, Func1<I, I2> input2) {
         return source -> {
             val i1 = input1.apply(source);
             val i2 = input2.apply(source);
             return func.apply(i1, i2);
         };
     }
-    public static <O, I, I1, I2, I3> Func1<I, O> from(
-            Func3<I1, I2, I3, O> func,
-            Func1<I, I1> input1,
-            Func1<I, I2> input2,
-            Func1<I, I3> input3) {
+    
+    public static <O, I, I1, I2, I3> Func1<I, O> from(Func3<I1, I2, I3, O> func, Func1<I, I1> input1, Func1<I, I2> input2, Func1<I, I3> input3) {
         return source -> {
             val i1 = input1.apply(source);
             val i2 = input2.apply(source);
@@ -99,12 +92,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return func.apply(i1, i2, i3);
         };
     }
-    public static <O, I, I1, I2, I3, I4> Func1<I, O> from(
-            Func4<I1, I2, I3, I4, O> func,
-            Func1<I, I1> input1,
-            Func1<I, I2> input2,
-            Func1<I, I3> input3,
-            Func1<I, I4> input4) {
+    
+    public static <O, I, I1, I2, I3, I4> Func1<I, O> from(Func4<I1, I2, I3, I4, O> func, Func1<I, I1> input1, Func1<I, I2> input2, Func1<I, I3> input3, Func1<I, I4> input4) {
         return source -> {
             val i1 = input1.apply(source);
             val i2 = input2.apply(source);
@@ -113,13 +102,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return func.apply(i1, i2, i3, i4);
         };
     }
-    public static <O, I, I1, I2, I3, I4, I5> Func1<I, O> from(
-            Func5<I1, I2, I3, I4, I5, O> func,
-            Func1<I, I1> input1,
-            Func1<I, I2> input2,
-            Func1<I, I3> input3,
-            Func1<I, I4> input4,
-            Func1<I, I5> input5) {
+    
+    public static <O, I, I1, I2, I3, I4, I5> Func1<I, O> from(Func5<I1, I2, I3, I4, I5, O> func, Func1<I, I1> input1, Func1<I, I2> input2, Func1<I, I3> input3, Func1<I, I4> input4, Func1<I, I5> input5) {
         return source -> {
             val i1 = input1.apply(source);
             val i2 = input2.apply(source);
@@ -129,14 +113,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return func.apply(i1, i2, i3, i4, i5);
         };
     }
-    public static <O, I, I1, I2, I3, I4, I5, I6> Func1<I, O> from(
-            Func6<I1, I2, I3, I4, I5, I6, O> func,
-            Func1<I, I1> input1,
-            Func1<I, I2> input2,
-            Func1<I, I3> input3,
-            Func1<I, I4> input4,
-            Func1<I, I5> input5,
-            Func1<I, I6> input6) {
+    
+    public static <O, I, I1, I2, I3, I4, I5, I6> Func1<I, O> from(Func6<I1, I2, I3, I4, I5, I6, O> func, Func1<I, I1> input1, Func1<I, I2> input2, Func1<I, I3> input3, Func1<I, I4> input4, Func1<I, I5> input5, Func1<I, I6> input6) {
         return source -> {
             val i1 = input1.apply(source);
             val i2 = input2.apply(source);
@@ -149,7 +127,6 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     public OUTPUT applyUnsafe(INPUT input) throws Exception;
-    
     
     /**
      * Applies this function to the given input value.
@@ -168,41 +145,53 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     public default OUTPUT applyToNull() {
-        return apply((INPUT)null);
+        return apply((INPUT) null);
     }
+    
     public default Result<OUTPUT> applyTo(Result<INPUT> input) {
         return input.map(this);
     }
+    
     public default Optional<OUTPUT> applyTo(Optional<INPUT> input) {
         return input.map(this);
     }
+    
     public default Nullable<OUTPUT> applyTo(Nullable<INPUT> input) {
         return input.map(this);
     }
+    
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT> input) {
         return input.getPromise().map(this);
     }
+    
     public default Task<OUTPUT> applyTo(Task<INPUT> input) {
         return input.map(this);
     }
+    
     public default StreamPlus<OUTPUT> applyTo(Stream<INPUT> input) {
         return StreamPlus.from(input).map(this);
     }
+    
     public default FuncList<OUTPUT> applyTo(List<INPUT> input) {
         return FuncList.from(input).map(this);
     }
+    
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(Map<KEY, INPUT> input) {
         return FuncMap.from(input).map(this);
     }
+    
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT> input) {
         return input.map(this);
     }
+    
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
         return FuncMap.from(input).map(this);
     }
+    
     public default Func0<OUTPUT> applyTo(Supplier<INPUT> input) {
-        return ()->apply(input.get());
+        return () -> apply(input.get());
     }
+    
     public default <T> Func1<T, OUTPUT> applyTo(Function<T, INPUT> input) {
         return t -> apply(input.apply(t));
     }
@@ -235,18 +224,17 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return target;
         };
     }
+    
     public default <TARGET> Func1<INPUT, TARGET> map(Function<? super OUTPUT, ? extends TARGET> after) {
         return input -> {
             OUTPUT output = this.applyUnsafe(input);
-            TARGET target = (output != null)
-                          ? Func.applyUnsafe(after, output)
-                          : null;
+            TARGET target = (output != null) ? Func.applyUnsafe(after, output) : null;
             return target;
         };
     }
     
     public default Func1<INPUT, OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
                 return outputValue;
@@ -256,8 +244,9 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             }
         };
     }
+    
     public default Func1<INPUT, OUTPUT> ifExceptionThenPrint() {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
                 return outputValue;
@@ -267,8 +256,9 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             }
         };
     }
+    
     public default Func1<INPUT, OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
                 return outputValue;
@@ -278,8 +268,9 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             }
         };
     }
+    
     public default Func1<INPUT, OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
                 return outputValue;
@@ -291,55 +282,46 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     public default Func1<INPUT, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue
-                        = (outputValue != null)
-                        ? outputValue
-                        : defaultValue;
+                val returnValue = (outputValue != null) ? outputValue : defaultValue;
                 return returnValue;
             } catch (Exception e) {
                 return defaultValue;
             }
         };
     }
+    
     public default Func1<INPUT, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue
-                        = (outputValue != null)
-                        ? outputValue
-                        : defaultSupplier.get();
+                val returnValue = (outputValue != null) ? outputValue : defaultSupplier.get();
                 return returnValue;
             } catch (Exception e) {
                 return defaultSupplier.get();
             }
         };
     }
+    
     public default Func1<INPUT, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(e);
             }
         };
     }
+    
     public default Func1<INPUT, OUTPUT> whenAbsentApply(Func2<INPUT, Exception, OUTPUT> exceptionMapper) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(input, null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(input, null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(input, e);
@@ -348,55 +330,46 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     public default Func1<INPUT, OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue
-                        = (outputValue != null)
-                        ? outputValue
-                        : defaultValue;
+                val returnValue = (outputValue != null) ? outputValue : defaultValue;
                 return returnValue;
             } catch (Exception e) {
                 return defaultValue;
             }
         };
     }
+    
     public default Func1<INPUT, OUTPUT> whenAbsentGet(Consumer<Exception> exceptionHandler, Supplier<OUTPUT> defaultSupplier) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue
-                        = (outputValue != null)
-                        ? outputValue
-                        : defaultSupplier.get();
+                val returnValue = (outputValue != null) ? outputValue : defaultSupplier.get();
                 return returnValue;
             } catch (Exception e) {
                 return defaultSupplier.get();
             }
         };
     }
+    
     public default Func1<INPUT, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func1<Exception, OUTPUT> exceptionMapper) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(e);
             }
         };
     }
+    
     public default Func1<INPUT, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func2<INPUT, Exception, OUTPUT> exceptionMapper) {
-        return (input)->{
+        return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(input, null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(input, null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(input, e);
@@ -428,16 +401,16 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     public default Func1<INPUT, Promise<OUTPUT>> async() {
         return input -> {
-            val supplier = (Func0<OUTPUT>)()->{
+            val supplier = (Func0<OUTPUT>) () -> {
                 return this.applyUnsafe(input);
             };
-            return DeferAction.from(supplier)
-                    .start().getPromise();
+            return DeferAction.from(supplier).start().getPromise();
         };
     }
+    
     public default Func1<INPUT, DeferAction<OUTPUT>> defer() {
         return input -> {
-            val supplier = (Func0<OUTPUT>)()->{
+            val supplier = (Func0<OUTPUT>) () -> {
                 return this.applyUnsafe(input);
             };
             return DeferAction.from(supplier);
@@ -449,12 +422,13 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     public default FuncUnit1<INPUT> ignoreResult() {
-        return FuncUnit1.of((input1)->applyUnsafe(input1));
+        return FuncUnit1.of((input1) -> applyUnsafe(input1));
     }
     
     public default Predicate<INPUT> toPredicate() {
         return toPredicate(Boolean.TRUE::equals);
     }
+    
     public default Predicate<INPUT> toPredicate(Func1<OUTPUT, Boolean> converter) {
         val converted = this.then(converter);
         return Func.toPredicate(converted);
@@ -471,5 +445,4 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return this.applyUnsafe(input);
         };
     }
-    
 }

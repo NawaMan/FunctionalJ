@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,5 +35,4 @@ public interface LongLongToIntFunctionPrimitive extends LongComparator {
     public default int compareLong(long o1, long o2) {
         return applyAsLongAndLong(o1, o2);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,12 +26,10 @@ package functionalj.result;
 import java.util.function.Predicate;
 
 public interface NullSafePredicate<DATA> extends Predicate<DATA> {
-
-    public boolean test(DATA data);
     
+    public boolean test(DATA data);
     
     public static <D> NullSafePredicate<D> of(Predicate<D> predicate) {
         return predicate::test;
     }
-    
 }

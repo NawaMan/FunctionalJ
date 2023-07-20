@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,7 +31,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
@@ -49,11 +48,11 @@ import nullablej.nullable.Nullable;
 
 /**
  * Function of two parameters.
- * 
+ *
  * @param <INPUT1>  the first input data type.
  * @param <INPUT2>  the second input data type.
  * @param <OUTPUT>  the output data type.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
@@ -62,6 +61,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public static <I1, I2, O> Func2<I1, I2, O> of(Func2<I1, I2, O> func) {
         return func;
     }
+    
     public static <I1, I2, O> Func2<I1, I2, O> func2(Func2<I1, I2, O> func) {
         return func;
     }
@@ -98,12 +98,15 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default OUTPUT applyTo(Tuple2<INPUT1, INPUT2> input) {
         return apply(input._1(), input._2());
     }
+    
     public default Func1<INPUT2, OUTPUT> applyTo(INPUT1 input1) {
         return input2 -> apply(input1, input2);
     }
+    
     public default Result<OUTPUT> applyTo(Result<INPUT1> input1, Result<INPUT2> input2) {
         return Result.ofResults(input1, input2, this);
     }
+    
     public default Optional<OUTPUT> applyTo(Optional<INPUT1> input1, Optional<INPUT2> input2) {
         return input1.flatMap(i1 -> {
             return input2.map(i2 -> {
@@ -111,6 +114,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             });
         });
     }
+    
     public default Nullable<OUTPUT> applyTo(Nullable<INPUT1> input1, Nullable<INPUT2> input2) {
         return input1.flatMap(i1 -> {
             return input2.map(i2 -> {
@@ -118,33 +122,43 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             });
         });
     }
+    
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2) {
         return Promise.from(input1, input2, this);
     }
+    
     public default Task<OUTPUT> applyTo(Task<INPUT1> input1, Task<INPUT2> input2) {
         return Task.from(input1, input2, this);
     }
+    
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
+    
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, ZipWithOption option) {
         return input1.zipWith(input2, option, this);
     }
+    
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
+    
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2, ZipWithOption option) {
         return input1.zipWith(input2, option, this);
     }
+    
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
+    
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2, ZipWithOption option) {
         return input1.zipWith(input2, option, this);
     }
+    
     public default Func0<OUTPUT> applyTo(Supplier<INPUT1> input1, Supplier<INPUT2> input2) {
-        return ()->apply(input1.get(), input2.get());
+        return () -> apply(input1.get(), input2.get());
     }
+    
     public default <SOURCE> Func1<SOURCE, OUTPUT> applyTo(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2) {
         return source -> {
             val i1 = input1.apply(source);
@@ -165,7 +179,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     * 
+     *
      * @param  <TARGET>  the target result value.
      * @param  after     the function to be run after this function.
      * @return           the composed function.
@@ -177,18 +191,17 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             return target;
         };
     }
+    
     public default <TARGET> Func2<INPUT1, INPUT2, TARGET> map(Function<? super OUTPUT, ? extends TARGET> after) {
         return (input1, input2) -> {
             OUTPUT output = this.applyUnsafe(input1, input2);
-            TARGET target = (output != null)
-                          ? Func.applyUnsafe(after, output)
-                          : null;
+            TARGET target = (output != null) ? Func.applyUnsafe(after, output) : null;
             return target;
         };
     }
     
     public default Func2<INPUT1, INPUT2, OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
                 return outputValue;
@@ -198,8 +211,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> ifExceptionThenPrint() {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
                 return outputValue;
@@ -209,8 +223,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
                 return outputValue;
@@ -220,8 +235,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
                 return outputValue;
@@ -233,69 +249,58 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : defaultValue;
+                val returnValue = (outputValue != null) ? outputValue : defaultValue;
                 return returnValue;
             } catch (Exception e) {
                 return defaultValue;
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : defaultSupplier.get();
+                val returnValue = (outputValue != null) ? outputValue : defaultSupplier.get();
                 return returnValue;
             } catch (Exception e) {
                 return defaultSupplier.get();
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(e);
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func3<INPUT1, INPUT2, Exception, OUTPUT> exceptionMapper) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(input1, input2, null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(input1, input2, null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(input1, input2, e);
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func2<Tuple2<INPUT1, INPUT2>, Exception, OUTPUT> exceptionMapper) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(Tuple.of(input1, input2), null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(Tuple.of(input1, input2), null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(Tuple.of(input1, input2), e);
@@ -304,13 +309,10 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : defaultValue;
+                val returnValue = (outputValue != null) ? outputValue : defaultValue;
                 return returnValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
@@ -318,14 +320,12 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentGet(Consumer<Exception> exceptionHandler, Supplier<OUTPUT> defaultSupplier) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : defaultSupplier.get();
+                val returnValue = (outputValue != null) ? outputValue : defaultSupplier.get();
                 return returnValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
@@ -333,14 +333,12 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func1<Exception, OUTPUT> exceptionMapper) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
                 return returnValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
@@ -348,14 +346,12 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func3<INPUT1, INPUT2, Exception, OUTPUT> exceptionMapper) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(input1, input2, null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(input1, input2, null);
                 return returnValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
@@ -363,14 +359,12 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             }
         };
     }
+    
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func2<Tuple2<INPUT1, INPUT2>, Exception, OUTPUT> exceptionMapper) {
-        return (input1, input2)->{
+        return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
-                        = (outputValue != null)
-                        ? outputValue
-                        : exceptionMapper.apply(Tuple.of(input1, input2), null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(Tuple.of(input1, input2), null);
                 return returnValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
@@ -403,17 +397,16 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     public default Func2<INPUT1, INPUT2, Promise<OUTPUT>> async() {
         return (input1, input2) -> {
-            val supplier = (Func0<OUTPUT>)()->{
+            val supplier = (Func0<OUTPUT>) () -> {
                 return this.applyUnsafe(input1, input2);
             };
-            return DeferAction.from(supplier)
-                    .start().getPromise();
+            return DeferAction.from(supplier).start().getPromise();
         };
     }
     
     public default Func2<INPUT1, INPUT2, DeferAction<OUTPUT>> defer() {
         return (input1, input2) -> {
-            val supplier = (Func0<OUTPUT>)()->{
+            val supplier = (Func0<OUTPUT>) () -> {
                 return this.applyUnsafe(input1, input2);
             };
             return DeferAction.from(supplier);
@@ -427,7 +420,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     public default FuncUnit2<INPUT1, INPUT2> ignoreResult() {
-        return FuncUnit2.of((input1, input2)->applyUnsafe(input1, input2));
+        return FuncUnit2.of((input1, input2) -> applyUnsafe(input1, input2));
     }
     
     public default Func1<Tuple2<INPUT1, INPUT2>, OUTPUT> wholly() {
@@ -444,7 +437,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     /**
      * Flip the parameter order.
-     * 
+     *
      * @return  the Func2 with parameter in a flipped order.
      */
     public default Func2<INPUT2, INPUT1, OUTPUT> flip() {
@@ -458,9 +451,11 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2) {
         return (i1) -> this.applyUnsafe(i1, i2);
     }
+    
     public default Func1<Result<INPUT1>, Result<OUTPUT>> elevateWith(Result<INPUT2> i2) {
         return (i1) -> this.applyTo(i1, i2);
     }
+    
     public default Func1<HasPromise<INPUT1>, Promise<OUTPUT>> elevateWith(HasPromise<INPUT2> i2) {
         return (i1) -> this.applyTo(i1, i2);
     }
@@ -468,16 +463,16 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func1<INPUT1, Func1<INPUT2, OUTPUT>> split() {
         return split1();
     }
+    
     public default Func1<INPUT1, Func1<INPUT2, OUTPUT>> split1() {
         return (i1) -> (i2) -> this.applyUnsafe(i1, i2);
     }
     
-    
-    //== Partially apply functions ==
-    
+    // == Partially apply functions ==
     public default Func0<OUTPUT> bind(INPUT1 i1, INPUT2 i2) {
         return () -> this.applyUnsafe(i1, i2);
     }
+    
     public default Func1<INPUT2, OUTPUT> bind1(INPUT1 i1) {
         return i2 -> this.applyUnsafe(i1, i2);
     }
@@ -489,8 +484,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func1<INPUT1, OUTPUT> bind(Absent a1, INPUT2 i2) {
         return i1 -> this.applyUnsafe(i1, i2);
     }
+    
     public default Func1<INPUT2, OUTPUT> bind(INPUT1 i1, Absent a2) {
         return i2 -> this.applyUnsafe(i1, i2);
     }
-    
 }

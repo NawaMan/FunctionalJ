@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,13 +25,8 @@ package functionalj.function;
 
 import java.util.function.ToDoubleBiFunction;
 
-
 @FunctionalInterface
-public interface ObjectDoubleToDoubleFunctionPrimitive<DATA> 
-        extends
-            Func2<DATA, Double, Double>,
-            ToDoubleBiFunction<DATA, Double> {
-    
+public interface ObjectDoubleToDoubleFunctionPrimitive<DATA> extends Func2<DATA, Double, Double>, ToDoubleBiFunction<DATA, Double> {
     
     public double applyObjectDouble(DATA data, double doubleValue);
     

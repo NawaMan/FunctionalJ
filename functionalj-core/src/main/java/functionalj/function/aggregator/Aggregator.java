@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,10 +31,9 @@ public interface Aggregator<SOURCE, TARGET> extends Func1<SOURCE, TARGET> {
     
     public Collected<SOURCE, ?, TARGET> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<SOURCE, TARGET> implements Aggregator<SOURCE, TARGET> {
-    
+        
         private final Collected<SOURCE, ?, TARGET> collected;
         
         public Impl(CollectorPlus<SOURCE, ?, TARGET> collector) {
@@ -50,7 +49,5 @@ public interface Aggregator<SOURCE, TARGET> extends Func1<SOURCE, TARGET> {
         public Collected<SOURCE, ?, TARGET> asCollected() {
             return collected;
         }
-        
     }
-    
 }

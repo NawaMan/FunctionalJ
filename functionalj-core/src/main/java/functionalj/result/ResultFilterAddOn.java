@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,9 +25,7 @@ package functionalj.result;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-
 import lombok.val;
-
 
 public interface ResultFilterAddOn<DATA> {
     
@@ -43,7 +41,6 @@ public interface ResultFilterAddOn<DATA> {
         return filter(value -> {
             if (clzz.isInstance(value))
                 return false;
-            
             val target = clzz.cast(value);
             val isPass = theCondition.test(target);
             return isPass;
@@ -57,5 +54,4 @@ public interface ResultFilterAddOn<DATA> {
             return isPass;
         });
     }
-    
 }

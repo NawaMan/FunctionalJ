@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,20 +34,21 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collector;
-
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.intstream.CollectorPlusHelper;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
 
-
 public interface DoubleCollectorPlus<ACCUMULATED, RESULT> extends CollectorPlus<Double, ACCUMULATED, RESULT> {
     
-    Supplier<ACCUMULATED>          supplier();
+    Supplier<ACCUMULATED> supplier();
+    
     ObjDoubleConsumer<ACCUMULATED> doubleAccumulator();
-    BinaryOperator<ACCUMULATED>    combiner();
-    Function<ACCUMULATED, RESULT>  finisher();
+    
+    BinaryOperator<ACCUMULATED> combiner();
+    
+    Function<ACCUMULATED, RESULT> finisher();
     
     public default Set<Characteristics> characteristics() {
         return CollectorPlusHelper.unorderedConcurrent();
@@ -61,8 +62,7 @@ public interface DoubleCollectorPlus<ACCUMULATED, RESULT> extends CollectorPlus<
         return doubleAccumulator()::accept;
     }
     
-    //== Derive == 
-    
+    // == Derive ==
     public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToDoubleFunction<SOURCE> mapper) {
         val collector = new DerivedDoubleCollectorPlus.FromObj<SOURCE, ACCUMULATED, RESULT>(this, mapper);
         return CollectorPlus.from(collector);

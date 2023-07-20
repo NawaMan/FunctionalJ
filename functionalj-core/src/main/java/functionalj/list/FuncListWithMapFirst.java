@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,59 +25,47 @@ package functionalj.list;
 
 import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
-
 import java.util.function.Function;
-
 import lombok.val;
 
 public interface FuncListWithMapFirst<DATA> extends AsFuncList<DATA> {
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            Function<? super DATA, T> mapper1,
-            Function<? super DATA, T> mapper2) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapFirst(mapper1, mapper2));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            Function<? super DATA, T> mapper1,
-            Function<? super DATA, T> mapper2,
-            Function<? super DATA, T> mapper3) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2, Function<? super DATA, T> mapper3) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapFirst(mapper1, mapper2, mapper3));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            Function<? super DATA, T> mapper1,
-            Function<? super DATA, T> mapper2,
-            Function<? super DATA, T> mapper3,
-            Function<? super DATA, T> mapper4) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2, Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            Function<? super DATA, T> mapper1,
-            Function<? super DATA, T> mapper2,
-            Function<? super DATA, T> mapper3,
-            Function<? super DATA, T> mapper4,
-            Function<? super DATA, T> mapper5) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2, Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4, Function<? super DATA, T> mapper5) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5));
     }
     
-    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
-    public default <T> FuncList<T> mapFirst(
-            Function<? super DATA, T> mapper1,
-            Function<? super DATA, T> mapper2,
-            Function<? super DATA, T> mapper3,
-            Function<? super DATA, T> mapper4,
-            Function<? super DATA, T> mapper5,
-            Function<? super DATA, T> mapper6) {
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2, Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4, Function<? super DATA, T> mapper5, Function<? super DATA, T> mapper6) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
     }

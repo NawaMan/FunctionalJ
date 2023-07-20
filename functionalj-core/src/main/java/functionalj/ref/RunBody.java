@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,12 +26,9 @@ package functionalj.ref;
 @FunctionalInterface
 public interface RunBody<EXCEPTION extends Exception> {
     
-    
     public static RunBody<RuntimeException> from(Runnable runnable) {
-        return ()->runnable.run();
+        return () -> runnable.run();
     }
     
-    
-	public void run() throws EXCEPTION;
-	
+    public void run() throws EXCEPTION;
 }

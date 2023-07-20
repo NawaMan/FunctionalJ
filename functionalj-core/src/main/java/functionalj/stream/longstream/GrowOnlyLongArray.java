@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.stream.longstream;
 
 import java.util.OptionalLong;
-
 import functionalj.list.longlist.LongFuncList;
 import functionalj.stream.StreamPlus;
 import lombok.val;
@@ -32,26 +31,26 @@ import lombok.val;
 // TODO - This is NOT thread safe (not even try to be).
 public final class GrowOnlyLongArray {
     
-    private static int ARRAY_COUNT  = 8;
+    private static int ARRAY_COUNT = 8;
+    
     private static int ARRAY_LENGTH = 100;
     
     private long[][] arrays;
-    private int      length = 0;
+    
+    private int length = 0;
     
     public GrowOnlyLongArray() {
         arrays = new long[ARRAY_COUNT][];
     }
     
-    public GrowOnlyLongArray(long ... values) {
-        int actualCount = (int)Math.ceil(1.0 * values.length / ARRAY_LENGTH);
-        int arrayCount  = Math.max(actualCount, ARRAY_COUNT);
+    public GrowOnlyLongArray(long... values) {
+        int actualCount = (int) Math.ceil(1.0 * values.length / ARRAY_LENGTH);
+        int arrayCount = Math.max(actualCount, ARRAY_COUNT);
         arrays = new long[arrayCount][];
         length = values.length;
-        
         int offset = 0;
         for (int i = 0; i < actualCount; i++) {
             arrays[i] = new long[ARRAY_LENGTH];
-            
             int eachLength = Math.min(ARRAY_LENGTH, length - offset);
             System.arraycopy(values, offset, arrays[i], 0, eachLength);
             offset = offset + ARRAY_LENGTH;
@@ -59,8 +58,8 @@ public final class GrowOnlyLongArray {
     }
     
     public void add(long i) {
-        int next    = length;
-        int aIndex  = next / ARRAY_LENGTH;
+        int next = length;
+        int aIndex = next / ARRAY_LENGTH;
         int residue = next % ARRAY_LENGTH;
         if (aIndex >= arrays.length) {
             long[][] newArrays = new long[arrays.length + ARRAY_COUNT][];
@@ -73,21 +72,20 @@ public final class GrowOnlyLongArray {
         arrays[aIndex][residue] = i;
         length++;
     }
+    
     public int length() {
         return length;
     }
+    
     public boolean isEmpty() {
         return length == 0;
     }
     
     public LongStreamPlus stream() {
-        int aCount  = length / ARRAY_LENGTH;
+        int aCount = length / ARRAY_LENGTH;
         int residue = length % ARRAY_LENGTH;
-        
-        LongStreamPlus head  = StreamPlus.of(arrays).limit(aCount).flatMapToLong(a -> LongStreamPlus.of(a));
-        LongStreamPlus tail  = ((aCount >= arrays.length) || (arrays[aCount] == null))
-                            ? LongStreamPlus.empty()
-                            : LongStreamPlus.of(arrays[aCount]).limit(residue);
+        LongStreamPlus head = StreamPlus.of(arrays).limit(aCount).flatMapToLong(a -> LongStreamPlus.of(a));
+        LongStreamPlus tail = ((aCount >= arrays.length) || (arrays[aCount] == null)) ? LongStreamPlus.empty() : LongStreamPlus.of(arrays[aCount]).limit(residue);
         LongStreamPlus total = head.appendWith(tail);
         return total;
     }
@@ -103,8 +101,7 @@ public final class GrowOnlyLongArray {
     public long get(int i) {
         if (i < 0 || i >= length)
             throw new ArrayIndexOutOfBoundsException(i);
-        
-        int aIndex  = i / ARRAY_LENGTH;
+        int aIndex = i / ARRAY_LENGTH;
         int residue = i % ARRAY_LENGTH;
         return arrays[aIndex][residue];
     }
@@ -112,8 +109,7 @@ public final class GrowOnlyLongArray {
     public OptionalLong at(int i) {
         if (i < 0 || i >= length)
             return OptionalLong.empty();
-        
-        int aIndex  = i / ARRAY_LENGTH;
+        int aIndex = i / ARRAY_LENGTH;
         int residue = i % ARRAY_LENGTH;
         return OptionalLong.of(arrays[aIndex][residue]);
     }
@@ -123,12 +119,11 @@ public final class GrowOnlyLongArray {
     }
     
     public int hashCode() {
-        return Long.hashCode(stream().reduce(43, (p, c)-> p*43 + c));
+        return Long.hashCode(stream().reduce(43, (p, c) -> p * 43 + c));
     }
     
     public boolean equals(GrowOnlyLongArray array) {
-        val score = stream().zipWith(array.stream(), (a,b) -> a == b ? 1 : 0).acceptUntil(i -> i == 0).sum();
+        val score = stream().zipWith(array.stream(), (a, b) -> a == b ? 1 : 0).acceptUntil(i -> i == 0).sum();
         return score == length;
     }
-    
 }

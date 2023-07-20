@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,21 +24,23 @@
 package functionalj.list.intlist;
 
 import java.util.function.Function;
-
 import functionalj.pipeable.Pipeable;
 
 public interface IntFuncListWithPipe {
     
     public IntFuncList toFuncList();
     
-    /** @return the pipeable of this stream. */
+    /**
+     * @return the pipeable of this stream.
+     */
     public default <T> Pipeable<IntFuncList> pipable() {
         return Pipeable.of(this.toFuncList());
     }
     
-    /** Pipe this stream plus through the given function. */
+    /**
+     * Pipe this stream plus through the given function.
+     */
     public default <T> T pipe(Function<? super IntFuncList, T> piper) {
         return piper.apply(this.toFuncList());
     }
-    
 }

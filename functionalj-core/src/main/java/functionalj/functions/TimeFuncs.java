@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,9 +29,8 @@ import functionalj.function.FuncUnit0;
 public class TimeFuncs {
     
     public static FuncUnit0 Sleep(long millisecond) {
-        return ()-> {
+        return () -> {
             Env.time().sleep(millisecond);
         };
     }
-    
 }

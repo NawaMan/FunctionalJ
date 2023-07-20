@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,24 +25,23 @@ package functionalj.supportive;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import functionalj.ref.ProcessBody;
 import lombok.val;
 
-
 /**
  * Implementation to get the caller.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public class CallerId {
     
-    /** The default instance of the caller id. */
+    /**
+     * The default instance of the caller id.
+     */
     public static final CallerId instance = new CallerId();
     
+    private static ThreadLocal<List<StackTraceElement>> callerTrace = ThreadLocal.withInitial(() -> new ArrayList<>(10));
     
-    private static ThreadLocal<List<StackTraceElement>> callerTrace
-                        = ThreadLocal.withInitial(()->new ArrayList<>(10));
     static {
         callerTrace.get().add(null);
     }
@@ -58,20 +57,19 @@ public class CallerId {
     
     /**
      * Run the body and continue (or start) the tracing.
-     * 
+     *
      * @param   body  the code to run -- the traced element will be passed on as the body parameter.
      * @return  the value returned by the body.
      * @throws T  the exception thrown by the value.
      */
     public <V, T extends Exception> V trace(ProcessBody<StackTraceElement, V, T> body) throws T {
-        StackTraceElement  trace   = last();
+        StackTraceElement trace = last();
         boolean isAdded = false;
         if (trace == null) {
             val stackTrace = Thread.currentThread().getStackTrace();
-            val length     = stackTrace.length;
-            val index      = Math.min(length - 1, 3);
+            val length = stackTrace.length;
+            val index = Math.min(length - 1, 3);
             trace = stackTrace[index];
-            
             val list = callerTrace.get();
             list.set(0, trace);
             isAdded = true;
@@ -79,14 +77,14 @@ public class CallerId {
         try {
             return body.process(trace);
         } finally {
-            if (isAdded) 
+            if (isAdded)
                 callerTrace.get().set(0, null);
         }
     }
     
     /**
      * Run the body but pause the tracing.
-     * 
+     *
      * @param   body  the code to run -- the traced element will be passed on as the body parameter.
      * @return  the value returned by the body.
      * @throws T  the exception thrown by the value.
@@ -94,12 +92,10 @@ public class CallerId {
     public <V, T extends Exception> V tracePause(ProcessBody<StackTraceElement, V, T> body) throws T {
         val trace = last();
         callerTrace.get().add(0, null);
-        
         try {
             return body.process(trace);
         } finally {
             callerTrace.get().remove(0);
         }
     }
-    
 }
