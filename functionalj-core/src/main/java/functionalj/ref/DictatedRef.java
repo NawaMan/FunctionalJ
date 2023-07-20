@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,11 +24,9 @@
 package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
-
 import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
-
 
 public class DictatedRef<DATA> extends Ref<DATA> {
     
@@ -68,7 +66,7 @@ public class DictatedRef<DATA> extends Ref<DATA> {
             return true;
         if (obj instanceof DictatedRef) {
             @SuppressWarnings("rawtypes")
-            val dictatedRef = (DictatedRef)obj;
+            val dictatedRef = (DictatedRef) obj;
             if (ref.equals(dictatedRef.ref))
                 return true;
             if (this.equals(dictatedRef.ref))
@@ -76,5 +74,4 @@ public class DictatedRef<DATA> extends Ref<DATA> {
         }
         return ref.equals(obj);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,9 +25,10 @@ package functionalj.promise;
 
 public class PromisePartiallyFailException extends RuntimeException {
     
-	private static final long serialVersionUID = 1715068836323475893L;
-	
-	private final int index;
+    private static final long serialVersionUID = 1715068836323475893L;
+    
+    private final int index;
+    
     private final int count;
     
     public PromisePartiallyFailException(int index, int count, Throwable cause) {
@@ -43,5 +44,4 @@ public class PromisePartiallyFailException extends RuntimeException {
     public int getCount() {
         return count;
     }
-    
 }

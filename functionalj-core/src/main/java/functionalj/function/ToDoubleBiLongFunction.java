@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,5 +27,4 @@ package functionalj.function;
 public interface ToDoubleBiLongFunction<DATA> {
     
     public double applyAsDouble(DATA data, long longValue);
-    
 }

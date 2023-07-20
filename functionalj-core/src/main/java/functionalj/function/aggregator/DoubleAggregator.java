@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.function.aggregator;
 
 import java.util.function.DoubleFunction;
-
 import functionalj.stream.doublestream.collect.DoubleCollected;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 
@@ -32,8 +31,7 @@ public interface DoubleAggregator<TARGET> extends DoubleFunction<TARGET>, Aggreg
     
     public DoubleCollected<?, TARGET> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<TARGET> implements DoubleAggregator<TARGET> {
         
         private final DoubleCollected<?, TARGET> collected;
@@ -57,5 +55,4 @@ public interface DoubleAggregator<TARGET> extends DoubleFunction<TARGET>, Aggreg
             return collected;
         }
     }
-    
 }

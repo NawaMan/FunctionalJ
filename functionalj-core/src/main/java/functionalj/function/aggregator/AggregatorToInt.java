@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,10 +31,9 @@ public interface AggregatorToInt<SOURCE> extends IntegerAccessPrimitive<SOURCE>,
     
     public CollectedToInt<SOURCE, ?> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<SOURCE> implements AggregatorToInt<SOURCE>, Aggregator<SOURCE, Integer> {
-    
+        
         private final CollectedToInt<SOURCE, ?> collected;
         
         public Impl(CollectorToIntPlus<SOURCE, ?> collector) {

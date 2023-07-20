@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.stream.intstream;
 
 import java.util.OptionalInt;
-
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.StreamPlus;
 import lombok.val;
@@ -32,26 +31,26 @@ import lombok.val;
 // TODO - This is NOT thread safe (not even try to be).
 public final class GrowOnlyIntArray {
     
-    private static int ARRAY_COUNT  = 8;
+    private static int ARRAY_COUNT = 8;
+    
     private static int ARRAY_LENGTH = 100;
     
     private int[][] arrays;
-    private int     length = 0;
+    
+    private int length = 0;
     
     public GrowOnlyIntArray() {
         arrays = new int[ARRAY_COUNT][];
     }
     
-    public GrowOnlyIntArray(int ... values) {
-        int actualCount = (int)Math.ceil(1.0 * values.length / ARRAY_LENGTH);
-        int arrayCount  = Math.max(actualCount, ARRAY_COUNT);
+    public GrowOnlyIntArray(int... values) {
+        int actualCount = (int) Math.ceil(1.0 * values.length / ARRAY_LENGTH);
+        int arrayCount = Math.max(actualCount, ARRAY_COUNT);
         arrays = new int[arrayCount][];
         length = values.length;
-        
         int offset = 0;
         for (int i = 0; i < actualCount; i++) {
             arrays[i] = new int[ARRAY_LENGTH];
-            
             int eachLength = Math.min(ARRAY_LENGTH, length - offset);
             System.arraycopy(values, offset, arrays[i], 0, eachLength);
             offset = offset + ARRAY_LENGTH;
@@ -59,8 +58,8 @@ public final class GrowOnlyIntArray {
     }
     
     public void add(int i) {
-        int next    = length;
-        int aIndex  = next / ARRAY_LENGTH;
+        int next = length;
+        int aIndex = next / ARRAY_LENGTH;
         int residue = next % ARRAY_LENGTH;
         if (aIndex >= arrays.length) {
             int[][] newArrays = new int[arrays.length + ARRAY_COUNT][];
@@ -73,21 +72,20 @@ public final class GrowOnlyIntArray {
         arrays[aIndex][residue] = i;
         length++;
     }
+    
     public int length() {
         return length;
     }
+    
     public boolean isEmpty() {
         return length == 0;
     }
     
     public IntStreamPlus stream() {
-        int aCount  = length / ARRAY_LENGTH;
+        int aCount = length / ARRAY_LENGTH;
         int residue = length % ARRAY_LENGTH;
-        
-        IntStreamPlus head  = StreamPlus.of(arrays).limit(aCount).flatMapToInt(a -> IntStreamPlus.of(a));
-        IntStreamPlus tail  = ((aCount >= arrays.length) || (arrays[aCount] == null))
-                            ? IntStreamPlus.empty()
-                            : IntStreamPlus.of(arrays[aCount]).limit(residue);
+        IntStreamPlus head = StreamPlus.of(arrays).limit(aCount).flatMapToInt(a -> IntStreamPlus.of(a));
+        IntStreamPlus tail = ((aCount >= arrays.length) || (arrays[aCount] == null)) ? IntStreamPlus.empty() : IntStreamPlus.of(arrays[aCount]).limit(residue);
         IntStreamPlus total = head.appendWith(tail);
         return total;
     }
@@ -103,8 +101,7 @@ public final class GrowOnlyIntArray {
     public int get(int i) {
         if (i < 0 || i >= length)
             throw new ArrayIndexOutOfBoundsException(i);
-        
-        int aIndex  = i / ARRAY_LENGTH;
+        int aIndex = i / ARRAY_LENGTH;
         int residue = i % ARRAY_LENGTH;
         return arrays[aIndex][residue];
     }
@@ -112,8 +109,7 @@ public final class GrowOnlyIntArray {
     public OptionalInt at(int i) {
         if (i < 0 || i >= length)
             return OptionalInt.empty();
-        
-        int aIndex  = i / ARRAY_LENGTH;
+        int aIndex = i / ARRAY_LENGTH;
         int residue = i % ARRAY_LENGTH;
         return OptionalInt.of(arrays[aIndex][residue]);
     }
@@ -123,12 +119,11 @@ public final class GrowOnlyIntArray {
     }
     
     public int hashCode() {
-        return stream().reduce(43, (p, c)-> p*43 + c);
+        return stream().reduce(43, (p, c) -> p * 43 + c);
     }
     
     public boolean equals(GrowOnlyIntArray array) {
-        val score = stream().zipWith(array.stream(), (a,b) -> a == b ? 1 : 0).acceptUntil(i -> i == 0).sum();
+        val score = stream().zipWith(array.stream(), (a, b) -> a == b ? 1 : 0).acceptUntil(i -> i == 0).sum();
         return score == length;
     }
-    
 }

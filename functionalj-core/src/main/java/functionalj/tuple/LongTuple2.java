@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,11 +30,13 @@ public class LongTuple2<T2> implements Tuple2<Long, T2>, Map.Entry<Long, T2> {
     public static <T2> LongTuple2<T2> of(long i1, T2 i2) {
         return new LongTuple2<T2>(i1, i2);
     }
+    
     public static <T2> LongTuple2<T2> intTuple(long i1, T2 i2) {
         return new LongTuple2<T2>(i1, i2);
     }
     
     public final long _1;
+    
     public final T2 _2;
     
     public LongTuple2(long _1, T2 _2) {
@@ -49,6 +51,7 @@ public class LongTuple2<T2> implements Tuple2<Long, T2>, Map.Entry<Long, T2> {
     public Long _1() {
         return _1;
     }
+    
     public T2 _2() {
         return _2;
     }
@@ -72,13 +75,14 @@ public class LongTuple2<T2> implements Tuple2<Long, T2>, Map.Entry<Long, T2> {
     public String toString() {
         return Tuple.toString(this);
     }
+    
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
+    
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);
     }
-    
 }

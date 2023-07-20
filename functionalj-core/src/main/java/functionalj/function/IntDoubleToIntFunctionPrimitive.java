@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,32 +25,23 @@ package functionalj.function;
 
 import java.util.function.ToIntBiFunction;
 
-
 @FunctionalInterface
-public interface IntDoubleToIntFunctionPrimitive 
-            extends 
-                ToIntBiFunction<Integer, Double>, 
-                ObjectDoubleToIntegerFunctionPrimitive<Integer> {
+public interface IntDoubleToIntFunctionPrimitive extends ToIntBiFunction<Integer, Double>, ObjectDoubleToIntegerFunctionPrimitive<Integer> {
     
     public static IntDoubleToIntFunctionPrimitive of(IntDoubleToIntFunctionPrimitive function) {
         return function;
-        
     }
+    
     public static IntDoubleToIntFunctionPrimitive from(ToIntBiFunction<Integer, Double> function) {
-        return (function instanceof IntDoubleToIntFunctionPrimitive)
-                ? (IntDoubleToIntFunctionPrimitive)function
-                : ((d1, d2) -> function.applyAsInt(d1, d2));
+        return (function instanceof IntDoubleToIntFunctionPrimitive) ? (IntDoubleToIntFunctionPrimitive) function : ((d1, d2) -> function.applyAsInt(d1, d2));
     }
+    
     public static IntDoubleToIntFunctionPrimitive from(ObjectDoubleToIntegerFunctionPrimitive<Integer> function) {
-        return (function instanceof IntDoubleToIntFunctionPrimitive)
-                ? (IntDoubleToIntFunctionPrimitive)function
-                : ((d1, d2) -> function.applyObjectDouble(d1, d2));
+        return (function instanceof IntDoubleToIntFunctionPrimitive) ? (IntDoubleToIntFunctionPrimitive) function : ((d1, d2) -> function.applyObjectDouble(d1, d2));
     }
     
-    //-- functionality --
-    
+    // -- functionality --
     public int applyIntDouble(int intValue, double doubleValue);
-    
     
     public default int applyAsInt(Integer intValue, Double doubleValue) {
         return applyIntDouble(intValue, doubleValue);
@@ -60,5 +51,4 @@ public interface IntDoubleToIntFunctionPrimitive
     public default int applyObjectDouble(Integer data, double doubleValue) {
         return applyIntDouble(data, doubleValue);
     }
-    
 }

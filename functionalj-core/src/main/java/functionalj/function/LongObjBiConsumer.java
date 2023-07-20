@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,13 +34,11 @@ public interface LongObjBiConsumer<DATA> extends FuncUnit2<Long, DATA> {
         acceptAsLong(input1, input2);
     }
     
-    
     public static <D> void accept(BiConsumer<Long, D> function, long input1, D input2) {
         if (function instanceof LongObjBiConsumer) {
-            ((LongObjBiConsumer<D>)function).acceptAsLong(input1, input2);
+            ((LongObjBiConsumer<D>) function).acceptAsLong(input1, input2);
         } else {
             function.accept(input1, input2);
         }
     }
-    
 }

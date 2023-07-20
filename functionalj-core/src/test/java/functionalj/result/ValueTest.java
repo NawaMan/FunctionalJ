@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,21 +24,15 @@
 package functionalj.result;
 
 import static functionalj.TestHelper.assertAsString;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-
 import org.junit.Test;
-
 import lombok.val;
-
-
 
 public class ValueTest {
     
     private static final Result<String> value = Result.valueOf("Test");
-    
     
     @Test
     public void testGet() {
@@ -46,42 +40,34 @@ public class ValueTest {
         val length = value.map(str -> {
             return str.length();
         });
-        
         assertAsString("Result:{ Value: 4 }", length);
     }
     
     @Test
     public void testLazy() {
         val logs = new ArrayList<String>();
-        val length =  value.map(str -> {
+        val length = value.map(str -> {
             logs.add(str);
             return str.length();
         });
         logs.add("--- After map but logged first ---");
-        
         assertAsString("Result:{ Value: Test }", value);
-        assertAsString("[--- After map but logged first ---]",    logs);
-        
+        assertAsString("[--- After map but logged first ---]", logs);
         // First use will have 'Test' added to the log.
         assertAsString("Result:{ Value: 4 }", length);
-        assertAsString("[--- After map but logged first ---, Test]",    logs);
-        
+        assertAsString("[--- After map but logged first ---, Test]", logs);
         // Second use does not add 'Test' to the log.
         assertAsString("Result:{ Value: 4 }", length);
-        assertAsString("[--- After map but logged first ---, Test]",    logs);
+        assertAsString("[--- After map but logged first ---, Test]", logs);
     }
     
     @Test
     public void testPrintException() {
         val buffer = new StringWriter();
-        val length =  value.map(str -> {
+        val length = value.map(str -> {
             throw new NullPointerException();
         });
-        
-        assertAsString(
-                "Result:{ Exception: java.lang.NullPointerException }",
-                length.printException(new PrintWriter(buffer)));
+        assertAsString("Result:{ Exception: java.lang.NullPointerException }", length.printException(new PrintWriter(buffer)));
         assertAsString("java.lang.NullPointerException", buffer.toString().split("\n")[0]);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.promise;
 
 import java.util.function.Consumer;
-
 import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.FuncUnit0;
@@ -38,44 +37,48 @@ public class DeferActionConfig {
         return new DeferActionConfig();
     }
     
-    public static final Ref<DeferActionConfig> current
-            = Ref.of(DeferActionConfig.class)
-            .orTypeDefaultOrGet(DeferActionConfig::new);
+    public static final Ref<DeferActionConfig> current = Ref.of(DeferActionConfig.class).orTypeDefaultOrGet(DeferActionConfig::new);
     
-    private static final FuncUnit0 DO_NOTHING = ()->{};
+    private static final FuncUnit0 DO_NOTHING = () -> {
+    };
     
-    private boolean     interruptOnCancel = true;
-    private FuncUnit0   onStart           = DO_NOTHING;
-    private AsyncRunner runner            = null;
+    private boolean interruptOnCancel = true;
+    
+    private FuncUnit0 onStart = DO_NOTHING;
+    
+    private AsyncRunner runner = null;
     
     public boolean interruptOnCancel() {
         return interruptOnCancel;
     }
+    
     public DeferActionConfig interruptOnCancel(boolean interruptOnCancel) {
         this.interruptOnCancel = interruptOnCancel;
         return this;
     }
+    
     public FuncUnit0 onStart() {
         return onStart;
     }
+    
     public DeferActionConfig onStart(FuncUnit0 onStart) {
         this.onStart = onStart;
         return this;
     }
+    
     public Consumer<Runnable> runner() {
         return runner;
     }
+    
     public DeferActionConfig runner(AsyncRunner runner) {
         this.runner = runner;
         return this;
     }
     
     public <D> DeferActionBuilder<D> createBuilder(Func0<D> supplier) {
-        return new DeferActionBuilder<D>(supplier)
-                .interruptOnCancel(interruptOnCancel)
-                .onStart(onStart)
-                .runner(runner);
+        return new DeferActionBuilder<D>(supplier).interruptOnCancel(interruptOnCancel).onStart(onStart).runner(runner);
     }
+    
     public DeferActionBuilder<Object> createBuilder(FuncUnit0 runnable) {
         return createBuilder(runnable.thenReturnNull());
     }
@@ -83,8 +86,8 @@ public class DeferActionConfig {
     public <D> DeferAction<D> createAction(Func0<D> supplier) {
         return createBuilder(supplier).build();
     }
+    
     public DeferAction<Object> createAction(FuncUnit0 runnable) {
         return createBuilder(runnable.thenReturnNull()).build();
     }
-    
 }

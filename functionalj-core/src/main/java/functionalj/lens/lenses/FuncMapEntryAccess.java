@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,18 +24,13 @@
 package functionalj.lens.lenses;
 
 import java.util.function.Function;
-
 import functionalj.lens.core.AccessParameterized2;
 import functionalj.tuple.Tuple2;
 
 // TODO - See if this can be shared with Tuple2Lens.
-
 @FunctionalInterface
-public interface FuncMapEntryAccess<HOST, MAPENTRY extends Tuple2<KEY, VALUE>, KEY, VALUE, 
-                                KEYACCESS extends AnyAccess<HOST,KEY>, 
-                                VALUEACCESS extends AnyAccess<HOST,VALUE>>
-                    extends AccessParameterized2<HOST, MAPENTRY, KEY, VALUE, KEYACCESS, VALUEACCESS> {
-
+public interface FuncMapEntryAccess<HOST, MAPENTRY extends Tuple2<KEY, VALUE>, KEY, VALUE, KEYACCESS extends AnyAccess<HOST, KEY>, VALUEACCESS extends AnyAccess<HOST, VALUE>> extends AccessParameterized2<HOST, MAPENTRY, KEY, VALUE, KEYACCESS, VALUEACCESS> {
+    
     public AccessParameterized2<HOST, MAPENTRY, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2();
     
     @Override
@@ -70,7 +65,7 @@ public interface FuncMapEntryAccess<HOST, MAPENTRY extends Tuple2<KEY, VALUE>, K
             return mapEntry._1();
         });
     }
-
+    
     public default VALUEACCESS value() {
         return accessParameterized2().createSubAccess2((MAPENTRY mapEntry) -> {
             if (mapEntry == null)
@@ -78,5 +73,4 @@ public interface FuncMapEntryAccess<HOST, MAPENTRY extends Tuple2<KEY, VALUE>, K
             return mapEntry._2();
         });
     }
-    
 }

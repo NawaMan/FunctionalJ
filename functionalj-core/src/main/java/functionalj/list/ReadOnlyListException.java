@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -36,7 +36,6 @@ public class ReadOnlyListException extends UnsupportedOperationException {
     @SuppressWarnings("rawtypes")
     public static String message(ReadOnlyList list) {
         Objects.requireNonNull(list);
-        
         String listToString = null;
         try {
             if (list.size() <= 3) {
@@ -53,5 +52,4 @@ public class ReadOnlyListException extends UnsupportedOperationException {
         }
         return listToString + " is read only.";
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,8 +31,7 @@ public interface LongAggregatorToBoolean extends LongToBooleanAccessPrimitive, L
     
     public LongCollectedToBoolean<?> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl implements LongAggregatorToBoolean {
         
         private final LongCollectedToBoolean<?> collected;
@@ -56,5 +55,4 @@ public interface LongAggregatorToBoolean extends LongToBooleanAccessPrimitive, L
             return applyLongToBoolean(input);
         }
     }
-    
 }

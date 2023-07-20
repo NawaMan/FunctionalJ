@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,7 +26,6 @@ package functionalj.function;
 import java.util.function.BiFunction;
 import java.util.function.ToDoubleBiFunction;
 
-
 @FunctionalInterface
 public interface DoubleLongToDoubleFunction extends ToDoubleBiFunction<Long, Double>, BiFunction<Long, Double, Double> {
     
@@ -42,17 +41,11 @@ public interface DoubleLongToDoubleFunction extends ToDoubleBiFunction<Long, Dou
         return applyAsLongAndDouble(longValue, doubleValue);
     }
     
-    
     public static double apply(ToDoubleBiFunction<Long, Double> function, Long longValue, double doubleValue) {
-        return (function instanceof DoubleLongToDoubleFunction)
-                ? ((DoubleLongToDoubleFunction)function).applyAsLongAndDouble(longValue, doubleValue)
-                : function.applyAsDouble(longValue, doubleValue);
+        return (function instanceof DoubleLongToDoubleFunction) ? ((DoubleLongToDoubleFunction) function).applyAsLongAndDouble(longValue, doubleValue) : function.applyAsDouble(longValue, doubleValue);
     }
     
-    
     public static double apply(BiFunction<Long, Double, Double> function, Long longValue, double doubleValue) {
-        return (function instanceof DoubleLongToDoubleFunction)
-                ? ((DoubleLongToDoubleFunction)function).applyAsLongAndDouble(longValue, doubleValue)
-                : function.apply(longValue, doubleValue);
+        return (function instanceof DoubleLongToDoubleFunction) ? ((DoubleLongToDoubleFunction) function).applyAsLongAndDouble(longValue, doubleValue) : function.apply(longValue, doubleValue);
     }
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,7 +31,6 @@ import java.util.function.LongToDoubleFunction;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.stream.collect.CollectorToDoublePlus;
 import functionalj.stream.intstream.collect.IntCollectorToDoublePlus;
 import functionalj.stream.longstream.collect.LongCollectorToDoublePlus;
@@ -39,9 +38,11 @@ import lombok.val;
 
 public interface DoubleCollectorToDoublePlus<ACCUMULATED> extends DoubleCollectorPlus<ACCUMULATED, Double> {
     
-    public Supplier<ACCUMULATED>          supplier();
+    public Supplier<ACCUMULATED> supplier();
+    
     public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator();
-    public BinaryOperator<ACCUMULATED>    combiner();
+    
+    public BinaryOperator<ACCUMULATED> combiner();
     
     public ToDoubleFunction<ACCUMULATED> finisherToDouble();
     
@@ -52,8 +53,7 @@ public interface DoubleCollectorToDoublePlus<ACCUMULATED> extends DoubleCollecto
         };
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public default <SOURCE> CollectorToDoublePlus<SOURCE, ACCUMULATED> of(ToDoubleFunction<SOURCE> mapper) {
         return new DerivedDoubleCollectorToDoublePlus.FromObj<>(this, mapper);
     }

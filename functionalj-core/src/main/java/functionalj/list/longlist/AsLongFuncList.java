@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,7 +26,6 @@ package functionalj.list.longlist;
 import functionalj.stream.longstream.AsLongStreamPlus;
 import functionalj.stream.longstream.LongStreamPlus;
 
-
 class AsLongFuncListHelper {
     
     static LongFuncList funcListOf(AsLongFuncList asFuncList) {
@@ -36,7 +35,6 @@ class AsLongFuncListHelper {
     static LongStreamPlus streamPlusOf(AsLongFuncList asFuncList) {
         return asFuncList.asLongFuncList().longStreamPlus();
     }
-    
 }
 
 @FunctionalInterface
@@ -44,10 +42,8 @@ public interface AsLongFuncList extends AsLongStreamPlus {
     
     public LongFuncList asLongFuncList();
     
-    
     @Override
     public default LongStreamPlus longStreamPlus() {
         return asLongFuncList().longStreamPlus();
     }
-    
 }

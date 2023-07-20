@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,9 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToIntPlus;
 import lombok.val;
-
 
 public abstract class DoubleAggregationToInt extends DoubleAggregation<Integer> {
     
@@ -39,10 +37,8 @@ public abstract class DoubleAggregationToInt extends DoubleAggregation<Integer> 
         return new DoubleAggregationToInt.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract DoubleCollectorToIntPlus<?> doubleCollectorToIntPlus();
-    
     
     @Override
     public DoubleCollectorPlus<?, Integer> doubleCollectorPlus() {
@@ -54,8 +50,7 @@ public abstract class DoubleAggregationToInt extends DoubleAggregation<Integer> 
         return new DoubleAggregatorToInt.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToInt<INPUT> of(ToDoubleFunction<INPUT> mapper) {
         val newCollector = doubleCollectorToIntPlus().of(mapper);
         return new AggregationToInt.Impl<INPUT>(newCollector);
@@ -76,8 +71,7 @@ public abstract class DoubleAggregationToInt extends DoubleAggregation<Integer> 
         return new DoubleAggregationToInt.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends DoubleAggregationToInt {
         
         private final DoubleCollectorToIntPlus<?> collector;
@@ -90,7 +84,5 @@ public abstract class DoubleAggregationToInt extends DoubleAggregation<Integer> 
         public DoubleCollectorToIntPlus<?> doubleCollectorToIntPlus() {
             return collector;
         }
-        
     }
-    
 }

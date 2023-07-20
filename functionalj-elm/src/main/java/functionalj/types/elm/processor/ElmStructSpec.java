@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,47 +26,49 @@ package functionalj.types.elm.processor;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
+import java.util.List;
+
 import functionalj.types.elm.Elm;
 import functionalj.types.input.InputElement;
 import functionalj.types.struct.generator.SourceSpec;
-import lombok.val;
-
 
 /**
  * This class represents The spec for an Elm structure type.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public class ElmStructSpec {
     
     private final SourceSpec sourceSpec;
+    
     private final String typeName;
+    
     private final String folderName;
+    
     private final String generatedDirectory;
     
     public ElmStructSpec(SourceSpec sourceSpec, InputElement element) {
         this.sourceSpec = sourceSpec;
         this.typeName   = sourceSpec.getTargetClassName();
         
-        val baseModule  = asList(elmBaseModule(element, sourceSpec).split("\\."));
-        this.folderName = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
+        List<String> baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
+        this.folderName         = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
         
-        val generatedDirectory  = element.annotation(Elm.class).generatedDirectory();
-        this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
+        String generatedDirectory = element.annotation(Elm.class).generatedDirectory();
+        this.generatedDirectory   = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
+    
     ElmStructSpec(SourceSpec sourceSpec, String typeName, String folderName, String generatedDirectory) {
-        this.sourceSpec         = sourceSpec;
-        this.typeName           = typeName;
-        this.folderName         = folderName;
+        this.sourceSpec = sourceSpec;
+        this.typeName = typeName;
+        this.folderName = folderName;
         this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     
     private String elmBaseModule(InputElement element, SourceSpec sourceSpec) {
-        val baseModule  = element.annotation(Elm.class).baseModule();
-        val elmtPackage = sourceSpec.getPackageName();
-        return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 
-                ? elmtPackage
-                : baseModule;
+        String baseModule  = element.annotation(Elm.class).baseModule();
+        String elmtPackage = sourceSpec.getPackageName();
+        return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) ? elmtPackage : baseModule;
     }
     
     public SourceSpec sourceSpec() {
@@ -82,7 +84,7 @@ public class ElmStructSpec {
     }
     
     public String moduleName() {
-        val moduleBase = ((folderName == null) || folderName.isEmpty()) ? "" : (folderName.replace('/', '.') + ".");
+        String moduleBase = ((folderName == null) || folderName.isEmpty()) ? "" : (folderName.replace('/', '.') + ".");
         return moduleBase + typeName;
     }
     
@@ -96,13 +98,6 @@ public class ElmStructSpec {
     
     @Override
     public String toString() {
-        return "ElmStructSpec ["
-                + "typeName="   + typeName     + ", "
-                + "fileName="   + fileName()   + ", "
-                + "moduleName=" + moduleName() + ", "
-                + "folderName=" + folderName  + ", "
-                + "generatedDirectory=" + generatedDirectory 
-                + "]";
+        return "ElmStructSpec [" + "typeName=" + typeName + ", " + "fileName=" + fileName() + ", " + "moduleName=" + moduleName() + ", " + "folderName=" + folderName + ", " + "generatedDirectory=" + generatedDirectory + "]";
     }
-    
 }

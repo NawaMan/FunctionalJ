@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,31 +25,27 @@ package functionalj.list;
 
 import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
-
 import java.util.function.Function;
 import java.util.function.Predicate;
-
 import lombok.val;
 
 public interface FuncListWithFlatMap<DATA> extends AsFuncList<DATA> {
     
-    /** FlatMap with the given mapper for only the value that pass the condition. */
-    public default FuncList<DATA> flatMapOnly(
-            Predicate<? super DATA>                          checker, 
-            Function<? super DATA, ? extends FuncList<DATA>> mapper) {
+    /**
+     * FlatMap with the given mapper for only the value that pass the condition.
+     */
+    public default FuncList<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends FuncList<DATA>> mapper) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.flatMapOnly(checker, value -> mapper.apply(value).stream()));
     }
     
-    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
-    public default <T> FuncList<T> flatMapIf(
-            Predicate<? super DATA>                       checker, 
-            Function<? super DATA, ? extends FuncList<T>> mapper, 
-            Function<? super DATA, ? extends FuncList<T>> elseMapper) {
+    /**
+     * FlatMap with the mapper if the condition is true, otherwise use another elseMapper.
+     */
+    public default <T> FuncList<T> flatMapIf(Predicate<? super DATA> checker, Function<? super DATA, ? extends FuncList<T>> mapper, Function<? super DATA, ? extends FuncList<T>> elseMapper) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> {
             return stream.flatMapIf(checker, value -> mapper.apply(value).stream(), value -> elseMapper.apply(value).stream());
         });
     }
-    
 }

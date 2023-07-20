@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,20 +24,16 @@
 package functionalj.functions;
 
 import java.util.function.Supplier;
-
 import functionalj.environments.Log;
 import functionalj.function.Func1;
 import functionalj.function.FunctionInvocationException;
 import functionalj.ref.Ref;
 import lombok.val;
 
-
 public interface ThrowFuncs {
     
     public static final Ref<Func1<Exception, RuntimeException>> exceptionTransformer = Ref.ofValue(e -> {
-        val throwable = (e instanceof RuntimeException) 
-                ? (RuntimeException)e 
-                : new FunctionInvocationException(e);
+        val throwable = (e instanceof RuntimeException) ? (RuntimeException) e : new FunctionInvocationException(e);
         return throwable;
     });
     
@@ -59,8 +55,6 @@ public interface ThrowFuncs {
         handleNoThrow(throwable);
         throw throwable;
     }
-    
     // TODO - Add wrap around for some type
-    //        Umm ... should rename this class or add in Func.carelessly
-    
+    // Umm ... should rename this class or add in Func.carelessly
 }

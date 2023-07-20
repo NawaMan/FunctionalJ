@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,12 +26,10 @@ package functionalj.pipeable;
 import functionalj.function.Func1;
 
 public interface NullSafeOperator<INPUT, OUTPUT> extends Func1<INPUT, OUTPUT> {
-
-    public OUTPUT applyUnsafe(INPUT input) throws Exception;
     
+    public OUTPUT applyUnsafe(INPUT input) throws Exception;
     
     public static <I, O> NullSafeOperator<I, O> of(Func1<I, O> func1) {
         return func1::applyUnsafe;
     }
-    
 }

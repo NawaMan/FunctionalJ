@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,32 +25,23 @@ package functionalj.function;
 
 import java.util.function.ToLongBiFunction;
 
-
 @FunctionalInterface
-public interface IntLongToLongFunctionPrimitive 
-            extends 
-                ToLongBiFunction<Integer, Long>, 
-                ObjectLongToLongFunctionPrimitive<Integer> {
+public interface IntLongToLongFunctionPrimitive extends ToLongBiFunction<Integer, Long>, ObjectLongToLongFunctionPrimitive<Integer> {
     
     public static IntLongToLongFunctionPrimitive of(IntLongToLongFunctionPrimitive function) {
         return function;
-        
     }
+    
     public static IntLongToLongFunctionPrimitive from(ToLongBiFunction<Integer, Long> function) {
-        return (function instanceof IntLongToLongFunctionPrimitive)
-                ? (IntLongToLongFunctionPrimitive)function
-                : ((d1, d2) -> function.applyAsLong(d1, d2));
+        return (function instanceof IntLongToLongFunctionPrimitive) ? (IntLongToLongFunctionPrimitive) function : ((d1, d2) -> function.applyAsLong(d1, d2));
     }
+    
     public static IntLongToLongFunctionPrimitive from(ObjectLongToLongFunctionPrimitive<Integer> function) {
-        return (function instanceof IntLongToLongFunctionPrimitive)
-                ? (IntLongToLongFunctionPrimitive)function
-                : ((d1, d2) -> function.applyObjectLong(d1, d2));
+        return (function instanceof IntLongToLongFunctionPrimitive) ? (IntLongToLongFunctionPrimitive) function : ((d1, d2) -> function.applyObjectLong(d1, d2));
     }
     
-    //-- functionality --
-    
+    // -- functionality --
     public long applyIntegerLong(int intValue, long longValue);
-    
     
     public default long applyAsLong(Integer intValue, Long longValue) {
         return applyIntegerLong(intValue, longValue);
@@ -60,5 +51,4 @@ public interface IntLongToLongFunctionPrimitive
     public default long applyObjectLong(Integer data, long longValue) {
         return applyIntegerLong(data, longValue);
     }
-    
 }

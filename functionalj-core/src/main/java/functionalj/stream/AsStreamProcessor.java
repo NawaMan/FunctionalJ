@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,9 +23,9 @@
 // ============================================================================
 package functionalj.stream;
 
-//@FunctionalInterface
-//public interface AsStreamProcessor<DATA, TARGET> {
-//    
-//    public StreamProcessor<DATA, TARGET> asStreamProcessor();
-//    
-//}
+// @FunctionalInterface
+// public interface AsStreamProcessor<DATA, TARGET> {
+// 
+// public StreamProcessor<DATA, TARGET> asStreamProcessor();
+// 
+// }

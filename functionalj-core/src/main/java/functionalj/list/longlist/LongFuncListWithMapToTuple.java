@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,9 +24,7 @@
 package functionalj.list.longlist;
 
 import static functionalj.list.longlist.LongFuncList.deriveToObj;
-
 import java.util.function.LongFunction;
-
 import functionalj.list.FuncList;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -34,57 +32,40 @@ import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 
-
 public interface LongFuncListWithMapToTuple extends AsLongFuncList {
     
-    /**Map the value into different values and then combine them into a tuple. */
-    public default <T1, T2> 
-            FuncList<Tuple2<T1, T2>> mapToTuple(
-                LongFunction<T1> mapper1,
-                LongFunction<T2> mapper2) {
+    /**
+     * Map the value into different values and then combine them into a tuple.
+     */
+    public default <T1, T2> FuncList<Tuple2<T1, T2>> mapToTuple(LongFunction<T1> mapper1, LongFunction<T2> mapper2) {
         return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2));
     }
     
-    /** Map the value into different values and then combine them with the combinator. */
-    public default <T1, T2, T3> 
-            FuncList<Tuple3<T1, T2, T3>> mapToTuple(
-                LongFunction<T1> mapper1,
-                LongFunction<T2> mapper2,
-                LongFunction<T3> mapper3) {
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3> FuncList<Tuple3<T1, T2, T3>> mapToTuple(LongFunction<T1> mapper1, LongFunction<T2> mapper2, LongFunction<T3> mapper3) {
         return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3));
     }
     
-    /** Map the value into different values and then combine them with the combinator. */
-    public default <T1, T2, T3, T4> 
-            FuncList<Tuple4<T1, T2, T3, T4>> mapToTuple(
-                LongFunction<T1> mapper1,
-                LongFunction<T2> mapper2,
-                LongFunction<T3> mapper3,
-                LongFunction<T4> mapper4) {
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4> FuncList<Tuple4<T1, T2, T3, T4>> mapToTuple(LongFunction<T1> mapper1, LongFunction<T2> mapper2, LongFunction<T3> mapper3, LongFunction<T4> mapper4) {
         return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4));
     }
     
-    /** Map the value into different values and then combine them with the combinator. */
-    public default <T1, T2, T3, T4, T5> 
-            FuncList<Tuple5<T1, T2, T3, T4, T5>> mapToTuple(
-                LongFunction<T1> mapper1,
-                LongFunction<T2> mapper2,
-                LongFunction<T3> mapper3,
-                LongFunction<T4> mapper4,
-                LongFunction<T5> mapper5) {
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5> FuncList<Tuple5<T1, T2, T3, T4, T5>> mapToTuple(LongFunction<T1> mapper1, LongFunction<T2> mapper2, LongFunction<T3> mapper3, LongFunction<T4> mapper4, LongFunction<T5> mapper5) {
         return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5));
     }
     
-    /** Map the value into different values and then combine them with the combinator. */
-    public default <T1, T2, T3, T4, T5, T6> 
-            FuncList<Tuple6<T1, T2, T3, T4, T5, T6>> mapToTuple(
-                LongFunction<T1> mapper1,
-                LongFunction<T2> mapper2,
-                LongFunction<T3> mapper3,
-                LongFunction<T4> mapper4,
-                LongFunction<T5> mapper5,
-                LongFunction<T6> mapper6) {
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6> FuncList<Tuple6<T1, T2, T3, T4, T5, T6>> mapToTuple(LongFunction<T1> mapper1, LongFunction<T2> mapper2, LongFunction<T3> mapper3, LongFunction<T4> mapper4, LongFunction<T5> mapper5, LongFunction<T6> mapper6) {
         return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
     }
-    
 }

@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,23 +25,19 @@ package functionalj.types.choice.generator;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import functionalj.types.Generic;
 import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.Method;
 import functionalj.types.choice.generator.model.SourceSpec;
-import lombok.Value;
-
 
 // TODO
 // - Proper import - when params requires extra type.
-
-@Value
 public class Generator implements Lines {
     
-    public final SourceSpec  sourceSpec;
+    public final SourceSpec sourceSpec;
+    
     public final TargetClass targetClass;
     
     public Generator(String targetName, Type sourceType, List<Case> choices) {
@@ -53,13 +49,20 @@ public class Generator implements Lines {
     }
     
     public Generator(SourceSpec sourceSpec) {
-        this.sourceSpec  = sourceSpec;
+        this.sourceSpec = sourceSpec;
         this.targetClass = new TargetClass(sourceSpec);
+    }
+    
+    public SourceSpec getSourceSpec() {
+        return sourceSpec;
+    }
+    
+    public TargetClass getTargetClass() {
+        return targetClass;
     }
     
     @Override
     public List<String> lines() {
         return targetClass.lines();
     }
-    
 }

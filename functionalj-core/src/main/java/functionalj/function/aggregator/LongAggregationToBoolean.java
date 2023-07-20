@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,11 +28,9 @@ import java.util.function.IntToLongFunction;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorToBooleanPlus;
 import lombok.val;
-
 
 public abstract class LongAggregationToBoolean extends LongAggregation<Boolean> {
     
@@ -40,10 +38,8 @@ public abstract class LongAggregationToBoolean extends LongAggregation<Boolean> 
         return new LongAggregationToBoolean.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract LongCollectorToBooleanPlus<?> longCollectorToBooleanPlus();
-    
     
     @Override
     public LongCollectorPlus<?, Boolean> longCollectorPlus() {
@@ -55,8 +51,7 @@ public abstract class LongAggregationToBoolean extends LongAggregation<Boolean> 
         return new LongAggregatorToBoolean.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToBoolean<INPUT> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorToBooleanPlus().of(mapper);
         return new AggregationToBoolean.Impl<>(newCollector);
@@ -69,9 +64,8 @@ public abstract class LongAggregationToBoolean extends LongAggregation<Boolean> 
     
     public LongAggregation<Boolean> ofLong(LongFunction<Long> mapper) {
         if (mapper instanceof LongUnaryOperator) {
-            return ofLongToBoolean((LongUnaryOperator)mapper);
+            return ofLongToBoolean((LongUnaryOperator) mapper);
         }
-        
         val newCollector = longCollectorToBooleanPlus().of(mapper);
         return new LongAggregation.Impl<>(newCollector);
     }
@@ -88,8 +82,7 @@ public abstract class LongAggregationToBoolean extends LongAggregation<Boolean> 
         return new LongAggregationToBoolean.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends LongAggregationToBoolean {
         
         private final LongCollectorToBooleanPlus<?> collector;
@@ -102,7 +95,5 @@ public abstract class LongAggregationToBoolean extends LongAggregation<Boolean> 
         public LongCollectorToBooleanPlus<?> longCollectorToBooleanPlus() {
             return collector;
         }
-        
     }
-    
 }

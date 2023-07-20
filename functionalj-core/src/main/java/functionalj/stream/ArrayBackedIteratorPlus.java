@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,19 +29,20 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
-
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import lombok.val;
 
-
 public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     
     private final DATA[] array;
-    private final int    start;
-    private final int    end;
+    
+    private final int start;
+    
+    private final int end;
+    
     private final Iterator<DATA> iterator;
     
     private AtomicInteger current = new AtomicInteger();
@@ -49,14 +50,16 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     private volatile Runnable closeHandler = null;
     
     @SafeVarargs
-    public static <DATA> ArrayBackedIteratorPlus<DATA> of(DATA ... array) {
+    public static <DATA> ArrayBackedIteratorPlus<DATA> of(DATA... array) {
         DATA[] copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedIteratorPlus<DATA>(copiedArray);
     }
+    
     public static <DATA> ArrayBackedIteratorPlus<DATA> from(DATA[] array) {
         DATA[] copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedIteratorPlus<DATA>(copiedArray);
     }
+    
     public static <DATA> ArrayBackedIteratorPlus<DATA> from(DATA[] array, int start, int length) {
         DATA[] copiedArray = Arrays.copyOf(array, array.length);
         return new ArrayBackedIteratorPlus<DATA>(copiedArray, start, length);
@@ -65,7 +68,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     ArrayBackedIteratorPlus(DATA[] array, int start, int length) {
         this.array = array;
         this.start = Math.max(0, Math.min(array.length - 1, start));
-        this.end   = Math.max(0, Math.min(array.length    , start + length));
+        this.end = Math.max(0, Math.min(array.length, start + length));
         this.iterator = createIterator(array);
         this.current.set(this.start - 1);
     }
@@ -76,10 +79,12 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     
     private Iterator<DATA> createIterator(DATA[] array) {
         return new Iterator<DATA>() {
+        
             @Override
             public boolean hasNext() {
                 return current.incrementAndGet() < ArrayBackedIteratorPlus.this.end;
             }
+        
             @Override
             public DATA next() {
                 int index = current.get();
@@ -87,7 +92,6 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
                     throw new NoSuchElementException();
                 if (index < 0)
                     throw new NoSuchElementException();
-                
                 return array[index];
             }
         };
@@ -119,6 +123,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
                 } else {
                     val thisCloseHandler = this.closeHandler;
                     this.closeHandler = new Runnable() {
+        
                         @Override
                         public void run() {
                             thisCloseHandler.run();
@@ -145,7 +150,6 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
         int newIndex = current.get();
         if ((newIndex >= end) && (count != 0))
             return AutoCloseableResult.from(Result.ofNoMore());
-        
         return AutoCloseableResult.valueOf(new ArrayBackedIteratorPlus<DATA>(array, oldIndex, oldIndex + count));
     }
     
@@ -153,8 +157,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
         val old = current.getAndAccumulate(count, (o, n) -> o + n) + 1;
         if ((current.get() >= end) && (count != 0))
             return Result.ofNoMore();
-        
-        try (val iterator = new ArrayBackedIteratorPlus<DATA>(array, old, old + count)){
+        try (val iterator = new ArrayBackedIteratorPlus<DATA>(array, old, old + count)) {
             val stream = iterator.stream();
             val value = mapper.apply(stream);
             return Result.valueOf(value);
@@ -162,8 +165,8 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     }
     
     public FuncList<DATA> FuncList() {
-        return FuncList.from(()->{
-            val iterable = (Iterable<DATA>)()->newIterator();
+        return FuncList.from(() -> {
+            val iterable = (Iterable<DATA>) () -> newIterator();
             return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
         });
     }
@@ -179,5 +182,4 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
         System.arraycopy(array, start, newArray, 0, length);
         return newArray;
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,10 +24,8 @@
 package functionalj.tuple;
 
 import java.util.Map;
-
 import functionalj.function.Func1;
 
 @FunctionalInterface
 public interface ToMapFunc<D, K, V> extends Func1<D, Map<K, V>> {
-
 }

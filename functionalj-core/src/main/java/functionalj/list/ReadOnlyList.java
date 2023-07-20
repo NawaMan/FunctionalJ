@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,16 +35,13 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
 import lombok.val;
 
-
 @FunctionalInterface
-public interface ReadOnlyList<DATA> 
-                    extends List<DATA> {
+public interface ReadOnlyList<DATA> extends List<DATA> {
     
     public static <T> ReadOnlyList<T> empty() {
         return ImmutableFuncList.empty();
@@ -52,14 +49,13 @@ public interface ReadOnlyList<DATA>
     
     public static <T> ReadOnlyList<T> of(Collection<T> data) {
         if (data instanceof ReadOnlyList) {
-            return (ReadOnlyList<T>)data;
+            return (ReadOnlyList<T>) data;
         }
-        
         return ImmutableFuncList.from(data);
     }
     
     @SafeVarargs
-    public static <T> ReadOnlyList<T> of(T ... data) {
+    public static <T> ReadOnlyList<T> of(T... data) {
         return ImmutableFuncList.of(data);
     }
     
@@ -79,11 +75,10 @@ public interface ReadOnlyList<DATA>
         return IteratorPlus.from(stream());
     }
     
-    //== Access list ==
-    
+    // == Access list ==
     @Override
     public default int size() {
-        return (int)stream().count();
+        return (int) stream().count();
     }
     
     @Override
@@ -98,9 +93,7 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default boolean containsAll(Collection<?> c) {
-        return c.stream()
-                .allMatch(each -> stream()
-                                    .anyMatch(o -> Objects.equals(each, o)));
+        return c.stream().allMatch(each -> stream().anyMatch(o -> Objects.equals(each, o)));
     }
     
     @Override
@@ -119,11 +112,10 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default DATA get(int index) {
-        val ref   = new AtomicReference<DATA>();
+        val ref = new AtomicReference<DATA>();
         val found = StreamPlusHelper.hasAt(this.stream(), index, ref);
         if (!found)
             throw new IndexOutOfBoundsException("" + index);
-        
         return ref.get();
     }
     
@@ -150,10 +142,8 @@ public interface ReadOnlyList<DATA>
     @Override
     public default ReadOnlyList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
         val length = toIndexExclusive - fromIndexInclusive;
-        val subList = stream()
-                .skip(fromIndexInclusive).limit(length)
-                .collect(Collectors.toList());
-        return (ReadOnlyList<DATA>)(()->StreamPlus.from(subList.stream()));
+        val subList = stream().skip(fromIndexInclusive).limit(length).collect(Collectors.toList());
+        return (ReadOnlyList<DATA>) (() -> StreamPlus.from(subList.stream()));
     }
     
     @Override
@@ -166,12 +156,10 @@ public interface ReadOnlyList<DATA>
     public default void forEach(Consumer<? super DATA> action) {
         if (action == null)
             return;
-        
         stream().forEach(action);
     }
     
-    //== Mutable methods are not supported.
-    
+    // == Mutable methods are not supported.
     @Override
     public default DATA set(int index, DATA element) {
         throw new ReadOnlyListException(this);
@@ -231,5 +219,4 @@ public interface ReadOnlyList<DATA>
     public default void sort(Comparator<? super DATA> c) {
         throw new ReadOnlyListException(this);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,12 +33,10 @@ public interface LongObjBiPredicate<DATA> extends Func2<Long, DATA, Boolean>, Bi
         return testAsLong(input1, input2);
     }
     
-    
     public static <D> boolean test(BiPredicate<Long, D> function, long input1, D input2) {
         if (function instanceof LongObjBiPredicate) {
-            return ((LongObjBiPredicate<D>)function).testAsLong(input1, input2);
+            return ((LongObjBiPredicate<D>) function).testAsLong(input1, input2);
         }
         return function.test(input1, input2);
     }
-    
 }

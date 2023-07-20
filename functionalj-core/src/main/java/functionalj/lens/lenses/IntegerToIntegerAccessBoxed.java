@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,9 +25,7 @@ package functionalj.lens.lenses;
 
 import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
-
 import lombok.val;
-
 
 @FunctionalInterface
 public interface IntegerToIntegerAccessBoxed extends IntegerAccessBoxed<Integer>, IntFunction<Integer> {
@@ -51,5 +49,4 @@ public interface IntegerToIntegerAccessBoxed extends IntegerAccessBoxed<Integer>
             return (result != null) ? result : fallback.getAsInt();
         };
     }
-    
 }

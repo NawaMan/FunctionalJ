@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,14 +24,12 @@
 package functionalj.validator;
 
 import java.util.function.Predicate;
-
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.result.Result;
 import functionalj.result.ValidationException;
 
 public interface Validator<DATA> extends Predicate<DATA>, Func1<DATA, Boolean> {
-
     
     public static <D> Validator<D> of(Predicate<D> checker, Func2<? super D, ? super Predicate<? super D>, ? extends ValidationException> exceptionCreator) {
         return new SimpleValidator.Impl<D>(checker, exceptionCreator);
@@ -45,11 +43,11 @@ public interface Validator<DATA> extends Predicate<DATA>, Func1<DATA, Boolean> {
     public default boolean test(DATA data) {
         return validate(data).isPresent();
     }
+    
     @Override
     public default Boolean applyUnsafe(DATA data) throws Exception {
         return test(data);
     }
     
     public Result<DATA> validate(DATA data);
-    
 }

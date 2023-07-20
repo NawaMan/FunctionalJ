@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.promise;
 
 import static functionalj.function.Func.carelessly;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -33,7 +32,8 @@ public class WaitSession {
     
     private List<BiConsumer<String, Exception>> listeners = new ArrayList<BiConsumer<String, Exception>>();
     
-    public WaitSession() {}
+    public WaitSession() {
+    }
     
     public void onExpired(BiConsumer<String, Exception> onDone) {
         listeners.add(onDone);
@@ -46,5 +46,4 @@ public class WaitSession {
             });
         });
     }
-    
 }

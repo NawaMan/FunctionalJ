@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,20 +30,17 @@ public interface IntFunctionPrimitive<TARGET> extends IntFunction<TARGET>, Func1
     
     public static <T> IntFunctionPrimitive<T> of(Function<Integer, T> function) {
         if (function instanceof IntFunctionPrimitive)
-            return (IntFunctionPrimitive<T>)function;
-        
+            return (IntFunctionPrimitive<T>) function;
         return i -> function.apply(i);
     }
+    
     public static <T> IntFunctionPrimitive<T> intFunction(Function<Integer, T> function) {
         if (function instanceof IntFunctionPrimitive)
-            return (IntFunctionPrimitive<T>)function;
-        
+            return (IntFunctionPrimitive<T>) function;
         return i -> function.apply(i);
     }
     
-    
     public TARGET applyInt(int value);
-    
     
     @Override
     public default TARGET apply(int value) {
@@ -54,5 +51,4 @@ public interface IntFunctionPrimitive<TARGET> extends IntFunction<TARGET>, Func1
     public default TARGET applyUnsafe(Integer input) throws Exception {
         return applyInt(input);
     }
-    
 }

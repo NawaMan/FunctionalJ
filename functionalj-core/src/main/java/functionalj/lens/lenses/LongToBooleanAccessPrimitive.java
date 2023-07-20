@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,22 +29,15 @@ import java.util.function.LongPredicate;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
-
 import lombok.val;
 
 @FunctionalInterface
-public interface LongToBooleanAccessPrimitive 
-                    extends 
-                        BooleanAccessPrimitive<Long>,
-                        LongPredicate {
+public interface LongToBooleanAccessPrimitive extends BooleanAccessPrimitive<Long>, LongPredicate {
     
-    //== abstract functionalities ==
-    
+    // == abstract functionalities ==
     public boolean applyLongToBoolean(long host);
     
-    
-    //== default functionalities ==
-    
+    // == default functionalities ==
     public default boolean test(long value) {
         return applyLongToBoolean(value);
     }
@@ -61,8 +54,7 @@ public interface LongToBooleanAccessPrimitive
         return applyLongToBoolean(host);
     }
     
-    //== Functionality ==
-    
+    // == Functionality ==
     @Override
     public default LongToBooleanAccessPrimitive negate() {
         return host -> {
@@ -71,23 +63,24 @@ public interface LongToBooleanAccessPrimitive
         };
     }
     
-    
     public default LongToBooleanAccessPrimitive or(boolean anotherBoolean) {
         return host -> {
             val boolValue = test(host);
             return boolValue || anotherBoolean;
         };
     }
+    
     public default LongToBooleanAccessPrimitive or(BooleanSupplier anotherSupplier) {
         return host -> {
-            val boolValue    = test(host);
+            val boolValue = test(host);
             val anotherValue = anotherSupplier.getAsBoolean();
             return boolValue || anotherValue;
         };
     }
+    
     public default LongToBooleanAccessPrimitive or(LongToBooleanAccessPrimitive anotherAccess) {
         return host -> {
-            val boolValue    = test(host);
+            val boolValue = test(host);
             val anotherValue = anotherAccess.apply(host);
             return boolValue || anotherValue;
         };
@@ -99,93 +92,77 @@ public interface LongToBooleanAccessPrimitive
             return boolValue && anotherBoolean;
         };
     }
+    
     public default LongToBooleanAccessPrimitive and(BooleanSupplier anotherSupplier) {
         return host -> {
-            val boolValue    = test(host);
+            val boolValue = test(host);
             val anotherValue = anotherSupplier.getAsBoolean();
             return boolValue && anotherValue;
         };
     }
+    
     public default LongToBooleanAccessPrimitive and(LongToBooleanAccessPrimitive anotherAccess) {
         return host -> {
-            val boolValue    = test(host);
+            val boolValue = test(host);
             val anotherValue = anotherAccess.apply(host);
             return boolValue && anotherValue;
         };
     }
     
     // TODO -Select Obj ... make sure we can put the lens of that object after.
-    
     public default LongToIntegerAccessPrimitive selectInt(int choiceTrue, int choiceFalse) {
         return host -> {
-            val boolValue    = test(host);
+            val boolValue = test(host);
             return boolValue ? choiceTrue : choiceFalse;
         };
     }
     
-    public default LongToIntegerAccessPrimitive selectInt(
-            LongToIntFunction choiceTrue, 
-            LongToIntFunction choiceFalse) {
+    public default LongToIntegerAccessPrimitive selectInt(LongToIntFunction choiceTrue, LongToIntFunction choiceFalse) {
         return host -> {
-            val boolValue    = test(host);
-            return boolValue 
-                    ? choiceTrue.applyAsInt(host)
-                    : choiceFalse.applyAsInt(host);
+            val boolValue = test(host);
+            return boolValue ? choiceTrue.applyAsInt(host) : choiceFalse.applyAsInt(host);
         };
     }
     
     public default LongToLongAccessPrimitive selectLong(long choiceTrue, long choiceFalse) {
         return host -> {
-            val boolValue    = test(host);
+            val boolValue = test(host);
             return boolValue ? choiceTrue : choiceFalse;
         };
     }
     
-    public default LongToLongAccessPrimitive selectLong(
-            LongUnaryOperator choiceTrue, 
-            LongUnaryOperator choiceFalse) {
+    public default LongToLongAccessPrimitive selectLong(LongUnaryOperator choiceTrue, LongUnaryOperator choiceFalse) {
         return host -> {
-            val boolValue    = test(host);
-            return boolValue 
-                    ? choiceTrue.applyAsLong(host)
-                    : choiceFalse.applyAsLong(host);
+            val boolValue = test(host);
+            return boolValue ? choiceTrue.applyAsLong(host) : choiceFalse.applyAsLong(host);
         };
     }
     
     public default LongToDoubleAccessPrimitive selectDouble(double choiceTrue, double choiceFalse) {
         return host -> {
-            val boolValue    = test(host);
+            val boolValue = test(host);
             return boolValue ? choiceTrue : choiceFalse;
         };
     }
     
-    public default LongToDoubleAccessPrimitive selectDouble(
-            LongToDoubleFunction choiceTrue, 
-            LongToDoubleFunction choiceFalse) {
+    public default LongToDoubleAccessPrimitive selectDouble(LongToDoubleFunction choiceTrue, LongToDoubleFunction choiceFalse) {
         return host -> {
-            val boolValue    = test(host);
-            return boolValue 
-                    ? choiceTrue.applyAsDouble(host)
-                    : choiceFalse.applyAsDouble(host);
+            val boolValue = test(host);
+            return boolValue ? choiceTrue.applyAsDouble(host) : choiceFalse.applyAsDouble(host);
         };
     }
     
     public default LongToStringAccessPrimitive selectDouble(String choiceTrue, String choiceFalse) {
         return host -> {
-            val boolValue    = test(host);
+            val boolValue = test(host);
             return boolValue ? choiceTrue : choiceFalse;
         };
     }
     
-    public default LongToStringAccessPrimitive selectDouble(
-            LongFunction<String> choiceTrue, 
-            LongFunction<String> choiceFalse) {
+    public default LongToStringAccessPrimitive selectDouble(LongFunction<String> choiceTrue, LongFunction<String> choiceFalse) {
         return host -> {
             val boolValue = test(host);
-            return boolValue 
-                    ? choiceTrue.apply(host)
-                    : choiceFalse.apply(host);
+            return boolValue ? choiceTrue.apply(host) : choiceFalse.apply(host);
         };
     }
-    
 }

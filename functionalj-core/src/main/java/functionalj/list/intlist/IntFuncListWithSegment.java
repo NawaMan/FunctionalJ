@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,12 +25,10 @@ package functionalj.list.intlist;
 
 import static functionalj.list.FuncList.deriveFrom;
 import static functionalj.list.intlist.AsIntFuncListHelper.funcListOf;
-
 import java.util.Comparator;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
-
 import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.IncompletedSegment;
@@ -43,15 +41,15 @@ public interface IntFuncListWithSegment extends AsIntFuncList {
     
     /**
      * Segment the stream into sub stream with the fix length of count.
-     * 
+     *
      * Note:
-     * <ul>
-     * <li>The last portion may be shorter.</li>
-     * <li>If the count is less than or equal to 0, an empty stream is return.</li>
-     * </ul>
-     * 
+     * &lt;ul&gt;
+     * &lt;li&gt;The last portion may be shorter.&lt;/li&gt;
+     * &lt;li&gt;If the count is less than or equal to 0, an empty stream is return.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
      * @param count  the element count of the sub stream.
-     **/
+     */
     public default FuncList<IntFuncList> segment(int count) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.segment(count));
@@ -77,7 +75,9 @@ public interface IntFuncListWithSegment extends AsIntFuncList {
         return deriveFrom(funcList, stream -> stream.segmentWhen(startCondition));
     }
     
-    /** Segment the stream into sub stream starting the element after the precondition is true. */
+    /**
+     * Segment the stream into sub stream starting the element after the precondition is true.
+     */
     @Sequential
     public default FuncList<IntFuncList> segmentAfter(IntPredicate endCondition) {
         val funcList = funcListOf(this);
@@ -85,150 +85,140 @@ public interface IntFuncListWithSegment extends AsIntFuncList {
     }
     
     /**
-     * Segment the stream into sub stream 
-     *   starting when the start condition is true 
+     * Segment the stream into sub stream
+     *   starting when the start condition is true
      *   and ending when the end condition is true
      *   -- both inclusively.
-     * 
-     * Note: this method will include the last sub stream 
+     *
+     * Note: this method will include the last sub stream
      *   even if the end condition is never been true before the stream ended.
-     * 
+     *
      * @param startCondition  the condition to start the sub stream
      * @param endCondition    the condition to end the sub stream
      */
-    public default FuncList<IntFuncList> segmentBetween(
-            IntPredicate startCondition,
-            IntPredicate endCondition) {
+    public default FuncList<IntFuncList> segmentBetween(IntPredicate startCondition, IntPredicate endCondition) {
         return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition));
     }
     
     /**
-     * Segment the stream into sub stream 
-     *   starting when the start condition is true 
+     * Segment the stream into sub stream
+     *   starting when the start condition is true
      *   and ending when the end condition is true
      *   -- both inclusively.
-     * 
+     *
      * @param startCondition             the condition to start the sub stream
      * @param endCondition               the condition to end the sub stream
      * @param includeIncompletedSegment  specifying if the incomplete segment at the end should be included.
-     **/
-    public default FuncList<IntFuncList> segmentBetween(
-            IntPredicate startCondition,
-            IntPredicate endCondition,
-            boolean      includeIncompletedSegment) {
+     */
+    public default FuncList<IntFuncList> segmentBetween(IntPredicate startCondition, IntPredicate endCondition, boolean includeIncompletedSegment) {
         return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition, includeIncompletedSegment));
     }
     
     /**
-     * Segment the stream into sub stream 
-     *   starting when the start condition is true 
+     * Segment the stream into sub stream
+     *   starting when the start condition is true
      *   and ending when the end condition is true
      *   -- both inclusively.
-     * 
-     * @param startCondition             the condition to start the sub stream
-     * @param endCondition               the condition to end the sub stream
-     * @param includeIncompletedSegment  specifying if the incomplete segment at the end should be included.
-     **/
-    public default FuncList<IntFuncList> segmentBetween(
-            IntPredicate       startCondition,
-            IntPredicate       endCondition,
-            IncompletedSegment incompletedSegment) {
+     *
+     * @param startCondition      the condition to start the sub stream
+     * @param endCondition        the condition to end the sub stream
+     * @param incompletedSegment  specifying if the incomplete segment at the end should be included.
+     */
+    public default FuncList<IntFuncList> segmentBetween(IntPredicate startCondition, IntPredicate endCondition, IncompletedSegment incompletedSegment) {
         val includeTail = (incompletedSegment == IncompletedSegment.included);
         return deriveFrom(this, stream -> stream.segmentBetween(startCondition, endCondition, includeTail));
     }
     
-    //-- segmentByPercentiles --
-    
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<IntFuncList> segmentByPercentiles(
-            int ... percentiles) {
+    // -- segmentByPercentiles --
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T> FuncList<IntFuncList> segmentByPercentiles(int... percentiles) {
         return IntFuncListHelper.segmentByPercentiles(this, IntFuncList.of(percentiles).mapToDouble());
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<IntFuncList> segmentByPercentiles(
-            IntFuncList percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T> FuncList<IntFuncList> segmentByPercentiles(IntFuncList percentiles) {
         return IntFuncListHelper.segmentByPercentiles(this, percentiles.mapToDouble());
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<IntFuncList> segmentByPercentiles(
-            double ... percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T> FuncList<IntFuncList> segmentByPercentiles(double... percentiles) {
         return IntFuncListHelper.segmentByPercentiles(this, DoubleFuncList.of(percentiles));
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<IntFuncList> segmentByPercentiles(
-            DoubleFuncList percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T> FuncList<IntFuncList> segmentByPercentiles(DoubleFuncList percentiles) {
         return IntFuncListHelper.segmentByPercentiles(this, percentiles);
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(
-            IntFunction<T> mapper,
-            double ...     percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(IntFunction<T> mapper, double... percentiles) {
         val percentileList = DoubleFuncList.of(percentiles);
         return segmentByPercentiles(mapper, percentileList);
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(
-            IntFunction<T> mapper,
-            int ...     percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(IntFunction<T> mapper, int... percentiles) {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(mapper, percentileList);
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<IntFuncList> segmentByPercentiles(
-            IntFunction<T> mapper,
-            Comparator<T>  comparator,
-            int ...        percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T> FuncList<IntFuncList> segmentByPercentiles(IntFunction<T> mapper, Comparator<T> comparator, int... percentiles) {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble().toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<IntFuncList> segmentByPercentiles(
-            IntFunction<T> mapper,
-            Comparator<T>  comparator,
-            double ...     percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T> FuncList<IntFuncList> segmentByPercentiles(IntFunction<T> mapper, Comparator<T> comparator, double... percentiles) {
         val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(
-            IntFunction<T> mapper,
-            IntFuncList    percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(IntFunction<T> mapper, IntFuncList percentiles) {
         val list = intStreamPlus().sortedBy(mapper).toImmutableList();
         return IntFuncListHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(
-            IntFunction<T> mapper,
-            DoubleFuncList percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T extends Comparable<? super T>> FuncList<IntFuncList> segmentByPercentiles(IntFunction<T> mapper, DoubleFuncList percentiles) {
         val list = intStreamPlus().sortedBy(mapper).toImmutableList();
         return IntFuncListHelper.segmentByPercentiles(list, percentiles);
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<IntFuncList> segmentByPercentiles(
-            IntFunction<T> mapper,
-            Comparator<T>  comparator,
-            IntFuncList    percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T> FuncList<IntFuncList> segmentByPercentiles(IntFunction<T> mapper, Comparator<T> comparator, IntFuncList percentiles) {
         val list = intStreamPlus().sortedBy(mapper, comparator).toImmutableList();
         return IntFuncListHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
     
-    /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<IntFuncList> segmentByPercentiles(
-            IntFunction<T> mapper,
-            Comparator<T>  comparator,
-            DoubleFuncList percentiles) {
+    /**
+     * Split the stream into segment based on the given percentiles. *
+     */
+    public default <T> FuncList<IntFuncList> segmentByPercentiles(IntFunction<T> mapper, Comparator<T> comparator, DoubleFuncList percentiles) {
         val list = intStreamPlus().sortedBy(mapper, comparator).toImmutableList();
         return IntFuncListHelper.segmentByPercentiles(list, percentiles);
     }
-    
 }

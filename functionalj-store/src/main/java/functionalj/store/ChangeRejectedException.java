@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,11 +30,12 @@ public class ChangeRejectedException extends RuntimeException {
     public ChangeRejectedException(String reason) {
         super(reason);
     }
+    
     public ChangeRejectedException(String reason, Throwable cause) {
         super(reason, cause);
     }
+    
     public ChangeRejectedException(Throwable cause) {
         super(cause);
     }
-    
 }

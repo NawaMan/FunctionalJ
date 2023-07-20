@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,38 +25,33 @@ package functionalj.list;
 
 import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
-
 import java.util.function.Function;
 import java.util.function.Predicate;
-
 import lombok.val;
 
 public interface FuncListWithMap<DATA> extends AsFuncList<DATA> {
     
-    /** Map the value using the mapper only when the condition is true. */
-    public default FuncList<DATA> mapOnly(
-            Predicate<? super DATA>      checker, 
-            Function<? super DATA, DATA> mapper) {
+    /**
+     * Map the value using the mapper only when the condition is true.
+     */
+    public default FuncList<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapOnly(checker, mapper));
     }
     
-    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
-    public default <T> FuncList<T> mapIf(
-            Predicate<? super DATA>   checker, 
-            Function<? super DATA, T> mapper,
-            Function<? super DATA, T> elseMapper) {
+    /**
+     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
+     */
+    public default <T> FuncList<T> mapIf(Predicate<? super DATA> checker, Function<? super DATA, T> mapper, Function<? super DATA, T> elseMapper) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapIf(checker, mapper, elseMapper));
     }
     
-    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.  */
-    public default <T> FuncList<T> mapToObjIf(
-            Predicate<? super DATA>   checker, 
-            Function<? super DATA, T> mapper,
-            Function<? super DATA, T> elseMapper) {
+    /**
+     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
+     */
+    public default <T> FuncList<T> mapToObjIf(Predicate<? super DATA> checker, Function<? super DATA, T> mapper, Function<? super DATA, T> elseMapper) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToObjIf(checker, mapper, elseMapper));
     }
-    
 }

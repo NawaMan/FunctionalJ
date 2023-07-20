@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,7 +27,6 @@ import static functionalj.types.Utils.blankToNull;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -39,7 +38,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -49,6 +47,7 @@ import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
 
 import functionalj.types.Choice;
 import functionalj.types.Serialize;
@@ -57,7 +56,6 @@ import functionalj.types.struct.generator.model.Accessibility;
 import functionalj.types.struct.generator.model.Concrecity;
 import functionalj.types.struct.generator.model.Modifiability;
 import functionalj.types.struct.generator.model.Scope;
-import lombok.val;
 
 public interface InputElement {
     
@@ -69,7 +67,7 @@ public interface InputElement {
         
         Impl(Environment environment, Element element) {
             this.environment = environment;
-            this.element     = element;
+            this.element = element;
         }
         
         @Override
@@ -79,11 +77,7 @@ public interface InputElement {
         
         @Override
         public String packageQualifiedName() {
-            return environment
-                    .elementUtils
-                    .getPackageOf(element)
-                    .getQualifiedName()
-                    .toString();
+            return environment.elementUtils.getPackageOf(element).getQualifiedName().toString();
         }
         
         @Override
@@ -98,16 +92,12 @@ public interface InputElement {
         
         @Override
         public InputElement enclosingElement() {
-            return environment
-                    .element(element.getEnclosingElement());
+            return environment.element(element.getEnclosingElement());
         }
         
         @Override
         public List<? extends InputElement> enclosedElements() {
-            return element
-                    .getEnclosedElements().stream()
-                    .map    (environment::element)
-                    .collect(toList());
+            return element.getEnclosedElements().stream().map(environment::element).collect(toList());
         }
         
         @Override
@@ -134,11 +124,10 @@ public interface InputElement {
             return "class=[" + element.getClass() + "]";
         }
         
-        //== Actions ==
-        
+        // == Actions ==
         @Override
         public String printElement() {
-            try (val writer = new StringWriter()) {
+            try (StringWriter writer = new StringWriter()) {
                 environment.elementUtils.printElements(writer, element);
                 return writer.toString();
             } catch (IOException e) {
@@ -165,82 +154,74 @@ public interface InputElement {
         
         @Override
         public void generateCode(String className, String content) throws IOException {
-            val sourceFile = environment.filer.createSourceFile(className, element);
+            JavaFileObject sourceFile = environment.filer.createSourceFile(className, element);
             try (Writer writer = sourceFile.openWriter()) {
                 writer.write(content);
             }
         }
         
-        //== Sub typing ==
-        
+        // == Sub typing ==
         @Override
         public InputTypeElement asTypeElement() {
-            return (element instanceof TypeElement)
-                    ? environment.element(((TypeElement)element)) 
-                    : null;
+            return (element instanceof TypeElement) ? environment.element(((TypeElement) element)) : null;
         }
         
         @Override
         public InputMethodElement asMethodElement() {
-            return (element instanceof ExecutableElement)
-                    ? environment.element(((ExecutableElement)element)) 
-                    : null;
+            return (element instanceof ExecutableElement) ? environment.element(((ExecutableElement) element)) : null;
         }
         
         @Override
         public InputVariableElement asVariableElement() {
-            return (element instanceof VariableElement)
-                    ? environment.element(((VariableElement)element)) 
-                    : null;
+            return (element instanceof VariableElement) ? environment.element(((VariableElement) element)) : null;
         }
         
         @Override
         public InputTypeParameterElement asTypeParameterElement() {
-            return (element instanceof TypeParameterElement)
-                    ? environment.element(((TypeParameterElement)element)) 
-                    : null;
+            return (element instanceof TypeParameterElement) ? environment.element(((TypeParameterElement) element)) : null;
         }
     }
     
-    @SuppressWarnings("rawtypes") 
+    @SuppressWarnings("rawtypes")
     public static abstract class Mock implements InputElement {
         
-        private final String                       simpleName;
-        private final String                       packageQualifiedName;
-        private final ElementKind                  kind;
-        private final Set<Modifier>                modifiers;
-        private final InputElement                 enclosingElement;
+        private final String simpleName;
+        
+        private final String packageQualifiedName;
+        
+        private final ElementKind kind;
+        
+        private final Set<Modifier> modifiers;
+        
+        private final InputElement enclosingElement;
+        
         private final Supplier<List<InputElement>> enclosedElementsSupplier;
-        private final Function<Class, Annotation>  annotations;
-        private final InputType                    asType;
-        private final String                       printElement;
-        private final String                       toString;
-        private final List<String>                 logs = new ArrayList<>();
-        private final List<String>                 code = new ArrayList<>();
+        
+        private final Function<Class, Annotation> annotations;
+        
+        private final InputType asType;
+        
+        private final String printElement;
+        
+        private final String toString;
+        
+        private final List<String> logs = new ArrayList<>();
+        
+        private final List<String> code = new ArrayList<>();
         
         private AtomicReference<List<InputElement>> enclosedElements = new AtomicReference<>(null);
         
-        public Mock(
-                String                       simpleName, 
-                String                       packageQualifiedName, 
-                ElementKind                  kind, 
-                Set<Modifier>                modifiers,
-                InputElement                 enclosingElement, 
-                Supplier<List<InputElement>> enclosedElementsSupplier, 
-                Function<Class, Annotation>  annotations,
-                InputType                    asType,
-                String                       printElement, 
-                String                       toString) {
-            this.simpleName               = simpleName;
-            this.packageQualifiedName     = packageQualifiedName;
-            this.kind                     = kind;
-            this.modifiers                = modifiers;
-            this.enclosingElement         = enclosingElement;
+        public Mock(String simpleName, String packageQualifiedName, ElementKind kind, Set<Modifier> modifiers, InputElement enclosingElement, Supplier<List<InputElement>> enclosedElementsSupplier, Function<Class, Annotation> annotations, InputType asType, String printElement, String toString) {
+            this.simpleName = simpleName;
+            this.packageQualifiedName = packageQualifiedName;
+            this.kind = kind;
+            this.modifiers = modifiers;
+            this.enclosingElement = enclosingElement;
             this.enclosedElementsSupplier = enclosedElementsSupplier;
-            this.annotations              = annotations;
-            this.asType                   = asType;
-            this.printElement             = printElement;
-            this.toString                 = toString;
+            this.annotations = annotations;
+            this.asType = asType;
+            this.printElement = printElement;
+            this.toString = toString;
         }
         
         @Override
@@ -280,7 +261,7 @@ public interface InputElement {
         @SuppressWarnings("unchecked")
         @Override
         public <A extends Annotation> A annotation(Class<A> annotationType) {
-            return (A)annotations.apply(annotationType);
+            return (A) annotations.apply(annotationType);
         }
         
         @Override
@@ -316,7 +297,7 @@ public interface InputElement {
         @Override
         public void generateCode(String className, String content) throws IOException {
             code.add("-|" + className + "|-----------------");
-            for (val line : content.split("\n")) {
+            for (String line : content.split("\n")) {
                 code.add(line);
             }
             code.add("-------------------------------------");
@@ -327,20 +308,28 @@ public interface InputElement {
             return toString;
         }
         
-        //== Builder ==
-        
+        // == Builder ==
         public static abstract class Builder {
             
-            protected String                       simpleName;
-            protected String                       packageQualifiedName;
-            protected ElementKind                  kind;
-            protected Set<Modifier>                modifiers;
-            protected InputElement                 enclosingElement;
+            protected String simpleName;
+            
+            protected String packageQualifiedName;
+            
+            protected ElementKind kind;
+            
+            protected Set<Modifier> modifiers;
+            
+            protected InputElement enclosingElement;
+            
             protected Supplier<List<InputElement>> enclosedElementsSupplier;
-            protected Function<Class, Annotation>  annotations = __ -> null;
-            protected InputType                    asType;
-            protected String                       printElement;
-            protected String                       toString;
+            
+            protected Function<Class, Annotation> annotations = __ -> null;
+            
+            protected InputType asType;
+            
+            protected String printElement;
+            
+            protected String toString;
             
             public Builder simpleName(String simpleName) {
                 this.simpleName = simpleName;
@@ -357,7 +346,7 @@ public interface InputElement {
                 return this;
             }
             
-            public Builder modifiers(Modifier ... modifiers) {
+            public Builder modifiers(Modifier... modifiers) {
                 return modifiers(new HashSet<>(asList(modifiers)));
             }
             
@@ -371,9 +360,10 @@ public interface InputElement {
                 return this;
             }
             
-            public Builder enclosedElements(InputElement ... enclosedElements) {
+            public Builder enclosedElements(InputElement... enclosedElements) {
                 return enclosedElements(() -> asList(enclosedElements));
             }
+            
             public Builder enclosedElements(List<InputElement> enclosedElements) {
                 return enclosedElements(() -> enclosedElements);
             }
@@ -384,7 +374,7 @@ public interface InputElement {
             }
             
             public Builder annotations(Class clzz, Annotation annotation) {
-                val oldAnnotations = annotations;
+                Function<Class, Annotation> oldAnnotations = annotations;
                 annotations = czz -> {
                     if (czz.equals(clzz)) {
                         return annotation;
@@ -414,11 +404,9 @@ public interface InputElement {
                 return this;
             }
         }
-        
     }
     
-    //== Fundamental methods ==
-    
+    // == Fundamental methods ==
     public String simpleName();
     
     public String packageQualifiedName();
@@ -436,13 +424,13 @@ public interface InputElement {
     /**
      * Returns the type defined by this element.
      *
-     * <p> A generic element defines a family of types, not just one.
-     * If this is a generic element, a <i>prototypical</i> type is
+     * &lt;p&gt; A generic element defines a family of types, not just one.
+     * If this is a generic element, a &lt;i&gt;prototypical&lt;/i&gt; type is
      * returned.  This is the element's invocation on the
      * type variables corresponding to its own formal type parameters.
      * For example,
-     * for the generic class element {@code C<N extends Number>},
-     * the parameterized type {@code C<N>} is returned.
+     * for the generic class element {@code C&lt;N extends Number&gt;},
+     * the parameterized type {@code C&lt;N&gt;} is returned.
      * The {@link Types} utility interface has more general methods
      * for obtaining the full range of types defined by an element.
      *
@@ -452,8 +440,7 @@ public interface InputElement {
      */
     public InputType asType();
     
-    //== Action ==
-    
+    // == Action ==
     public String printElement();
     
     public String getToString();
@@ -466,8 +453,7 @@ public interface InputElement {
     
     public void generateCode(String className, String content) throws IOException;
     
-    //== Sub typing == 
-    
+    // == Sub typing ==
     public InputTypeElement asTypeElement();
     
     public InputMethodElement asMethodElement();
@@ -476,21 +462,17 @@ public interface InputElement {
     
     public InputTypeParameterElement asTypeParameterElement();
     
-    //== Derived methods ==
-    
+    // == Derived methods ==
     public default String packageName() {
         if (isTypeElement())
             return packageQualifiedName();
-        
         if (isMethodElement())
             return asMethodElement().enclosingElement().packageQualifiedName();
-        
         throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
     }
     
     public default boolean isStructOrChoice() {
-        return (annotation(Struct.class) != null)
-            || (annotation(Choice.class) != null);
+        return (annotation(Struct.class) != null) || (annotation(Choice.class) != null);
     }
     
     public default boolean isInterface() {
@@ -541,8 +523,7 @@ public interface InputElement {
         return modifiers().contains(Modifier.ABSTRACT) ? Concrecity.ABSTRACT : Concrecity.CONCRETE;
     }
     
-    //== Sub typing ==
-    
+    // == Sub typing ==
     public default boolean isTypeElement() {
         return asTypeElement() != null;
     }
@@ -559,17 +540,14 @@ public interface InputElement {
         return asTypeParameterElement() != null;
     }
     
-    //== From annotation ==
-    
+    // == From annotation ==
     public default String sourceName() {
         if (isTypeElement()) {
-            val packageName = packageName();
-            return packageQualifiedName().substring(packageName.length() + 1 );
+            String packageName = packageName();
+            return packageQualifiedName().substring(packageName.length() + 1);
         }
-        
         if (isMethodElement())
             return null;
-        
         throw new IllegalArgumentException("Struct and Choice annotation is only support class or method.");
     }
     
@@ -578,24 +556,20 @@ public interface InputElement {
     }
     
     public default String targetName(InputElement element) {
-        val specTargetName = specifiedTargetName();
-        val simpleName     = element.simpleName().toString();
+        String specTargetName = specifiedTargetName();
+        String simpleName = element.simpleName().toString();
         if ((specTargetName != null) && !specTargetName.isEmpty())
             return specTargetName;
-        
         if (simpleName.matches("^.*Spec$"))
             return simpleName.replaceAll("Spec$", "");
-        
         if (simpleName.matches("^.*Model$"))
             return simpleName.replaceAll("Model$", "");
-        
         return simpleName;
     }
     
     public default String specifiedTargetName() {
         if (annotation(Struct.class) != null) {
             return blankToNull(annotation(Struct.class).name());
-            
         }
         if (annotation(Choice.class) != null) {
             return blankToNull(annotation(Choice.class).name());
@@ -605,11 +579,11 @@ public interface InputElement {
     
     public default String specifiedSpecField() {
         if (annotation(Struct.class) != null) {
-            val specField = annotation(Struct.class).specField();
+            String specField = annotation(Struct.class).specField();
             return blankToNull(specField);
         }
         if (annotation(Choice.class) != null) {
-            val specField = annotation(Choice.class).specField();
+            String specField = annotation(Choice.class).specField();
             return blankToNull(specField);
         }
         throw new IllegalArgumentException("Unknown element annotation type: " + this);
@@ -627,7 +601,7 @@ public interface InputElement {
     
     public default String choiceTagMapKeyName() {
         if (annotation(Choice.class) != null) {
-            val tagMapKeyName = annotation(Choice.class).tagMapKeyName();
+            String tagMapKeyName = annotation(Choice.class).tagMapKeyName();
             return blankToNull(tagMapKeyName);
         } else {
             return null;
@@ -645,12 +619,6 @@ public interface InputElement {
     }
     
     public default List<String> readLocalTypeWithLens() {
-        return enclosingElement()
-                .enclosedElements().stream()
-                .filter (elmt -> elmt.isStructOrChoice())
-                .map    (elmt -> targetName(elmt))
-                .filter (name -> nonNull(name))
-                .collect(toList());
+        return enclosingElement().enclosedElements().stream().filter(elmt -> elmt.isStructOrChoice()).map(elmt -> targetName(elmt)).filter(name -> nonNull(name)).collect(toList());
     }
-    
 }

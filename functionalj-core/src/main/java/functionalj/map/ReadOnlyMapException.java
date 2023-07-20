@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,8 +26,8 @@ package functionalj.map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ReadOnlyMapException extends UnsupportedOperationException{
-
+public class ReadOnlyMapException extends UnsupportedOperationException {
+    
     private static final long serialVersionUID = 3110853798441402736L;
     
     public ReadOnlyMapException(@SuppressWarnings("rawtypes") ReadOnlyMap map) {
@@ -37,7 +37,6 @@ public class ReadOnlyMapException extends UnsupportedOperationException{
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static String message(ReadOnlyMap map) {
         Objects.requireNonNull(map);
-        
         String mapToString = null;
         try {
             if (map.size() <= 3) {

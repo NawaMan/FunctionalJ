@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,9 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import lombok.val;
-
 
 public abstract class DoubleAggregation<TARGET> extends Aggregation<Double, TARGET> {
     
@@ -39,10 +37,8 @@ public abstract class DoubleAggregation<TARGET> extends Aggregation<Double, TARG
         return new DoubleAggregation.Impl<T>(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract DoubleCollectorPlus<?, TARGET> doubleCollectorPlus();
-    
     
     @Override
     public CollectorPlus<Double, ?, TARGET> collectorPlus() {
@@ -54,8 +50,7 @@ public abstract class DoubleAggregation<TARGET> extends Aggregation<Double, TARG
         return new DoubleAggregator.Impl<>(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> Aggregation<INPUT, TARGET> of(ToDoubleFunction<INPUT> mapper) {
         val newCollector = doubleCollectorPlus().of(mapper);
         return new Aggregation.Impl<>(newCollector);
@@ -76,8 +71,7 @@ public abstract class DoubleAggregation<TARGET> extends Aggregation<Double, TARG
         return new DoubleAggregation.Impl<>(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<TRG> extends DoubleAggregation<TRG> {
         
         private final DoubleCollectorPlus<?, TRG> collector;
@@ -90,7 +84,5 @@ public abstract class DoubleAggregation<TARGET> extends Aggregation<Double, TARG
         public DoubleCollectorPlus<?, TRG> doubleCollectorPlus() {
             return collector;
         }
-        
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,7 +33,7 @@ public interface LongLongBiFunction<TARGET> extends Func2<Long, Long, TARGET> {
     public default TARGET applyLong(long input1, long input2) {
         try {
             return applyLongUnsafe(input1, input2);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }

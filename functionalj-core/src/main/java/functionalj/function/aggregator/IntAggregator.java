@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.function.aggregator;
 
 import java.util.function.IntFunction;
-
 import functionalj.stream.intstream.collect.IntCollected;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 
@@ -32,8 +31,7 @@ public interface IntAggregator<TARGET> extends IntFunction<TARGET>, Aggregator<I
     
     public IntCollected<?, TARGET> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<TARGET> implements IntAggregator<TARGET> {
         
         private final IntCollected<?, TARGET> collected;
@@ -57,5 +55,4 @@ public interface IntAggregator<TARGET> extends IntFunction<TARGET>, Aggregator<I
             return collected;
         }
     }
-    
 }

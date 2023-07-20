@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.stream.doublestream;
 
 import static functionalj.function.Func.f;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -33,7 +32,6 @@ import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
-
 import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func1;
@@ -41,7 +39,6 @@ import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.ZipWithOption;
 import lombok.val;
-
 
 public class DoubleStreamPlusHelper {
     
@@ -53,25 +50,17 @@ public class DoubleStreamPlusHelper {
     
     public static <T> boolean hasAt(DoubleStream stream, long index, double[][] valueRef) {
         // Note: It is done this way to avoid interpreting 'null' as no-value
-        
         val ref = new double[1][];
-        stream
-            .skip     (index)
-            .peek     (value -> { ref[0] = new double[] { value }; })
-            .findFirst()
-            .orElse   (-1);
-        
+        stream.skip(index).peek(value -> {
+            ref[0] = new double[] { value };
+        }).findFirst().orElse(-1);
         val found = ref[0] != null;
         valueRef[0] = ref[0];
-        
         return found;
     }
     
-    //-- Terminal --
-    
-    static <TARGET> TARGET terminate(
-            AsDoubleStreamPlus             asStreamPlus,
-            Function<DoubleStream, TARGET> action) {
+    // -- Terminal --
+    static <TARGET> TARGET terminate(AsDoubleStreamPlus asStreamPlus, Function<DoubleStream, TARGET> action) {
         val streamPlus = asStreamPlus.doubleStreamPlus();
         try {
             val stream = streamPlus.doubleStream();
@@ -82,9 +71,7 @@ public class DoubleStreamPlusHelper {
         }
     }
     
-    static void terminate(
-            AsDoubleStreamPlus     asStreamPlus,
-            Consumer<DoubleStream> action) {
+    static void terminate(AsDoubleStreamPlus asStreamPlus, Consumer<DoubleStream> action) {
         val streamPlus = asStreamPlus.doubleStreamPlus();
         try {
             val stream = streamPlus.doubleStream();
@@ -94,75 +81,66 @@ public class DoubleStreamPlusHelper {
         }
     }
     
-    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
-    public static <T> DoubleStreamPlus sequential(
-            AsDoubleStreamPlus                        asStreamPlus,
-            Func1<DoubleStreamPlus, DoubleStreamPlus> action) {
+    /**
+     * Run the given action sequentially, make sure to set the parallelity of the result back.
+     */
+    public static <T> DoubleStreamPlus sequential(AsDoubleStreamPlus asStreamPlus, Func1<DoubleStreamPlus, DoubleStreamPlus> action) {
         val streamPlus = asStreamPlus.doubleStreamPlus();
         val isParallel = streamPlus.isParallel();
-        
         val orgDoubleStreamPlus = streamPlus.sequential();
         val newDoubleStreamPlus = action.apply(orgDoubleStreamPlus);
         if (newDoubleStreamPlus.isParallel() == isParallel)
             return newDoubleStreamPlus;
-        
         if (isParallel)
             return newDoubleStreamPlus.parallel();
-        
         return newDoubleStreamPlus.sequential();
     }
     
-    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
-    public static <T> DoubleStreamPlus sequentialToDouble(
-            AsDoubleStreamPlus                        asStreamPlus,
-            Func1<DoubleStreamPlus, DoubleStreamPlus> action) {
+    /**
+     * Run the given action sequentially, make sure to set the parallelity of the result back.
+     */
+    public static <T> DoubleStreamPlus sequentialToDouble(AsDoubleStreamPlus asStreamPlus, Func1<DoubleStreamPlus, DoubleStreamPlus> action) {
         return sequential(asStreamPlus, action);
     }
     
-    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
-    public static <T> StreamPlus<T> sequentialToObj(
-            AsDoubleStreamPlus                     asStreamPlus,
-            Func1<DoubleStreamPlus, StreamPlus<T>> action) {
+    /**
+     * Run the given action sequentially, make sure to set the parallelity of the result back.
+     */
+    public static <T> StreamPlus<T> sequentialToObj(AsDoubleStreamPlus asStreamPlus, Func1<DoubleStreamPlus, StreamPlus<T>> action) {
         val streamPlus = asStreamPlus.doubleStreamPlus();
         val isParallel = streamPlus.isParallel();
-        
         val orgDoubleStreamPlus = streamPlus.sequential();
         val newDoubleStreamPlus = action.apply(orgDoubleStreamPlus);
         if (newDoubleStreamPlus.isParallel() == isParallel)
             return newDoubleStreamPlus;
-        
         if (isParallel)
             return newDoubleStreamPlus.parallel();
-        
         return newDoubleStreamPlus.sequential();
     }
     
-    static <DATA, B, TARGET> StreamPlus<TARGET> doZipDoubleWith(
-            DoubleObjBiFunction<B, TARGET> merger,
-            DoubleIteratorPlus             iteratorA,
-            IteratorPlus<B>                iteratorB) {
-        
+    static <DATA, B, TARGET> StreamPlus<TARGET> doZipDoubleWith(DoubleObjBiFunction<B, TARGET> merger, DoubleIteratorPlus iteratorA, IteratorPlus<B> iteratorB) {
         val targetIterator = new Iterator<TARGET>() {
+        
             private boolean hasNextA;
+        
             private boolean hasNextB;
-            
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
+        
             public TARGET next() {
                 if (!hasNextA)
                     throw new NoSuchElementException();
-                
                 double nextA = iteratorA.nextDouble();
-                val    nextB = iteratorB.next();
+                val nextB = iteratorB.next();
                 return merger.apply(nextA, nextB);
             }
         };
-        
-        val iterable     = (Iterable<TARGET>)() -> targetIterator;
-        val spliterator  = iterable.spliterator();
+        val iterable = (Iterable<TARGET>) () -> targetIterator;
+        val spliterator = iterable.spliterator();
         val targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
@@ -171,29 +149,27 @@ public class DoubleStreamPlusHelper {
         return targetStream;
     }
     
-    static <DATA, B, TARGET> StreamPlus<TARGET> doZipDoubleWith(
-            double                         defaultValue,
-            DoubleObjBiFunction<B, TARGET> merger,
-            DoubleIteratorPlus             iteratorA,
-            IteratorPlus<B>                iteratorB) {
-        
+    static <DATA, B, TARGET> StreamPlus<TARGET> doZipDoubleWith(double defaultValue, DoubleObjBiFunction<B, TARGET> merger, DoubleIteratorPlus iteratorA, IteratorPlus<B> iteratorB) {
         val targetIterator = new Iterator<TARGET>() {
+        
             private boolean hasNextA;
+        
             private boolean hasNextB;
-            
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return hasNextA || hasNextB;
             }
+        
             public TARGET next() {
                 double nextA = hasNextA ? iteratorA.nextDouble() : defaultValue;
-                B      nextB = hasNextB ? iteratorB.next()       : null;
+                B nextB = hasNextB ? iteratorB.next() : null;
                 return merger.apply(nextA, nextB);
             }
         };
-        val iterable     = (Iterable<TARGET>)() -> targetIterator;
-        val spliterator  = iterable.spliterator();
+        val iterable = (Iterable<TARGET>) () -> targetIterator;
+        val spliterator = iterable.spliterator();
         val targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
@@ -202,35 +178,33 @@ public class DoubleStreamPlusHelper {
         return targetStream;
     }
     
-    static DoubleStreamPlus doZipDoubleDoubleWith(
-            DoubleBinaryOperator merger,
-            DoubleIteratorPlus   iteratorA,
-            DoubleIteratorPlus   iteratorB) {
-        
+    static DoubleStreamPlus doZipDoubleDoubleWith(DoubleBinaryOperator merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB) {
         val iterator = new PrimitiveIterator.OfDouble() {
+        
             private boolean hasNextA;
+        
             private boolean hasNextB;
-            
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
+        
             public double nextDouble() {
                 if (hasNextA && hasNextB) {
-                    double nextA  = iteratorA.nextDouble();
-                    double nextB  = iteratorB.nextDouble();
+                    double nextA = iteratorA.nextDouble();
+                    double nextB = iteratorB.nextDouble();
                     double choice = merger.applyAsDouble(nextA, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
             }
         };
-        
         val targetIterator = DoubleIteratorPlus.from(iterator);
-        val iterable       = (DoubleIterable)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
+        val iterable = (DoubleIterable) () -> targetIterator;
+        val spliterator = iterable.spliterator();
+        val targetStream = DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -238,35 +212,33 @@ public class DoubleStreamPlusHelper {
         return targetStream;
     }
     
-    static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(
-            DoubleDoubleFunction<TARGET> merger,
-            DoubleIteratorPlus             iteratorA,
-            DoubleIteratorPlus             iteratorB) {
-        
+    static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(DoubleDoubleFunction<TARGET> merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB) {
         val iterator = new Iterator<TARGET>() {
+        
             private boolean hasNextA;
+        
             private boolean hasNextB;
-            
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA && hasNextB);
             }
+        
             public TARGET next() {
                 if (hasNextA && hasNextB) {
-                    double nextA  = iteratorA.nextDouble();
-                    double nextB  = iteratorB.nextDouble();
+                    double nextA = iteratorA.nextDouble();
+                    double nextB = iteratorB.nextDouble();
                     TARGET choice = merger.apply(nextA, nextB);
                     return choice;
                 }
                 throw new NoSuchElementException();
             }
         };
-        
         val targetIterator = IteratorPlus.from(iterator);
-        val iterable       = (Iterable<TARGET>)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        val iterable = (Iterable<TARGET>) () -> targetIterator;
+        val spliterator = iterable.spliterator();
+        val targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -274,25 +246,23 @@ public class DoubleStreamPlusHelper {
         return targetStream;
     }
     
-    static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(
-            DoubleDoubleFunction<TARGET> merger,
-            DoubleIteratorPlus             iteratorA,
-            DoubleIteratorPlus             iteratorB,
-            double                         defaultValue) {
-        
+    static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(DoubleDoubleFunction<TARGET> merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB, double defaultValue) {
         val iterator = new Iterator<TARGET>() {
+        
             private boolean hasNextA;
+        
             private boolean hasNextB;
-            
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
+        
             public TARGET next() {
                 if (hasNextA && hasNextB) {
-                    double nextA  = iteratorA.nextDouble();
-                    double nextB  = iteratorB.nextDouble();
+                    double nextA = iteratorA.nextDouble();
+                    double nextB = iteratorB.nextDouble();
                     TARGET choice = merger.apply(nextA, nextB);
                     return choice;
                 }
@@ -310,8 +280,8 @@ public class DoubleStreamPlusHelper {
             }
         };
         val targetIterator = IteratorPlus.from(iterator);
-        val iterable       = (Iterable<TARGET>)() -> targetIterator;
-        val targetStream   = StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        val iterable = (Iterable<TARGET>) () -> targetIterator;
+        val targetStream = StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -319,25 +289,23 @@ public class DoubleStreamPlusHelper {
         return targetStream;
     }
     
-    static DoubleStreamPlus doZipDoubleDoubleWith(
-            DoubleBinaryOperator merger,
-            DoubleIteratorPlus   iteratorA,
-            DoubleIteratorPlus   iteratorB,
-            double               defaultValue) {
-        
+    static DoubleStreamPlus doZipDoubleDoubleWith(DoubleBinaryOperator merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB, double defaultValue) {
         val iterator = new PrimitiveIterator.OfDouble() {
+        
             private boolean hasNextA;
+        
             private boolean hasNextB;
-            
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
+        
             public double nextDouble() {
                 if (hasNextA && hasNextB) {
-                    double nextA  = iteratorA.nextDouble();
-                    double nextB  = iteratorB.nextDouble();
+                    double nextA = iteratorA.nextDouble();
+                    double nextB = iteratorB.nextDouble();
                     double choice = merger.applyAsDouble(nextA, nextB);
                     return choice;
                 }
@@ -354,11 +322,10 @@ public class DoubleStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        
         val targetIterator = DoubleIteratorPlus.from(iterator);
-        val iterable       = (DoubleIterable)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
+        val iterable = (DoubleIterable) () -> targetIterator;
+        val spliterator = iterable.spliterator();
+        val targetStream = DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -366,26 +333,23 @@ public class DoubleStreamPlusHelper {
         return targetStream;
     }
     
-    static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(
-            DoubleDoubleFunction<TARGET> merger,
-            DoubleIteratorPlus             iteratorA,
-            DoubleIteratorPlus             iteratorB,
-            double                         defaultValueA,
-            double                         defaultValueB) {
-        
+    static <TARGET> StreamPlus<TARGET> doZipDoubleDoubleObjWith(DoubleDoubleFunction<TARGET> merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB, double defaultValueA, double defaultValueB) {
         val iterator = new Iterator<TARGET>() {
+        
             private boolean hasNextA;
+        
             private boolean hasNextB;
-            
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
+        
             public TARGET next() {
                 if (hasNextA && hasNextB) {
-                    double nextA  = iteratorA.nextDouble();
-                    double nextB  = iteratorB.nextDouble();
+                    double nextA = iteratorA.nextDouble();
+                    double nextB = iteratorB.nextDouble();
                     TARGET choice = merger.apply(nextA, nextB);
                     return choice;
                 }
@@ -402,11 +366,10 @@ public class DoubleStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        
         val targetIterator = IteratorPlus.from(iterator);
-        val iterable       = (Iterable<TARGET>)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        val iterable = (Iterable<TARGET>) () -> targetIterator;
+        val spliterator = iterable.spliterator();
+        val targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -414,26 +377,23 @@ public class DoubleStreamPlusHelper {
         return targetStream;
     }
     
-    static DoubleStreamPlus doZipDoubleDoubleWith(
-            DoubleBinaryOperator merger,
-            DoubleIteratorPlus   iteratorA,
-            DoubleIteratorPlus   iteratorB,
-            double               defaultValueA,
-            double               defaultValueB) {
-        
+    static DoubleStreamPlus doZipDoubleDoubleWith(DoubleBinaryOperator merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB, double defaultValueA, double defaultValueB) {
         val iterator = new PrimitiveIterator.OfDouble() {
+        
             private boolean hasNextA;
+        
             private boolean hasNextB;
-            
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
                 return (hasNextA || hasNextB);
             }
+        
             public double nextDouble() {
                 if (hasNextA && hasNextB) {
-                    double nextA  = iteratorA.nextDouble();
-                    double nextB  = iteratorB.nextDouble();
+                    double nextA = iteratorA.nextDouble();
+                    double nextB = iteratorB.nextDouble();
                     double choice = merger.applyAsDouble(nextA, nextB);
                     return choice;
                 }
@@ -450,11 +410,10 @@ public class DoubleStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        
         val targetIterator = DoubleIteratorPlus.from(iterator);
-        val iterable       = (DoubleIterable)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
+        val iterable = (DoubleIterable) () -> targetIterator;
+        val spliterator = iterable.spliterator();
+        val targetStream = DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -462,37 +421,41 @@ public class DoubleStreamPlusHelper {
         return targetStream;
     }
     
-    static DoubleStreamPlus doMergeInt(
-            DoubleIteratorPlus iteratorA,
-            DoubleIteratorPlus iteratorB) {
+    static DoubleStreamPlus doMergeInt(DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB) {
         val iterator = new DoubleIteratorPlus() {
+        
             private boolean isA = true;
-            
+        
             public boolean hasNext() {
                 if (isA) {
-                    if (iteratorA.hasNext()) return true;
+                    if (iteratorA.hasNext())
+                        return true;
                     isA = false;
-                    if (iteratorB.hasNext()) return true;
+                    if (iteratorB.hasNext())
+                        return true;
                     return false;
                 }
-                
-                if (iteratorB.hasNext()) return true;
+                if (iteratorB.hasNext())
+                    return true;
                 isA = true;
-                if (iteratorA.hasNext()) return true;
+                if (iteratorA.hasNext())
+                    return true;
                 return false;
             }
+        
             public double nextDouble() {
                 val next = isA ? iteratorA.next() : iteratorB.next();
                 isA = !isA;
                 return next;
             }
+        
             @Override
             public OfDouble asIterator() {
                 return this;
             }
         };
-        val iterable     = (DoubleIterable)() -> iterator;
-        val spliterator  = iterable.spliterator();
+        val iterable = (DoubleIterable) () -> iterator;
+        val spliterator = iterable.spliterator();
         val targetStream = DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iterator::close).runCarelessly();
@@ -502,27 +465,23 @@ public class DoubleStreamPlusHelper {
         return targetStream;
     }
     
-    static DoubleStreamPlus doChoiceWith(
-            ZipWithOption        option,
-            DoubleBinaryOperator merger,
-            DoubleIteratorPlus   iteratorA,
-            DoubleIteratorPlus   iteratorB) {
-        
+    static DoubleStreamPlus doChoiceWith(ZipWithOption option, DoubleBinaryOperator merger, DoubleIteratorPlus iteratorA, DoubleIteratorPlus iteratorB) {
         val iterator = new PrimitiveIterator.OfDouble() {
+        
             private boolean hasNextA;
+        
             private boolean hasNextB;
-            
+        
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
-                return (option == ZipWithOption.RequireBoth)
-                        ? (hasNextA && hasNextB)
-                        : (hasNextA || hasNextB);
+                return (option == ZipWithOption.RequireBoth) ? (hasNextA && hasNextB) : (hasNextA || hasNextB);
             }
+        
             public double nextDouble() {
                 if (hasNextA && hasNextB) {
-                    double nextA  = iteratorA.nextDouble();
-                    double nextB  = iteratorB.nextDouble();
+                    double nextA = iteratorA.nextDouble();
+                    double nextB = iteratorB.nextDouble();
                     double choice = merger.applyAsDouble(nextA, nextB);
                     return choice;
                 }
@@ -537,16 +496,14 @@ public class DoubleStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        
         val targetIterator = DoubleIteratorPlus.from(iterator);
-        val iterable       = (DoubleIterable)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
+        val iterable = (DoubleIterable) () -> targetIterator;
+        val spliterator = iterable.spliterator();
+        val targetStream = DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
         });
         return targetStream;
     }
-    
 }

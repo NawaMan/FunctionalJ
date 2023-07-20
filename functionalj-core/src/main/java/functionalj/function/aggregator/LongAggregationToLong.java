@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,9 @@ import java.util.function.IntToLongFunction;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorToLongPlus;
 import lombok.val;
-
 
 public abstract class LongAggregationToLong extends LongAggregation<Long> {
     
@@ -39,10 +37,8 @@ public abstract class LongAggregationToLong extends LongAggregation<Long> {
         return new LongAggregationToLong.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract LongCollectorToLongPlus<?> longCollectorToLongPlus();
-    
     
     @Override
     public LongCollectorPlus<?, Long> longCollectorPlus() {
@@ -54,8 +50,7 @@ public abstract class LongAggregationToLong extends LongAggregation<Long> {
         return new LongAggregatorToLong.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToLong<INPUT> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorToLongPlus().of(mapper);
         return new AggregationToLong.Impl<>(newCollector);
@@ -68,10 +63,9 @@ public abstract class LongAggregationToLong extends LongAggregation<Long> {
     
     public LongAggregation<Long> ofLong(LongFunction<Long> mapper) {
         if (mapper instanceof LongUnaryOperator) {
-            val newCollector = longCollectorToLongPlus().of((LongUnaryOperator)mapper);
+            val newCollector = longCollectorToLongPlus().of((LongUnaryOperator) mapper);
             return new LongAggregationToLong.Impl(newCollector);
         }
-        
         val newCollector = longCollectorToLongPlus().of(mapper);
         return new LongAggregation.Impl<>(newCollector);
     }
@@ -83,8 +77,7 @@ public abstract class LongAggregationToLong extends LongAggregation<Long> {
         return new LongAggregationToLong.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends LongAggregationToLong {
         
         private final LongCollectorToLongPlus<?> collector;
@@ -97,7 +90,5 @@ public abstract class LongAggregationToLong extends LongAggregation<Long> {
         public LongCollectorToLongPlus<?> longCollectorToLongPlus() {
             return collector;
         }
-        
     }
-    
 }

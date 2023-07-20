@@ -1,3 +1,26 @@
+// ============================================================================
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.lens.lenses.java.time;
 
 import java.time.Clock;
@@ -17,7 +40,6 @@ import java.time.temporal.TemporalField;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
-
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.BooleanAccessPrimitive;
@@ -26,10 +48,8 @@ import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
-
 @FunctionalInterface
-public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
-                    extends AnyAccess<HOST, CHRONOLOGY> {
+public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology> extends AnyAccess<HOST, CHRONOLOGY> {
     
     public static <H, C extends Chronology> ChronologyAccess<H, C> of(Function<H, C> func) {
         return func::apply;
@@ -41,6 +61,7 @@ public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
             return value.getId();
         };
     }
+    
     public default StringAccess<HOST> getCalendarType() {
         return host -> {
             val value = apply(host);
@@ -54,70 +75,78 @@ public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
             return value.date(era, yearOfEra, month, dayOfMonth);
         };
     }
+    
     public default ChronoLocalDateAccess<HOST, ? extends ChronoLocalDate> date(int prolepticYear, int month, int dayOfMonth) {
         return host -> {
             val value = apply(host);
             return value.date(prolepticYear, month, dayOfMonth);
         };
     }
+    
     public default ChronoLocalDateAccess<HOST, ? extends ChronoLocalDate> dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return host -> {
             val value = apply(host);
             return value.dateYearDay(era, yearOfEra, dayOfYear);
         };
     }
+    
     public default ChronoLocalDateAccess<HOST, ? extends ChronoLocalDate> dateYearDay(int prolepticYear, int dayOfYear) {
         return host -> {
             val value = apply(host);
             return value.dateYearDay(prolepticYear, dayOfYear);
         };
     }
+    
     public default ChronoLocalDateAccess<HOST, ? extends ChronoLocalDate> dateEpochDay(long epochDay) {
         return host -> {
             val value = apply(host);
             return value.dateEpochDay(epochDay);
         };
     }
+    
     public default ChronoLocalDateAccess<HOST, ? extends ChronoLocalDate> dateNow() {
         return host -> {
             val value = apply(host);
             return value.dateNow();
         };
     }
+    
     public default ChronoLocalDateAccess<HOST, ? extends ChronoLocalDate> dateNow(ZoneId zone) {
         return host -> {
             val value = apply(host);
             return value.dateNow(zone);
         };
     }
+    
     public default ChronoLocalDateAccess<HOST, ? extends ChronoLocalDate> dateNow(Clock clock) {
         return host -> {
             val value = apply(host);
             return value.dateNow(clock);
         };
     }
+    
     public default ChronoLocalDateAccess<HOST, ? extends ChronoLocalDate> date(TemporalAccessor temporal) {
         return host -> {
             val value = apply(host);
             return value.date(temporal);
         };
     }
-    public default ChronoLocalDateTimeAccess<HOST, ? extends ChronoLocalDateTime<? extends ChronoLocalDate>> 
-                    localDateTime(TemporalAccessor temporal) {
+    
+    public default ChronoLocalDateTimeAccess<HOST, ? extends ChronoLocalDateTime<? extends ChronoLocalDate>> localDateTime(TemporalAccessor temporal) {
         return host -> {
             val value = apply(host);
             return value.localDateTime(temporal);
         };
     }
-    public default ChronoZonedDateTimeAccess<HOST, ? extends ChronoZonedDateTime<? extends ChronoLocalDate>> 
-            zonedDateTime(TemporalAccessor temporal) {
+    
+    public default ChronoZonedDateTimeAccess<HOST, ? extends ChronoZonedDateTime<? extends ChronoLocalDate>> zonedDateTime(TemporalAccessor temporal) {
         return host -> {
             val value = apply(host);
             return value.zonedDateTime(temporal);
         };
     }
-    public default ChronoZonedDateTimeAccess<HOST, ? extends ChronoZonedDateTime<? extends ChronoLocalDate>> 
-            zonedDateTime(Instant instant, ZoneId zone) {
+    
+    public default ChronoZonedDateTimeAccess<HOST, ? extends ChronoZonedDateTime<? extends ChronoLocalDate>> zonedDateTime(Instant instant, ZoneId zone) {
         return host -> {
             val value = apply(host);
             return value.zonedDateTime(instant, zone);
@@ -130,39 +159,46 @@ public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
             return value.isLeapYear(prolepticYear);
         };
     }
+    
     public default IntegerAccessPrimitive<HOST> prolepticYear(Era era, int yearOfEra) {
         return host -> {
             val value = apply(host);
             return value.prolepticYear(era, yearOfEra);
         };
     }
+    
     public default EraAccess<HOST, ? extends Era> eraOf(int eraValue) {
         return host -> {
             val value = apply(host);
             return value.eraOf(eraValue);
         };
     }
+    
     public default ListAccess<HOST, Era, EraAccess<HOST, Era>> eras() {
         return ListAccess.of(host -> ChronologyAccess.this.apply(host).eras(), EraAccess::of);
     }
+    
     public default ValueRangeAccess<HOST> range(ChronoField field) {
         return host -> {
             val value = apply(host);
             return value.range(field);
         };
     }
+    
     public default StringAccess<HOST> getDisplayName(TextStyle style, Locale locale) {
         return host -> {
             val value = apply(host);
             return value.getDisplayName(style, locale);
         };
     }
+    
     public default ChronoLocalDateAccess<HOST, ? extends ChronoLocalDate> resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return host -> {
             val value = apply(host);
             return value.resolveDate(fieldValues, resolverStyle);
         };
     }
+    
     public default ChronoPeriodAccess<HOST, ? extends ChronoPeriod> period(int years, int months, int days) {
         return host -> {
             val value = apply(host);
@@ -176,17 +212,20 @@ public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
             return value.compareTo(other);
         };
     }
+    
     public default BooleanAccess<HOST> thatGreaterThan(Chronology anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) > 0);
     }
+    
     public default BooleanAccess<HOST> thatLessThan(Chronology anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) < 0);
     }
+    
     public default BooleanAccess<HOST> thatGreaterThanOrEqualsTo(Chronology anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) >= 0);
     }
+    
     public default BooleanAccess<HOST> thatLessThanOrEqualsTo(Chronology anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
-    
 }

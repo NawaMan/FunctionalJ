@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.function;
 
-
 @FunctionalInterface
 public interface IntIntToDoubleFunctionPrimitive extends ToDoubleBiIntFunction<Integer> {
     
@@ -32,5 +31,4 @@ public interface IntIntToDoubleFunctionPrimitive extends ToDoubleBiIntFunction<I
     public default double applyAsDouble(Integer data, int doubleValue) {
         return applyAsIntAndInt(data, doubleValue);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,8 @@ package functionalj.tuple;
 
 public final class Keep {
     
-    /** The keep instance indicating that a parameter is to be keep as is. */
+    /**
+     * The keep instance indicating that a parameter is to be keep as is.
+     */
     public static final Keep keep = new Keep();
-    
 }

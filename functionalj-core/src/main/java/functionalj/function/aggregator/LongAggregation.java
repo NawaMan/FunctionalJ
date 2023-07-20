@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,9 @@ import java.util.function.DoubleToLongFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.LongFunction;
 import java.util.function.ToLongFunction;
-
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
-
 
 public abstract class LongAggregation<TARGET> extends Aggregation<Long, TARGET> {
     
@@ -39,10 +37,8 @@ public abstract class LongAggregation<TARGET> extends Aggregation<Long, TARGET> 
         return new LongAggregation.Impl<T>(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract LongCollectorPlus<?, TARGET> longCollectorPlus();
-    
     
     @Override
     public CollectorPlus<Long, ?, TARGET> collectorPlus() {
@@ -54,8 +50,7 @@ public abstract class LongAggregation<TARGET> extends Aggregation<Long, TARGET> 
         return new LongAggregator.Impl<>(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> Aggregation<INPUT, TARGET> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorPlus().of(mapper);
         return new Aggregation.Impl<>(newCollector);
@@ -76,8 +71,7 @@ public abstract class LongAggregation<TARGET> extends Aggregation<Long, TARGET> 
         return new DoubleAggregation.Impl<>(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<TRG> extends LongAggregation<TRG> {
         
         private final LongCollectorPlus<?, TRG> collector;
@@ -90,7 +84,5 @@ public abstract class LongAggregation<TARGET> extends Aggregation<Long, TARGET> 
         public LongCollectorPlus<?, TRG> longCollectorPlus() {
             return collector;
         }
-        
     }
-    
 }

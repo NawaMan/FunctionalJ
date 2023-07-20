@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,7 +32,6 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.stream.collect.CollectorToBooleanPlus;
 import functionalj.stream.intstream.collect.IntCollectorToBooleanPlus;
 import functionalj.stream.longstream.collect.LongCollectorToBooleanPlus;
@@ -40,9 +39,11 @@ import lombok.val;
 
 public interface DoubleCollectorToBooleanPlus<ACCUMULATED> extends DoubleCollectorPlus<ACCUMULATED, Boolean> {
     
-    public Supplier<ACCUMULATED>          supplier();
+    public Supplier<ACCUMULATED> supplier();
+    
     public ObjDoubleConsumer<ACCUMULATED> doubleAccumulator();
-    public BinaryOperator<ACCUMULATED>    combiner();
+    
+    public BinaryOperator<ACCUMULATED> combiner();
     
     public Predicate<ACCUMULATED> finisherToBoolean();
     
@@ -53,8 +54,7 @@ public interface DoubleCollectorToBooleanPlus<ACCUMULATED> extends DoubleCollect
         };
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public default <SOURCE> CollectorToBooleanPlus<SOURCE, ACCUMULATED> of(ToDoubleFunction<SOURCE> mapper) {
         return new DerivedDoubleCollectorToBooleanPlus.FromObj<>(this, mapper);
     }

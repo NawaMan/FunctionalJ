@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,73 +28,60 @@ import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
-
 import lombok.val;
-
 
 public interface LongStreamPlusWithPeek {
     
-     public LongStreamPlus longStreamPlus();
+    public LongStreamPlus longStreamPlus();
     
-    //-- Peek --
-    
-    /** Peek only the value that is selected with selector. */
-    public default LongStreamPlus peekBy(
-            LongPredicate selector,
-            LongConsumer  theConsumer) {
+    // -- Peek --
+    /**
+     * Peek only the value that is selected with selector.
+     */
+    public default LongStreamPlus peekBy(LongPredicate selector, LongConsumer theConsumer) {
         val streamPlus = longStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    if (!selector.test(value))
-                        return;
-                    
-                    theConsumer.accept(value);
-                });
+        return streamPlus.peek(value -> {
+            if (!selector.test(value))
+                return;
+            theConsumer.accept(value);
+        });
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
-    
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
-    
-    /** Peek the mapped value using the mapper. */
-    public default <T> LongStreamPlus peekAs(
-            LongFunction<T>     mapper,
-            Consumer<? super T> consumer) {
+    /**
+     * Peek the mapped value using the mapper.
+     */
+    public default <T> LongStreamPlus peekAs(LongFunction<T> mapper, Consumer<? super T> consumer) {
         val streamPlus = longStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    consumer.accept(target);
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            consumer.accept(target);
+        });
     }
     
-    /** Peek only the mapped value using the mapper. */
-    public default <T> LongStreamPlus peekBy(
-            LongFunction<T>      mapper,
-            Predicate<? super T> selector,
-            LongConsumer         consumer) {
+    /**
+     * Peek only the mapped value using the mapper.
+     */
+    public default <T> LongStreamPlus peekBy(LongFunction<T> mapper, Predicate<? super T> selector, LongConsumer consumer) {
         val streamPlus = longStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    if (selector.test(target))
-                        consumer.accept(value);
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            if (selector.test(target))
+                consumer.accept(value);
+        });
     }
     
-    /** Peek the mapped value using the mapper. */
-    public default <T> LongStreamPlus peekAs(
-            LongFunction<T>      mapper,
-            Predicate<? super T> selector,
-            Consumer<? super T>  consumer) {
+    /**
+     * Peek the mapped value using the mapper.
+     */
+    public default <T> LongStreamPlus peekAs(LongFunction<T> mapper, Predicate<? super T> selector, Consumer<? super T> consumer) {
         val streamPlus = longStreamPlus();
-        return streamPlus
-                .peek(value -> {
-                    val target = mapper.apply(value);
-                    if (selector.test(target)) {
-                        consumer.accept(target);
-                    }
-                });
+        return streamPlus.peek(value -> {
+            val target = mapper.apply(value);
+            if (selector.test(target)) {
+                consumer.accept(target);
+            }
+        });
     }
-    
 }

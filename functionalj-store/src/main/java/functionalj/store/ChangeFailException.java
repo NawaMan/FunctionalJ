@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,11 +24,10 @@
 package functionalj.store;
 
 public class ChangeFailException extends RuntimeException {
-
+    
     private static final long serialVersionUID = -1774773688354042392L;
     
     public ChangeFailException(Throwable cause) {
         super(cause);
     }
-
 }

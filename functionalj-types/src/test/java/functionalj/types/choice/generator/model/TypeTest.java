@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,9 +24,7 @@
 package functionalj.types.choice.generator.model;
 
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
-
 import functionalj.types.Type;
 
 public class TypeTest {
@@ -35,5 +33,4 @@ public class TypeTest {
     public void testPredicateType() {
         assertEquals("java.lang.Integer", Type.INTEGER.toString());
     }
-    
 }

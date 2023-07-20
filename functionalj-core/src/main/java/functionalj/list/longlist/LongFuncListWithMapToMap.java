@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,172 +24,79 @@
 package functionalj.list.longlist;
 
 import static functionalj.list.longlist.LongFuncList.deriveToObj;
-
 import java.util.function.LongFunction;
-
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 
-
 public interface LongFuncListWithMapToMap extends AsLongFuncList {
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key, LongFunction<? extends VALUE> mapper) {
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key, LongFunction<? extends VALUE> mapper) {
         return deriveToObj(this, stream -> stream.mapToMap(key, mapper));
     }
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key1, LongFunction<? extends VALUE> mapper1,
-            KEY key2, LongFunction<? extends VALUE> mapper2) {
-        return deriveToObj(this, stream -> stream.mapToMap(
-                                                    key1, mapper1,
-                                                    key2, mapper2));
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, LongFunction<? extends VALUE> mapper1, KEY key2, LongFunction<? extends VALUE> mapper2) {
+        return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2));
     }
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key1, LongFunction<? extends VALUE> mapper1,
-            KEY key2, LongFunction<? extends VALUE> mapper2,
-            KEY key3, LongFunction<? extends VALUE> mapper3) {
-        return deriveToObj(this, stream -> stream.mapToMap(
-                                                    key1, mapper1,
-                                                    key2, mapper2,
-                                                    key3, mapper3));
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, LongFunction<? extends VALUE> mapper1, KEY key2, LongFunction<? extends VALUE> mapper2, KEY key3, LongFunction<? extends VALUE> mapper3) {
+        return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3));
     }
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key1, LongFunction<? extends VALUE> mapper1,
-            KEY key2, LongFunction<? extends VALUE> mapper2,
-            KEY key3, LongFunction<? extends VALUE> mapper3,
-            KEY key4, LongFunction<? extends VALUE> mapper4) {
-        return deriveToObj(this, stream -> stream.mapToMap(
-                                                    key1, mapper1,
-                                                    key2, mapper2,
-                                                    key3, mapper3,
-                                                    key4, mapper4));
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, LongFunction<? extends VALUE> mapper1, KEY key2, LongFunction<? extends VALUE> mapper2, KEY key3, LongFunction<? extends VALUE> mapper3, KEY key4, LongFunction<? extends VALUE> mapper4) {
+        return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4));
     }
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key1, LongFunction<? extends VALUE> mapper1,
-            KEY key2, LongFunction<? extends VALUE> mapper2,
-            KEY key3, LongFunction<? extends VALUE> mapper3,
-            KEY key4, LongFunction<? extends VALUE> mapper4,
-            KEY key5, LongFunction<? extends VALUE> mapper5) {
-        return deriveToObj(this, stream -> stream.mapToMap(
-                                                    key1, mapper1,
-                                                    key2, mapper2,
-                                                    key3, mapper3,
-                                                    key4, mapper4,
-                                                    key5, mapper5));
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, LongFunction<? extends VALUE> mapper1, KEY key2, LongFunction<? extends VALUE> mapper2, KEY key3, LongFunction<? extends VALUE> mapper3, KEY key4, LongFunction<? extends VALUE> mapper4, KEY key5, LongFunction<? extends VALUE> mapper5) {
+        return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5));
     }
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key1, LongFunction<? extends VALUE> mapper1,
-            KEY key2, LongFunction<? extends VALUE> mapper2,
-            KEY key3, LongFunction<? extends VALUE> mapper3,
-            KEY key4, LongFunction<? extends VALUE> mapper4,
-            KEY key5, LongFunction<? extends VALUE> mapper5,
-            KEY key6, LongFunction<? extends VALUE> mapper6) {
-        return deriveToObj(this, stream -> stream.mapToMap(
-                                                    key1, mapper1,
-                                                    key2, mapper2,
-                                                    key3, mapper3,
-                                                    key4, mapper4,
-                                                    key5, mapper5,
-                                                    key6, mapper6));
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, LongFunction<? extends VALUE> mapper1, KEY key2, LongFunction<? extends VALUE> mapper2, KEY key3, LongFunction<? extends VALUE> mapper3, KEY key4, LongFunction<? extends VALUE> mapper4, KEY key5, LongFunction<? extends VALUE> mapper5, KEY key6, LongFunction<? extends VALUE> mapper6) {
+        return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6));
     }
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key1, LongFunction<? extends VALUE> mapper1,
-            KEY key2, LongFunction<? extends VALUE> mapper2,
-            KEY key3, LongFunction<? extends VALUE> mapper3,
-            KEY key4, LongFunction<? extends VALUE> mapper4,
-            KEY key5, LongFunction<? extends VALUE> mapper5,
-            KEY key6, LongFunction<? extends VALUE> mapper6,
-            KEY key7, LongFunction<? extends VALUE> mapper7) {
-        return deriveToObj(this, stream -> stream.mapToMap(
-                                                    key1, mapper1,
-                                                    key2, mapper2,
-                                                    key3, mapper3,
-                                                    key4, mapper4,
-                                                    key5, mapper5,
-                                                    key6, mapper6,
-                                                    key7, mapper7));
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, LongFunction<? extends VALUE> mapper1, KEY key2, LongFunction<? extends VALUE> mapper2, KEY key3, LongFunction<? extends VALUE> mapper3, KEY key4, LongFunction<? extends VALUE> mapper4, KEY key5, LongFunction<? extends VALUE> mapper5, KEY key6, LongFunction<? extends VALUE> mapper6, KEY key7, LongFunction<? extends VALUE> mapper7) {
+        return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6, key7, mapper7));
     }
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key1, LongFunction<? extends VALUE> mapper1,
-            KEY key2, LongFunction<? extends VALUE> mapper2,
-            KEY key3, LongFunction<? extends VALUE> mapper3,
-            KEY key4, LongFunction<? extends VALUE> mapper4,
-            KEY key5, LongFunction<? extends VALUE> mapper5,
-            KEY key6, LongFunction<? extends VALUE> mapper6,
-            KEY key7, LongFunction<? extends VALUE> mapper7,
-            KEY key8, LongFunction<? extends VALUE> mapper8) {
-        return deriveToObj(this, stream -> stream.mapToMap(
-                                                    key1, mapper1,
-                                                    key2, mapper2,
-                                                    key3, mapper3,
-                                                    key4, mapper4,
-                                                    key5, mapper5,
-                                                    key6, mapper6,
-                                                    key7, mapper7,
-                                                    key8, mapper8));
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, LongFunction<? extends VALUE> mapper1, KEY key2, LongFunction<? extends VALUE> mapper2, KEY key3, LongFunction<? extends VALUE> mapper3, KEY key4, LongFunction<? extends VALUE> mapper4, KEY key5, LongFunction<? extends VALUE> mapper5, KEY key6, LongFunction<? extends VALUE> mapper6, KEY key7, LongFunction<? extends VALUE> mapper7, KEY key8, LongFunction<? extends VALUE> mapper8) {
+        return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6, key7, mapper7, key8, mapper8));
     }
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key1, LongFunction<? extends VALUE> mapper1,
-            KEY key2, LongFunction<? extends VALUE> mapper2,
-            KEY key3, LongFunction<? extends VALUE> mapper3,
-            KEY key4, LongFunction<? extends VALUE> mapper4,
-            KEY key5, LongFunction<? extends VALUE> mapper5,
-            KEY key6, LongFunction<? extends VALUE> mapper6,
-            KEY key7, LongFunction<? extends VALUE> mapper7,
-            KEY key8, LongFunction<? extends VALUE> mapper8,
-            KEY key9, LongFunction<? extends VALUE> mapper9) {
-        return deriveToObj(this, stream -> stream.mapToMap(
-                                                    key1, mapper1,
-                                                    key2, mapper2,
-                                                    key3, mapper3,
-                                                    key4, mapper4,
-                                                    key5, mapper5,
-                                                    key6, mapper6,
-                                                    key7, mapper7,
-                                                    key8, mapper8,
-                                                    key9, mapper9));
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, LongFunction<? extends VALUE> mapper1, KEY key2, LongFunction<? extends VALUE> mapper2, KEY key3, LongFunction<? extends VALUE> mapper3, KEY key4, LongFunction<? extends VALUE> mapper4, KEY key5, LongFunction<? extends VALUE> mapper5, KEY key6, LongFunction<? extends VALUE> mapper6, KEY key7, LongFunction<? extends VALUE> mapper7, KEY key8, LongFunction<? extends VALUE> mapper8, KEY key9, LongFunction<? extends VALUE> mapper9) {
+        return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6, key7, mapper7, key8, mapper8, key9, mapper9));
     }
     
-    /** Put mapped value and put it in the map with specific keys. */
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
-            KEY key1, LongFunction<? extends VALUE> mapper1,
-            KEY key2, LongFunction<? extends VALUE> mapper2,
-            KEY key3, LongFunction<? extends VALUE> mapper3,
-            KEY key4, LongFunction<? extends VALUE> mapper4,
-            KEY key5, LongFunction<? extends VALUE> mapper5,
-            KEY key6, LongFunction<? extends VALUE> mapper6,
-            KEY key7, LongFunction<? extends VALUE> mapper7,
-            KEY key8, LongFunction<? extends VALUE> mapper8,
-            KEY key9, LongFunction<? extends VALUE> mapper9,
-            KEY key10, LongFunction<? extends VALUE> mapper10) {
-        return deriveToObj(this, stream -> stream.mapToMap(
-                                                    key1, mapper1,
-                                                    key2, mapper2,
-                                                    key3, mapper3,
-                                                    key4, mapper4,
-                                                    key5, mapper5,
-                                                    key6, mapper6,
-                                                    key7, mapper7,
-                                                    key8, mapper8,
-                                                    key9, mapper9,
-                                                    key10, mapper10));
+    /**
+     * Put mapped value and put it in the map with specific keys.
+     */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, LongFunction<? extends VALUE> mapper1, KEY key2, LongFunction<? extends VALUE> mapper2, KEY key3, LongFunction<? extends VALUE> mapper3, KEY key4, LongFunction<? extends VALUE> mapper4, KEY key5, LongFunction<? extends VALUE> mapper5, KEY key6, LongFunction<? extends VALUE> mapper6, KEY key7, LongFunction<? extends VALUE> mapper7, KEY key8, LongFunction<? extends VALUE> mapper8, KEY key9, LongFunction<? extends VALUE> mapper9, KEY key10, LongFunction<? extends VALUE> mapper10) {
+        return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6, key7, mapper7, key8, mapper8, key9, mapper9, key10, mapper10));
     }
-    
 }

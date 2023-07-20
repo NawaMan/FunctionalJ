@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,11 +35,9 @@ public interface DoubleObjBiFunction<DATA, TARGET> extends Func2<Double, DATA, T
     
     public static <D, T> T apply(BiFunction<Double, D, T> function, double input1, D input2) {
         if (function instanceof DoubleObjBiPredicate) {
-            return ((DoubleObjBiFunction<D, T>)function).applyAsDouble(input1, input2);
+            return ((DoubleObjBiFunction<D, T>) function).applyAsDouble(input1, input2);
         } else {
             return function.apply(input1, input2);
         }
     }
-    
 }
-

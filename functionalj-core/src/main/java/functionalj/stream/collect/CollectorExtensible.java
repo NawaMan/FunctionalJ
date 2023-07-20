@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,10 +35,23 @@ public interface CollectorExtensible<DATA, ACCUMULATED, RESULT> extends Collecto
     
     Collector<DATA, ACCUMULATED, RESULT> collector();
     
-    default Supplier<ACCUMULATED>         supplier()        { return collector().supplier();        }
-    default BiConsumer<ACCUMULATED, DATA> accumulator()     { return collector().accumulator();     }
-    default BinaryOperator<ACCUMULATED>   combiner()        { return collector().combiner();        }
-    default Function<ACCUMULATED, RESULT> finisher()        { return collector().finisher();        }
-    default Set<Characteristics>          characteristics() { return collector().characteristics(); }
+    default Supplier<ACCUMULATED> supplier() {
+        return collector().supplier();
+    }
     
+    default BiConsumer<ACCUMULATED, DATA> accumulator() {
+        return collector().accumulator();
+    }
+    
+    default BinaryOperator<ACCUMULATED> combiner() {
+        return collector().combiner();
+    }
+    
+    default Function<ACCUMULATED, RESULT> finisher() {
+        return collector().finisher();
+    }
+    
+    default Set<Characteristics> characteristics() {
+        return collector().characteristics();
+    }
 }

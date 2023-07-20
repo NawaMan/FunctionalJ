@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,12 +27,10 @@ import static functionalj.list.longlist.LongFuncList.deriveToDouble;
 import static functionalj.list.longlist.LongFuncList.deriveToInt;
 import static functionalj.list.longlist.LongFuncList.deriveToLong;
 import static functionalj.list.longlist.LongFuncList.deriveToObj;
-
 import java.util.function.LongBinaryOperator;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-
 import functionalj.function.Func1;
 import functionalj.function.LongLongBiFunction;
 import functionalj.function.LongLongToDoubleFunctionPrimitive;
@@ -45,74 +43,91 @@ import functionalj.tuple.LongLongTuple;
 
 public interface LongFuncListWithMapGroup extends AsLongFuncList {
     
-    
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default LongFuncList mapTwo(LongBinaryOperator combinator) {
         return deriveToLong(this, stream -> stream.mapTwo(combinator));
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default LongFuncList mapGroup(int count, ToLongFunction<LongStreamPlus> combinator) {
         return deriveToLong(this, stream -> stream.mapGroup(count, combinator));
     }
     
     // == Object ==
-    
-    /** @return  the stream of  each previous value and each current value. */
+    /**
+     * @return  the stream of  each previous value and each current value.
+     */
     public default FuncList<LongLongTuple> mapTwoToObj() {
         return deriveToObj(this, stream -> stream.mapTwoToObj());
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default <TARGET> FuncList<TARGET> mapTwoToObj(LongLongBiFunction<TARGET> combinator) {
         return deriveToObj(this, stream -> stream.mapTwoToObj(combinator));
     }
     
-    /** @return  the stream of  each previous value and each current value. */
+    /**
+     * @return  the stream of  each previous value and each current value.
+     */
     public default FuncList<LongStreamPlus> mapGroupToObj(int count) {
         return deriveToObj(this, stream -> stream.mapGroupToObj(count));
     }
     
-    /** @return  the stream of  each previous value and each current value. */
+    /**
+     * @return  the stream of  each previous value and each current value.
+     */
     public default <TARGET> FuncList<TARGET> mapGroupToObj(int count, Func1<LongStreamPlus, ? extends TARGET> combinator) {
-        return mapGroupToObj(count)
-                .map(combinator);
+        return mapGroupToObj(count).map(combinator);
     }
     
-    //== Int ==
-    
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    // == Int ==
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default IntFuncList mapTwoToInt(LongLongToIntFunctionPrimitive combinator) {
         return deriveToInt(this, stream -> stream.mapTwoToInt(combinator));
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default IntFuncList mapGroupToInt(int count, ToIntFunction<LongStreamPlus> combinator) {
         return deriveToInt(this, stream -> stream.mapGroupToInt(count, combinator));
     }
     
-    //== Long ==
-    
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    // == Long ==
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default LongFuncList mapTwoToLong(LongBinaryOperator combinator) {
         return deriveToLong(this, stream -> stream.mapTwoToLong(combinator));
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default LongFuncList mapGroupToLong(int count, ToLongFunction<LongStreamPlus> combinator) {
         return deriveToLong(this, stream -> stream.mapGroupToLong(count, combinator));
     }
     
-    //== Double ==
-    
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    // == Double ==
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default DoubleFuncList mapTwoToDouble(LongLongToDoubleFunctionPrimitive combinator) {
         return deriveToDouble(this, stream -> stream.mapTwoToDouble(combinator));
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default DoubleFuncList mapGroupToDouble(int count, ToDoubleFunction<LongStreamPlus> combinator) {
         return deriveToDouble(this, stream -> stream.mapGroupToDouble(count, combinator));
     }
-    
 }

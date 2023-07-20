@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,67 +24,68 @@
 package functionalj.list;
 
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
-
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusUtils;
 import lombok.val;
 
 public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
     
-    //-- Data --
+    // -- Data --
+    private final Object source;
     
-    private final Object                                 source;
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
     
-    //-- Constructors --
-    
+    // -- Constructors --
     FuncListDerived(Iterable<SOURCE> iterable, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = iterable;
     }
+    
     FuncListDerived(FuncList<SOURCE> FuncList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = FuncList;
     }
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     FuncListDerived(Supplier<Stream<SOURCE>> streams) {
-        this.action = stream -> (Stream)stream;
+        this.action = stream -> (Stream) stream;
         this.source = streams;
     }
+    
     FuncListDerived(Supplier<Stream<SOURCE>> streams, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streams;
     }
     
-    //-- Source Stream --
-    
+    // -- Source Stream --
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Stream<SOURCE> getSourceStream() {
         if (source == null)
             return Stream.empty();
         if (source instanceof FuncList)
-            return (Stream<SOURCE>)((FuncList)source).stream();
+            return (Stream<SOURCE>) ((FuncList) source).stream();
         if (source instanceof Collection)
-            return ((Collection)source).stream();
+            return ((Collection) source).stream();
         if (source instanceof Supplier)
-            return ((Supplier<Stream<SOURCE>>)source).get();
+            return ((Supplier<Stream<SOURCE>>) source).get();
         throw new IllegalStateException();
     }
     
     @Override
     public StreamPlus<DATA> stream() {
         Stream<SOURCE> theStream = getSourceStream();
-        Stream<DATA>   newStream = action.apply(theStream);
+        Stream<DATA> newStream = action.apply(theStream);
         return StreamPlus.from(newStream);
     }
     
-    /** Check if this list is a lazy list. */
+    /**
+     * Check if this list is a lazy list.
+     */
     public Mode mode() {
         return Mode.lazy;
     }
@@ -105,7 +106,9 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
         return FuncList.from(stream());
     }
     
-    /** Returns an immutable list containing the data of this list. Maintaining the mode. */
+    /**
+     * Returns an immutable list containing the data of this list. Maintaining the mode.
+     */
     @Override
     public ImmutableFuncList<DATA> toImmutableList() {
         return new ImmutableFuncList<>(this, -1, Mode.lazy);
@@ -121,16 +124,12 @@ public class FuncListDerived<SOURCE, DATA> implements FuncList<DATA> {
     public boolean equals(Object o) {
         if (!(o instanceof Collection))
             return false;
-        
-        val anotherList = FuncList.from((Collection)o);
-        return !zipWith(anotherList, AllowUnpaired, Objects::equals)
-                .findFirst(Boolean.FALSE::equals)
-                .isPresent();
+        val anotherList = FuncList.from((Collection) o);
+        return !zipWith(anotherList, AllowUnpaired, Objects::equals).findFirst(Boolean.FALSE::equals).isPresent();
     }
     
     @Override
     public String toString() {
         return asFuncList().toListString();
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,21 +31,24 @@ import functionalj.types.struct.generator.ILines;
 
 /**
  * This class represents function in Elm for the purpose of generating the elm code.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public class ElmFunctionBuilder implements ILines {
     
     private final String name;
+    
     private final String declaration;
+    
     private final String camelName;
+    
     private final ILines body;
     
     public ElmFunctionBuilder(String name, String declaration, String camelName, ILines body) {
-        this.name        = name;
+        this.name = name;
         this.declaration = declaration;
-        this.camelName   = camelName;
-        this.body        = body;
+        this.camelName = camelName;
+        this.body = body;
     }
     
     public String name() {
@@ -66,10 +69,6 @@ public class ElmFunctionBuilder implements ILines {
     
     @Override
     public Stream<String> lines() {
-        return ILines.line(name + " : " + declaration)
-            .append(name + " " + (camelName + " =").trim() + " ")
-            .append(body().indent(1).lines().collect(joining("\n")))
-            .lines();
+        return ILines.line(name + " : " + declaration).append(name + " " + (camelName + " =").trim() + " ").append(body().indent(1).lines().collect(joining("\n"))).lines();
     }
-    
 }

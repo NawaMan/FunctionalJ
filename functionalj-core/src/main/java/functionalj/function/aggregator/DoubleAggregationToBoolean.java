@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,11 +28,9 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToBooleanPlus;
 import lombok.val;
-
 
 public abstract class DoubleAggregationToBoolean extends DoubleAggregation<Boolean> {
     
@@ -40,10 +38,8 @@ public abstract class DoubleAggregationToBoolean extends DoubleAggregation<Boole
         return new DoubleAggregationToBoolean.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract DoubleCollectorToBooleanPlus<?> doubleCollectorToBooleanPlus();
-    
     
     @Override
     public DoubleCollectorPlus<?, Boolean> doubleCollectorPlus() {
@@ -55,8 +51,7 @@ public abstract class DoubleAggregationToBoolean extends DoubleAggregation<Boole
         return new DoubleAggregatorToBoolean.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToBoolean<INPUT> of(ToDoubleFunction<INPUT> mapper) {
         val newCollector = doubleCollectorToBooleanPlus().of(mapper);
         return new AggregationToBoolean.Impl<INPUT>(newCollector);
@@ -74,9 +69,8 @@ public abstract class DoubleAggregationToBoolean extends DoubleAggregation<Boole
     
     public DoubleAggregation<Boolean> ofDouble(DoubleFunction<Double> mapper) {
         if (mapper instanceof DoubleUnaryOperator) {
-            return ofDoubleToBoolean((DoubleUnaryOperator)mapper);
+            return ofDoubleToBoolean((DoubleUnaryOperator) mapper);
         }
-        
         val newCollector = doubleCollectorToBooleanPlus().of(mapper);
         return new DoubleAggregation.Impl<>(newCollector);
     }
@@ -88,8 +82,7 @@ public abstract class DoubleAggregationToBoolean extends DoubleAggregation<Boole
         return new DoubleAggregationToBoolean.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends DoubleAggregationToBoolean {
         
         private final DoubleCollectorToBooleanPlus<?> collector;
@@ -102,7 +95,5 @@ public abstract class DoubleAggregationToBoolean extends DoubleAggregation<Boole
         public DoubleCollectorToBooleanPlus<?> doubleCollectorToBooleanPlus() {
             return collector;
         }
-        
     }
-    
 }

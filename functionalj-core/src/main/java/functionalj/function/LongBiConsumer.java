@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -41,12 +41,11 @@ public interface LongBiConsumer extends LongObjBiConsumer<Long> {
     @SuppressWarnings("unchecked")
     public static void accept(BiConsumer<? super Long, ? super Long> consumer, long input1, long input2) {
         if (consumer instanceof LongBiConsumer) {
-            ((LongBiConsumer)consumer).acceptAsLongLong(input1, input2);
+            ((LongBiConsumer) consumer).acceptAsLongLong(input1, input2);
         } else if (consumer instanceof IntObjBiConsumer) {
-            ((LongObjBiConsumer<Long>)consumer).acceptAsLong(input1, input2);
+            ((LongObjBiConsumer<Long>) consumer).acceptAsLong(input1, input2);
         } else {
             consumer.accept(input1, input2);
         }
     }
-    
 }

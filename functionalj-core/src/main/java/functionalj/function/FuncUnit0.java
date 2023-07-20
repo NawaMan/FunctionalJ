@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,26 +24,28 @@
 package functionalj.function;
 
 import static java.util.Objects.requireNonNull;
-
 import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
 import functionalj.ref.RunBody;
 import lombok.val;
 
-
 public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     
-    public static FuncUnit0 doNothing = () -> {};
+    public static FuncUnit0 doNothing = () -> {
+    };
     
     public static FuncUnit0 of(FuncUnit0 runnable) {
         return runnable;
     }
+    
     public static FuncUnit0 funcUnit0(FuncUnit0 runnable) {
         return runnable;
     }
+    
     public static FuncUnit0 from(Runnable runnable) {
         return runnable::run;
     }
+    
     public static <EXCEPTION extends Exception> FuncUnit0 from(RunBody<EXCEPTION> runnable) {
         return runnable::run;
     }
@@ -86,6 +88,7 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     public default <T> Func0<T> thenReturnNull() {
         return thenReturn(null);
     }
+    
     public default <T> Func0<T> thenReturn(T value) {
         return () -> {
             runUnsafe();
@@ -101,7 +104,6 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         };
     }
     
-    
     public default FuncUnit0 carelessly() {
         return this::runCarelessly;
     }
@@ -113,5 +115,4 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     public default DeferAction<Object> defer() {
         return this.thenReturnNull().defer();
     }
-    
 }

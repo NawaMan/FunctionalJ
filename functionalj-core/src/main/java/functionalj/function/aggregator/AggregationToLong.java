@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,20 +27,17 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
-
 import functionalj.stream.collect.CollectorToLongPlus;
 import lombok.val;
 
-public abstract class  AggregationToLong<SOURCE> extends Aggregation<SOURCE, Long> {
+public abstract class AggregationToLong<SOURCE> extends Aggregation<SOURCE, Long> {
     
     public static <S, A> AggregationToLong<S> from(CollectorToLongPlus<S, A> collector) {
         return new AggregationToLong.Impl<S>(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract CollectorToLongPlus<SOURCE, ?> collectorToLongPlus();
-    
     
     @Override
     public CollectorToLongPlus<SOURCE, ?> collectorPlus() {
@@ -52,8 +49,7 @@ public abstract class  AggregationToLong<SOURCE> extends Aggregation<SOURCE, Lon
         return new AggregatorToLong.Impl<>(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToLong<INPUT> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorToLongPlus().of(mapper);
         return new AggregationToLong.Impl<INPUT>(newCollector);
@@ -74,8 +70,7 @@ public abstract class  AggregationToLong<SOURCE> extends Aggregation<SOURCE, Lon
         return new DoubleAggregationToLong.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<SRC> extends AggregationToLong<SRC> {
         
         private final CollectorToLongPlus<SRC, ?> collector;
@@ -88,7 +83,5 @@ public abstract class  AggregationToLong<SOURCE> extends Aggregation<SOURCE, Lon
         public CollectorToLongPlus<SRC, ?> collectorToLongPlus() {
             return collector;
         }
-        
     }
-    
 }

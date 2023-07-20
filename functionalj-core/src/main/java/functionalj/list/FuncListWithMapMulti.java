@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,13 +25,11 @@ package functionalj.list;
 
 import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
-
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
-
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.list.longlist.LongFuncList;
@@ -62,5 +60,4 @@ public interface FuncListWithMapMulti<DATA> extends AsFuncList<DATA> {
     public default <T> FuncList<T> mapMultiToObj(BiConsumer<DATA, Consumer<? super T>> mapper) {
         return mapMulti(mapper);
     }
-    
 }

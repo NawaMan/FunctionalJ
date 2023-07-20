@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,11 +31,12 @@ public abstract class Acceptable<DATA> extends Value<DATA> {
     protected Acceptable(DATA data, Validation<DATA> validating) {
         this(data, FuncList.of(validating.toValidator()));
     }
+    
     protected Acceptable(DATA data, FuncList<Validator<? super DATA>> validators) {
         super(data, validators);
     }
+    
     protected Acceptable(DATA data, FuncList<Validator<? super DATA>> validators, Validation<DATA> validating) {
         super(data, validators.append(validating.toValidator()));
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,12 +25,9 @@ package functionalj.lens;
 
 import static functionalj.lens.ResultAccessTest.Driver.theDriver;
 import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.function.Function;
-
 import org.junit.Test;
-
 import functionalj.function.Func1;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensUtils;
@@ -40,13 +37,13 @@ import functionalj.lens.lenses.StringLens;
 import functionalj.result.Result;
 import lombok.val;
 
-
 public class ResultAccessTest {
-
+    
     public static interface CarSpec {
+        
         public String color();
     }
-
+    
     public static class Car implements CarSpec {
         
         public static CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));
@@ -60,6 +57,7 @@ public class ResultAccessTest {
         public String color() {
             return color;
         }
+        
         public Car withColor(String color) {
             return new Car(color);
         }
@@ -70,19 +68,25 @@ public class ResultAccessTest {
         }
         
         public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {
-            
+        
             public final StringLens<HOST> color = createSubLens(Car::color, Car::withColor, StringLens::of);
-            
-            public CarLens(LensSpec<HOST, Car> spec)   { super(spec); }
-            public CarLens(Function<HOST, Car> access) { super(LensSpec.of(access)); }
-            
+        
+            public CarLens(LensSpec<HOST, Car> spec) {
+                super(spec);
+            }
+        
+            public CarLens(Function<HOST, Car> access) {
+                super(LensSpec.of(access));
+            }
+        
             public final Func1<HOST, HOST> withColor(String newColor) {
                 return CarLens.this.color.changeTo(newColor);
             }
-            
+        
             public final CarLens<HOST> nullSafe() {
                 return new CarLens<>(this.lensSpec().toNullSafe());
             }
+        
             public final CarLens<HOST> nullAware() {
                 return new CarLens<>(this.lensSpec().toNullSafe());
             }
@@ -93,17 +97,19 @@ public class ResultAccessTest {
         
         public static DriverLens<Driver> theDriver = new DriverLens<>(LensSpec.of(Driver.class));
         
-        private final Car         firstCar;
+        private final Car firstCar;
+        
         private final Result<Car> secondCar;
         
         public Driver(Car firstCar, Result<Car> secondCar) {
-            this.firstCar  = firstCar;
+            this.firstCar = firstCar;
             this.secondCar = secondCar;
         }
         
         public Car firstCar() {
             return firstCar;
         }
+        
         public Driver withFirstCar(Car car) {
             return new Driver(car, secondCar);
         }
@@ -111,6 +117,7 @@ public class ResultAccessTest {
         public Result<Car> secondCar() {
             return secondCar;
         }
+        
         public Driver withSecondCar(Result<Car> secondCar) {
             return new Driver(firstCar, secondCar);
         }
@@ -120,22 +127,24 @@ public class ResultAccessTest {
             return "Driver(firstCar=" + firstCar + ",secondCar=" + secondCar + ")";
         }
         
-        
         public static class DriverLens<HOST> extends ObjectLensImpl<HOST, Driver> {
-            
+        
             public final Car.CarLens<HOST> firstCar = new Car.CarLens<>(this.lensSpec().then(LensSpec.of(Driver::firstCar, Driver::withFirstCar)));
-            
-            public final ResultLens<HOST, Car, Car.CarLens<HOST>> secondCar
-                        = LensUtils.createResultLens(
-                                this.lensSpec().then(LensSpec.of(Driver::secondCar, Driver::withSecondCar)),
-                                Car.CarLens::new);
-            
-            public DriverLens(LensSpec<HOST, Driver> spec)   { super(spec); }
-            public DriverLens(Function<HOST, Driver> access) { super(LensSpec.of(access)); }
-            
+        
+            public final ResultLens<HOST, Car, Car.CarLens<HOST>> secondCar = LensUtils.createResultLens(this.lensSpec().then(LensSpec.of(Driver::secondCar, Driver::withSecondCar)), Car.CarLens::new);
+        
+            public DriverLens(LensSpec<HOST, Driver> spec) {
+                super(spec);
+            }
+        
+            public DriverLens(Function<HOST, Driver> access) {
+                super(LensSpec.of(access));
+            }
+        
             public final DriverLens<HOST> nullSafe() {
                 return new DriverLens<>(this.lensSpec().toNullSafe());
             }
+        
             public final DriverLens<HOST> nullUnsafe() {
                 return new DriverLens<>(this.lensSpec().toNullUnsafe());
             }
@@ -145,20 +154,9 @@ public class ResultAccessTest {
     @Test
     public void testResultAccessMap() {
         val logs = new ArrayList<String>();
-        
-        theDriver.secondCar.thenMap(Car::color)
-        .apply(new Driver(new Car("Black"), Result.valueOf(new Car("White"))))
-        .pipeTo(me -> logs.add(me.toString()));
-        
-        theDriver.secondCar.thenMap(Car::color)
-        .apply(new Driver(new Car("Black"), Result.ofNull()))
-        .pipeTo(me -> logs.add(me.toString()));
-        
-        theDriver.secondCar.thenMap(Car::color)
-        .apply (new Driver(new Car("Black"), null))
-        .pipeTo(me -> logs.add(me.toString()));
-        
+        theDriver.secondCar.thenMap(Car::color).apply(new Driver(new Car("Black"), Result.valueOf(new Car("White")))).pipeTo(me -> logs.add(me.toString()));
+        theDriver.secondCar.thenMap(Car::color).apply(new Driver(new Car("Black"), Result.ofNull())).pipeTo(me -> logs.add(me.toString()));
+        theDriver.secondCar.thenMap(Car::color).apply(new Driver(new Car("Black"), null)).pipeTo(me -> logs.add(me.toString()));
         assertEquals("[Result:{ Value: White }, Result:{ Value: null }, Result:{ Value: null }]", logs.toString());
     }
-
 }

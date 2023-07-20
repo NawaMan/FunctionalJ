@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,13 +24,12 @@
 package functionalj.types.struct.generator;
 
 import java.util.stream.Stream;
-
 import functionalj.types.IRequireTypes;
 import functionalj.types.Type;
 
 /**
  * Classes implementing this interface as a term in code.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface IGenerateTerm extends IRequireTypes {
@@ -42,10 +41,9 @@ public interface IGenerateTerm extends IRequireTypes {
     
     /**
      * Generate term.
-     * 
+     *
      * @param  currentPackage  the current package.
      * @return  the term.
      */
     public String toTerm(String currentPackage);
-    
 }

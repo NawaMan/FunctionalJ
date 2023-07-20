@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -47,7 +47,7 @@ public interface ReadOnlyMap<KEY, VALUE> extends Map<KEY, VALUE> {
     public Collection<VALUE> values();
     
     @Override
-    public Set<Entry<KEY, VALUE>> entrySet() ;
+    public Set<Entry<KEY, VALUE>> entrySet();
     
     @Override
     public boolean containsKey(Object key);
@@ -128,5 +128,4 @@ public interface ReadOnlyMap<KEY, VALUE> extends Map<KEY, VALUE> {
     public default VALUE merge(KEY key, VALUE value, BiFunction<? super VALUE, ? super VALUE, ? extends VALUE> remappingFunction) {
         throw new ReadOnlyMapException(this);
     }
-    
 }

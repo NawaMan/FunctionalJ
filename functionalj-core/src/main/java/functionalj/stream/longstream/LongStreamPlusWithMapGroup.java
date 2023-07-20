@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,7 +33,6 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.stream.StreamSupport;
-
 import functionalj.function.Func1;
 import functionalj.function.Func4;
 import functionalj.function.LongLongBiFunction;
@@ -45,21 +44,20 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.LongLongTuple;
 import lombok.val;
 
-
-
 class LongStreamPlusWithMapGroupHelper {
     
-    static <TARGET> StreamPlus<TARGET> mapGroup(
-            LongStreamPlus streamPlus,
-            int count,
-            Func4<long[], Integer, Integer, Consumer<? super TARGET>, Void> processNormal,
-            Func4<long[], Integer, Integer, Consumer<? super TARGET>, Void> processTail) {
+    static <TARGET> StreamPlus<TARGET> mapGroup(LongStreamPlus streamPlus, int count, Func4<long[], Integer, Integer, Consumer<? super TARGET>, Void> processNormal, Func4<long[], Integer, Integer, Consumer<? super TARGET>, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractSpliterator<TARGET>(splitr.estimateSize(), 0) {
-            long[]   array = new long[count*10];
-            int      start = 0;
-            int      end   = 0;
-            boolean  used  = false;
+        
+            long[] array = new long[count * 10];
+        
+            int start = 0;
+        
+            int end = 0;
+        
+            boolean used = false;
+        
             @Override
             public boolean tryAdvance(Consumer<? super TARGET> consumer) {
                 LongConsumer action = elem -> {
@@ -74,7 +72,7 @@ class LongStreamPlusWithMapGroupHelper {
                     if (end >= array.length) {
                         System.arraycopy(array, start, array, 0, length - 1);
                         start = 0;
-                        end   = length - 1;
+                        end = length - 1;
                     }
                 };
                 boolean hasNext = splitr.tryAdvance(action);
@@ -87,17 +85,18 @@ class LongStreamPlusWithMapGroupHelper {
         return StreamPlus.from(StreamSupport.stream(spliterator, false));
     }
     
-    static <TARGET> IntStreamPlus mapGroupToInt(
-            LongStreamPlus streamPlus,
-            int count,
-            Func4<long[], Integer, Integer, IntConsumer, Void> processNormal,
-            Func4<long[], Integer, Integer, IntConsumer, Void> processTail) {
+    static <TARGET> IntStreamPlus mapGroupToInt(LongStreamPlus streamPlus, int count, Func4<long[], Integer, Integer, IntConsumer, Void> processNormal, Func4<long[], Integer, Integer, IntConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-            long[]   array = new long[count*10];
-            int      start = 0;
-            int      end   = 0;
-            boolean  used  = false;
+        
+            long[] array = new long[count * 10];
+        
+            int start = 0;
+        
+            int end = 0;
+        
+            boolean used = false;
+        
             @Override
             public boolean tryAdvance(IntConsumer consumer) {
                 LongConsumer action = elem -> {
@@ -112,7 +111,7 @@ class LongStreamPlusWithMapGroupHelper {
                     if (end >= array.length) {
                         System.arraycopy(array, start, array, 0, length - 1);
                         start = 0;
-                        end   = length - 1;
+                        end = length - 1;
                     }
                 };
                 boolean hasNext = splitr.tryAdvance(action);
@@ -125,17 +124,18 @@ class LongStreamPlusWithMapGroupHelper {
         return IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
     }
     
-    static <DATA, TARGET> LongStreamPlus mapGroupToLong(
-            LongStreamPlus streamPlus,
-            int count,
-            Func4<long[], Integer, Integer, LongConsumer, Void> processNormal,
-            Func4<long[], Integer, Integer, LongConsumer, Void> processTail) {
+    static <DATA, TARGET> LongStreamPlus mapGroupToLong(LongStreamPlus streamPlus, int count, Func4<long[], Integer, Integer, LongConsumer, Void> processNormal, Func4<long[], Integer, Integer, LongConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractLongSpliterator(splitr.estimateSize(), 0) {
-            long[]   array = new long[count*10];
-            int      start = 0;
-            int      end   = 0;
-            boolean  used  = false;
+        
+            long[] array = new long[count * 10];
+        
+            int start = 0;
+        
+            int end = 0;
+        
+            boolean used = false;
+        
             @Override
             public boolean tryAdvance(LongConsumer consumer) {
                 LongConsumer action = elem -> {
@@ -150,14 +150,13 @@ class LongStreamPlusWithMapGroupHelper {
                     if (end >= array.length) {
                         System.arraycopy(array, start, array, 0, length - 1);
                         start = 0;
-                        end   = length - 1;
+                        end = length - 1;
                     }
                 };
                 boolean hasNext = splitr.tryAdvance(action);
                 if (hasNext && !used) {
                     hasNext = splitr.tryAdvance(action);
                 }
-                
                 if (!hasNext && !used && (processTail != null)) {
                     processTail.apply(array, start, end, consumer);
                 }
@@ -167,17 +166,18 @@ class LongStreamPlusWithMapGroupHelper {
         return LongStreamPlus.from(StreamSupport.longStream(spliterator, false));
     }
     
-    static <DATA, TARGET> DoubleStreamPlus mapGroupToDouble(
-            LongStreamPlus streamPlus,
-            int count,
-            Func4<long[], Integer, Integer, DoubleConsumer, Void> processNormal,
-            Func4<long[], Integer, Integer, DoubleConsumer, Void> processTail) {
+    static <DATA, TARGET> DoubleStreamPlus mapGroupToDouble(LongStreamPlus streamPlus, int count, Func4<long[], Integer, Integer, DoubleConsumer, Void> processNormal, Func4<long[], Integer, Integer, DoubleConsumer, Void> processTail) {
         val splitr = streamPlus.spliterator();
         val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-            long[]   array = new long[count*10];
-            int      start = 0;
-            int      end   = 0;
-            boolean  used  = false;
+        
+            long[] array = new long[count * 10];
+        
+            int start = 0;
+        
+            int end = 0;
+        
+            boolean used = false;
+        
             @Override
             public boolean tryAdvance(DoubleConsumer consumer) {
                 LongConsumer action = elem -> {
@@ -192,14 +192,13 @@ class LongStreamPlusWithMapGroupHelper {
                     if (end >= array.length) {
                         System.arraycopy(array, start, array, 0, length - 1);
                         start = 0;
-                        end   = length - 1;
+                        end = length - 1;
                     }
                 };
                 boolean hasNext = splitr.tryAdvance(action);
                 if (hasNext && !used) {
                     hasNext = splitr.tryAdvance(action);
                 }
-                
                 if (!hasNext && !used && (processTail != null)) {
                     processTail.apply(array, start, end, consumer);
                 }
@@ -210,206 +209,188 @@ class LongStreamPlusWithMapGroupHelper {
     }
 }
 
-
-
 public interface LongStreamPlusWithMapGroup {
     
     public LongStreamPlus longStreamPlus();
     
-    
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default LongStreamPlus mapTwo(LongBinaryOperator combinator) {
-        return LongStreamPlusWithMapGroupHelper.mapGroupToLong(
-                longStreamPlus(), 2, 
-                (array, start, end, consumer) -> {
-                    val prev  = array[start];
-                    val curr  = array[start + 1];
-                    val value = combinator.applyAsLong(prev, curr);
-                    consumer.accept(value);
-                    return (Void)null;
-                },
-                null);
+        return LongStreamPlusWithMapGroupHelper.mapGroupToLong(longStreamPlus(), 2, (array, start, end, consumer) -> {
+            val prev = array[start];
+            val curr = array[start + 1];
+            val value = combinator.applyAsLong(prev, curr);
+            consumer.accept(value);
+            return (Void) null;
+        }, null);
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default LongStreamPlus mapGroup(int count, ToLongFunction<LongStreamPlus> combinator) {
-        return LongStreamPlusWithMapGroupHelper.mapGroupToLong(
-                longStreamPlus(), count, 
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, count);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    val value      = combinator.applyAsLong(streamPlus);
-                    consumer.accept(value);
-                    return (Void)null;
-                },
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, end - start);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    val value      = combinator.applyAsLong(streamPlus);
-                    consumer.accept(value);
-                    return (Void)null;
-                });
+        return LongStreamPlusWithMapGroupHelper.mapGroupToLong(longStreamPlus(), count, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, count);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            val value = combinator.applyAsLong(streamPlus);
+            consumer.accept(value);
+            return (Void) null;
+        }, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, end - start);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            val value = combinator.applyAsLong(streamPlus);
+            consumer.accept(value);
+            return (Void) null;
+        });
     }
     
     // == Object ==
-    
-    /** @return  the stream of  each previous value and each current value. */
+    /**
+     * @return  the stream of  each previous value and each current value.
+     */
     public default StreamPlus<LongLongTuple> mapTwoToObj() {
-        return LongStreamPlusWithMapGroupHelper.mapGroup(
-                longStreamPlus(), 2, 
-                (array, start, end, consumer) -> {
-                    val prev  = array[start];
-                    val curr  = array[start + 1];
-                    consumer.accept(LongLongTuple.of(prev, curr));
-                    return (Void)null;
-                },
-                null);
+        return LongStreamPlusWithMapGroupHelper.mapGroup(longStreamPlus(), 2, (array, start, end, consumer) -> {
+            val prev = array[start];
+            val curr = array[start + 1];
+            consumer.accept(LongLongTuple.of(prev, curr));
+            return (Void) null;
+        }, null);
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default <TARGET> StreamPlus<TARGET> mapTwoToObj(LongLongBiFunction<TARGET> combinator) {
-        return LongStreamPlusWithMapGroupHelper.mapGroup(
-                longStreamPlus(), 2, 
-                (array, start, end, consumer) -> {
-                    val prev  = array[start];
-                    val curr  = array[start + 1];
-                    val value = combinator.apply(prev, curr);
-                    consumer.accept(value);
-                    return (Void)null;
-                },
-                null);
+        return LongStreamPlusWithMapGroupHelper.mapGroup(longStreamPlus(), 2, (array, start, end, consumer) -> {
+            val prev = array[start];
+            val curr = array[start + 1];
+            val value = combinator.apply(prev, curr);
+            consumer.accept(value);
+            return (Void) null;
+        }, null);
     }
     
-    /** @return  the stream of  each previous value and each current value. */
+    /**
+     * @return  the stream of  each previous value and each current value.
+     */
     public default StreamPlus<LongStreamPlus> mapGroupToObj(int count) {
-        return LongStreamPlusWithMapGroupHelper.<LongStreamPlus>mapGroup(
-                longStreamPlus(), count, 
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, count);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    consumer.accept(streamPlus);
-                    return (Void)null;
-                },
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, end - start);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    consumer.accept(streamPlus);
-                    return (Void)null;
-                });
+        return LongStreamPlusWithMapGroupHelper.<LongStreamPlus>mapGroup(longStreamPlus(), count, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, count);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            consumer.accept(streamPlus);
+            return (Void) null;
+        }, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, end - start);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            consumer.accept(streamPlus);
+            return (Void) null;
+        });
     }
     
-    /** @return  the stream of  each previous value and each current value. */
+    /**
+     * @return  the stream of  each previous value and each current value.
+     */
     public default <TARGET> StreamPlus<TARGET> mapGroupToObj(int count, Func1<LongStreamPlus, ? extends TARGET> combinator) {
-        return mapGroupToObj(count)
-                .map(combinator);
+        return mapGroupToObj(count).map(combinator);
     }
     
-    //== Int ==
-    
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    // == Int ==
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default IntStreamPlus mapTwoToInt(LongLongToIntFunctionPrimitive combinator) {
-        return LongStreamPlusWithMapGroupHelper.mapGroupToInt(
-                longStreamPlus(), 2, 
-                (array, start, end, consumer) -> {
-                    val prev  = array[start];
-                    val curr  = array[start + 1];
-                    val value = combinator.applyAsLongAndLong(prev, curr);
-                    consumer.accept(value);
-                    return (Void)null;
-                },
-                null);
+        return LongStreamPlusWithMapGroupHelper.mapGroupToInt(longStreamPlus(), 2, (array, start, end, consumer) -> {
+            val prev = array[start];
+            val curr = array[start + 1];
+            val value = combinator.applyAsLongAndLong(prev, curr);
+            consumer.accept(value);
+            return (Void) null;
+        }, null);
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default IntStreamPlus mapGroupToInt(int count, ToIntFunction<LongStreamPlus> combinator) {
-        return LongStreamPlusWithMapGroupHelper.mapGroupToInt(
-                longStreamPlus(), count, 
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, count);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    val value      = combinator.applyAsInt(streamPlus);
-                    consumer.accept(value);
-                    return (Void)null;
-                },
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, end - start);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    val value      = combinator.applyAsInt(streamPlus);
-                    consumer.accept(value);
-                    return (Void)null;
-                });
+        return LongStreamPlusWithMapGroupHelper.mapGroupToInt(longStreamPlus(), count, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, count);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            val value = combinator.applyAsInt(streamPlus);
+            consumer.accept(value);
+            return (Void) null;
+        }, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, end - start);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            val value = combinator.applyAsInt(streamPlus);
+            consumer.accept(value);
+            return (Void) null;
+        });
     }
     
-    //== Long ==
-    
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    // == Long ==
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default LongStreamPlus mapTwoToLong(LongBinaryOperator combinator) {
-        return LongStreamPlusWithMapGroupHelper.mapGroupToLong(
-                longStreamPlus(), 2, 
-                (array, start, end, consumer) -> {
-                    val prev  = array[start];
-                    val curr  = array[start + 1];
-                    val value = combinator.applyAsLong(prev, curr);
-                    consumer.accept(value);
-                    return (Void)null;
-                },
-                null);
+        return LongStreamPlusWithMapGroupHelper.mapGroupToLong(longStreamPlus(), 2, (array, start, end, consumer) -> {
+            val prev = array[start];
+            val curr = array[start + 1];
+            val value = combinator.applyAsLong(prev, curr);
+            consumer.accept(value);
+            return (Void) null;
+        }, null);
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default LongStreamPlus mapGroupToLong(int count, ToLongFunction<LongStreamPlus> combinator) {
-        return LongStreamPlusWithMapGroupHelper.mapGroupToLong(
-                longStreamPlus(), count, 
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, count);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    val value      = combinator.applyAsLong(streamPlus);
-                    consumer.accept(value);
-                    return (Void)null;
-                },
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, end - start);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    val value      = combinator.applyAsLong(streamPlus);
-                    consumer.accept(value);
-                    return (Void)null;
-                });
+        return LongStreamPlusWithMapGroupHelper.mapGroupToLong(longStreamPlus(), count, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, count);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            val value = combinator.applyAsLong(streamPlus);
+            consumer.accept(value);
+            return (Void) null;
+        }, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, end - start);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            val value = combinator.applyAsLong(streamPlus);
+            consumer.accept(value);
+            return (Void) null;
+        });
     }
     
-    //== Double ==
-    
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    // == Double ==
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default DoubleStreamPlus mapTwoToDouble(LongLongToDoubleFunctionPrimitive combinator) {
-        return LongStreamPlusWithMapGroupHelper.mapGroupToDouble(
-                longStreamPlus(), 2, 
-                (array, start, end, consumer) -> {
-                    val prev  = array[start];
-                    val curr  = array[start + 1];
-                    val value = combinator.applyAsDouble(prev, curr);
-                    consumer.accept(value);
-                    return (Void)null;
-                },
-                null);
+        return LongStreamPlusWithMapGroupHelper.mapGroupToDouble(longStreamPlus(), 2, (array, start, end, consumer) -> {
+            val prev = array[start];
+            val curr = array[start + 1];
+            val value = combinator.applyAsDouble(prev, curr);
+            consumer.accept(value);
+            return (Void) null;
+        }, null);
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
     public default DoubleStreamPlus mapGroupToDouble(int count, ToDoubleFunction<LongStreamPlus> combinator) {
-        return LongStreamPlusWithMapGroupHelper.mapGroupToDouble(
-                longStreamPlus(), count, 
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, count);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    val value      = combinator.applyAsDouble(streamPlus);
-                    consumer.accept(value);
-                    return (Void)null;
-                },
-                (array, start, end, consumer) -> {
-                    val iterator   = new ArrayBackedLongIteratorPlus(array, start, end - start);
-                    val streamPlus = new ArrayBackedLongStreamPlus(iterator);
-                    val value      = combinator.applyAsDouble(streamPlus);
-                    consumer.accept(value);
-                    return (Void)null;
-                });
+        return LongStreamPlusWithMapGroupHelper.mapGroupToDouble(longStreamPlus(), count, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, count);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            val value = combinator.applyAsDouble(streamPlus);
+            consumer.accept(value);
+            return (Void) null;
+        }, (array, start, end, consumer) -> {
+            val iterator = new ArrayBackedLongIteratorPlus(array, start, end - start);
+            val streamPlus = new ArrayBackedLongStreamPlus(iterator);
+            val value = combinator.applyAsDouble(streamPlus);
+            consumer.accept(value);
+            return (Void) null;
+        });
     }
-    
 }

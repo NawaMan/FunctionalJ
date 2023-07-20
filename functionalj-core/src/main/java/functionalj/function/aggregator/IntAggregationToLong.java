@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -27,11 +27,9 @@ import java.util.function.DoubleToIntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
-
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToLongPlus;
 import lombok.val;
-
 
 public abstract class IntAggregationToLong extends IntAggregation<Long> {
     
@@ -39,10 +37,8 @@ public abstract class IntAggregationToLong extends IntAggregation<Long> {
         return new IntAggregationToLong.Impl(collector);
     }
     
-    //== Instance == 
-    
+    // == Instance ==
     public abstract IntCollectorToLongPlus<?> intCollectorToLongPlus();
-    
     
     @Override
     public IntCollectorPlus<?, Long> intCollectorPlus() {
@@ -54,8 +50,7 @@ public abstract class IntAggregationToLong extends IntAggregation<Long> {
         return new IntAggregatorToLong.Impl(collector);
     }
     
-    //== Derived ==
-    
+    // == Derived ==
     public <INPUT> AggregationToLong<INPUT> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorToLongPlus().of(mapper);
         return new AggregationToLong.Impl<>(newCollector);
@@ -76,8 +71,7 @@ public abstract class IntAggregationToLong extends IntAggregation<Long> {
         return new DoubleAggregationToLong.Impl(newCollector);
     }
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl extends IntAggregationToLong {
         
         private final IntCollectorToLongPlus<?> collector;
@@ -90,7 +84,5 @@ public abstract class IntAggregationToLong extends IntAggregation<Long> {
         public IntCollectorToLongPlus<?> intCollectorToLongPlus() {
             return collector;
         }
-        
     }
-    
 }

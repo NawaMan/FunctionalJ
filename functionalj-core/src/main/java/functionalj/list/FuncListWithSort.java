@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,26 +25,25 @@ package functionalj.list;
 
 import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
-
 import java.util.Comparator;
 import java.util.function.Function;
-
 import lombok.val;
 
 public interface FuncListWithSort<DATA> extends AsFuncList<DATA> {
     
-    /** Sort the values by the mapped value. */
+    /**
+     * Sort the values by the mapped value.
+     */
     public default <T extends Comparable<? super T>> FuncList<DATA> sortedBy(Function<? super DATA, T> mapper) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.sortedBy(mapper));
     }
     
-    /** Sort the values by the mapped value using the comparator. */
-    public default <T> FuncList<DATA> sortedBy(
-            Function<? super DATA, T> mapper, 
-            Comparator<T>             comparator) {
+    /**
+     * Sort the values by the mapped value using the comparator.
+     */
+    public default <T> FuncList<DATA> sortedBy(Function<? super DATA, T> mapper, Comparator<T> comparator) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.sortedBy(mapper, comparator));
     }
-    
 }

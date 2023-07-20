@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -48,80 +48,73 @@ public enum Core {
     
     BigDecimalLens("BigDecimalLens"),
     BigIntegerLens("BigIntegerLens"),
-    BooleanLens   ("BooleanLens"),
-    DoubleLens    ("DoubleLens"),
-    FuncListLens  ("FuncListLens"),
-    FuncMapLens   ("FuncMapLens"),
-    IntegerLens   ("IntegerLens"),
-    ListLens      ("ListLens"),
-    LongLens      ("LongLens"),
-    MapLens       ("MapLens"),
-    MayBeLens     ("MayBeLens"),
-    NullableLens  ("NullableLens"),
-    ObjectLens    ("ObjectLens"),
+    BooleanLens("BooleanLens"),
+    DoubleLens("DoubleLens"),
+    FuncListLens("FuncListLens"),
+    FuncMapLens("FuncMapLens"),
+    IntegerLens("IntegerLens"),
+    ListLens("ListLens"),
+    LongLens("LongLens"),
+    MapLens("MapLens"),
+    MayBeLens("MayBeLens"),
+    NullableLens("NullableLens"),
+    ObjectLens("ObjectLens"),
     ObjectLensImpl("ObjectLensImpl"),
-    OptionalLens  ("OptionalLens"),
-    StringLens    ("StringLens"),
-    
+    OptionalLens("OptionalLens"),
+    StringLens("StringLens"),
     Generated("Generated", "functionalj.types"),
-    
-    LensSpec ("LensSpec", "functionalj.lens.core"),
-    
-    FuncList         ("FuncList",          "functionalj.list"),
-    FuncMap          ("FuncMap",           "functionalj.map"),
+    LensSpec("LensSpec", "functionalj.lens.core"),
+    FuncList("FuncList", "functionalj.list"),
+    FuncMap("FuncMap", "functionalj.map"),
     ImmutableFuncList("ImmutableFuncList", "functionalj.list"),
-    ImmutableFuncMap ("ImmutableFuncMap",  "functionalj.map"),
-    
-    Nullable      ("Nullable",      "nullablej.nullable"),
-    Optional      ("Optional",      "java.util"),
-    
-    Pipeable      ("Pipeable",      "functionalj.pipeable"),
-    
-    DayOfWeek               ("DayOfWeek",                "java.time"),
-    Duration                ("Duration",                 "java.time"),
-    Instant                 ("Instant",                  "java.time"),
-    LocalDate               ("LocalDate",                "java.time"),
-    LocalDateTime           ("LocalDateTime",            "java.time"),
-    LocalTime               ("LocalTime",                "java.time"),
-    Month                   ("Month",                    "java.time"),
-    OffsetDateTime          ("OffsetDateTime",           "java.time"),
-    Period                  ("Period",                   "java.time"),
-    ZonedDateTime           ("ZonedDateTime",            "java.time"),
-    ZoneId                  ("ZoneId",                   "java.time"),
-    ZoneOffset              ("ZoneOffset",               "java.time"),
-    ZoneOffsetTransition    ("ZoneOffsetTransition",     "java.time"),
+    ImmutableFuncMap("ImmutableFuncMap", "functionalj.map"),
+    Nullable("Nullable", "nullablej.nullable"),
+    Optional("Optional", "java.util"),
+    Pipeable("Pipeable", "functionalj.pipeable"),
+    DayOfWeek("DayOfWeek", "java.time"),
+    Duration("Duration", "java.time"),
+    Instant("Instant", "java.time"),
+    LocalDate("LocalDate", "java.time"),
+    LocalDateTime("LocalDateTime", "java.time"),
+    LocalTime("LocalTime", "java.time"),
+    Month("Month", "java.time"),
+    OffsetDateTime("OffsetDateTime", "java.time"),
+    Period("Period", "java.time"),
+    ZonedDateTime("ZonedDateTime", "java.time"),
+    ZoneId("ZoneId", "java.time"),
+    ZoneOffset("ZoneOffset", "java.time"),
+    ZoneOffsetTransition("ZoneOffsetTransition", "java.time"),
     ZoneOffsetTransitionRule("ZoneOffsetTransitionRule", "java.time"),
-    
-    DayOfWeekLens                ("DayOfWeekLens",                 "functionalj.lens.lenses.java.time"),
-    DurationLens                 ("DurationLens",                  "functionalj.lens.lenses.java.time"),
-    InstantLens                  ("InstantLens",                   "functionalj.lens.lenses.java.time"),
-    LocalDateLens                ("LocalDateLens",                 "functionalj.lens.lenses.java.time"),
-    LocalDateTimeLens            ("LocalDateTimeLens",             "functionalj.lens.lenses.java.time"),
-    LocalTimeLens                ("LocalTimeLens",                 "functionalj.lens.lenses.java.time"),
-    MonthLens                    ("MonthLens",                     "functionalj.lens.lenses.java.time"),
-    OffsetDateTimeLens           ("OffsetDateTimeLens",            "functionalj.lens.lenses.java.time"),
-    PeriodLens                   ("PeriodLens",                    "functionalj.lens.lenses.java.time"),
-    ZonedDateTimeLens            ("ZonedDateTimeLens",             "functionalj.lens.lenses.java.time"),
-    ZonedIdLens                  ("ZonedIdLens",                   "functionalj.lens.lenses.java.time"),
-    ZonedOffsetLens              ("ZonedOffsetLens",               "functionalj.lens.lenses.java.time"),
-    ZonedOffsetTransitionLens    ("ZonedOffsetTransitionLens",     "functionalj.lens.lenses.java.time"),
+    DayOfWeekLens("DayOfWeekLens", "functionalj.lens.lenses.java.time"),
+    DurationLens("DurationLens", "functionalj.lens.lenses.java.time"),
+    InstantLens("InstantLens", "functionalj.lens.lenses.java.time"),
+    LocalDateLens("LocalDateLens", "functionalj.lens.lenses.java.time"),
+    LocalDateTimeLens("LocalDateTimeLens", "functionalj.lens.lenses.java.time"),
+    LocalTimeLens("LocalTimeLens", "functionalj.lens.lenses.java.time"),
+    MonthLens("MonthLens", "functionalj.lens.lenses.java.time"),
+    OffsetDateTimeLens("OffsetDateTimeLens", "functionalj.lens.lenses.java.time"),
+    PeriodLens("PeriodLens", "functionalj.lens.lenses.java.time"),
+    ZonedDateTimeLens("ZonedDateTimeLens", "functionalj.lens.lenses.java.time"),
+    ZonedIdLens("ZonedIdLens", "functionalj.lens.lenses.java.time"),
+    ZonedOffsetLens("ZonedOffsetLens", "functionalj.lens.lenses.java.time"),
+    ZonedOffsetTransitionLens("ZonedOffsetTransitionLens", "functionalj.lens.lenses.java.time"),
     ZonedOffsetTransitionRuleLens("ZonedOffsetTransitionRuleLens", "functionalj.lens.lenses.java.time"),
-    
-    StrFunc("StrFuncs", "functionalj.functions")
-    ;
+    StrFunc("StrFuncs", "functionalj.functions");
     
     private static final String LENSES_PACKAGE = "functionalj.lens.lenses";
     
     private String simpleName;
+    
     private String packageName;
-    private Type   type = null;
+    
+    private Type type = null;
     
     private Core(String simpleName) {
         this(simpleName, LENSES_PACKAGE);
     }
     
     private Core(String simpleName, String packageName) {
-        this.simpleName  = simpleName;
+        this.simpleName = simpleName;
         this.packageName = packageName;
     }
     
@@ -136,8 +129,6 @@ public enum Core {
     public Type type() {
         if (type == null)
             type = new Type(packageName, simpleName);
-        
         return type;
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,9 +30,11 @@ public abstract class Annotated implements Named, Traced {
     protected Annotated(String type, String name) {
         this(type, name, null);
     }
+    
     protected Annotated(String type, String name, String location) {
         this.toString = type + prefixWhenNotBlank("::", name) + prefixWhenNotBlank("@", location);
     }
+    
     private String prefixWhenNotBlank(String prefix, String location) {
         return ((location != null) && !location.isEmpty()) ? prefix + location : "";
     }
@@ -40,6 +42,7 @@ public abstract class Annotated implements Named, Traced {
     public final String getName() {
         return this.toString.replaceFirst("^.*::", "").replaceFirst("^(.*)(@.*)$", "$1");
     }
+    
     public final String getLocation() {
         return this.toString.replaceFirst("^.*::", "").replaceFirst("^.*@", "");
     }
@@ -48,17 +51,24 @@ public abstract class Annotated implements Named, Traced {
         return toString;
     }
     
-    
-    /** Named predicate. **/
+    /**
+     * Named predicate. *
+     */
     static class Predicate<T> extends Annotated implements java.util.function.Predicate<T> {
+        
         private final java.util.function.Predicate<T> check;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Predicate(String name, String location, java.util.function.Predicate<T> check) {
             super("Predicate", name, location);
             this.check = check;
         }
-        /** Constructors. */
+        
+        /**
+         * Constructors.
+         */
         public Predicate(String name, java.util.function.Predicate<T> check) {
             super("Predicate", name);
             this.check = check;
@@ -69,16 +79,25 @@ public abstract class Annotated implements Named, Traced {
             return check.test(t);
         }
     }
-    /** Named predicate. **/
+    
+    /**
+     * Named predicate. *
+     */
     static class BiPredicate<T, U> extends Annotated implements java.util.function.BiPredicate<T, U> {
+        
         private final java.util.function.BiPredicate<T, U> check;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public BiPredicate(String name, String location, java.util.function.BiPredicate<T, U> check) {
             super("BiPredicate", name, location);
             this.check = check;
         }
-        /** Constructors. */
+        
+        /**
+         * Constructors.
+         */
         public BiPredicate(String name, java.util.function.BiPredicate<T, U> check) {
             super("BiPredicate", name);
             this.check = check;
@@ -90,16 +109,24 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    /** Named runnable. **/
+    /**
+     * Named runnable. *
+     */
     static class Runnable extends Annotated implements java.lang.Runnable {
+        
         private final java.lang.Runnable runnable;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Runnable(String name, String location, java.lang.Runnable runnable) {
             super("Runnable", name, location);
             this.runnable = runnable;
         }
-        /** Constructors. */
+        
+        /**
+         * Constructors.
+         */
         public Runnable(String name, java.lang.Runnable runnable) {
             super("Runnable", name);
             this.runnable = runnable;
@@ -111,16 +138,24 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    /** Named supplier */
+    /**
+     * Named supplier
+     */
     static class Supplier<T> extends Annotated implements java.util.function.Supplier<T> {
+        
         private final java.util.function.Supplier<T> supplier;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Supplier(String name, String location, java.util.function.Supplier<T> supplier) {
             super("Supplier", name, location);
             this.supplier = supplier;
         }
-        /** Constructors. */
+        
+        /**
+         * Constructors.
+         */
         public Supplier(String name, java.util.function.Supplier<T> supplier) {
             super("Supplier", name);
             this.supplier = supplier;
@@ -130,19 +165,26 @@ public abstract class Annotated implements Named, Traced {
         public T get() {
             return supplier.get();
         }
-        
     }
     
-    /** Named consumer. **/
+    /**
+     * Named consumer. *
+     */
     static class Consumer<T> extends Annotated implements java.util.function.Consumer<T> {
+        
         private final java.util.function.Consumer<T> consumer;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Consumer(String name, String location, java.util.function.Consumer<T> consumer) {
             super("Consumer", name, location);
             this.consumer = consumer;
         }
-        /** Constructors. */
+        
+        /**
+         * Constructors.
+         */
         public Consumer(String name, java.util.function.Consumer<T> consumer) {
             super("Consumer", name);
             this.consumer = consumer;
@@ -152,17 +194,20 @@ public abstract class Annotated implements Named, Traced {
         public void accept(T value) {
             consumer.accept(value);
         }
-        
     }
     
     static class Func0<OUTPUT> extends Annotated implements functionalj.function.Func0<OUTPUT> {
+        
         private final functionalj.function.Func0<OUTPUT> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Func0(String name, String location, functionalj.function.Func0<OUTPUT> func) {
             super("F0", name, location);
             this.func = func;
         }
+        
         public Func0(String name, functionalj.function.Func0<OUTPUT> func) {
             super("F0", name);
             this.func = func;
@@ -175,13 +220,17 @@ public abstract class Annotated implements Named, Traced {
     }
     
     static class Func1<INPUT, OUTPUT> extends Annotated implements functionalj.function.Func1<INPUT, OUTPUT> {
+        
         private final functionalj.function.Func1<INPUT, OUTPUT> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Func1(String name, String location, functionalj.function.Func1<INPUT, OUTPUT> func) {
             super("F1", name, location);
             this.func = func;
         }
+        
         public Func1(String name, functionalj.function.Func1<INPUT, OUTPUT> func) {
             super("F1", name);
             this.func = func;
@@ -193,15 +242,18 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func2<INPUT1, INPUT2, OUTPUT> extends Annotated 
-            implements functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> {
+    static class Func2<INPUT1, INPUT2, OUTPUT> extends Annotated implements functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> {
+        
         private final functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Func2(String name, String location, functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> func) {
             super("F2", name, location);
             this.func = func;
         }
+        
         public Func2(String name, functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> func) {
             super("F2", name);
             this.func = func;
@@ -213,15 +265,18 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func3<INPUT1, INPUT2, INPUT3, OUTPUT> extends Annotated 
-            implements functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
+    static class Func3<INPUT1, INPUT2, INPUT3, OUTPUT> extends Annotated implements functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
+        
         private final functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Func3(String name, String location, functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func) {
             super("F3", name, location);
             this.func = func;
         }
+        
         public Func3(String name, functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func) {
             super("F3", name);
             this.func = func;
@@ -233,15 +288,18 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> extends Annotated 
-            implements functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
+    static class Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> extends Annotated implements functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
+        
         private final functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Func4(String name, String location, functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func) {
             super("F3", name, location);
             this.func = func;
         }
+        
         public Func4(String name, functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func) {
             super("F3", name);
             this.func = func;
@@ -253,15 +311,18 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> extends Annotated 
-            implements functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
+    static class Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> extends Annotated implements functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
+        
         private final functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Func5(String name, String location, functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func) {
             super("F5", name, location);
             this.func = func;
         }
+        
         public Func5(String name, functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func) {
             super("F5", name);
             this.func = func;
@@ -273,15 +334,18 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> extends Annotated 
-            implements functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
+    static class Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> extends Annotated implements functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
+        
         private final functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public Func6(String name, String location, functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func) {
             super("F6", name, location);
             this.func = func;
         }
+        
         public Func6(String name, functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func) {
             super("F6", name);
             this.func = func;
@@ -294,13 +358,17 @@ public abstract class Annotated implements Named, Traced {
     }
     
     static class FuncUnit0 extends Annotated implements functionalj.function.FuncUnit0 {
+        
         private final functionalj.function.FuncUnit0 func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public FuncUnit0(String name, String location, functionalj.function.FuncUnit0 func) {
             super("FU0", name, location);
             this.func = func;
         }
+        
         public FuncUnit0(String name, functionalj.function.FuncUnit0 func) {
             super("FU0", name);
             this.func = func;
@@ -313,13 +381,17 @@ public abstract class Annotated implements Named, Traced {
     }
     
     static class FuncUnit1<INPUT> extends Annotated implements functionalj.function.FuncUnit1<INPUT> {
+        
         private final functionalj.function.FuncUnit1<INPUT> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public FuncUnit1(String name, String location, functionalj.function.FuncUnit1<INPUT> func) {
             super("FU1", name, location);
             this.func = func;
         }
+        
         public FuncUnit1(String name, functionalj.function.FuncUnit1<INPUT> func) {
             super("FU1", name);
             this.func = func;
@@ -331,15 +403,18 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class FuncUnit2<INPUT1, INPUT2> extends Annotated 
-            implements functionalj.function.FuncUnit2<INPUT1, INPUT2> {
+    static class FuncUnit2<INPUT1, INPUT2> extends Annotated implements functionalj.function.FuncUnit2<INPUT1, INPUT2> {
+        
         private final functionalj.function.FuncUnit2<INPUT1, INPUT2> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public FuncUnit2(String name, String location, functionalj.function.FuncUnit2<INPUT1, INPUT2> func) {
             super("FU2", name, location);
             this.func = func;
         }
+        
         public FuncUnit2(String name, functionalj.function.FuncUnit2<INPUT1, INPUT2> func) {
             super("FU2", name);
             this.func = func;
@@ -351,15 +426,18 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class FuncUnit3<INPUT1, INPUT2, INPUT3> extends Annotated 
-            implements functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> {
+    static class FuncUnit3<INPUT1, INPUT2, INPUT3> extends Annotated implements functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> {
+        
         private final functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> func;
         
-        /** Constructors. */
+        /**
+         * Constructors.
+         */
         public FuncUnit3(String name, String location, functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> func) {
             super("FU3", name, location);
             this.func = func;
         }
+        
         public FuncUnit3(String name, functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> func) {
             super("FU3", name);
             this.func = func;

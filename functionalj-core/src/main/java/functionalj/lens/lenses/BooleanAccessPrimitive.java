@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,5 +29,4 @@ public interface BooleanAccessPrimitive<HOST> extends BooleanAccess<HOST> {
     public default Boolean applyUnsafe(HOST host) throws Exception {
         return test(host);
     }
-    
 }

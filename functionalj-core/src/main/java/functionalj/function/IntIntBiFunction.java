@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,7 +33,7 @@ public interface IntIntBiFunction<TARGET> extends Func2<Integer, Integer, TARGET
     public default TARGET applyInt(int input1, int input2) {
         try {
             return applyIntUnsafe(input1, input2);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             throw ThrowFuncs.exceptionTransformer.get().apply(exception);
         }
     }

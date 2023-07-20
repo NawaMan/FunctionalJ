@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,11 +28,13 @@ import functionalj.function.FuncUnit1;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({ "rawtypes" })
 public class ChangeResult<D> implements Pipeable<ChangeResult<D>> {
     
     private Store<D> store;
+    
     private D originalData;
+    
     private ResultStatus<D> status;
     
     public ChangeResult(D originalData, ResultStatus<D> status) {
@@ -48,9 +50,11 @@ public class ChangeResult<D> implements Pipeable<ChangeResult<D>> {
     public Store<D> store() {
         return store;
     }
+    
     public D originalData() {
         return originalData;
     }
+    
     public ResultStatus<D> status() {
         return status;
     }
@@ -102,21 +106,11 @@ public class ChangeResult<D> implements Pipeable<ChangeResult<D>> {
     }
     
     public boolean hasChanged() {
-        return status.match()
-                .notAllowed(false)
-                .accepted  (true)
-                .adjusted  (true)
-                .rejected  (false)
-                .failed    (false);
+        return status.match().notAllowed(false).accepted(true).adjusted(true).rejected(false).failed(false);
     }
     
     public Result<D> result() {
-        return status.match()
-                .notAllowed(n -> Result.<D>ofNotExist())
-                .accepted  (a -> Result.valueOf(a.newData()))
-                .adjusted  (a -> Result.valueOf(a.adjustedData()))
-                .rejected  (()-> Result.<D>ofNotExist())
-                .failed    (()-> Result.<D>ofNotExist());
+        return status.match().notAllowed(n -> Result.<D>ofNotExist()).accepted(a -> Result.valueOf(a.newData())).adjusted(a -> Result.valueOf(a.adjustedData())).rejected(() -> Result.<D>ofNotExist()).failed(() -> Result.<D>ofNotExist());
     }
     
     public D value() {
@@ -124,13 +118,11 @@ public class ChangeResult<D> implements Pipeable<ChangeResult<D>> {
     }
     
     public ChangeResult<D> change(Func1<D, D> changer) {
-        return hasChanged()
-                ? store.change(changer)
-                : this;
+        return hasChanged() ? store.change(changer) : this;
     }
+    
     public ChangeResult<D> use(FuncUnit1<D> consumer) {
         store.use(consumer);
         return this;
     }
-    
 }

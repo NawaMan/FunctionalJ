@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,19 +34,20 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collector;
-
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.intstream.CollectorPlusHelper;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import lombok.val;
 
-
 public interface LongCollectorPlus<ACCUMULATED, RESULT> extends CollectorPlus<Long, ACCUMULATED, RESULT> {
     
-    Supplier<ACCUMULATED>         supplier();
-    ObjLongConsumer<ACCUMULATED>  longAccumulator();
-    BinaryOperator<ACCUMULATED>   combiner();
+    Supplier<ACCUMULATED> supplier();
+    
+    ObjLongConsumer<ACCUMULATED> longAccumulator();
+    
+    BinaryOperator<ACCUMULATED> combiner();
+    
     Function<ACCUMULATED, RESULT> finisher();
     
     public default Set<Characteristics> characteristics() {
@@ -61,8 +62,7 @@ public interface LongCollectorPlus<ACCUMULATED, RESULT> extends CollectorPlus<Lo
         return longAccumulator()::accept;
     }
     
-    //== Derive == 
-    
+    // == Derive ==
     public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToLongFunction<SOURCE> mapper) {
         val collector = new DerivedLongCollectorPlus.FromObj<>(this, mapper);
         return CollectorPlus.from(collector);

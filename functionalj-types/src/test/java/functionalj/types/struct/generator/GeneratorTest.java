@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -41,214 +41,38 @@ import lombok.val;
 public class GeneratorTest {
     
     private Configurations configures = new Configurations();
+    
     {
-        configures.coupleWithDefinition      = true;
-        configures.generateNoArgConstructor  = true;
+        configures.coupleWithDefinition = true;
+        configures.generateNoArgConstructor = true;
         configures.generateAllArgConstructor = true;
-        configures.generateLensClass         = true;
-        configures.toStringTemplate          = "";
+        configures.generateLensClass = true;
+        configures.toStringTemplate = "";
     }
     
-    private String  definitionClassName = "Definitions.CarDef";
-    private String  targetClassName     = "Car";
-    private String  packageName         = "me.test";
-    private boolean isClass             = false;
+    private String definitionClassName = "Definitions.CarDef";
     
-    private List<Getter> getters = asList(
-            new Getter("anint",    Type.INT),
-            new Getter("anbool",   Type.BOOL),
-            new Getter("anstring", Type.STRING)
-    );
+    private String targetClassName = "Car";
+    
+    private String packageName = "me.test";
+    
+    private boolean isClass = false;
+    
+    private List<Getter> getters = asList(new Getter("anint", Type.INT), new Getter("anbool", Type.BOOL), new Getter("anstring", Type.STRING));
     
     @Test
     public void testStandard() {
         val generated = generate();
-        assertAsString(
-                "package me.test;\n"
-                + "\n"
-                + "import functionalj.lens.core.LensSpec;\n"
-                + "import functionalj.lens.lenses.BooleanLens;\n"
-                + "import functionalj.lens.lenses.IntegerLens;\n"
-                + "import functionalj.lens.lenses.ObjectLensImpl;\n"
-                + "import functionalj.lens.lenses.StringLens;\n"
-                + "import functionalj.pipeable.Pipeable;\n"
-                + "import functionalj.types.Generated;\n"
-                + "import functionalj.types.IPostConstruct;\n"
-                + "import functionalj.types.IStruct;\n"
-                + "import functionalj.types.struct.generator.Getter;\n"
-                + "import java.lang.Exception;\n"
-                + "import java.lang.Object;\n"
-                + "import java.util.HashMap;\n"
-                + "import java.util.Map;\n"
-                + "import java.util.function.BiFunction;\n"
-                + "import java.util.function.Function;\n"
-                + "import java.util.function.Supplier;\n"
-                + "\n"
-                + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"me.test.null.Definitions.CarDef\")\n"
-                + "\n"
-                + "@SuppressWarnings(\"all\")\n"
-                + "\n"
-                + "public class Car implements Definitions.CarDef,IStruct,Pipeable<Car> {\n"
-                + "    \n"
-                + "    public static final Car.CarLens<Car> theCar = new Car.CarLens<>(\"theCar\", LensSpec.of(Car.class));\n"
-                + "    public static final Car.CarLens<Car> eachCar = theCar;\n"
-                + "    public final int anint;\n"
-                + "    public final boolean anbool;\n"
-                + "    public final String anstring;\n"
-                + "    \n"
-                + "    public Car() {\n"
-                + "        this(0, false, null);\n"
-                + "    }\n"
-                + "    public Car(int anint, boolean anbool, String anstring) {\n"
-                + "        this.anint = anint;\n"
-                + "        this.anbool = anbool;\n"
-                + "        this.anstring = $utils.notNull(anstring);\n"
-                + "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n"
-                + "    }\n"
-                + "    \n"
-                + "    public Car __data() throws Exception  {\n"
-                + "        return this;\n"
-                + "    }\n"
-                + "    public int anint() {\n"
-                + "        return anint;\n"
-                + "    }\n"
-                + "    public boolean anbool() {\n"
-                + "        return anbool;\n"
-                + "    }\n"
-                + "    public String anstring() {\n"
-                + "        return anstring;\n"
-                + "    }\n"
-                + "    public Car withAnint(int anint) {\n"
-                + "        return new Car(anint, anbool, anstring);\n"
-                + "    }\n"
-                + "    public Car withAnint(Supplier<Integer> anint) {\n"
-                + "        return new Car(anint.get(), anbool, anstring);\n"
-                + "    }\n"
-                + "    public Car withAnint(Function<Integer, Integer> anint) {\n"
-                + "        return new Car(anint.apply(this.anint), anbool, anstring);\n"
-                + "    }\n"
-                + "    public Car withAnint(BiFunction<Car, Integer, Integer> anint) {\n"
-                + "        return new Car(anint.apply(this, this.anint), anbool, anstring);\n"
-                + "    }\n"
-                + "    public Car withAnbool(boolean anbool) {\n"
-                + "        return new Car(anint, anbool, anstring);\n"
-                + "    }\n"
-                + "    public Car withAnbool(Supplier<Boolean> anbool) {\n"
-                + "        return new Car(anint, anbool.get(), anstring);\n"
-                + "    }\n"
-                + "    public Car withAnbool(Function<Boolean, Boolean> anbool) {\n"
-                + "        return new Car(anint, anbool.apply(this.anbool), anstring);\n"
-                + "    }\n"
-                + "    public Car withAnbool(BiFunction<Car, Boolean, Boolean> anbool) {\n"
-                + "        return new Car(anint, anbool.apply(this, this.anbool), anstring);\n"
-                + "    }\n"
-                + "    public Car withAnstring(String anstring) {\n"
-                + "        return new Car(anint, anbool, anstring);\n"
-                + "    }\n"
-                + "    public Car withAnstring(Supplier<String> anstring) {\n"
-                + "        return new Car(anint, anbool, anstring.get());\n"
-                + "    }\n"
-                + "    public Car withAnstring(Function<String, String> anstring) {\n"
-                + "        return new Car(anint, anbool, anstring.apply(this.anstring));\n"
-                + "    }\n"
-                + "    public Car withAnstring(BiFunction<Car, String, String> anstring) {\n"
-                + "        return new Car(anint, anbool, anstring.apply(this, this.anstring));\n"
-                + "    }\n"
-                + "    public static Car fromMap(Map<String, ? extends Object> map) {\n"
-                + "        Map<String, Getter> $schema = getStructSchema();\n"
-                + "        Car obj = new Car(\n"
-                + "                    (int)$utils.extractPropertyFromMap(Car.class, int.class, map, $schema, \"anint\"),\n"
-                + "                    (boolean)$utils.extractPropertyFromMap(Car.class, boolean.class, map, $schema, \"anbool\"),\n"
-                + "                    (String)$utils.extractPropertyFromMap(Car.class, String.class, map, $schema, \"anstring\")\n"
-                + "                );\n"
-                + "        return obj;\n"
-                + "    }\n"
-                + "    public Map<String, Object> __toMap() {\n"
-                + "        Map<String, Object> map = new HashMap<>();\n"
-                + "        map.put(\"anint\", $utils.toMapValueObject(anint));\n"
-                + "        map.put(\"anbool\", $utils.toMapValueObject(anbool));\n"
-                + "        map.put(\"anstring\", $utils.toMapValueObject(anstring));\n"
-                + "        return map;\n"
-                + "    }\n"
-                + "    public Map<String, Getter> __getSchema() {\n"
-                + "        return getStructSchema();\n"
-                + "    }\n"
-                + "    public static Map<String, Getter> getStructSchema() {\n"
-                + "        java.util.Map<String, functionalj.types.struct.generator.Getter> map = new java.util.HashMap<>();\n"
-                + "        map.put(\"anint\", new functionalj.types.struct.generator.Getter(\"anint\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n"
-                + "        map.put(\"anbool\", new functionalj.types.struct.generator.Getter(\"anbool\", new functionalj.types.Type(null, null, \"boolean\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n"
-                + "        map.put(\"anstring\", new functionalj.types.struct.generator.Getter(\"anstring\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n"
-                + "        return map;\n"
-                + "    }\n"
-                + "    public String toString() {\n"
-                + "        return \"Car[\" + \"anint: \" + anint() + \", \" + \"anbool: \" + anbool() + \", \" + \"anstring: \" + anstring() + \"]\";\n"
-                + "    }\n"
-                + "    public int hashCode() {\n"
-                + "        return toString().hashCode();\n"
-                + "    }\n"
-                + "    public boolean equals(Object another) {\n"
-                + "        return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));\n"
-                + "    }\n"
-                + "    \n"
-                + "    public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {\n"
-                + "        \n"
-                + "        public final IntegerLens<HOST> anint = createSubLensInt(\"anint\", Car::anint, Car::withAnint);\n"
-                + "        public final BooleanLens<HOST> anbool = createSubLensBoolean(\"anbool\", Car::anbool, Car::withAnbool);\n"
-                + "        public final StringLens<HOST> anstring = createSubLens(\"anstring\", Car::anstring, Car::withAnstring, StringLens::of);\n"
-                + "        \n"
-                + "        public CarLens(String name, LensSpec<HOST, Car> spec) {\n"
-                + "            super(name, spec);\n"
-                + "        }\n"
-                + "        \n"
-                + "    }\n"
-                + "    public static final class Builder {\n"
-                + "        \n"
-                + "        public final CarBuilder_withoutAnbool anint(int anint) {\n"
-                + "            return (boolean anbool)->{\n"
-                + "            return (String anstring)->{\n"
-                + "            return ()->{\n"
-                + "                return new Car(\n"
-                + "                    anint,\n"
-                + "                    anbool,\n"
-                + "                    anstring\n"
-                + "                );\n"
-                + "            };\n"
-                + "            };\n"
-                + "            };\n"
-                + "        }\n"
-                + "        \n"
-                + "        public static interface CarBuilder_withoutAnbool {\n"
-                + "            \n"
-                + "            public CarBuilder_withoutAnstring anbool(boolean anbool);\n"
-                + "            \n"
-                + "        }\n"
-                + "        public static interface CarBuilder_withoutAnstring {\n"
-                + "            \n"
-                + "            public CarBuilder_ready anstring(String anstring);\n"
-                + "            \n"
-                + "        }\n"
-                + "        public static interface CarBuilder_ready {\n"
-                + "            \n"
-                + "            public Car build();\n"
-                + "            \n"
-                + "            \n"
-                + "            \n"
-                + "        }\n"
-                + "        \n"
-                + "        \n"
-                + "    }\n"
-                + "    \n"
-                + "}", generated);
+        assertAsString("package me.test;\n" + "\n" + "import functionalj.lens.core.LensSpec;\n" + "import functionalj.lens.lenses.BooleanLens;\n" + "import functionalj.lens.lenses.IntegerLens;\n" + "import functionalj.lens.lenses.ObjectLensImpl;\n" + "import functionalj.lens.lenses.StringLens;\n" + "import functionalj.pipeable.Pipeable;\n" + "import functionalj.types.Generated;\n" + "import functionalj.types.IPostConstruct;\n" + "import functionalj.types.IStruct;\n" + "import functionalj.types.struct.generator.Getter;\n" + "import java.lang.Exception;\n" + "import java.lang.Object;\n" + "import java.util.HashMap;\n" + "import java.util.Map;\n" + "import java.util.function.BiFunction;\n" + "import java.util.function.Function;\n" + "import java.util.function.Supplier;\n" + "\n" + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"me.test.null.Definitions.CarDef\")\n" + "\n" + "@SuppressWarnings(\"all\")\n" + "\n" + "public class Car implements Definitions.CarDef,IStruct,Pipeable<Car> {\n" + "    \n" + "    public static final Car.CarLens<Car> theCar = new Car.CarLens<>(\"theCar\", LensSpec.of(Car.class));\n" + "    public static final Car.CarLens<Car> eachCar = theCar;\n" + "    public final int anint;\n" + "    public final boolean anbool;\n" + "    public final String anstring;\n" + "    \n" + "    public Car() {\n" + "        this(0, false, null);\n" + "    }\n" + "    public Car(int anint, boolean anbool, String anstring) {\n" + "        this.anint = anint;\n" + "        this.anbool = anbool;\n" + "        this.anstring = $utils.notNull(anstring);\n" + "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + "    }\n" + "    \n" + "    public Car __data() throws Exception  {\n" + "        return this;\n" + "    }\n" + "    public int anint() {\n" + "        return anint;\n" + "    }\n" + "    public boolean anbool() {\n" + "        return anbool;\n" + "    }\n" + "    public String anstring() {\n" + "        return anstring;\n" + "    }\n" + "    public Car withAnint(int anint) {\n" + "        return new Car(anint, anbool, anstring);\n" + "    }\n" + "    public Car withAnint(Supplier<Integer> anint) {\n" + "        return new Car(anint.get(), anbool, anstring);\n" + "    }\n" + "    public Car withAnint(Function<Integer, Integer> anint) {\n" + "        return new Car(anint.apply(this.anint), anbool, anstring);\n" + "    }\n" + "    public Car withAnint(BiFunction<Car, Integer, Integer> anint) {\n" + "        return new Car(anint.apply(this, this.anint), anbool, anstring);\n" + "    }\n" + "    public Car withAnbool(boolean anbool) {\n" + "        return new Car(anint, anbool, anstring);\n" + "    }\n" + "    public Car withAnbool(Supplier<Boolean> anbool) {\n" + "        return new Car(anint, anbool.get(), anstring);\n" + "    }\n" + "    public Car withAnbool(Function<Boolean, Boolean> anbool) {\n" + "        return new Car(anint, anbool.apply(this.anbool), anstring);\n" + "    }\n" + "    public Car withAnbool(BiFunction<Car, Boolean, Boolean> anbool) {\n" + "        return new Car(anint, anbool.apply(this, this.anbool), anstring);\n" + "    }\n" + "    public Car withAnstring(String anstring) {\n" + "        return new Car(anint, anbool, anstring);\n" + "    }\n" + "    public Car withAnstring(Supplier<String> anstring) {\n" + "        return new Car(anint, anbool, anstring.get());\n" + "    }\n" + "    public Car withAnstring(Function<String, String> anstring) {\n" + "        return new Car(anint, anbool, anstring.apply(this.anstring));\n" + "    }\n" + "    public Car withAnstring(BiFunction<Car, String, String> anstring) {\n" + "        return new Car(anint, anbool, anstring.apply(this, this.anstring));\n" + "    }\n" + "    public static Car fromMap(Map<String, ? extends Object> map) {\n" + "        Map<String, Getter> $schema = getStructSchema();\n" + "        Car obj = new Car(\n" + "                    (int)$utils.extractPropertyFromMap(Car.class, int.class, map, $schema, \"anint\"),\n" + "                    (boolean)$utils.extractPropertyFromMap(Car.class, boolean.class, map, $schema, \"anbool\"),\n" + "                    (String)$utils.extractPropertyFromMap(Car.class, String.class, map, $schema, \"anstring\")\n" + "                );\n" + "        return obj;\n" + "    }\n" + "    public Map<String, Object> __toMap() {\n" + "        Map<String, Object> map = new HashMap<>();\n" + "        map.put(\"anint\", $utils.toMapValueObject(anint));\n" + "        map.put(\"anbool\", $utils.toMapValueObject(anbool));\n" + "        map.put(\"anstring\", $utils.toMapValueObject(anstring));\n" + "        return map;\n" + "    }\n" + "    public Map<String, Getter> __getSchema() {\n" + "        return getStructSchema();\n" + "    }\n" + "    public static Map<String, Getter> getStructSchema() {\n" + "        java.util.Map<String, functionalj.types.struct.generator.Getter> map = new java.util.HashMap<>();\n" + "        map.put(\"anint\", new functionalj.types.struct.generator.Getter(\"anint\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + "        map.put(\"anbool\", new functionalj.types.struct.generator.Getter(\"anbool\", new functionalj.types.Type(null, null, \"boolean\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + "        map.put(\"anstring\", new functionalj.types.struct.generator.Getter(\"anstring\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + "        return map;\n" + "    }\n" + "    public String toString() {\n" + "        return \"Car[\" + \"anint: \" + anint() + \", \" + \"anbool: \" + anbool() + \", \" + \"anstring: \" + anstring() + \"]\";\n" + "    }\n" + "    public int hashCode() {\n" + "        return toString().hashCode();\n" + "    }\n" + "    public boolean equals(Object another) {\n" + "        return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));\n" + "    }\n" + "    \n" + "    public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {\n" + "        \n" + "        public final IntegerLens<HOST> anint = createSubLensInt(\"anint\", Car::anint, Car::withAnint);\n" + "        public final BooleanLens<HOST> anbool = createSubLensBoolean(\"anbool\", Car::anbool, Car::withAnbool);\n" + "        public final StringLens<HOST> anstring = createSubLens(\"anstring\", Car::anstring, Car::withAnstring, StringLens::of);\n" + "        \n" + "        public CarLens(String name, LensSpec<HOST, Car> spec) {\n" + "            super(name, spec);\n" + "        }\n" + "        \n" + "    }\n" + "    public static final class Builder {\n" + "        \n" + "        public final CarBuilder_withoutAnbool anint(int anint) {\n" + "            return (boolean anbool)->{\n" + "            return (String anstring)->{\n" + "            return ()->{\n" + "                return new Car(\n" + "                    anint,\n" + "                    anbool,\n" + "                    anstring\n" + "                );\n" + "            };\n" + "            };\n" + "            };\n" + "        }\n" + "        \n" + "        public static interface CarBuilder_withoutAnbool {\n" + "            \n" + "            public CarBuilder_withoutAnstring anbool(boolean anbool);\n" + "            \n" + "        }\n" + "        public static interface CarBuilder_withoutAnstring {\n" + "            \n" + "            public CarBuilder_ready anstring(String anstring);\n" + "            \n" + "        }\n" + "        public static interface CarBuilder_ready {\n" + "            \n" + "            public Car build();\n" + "            \n" + "            \n" + "            \n" + "        }\n" + "        \n" + "        \n" + "    }\n" + "    \n" + "}", generated);
     }
     
     @Test
     public void testDecouplingWithSuper() {
-        val generatedWith = generate(()->{
+        val generatedWith = generate(() -> {
             configures.coupleWithDefinition = true;
         });
         assertTrue(generatedWith.contains(" implements Definitions.CarDef"));
-        
-        val generatedWithout = generate(()->{
+        val generatedWithout = generate(() -> {
             configures.coupleWithDefinition = false;
         });
         assertFalse(generatedWithout.contains(" implements Definitions.CarDef"));
@@ -256,12 +80,11 @@ public class GeneratorTest {
     
     @Test
     public void testIsClassOrInteface() {
-        val generatedWith = generate(()->{
+        val generatedWith = generate(() -> {
             isClass = true;
         });
         assertTrue(generatedWith.contains(" extends Definitions.CarDef"));
-        
-        val generatedWithout = generate(()->{
+        val generatedWithout = generate(() -> {
             isClass = false;
         });
         assertTrue(generatedWithout.contains(" implements Definitions.CarDef"));
@@ -269,12 +92,11 @@ public class GeneratorTest {
     
     @Test
     public void testNoArgConstructor() {
-        val generatedWith = generate(()->{
+        val generatedWith = generate(() -> {
             configures.generateNoArgConstructor = true;
         });
         assertTrue(generatedWith.contains("public Car() {"));
-        
-        val generatedWithout = generate(()->{
+        val generatedWithout = generate(() -> {
             configures.generateNoArgConstructor = false;
         });
         assertFalse(generatedWithout.contains("public Car() {"));
@@ -282,12 +104,11 @@ public class GeneratorTest {
     
     @Test
     public void testAllArgConstructor() {
-        val generatedWith = generate(()->{
+        val generatedWith = generate(() -> {
             configures.generateAllArgConstructor = true;
         });
         assertTrue(generatedWith.contains("public Car(int anint, boolean anbool, String anstring) {"));
-        
-        val generatedWithout = generate(()->{
+        val generatedWithout = generate(() -> {
             configures.generateAllArgConstructor = false;
         });
         assertTrue(generatedWithout.contains("private Car(int anint, boolean anbool, String anstring) {"));
@@ -295,13 +116,12 @@ public class GeneratorTest {
     
     @Test
     public void testLensClass() {
-        val generatedWith = generate(()->{
+        val generatedWith = generate(() -> {
             configures.generateLensClass = true;
         });
         assertTrue(generatedWith.contains("public static final Car.CarLens<Car> theCar = new Car.CarLens<>(\"theCar\", LensSpec.of(Car.class));"));
         assertTrue(generatedWith.contains("public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {"));
-        
-        val generatedWithout = generate(()->{
+        val generatedWithout = generate(() -> {
             configures.generateLensClass = false;
         });
         assertFalse(generatedWithout.contains("public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));"));
@@ -315,22 +135,16 @@ public class GeneratorTest {
     private String generate(Runnable setting) {
         if (setting != null)
             setting.run();
-        
-        SourceSpec sourceSpec = new SourceSpec(
-                    definitionClassName, // specClassName
-                    packageName,         // packageName
-                    null,                // encloseName
-                    targetClassName,     // targetClassName
-                    packageName,         // targetPackageName
-                    isClass,             // isClass
-                    null,
-                    null,
-                    configures,          // Configurations
-                    getters,
-                    emptyList(),
-                    emptyList());
+        SourceSpec sourceSpec = new SourceSpec(// specClassName
+        definitionClassName, // packageName
+        packageName, // encloseName
+        null, // targetClassName
+        targetClassName, // targetPackageName
+        packageName, // isClass
+        isClass, null, null, // Configurations
+        configures, getters, emptyList(), emptyList());
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
-        val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
+        val generated = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }
 }

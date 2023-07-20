@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,7 +29,7 @@ import java.util.function.BiFunction;
 public interface WriteLens<HOST, DATA> {
     
     public static <HOST, DATA> WriteLens<HOST, DATA> of(BiFunction<HOST, DATA, HOST> biFunction) {
-        return (host, newValue)->{
+        return (host, newValue) -> {
             return biFunction.apply(host, newValue);
         };
     }
@@ -44,7 +44,6 @@ public interface WriteLens<HOST, DATA> {
         return this::apply;
     }
     
-    
     public static interface PrimitiveInt<HOST> extends WriteLens<HOST, Integer> {
         
         public HOST applyWithInt(HOST host, int newValue);
@@ -52,7 +51,6 @@ public interface WriteLens<HOST, DATA> {
         public default HOST apply(HOST host, Integer newValue) {
             return applyWithInt(host, newValue);
         }
-        
     }
     
     public static interface PrimitiveLong<HOST> extends WriteLens<HOST, Long> {
@@ -62,7 +60,6 @@ public interface WriteLens<HOST, DATA> {
         public default HOST apply(HOST host, Long newValue) {
             return applyWithLong(host, newValue);
         }
-        
     }
     
     public static interface PrimitiveDouble<HOST> extends WriteLens<HOST, Double> {
@@ -82,5 +79,4 @@ public interface WriteLens<HOST, DATA> {
             return applyWithBoolean(host, newValue);
         }
     }
-    
 }

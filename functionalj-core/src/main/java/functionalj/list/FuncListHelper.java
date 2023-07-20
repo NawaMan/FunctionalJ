@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,23 +25,16 @@ package functionalj.list;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import functionalj.list.doublelist.DoubleFuncList;
 import lombok.val;
-
 
 public class FuncListHelper {
     
     static <D> FuncList<FuncList<D>> segmentByPercentiles(AsFuncList<D> funcList, DoubleFuncList percentiles) {
         val list = funcList.asFuncList();
         val size = list.size();
-        DoubleFuncList indexes = percentiles
-                .append(100.0)
-                .sorted()
-                .map   (d -> (int)Math.round(d*size/100))
-                .toImmutableList();
-        
-        val lists   = new ArrayList<List<D>>();
+        DoubleFuncList indexes = percentiles.append(100.0).sorted().map(d -> (int) Math.round(d * size / 100)).toImmutableList();
+        val lists = new ArrayList<List<D>>();
         for (int i = 0; i < indexes.size(); i++) {
             lists.add(new ArrayList<D>());
         }
@@ -54,8 +47,6 @@ public class FuncListHelper {
             val element = list.get(i);
             l.add(element);
         }
-        
         return FuncList.from(lists.stream().map(each -> ImmutableFuncList.from(each.stream())));
     }
-    
 }

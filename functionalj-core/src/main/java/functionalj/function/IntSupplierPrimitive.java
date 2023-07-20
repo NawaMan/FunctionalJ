@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,17 +31,15 @@ public interface IntSupplierPrimitive extends IntSupplier, Supplier<Integer> {
     
     public static IntSupplierPrimitive of(Supplier<Integer> supplier) {
         if (supplier instanceof IntSupplierPrimitive)
-            return (IntSupplierPrimitive)supplier;
-        
-        return () -> supplier.get();
-    }
-    public static IntSupplierPrimitive intSupplier(Supplier<Integer> supplier) {
-        if (supplier instanceof IntSupplierPrimitive)
-            return (IntSupplierPrimitive)supplier;
-        
+            return (IntSupplierPrimitive) supplier;
         return () -> supplier.get();
     }
     
+    public static IntSupplierPrimitive intSupplier(Supplier<Integer> supplier) {
+        if (supplier instanceof IntSupplierPrimitive)
+            return (IntSupplierPrimitive) supplier;
+        return () -> supplier.get();
+    }
     
     public int getAsInt();
     
@@ -49,6 +47,4 @@ public interface IntSupplierPrimitive extends IntSupplier, Supplier<Integer> {
     public default Integer get() {
         return getAsInt();
     }
-    
 }
-

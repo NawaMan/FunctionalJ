@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,14 +24,12 @@
 package functionalj.stream.doublestream;
 
 import static functionalj.stream.doublestream.collect.DoubleCollected.collectedOf;
-
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleConsumer;
 import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
-
 import functionalj.function.aggregator.DoubleAggregation;
 import functionalj.function.aggregator.DoubleAggregationToDouble;
 import functionalj.tuple.Tuple;
@@ -42,56 +40,53 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
-
 public interface AsDoubleStreamPlusWithCalculate {
     
-    /** @return  the stream plus instance of this object. */
+    /**
+     * @return  the stream plus instance of this object.
+     */
     public DoubleStreamPlus doubleStreamPlus();
     
     public void forEach(DoubleConsumer action);
     
-    
     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
-    //        Still not sure how to do that.
-    
-    /** Perform the calculation using the data of this stream */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public default <RESULT> RESULT calculate(
-            DoubleAggregation<RESULT> aggregation) {
-        val collector  = aggregation.doubleCollectorPlus();
-        Supplier          supplier    = collector.supplier();
+    // Still not sure how to do that.
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public default <RESULT> RESULT calculate(DoubleAggregation<RESULT> aggregation) {
+        val collector = aggregation.doubleCollectorPlus();
+        Supplier supplier = collector.supplier();
         ObjDoubleConsumer accumulator = collector.doubleAccumulator();
-        BinaryOperator    combiner    = collector.combiner();
-        Function          finisher    = collector.finisher();
-        
-        val streamPlus  = doubleStreamPlus();
+        BinaryOperator combiner = collector.combiner();
+        Function finisher = collector.finisher();
+        val streamPlus = doubleStreamPlus();
         val accumulated = streamPlus.doubleStream().collect(supplier, accumulator, (a, b) -> combiner.apply(a, b));
-        val value       = finisher.apply(accumulated);
-        return (RESULT)value;
+        val value = finisher.apply(accumulated);
+        return (RESULT) value;
     }
     
-    /** Perform the calculation using the data of this stream */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public default double calculate(
-           DoubleAggregationToDouble aggregation) {
-        val collector  = aggregation.doubleCollectorToDoublePlus();
-        Supplier          supplier    = collector.supplier();
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public default double calculate(DoubleAggregationToDouble aggregation) {
+        val collector = aggregation.doubleCollectorToDoublePlus();
+        Supplier supplier = collector.supplier();
         ObjDoubleConsumer accumulator = collector.doubleAccumulator();
-        BinaryOperator    combiner    = collector.combiner();
-        ToDoubleFunction  finisher    = collector.finisherToDouble();
-        
-        val streamPlus  = doubleStreamPlus();
+        BinaryOperator combiner = collector.combiner();
+        ToDoubleFunction finisher = collector.finisherToDouble();
+        val streamPlus = doubleStreamPlus();
         val accumulated = streamPlus.doubleStream().collect(supplier, accumulator, (a, b) -> combiner.apply(a, b));
-        val value       = finisher.applyAsDouble(accumulated);
+        val value = finisher.applyAsDouble(accumulated);
         return value;
     }
     
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2>
-                        Tuple2<RESULT1, RESULT2>
-                        calculate(
-                                DoubleAggregation<RESULT1> collector1,
-                                DoubleAggregation<RESULT2> collector2) {
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2> Tuple2<RESULT1, RESULT2> calculate(DoubleAggregation<RESULT1> collector1, DoubleAggregation<RESULT2> collector2) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -99,19 +94,13 @@ public interface AsDoubleStreamPlusWithCalculate {
             collected1.accumulate(each);
             collected2.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish());
     }
     
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2, RESULT3>
-                        Tuple3<RESULT1, RESULT2, RESULT3>
-                        calculate(
-                                DoubleAggregation<RESULT1> collector1,
-                                DoubleAggregation<RESULT2> collector2,
-                                DoubleAggregation<RESULT3> collector3) {
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3> Tuple3<RESULT1, RESULT2, RESULT3> calculate(DoubleAggregation<RESULT1> collector1, DoubleAggregation<RESULT2> collector2, DoubleAggregation<RESULT3> collector3) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -121,21 +110,13 @@ public interface AsDoubleStreamPlusWithCalculate {
             collected2.accumulate(each);
             collected3.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish(),
-            collected3.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish());
     }
     
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2, RESULT3, RESULT4>
-                        Tuple4<RESULT1, RESULT2, RESULT3, RESULT4>
-                        calculate(
-                                DoubleAggregation<RESULT1> collector1,
-                                DoubleAggregation<RESULT2> collector2,
-                                DoubleAggregation<RESULT3> collector3,
-                                DoubleAggregation<RESULT4> collector4) {
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4> Tuple4<RESULT1, RESULT2, RESULT3, RESULT4> calculate(DoubleAggregation<RESULT1> collector1, DoubleAggregation<RESULT2> collector2, DoubleAggregation<RESULT3> collector3, DoubleAggregation<RESULT4> collector4) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -147,23 +128,13 @@ public interface AsDoubleStreamPlusWithCalculate {
             collected3.accumulate(each);
             collected4.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish(),
-            collected3.finish(),
-            collected4.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish());
     }
     
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5>
-                        Tuple5<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5>
-                        calculate(
-                                DoubleAggregation<RESULT1> collector1,
-                                DoubleAggregation<RESULT2> collector2,
-                                DoubleAggregation<RESULT3> collector3,
-                                DoubleAggregation<RESULT4> collector4,
-                                DoubleAggregation<RESULT5> collector5) {
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5> Tuple5<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5> calculate(DoubleAggregation<RESULT1> collector1, DoubleAggregation<RESULT2> collector2, DoubleAggregation<RESULT3> collector3, DoubleAggregation<RESULT4> collector4, DoubleAggregation<RESULT5> collector5) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -177,25 +148,13 @@ public interface AsDoubleStreamPlusWithCalculate {
             collected4.accumulate(each);
             collected5.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish(),
-            collected3.finish(),
-            collected4.finish(),
-            collected5.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish(), collected5.finish());
     }
     
-    /** Perform the calculation using the data of this stream */
-    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6>
-                        Tuple6<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6>
-                        calculate(
-                                DoubleAggregation<RESULT1> collector1,
-                                DoubleAggregation<RESULT2> collector2,
-                                DoubleAggregation<RESULT3> collector3,
-                                DoubleAggregation<RESULT4> collector4,
-                                DoubleAggregation<RESULT5> collector5,
-                                DoubleAggregation<RESULT6> collector6) {
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6> Tuple6<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6> calculate(DoubleAggregation<RESULT1> collector1, DoubleAggregation<RESULT2> collector2, DoubleAggregation<RESULT3> collector3, DoubleAggregation<RESULT4> collector4, DoubleAggregation<RESULT5> collector5, DoubleAggregation<RESULT6> collector6) {
         // TODO - Created combined collectors
         val collected1 = collectedOf(collector1);
         val collected2 = collectedOf(collector2);
@@ -211,14 +170,6 @@ public interface AsDoubleStreamPlusWithCalculate {
             collected5.accumulate(each);
             collected6.accumulate(each);
         });
-        return Tuple.of(
-            collected1.finish(),
-            collected2.finish(),
-            collected3.finish(),
-            collected4.finish(),
-            collected5.finish(),
-            collected6.finish()
-        );
+        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish(), collected5.finish(), collected6.finish());
     }
-    
 }

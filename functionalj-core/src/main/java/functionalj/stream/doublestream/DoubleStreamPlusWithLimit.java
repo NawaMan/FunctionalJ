@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,43 +24,40 @@
 package functionalj.stream.doublestream;
 
 import static functionalj.stream.doublestream.DoubleStreamPlusHelper.sequential;
-
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
-
 import functionalj.function.DoubleDoublePredicatePrimitive;
 import functionalj.function.aggregator.DoubleAggregationToBoolean;
 import functionalj.stream.markers.Sequential;
 import lombok.val;
 
-
 public interface DoubleStreamPlusWithLimit {
     
     public DoubleStreamPlus doubleStreamPlus();
     
-    /** Limit the size of the stream to the given size. */
+    /**
+     * Limit the size of the stream to the given size.
+     */
     public default DoubleStreamPlus limit(Long maxSize) {
         val streamPlus = doubleStreamPlus();
-        return ((maxSize == null) || (maxSize.longValue() < 0))
-                ? streamPlus
-                : streamPlus
-                    .limit((long)maxSize);
+        return ((maxSize == null) || (maxSize.longValue() < 0)) ? streamPlus : streamPlus.limit((long) maxSize);
     }
     
-    /** Skip to the given offset position. */
+    /**
+     * Skip to the given offset position.
+     */
     public default DoubleStreamPlus skip(Long offset) {
         val streamPlus = doubleStreamPlus();
-        return ((offset == null) || (offset.longValue() < 0))
-                ? streamPlus
-                : streamPlus
-                    .skip((long)offset);
+        return ((offset == null) || (offset.longValue() < 0)) ? streamPlus : streamPlus.skip((long) offset);
     }
     
-    /** Skip any value while the condition is true. */
+    /**
+     * Skip any value while the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus skipWhile(DoublePredicate condition) {
         val streamPlus = doubleStreamPlus();
@@ -69,32 +66,38 @@ public interface DoubleStreamPlusWithLimit {
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
-                
                 if (!condition.test(e))
                     isStillTrue.set(false);
-                
                 return !isStillTrue.get();
             });
         });
     }
     
-    /** Skip any value while the condition is true. */
+    /**
+     * Skip any value while the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus skipWhile(DoubleAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return skipWhile(condition);
     }
     
-    /** Skip any value while the condition is true. */
+    /**
+     * Skip any value while the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus skipWhile(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+        
                 boolean isStillSkipping = true;
-                boolean isFirst         = true;
-                double  prevValue       = Double.NaN;
+        
+                boolean isFirst = true;
+        
+                double prevValue = Double.NaN;
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     DoubleConsumer action = elem -> {
@@ -127,7 +130,9 @@ public interface DoubleStreamPlusWithLimit {
         });
     }
     
-    /** Skip any value until the condition is true. */
+    /**
+     * Skip any value until the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus skipUntil(DoublePredicate condition) {
         val streamPlus = doubleStreamPlus();
@@ -136,32 +141,38 @@ public interface DoubleStreamPlusWithLimit {
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
-                
                 if (condition.test(e))
                     isStillTrue.set(false);
-                
                 return !isStillTrue.get();
             });
         });
     }
     
-    /** Skip any value until the condition is true. */
+    /**
+     * Skip any value until the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus skipUntil(DoubleAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return skipUntil(condition);
     }
     
-    /** Skip any value until the condition is true. */
+    /**
+     * Skip any value until the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus skipUntil(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+        
                 boolean isStillSkipping = true;
-                boolean isFirst         = true;
-                double  prevValue       = Integer.MIN_VALUE;
+        
+                boolean isFirst = true;
+        
+                double prevValue = Integer.MIN_VALUE;
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     DoubleConsumer action = elem -> {
@@ -194,14 +205,18 @@ public interface DoubleStreamPlusWithLimit {
         });
     }
     
-    /** Accept any value while the condition is true. */
+    /**
+     * Accept any value while the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus acceptWhile(DoublePredicate condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+        
                 boolean stillGoing = true;
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -223,23 +238,31 @@ public interface DoubleStreamPlusWithLimit {
         });
     }
     
-    /** Accept any value while the condition is true. */
+    /**
+     * Accept any value while the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus acceptWhile(DoubleAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return acceptWhile(condition);
     }
     
-    /** Accept any value while the condition is true. */
+    /**
+     * Accept any value while the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus acceptWhile(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+        
                 boolean stillGoing = true;
-                boolean isFirst    = true;
-                double  prevValue  = Double.NaN;
+        
+                boolean isFirst = true;
+        
+                double prevValue = Double.NaN;
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -267,14 +290,18 @@ public interface DoubleStreamPlusWithLimit {
         });
     }
     
-    /** Accept any value until the condition is true. */
+    /**
+     * Accept any value until the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus acceptUntil(DoublePredicate condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+        
                 boolean stillGoing = true;
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -296,23 +323,31 @@ public interface DoubleStreamPlusWithLimit {
         });
     }
     
-    /** Accept any value until the condition is true. */
+    /**
+     * Accept any value until the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus acceptUntil(DoubleAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return acceptWhile(condition);
     }
     
-    /** Accept any value until the condition is true. */
+    /**
+     * Accept any value until the condition is true.
+     */
     @Sequential
     public default DoubleStreamPlus acceptUntil(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+        
                 boolean stillGoing = true;
-                boolean isFirst    = true;
-                double  prevValue  = -1;
+        
+                boolean isFirst = true;
+        
+                double prevValue = -1;
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -340,15 +375,18 @@ public interface DoubleStreamPlusWithLimit {
         });
     }
     
-    /** Accept any value until the condition is false - include the item that the condition is false. */
+    /**
+     * Accept any value until the condition is false - include the item that the condition is false.
+     */
     @Sequential
     public default DoubleStreamPlus dropAfter(DoublePredicate condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+        
                 boolean stillGoing = true;
-                
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -369,23 +407,31 @@ public interface DoubleStreamPlusWithLimit {
         });
     }
     
-    /** Accept any value until the condition is false - include the item that the condition is false. */
+    /**
+     * Accept any value until the condition is false - include the item that the condition is false.
+     */
     @Sequential
     public default DoubleStreamPlus dropAfter(DoubleAggregationToBoolean aggregationCondition) {
         val condition = aggregationCondition.newAggregator();
         return dropAfter(condition);
     }
     
-    /** Accept any value until the condition is false - include the item that the condition is false. */
+    /**
+     * Accept any value until the condition is false - include the item that the condition is false.
+     */
     @Sequential
     public default DoubleStreamPlus dropAfter(DoubleDoublePredicatePrimitive condition) {
         val streamPlus = doubleStreamPlus();
         return sequential(streamPlus, stream -> {
             val orgSpliterator = stream.spliterator();
             val newSpliterator = new Spliterators.AbstractDoubleSpliterator(orgSpliterator.estimateSize(), 0) {
+        
                 boolean stillGoing = true;
-                boolean isFirst    = true;
-                double  prevValue  = -1;
+        
+                boolean isFirst = true;
+        
+                double prevValue = -1;
+        
                 @Override
                 public boolean tryAdvance(DoubleConsumer consumer) {
                     if (stillGoing) {
@@ -411,5 +457,4 @@ public interface DoubleStreamPlusWithLimit {
             return DoubleStreamPlus.from(newStream);
         });
     }
-    
 }

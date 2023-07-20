@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,17 +28,20 @@ import java.util.function.IntUnaryOperator;
 
 public class IntIntTuple implements Tuple2<Integer, Integer>, Map.Entry<Integer, Integer> {
     
-    public static  IntIntTuple of(int i1, int i2) {
+    public static IntIntTuple of(int i1, int i2) {
         return new IntIntTuple(i1, i2);
     }
-    public static  IntIntTuple intTuple(int i1, int i2) {
+    
+    public static IntIntTuple intTuple(int i1, int i2) {
         return of(i1, i2);
     }
-    public static  IntIntTuple tuple(int i1, int i2) {
+    
+    public static IntIntTuple tuple(int i1, int i2) {
         return of(i1, i2);
     }
     
     public final int _1;
+    
     public final int _2;
     
     public IntIntTuple(int _1, int _2) {
@@ -49,6 +52,7 @@ public class IntIntTuple implements Tuple2<Integer, Integer>, Map.Entry<Integer,
     public int _int1() {
         return _1;
     }
+    
     public int _int2() {
         return _2;
     }
@@ -56,6 +60,7 @@ public class IntIntTuple implements Tuple2<Integer, Integer>, Map.Entry<Integer,
     public Integer _1() {
         return _1;
     }
+    
     public Integer _2() {
         return _2;
     }
@@ -99,13 +104,14 @@ public class IntIntTuple implements Tuple2<Integer, Integer>, Map.Entry<Integer,
     public String toString() {
         return Tuple.toString(this);
     }
+    
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
+    
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);
     }
-    
 }

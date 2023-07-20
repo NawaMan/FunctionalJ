@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,10 +28,9 @@ public class ResultCancelledException extends ResultNotAvailableException {
     private static final long serialVersionUID = 1402992361738590955L;
     
     ResultCancelledException() {
-        
     }
+    
     public ResultCancelledException(String message, Throwable cause) {
         super(message, cause);
     }
-    
 }

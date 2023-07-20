@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,7 +31,8 @@ public class ObjIntTuple<T1> implements Tuple2<T1, Integer>, Map.Entry<T1, Integ
         return new ObjIntTuple<>(t1, i);
     }
     
-    public final T1  _1;
+    public final T1 _1;
+    
     public final int _2;
     
     public ObjIntTuple(T1 _1, int _2) {
@@ -42,9 +43,11 @@ public class ObjIntTuple<T1> implements Tuple2<T1, Integer>, Map.Entry<T1, Integ
     public T1 _1() {
         return _1;
     }
+    
     public int _2int() {
         return _2;
     }
+    
     public Integer _2() {
         return _2;
     }
@@ -68,13 +71,14 @@ public class ObjIntTuple<T1> implements Tuple2<T1, Integer>, Map.Entry<T1, Integ
     public String toString() {
         return Tuple.toString(this);
     }
+    
     @Override
     public int hashCode() {
         return Tuple.hashCode(this);
     }
+    
     @Override
     public boolean equals(Object obj) {
         return Tuple.equals(this, obj);
     }
-    
 }

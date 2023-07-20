@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,45 +24,42 @@
 package functionalj.validator;
 
 import java.util.function.Predicate;
-
 import functionalj.function.Func2;
 import functionalj.result.Result;
 import functionalj.result.ValidationException;
 import lombok.val;
 
-
 public interface SimpleValidator<DATA> extends Validator<DATA> {
     
-    public static <D> Func2<D,Predicate<? super D>,ValidationException> exceptionFor(String template) {
+    public static <D> Func2<D, Predicate<? super D>, ValidationException> exceptionFor(String template) {
         return (d, p) -> new ValidationException(String.format(template, d, p));
     }
-    public static <D> Func2<D,Predicate<? super D>,ValidationException> exceptionFor(String template, Exception cause) {
+    
+    public static <D> Func2<D, Predicate<? super D>, ValidationException> exceptionFor(String template, Exception cause) {
         return (d, p) -> new ValidationException(String.format(template, d, p), cause);
     }
     
     public Predicate<? super DATA> checker();
-    public ValidationException     createException(DATA data);
+    
+    public ValidationException createException(DATA data);
     
     public default Result<DATA> validate(DATA data) {
-        return Result.of(()->{
+        return Result.of(() -> {
             val checker = checker();
             if (checker.test(data))
                 return data;
-                
             val exception = createException(data);
             throw exception;
         });
     }
     
-    
     public static class Impl<D> implements SimpleValidator<D> {
         
         private final Predicate<? super D> checker;
+        
         private final Func2<? super D, ? super Predicate<? super D>, ? extends ValidationException> exceptionCreator;
         
-        public Impl(
-                Predicate<? super D> checker,
-                Func2<? super D, ? super Predicate<? super D>, ? extends ValidationException> exceptionCreator) {
+        public Impl(Predicate<? super D> checker, Func2<? super D, ? super Predicate<? super D>, ? extends ValidationException> exceptionCreator) {
             this.checker = checker;
             this.exceptionCreator = exceptionCreator;
         }
@@ -76,7 +73,5 @@ public interface SimpleValidator<DATA> extends Validator<DATA> {
         public ValidationException createException(D data) {
             return exceptionCreator.apply(data, checker);
         }
-        
     }
-    
 }

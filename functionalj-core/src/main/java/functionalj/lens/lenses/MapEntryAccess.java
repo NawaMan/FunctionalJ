@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,14 +25,10 @@ package functionalj.lens.lenses;
 
 import java.util.Map;
 import java.util.function.Function;
-
 import functionalj.lens.core.AccessParameterized2;
 
 @FunctionalInterface
-public interface MapEntryAccess<HOST, MAPENTRY extends Map.Entry<KEY, VALUE>, KEY, VALUE, 
-                                KEYACCESS extends AnyAccess<HOST,KEY>, 
-                                VALUEACCESS extends AnyAccess<HOST,VALUE>>
-                    extends AccessParameterized2<HOST, MAPENTRY, KEY, VALUE, KEYACCESS, VALUEACCESS> {
+public interface MapEntryAccess<HOST, MAPENTRY extends Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS extends AnyAccess<HOST, KEY>, VALUEACCESS extends AnyAccess<HOST, VALUE>> extends AccessParameterized2<HOST, MAPENTRY, KEY, VALUE, KEYACCESS, VALUEACCESS> {
     
     public AccessParameterized2<HOST, MAPENTRY, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2();
     
@@ -68,7 +64,7 @@ public interface MapEntryAccess<HOST, MAPENTRY extends Map.Entry<KEY, VALUE>, KE
             return mapEntry.getKey();
         });
     }
-
+    
     public default VALUEACCESS value() {
         return accessParameterized2().createSubAccess2((MAPENTRY mapEntry) -> {
             if (mapEntry == null)
@@ -76,5 +72,4 @@ public interface MapEntryAccess<HOST, MAPENTRY extends Map.Entry<KEY, VALUE>, KE
             return mapEntry.getValue();
         });
     }
-    
 }

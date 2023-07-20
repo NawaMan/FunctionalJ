@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,43 +26,33 @@ package functionalj.stream;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
 import lombok.val;
-
 
 public interface StreamPlusWithFlatMap<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /** FlatMap with the given mapper for only the value that pass the condition. */
-    public default StreamPlus<DATA> flatMapOnly(
-            Predicate<? super DATA>                        condition, 
-            Function<? super DATA, ? extends Stream<DATA>> mapper) {
+    /**
+     * FlatMap with the given mapper for only the value that pass the condition.
+     */
+    public default StreamPlus<DATA> flatMapOnly(Predicate<? super DATA> condition, Function<? super DATA, ? extends Stream<DATA>> mapper) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .flatMap(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
-                            ? mapper.apply(value)
-                            : StreamPlus.of(value);
-                    return mapped;
-                });
+        return streamPlus.flatMap(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.apply(value) : StreamPlus.of(value);
+            return mapped;
+        });
     }
     
-    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
-    public default <T> StreamPlus<T> flatMapIf(
-            Predicate<? super DATA>           condition, 
-            Function<? super DATA, Stream<T>> mapper, 
-            Function<? super DATA, Stream<T>> elseMapper) {
+    /**
+     * FlatMap with the mapper if the condition is true, otherwise use another elseMapper.
+     */
+    public default <T> StreamPlus<T> flatMapIf(Predicate<? super DATA> condition, Function<? super DATA, Stream<T>> mapper, Function<? super DATA, Stream<T>> elseMapper) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .flatMap(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
-                            ? mapper.apply(value)
-                            : elseMapper.apply(value);
-                    return mapped;
-                });
+        return streamPlus.flatMap(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.apply(value) : elseMapper.apply(value);
+            return mapped;
+        });
     }
-    
 }

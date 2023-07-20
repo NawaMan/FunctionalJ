@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,7 +26,6 @@ package functionalj.promise;
 import static functionalj.function.Apply.$;
 import static functionalj.function.Func.carelessly;
 import static java.util.Objects.requireNonNull;
-
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
@@ -67,20 +65,9 @@ import functionalj.tuple.Tuple2;
 import functionalj.validator.Validator;
 import lombok.val;
 
-
 // TODO - Should extract important stuff to PromiseBase ... so it is not flooded with the less important things.
-
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class Promise<DATA> 
-                implements
-                    HasPromise<DATA>, 
-                    HasResult<DATA>, 
-                    Pipeable<HasPromise<DATA>>,
-                    PromiseChainAddOn<DATA>,
-                    PromiseFilterAddOn<DATA>,
-                    PromiseMapAddOn<DATA>,
-                    PromisePeekAddOn<DATA>,
-                    PromiseStatusAddOn<DATA> {
+public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeable<HasPromise<DATA>>, PromiseChainAddOn<DATA>, PromiseFilterAddOn<DATA>, PromiseMapAddOn<DATA>, PromisePeekAddOn<DATA>, PromiseStatusAddOn<DATA> {
     
     private static final int INITIAL_CAPACITY = 2;
     
@@ -88,108 +75,72 @@ public class Promise<DATA>
     
     public static <D> Promise<D> ofResult(HasResult<D> asResult) {
         if (asResult instanceof HasPromise)
-            return ((HasPromise<D>)asResult).getPromise();
-        
-        return DeferActionBuilder
-                .from(()->asResult.getResult().value())
-                .build()
-                .getPromise();
+            return ((HasPromise<D>) asResult).getPromise();
+        return DeferActionBuilder.from(() -> asResult.getResult().value()).build().getPromise();
     }
+    
     public static <D> Promise<D> ofValue(D value) {
-        return DeferAction.of((Class<D>)null)
-                .start()
-                .complete(value)
-                .getPromise();
+        return DeferAction.of((Class<D>) null).start().complete(value).getPromise();
     }
     
     public static <D> Promise<D> ofException(Exception exception) {
-        return DeferAction.of((Class<D>)null)
-                .start()
-                .fail(exception)
-                .getPromise();
+        return DeferAction.of((Class<D>) null).start().fail(exception).getPromise();
     }
     
     public static <D> Promise<D> ofAborted() {
-        return DeferAction.of((Class<D>)null)
-                .start()
-                .abort()
-                .getPromise();
+        return DeferAction.of((Class<D>) null).start().abort().getPromise();
     }
     
-    
-    public static <D, T1, T2> Promise<D> from(
-            NamedExpression<HasPromise<T1>> promise1,
-            NamedExpression<HasPromise<T2>> promise2,
-            Func2<T1, T2, D>                merger) {
-        val action  = DeferAction.from(promise1, promise2, merger);
+    public static <D, T1, T2> Promise<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, Func2<T1, T2, D> merger) {
+        val action = DeferAction.from(promise1, promise2, merger);
         val promise = action.getPromise();
         return promise;
     }
     
-    public static <D, T1, T2, T3> Promise<D> from(
-            NamedExpression<HasPromise<T1>> promise1,
-            NamedExpression<HasPromise<T2>> promise2,
-            NamedExpression<HasPromise<T3>> promise3,
-            Func3<T1, T2, T3, D>            merger) {
-        val action  = DeferAction.from(promise1, promise2, promise3, merger);
+    public static <D, T1, T2, T3> Promise<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, NamedExpression<HasPromise<T3>> promise3, Func3<T1, T2, T3, D> merger) {
+        val action = DeferAction.from(promise1, promise2, promise3, merger);
         val promise = action.getPromise();
         return promise;
     }
     
-    public static <D, T1, T2, T3, T4> Promise<D> from(
-            NamedExpression<HasPromise<T1>> promise1,
-            NamedExpression<HasPromise<T2>> promise2,
-            NamedExpression<HasPromise<T3>> promise3,
-            NamedExpression<HasPromise<T4>> promise4,
-            Func4<T1, T2, T3, T4, D>        merger) {
-        val action  = DeferAction.from(promise1, promise2, promise3, promise4, merger);
+    public static <D, T1, T2, T3, T4> Promise<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, NamedExpression<HasPromise<T3>> promise3, NamedExpression<HasPromise<T4>> promise4, Func4<T1, T2, T3, T4, D> merger) {
+        val action = DeferAction.from(promise1, promise2, promise3, promise4, merger);
         val promise = action.getPromise();
         return promise;
     }
     
-    public static <D, T1, T2, T3, T4, T5> Promise<D> from(
-            NamedExpression<HasPromise<T1>> promise1,
-            NamedExpression<HasPromise<T2>> promise2,
-            NamedExpression<HasPromise<T3>> promise3,
-            NamedExpression<HasPromise<T4>> promise4,
-            NamedExpression<HasPromise<T5>> promise5,
-            Func5<T1, T2, T3, T4, T5, D>    merger) {
-        val action  = DeferAction.from(promise1, promise2, promise3, promise4, promise5, merger);
+    public static <D, T1, T2, T3, T4, T5> Promise<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, NamedExpression<HasPromise<T3>> promise3, NamedExpression<HasPromise<T4>> promise4, NamedExpression<HasPromise<T5>> promise5, Func5<T1, T2, T3, T4, T5, D> merger) {
+        val action = DeferAction.from(promise1, promise2, promise3, promise4, promise5, merger);
         val promise = action.getPromise();
         return promise;
     }
     
-    public static <D, T1, T2, T3, T4, T5, T6> Promise<D> from(
-            NamedExpression<HasPromise<T1>>  promise1,
-            NamedExpression<HasPromise<T2>>  promise2,
-            NamedExpression<HasPromise<T3>>  promise3,
-            NamedExpression<HasPromise<T4>>  promise4,
-            NamedExpression<HasPromise<T5>>  promise5,
-            NamedExpression<HasPromise<T6>>  promise6,
-            Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        val action  = DeferAction.from(promise1, promise2, promise3, promise4, promise5, promise6, merger);
+    public static <D, T1, T2, T3, T4, T5, T6> Promise<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, NamedExpression<HasPromise<T3>> promise3, NamedExpression<HasPromise<T4>> promise4, NamedExpression<HasPromise<T5>> promise5, NamedExpression<HasPromise<T6>> promise6, Func6<T1, T2, T3, T4, T5, T6, D> merger) {
+        val action = DeferAction.from(promise1, promise2, promise3, promise4, promise5, promise6, merger);
         val promise = action.getPromise();
         return promise;
     }
-    
     
     // DATA
-    //    StartableAction -> NOT START
-    //    consumer        -> Pending
-    //    result          -> done.
-    //      result.cancelled -> aborted
-    //      result.completed -> completed
-    final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>(INITIAL_CAPACITY);
-    final List<FuncUnit1<Result<DATA>>>                          eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
+    // StartableAction -> NOT START
+    // consumer        -> Pending
+    // result          -> done.
+    // result.cancelled -> aborted
+    // result.completed -> completed
+    final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers = new ConcurrentHashMap<>(INITIAL_CAPACITY);
+    
+    final List<FuncUnit1<Result<DATA>>> eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
     
     private static final AtomicInteger ID = new AtomicInteger(1);
     
     final AtomicReference<Object> dataRef = new AtomicReference<>();
+    
     final int id = ID.getAndIncrement();
     
     public int hashCode() {
         return id;
     }
+    
     public String toString() {
         return "Promise#" + id;
     }
@@ -197,6 +148,7 @@ public class Promise<DATA>
     Promise(OnStart onStart) {
         dataRef.set(onStart);
     }
+    
     Promise(StartableAction<DATA> action) {
         dataRef.set(action);
     }
@@ -207,7 +159,7 @@ public class Promise<DATA>
     
     Promise<DATA> parent() {
         val data = this.dataRef.get();
-        return (data instanceof Promise) ? (Promise)data : null;
+        return (data instanceof Promise) ? (Promise) data : null;
     }
     
     @Override
@@ -231,26 +183,25 @@ public class Promise<DATA>
     public final PromiseStatus getStatus() {
         val data = dataRef.get();
         if (data instanceof Promise) {
-            Promise<DATA> promise = (Promise<DATA>)data;
+            Promise<DATA> promise = (Promise<DATA>) data;
             PromiseStatus parentStatus = promise.getStatus();
             // Pending ... as the result is not yet propagated down
             if (parentStatus.isNotDone())
-                 return parentStatus;
-            else return PromiseStatus.PENDING;
+                return parentStatus;
+            else
+                return PromiseStatus.PENDING;
         }
-        
         if ((data instanceof StartableAction) || (data instanceof OnStart))
             return PromiseStatus.NOT_STARTED;
         if (consumers == data)
             return PromiseStatus.PENDING;
         if (data instanceof Result) {
-            val result = (Result<DATA>)data;
+            val result = (Result<DATA>) data;
             if (result.isCancelled())
                 return PromiseStatus.ABORTED;
             if (result.isReady())
                 return PromiseStatus.COMPLETED;
         }
-        
         dataRef.set(Result.ofException(new IllegalStateException("Promise is in an unknown state!: " + data)));
         try {
             handleIllegalStatusException(data);
@@ -260,47 +211,49 @@ public class Promise<DATA>
         return PromiseStatus.COMPLETED;
     }
     
-    //== Internal working ==
-    
+    // == Internal working ==
     public final boolean start() {
         val data = dataRef.get();
         if (data instanceof Promise) {
-            val parent = (Promise<DATA>)data;
+            val parent = (Promise<DATA>) data;
             return parent.start();
         }
-        
         val isStartAction = (data instanceof StartableAction);
-        val isOnStart     = (data instanceof OnStart);
+        val isOnStart = (data instanceof OnStart);
         if (!isStartAction && !isOnStart)
             return false;
-        
         val isJustStarted = dataRef.compareAndSet(data, consumers);
         if (isJustStarted) {
-            if (isStartAction)  ((StartableAction<DATA>)data).start();
-            else if (isOnStart) ((OnStart)data).run();
+            if (isStartAction)
+                ((StartableAction<DATA>) data).start();
+            else if (isOnStart)
+                ((OnStart) data).run();
         }
         return isJustStarted;
     }
     
     OnStart getOnStart() {
         val data = dataRef.get();
-        return (data instanceof OnStart) ? (OnStart)data : OnStart.DoNothing;
+        return (data instanceof OnStart) ? (OnStart) data : OnStart.DoNothing;
     }
     
     boolean abort() {
-        val cancelResult = (Result<DATA>)Result.ofCancelled();
+        val cancelResult = (Result<DATA>) Result.ofCancelled();
         return makeDone(cancelResult);
     }
+    
     boolean abort(String message) {
-        val cancelResult = (Result<DATA>)Result.ofCancelled(message);
+        val cancelResult = (Result<DATA>) Result.ofCancelled(message);
         return makeDone(cancelResult);
     }
+    
     boolean abort(Exception cause) {
-        val cancelResult = (Result<DATA>)Result.ofCancelled(null, cause);
+        val cancelResult = (Result<DATA>) Result.ofCancelled(null, cause);
         return makeDone(cancelResult);
     }
+    
     boolean abort(String message, Exception cause) {
-        val cancelResult = (Result<DATA>)Result.ofCancelled(message, cause);
+        val cancelResult = (Result<DATA>) Result.ofCancelled(message, cause);
         return makeDone(cancelResult);
     }
     
@@ -310,7 +263,7 @@ public class Promise<DATA>
     }
     
     boolean makeFail(Exception exception) {
-        val result = (Result<DATA>)Result.ofException(exception);
+        val result = (Result<DATA>) Result.ofException(exception);
         return makeDone(result);
     }
     
@@ -319,12 +272,13 @@ public class Promise<DATA>
             return operation.get();
         }
     }
+    
     static <DATA> boolean makeDone(Promise<DATA> promise, Result<DATA> result) {
-        val isDone = promise.synchronouseOperation(()->{
+        val isDone = promise.synchronouseOperation(() -> {
             val data = promise.dataRef.get();
             try {
                 if (data instanceof Promise) {
-                    val parent = (Promise<DATA>)data;
+                    val parent = (Promise<DATA>) data;
                     try {
                         if (!promise.dataRef.compareAndSet(parent, result))
                             return false;
@@ -342,24 +296,18 @@ public class Promise<DATA>
             } finally {
             }
         });
-        
         if (isDone != null)
             return isDone.booleanValue();
-        
         val subscribers = new HashMap<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>>(promise.consumers);
         promise.consumers.clear();
-        
         val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(promise.eavesdroppers);
         promise.eavesdroppers.clear();
-        
         for (val eavesdropper : eavesdroppers) {
-            carelessly(()->{
+            carelessly(() -> {
                 eavesdropper.accept(result);
             });
         }
-        
-        subscribers
-        .forEach((subscription, consumer) -> {
+        subscribers.forEach((subscription, consumer) -> {
             try {
                 consumer.accept(result);
             } catch (Exception e) {
@@ -377,15 +325,11 @@ public class Promise<DATA>
         return makeDone(this, result);
     }
     
-    //== Customizable ==
-    
+    // == Customizable ==
     protected void handleIllegalStatusException(Object data) {
     }
     
-    protected void handleResultConsumptionExcepion(
-            SubscriptionRecord<DATA> subscription,
-            FuncUnit1<Result<DATA>>  consumer,
-            Result<DATA>             result) {
+    protected void handleResultConsumptionExcepion(SubscriptionRecord<DATA> subscription, FuncUnit1<Result<DATA>> consumer, Result<DATA> result) {
     }
     
     private <T> Promise<T> newSubPromise(FuncUnit2<Result<DATA>, Promise<T>> resultConsumer) {
@@ -394,25 +338,29 @@ public class Promise<DATA>
         return promise;
     }
     
-    //== Basic functionality ==
-    
+    // == Basic functionality ==
     public final boolean isStarted() {
         return !PromiseStatus.NOT_STARTED.equals(getStatus());
     }
+    
     public final boolean isPending() {
         return PromiseStatus.PENDING.equals(getStatus());
     }
+    
     public final boolean isAborted() {
         return PromiseStatus.ABORTED.equals(getStatus());
     }
+    
     public final boolean isComplete() {
         return PromiseStatus.COMPLETED.equals(getStatus());
     }
+    
     public final boolean isDone() {
         val status = getStatus();
         val isDone = (null != status) && status.isDone();
         return isDone;
     }
+    
     public final boolean isNotDone() {
         return !isDone();
     }
@@ -420,10 +368,12 @@ public class Promise<DATA>
     boolean isSubscribed(SubscriptionRecord<DATA> subscription) {
         return consumers.containsKey(subscription);
     }
+    
     void unsubscribe(SubscriptionRecord<DATA> subscription) {
         consumers.remove(subscription);
         abortWhenNoSubscription();
     }
+    
     void unsubscribe(Promise<DATA> promise) {
         val entry = consumers.entrySet().stream().filter(e -> Objects.equals(e.getKey().getPromise(), promise)).findFirst();
         if (entry.isPresent())
@@ -439,9 +389,9 @@ public class Promise<DATA>
     private SubscriptionRecord<DATA> listen(boolean isEavesdropping, FuncUnit1<Result<DATA>> resultConsumer) {
         val subscription = new SubscriptionRecord<DATA>(this);
         if (isEavesdropping)
-             eavesdroppers.add(resultConsumer);
-        else consumers    .put(subscription, resultConsumer);
-        
+            eavesdroppers.add(resultConsumer);
+        else
+            consumers.put(subscription, resultConsumer);
         return subscription;
     }
     
@@ -453,32 +403,30 @@ public class Promise<DATA>
         long timeout = waitTimeout.whenAbsentUse(-1L).get().longValue();
         return getResult(timeout, TimeUnit.MILLISECONDS);
     }
+    
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         start();
         if (!isDone()) {
             val latch = new CountDownLatch(1);
-            synchronouseOperation(()->{
+            synchronouseOperation(() -> {
                 onComplete(result -> {
                     latch.countDown();
                 });
                 return isDone();
             });
-            
             if (!isDone()) {
                 try {
                     if ((timeout < 0) || (unit == null))
-                         latch.await();
-                    else latch.await(timeout, unit);
-                    
+                        latch.await();
+                    else
+                        latch.await(timeout, unit);
                 } catch (InterruptedException exception) {
                     throw new UncheckedInterruptedException(exception);
                 }
             }
         }
-        
         if (!isDone())
             throw new UncheckedInterruptedException(new InterruptedException());
-        
         val currentResult = getCurrentResult();
         return currentResult;
     }
@@ -486,11 +434,11 @@ public class Promise<DATA>
     public final Result<DATA> getCurrentResult() {
         val data = dataRef.get();
         if (data instanceof Result) {
-            val result = (Result<DATA>)data;
+            val result = (Result<DATA>) data;
             return result;
         }
         if (data instanceof Promise) {
-            val parent = (Promise<DATA>)data;
+            val parent = (Promise<DATA>) data;
             return parent.getCurrentResult();
         }
         return Result.ofNotReady();
@@ -543,17 +491,16 @@ public class Promise<DATA>
     }
     
     final SubscriptionRecord<DATA> doSubscribe(boolean isEavesdropping, Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
-        val toRunNow           = new AtomicBoolean(false);
-        val returnSubscription = (SubscriptionRecord<DATA>)synchronouseOperation(()->{
+        val toRunNow = new AtomicBoolean(false);
+        val returnSubscription = (SubscriptionRecord<DATA>) synchronouseOperation(() -> {
             val data = dataRef.get();
             if (data instanceof Result) {
                 val subscription = new SubscriptionRecord<DATA>(this);
                 toRunNow.set(true);
                 return subscription;
             }
-            
-            val hasNotified  = new AtomicBoolean(false);
-            val waitSession  = wait != null ? wait.newSession() : Wait.forever().newSession();
+            val hasNotified = new AtomicBoolean(false);
+            val waitSession = wait != null ? wait.newSession() : Wait.forever().newSession();
             val subscription = listen(isEavesdropping, result -> {
                 if (hasNotified.compareAndSet(false, true)) {
                     try {
@@ -568,15 +515,15 @@ public class Promise<DATA>
             waitSession.onExpired((message, throwable) -> {
                 if (!hasNotified.compareAndSet(false, true))
                     return;
-                
                 subscription.unsubscribe();
                 Result<DATA> result;
                 try {
                     if (wait instanceof WaitOrDefault) {
-                        val supplier = ((WaitOrDefault<DATA>)wait).getDefaultSupplier();
+                        val supplier = ((WaitOrDefault<DATA>) wait).getDefaultSupplier();
                         if (supplier == null)
-                             result = Result.ofCancelled(message, throwable);
-                        else result = supplier.get();
+                            result = Result.ofCancelled(message, throwable);
+                        else
+                            result = supplier.get();
                     } else {
                         result = Result.ofCancelled(message, throwable);
                     }
@@ -593,26 +540,23 @@ public class Promise<DATA>
             });
             return subscription;
         });
-        
         if (toRunNow.get()) {
             // The consumer can be heavy so we remove it out of the locked operation.
             val data = dataRef.get();
-            val result = (Result<DATA>)data;
+            val result = (Result<DATA>) data;
             try {
                 resultConsumer.accept(result);
             } catch (Throwable e) {
                 handleResultConsumptionExcepion(returnSubscription, resultConsumer, result);
             }
         }
-        
         return returnSubscription;
     }
     
-    //== Functional ==
-    
+    // == Functional ==
     public Promise<DATA> filter(Predicate<? super DATA> predicate) {
         requireNonNull(predicate);
-        return (Promise<DATA>)newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
+        return (Promise<DATA>) newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
             val result = r.filter(predicate);
             targetPromise.makeDone((Result<DATA>) result);
         });
@@ -620,7 +564,7 @@ public class Promise<DATA>
     
     public Promise<DATA> peek(Consumer<? super DATA> peeker) {
         requireNonNull(peeker);
-        return (Promise<DATA>)newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
+        return (Promise<DATA>) newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
             val result = r.peek(peeker);
             targetPromise.makeDone((Result<DATA>) result);
         });
@@ -628,7 +572,7 @@ public class Promise<DATA>
     
     public <TARGET> Promise<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         requireNonNull(mapper);
-        return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
+        return (Promise<TARGET>) newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val result = r.map(mapper);
             targetPromise.makeDone((Result<TARGET>) result);
         });
@@ -636,7 +580,7 @@ public class Promise<DATA>
     
     public <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper) {
         requireNonNull(mapper);
-        return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
+        return (Promise<TARGET>) newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val result = mapper.apply(r);
             targetPromise.makeDone((Result<TARGET>) result);
         });
@@ -645,8 +589,9 @@ public class Promise<DATA>
     public <TARGET> Promise<TARGET> flatMap(Function<? super DATA, ? extends HasPromise<TARGET>> mapper) {
         return chain(mapper);
     }
+    
     public <TARGET> Promise<TARGET> chain(Function<? super DATA, ? extends HasPromise<TARGET>> mapper) {
-        return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
+        return (Promise<TARGET>) newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val targetResult = r.map(mapper);
             targetResult.ifPresent(hasPromise -> {
                 hasPromise.getPromise().onComplete(result -> {
@@ -657,14 +602,14 @@ public class Promise<DATA>
     }
     
     public Promise<DATA> or(Result<DATA> anotherResult) {
-        return mapResult(r -> r.or((Result)anotherResult));
+        return mapResult(r -> r.or((Result) anotherResult));
     }
     
     public <T> Promise<T> mapValue(BiFunction<DATA, Exception, Result<T>> processor) {
         return mapResult(result -> {
             val excception = result.exception();
-            val value      = (excception != null) ? null : result.value();
-            return $(processor, (DATA)value, excception);
+            val value = (excception != null) ? null : result.value();
+            return $(processor, (DATA) value, excception);
         });
     }
     
@@ -673,133 +618,141 @@ public class Promise<DATA>
     }
     
     public Promise<DATA> mapException(Function<? super Exception, ? extends Exception> mapper) {
-        return (Promise)mapResult(result -> result.mapException(mapper));
+        return (Promise) mapResult(result -> result.mapException(mapper));
     }
     
-    public <OPERANT, TARGET> Promise<TARGET> mapWith(
-            BiFunction<? super DATA, ? super OPERANT, ? extends TARGET> func,
-            Result<OPERANT> operantResult) {
-        return (Promise)mapResult(result -> result.mapWith((Func2)func, operantResult));
+    public <OPERANT, TARGET> Promise<TARGET> mapWith(BiFunction<? super DATA, ? super OPERANT, ? extends TARGET> func, Result<OPERANT> operantResult) {
+        return (Promise) mapResult(result -> result.mapWith((Func2) func, operantResult));
     }
     
     public Promise<DATA> forValue(Consumer<? super DATA> theConsumer) {
-        return (Promise)mapResult(result -> result.forValue((Consumer)theConsumer));
+        return (Promise) mapResult(result -> result.forValue((Consumer) theConsumer));
     }
     
-    //== Status ==
-    
+    // == Status ==
     public Promise<DATA> ifStatusRun(ResultStatus status, Runnable runnable) {
-        return (Promise)mapResult(result -> result.ifStatusRun(status, runnable));
+        return (Promise) mapResult(result -> result.ifStatusRun(status, runnable));
     }
     
     public Promise<DATA> ifStatusAccept(ResultStatus status, Consumer<? super DATA> consumer) {
-        return (Promise)mapResult(result -> result.ifStatusAccept(status, (Consumer)consumer));
+        return (Promise) mapResult(result -> result.ifStatusAccept(status, (Consumer) consumer));
     }
     
     public Promise<DATA> whenStatusUse(ResultStatus status, DATA fallbackValue) {
-        return (Promise)mapResult(result -> result.whenStatusUse(status, fallbackValue));
+        return (Promise) mapResult(result -> result.whenStatusUse(status, fallbackValue));
     }
+    
     public Promise<DATA> whenStatusGet(ResultStatus status, Supplier<? extends DATA> fallbackSupplier) {
-        return (Promise)mapResult(result -> result.whenStatusGet(status, fallbackSupplier));
-    }
-    public Promise<DATA> whenStatusApply(ResultStatus status, BiFunction<DATA, ? super Exception,? extends DATA> recoverFunction) {
-        return (Promise)mapResult(result -> result.whenStatusApply(status, (BiFunction)recoverFunction));
+        return (Promise) mapResult(result -> result.whenStatusGet(status, fallbackSupplier));
     }
     
-    //== Validation ==
+    public Promise<DATA> whenStatusApply(ResultStatus status, BiFunction<DATA, ? super Exception, ? extends DATA> recoverFunction) {
+        return (Promise) mapResult(result -> result.whenStatusApply(status, (BiFunction) recoverFunction));
+    }
     
+    // == Validation ==
     public Promise<DATA> validateNotNull() {
-        return (Promise)mapResult(result -> result.validateNotNull());
+        return (Promise) mapResult(result -> result.validateNotNull());
     }
+    
     public Promise<DATA> validateNotNull(String message) {
-        return (Promise)mapResult(result -> result.validateNotNull(message));
+        return (Promise) mapResult(result -> result.validateNotNull(message));
     }
+    
     public Promise<DATA> validateUnavailable() {
-        return (Promise)mapResult(result -> result.validateUnavailable());
+        return (Promise) mapResult(result -> result.validateUnavailable());
     }
+    
     public Promise<DATA> validateNotReady() {
-        return (Promise)mapResult(result -> result.validateNotReady());
+        return (Promise) mapResult(result -> result.validateNotReady());
     }
+    
     public Promise<DATA> validateResultCancelled() {
-        return (Promise)mapResult(result -> result.validateResultCancelled());
+        return (Promise) mapResult(result -> result.validateResultCancelled());
     }
+    
     public Promise<DATA> validateResultNotExist() {
-        return (Promise)mapResult(result -> result.validateResultNotExist());
+        return (Promise) mapResult(result -> result.validateResultNotExist());
     }
+    
     public Promise<DATA> validateNoMoreResult() {
-        return (Promise)mapResult(result -> result.validateNoMoreResult());
+        return (Promise) mapResult(result -> result.validateNoMoreResult());
     }
     
     public Promise<DATA> validate(String stringFormat, Predicate<? super DATA> validChecker) {
-        return (Promise)mapResult(result -> result.validate(stringFormat, (Predicate)validChecker));
+        return (Promise) mapResult(result -> result.validate(stringFormat, (Predicate) validChecker));
     }
     
     public <T> Promise<DATA> validate(String stringFormat, Func1<? super DATA, T> mapper, Predicate<? super T> validChecker) {
-        return (Promise)mapResult(result -> result.validate(stringFormat, (Func1)mapper, (Predicate)validChecker));
-    }
-    public Promise<DATA> validate(Validator<DATA> validator) {
-        return (Promise)mapResult(result -> result.validate((Validator)validator));
+        return (Promise) mapResult(result -> result.validate(stringFormat, (Func1) mapper, (Predicate) validChecker));
     }
     
-    public Promise<Tuple2<DATA, FuncList<ValidationException>>> validate(Validator<? super DATA> ... validators) {
-        return (Promise)mapResult(result -> result.validate((Validator[])validators));
+    public Promise<DATA> validate(Validator<DATA> validator) {
+        return (Promise) mapResult(result -> result.validate((Validator) validator));
+    }
+    
+    public Promise<Tuple2<DATA, FuncList<ValidationException>>> validate(Validator<? super DATA>... validators) {
+        return (Promise) mapResult(result -> result.validate((Validator[]) validators));
     }
     
     public Promise<Tuple2<DATA, FuncList<ValidationException>>> validate(List<Validator<? super DATA>> validators) {
-        return (Promise)mapResult(result -> result.validate((List)validators));
+        return (Promise) mapResult(result -> result.validate((List) validators));
     }
     
     public Promise<DATA> ensureNotNull() {
-        return (Promise)mapResult(result -> result.ensureNotNull());
+        return (Promise) mapResult(result -> result.ensureNotNull());
     }
     
     // Alias of whenNotPresentUse
     public Promise<DATA> otherwise(DATA elseValue) {
-        return (Promise)mapResult(result -> result.otherwise(elseValue));
+        return (Promise) mapResult(result -> result.otherwise(elseValue));
     }
     
     // Alias of whenNotPresentGet
     public Promise<DATA> otherwiseGet(Supplier<? extends DATA> elseSupplier) {
-        return (Promise)mapResult(result -> result.otherwiseGet(elseSupplier));
+        return (Promise) mapResult(result -> result.otherwiseGet(elseSupplier));
     }
     
     public Promise<DATA> printException() {
-        return (Promise)mapResult(result -> result.printException());
+        return (Promise) mapResult(result -> result.printException());
     }
     
     public Promise<DATA> printException(PrintStream printStream) {
-        return (Promise)mapResult(result -> result.printException(printStream));
+        return (Promise) mapResult(result -> result.printException(printStream));
     }
     
     public Promise<DATA> printException(PrintWriter printWriter) {
-        return (Promise)mapResult(result -> result.printException(printWriter));
+        return (Promise) mapResult(result -> result.printException(printWriter));
     }
     
-    //== Disambiguous ==
-    
+    // == Disambiguous ==
     @Override
     public Promise<DATA> ifException(Consumer<? super Exception> consumer) {
         return PromiseStatusAddOn.super.ifException(consumer);
     }
+    
     @Override
     public Promise<DATA> ifExceptionThenPrint() {
         return PromiseStatusAddOn.super.ifExceptionThenPrint();
     }
+    
     @Override
     public Promise<DATA> ifExceptionThenPrint(PrintStream printStream) {
         return PromiseStatusAddOn.super.ifExceptionThenPrint(printStream);
     }
+    
     @Override
     public Promise<DATA> ifExceptionThenPrint(PrintWriter printWriter) {
         return PromiseStatusAddOn.super.ifExceptionThenPrint(printWriter);
     }
+    
     @Override
     public Promise<DATA> whenAbsentUse(DATA fallbackValue) {
         return PromiseStatusAddOn.super.whenAbsentUse(fallbackValue);
     }
+    
     @Override
     public Promise<DATA> whenAbsentGet(Supplier<? extends DATA> fallbackSupplier) {
         return PromiseStatusAddOn.super.whenAbsentGet(fallbackSupplier);
     }
-    
 }

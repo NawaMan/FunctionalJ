@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,29 +32,20 @@ import javax.tools.Diagnostic;
 /**
  * This dummy messager is used by Elm annotation process to get the StructSpec without double up the error/warning
  *   messages.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public class DummyMessager implements Messager {
     
     public void printMessage(Diagnostic.Kind kind, CharSequence msg) {
-        
     }
     
     public void printMessage(Diagnostic.Kind kind, CharSequence msg, Element e) {
-        
     }
     
     public void printMessage(Diagnostic.Kind kind, CharSequence msg, Element e, AnnotationMirror a) {
-        
     }
     
-    public void printMessage(Diagnostic.Kind kind,
-                      CharSequence msg,
-                      Element e,
-                      AnnotationMirror a,
-                      AnnotationValue v) {
-        
+    public void printMessage(Diagnostic.Kind kind, CharSequence msg, Element e, AnnotationMirror a, AnnotationValue v) {
     }
-    
 }

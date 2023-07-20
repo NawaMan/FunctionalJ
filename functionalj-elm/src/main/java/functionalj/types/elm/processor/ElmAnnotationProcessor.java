@@ -1,18 +1,18 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,11 +37,15 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 import functionalj.types.Choice;
 import functionalj.types.Struct;
@@ -50,8 +54,6 @@ import functionalj.types.elm.Elm;
 import functionalj.types.input.Environment;
 import functionalj.types.input.InputElement;
 import functionalj.types.struct.SourceSpecBuilder;
-import lombok.val;
-
 
 /**
  * Annotation processor for Elm.
@@ -64,10 +66,10 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        val elementUtils = processingEnv.getElementUtils();
-        val typeUtils    = processingEnv.getTypeUtils();
-        val messager     = processingEnv.getMessager();
-        val filer        = processingEnv.getFiler();
+        Elements elementUtils = processingEnv.getElementUtils();
+        Types    typeUtils    = processingEnv.getTypeUtils();
+        Messager messager     = processingEnv.getMessager();
+        Filer    filer        = processingEnv.getFiler();
         environment = new Environment(elementUtils, typeUtils, messager, filer);
     }
     
@@ -86,36 +88,32 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         boolean hasError = false;
-        
-        val structTypes = collectAllStructTypes(roundEnv);
-        val choiceTypes = collectAllChoiceTypes(roundEnv);
+        List<String> structTypes = collectAllStructTypes(roundEnv);
+        List<String> choiceTypes = collectAllChoiceTypes(roundEnv);
         for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
-            val element = environment.element(javaElement);
-            
-            val struct = element.annotation(Struct.class);
+            InputElement element = environment.element(javaElement);
+            Struct       struct  = element.annotation(Struct.class);
             if (struct != null) {
                 hasError = hasError | !handleStructType(element, structTypes, choiceTypes);
                 continue;
             }
-            
-            val choice = element.annotation(Choice.class);
+            Choice choice = element.annotation(Choice.class);
             if (choice != null) {
                 hasError = hasError | !handleChoiceType(element, structTypes, choiceTypes);
                 continue;
             }
-            
             element.error("The element must either be a struct or a choice.");
         }
         return hasError;
     }
     
     private List<String> collectAllStructTypes(RoundEnvironment roundEnv) {
-        val allTypes = new ArrayList<String>();
+        List<String> allTypes = new ArrayList<String>();
         for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
-            val element = environment.element(javaElement);
-            val struct  = element.annotation(Struct.class);
+            InputElement element = environment.element(javaElement);
+            Struct struct = element.annotation(Struct.class);
             if (struct != null) {
-                val name = element.simpleName();
+                String name = element.simpleName();
                 allTypes.add(name);
             }
         }
@@ -123,12 +121,12 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     }
     
     private List<String> collectAllChoiceTypes(RoundEnvironment roundEnv) {
-        val allTypes = new ArrayList<String>();
+        List<String> allTypes = new ArrayList<String>();
         for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
-            val element = environment.element(javaElement);
-            val choice = element.annotation(Choice.class);
+            InputElement element = environment.element(javaElement);
+            Choice choice = element.annotation(Choice.class);
             if (choice != null) {
-                val name = element.simpleName();
+                String name = element.simpleName();
                 allTypes.add(name);
             }
         }
@@ -136,71 +134,57 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     }
     
     private boolean handleStructType(InputElement element, List<String> structTypes, List<String> choiceTypes) {
-        val structSpec     = new SourceSpecBuilder(element);
-        val sourceSpec     = structSpec.sourceSpec();
-        val packageName    = structSpec.packageName();
-        val specTargetName = structSpec.targetName();
+        SourceSpecBuilder structSpec     = new SourceSpecBuilder(element);
+        String            packageName    = structSpec.packageName();
+        String            specTargetName = structSpec.targetName();
         try {
-            val elmStructSpec = new ElmStructSpec(sourceSpec, element);
-            val elmStruct     = new ElmStructBuilder(elmStructSpec, structTypes, choiceTypes);
-            val baseDir       = elmStructSpec.generatedDirectory();
-            val folderName    = elmStructSpec.folderName();
-            val fileName      = elmStructSpec.fileName();
-            
-            val generatedPath = baseDir + folderName + "/";
-            val generatedCode = elmStruct.toElmCode();
-            val generatedName = generatedPath + fileName;
-            
+            ElmStructSpec    elmStructSpec = new ElmStructSpec(structSpec.sourceSpec(), element);
+            ElmStructBuilder elmStruct     = new ElmStructBuilder(elmStructSpec, structTypes, choiceTypes);
+            String           baseDir       = elmStructSpec.generatedDirectory();
+            String           folderName    = elmStructSpec.folderName();
+            String           fileName      = elmStructSpec.fileName();
+            String           generatedPath = baseDir + folderName + "/";
+            String           generatedCode = elmStruct.toElmCode();
+            String           generatedName = generatedPath + fileName;
             generateElmCode(generatedPath, generatedCode, generatedName);
             return true;
         } catch (Throwable e) {
-            element.error("Problem generating the class: "
-                    + packageName + "." + specTargetName
-                    + ": "  + e.getMessage()
-                    + ":"   + e.getClass()
-                    + stream(e.getStackTrace())
-                        .map(st -> "\n    @" + st)
-                        .collect(joining()));
+            element.error("Problem generating the class: " + packageName + "." + specTargetName + ": " + e.getMessage() + ":" + e.getClass() + stream(e.getStackTrace()).map(st -> "\n    @" + st).collect(joining()));
             return !element.hasError();
         }
     }
     
     private void generateElmCode(String generatedPath, String generatedCode, String generatedName) throws IOException {
         new File(generatedPath).mkdirs();
-        val generatedFile = new File(generatedName);
-        val lines         = asList(generatedCode.split("\n"));
+        File         generatedFile = new File(generatedName);
+        List<String> lines         = asList(generatedCode.split("\n"));
         Files.write(generatedFile.toPath(), lines);
     }
     
     private boolean handleChoiceType(InputElement element, List<String> structTypes, List<String> choiceTypes) {
-        val choiceSpec     = new ChoiceSpec(element);
-        val sourceSpec     = choiceSpec.sourceSpec();
-        val packageName    = choiceSpec.packageName();
-        val specTargetName = choiceSpec.targetName();
+        ChoiceSpec choiceSpec     = new ChoiceSpec(element);
+        String     packageName    = choiceSpec.packageName();
+        String     specTargetName = choiceSpec.targetName();
         try {
-            val elmChoiceSpec = new ElmChoiceSpec(sourceSpec, element);
-            val elmChoice     = new ElmChoiceBuilder(elmChoiceSpec, structTypes, choiceTypes);
-            val baseDir       = elmChoiceSpec.generatedDirectory();
-            val folderName    = elmChoiceSpec.folderName();
-            val fileName      = elmChoiceSpec.fileName();
-            
-            val generatedPath = baseDir + folderName + "/";
-            val generatedCode = elmChoice.toElmCode();
-            val generatedName = generatedPath + fileName;
-            
+            ElmChoiceSpec    elmChoiceSpec = new ElmChoiceSpec(choiceSpec.sourceSpec(), element);
+            ElmChoiceBuilder elmChoice     = new ElmChoiceBuilder(elmChoiceSpec, structTypes, choiceTypes);
+            String           baseDir       = elmChoiceSpec.generatedDirectory();
+            String           folderName    = elmChoiceSpec.folderName();
+            String           fileName      = elmChoiceSpec.fileName();
+            String           generatedPath = baseDir + folderName + "/";
+            String           generatedCode = elmChoice.toElmCode();
+            String           generatedName = generatedPath + fileName;
             generateElmCode(generatedPath, generatedCode, generatedName);
             return true;
         } catch (Exception exception) {
-            val template = "Problem generating the class: %s.%s: %s:%s%s";
-            val excMsg     = exception.getMessage();
-            val excClass   = exception.getClass();
-            val stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
-            val errMsg   = format(template, packageName, specTargetName, excMsg, excClass, stacktrace);
+            String   template   = "Problem generating the class: %s.%s: %s:%s%s";
+            String   excMsg     = exception.getMessage();
+            Class<?> excClass   = exception.getClass();
+            String   stacktrace = stream(exception.getStackTrace()).map(st -> "\n    @" + st).collect(joining());
+            String   errMsg     = format(template, packageName, specTargetName, excMsg, excClass, stacktrace);
             exception.printStackTrace(System.err);
             element.error(errMsg);
-            
             return !element.hasError();
         }
     }
-    
 }

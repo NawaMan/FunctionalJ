@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,54 +25,45 @@ package functionalj.stream;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-
 import lombok.val;
-
 
 public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
     
-    /** Map the value using the mapper. */
+    /**
+     * Map the value using the mapper.
+     */
     public default <T> StreamPlus<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
         return StreamPlus.from(stream().map(each -> mapper.apply(each)));
     }
     
-    /** Map the value using the mapper only when the condition is true. */
-    public default StreamPlus<DATA> mapOnly(
-            Predicate<? super DATA>      condition, 
-            Function<? super DATA, DATA> mapper) {
+    /**
+     * Map the value using the mapper only when the condition is true.
+     */
+    public default StreamPlus<DATA> mapOnly(Predicate<? super DATA> condition, Function<? super DATA, DATA> mapper) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .map(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
-                            ? mapper.apply(value)
-                            : value;
-                    return mapped;
-                });
+        return streamPlus.map(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.apply(value) : value;
+            return mapped;
+        });
     }
     
-    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
-    public default <T> StreamPlus<T> mapIf(
-            Predicate<? super DATA>   condition, 
-            Function<? super DATA, T> mapper,
-            Function<? super DATA, T> elseMapper) {
+    /**
+     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
+     */
+    public default <T> StreamPlus<T> mapIf(Predicate<? super DATA> condition, Function<? super DATA, T> mapper, Function<? super DATA, T> elseMapper) {
         val streamPlus = streamPlus();
-        return streamPlus
-                .mapToObj(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue 
-                            ? mapper    .apply(value) 
-                            : elseMapper.apply(value);
-                    return mapped;
-                });
+        return streamPlus.mapToObj(value -> {
+            val isTrue = condition.test(value);
+            val mapped = isTrue ? mapper.apply(value) : elseMapper.apply(value);
+            return mapped;
+        });
     }
     
-    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.  */
-    public default <T> StreamPlus<T> mapToObjIf(
-            Predicate<? super DATA>   checker, 
-            Function<? super DATA, T> mapper,
-            Function<? super DATA, T> elseMapper) {
+    /**
+     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
+     */
+    public default <T> StreamPlus<T> mapToObjIf(Predicate<? super DATA> checker, Function<? super DATA, T> mapper, Function<? super DATA, T> elseMapper) {
         return mapIf(checker, mapper, elseMapper);
     }
-    
 }

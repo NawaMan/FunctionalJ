@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,18 +30,15 @@ public interface IntObjBiConsumer<DATA> extends FuncUnit2<Integer, DATA> {
     
     public void acceptAsInt(int input1, DATA input2);
     
-    
     public default void acceptUnsafe(Integer input1, DATA input2) throws Exception {
         acceptAsInt(input1, input2);
     }
     
-    
     public static <D> void accept(BiConsumer<Integer, D> function, int input1, D input2) {
         if (function instanceof IntObjBiConsumer) {
-            ((IntObjBiConsumer<D>)function).acceptAsInt(input1, input2);
+            ((IntObjBiConsumer<D>) function).acceptAsInt(input1, input2);
         } else {
             function.accept(input1, input2);
         }
     }
-    
 }

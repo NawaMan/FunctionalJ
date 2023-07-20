@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,16 +24,15 @@
 package functionalj.result;
 
 import static functionalj.function.Func.f;
-
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 
 public class DerivedResult<DATA> extends Result<DATA> {
-
+    
     private final Func0<Object> dataSupplier;
     
     public DerivedResult(Func0<DATA> dataSupplier) {
-        this.dataSupplier = f(()->{
+        this.dataSupplier = f(() -> {
             try {
                 return dataSupplier.applySafely().__valueData();
             } catch (Exception e) {
@@ -41,8 +40,9 @@ public class DerivedResult<DATA> extends Result<DATA> {
             }
         }).memoize();
     }
+    
     public <ORG> DerivedResult(Result<ORG> orgValue, Func1<Result<ORG>, Result<DATA>> mapper) {
-        this.dataSupplier = f(()->{
+        this.dataSupplier = f(() -> {
             try {
                 return mapper.applyUnsafe(orgValue).__valueData();
             } catch (Exception e) {

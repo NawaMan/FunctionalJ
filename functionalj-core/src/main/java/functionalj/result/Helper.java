@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,13 +29,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 import functionalj.function.Func0;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit2;
 import lombok.val;
-
-
 
 class Helper {
     
@@ -53,6 +50,7 @@ class Helper {
                 consumer.accept(value);
         };
     }
+    
     static <DATA> FuncUnit2<DATA, Exception> processIf(Predicate<ResultStatus> statusCheck, BiConsumer<? super DATA, ? super Exception> consumer) {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
@@ -60,6 +58,7 @@ class Helper {
                 consumer.accept(value, exception);
         };
     }
+    
     static <DATA> FuncUnit2<DATA, Exception> processIf(Predicate<ResultStatus> statusCheck, Runnable runnable) {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
@@ -67,6 +66,7 @@ class Helper {
                 runnable.run();
         };
     }
+    
     static <DATA> FuncUnit2<DATA, Exception> processIfException(Predicate<ResultStatus> statusCheck, Consumer<? super Exception> consumer) {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
@@ -75,56 +75,39 @@ class Helper {
         };
     }
     
-    static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenUse(
-            Predicate<ResultStatus> statusCheck,
-            Result<DATA>            result,
-            DATA                    fallbackValue) {
+    static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenUse(Predicate<ResultStatus> statusCheck, Result<DATA> result, DATA fallbackValue) {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 return Result.valueOf(fallbackValue);
-            
             return result;
         };
     }
     
-    static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenGet(
-            Predicate<ResultStatus>  statusCheck,
-            Result<DATA>             result,
-            Supplier<? extends DATA> fallbackSupplier) {
+    static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenGet(Predicate<ResultStatus> statusCheck, Result<DATA> result, Supplier<? extends DATA> fallbackSupplier) {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 return Result.of(Func0.from(fallbackSupplier));
-            
             return result;
         };
     }
     
-    static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenApply(
-            Predicate<ResultStatus>                     statusCheck,
-            Result<DATA>                                result,
-            Function<? super Exception, ? extends DATA> recoverFunction) {
+    static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenApply(Predicate<ResultStatus> statusCheck, Result<DATA> result, Function<? super Exception, ? extends DATA> recoverFunction) {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
-                return Result.of(()->recoverFunction.apply(exception));
-            
+                return Result.of(() -> recoverFunction.apply(exception));
             return result;
         };
     }
     
-    static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenApply(
-            Predicate<ResultStatus>                             statusCheck,
-            Result<DATA>                                        result,
-            BiFunction<DATA, ? super Exception, ? extends DATA> recoverFunction) {
+    static <DATA> Func2<DATA, Exception, Result<DATA>> processWhenApply(Predicate<ResultStatus> statusCheck, Result<DATA> result, BiFunction<DATA, ? super Exception, ? extends DATA> recoverFunction) {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
-                return Result.of(()->recoverFunction.apply(value, exception));
-            
+                return Result.of(() -> recoverFunction.apply(value, exception));
             return result;
         };
     }
-    
 }

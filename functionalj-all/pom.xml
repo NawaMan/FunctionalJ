@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>io.functionalj</groupId>
+        <artifactId>functionalj</artifactId>
+        <version>1.0.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <artifactId>functionalj-all</artifactId>
+    <name>functionalj-all</name>
+    <description>
+        The module for combining all FunctionalJ modules.
+    </description>
+    
+    <dependencies>
+        <dependency>
+            <groupId>io.functionalj</groupId>
+            <artifactId>functionalj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.functionalj</groupId>
+            <artifactId>functionalj-types</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.functionalj</groupId>
+            <artifactId>functionalj-elm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.functionalj</groupId>
+            <artifactId>functionalj-store</artifactId>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,27 +26,20 @@ package functionalj.function;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 
-
 @FunctionalInterface
 public interface ObjectObjectToIntegerFunction<INPUT1, INPUT2> extends ToIntBiFunction<INPUT1, INPUT2>, Func2<INPUT1, INPUT2, Integer> {
     
     public static <I1, I2> ObjectObjectToIntegerFunction<I1, I2> of(ToIntBiFunction<I1, I2> function) {
-        return (function instanceof ObjectObjectToIntegerFunction)
-                ? (ObjectObjectToIntegerFunction<I1, I2>)function
-                : ((i1, i2) -> function.applyAsInt(i1, i2));
+        return (function instanceof ObjectObjectToIntegerFunction) ? (ObjectObjectToIntegerFunction<I1, I2>) function : ((i1, i2) -> function.applyAsInt(i1, i2));
     }
     
     public static <I1, I2> ObjectObjectToIntegerFunction<I1, I2> of(BiFunction<I1, I2, Integer> function) {
-        return (function instanceof ObjectObjectToIntegerFunction)
-                ? (ObjectObjectToIntegerFunction<I1, I2>)function
-                : ((i1, i2) -> function.apply(i1, i2));
+        return (function instanceof ObjectObjectToIntegerFunction) ? (ObjectObjectToIntegerFunction<I1, I2>) function : ((i1, i2) -> function.apply(i1, i2));
     }
-    
     
     public int applyAsInt(INPUT1 input1, INPUT2 input2);
     
     public default Integer applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception {
         return applyAsInt(input1, input2);
     }
-    
 }

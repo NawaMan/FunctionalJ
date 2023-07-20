@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,20 +24,15 @@
 package functionalj.lens.lenses;
 
 import java.util.function.Predicate;
-
 import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 import lombok.val;
 
-
 @FunctionalInterface
-public interface BooleanLens<HOST>
-        extends
-            BooleanAccess<HOST>,
-            AnyLens<HOST, Boolean> , Predicate<HOST> {
-    
+public interface BooleanLens<HOST> extends BooleanAccess<HOST>, AnyLens<HOST, Boolean>, Predicate<HOST> {
     
     public static class Impl<H> extends AnyLens.Impl<H, Boolean> implements Named, BooleanLens<H> {
+        
         public Impl(String name, LensSpec<H, Boolean> spec) {
             super(name, spec);
         }
@@ -46,6 +41,7 @@ public interface BooleanLens<HOST>
     public static <HOST> BooleanLens<HOST> of(String name, LensSpec<HOST, Boolean> spec) {
         return new Impl<>(name, spec);
     }
+    
     public static <HOST> BooleanLens<HOST> of(LensSpec<HOST, Boolean> spec) {
         return of(null, spec);
     }
@@ -61,11 +57,10 @@ public interface BooleanLens<HOST>
     public default boolean test(HOST host) {
         LensSpec<HOST, Boolean> lensSpec = lensSpec();
         if (lensSpec instanceof PrimitiveLensSpecs.BooleanLensSpecPrimitive) {
-            val spec  = (PrimitiveLensSpecs.BooleanLensSpecPrimitive)lensSpec;
+            val spec = (PrimitiveLensSpecs.BooleanLensSpecPrimitive) lensSpec;
             val value = spec.test(host);
             return value;
         }
-        
         val value = lensSpec.apply(host);
         return value;
     }
@@ -75,5 +70,4 @@ public interface BooleanLens<HOST>
         LensSpec<HOST, Boolean> lensSpec = lensSpec();
         return lensSpec.apply(host);
     }
-    
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,11 +35,9 @@ public interface ObjLongBiFunction<DATA, TARGET> extends Func2<DATA, Long, TARGE
     
     public static <D, T> T apply(BiFunction<D, Long, T> function, D input1, long input2) {
         if (function instanceof ObjLongBiFunction) {
-            return ((ObjLongBiFunction<D, T>)function).applyAsLong(input1, input2);
+            return ((ObjLongBiFunction<D, T>) function).applyAsLong(input1, input2);
         } else {
             return function.apply(input1, input2);
         }
     }
-    
 }
-

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,12 +23,11 @@
 // ============================================================================
 package functionalj.stream;
 
-
 import functionalj.list.FuncList;
 
 /**
  * Classes implementing this interface can create an iterator plus.
- * 
+ *
  * @param <DATA>  the data type.
  *
  * @author NawaMan -- nawa@nawaman.net
@@ -41,5 +40,4 @@ public interface IterablePlus<DATA> {
     public default FuncList<DATA> FuncList() {
         return FuncList.from(() -> iterator().stream());
     }
-    
 }

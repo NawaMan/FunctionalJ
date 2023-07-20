@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,18 +24,14 @@
 package functionalj.lens.lenses;
 
 import java.math.BigDecimal;
-
 import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
-public interface BigDecimalLens<HOST> 
-        extends
-            BigDecimalAccess<HOST>,
-            ComparableLens<HOST, BigDecimal> {
-    
+public interface BigDecimalLens<HOST> extends BigDecimalAccess<HOST>, ComparableLens<HOST, BigDecimal> {
     
     public static class Impl<H> extends ComparableLens.Impl<H, BigDecimal> implements Named, BigDecimalLens<H> {
+        
         public Impl(String name, LensSpec<H, BigDecimal> spec) {
             super(name, spec);
         }
@@ -44,6 +40,7 @@ public interface BigDecimalLens<HOST>
     public static <HOST> BigDecimalLens<HOST> of(String name, LensSpec<HOST, BigDecimal> spec) {
         return new Impl<>(name, spec);
     }
+    
     public static <HOST> BigDecimalLens<HOST> of(LensSpec<HOST, BigDecimal> spec) {
         return of(null, spec);
     }
@@ -52,5 +49,4 @@ public interface BigDecimalLens<HOST>
     default BigDecimal apply(HOST host) {
         return lensSpec().getRead().apply(host);
     }
-
 }

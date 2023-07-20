@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,7 +24,6 @@
 package functionalj.function.aggregator;
 
 import java.util.function.LongFunction;
-
 import functionalj.stream.longstream.collect.LongCollected;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 
@@ -32,8 +31,7 @@ public interface LongAggregator<TARGET> extends LongFunction<TARGET>, Aggregator
     
     public LongCollected<?, TARGET> asCollected();
     
-    //== Implementation ==
-    
+    // == Implementation ==
     public static class Impl<TARGET> implements LongAggregator<TARGET> {
         
         private final LongCollected<?, TARGET> collected;
@@ -57,5 +55,4 @@ public interface LongAggregator<TARGET> extends LongFunction<TARGET>, Aggregator
             return collected;
         }
     }
-    
 }

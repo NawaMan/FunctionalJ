@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2021 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,22 +28,16 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 import java.util.stream.Collector;
-
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import lombok.val;
 
-
 @FunctionalInterface
-public interface CollectorPlus<DATA, ACCUMULATED, RESULT> 
-            extends
-                CollectorExtensible<DATA, ACCUMULATED, RESULT> {
+public interface CollectorPlus<DATA, ACCUMULATED, RESULT> extends CollectorExtensible<DATA, ACCUMULATED, RESULT> {
     
     public static <D, A, R> CollectorPlus<D, A, R> from(Collector<D, A, R> collector) {
-        return (collector instanceof CollectorPlus)
-                ? (CollectorPlus<D,A,R>)collector
-                : ()->collector;
+        return (collector instanceof CollectorPlus) ? (CollectorPlus<D, A, R>) collector : () -> collector;
     }
     
     // TODO - make it easy to create reducer
@@ -52,13 +46,11 @@ public interface CollectorPlus<DATA, ACCUMULATED, RESULT>
     // (DATA)->TARGET , (TARGET, TARGET) -> TARGET
     // or
     // (DATA)->ACCUMULATED , (ACCUMULATED, ACCUMULATED) -> ACCUMULATED, (ACCUMULATED) -> TARGET
-    
     public default CollectorPlus<DATA, ACCUMULATED, RESULT> collectorPlus() {
         return this;
     }
     
-    //== Derive == 
-    
+    // == Derive ==
     public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(Function<SOURCE, DATA> mapper) {
         val collector = new DerivedCollectorPlus.FromObj<>(this, mapper);
         return CollectorPlus.from(collector);
