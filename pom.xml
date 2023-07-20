@@ -4,7 +4,7 @@
     
     <groupId>io.functionalj</groupId>
     <artifactId>functionalj</artifactId>
-    <version>0.5.9.0</version>
+    <version>1.0.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>functionalj</name>
@@ -28,7 +28,7 @@
         
         <!--==== SECRET ====-->
         <gpg.executable>/usr/bin/gpg</gpg.executable>
-        <gpg.keyname>${env.FUNCIONALJ_KEYNAME}</gpg.keyname>
+        <gpg.keyname>${env.FUNCTIONALJ_KEYNAME}</gpg.keyname>
         <gpg.passphrase>${env.NAWAMAN_SIGNING_PASSWORD}</gpg.passphrase>
         
         <!--==== VERSIONS ====-->
