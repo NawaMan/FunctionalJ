@@ -32,6 +32,9 @@ import java.nio.file.Paths;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
 
+/**
+ * This class contains functions related to data.
+ **/
 public class FuncData {
     
     // == Read text file ==
@@ -53,8 +56,8 @@ public class FuncData {
      *
      * This has been tested with 2GB text file.
      *
-     * @param path
-     *          the path to the text file.
+     * @param path     the path to the text file.
+     * @param charset  the character set.
      * @return  the functional list containing the lines of text from the class.
      */
     public static Result<FuncList<String>> readLines(String path, Charset charset) {
@@ -79,8 +82,8 @@ public class FuncData {
      *
      * This has been tested with 2GB text file.
      *
-     * @param path
-     *          the path to the text file.
+     * @param path     the path to the text file.
+     * @param charset  the character set.
      * @return  the functional list containing the lines of text from the class.
      */
     public static Result<FuncList<String>> readLines(Path path, Charset charset) {
