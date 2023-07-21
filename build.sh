@@ -163,8 +163,9 @@ function ensure-release() {
 }
 
 function increment-build-number() {
-    BUILD_NUMBER=$(cat $BUILD_NUMBER_FILE)
-    ((BUILD_NUMBER++))
+    BUILD_NUMBER=$(cat $BUILD_NUMBER_FILE | grep -E "^[0-9]+$")
+    if [[ "$BUILD_NUMBER" == "" ]]; then BUILD_NUMBER=0; fi
+    ((BUILD_NUMBER++)) || true
     echo -n "$BUILD_NUMBER" > $BUILD_NUMBER_FILE
     echo "Up the build number to: $BUILD_NUMBER"
 }

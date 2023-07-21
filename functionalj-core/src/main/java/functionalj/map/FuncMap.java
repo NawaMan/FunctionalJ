@@ -193,6 +193,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * 
      * @param  key0    the 0th key.
      * @param  value0  the 0th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -212,6 +214,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value0  the 0th value.
      * @param  key1    the 1st key.
      * @param  value1  the 1st value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -235,6 +239,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value1  the 1st value.
      * @param  key2    the 2nd key.
      * @param  value2  the 2nd value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -262,6 +268,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value2  the 2nd value.
      * @param  key3    the 3rd key.
      * @param  value3  the 3rd value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -293,6 +301,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value3  the 3rd value.
      * @param  key4    the 4th key.
      * @param  value4  the 4th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -328,6 +338,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value4  the 4th value.
      * @param  key5    the 5th key.
      * @param  value5  the 5th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -367,6 +379,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value5  the 5th value.
      * @param  key6    the 6th key.
      * @param  value6  the 6th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -410,6 +424,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value6  the 6th value.
      * @param  key7    the 7th key.
      * @param  value7  the 7th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -457,6 +473,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value7  the 7th value.
      * @param  key8    the 8th key.
      * @param  value8  the 8th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -508,6 +526,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value8  the 8th value.
      * @param  key9    the 9th key.
      * @param  value9  the 9th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8, K key9, V value9) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -563,6 +583,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
      * @param  value9   the 9th value.
      * @param  key10    the 10th key.
      * @param  value10  the 10th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8, K key9, V value9, K key10, V value10) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -594,6 +616,14 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -605,6 +635,16 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -618,6 +658,18 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1, K key2, V value2) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -633,6 +685,20 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * @param  key3     the 3rd key.
+     * @param  value3   the 3rd value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -650,6 +716,22 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * @param  key3     the 3rd key.
+     * @param  value3   the 3rd value.
+     * @param  key4     the 4th key.
+     * @param  value4   the 4th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -669,6 +751,24 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * @param  key3     the 3rd key.
+     * @param  value3   the 3rd value.
+     * @param  key4     the 4th key.
+     * @param  value4   the 4th value.
+     * @param  key5     the 5th key.
+     * @param  value5   the 5th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -690,6 +790,26 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * @param  key3     the 3rd key.
+     * @param  value3   the 3rd value.
+     * @param  key4     the 4th key.
+     * @param  value4   the 4th value.
+     * @param  key5     the 5th key.
+     * @param  value5   the 5th value.
+     * @param  key6     the 6th key.
+     * @param  value6   the 6th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -713,6 +833,28 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * @param  key3     the 3rd key.
+     * @param  value3   the 3rd value.
+     * @param  key4     the 4th key.
+     * @param  value4   the 4th value.
+     * @param  key5     the 5th key.
+     * @param  value5   the 5th value.
+     * @param  key6     the 6th key.
+     * @param  value6   the 6th value.
+     * @param  key7     the 7th key.
+     * @param  value7   the 7th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -738,6 +880,30 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * @param  key3     the 3rd key.
+     * @param  value3   the 3rd value.
+     * @param  key4     the 4th key.
+     * @param  value4   the 4th value.
+     * @param  key5     the 5th key.
+     * @param  value5   the 5th value.
+     * @param  key6     the 6th key.
+     * @param  value6   the 6th value.
+     * @param  key7     the 7th key.
+     * @param  value7   the 7th value.
+     * @param  key8     the 8th key.
+     * @param  value8   the 8th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -765,6 +931,32 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * @param  key3     the 3rd key.
+     * @param  value3   the 3rd value.
+     * @param  key4     the 4th key.
+     * @param  value4   the 4th value.
+     * @param  key5     the 5th key.
+     * @param  value5   the 5th value.
+     * @param  key6     the 6th key.
+     * @param  value6   the 6th value.
+     * @param  key7     the 7th key.
+     * @param  value7   the 7th value.
+     * @param  key8     the 8th key.
+     * @param  value8   the 8th value.
+     * @param  key9     the 9th key.
+     * @param  value9   the 9th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8, K key9, V value9) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -794,6 +986,34 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     /**
      * Create an immutable map with using the key-value pair.
      * Note: the pair will be ignore if the key is null.
+     * 
+     * @param <K>  the type of the map key.
+     * @param <V>  the type of the map value.
+     * 
+     * @param  key0     the 0th key.
+     * @param  value0   the 0th value.
+     * @param  key1     the 1st key.
+     * @param  value1   the 1st value.
+     * @param  key2     the 2nd key.
+     * @param  value2   the 2nd value.
+     * @param  key3     the 3rd key.
+     * @param  value3   the 3rd value.
+     * @param  key4     the 4th key.
+     * @param  value4   the 4th value.
+     * @param  key5     the 5th key.
+     * @param  value5   the 5th value.
+     * @param  key6     the 6th key.
+     * @param  value6   the 6th value.
+     * @param  key7     the 7th key.
+     * @param  value7   the 7th value.
+     * @param  key8     the 8th key.
+     * @param  value8   the 8th value.
+     * @param  key9     the 9th key.
+     * @param  value9   the 9th value.
+     * @param  key10    the 10th key.
+     * @param  value10  the 10th value.
+     * 
+     * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> mapOf(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7, K key8, V value8, K key9, V value9, K key10, V value10) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
