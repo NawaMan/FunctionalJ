@@ -48,7 +48,7 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
             this.spec = spec;
         }
         
-        public String getName() {
+        public String name() {
             return name;
         }
         

@@ -37,16 +37,8 @@ public interface Named {
      *
      * @return the name.
      */
-    public String getName();
+    public String name();
     
-    /**
-     * Returns the name.
-     *
-     * @return the name.
-     */
-    public default String name() {
-        return getName();
-    }
     
     /**
      * Add name to the given predicate.
@@ -61,6 +53,12 @@ public interface Named {
     
     /**
      * Add name to the given predicate.
+     * 
+     * @param <T>  the data type to be check.
+     * 
+     * @param name 
+     * @param check 
+     * @return 
      */
     public static <T> Annotated.Predicate<T> Predicate(String name, java.util.function.Predicate<T> check) {
         return new Annotated.Predicate<T>(name, check);

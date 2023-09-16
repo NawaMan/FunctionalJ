@@ -33,7 +33,7 @@ public interface Traced {
      *
      * @return the location.
      */
-    public String getLocation();
+    public String location();
     
     public static String extractLocationString(StackTraceElement caller) {
         return caller.getClassName() + "#" + caller.getLineNumber();

@@ -51,7 +51,6 @@ public class FunctionalJTest {
     public void testOnly() {
         @Value
         class Person {
-        
             private String name;
         }
         val persons = asList(new Person("John"), new Person("Jack"), new Person("Jim"));

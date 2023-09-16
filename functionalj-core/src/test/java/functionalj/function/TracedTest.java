@@ -39,10 +39,10 @@ public class TracedTest {
     
     @Test
     public void testName() {
-        assertEquals("Predicate1", ((Named) TracedConstants.namedPredicate).getName());
-        assertEquals("Predicate", ((Named) TracedConstants.nonamePredicate).getName());
-        assertEquals("F1", ((Named) TracedConstants.namedNoTracedFunc1).getName());
-        assertEquals("F2", ((Named) TracedConstants.namedTracedFunc1).getName());
-        assertEquals("F1", ((Named) TracedConstants.nonameTracedFunc1).getName());
+        assertEquals("Predicate1", ((Named) TracedConstants.namedPredicate).name());
+        assertEquals("Predicate", ((Named) TracedConstants.nonamePredicate).name());
+        assertEquals("F1", ((Named) TracedConstants.namedNoTracedFunc1).name());
+        assertEquals("F2", ((Named) TracedConstants.namedTracedFunc1).name());
+        assertEquals("F1", ((Named) TracedConstants.nonameTracedFunc1).name());
     }
 }
