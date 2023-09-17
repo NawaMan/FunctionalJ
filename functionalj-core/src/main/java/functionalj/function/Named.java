@@ -43,8 +43,8 @@ public interface Named {
     /**
      * Add name to the given predicate.
      *
-     * @param name
-     * @param check
+     * @param name   the name of the predicate.
+     * @param check  the predicate body.
      * @return the named predicate.
      */
     public static <T> Annotated.Predicate<T> predicate(String name, java.util.function.Predicate<T> check) {
@@ -56,19 +56,19 @@ public interface Named {
      * 
      * @param <T>  the data type to be check.
      * 
-     * @param name 
-     * @param check 
-     * @return 
+     * @param name  the name of the predicate.
+     * @param check the predicate body.
+     * @return the named predicate.
      */
     public static <T> Annotated.Predicate<T> Predicate(String name, java.util.function.Predicate<T> check) {
         return new Annotated.Predicate<T>(name, check);
     }
     
     /**
-     * Add name to the given bipredicate.
-     *
-     * @param name
-     * @param check
+     * Add name to the given BiPredicate.
+     * 
+     * @param name   the name of the predicate.
+     * @param check  the predicate body.
      * @return the named predicate.
      */
     public static <T, U> Annotated.BiPredicate<T, U> biPredicate(String name, java.util.function.BiPredicate<T, U> check) {
@@ -76,7 +76,11 @@ public interface Named {
     }
     
     /**
-     * Add name to the given bipredicate.
+     * Add name to the given BiPredicate.
+     * 
+     * @param name  the name of the predicate.
+     * @param check the predicate body.
+     * @return the named predicate.
      */
     public static <T, U> Annotated.BiPredicate<T, U> BiPredicate(String name, java.util.function.BiPredicate<T, U> check) {
         return new Annotated.BiPredicate<T, U>(name, check);
@@ -84,6 +88,11 @@ public interface Named {
     
     /**
      * Add name to the given supplier.
+     * 
+     * @param name      the name of the supplier.
+     * @param supplier  the supplier body.
+     * @param <T>       the type of the data to be supplied.
+     * @return          the named supplier.
      */
     public static <T> Annotated.Supplier<T> supplier(String name, java.util.function.Supplier<T> supplier) {
         return new Annotated.Supplier<T>(name, supplier);
@@ -91,6 +100,11 @@ public interface Named {
     
     /**
      * Add name to the given supplier.
+     * 
+     * @param name      the name of the supplier.
+     * @param supplier  the supplier body.
+     * @param <T>       the type of the data to be supplied.
+     * @return          the named supplier.
      */
     public static <T> Annotated.Supplier<T> Supplier(String name, java.util.function.Supplier<T> supplier) {
         return new Annotated.Supplier<T>(name, supplier);
@@ -98,6 +112,10 @@ public interface Named {
     
     /**
      * Add name to the given runnable.
+     * 
+     * @param name      the name of the runnable.
+     * @param runnable  the supper body.
+     * @return          the named runnable.
      */
     public static Annotated.Runnable runnable(String name, java.lang.Runnable runnable) {
         return new Annotated.Runnable(name, runnable);
@@ -105,6 +123,10 @@ public interface Named {
     
     /**
      * Add name to the given runnable.
+     * 
+     * @param name      the name of the runnable.
+     * @param runnable  the runnable body.
+     * @return          the named runnable.
      */
     public static Annotated.Runnable Runnable(String name, java.lang.Runnable runnable) {
         return new Annotated.Runnable(name, runnable);
@@ -112,6 +134,10 @@ public interface Named {
     
     /**
      * Add name to the given consumer.
+     * 
+     * @param name      the name of the consumer.
+     * @param consumer  the consumer body.
+     * @return          the named consumer.
      */
     public static <T> Annotated.Consumer<T> consumer(String name, java.util.function.Consumer<T> consumer) {
         return new Annotated.Consumer<T>(name, consumer);
@@ -119,6 +145,10 @@ public interface Named {
     
     /**
      * Add name to the given consumer.
+     * 
+     * @param name      the name of the consumer.
+     * @param consumer  the consumer body.
+     * @return          the named consumer.
      */
     public static <T> Annotated.Consumer<T> Consumer(String name, java.util.function.Consumer<T> consumer) {
         return new Annotated.Consumer<T>(name, consumer);
