@@ -24,6 +24,7 @@
 package functionalj.function;
 
 import static java.util.Arrays.stream;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,6 +39,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
 import functionalj.environments.Env;
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
@@ -1202,4 +1204,5 @@ public interface Func {
     public static <INPUT> Predicate<INPUT> toPredicate(Func1<INPUT, Boolean> func) {
         return input -> func.apply(input);
     }
+    
 }
