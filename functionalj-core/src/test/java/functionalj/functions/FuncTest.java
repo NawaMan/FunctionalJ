@@ -27,8 +27,11 @@ import static functionalj.function.Apply.$;
 import static functionalj.function.Func.f;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
 import java.io.FileNotFoundException;
+
 import org.junit.Test;
+
 import functionalj.function.Func;
 import functionalj.function.Func2;
 import functionalj.function.Func4;
@@ -147,4 +150,5 @@ public class FuncTest {
         assertEquals(Integer.MAX_VALUE, safeDivide5.apply(1, 0).intValue());
         assertEquals(Integer.MIN_VALUE, safeDivide5.apply(-1, 0).intValue());
     }
+    
 }

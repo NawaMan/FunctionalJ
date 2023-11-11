@@ -36,12 +36,12 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     
     public static <H, T, A extends AnyAccess<H, T>> NullableAccess<H, T, A> of(Function<H, Nullable<T>> read, Function<Function<H, T>, A> createAccess) {
         val accessParameterized = new AccessParameterized<H, Nullable<T>, T, A>() {
-        
+            
             @Override
             public Nullable<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
             }
-        
+            
             @Override
             public A createSubAccessFromHost(Function<H, T> accessToParameter) {
                 return createAccess.apply(accessToParameter);

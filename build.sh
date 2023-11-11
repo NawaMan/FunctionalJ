@@ -24,19 +24,33 @@ function main() {
 function build-quick() {
     ensure-java-version
     set-version
-    ./mvnw clean install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
+    ./mvnw \
+        --no-transfer-progress    \
+        --batch-mode              \
+        -Dmaven.test.skip=true    \
+        -Dmaven.javadoc.skip=true \
+        -Dmaven.source.skip=true  \
+        clean install
 }
 
 function build-test() {
     ensure-java-version
     set-version
-    ./mvnw clean compile test -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
+    ./mvnw \
+        --no-transfer-progress    \
+        --batch-mode              \
+        -Dmaven.source.skip=true  \
+        -Dmaven.javadoc.skip=true \
+        clean compile test  
 }
 
 function build-full() {
     ensure-java-version
     set-version
-    ./mvnw clean install -Dgpg.signing.skip=true
+    ./mvnw \
+        --no-transfer-progress    \
+        --batch-mode              \
+        clean install
 }
 
 function build-package() {
@@ -49,7 +63,11 @@ function build-package() {
     
     ensure-java-version
     set-version
-    ./mvnw clean install package deploy -Dnexus.staging.skip=true
+    ./mvnw \
+        --no-transfer-progress \
+        --batch-mode           \
+        -Dgpg.passphrase=$NAWAMAN_SIGNING_PASSWORD \
+        clean install package deploy -Ppackage
 }
 
 function build-release() {
@@ -69,7 +87,11 @@ function build-release() {
     
     ensure-java-version
     set-version
-    ./mvnw clean install package deploy
+    ./mvnw \
+        --no-transfer-progress \
+        --batch-mode           \
+        -Dgpg.passphrase=$NAWAMAN_SIGNING_PASSWORD \
+        clean install package deploy -Ppublish
     
     set -x
     increment-build-number

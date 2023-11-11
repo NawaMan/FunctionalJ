@@ -87,6 +87,8 @@ class StringAccessHelper {
 
 /**
  * Classes implementing this interface know how to access to a String value.
+ * 
+ * @param <HOST> the host of the access.
  */
 @FunctionalInterface
 public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, ConcreteAccess<HOST, String, StringAccess<HOST>> {
@@ -369,6 +371,10 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
      * &lt;li&gt;&lt;b&gt;More args: &lt;/b&gt;"Hello".formatWith("Word: %s %s.", "there"); will returns "Word: Hello there."&lt;/li&gt;
      * &lt;li&gt;&lt;b&gt;Access: &lt;/b&gt;"Hello".formatWith("Word: %s (%s).", $S.length()); will returns "Word: Hello (5)."&lt;/li&gt;
      * &lt;/ol&gt;
+     * 
+     * @param format     the format string.
+     * @param otherArgs  other arguments (the second and later arguments).
+     * @return           the formated string.
      */
     public default StringAccess<HOST> formatWith(String format, Object... otherArgs) {
         return StringAccess.of(host -> {
@@ -380,6 +386,10 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
     
     /**
      * Similar to another formatWith method but the format is derived from the string value.
+     * 
+     * @param formatFunction  the function to format.
+     * @param otherArgs       other arguments (the second and later arguments).
+     * @return                the formated string.
      */
     public default StringAccess<HOST> formatWith(Function<HOST, String> formatFunction, Object... otherArgs) {
         return StringAccess.of(host -> {

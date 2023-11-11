@@ -38,6 +38,9 @@ public class TestHelper {
      *
      * The string value of actual must match the expected exactly.
      * If inexact matching is needed, start it with '\\E' and ended it with '\\Q'.
+     * 
+     * @param expected  the expected string value.
+     * @param actual    the actual object value.
      */
     public static void assertAsString(String expected, Object actual) {
         val expectedRegEx = "^\\Q" + expected + "\\E$";
@@ -52,6 +55,10 @@ public class TestHelper {
      *
      * The string value of actual must match the expected exactly.
      * If inexact matching is needed, start it with '\\E' and ended it with '\\Q'.
+     * 
+     * @param failureMessage  the message to explains what the failure means.
+     * @param expected        the expected string value.
+     * @param actual          the actual object.
      */
     public static void assertAsString(String failureMessage, String expected, Object actual) {
         val expectedRegEx = "^\\Q" + expected + "\\E$";
@@ -66,6 +73,10 @@ public class TestHelper {
      *
      * The string value of actual must match the expected exactly.
      * If inexact matching is needed, start it with '\\E' and ended it with '\\Q'.
+     * 
+     * @param failureMessage  the message to explains what the failure means.
+     * @param expected        the expected string value.
+     * @param actual          the actual object.
      */
     public static void assertAsString(Supplier<String> failureMessage, String expected, Object actual) {
         val expectedRegEx = "^\\Q" + expected + "\\E$";

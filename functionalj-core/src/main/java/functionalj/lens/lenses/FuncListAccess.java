@@ -39,12 +39,12 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
     
     public static <H, T, A extends AnyAccess<H, T>> FuncListAccess<H, T, A> of(Function<H, FuncList<T>> read, Function<Function<H, T>, A> createAccess) {
         val accessParameterized = new AccessParameterized<H, FuncList<T>, T, A>() {
-        
+            
             @Override
             public FuncList<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
             }
-        
+            
             @Override
             public A createSubAccessFromHost(Function<H, T> accessToParameter) {
                 return createAccess.apply(accessToParameter);
