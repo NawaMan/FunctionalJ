@@ -5,7 +5,7 @@
     
     <groupId>io.functionalj</groupId>
     <artifactId>functionalj</artifactId>
-    <version>1.0.0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>functionalj</name>
