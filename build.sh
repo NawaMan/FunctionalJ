@@ -33,6 +33,7 @@ function build-quick() {
         -Dmaven.source.skip=true  \
         -Dmaven.javadoc.skip=true \
         -Dgpg.signing.skip=true   \
+        -Dsona.staging.skip=true  \
         clean install
 }
 
@@ -41,18 +42,24 @@ function build-test() {
     ./mvnw \
         --no-transfer-progress    \
         --batch-mode              \
+        -Dmaven.test.skip=false   \
         -Dmaven.source.skip=true  \
         -Dmaven.javadoc.skip=true \
         -Dgpg.signing.skip=true   \
+        -Dsona.staging.skip=true  \
         clean compile test
 }
 
 function build-full() {
     ensure-java-version
     ./mvnw \
-        --no-transfer-progress    \
-        --batch-mode              \
-        -Dgpg.signing.skip=true   \
+        --no-transfer-progress     \
+        --batch-mode               \
+        -Dmaven.test.skip=false    \
+        -Dmaven.source.skip=false  \
+        -Dmaven.javadoc.skip=false \
+        -Dgpg.signing.skip=true    \
+        -Dsona.staging.skip=true   \
         clean install
 }
 
@@ -69,7 +76,12 @@ function build-package() {
         --no-transfer-progress \
         --batch-mode           \
         -Dgpg.passphrase=$NAWAMAN_SIGNING_PASSWORD \
-        clean install package
+        -Dmaven.test.skip=false    \
+        -Dmaven.source.skip=false  \
+        -Dmaven.javadoc.skip=false \
+        -Dgpg.signing.skip=false   \
+        -Dsona.staging.skip=true   \
+        clean install package gpg:sign
 }
 
 function act() {
@@ -91,8 +103,7 @@ function build-release() {
         exit -1
     fi
     
-
-    # Start of the subshell
+    # Start of the subshell because the build.sh will be replaced with the one from release (older code).
     (
         act git checkout release
         
@@ -108,7 +119,12 @@ function build-release() {
             --no-transfer-progress \
             --batch-mode           \
             -Dgpg.passphrase=$NAWAMAN_SIGNING_PASSWORD \
-            clean install package deploy
+            -Dmaven.test.skip=false    \
+            -Dmaven.source.skip=false  \
+            -Dmaven.javadoc.skip=false \
+            -Dgpg.signing.skip=false   \
+            -Dsona.staging.skip=false  \
+            clean install package gpg:sign deploy
         act git push
         
         act git tag -a v$VERSION -m '"Release: v$VERSION"'
