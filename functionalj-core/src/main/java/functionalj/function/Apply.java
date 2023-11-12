@@ -496,13 +496,22 @@ public interface Apply {
     // == $$ ==
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <O>   the type of DATA being supplied.
+     * @param func  the supplier.
+     * @return      the supplied result.
      */
     public static <O> Result<O> $$(Supplier<O> func) {
         return applySafely(func);
     }
     
     /**
-     * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * Obtain the value safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <O>  the data type.
+     * 
+     * @param ref  the reference.
+     * @return     the result of value from the reference.
      */
     public static <O> Result<O> $$(Ref<O> ref) {
         return applySafely(ref);
@@ -510,6 +519,13 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I>    the input data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func   the function.
+     * @param input  the input to be applied to.
+     * @return       the output as a result.
      */
     public static <I, O> Result<O> $$(Function<I, O> func, I input) {
         return applySafely(func, input);
@@ -517,6 +533,15 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @return        the output as a result.
      */
     public static <I1, I2, O> Result<O> $$(BiFunction<I1, I2, O> func, I1 input1, I2 input2) {
         return applySafely(func, input1, input2);
@@ -524,6 +549,17 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @return        the output as a result.
      */
     public static <I1, I2, I3, O> Result<O> $$(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
         return applySafely(func, input1, input2, input3);
@@ -531,6 +567,19 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @return        the output as a result.
      */
     public static <I1, I2, I3, I4, O> Result<O> $$(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
         return applySafely(func, input1, input2, input3, input4);
@@ -538,6 +587,21 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @return        the output as a result.
      */
     public static <I1, I2, I3, I4, I5, O> Result<O> $$(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) {
         return applySafely(func, input1, input2, input3, input4, input5);
@@ -545,6 +609,23 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @return        the output as a result.
      */
     public static <I1, I2, I3, I4, I5, I6, O> Result<O> $$(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) {
         return applySafely(func, input1, input2, input3, input4, input5, input6);
@@ -552,6 +633,11 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <O>  the output data type.
+     * 
+     * @param func  the supplier.
+     * @return      the output as a result.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <O> Result<O> applySafely(Supplier<O> func) {
@@ -562,6 +648,11 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <O>  the output data type.
+     * 
+     * @param ref  the reference.
+     * @return     the output value.
      */
     public static <O> Result<O> applySafely(Ref<O> ref) {
         return ref.asResult();
@@ -569,6 +660,13 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I>  the input data type.
+     * @param <O>  the output data type.
+     * 
+     * @param func   the function.
+     * @param input  the input to be applied to.
+     * @return       the output as a result.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <I, O> Result<O> applySafely(Function<I, O> func, I input) {
@@ -579,6 +677,15 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @return        the output as a result.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <I1, I2, O> Result<O> applySafely(BiFunction<I1, I2, O> func, I1 input1, I2 input2) {
@@ -589,6 +696,17 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @return        the output as a result.
      */
     public static <I1, I2, I3, O> Result<O> applySafely(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
         return func.applySafely(input1, input2, input3);
@@ -596,6 +714,19 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @return        the output as a result.
      */
     public static <I1, I2, I3, I4, O> Result<O> applySafely(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
         return func.applySafely(input1, input2, input3, input4);
@@ -603,6 +734,21 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @return        the output as a result.
      */
     public static <I1, I2, I3, I4, I5, O> Result<O> applySafely(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) {
         return func.applySafely(input1, input2, input3, input4, input5);
@@ -610,6 +756,23 @@ public interface Apply {
     
     /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @return        the output as a result.
      */
     public static <I1, I2, I3, I4, I5, I6, O> Result<O> applySafely(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) {
         return func.applySafely(input1, input2, input3, input4, input5, input6);
@@ -618,6 +781,12 @@ public interface Apply {
     // == $$$ ==
     /**
      * Apply the function safely (might throw exception).
+     * 
+     * @param <O>  the output data type.
+     * 
+     * @param func  the supplier.
+     * @return      the output as a result.
+     * @throws Exception  the exception from the supplier.
      */
     public static <O> O applyUnsafe(Supplier<O> func) throws Exception {
         if (func instanceof Func0)
@@ -627,6 +796,14 @@ public interface Apply {
     
     /**
      * Apply the function safely (might throw exception).
+     * 
+     * @param <I>  the input data type.
+     * @param <O>  the output data type.
+     * 
+     * @param func   the function.
+     * @param input  the input 1 to be applied to.
+     * @return       the output as a result.
+     * @throws Exception  the exception from the function.
      */
     public static <I, O> O $$$(Function<I, O> func, I input) throws Exception {
         if (func instanceof Func1)
@@ -636,6 +813,16 @@ public interface Apply {
     
     /**
      * Apply the function safely (might throw exception).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @return        the output as a result.
+     * @throws Exception  the exception from the function.
      */
     public static <I1, I2, O> O $$$(BiFunction<I1, I2, O> func, I1 input1, I2 input2) throws Exception {
         if (func instanceof Func2)
@@ -645,6 +832,18 @@ public interface Apply {
     
     /**
      * Apply the function safely (might throw exception).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @return        the output as a result.
+     * @throws Exception  the exception from the function.
      */
     public static <I1, I2, I3, O> O $$$(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) throws Exception {
         return func.applyUnsafe(input1, input2, input3);
@@ -652,6 +851,20 @@ public interface Apply {
     
     /**
      * Apply the function safely (might throw exception).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @return        the output as a result.
+     * @throws Exception  the exception from the function.
      */
     public static <I1, I2, I3, I4, O> O $$$(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) throws Exception {
         return func.applyUnsafe(input1, input2, input3, input4);
@@ -659,6 +872,22 @@ public interface Apply {
     
     /**
      * Apply the function safely (might throw exception).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @return        the output as a result.
+     * @throws Exception  the exception from the function.
      */
     public static <I1, I2, I3, I4, I5, O> O $$$(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) throws Exception {
         return func.applyUnsafe(input1, input2, input3, input4, input5);
@@ -666,6 +895,24 @@ public interface Apply {
     
     /**
      * Apply the function safely (might throw exception).
+     * 
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <O>    the output data type.
+     * 
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @return        the output as a result.
+     * @throws Exception  the exception from the function.
      */
     public static <I1, I2, I3, I4, I5, I6, O> O $$$(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) throws Exception {
         return func.applyUnsafe(input1, input2, input3, input4, input5, input6);

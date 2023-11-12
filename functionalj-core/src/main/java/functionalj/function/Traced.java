@@ -26,6 +26,11 @@ package functionalj.function;
 import functionalj.supportive.CallerId;
 import lombok.val;
 
+/**
+ * This class offer a way to make it easy to debug lambda by adding name and trace location to them.
+ *
+ * @author NawaMan
+ */
 public interface Traced {
     
     /**
@@ -33,8 +38,14 @@ public interface Traced {
      *
      * @return the location.
      */
-    public String getLocation();
+    public String location();
     
+    /**
+     * Extract the location string from StackTraceElement.
+     * 
+     * @param  caller  the caller element.
+     * @return         the location string.
+     */
     public static String extractLocationString(StackTraceElement caller) {
         return caller.getClassName() + "#" + caller.getLineNumber();
     }
@@ -42,8 +53,8 @@ public interface Traced {
     /**
      * Add name to the given predicate.
      *
-     * @param name
-     * @param check
+     * @param name   the name of the predicate.
+     * @param check  the predicate body.
      * @return the named predicate.
      */
     public static <T> Annotated.Predicate<T> predicate(String name, java.util.function.Predicate<T> check) {
@@ -58,6 +69,12 @@ public interface Traced {
     
     /**
      * Add name to the given predicate.
+     * 
+     * @param <T>  the data type to be check.
+     * 
+     * @param name  the name of the predicate.
+     * @param check the predicate body.
+     * @return the named predicate.
      */
     public static <T> Annotated.Predicate<T> Predicate(String name, java.util.function.Predicate<T> check) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -65,7 +82,10 @@ public interface Traced {
     }
     
     /**
-     * Add name to the given predicate.
+     * Add name to the given BiPredicate.
+     * 
+     * @param check  the predicate body.
+     * @return the named predicate.
      */
     public static <T> Annotated.Predicate<T> Predicate(java.util.function.Predicate<T> check) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -73,7 +93,11 @@ public interface Traced {
     }
     
     /**
-     * Add name to the given supplier.
+     * Add name to the given Supplier.
+     * 
+     * @param name     the name of the supplier.
+     * @param supplier the supplier body.
+     * @return the named supplier.
      */
     public static <T> Annotated.Supplier<T> supplier(String name, java.util.function.Supplier<T> supplier) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -82,6 +106,10 @@ public interface Traced {
     
     /**
      * Add name to the given supplier.
+     * 
+     * @param supplier  the supplier body.
+     * @param <T>       the type of the data to be supplied.
+     * @return          the named supplier.
      */
     public static <T> Annotated.Supplier<T> supplier(java.util.function.Supplier<T> supplier) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -90,6 +118,11 @@ public interface Traced {
     
     /**
      * Add name to the given supplier.
+     * 
+     * @param name      the name of the supplier.
+     * @param supplier  the supplier body.
+     * @param <T>       the type of the data to be supplied.
+     * @return          the named supplier.
      */
     public static <T> Annotated.Supplier<T> Supplier(String name, java.util.function.Supplier<T> supplier) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -98,6 +131,10 @@ public interface Traced {
     
     /**
      * Add name to the given supplier.
+     * 
+     * @param supplier  the supplier body.
+     * @param <T>       the type of the data to be supplied.
+     * @return          the named supplier.
      */
     public static <T> Annotated.Supplier<T> Supplier(java.util.function.Supplier<T> supplier) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -106,6 +143,10 @@ public interface Traced {
     
     /**
      * Add name to the given runnable.
+     * 
+     * @param name      the name of the runnable.
+     * @param runnable  the supper body.
+     * @return          the named runnable.
      */
     public static Annotated.Runnable runnable(String name, java.lang.Runnable runnable) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -114,6 +155,9 @@ public interface Traced {
     
     /**
      * Add name to the given runnable.
+     * 
+     * @param runnable  the runnable body.
+     * @return          the named runnable.
      */
     public static Annotated.Runnable runnable(java.lang.Runnable runnable) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -122,6 +166,10 @@ public interface Traced {
     
     /**
      * Add name to the given runnable.
+     * 
+     * @param name      the name of the runnable.
+     * @param runnable  the runnable body.
+     * @return          the named runnable.
      */
     public static Annotated.Runnable Runnable(String name, java.lang.Runnable runnable) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -130,6 +178,9 @@ public interface Traced {
     
     /**
      * Add name to the given runnable.
+     * 
+     * @param runnable  the runnable body.
+     * @return          the named runnable.
      */
     public static Annotated.Runnable Runnable(java.lang.Runnable runnable) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -138,6 +189,10 @@ public interface Traced {
     
     /**
      * Add name to the given consumer.
+     * 
+     * @param name      the name of the consumer.
+     * @param consumer  the consumer body.
+     * @return          the named consumer.
      */
     public static <T> Annotated.Consumer<T> consumer(String name, java.util.function.Consumer<T> consumer) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -146,6 +201,9 @@ public interface Traced {
     
     /**
      * Add name to the given consumer.
+     * 
+     * @param consumer  the consumer body.
+     * @return          the named consumer.
      */
     public static <T> Annotated.Consumer<T> consumer(java.util.function.Consumer<T> consumer) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -154,6 +212,10 @@ public interface Traced {
     
     /**
      * Add name to the given consumer.
+     * 
+     * @param name      the name of the consumer.
+     * @param consumer  the consumer body.
+     * @return          the named consumer.
      */
     public static <T> Annotated.Consumer<T> Consumer(String name, java.util.function.Consumer<T> consumer) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
@@ -162,6 +224,9 @@ public interface Traced {
     
     /**
      * Add name to the given consumer.
+     * 
+     * @param consumer  the consumer body.
+     * @return          the named consumer.
      */
     public static <T> Annotated.Consumer<T> Consumer(java.util.function.Consumer<T> consumer) {
         val location = CallerId.instance.trace(Traced::extractLocationString);

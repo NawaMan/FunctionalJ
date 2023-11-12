@@ -41,6 +41,8 @@ import lombok.val;
 
 /**
  * Classes implementing this interface know how to access to a double value.
+ * 
+ * @param <HOST> the host of the access.
  */
 public interface DoubleAccess<HOST> extends NumberAccess<HOST, Double, DoubleAccess<HOST>>, ToDoubleFunction<HOST>, ConcreteAccess<HOST, Double, DoubleAccess<HOST>> {
     
@@ -1002,6 +1004,8 @@ public interface DoubleAccess<HOST> extends NumberAccess<HOST, Double, DoubleAcc
      * &lt;i&gt;x&lt;/i&gt; near 0, the exact sum of
      * {@code expm1(x)}&nbsp;+&nbsp;1 is much closer to the true
      * result of &lt;i&gt;e&lt;/i&gt;&lt;sup&gt;x&lt;/sup&gt; than {@code exp(x)}.
+     * 
+     * @return the value <i>e</i><sup>{@code x}</sup>&nbsp;-&nbsp;1.
      */
     public default DoubleAccessPrimitive<HOST> expm1() {
         return host -> {
@@ -1040,6 +1044,8 @@ public interface DoubleAccess<HOST> extends NumberAccess<HOST, Double, DoubleAcc
      *
      * &lt;p&gt;The computed result must be within 1 ulp of the exact result.
      * Results must be semi-monotonic.
+     * 
+     * @return the value ln({@code x}&nbsp;+&nbsp;1), the natural
      */
     public default DoubleAccessPrimitive<HOST> log1p() {
         return host -> {
@@ -1047,32 +1053,82 @@ public interface DoubleAccess<HOST> extends NumberAccess<HOST, Double, DoubleAcc
             return Math.log1p(doubleValue);
         };
     }
-    // TODO - Add more
-    // Math.addExact((int)0, (int)0)
-    // Math.addExact((long)0, (long)0)
-    // Math.decrementExact((int)0)
-    // Math.decrementExact((long)0)
-    // Math.incrementExact((int)0)
-    // Math.incrementExact((long)0)
-    // Math.multiplyExact(int, int)
-    // Math.multiplyExact(long, long)
-    // Math.negateExact(int)
-    // Math.negateExact(long)
-    // Math.subtractExact(int, int)
-    // Math.subtractExact(long, long)
-    // Math.toIntExact(0)
-    // TODO - Add more.
-    // Math.acos(doubleValue)
-    // Math.asin(doubleValue)
-    // Math.tan(doubleValue)
-    // Math.tan2(doubleValue)
-    // Math.cos(doubleValue)
-    // Math.cosh(doubleValue)
-    // Math.sin(doubleValue)
-    // Math.sinh(doubleValue)
-    // Math.tan(doubleValue)
-    // Math.tanh(doubleValue)
-    // 
-    // Math.toDegrees(doubleValue)
-    // Math.toRadians(doubleValue)
+    
+    public default DoubleAccessPrimitive<HOST> acos() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.acos(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> asin() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.asin(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> atan() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.atan(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> cos() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.cos(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> cosh() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.cosh(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> sin() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.sin(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> sinh() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.sinh(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> tan() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.tan(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> tanh() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.tanh(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> toDegrees() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.toDegrees(doubleValue);
+        };
+    }
+    
+    public default DoubleAccessPrimitive<HOST> toRadians() {
+        return host -> {
+            double doubleValue = access(this, host);
+            return Math.toRadians(doubleValue);
+        };
+    }
+    
 }

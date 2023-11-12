@@ -560,9 +560,13 @@ public class StrFuncs {
      * &lt;li&gt;assertEquals("--hello--there-$$SS-", template("--$Hello--$There-$$$SS-", str -&gt; str.toLowerCase()));&lt;/li&gt;
      * &lt;li&gt;assertEquals("--hello--there-$0S-",  template("--$Hello--$There-$0S-",   str -&gt; str.toLowerCase()))&lt;/li&gt;
      * &lt;/ol&gt;
+     * 
+     * @param template  the template string.
+     * @param replacer  the replacer function.
+     * @return          the result string.
      */
-    public static String template(String str, Func1<String, Object> replacer) {
-        return template((CharSequence) str, replacer);
+    public static String template(String template, Func1<String, Object> replacer) {
+        return template((CharSequence) template, replacer);
     }
     
     public static String template(CharSequence str, Func1<String, Object> replacer) {

@@ -23,14 +23,30 @@
 // ============================================================================
 package functionalj.function;
 
+/**
+ * Abstract class for function that is annotated (named or traced).
+ */
 public abstract class Annotated implements Named, Traced {
     
     private final String toString;
     
+    /**
+     * Construct an {@link Annotated} function.
+     * 
+     * @param  type  the type of the function.
+     * @param  name  the name of the function.
+     **/
     protected Annotated(String type, String name) {
         this(type, name, null);
     }
     
+    /**
+     * Construct an {@link Annotated} function.
+     * 
+     * @param  type      the type of the function.
+     * @param  name      the name of the function.
+     * @param  location  the location of the function.
+     **/
     protected Annotated(String type, String name, String location) {
         this.toString = type + prefixWhenNotBlank("::", name) + prefixWhenNotBlank("@", location);
     }
@@ -39,14 +55,17 @@ public abstract class Annotated implements Named, Traced {
         return ((location != null) && !location.isEmpty()) ? prefix + location : "";
     }
     
-    public final String getName() {
+    /** @return  the name of this annotated function. **/
+    public final String name() {
         return this.toString.replaceFirst("^.*::", "").replaceFirst("^(.*)(@.*)$", "$1");
     }
     
-    public final String getLocation() {
+    /** @return  the location of this annotated function. **/
+    public final String location() {
         return this.toString.replaceFirst("^.*::", "").replaceFirst("^.*@", "");
     }
     
+    @Override
     public final String toString() {
         return toString;
     }
@@ -60,6 +79,10 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the predicate.
+         * @param location  the location of the predicate.
+         * @param check     the predicate body.
          */
         public Predicate(String name, String location, java.util.function.Predicate<T> check) {
             super("Predicate", name, location);
@@ -68,6 +91,9 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name   the name of the predicate.
+         * @param check  the predicate body.
          */
         public Predicate(String name, java.util.function.Predicate<T> check) {
             super("Predicate", name);
@@ -89,6 +115,10 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the bi-predicate.
+         * @param location  the location of the bi-predicate.
+         * @param check     the bi-predicate body.
          */
         public BiPredicate(String name, String location, java.util.function.BiPredicate<T, U> check) {
             super("BiPredicate", name, location);
@@ -97,6 +127,9 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name   the name of the bi-predicate.
+         * @param check  the bi-predicate body.
          */
         public BiPredicate(String name, java.util.function.BiPredicate<T, U> check) {
             super("BiPredicate", name);
@@ -118,6 +151,10 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the runnable.
+         * @param location  the location of the runnable.
+         * @param runnable  the runnable body.
          */
         public Runnable(String name, String location, java.lang.Runnable runnable) {
             super("Runnable", name, location);
@@ -126,6 +163,9 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the runnable.
+         * @param runnable  the runnable body.
          */
         public Runnable(String name, java.lang.Runnable runnable) {
             super("Runnable", name);
@@ -147,6 +187,10 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the supplier.
+         * @param location  the location of the supplier.
+         * @param supplier  the supplier body.
          */
         public Supplier(String name, String location, java.util.function.Supplier<T> supplier) {
             super("Supplier", name, location);
@@ -155,6 +199,9 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the supplier.
+         * @param supplier  the supplier body.
          */
         public Supplier(String name, java.util.function.Supplier<T> supplier) {
             super("Supplier", name);
@@ -176,6 +223,10 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the supplier.
+         * @param location  the location of the supplier.
+         * @param consumer  the consumer body.
          */
         public Consumer(String name, String location, java.util.function.Consumer<T> consumer) {
             super("Consumer", name, location);
@@ -184,6 +235,9 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the supplier.
+         * @param consumer  the consumer body.
          */
         public Consumer(String name, java.util.function.Consumer<T> consumer) {
             super("Consumer", name);
@@ -202,12 +256,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the Func0.
+         * @param location  the location of the Func0.
+         * @param func      the Func0 body.
          */
         public Func0(String name, String location, functionalj.function.Func0<OUTPUT> func) {
             super("F0", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func0.
+         * @param func  the Func0 body.
+         */
         public Func0(String name, functionalj.function.Func0<OUTPUT> func) {
             super("F0", name);
             this.func = func;
@@ -225,12 +289,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the Func1.
+         * @param location  the location of the Func1.
+         * @param func      the Func1 body.
          */
         public Func1(String name, String location, functionalj.function.Func1<INPUT, OUTPUT> func) {
             super("F1", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func1.
+         * @param func  the Func1 body.
+         */
         public Func1(String name, functionalj.function.Func1<INPUT, OUTPUT> func) {
             super("F1", name);
             this.func = func;
@@ -248,12 +322,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the Func2.
+         * @param location  the location of the Func2.
+         * @param func      the Func2 body.
          */
         public Func2(String name, String location, functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> func) {
             super("F2", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func2.
+         * @param func  the Func2 body.
+         */
         public Func2(String name, functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> func) {
             super("F2", name);
             this.func = func;
@@ -271,12 +355,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the Func3.
+         * @param location  the location of the Func3.
+         * @param func      the Func3 body.
          */
         public Func3(String name, String location, functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func) {
             super("F3", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func3.
+         * @param func  the Func3 body.
+         */
         public Func3(String name, functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func) {
             super("F3", name);
             this.func = func;
@@ -294,12 +388,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the Func4.
+         * @param location  the location of the Func4.
+         * @param func      the Func4 body.
          */
         public Func4(String name, String location, functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func) {
             super("F3", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func4.
+         * @param func  the Func4 body.
+         */
         public Func4(String name, functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func) {
             super("F3", name);
             this.func = func;
@@ -317,12 +421,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the Func5.
+         * @param location  the location of the Func5.
+         * @param func      the Func5 body.
          */
         public Func5(String name, String location, functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func) {
             super("F5", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func5.
+         * @param func  the Func5 body.
+         */
         public Func5(String name, functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func) {
             super("F5", name);
             this.func = func;
@@ -340,12 +454,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the Func6.
+         * @param location  the location of the Func6.
+         * @param func      the Func6 body.
          */
         public Func6(String name, String location, functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func) {
             super("F6", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func6.
+         * @param func  the Func6 body.
+         */
         public Func6(String name, functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func) {
             super("F6", name);
             this.func = func;
@@ -363,12 +487,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the FuncUnit0.
+         * @param location  the location of the FuncUnit0.
+         * @param func      the FuncUnit0 body.
          */
         public FuncUnit0(String name, String location, functionalj.function.FuncUnit0 func) {
             super("FU0", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit0.
+         * @param func  the FuncUnit0 body.
+         */
         public FuncUnit0(String name, functionalj.function.FuncUnit0 func) {
             super("FU0", name);
             this.func = func;
@@ -386,12 +520,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the FuncUnit1.
+         * @param location  the location of the FuncUnit1.
+         * @param func      the FuncUnit1 body.
          */
         public FuncUnit1(String name, String location, functionalj.function.FuncUnit1<INPUT> func) {
             super("FU1", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit1.
+         * @param func  the FuncUnit1 body.
+         */
         public FuncUnit1(String name, functionalj.function.FuncUnit1<INPUT> func) {
             super("FU1", name);
             this.func = func;
@@ -409,12 +553,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the FuncUnit2.
+         * @param location  the location of the FuncUnit2.
+         * @param func      the FuncUnit2 body.
          */
         public FuncUnit2(String name, String location, functionalj.function.FuncUnit2<INPUT1, INPUT2> func) {
             super("FU2", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit2.
+         * @param func  the FuncUnit2 body.
+         */
         public FuncUnit2(String name, functionalj.function.FuncUnit2<INPUT1, INPUT2> func) {
             super("FU2", name);
             this.func = func;
@@ -432,12 +586,22 @@ public abstract class Annotated implements Named, Traced {
         
         /**
          * Constructors.
+         * 
+         * @param name      the name of the FuncUnit3.
+         * @param location  the location of the FuncUnit3.
+         * @param func      the FuncUnit3 body.
          */
         public FuncUnit3(String name, String location, functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> func) {
             super("FU3", name, location);
             this.func = func;
         }
         
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit3.
+         * @param func  the FuncUnit3 body.
+         */
         public FuncUnit3(String name, functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> func) {
             super("FU3", name);
             this.func = func;

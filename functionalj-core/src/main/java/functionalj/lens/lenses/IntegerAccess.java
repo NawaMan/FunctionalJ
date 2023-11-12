@@ -44,6 +44,8 @@ import lombok.val;
 
 /**
  * Classes implementing this interface know how to access to an integer value.
+ * 
+ * @param <HOST> the host of the access.
  */
 public interface IntegerAccess<HOST> extends NumberAccess<HOST, Integer, IntegerAccess<HOST>>, ToIntFunction<HOST>, ConcreteAccess<HOST, Integer, IntegerAccess<HOST>> {
     

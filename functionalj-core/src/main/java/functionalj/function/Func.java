@@ -24,6 +24,7 @@
 package functionalj.function;
 
 import static java.util.Arrays.stream;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,6 +39,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
 import functionalj.environments.Env;
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
@@ -420,7 +422,8 @@ public interface Func {
     
     /**
      * Constructs a Func1 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
@@ -432,7 +435,8 @@ public interface Func {
     
     /**
      * Constructs a Func2 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -445,7 +449,8 @@ public interface Func {
     
     /**
      * Constructs a Func3 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -459,7 +464,8 @@ public interface Func {
     
     /**
      * Constructs a Func4 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -474,7 +480,8 @@ public interface Func {
     
     /**
      * Constructs a Func5 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -490,7 +497,8 @@ public interface Func {
     
     /**
      * Constructs a Func6 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -635,7 +643,8 @@ public interface Func {
     // == F (traced location) - with name ==
     /**
      * Constructs a Func0 from supplier or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func0.
@@ -646,7 +655,8 @@ public interface Func {
     
     /**
      * Constructs a Func1 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
      * @param  <OUTPUT>  the output data type.
@@ -658,7 +668,8 @@ public interface Func {
     
     /**
      * Constructs a Func2 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -671,7 +682,8 @@ public interface Func {
     
     /**
      * Constructs a Func3 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -685,7 +697,8 @@ public interface Func {
     
     /**
      * Constructs a Func4 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -700,7 +713,8 @@ public interface Func {
     
     /**
      * Constructs a Func5 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -716,7 +730,8 @@ public interface Func {
     
     /**
      * Constructs a Func6 from function or lambda.
-     *
+     * 
+     * @param  name      the function name.
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
      * @param  <INPUT2>  the second input data type.
@@ -1189,4 +1204,5 @@ public interface Func {
     public static <INPUT> Predicate<INPUT> toPredicate(Func1<INPUT, Boolean> func) {
         return input -> func.apply(input);
     }
+    
 }

@@ -106,6 +106,8 @@ public interface StreamPlus<DATA> extends Stream<DATA>, AsStreamPlus<DATA>, Stre
     
     /**
      * Throw a no more element exception. This is used for generator.
+     * 
+     * @param  <TARGET>  the type of the no more element.
      */
     public static <TARGET> TARGET noMoreElement() throws NoMoreResultException {
         return SupplierBackedIterator.noMoreElement();
