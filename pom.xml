@@ -28,8 +28,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
         <!--==== SKIP ====-->
-        <gpg.skip>true</gpg.skip>
-        <sona.skip>true</sona.skip>
+        <gpg.signing.skip>true</gpg.signing.skip>
+        <sona.staging.skip>true</sona.staging.skip>
         
         <!--==== SECRET ====-->
         <gpg.executable>/usr/bin/gpg</gpg.executable>
@@ -220,7 +220,7 @@
                         <configuration>
                             <keyname>${gpg.keyname}</keyname>
                             <passphrase>${gpg.passphrase}</passphrase>
-                            <skip>${gpg.skip}</skip>
+                            <skip>${gpg.signing.skip}</skip>
                         </configuration>
                     </execution>
                 </executions>
@@ -236,7 +236,7 @@
                     <serverId>ossrh</serverId>
                     <nexusUrl>${sona.site}</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    <skipNexusStagingDeployMojo>${sona.skip}</skipNexusStagingDeployMojo>
+                    <skipNexusStagingDeployMojo>${sona.staging.skip}</skipNexusStagingDeployMojo>
                 </configuration>
             </plugin>
         </plugins>
