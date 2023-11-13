@@ -30,13 +30,15 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static org.junit.Assert.assertEquals;
+
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
 import org.junit.Test;
+
 import lombok.val;
 
 public class ClosureConstantTest {
