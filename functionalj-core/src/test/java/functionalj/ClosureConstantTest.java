@@ -27,6 +27,7 @@ import static functionalj.function.Func.cacheFor;
 import static functionalj.function.Func.lazy;
 import static functionalj.function.Func.withIndex;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static org.junit.Assert.assertEquals;
 import java.util.Map;
@@ -43,12 +44,24 @@ public class ClosureConstantTest {
     // Index
     @Test
     public void testWithIndex() {
-        assertEquals("0: One, 1: Two, 2: Three", asList("One", "Two", "Three").stream().map(withIndex((str, idx) -> idx + ": " + str)).collect(joining(", ")));
+        assertEquals(
+                "0: One, 1: Two, 2: Three", 
+                asList  ("One", "Two", "Three")
+                .stream ()
+                .map    (withIndex((str, idx) -> idx + ": " + str))
+                .collect(joining(", ")));
     }
     
     @Test
     public void testGrouping() {
-        assertEquals("[One, Two], [Three, Four], [Five]", asList("One", "Two", "Three", "Four", "Five").stream().collect(Collectors.groupingBy(withIndex((str, idx) -> (idx / 2)))).values().stream().map(each -> each.toString()).collect(joining(", ")));
+        assertEquals(
+                "[One, Two], [Three, Four], [Five]", 
+                asList  ("One", "Two", "Three", "Four", "Five")
+                .stream ()
+                .collect(groupingBy(withIndex((str, idx) -> (idx / 2)))).values()
+                .stream ()
+                .map    (each -> each.toString())
+                .collect(joining(", ")));
     }
     
     // Cache
