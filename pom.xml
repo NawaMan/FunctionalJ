@@ -50,8 +50,8 @@
         
         <!-- DEPENDENCY -->
         <lombok.version>1.18.28</lombok.version>
-        <defaultj.version>2.2.0.5</defaultj.version>
-        <nullablej.version>4.0.6.0</nullablej.version>
+        <defaultj.version>2.3.1</defaultj.version>
+        <nullablej.version>4.1.0</nullablej.version>
         
         <!-- TEST -->
         <junit.version>4.13.2</junit.version>
