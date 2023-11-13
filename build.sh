@@ -105,9 +105,9 @@ function build-release() {
     
     # Start of the subshell because the build.sh will be replaced with the one from release (older code).
     (
-        act git checkout release
-        
         VERSION=$(current-version)
+        
+        act git checkout release
         act git merge master --no-ff -m '"Release: v$VERSION"'
         
         ensure-variable NAWAMAN_SIGNING_PASSWORD
