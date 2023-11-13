@@ -176,26 +176,19 @@ function ensure-variable() {
 }
 
 function current-version() {
-    if [[ ! -f $VERSION_NUMBER_FILE ]]; then
-        echo "The file '$VERSION_NUMBER_FILE' does not exists or not accessible."
-        show-help
-        exit -1
-    fi
-    if [[ ! -f $BUILD_NUMBER_FILE ]]; then
-        echo "The file '$BUILD_NUMBER_FILE' does not exists or not accessible."
-        show-help
+    if [[ ! -f "$VERSION_FILE" ]]; then
+        echo "The file '$VERSION_FILE' does not exists or not accessible."
         exit -1
     fi
     
-    local CURRENT_BRANCH=$(git branch --show-current)
+    local IS_RELEASE=$(is-release)
     local SNAPSHOT='-SNAPSHOT'
-    if [[ "$CURRENT_BRANCH" == "release" ]]; then
+    if [[ "$IS_RELEASE" == "true" ]]; then
         SNAPSHOT=""
     fi
     
-    local PROJECT_VERSION=$(cat $VERSION_NUMBER_FILE)
-    local PROJECT_BUILD=$(cat $BUILD_NUMBER_FILE)
-    echo -n "$PROJECT_VERSION"."$PROJECT_BUILD""$SNAPSHOT"
+    local PROJECT_VERSION=$(cat "$VERSION_FILE")$(cat "$VERSION_SUFFIX_FILE")"$SNAPSHOT"
+    echo -n "$PROJECT_VERSION"
 }
 
 function ensure-java-version() {
@@ -272,22 +265,6 @@ function is-release() {
     fi
     
     echo "false"
-}
-
-function current-version() {
-    if [[ ! -f "$VERSION_FILE" ]]; then
-        echo "The file '$VERSION_FILE' does not exists or not accessible."
-        exit -1
-    fi
-    
-    local IS_RELEASE=$(is-release)
-    local SNAPSHOT='-SNAPSHOT'
-    if [[ "$IS_RELEASE" == "true" ]]; then
-        SNAPSHOT=""
-    fi
-    
-    local PROJECT_VERSION=$(cat "$VERSION_FILE")$(cat "$VERSION_SUFFIX_FILE")"$SNAPSHOT"
-    echo -n "$PROJECT_VERSION"
 }
 
 function set-version() {
