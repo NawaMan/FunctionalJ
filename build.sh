@@ -237,15 +237,6 @@ function untracted-files() {
 }
 
 function is-release() {
-    if [[ "$IS_RELEASE" == "true" ]]; then
-        echo "true"
-        return
-    fi
-    if [[ "$IS_RELEASE" == "false" ]]; then
-        echo "false"
-        return
-    fi
-    
     local CURRENT_BRANCH=$(git branch --show-current)
     if [[ "$CURRENT_BRANCH" == "release" ]]; then
         echo "true"
