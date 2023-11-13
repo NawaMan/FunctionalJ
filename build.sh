@@ -103,16 +103,16 @@ function build-release() {
         exit -1
     fi
     
+    ensure-variable NAWAMAN_SIGNING_PASSWORD
+    ensure-variable NAWAMAN_SONATYPE_PASSWORD
+    ensure-variable "$(cat key-var-name)"
+    
     # Start of the subshell because the build.sh will be replaced with the one from release (older code).
     (
         VERSION=$(current-version | sed 's/-SNAPSHOT//')
         
         act git checkout release
         act git merge master --no-ff -m '"Release: v$VERSION"'
-        
-        ensure-variable NAWAMAN_SIGNING_PASSWORD
-        ensure-variable NAWAMAN_SONATYPE_PASSWORD
-        ensure-variable "$(cat key-var-name)"
         
         set-version
         act ./mvnw \
