@@ -136,7 +136,7 @@ function build-release() {
         act inc-version --build
         NEW_VERSION=$(current-version)
         act git add version
-        act git commit -m '"Update the version to: v$NEW_VERSION"'
+        act git commit -m '"Update the version to: v$NEW_VERSION-SNAPSHOT"'
         act git push
         
         echo -e "\033[32mDone for now.\033[0m"
