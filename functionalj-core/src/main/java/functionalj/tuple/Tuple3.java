@@ -710,7 +710,29 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         return Tuple.of(new1, new2, new3);
     }
     
-    // == drop ==
+    //== drop each ==
+    
+    /** @return  a {@link Tuple2} with values from this tuple except for the first element. */
+    public default Tuple2<T2, T3> drop() {
+        return drop1();
+    }
+    
+    /** @return  a {@link Tuple2} with values from this tuple except for the first element. */
+    public default Tuple2<T2, T3> drop1() {
+        return Tuple.of(_2(), _3());
+    }
+    
+    /** @return  a {@link Tuple2} with values from this tuple except for the second element. */
+    public default Tuple2<T1, T3> drop2() {
+        return Tuple.of(_1(), _3());
+    }
+    
+    /** @return  a {@link Tuple2} with values from this tuple except for the third element. */
+    public default Tuple2<T1, T2> drop3() {
+        return Tuple.of(_1(), _2());
+    }
+    
+    //== drop - mix ==
     
     /**
      * Drops specified elements from this tuple, returning a new tuple with the remaining elements.
