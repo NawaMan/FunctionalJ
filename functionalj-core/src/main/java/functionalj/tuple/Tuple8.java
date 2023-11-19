@@ -35,6 +35,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Drop;
+import functionalj.function.Func0;
+import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
@@ -149,6 +151,498 @@ public interface Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> extends Pipeable<Tuple8<
     public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> __data() {
         return this;
     }
+    
+    //== extendWith ==
+    
+    /**
+     * Creates a new {@link Tuple9} by appending an additional element to this tuple.
+     * 
+     * @param <T9>  the nine element.
+     * @param _9    the ninth element of the tuple
+     * @return a new {@link Tuple9} object consisting of the elements of this tuple followed by the new element
+     */
+    public default <T9> Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> extendWith(T9 _9) {
+        return new Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>() {
+            @Override
+            public T1 _1() {
+                return Tuple8.this._1();
+            }
+            @Override
+            public T2 _2() {
+                return Tuple8.this._2();
+            }
+            @Override
+            public T3 _3() {
+                return Tuple8.this._3();
+            }
+            @Override
+            public T4 _4() {
+                return Tuple8.this._4();
+            }
+            public T5 _5() {
+                return Tuple8.this._5();
+            }
+            @Override
+            public T6 _6() {
+                return Tuple8.this._6();
+            }
+            @Override
+            public T7 _7() {
+                return Tuple8.this._7();
+            }
+            @Override
+            public T8 _8() {
+                return Tuple8.this._8();
+            }
+            @Override
+            public T9 _9() {
+                return _9;
+            }
+        };
+    }
+    
+    //== with ==
+    
+    /**
+     * Delegated Tuple.
+     * 
+     * @param <D1>  the first data type.
+     * @param <D2>  the second data type.
+     * @param <D3>  the third data type.
+     * @param <D4>  the forth data type.
+     * @param <D5>  the fifth data type.
+     * @param <D6>  the sixth data type.
+     * @param <D7>  the seventh data type.
+     * @param <D8>  the eighth data type.
+     */
+    public static class Delegated<D1, D2, D3, D4, D5, D6, D7, D8> 
+                implements Tuple8<D1, D2, D3, D4, D5, D6, D7, D8> {
+        
+        private final Tuple8<D1, D2, D3, D4, D5, D6, D7, D8> source;
+        
+        Delegated(Tuple8<D1, D2, D3, D4, D5, D6, D7, D8> source) {
+            this.source = source;
+        }
+        @Override
+        public D1 _1() {
+            return __data()._1();
+        }
+        @Override
+        public D2 _2() {
+            return source._2();
+        }
+        @Override
+        public D3 _3() {
+            return source._3();
+        }
+        @Override
+        public D4 _4() {
+            return source._4();
+        }
+        @Override
+        public D5 _5() {
+            return source._5();
+        }
+        @Override
+        public D6 _6() {
+            return source._6();
+        }
+        @Override
+        public D7 _7() {
+            return source._7();
+        }
+        @Override
+        public D8 _8() {
+            return source._8();
+        }
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the first element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the first element of the tuple
+     * @return            the newly {@link Tuple8} with values from this tuple except for the first element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with1(T1 newValue) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T1 _1() {
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the first element of this tuple with the result of a supplier function.
+     *
+     * @param supplier1   a supplier ({@link Func0}) of T1 that provides the new first element
+     * @return            the newly {@link Tuple8} with values from this tuple except for the first element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with1(Func0<T1> supplier1) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T1 _1() {
+                val newValue = supplier1.get();
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by applying a function to the second element of this tuple.
+     *
+     * @param  function1   a function ({@link Func1}) function that takes and returns a T1, applied to the first element of this tuple
+     * @return             the newly {@link Tuple8} with values from this tuple except for the first element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with1(Func1<T1, T1> function1) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T1 _1() {
+                val oldValue = Tuple8.this._1();
+                val newValue = function1.apply(oldValue);
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the second element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the second element of the tuple
+     * @return            the newly {@link Tuple8} with values from this tuple except for the second element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with2(T2 newValue) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T2 _2() {
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the second element of this tuple with the result of a supplier function.
+     *
+     * @param supplier2   a supplier ({@link Func0}) of T2 that provides the new second element
+     * @return            the newly {@link Tuple8} with values from this tuple except for the second element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with2(Func0<T2> supplier2) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T2 _2() {
+                val newValue = supplier2.get();
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by applying a function to the second element of this tuple.
+     *
+     * @param  function2   a function ({@link Func1}) function that takes and returns a T2, applied to the second element of this tuple
+     * @return             the newly {@link Tuple8} with values from this tuple except for the second element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with2(Func1<T2, T2> function2) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T2 _2() {
+                val oldValue = Tuple8.this._2();
+                val newValue = function2.apply(oldValue);
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the third element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the third element of the tuple
+     * @return            the newly {@link Tuple8} with values from this tuple except for the third element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with3(T3 newValue) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T3 _3() {
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the third element of this tuple with the result of a supplier function.
+     *
+     * @param supplier3   a supplier ({@link Func0}) of T3 that provides the new third element
+     * @return            the newly {@link Tuple8} with values from this tuple except for the third element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with3(Func0<T3> supplier3) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T3 _3() {
+                val newValue = supplier3.get();
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by applying a function to the second element of this tuple.
+     *
+     * @param  function3   a function ({@link Func1}) function that takes and returns a T3, applied to the third element of this tuple
+     * @return             the newly {@link Tuple8} with values from this tuple except for the third element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with3(Func1<T3, T3> function3) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T3 _3() {
+                val oldValue = Tuple8.this._3();
+                val newValue = function3.apply(oldValue);
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the forth element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the forth element of the tuple
+     * @return            the newly {@link Tuple8} with values from this tuple except for the forth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with4(T4 newValue) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T4 _4() {
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the forth element of this tuple with the result of a supplier function.
+     *
+     * @param supplier4   a supplier ({@link Func0}) of T4 that provides the new forth element
+     * @return            the newly {@link Tuple8} with values from this tuple except for the forth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with4(Func0<T4> supplier4) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T4 _4() {
+                val newValue = supplier4.get();
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by applying a function to the second element of this tuple.
+     *
+     * @param  function4   a function ({@link Func1}) function that takes and returns a T4, applied to the forth element of this tuple
+     * @return             the newly {@link Tuple8} with values from this tuple except for the forth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with4(Func1<T4, T4> function4) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T4 _4() {
+                val oldValue = Tuple8.this._4();
+                val newValue = function4.apply(oldValue);
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the fifth element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the fifth element of the tuple
+     * @return            the newly {@link Tuple8} with values from this tuple except for the fifth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with5(T5 newValue) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T5 _5() {
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the fifth element of this tuple with the result of a supplier function.
+     *
+     * @param supplier5   a supplier ({@link Func0}) of T5 that provides the new fifth element
+     * @return            the newly {@link Tuple8} with values from this tuple except for the fifth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with5(Func0<T5> supplier5) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T5 _5() {
+                val newValue = supplier5.get();
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by applying a function to the second element of this tuple.
+     *
+     * @param  function5   a function ({@link Func1}) function that takes and returns a T5, applied to the fifth element of this tuple
+     * @return             the newly {@link Tuple8} with values from this tuple except for the fifth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with5(Func1<T5, T5> function5) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T5 _5() {
+                val oldValue = Tuple8.this._5();
+                val newValue = function5.apply(oldValue);
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the sixth element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the sixth element of the tuple
+     * @return            the newly {@link Tuple8} with values from this tuple except for the sixth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with6(T6 newValue) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T6 _6() {
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the sixth element of this tuple with the result of a supplier function.
+     *
+     * @param supplier6   a supplier ({@link Func0}) of T6 that provides the new sixth element
+     * @return            the newly {@link Tuple8} with values from this tuple except for the sixth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with6(Func0<T6> supplier6) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T6 _6() {
+                val newValue = supplier6.get();
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by applying a function to the second element of this tuple.
+     *
+     * @param  function6   a function ({@link Func1}) function that takes and returns a T6, applied to the sixth element of this tuple
+     * @return             the newly {@link Tuple8} with values from this tuple except for the sixth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with6(Func1<T6, T6> function6) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T6 _6() {
+                val oldValue = Tuple8.this._6();
+                val newValue = function6.apply(oldValue);
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the seventh element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the seventh element of the tuple
+     * @return            the newly {@link Tuple8} with values from this tuple except for the seventh element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with7(T7 newValue) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T7 _7() {
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the seventh element of this tuple with the result of a supplier function.
+     *
+     * @param supplier7   a supplier ({@link Func0}) of T7 that provides the new seventh element
+     * @return            the newly {@link Tuple8} with values from this tuple except for the seventh element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with7(Func0<T7> supplier7) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T7 _7() {
+                val newValue = supplier7.get();
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by applying a function to the second element of this tuple.
+     *
+     * @param  function7   a function ({@link Func1}) function that takes and returns a T7, applied to the seventh element of this tuple
+     * @return             the newly {@link Tuple8} with values from this tuple except for the seventh element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with7(Func1<T7, T7> function7) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T7 _7() {
+                val oldValue = Tuple8.this._7();
+                val newValue = function7.apply(oldValue);
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the eighth element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the eighth element of the tuple
+     * @return            the newly {@link Tuple8} with values from this tuple except for the eighth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with8(T8 newValue) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T8 _8() {
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by replacing the eighth element of this tuple with the result of a supplier function.
+     *
+     * @param supplier8   a supplier ({@link Func0}) of T8 that provides the new eighth element
+     * @return            the newly {@link Tuple8} with values from this tuple except for the eighth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with8(Func0<T8> supplier8) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T8 _8() {
+                val newValue = supplier8.get();
+                return newValue;
+            }
+        };
+    }
+    
+    /**
+     * Creates a new {@link Tuple8} by applying a function to the second element of this tuple.
+     *
+     * @param  function8   a function ({@link Func1}) function that takes and returns a T8, applied to the eighth element of this tuple
+     * @return             the newly {@link Tuple8} with values from this tuple except for the eighth element.
+     */
+    public default Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> with8(Func1<T8, T8> function8) {
+        return new Tuple8.Delegated<T1, T2, T3, T4, T5, T6, T7, T8>(this) {
+            @Override
+            public T8 _8() {
+                val oldValue = Tuple8.this._8();
+                val newValue = function8.apply(oldValue);
+                return newValue;
+            }
+        };
+    }
+    
+    
+    //== Converts ==
     
     /**
      * Converts this tuple into an immutable form, {@link ImmutableTuple8}.
