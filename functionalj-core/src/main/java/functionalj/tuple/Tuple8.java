@@ -9048,7 +9048,54 @@ public interface Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> extends Pipeable<Tuple8<
         return Tuple.of(new1, new2, new3, new4, new5, new6, new7, new8);
     }
     
-    // == drop ==
+    //== drop each ==
+    
+    /** @return  a {@link Tuple7} with values from this tuple except for the first element. */
+    public default Tuple7<T2, T3, T4, T5, T6, T7, T8> drop() {
+        return drop1();
+    }
+    
+    /** @return  a {@link Tuple7} with values from this tuple except for the first element. */
+    public default Tuple7<T2, T3, T4, T5, T6, T7, T8> drop1() {
+        return Tuple.of(_2(), _3(), _4(), _5(), _6(), _7(), _8());
+    }
+    
+    /** @return  a {@link Tuple7} with values from this tuple except for the second element. */
+    public default Tuple7<T1, T3, T4, T5, T6, T7, T8> drop2() {
+        return Tuple.of(_1(), _3(), _4(), _5(), _6(), _7(), _8());
+    }
+    
+    /** @return  a {@link Tuple7} with values from this tuple except for the third element. */
+    public default Tuple7<T1, T2, T4, T5, T6, T7, T8> drop3() {
+        return Tuple.of(_1(), _2(), _4(), _5(), _6(), _7(), _8());
+    }
+    
+    /** @return  a {@link Tuple7} with values from this tuple except for the forth element. */
+    public default Tuple7<T1, T2, T3, T5, T6, T7, T8> drop4() {
+        return Tuple.of(_1(), _2(), _3(), _5(), _6(), _7(), _8());
+    }
+    
+    /** @return  a {@link Tuple7} with values from this tuple except for the fifth element. */
+    public default Tuple7<T1, T2, T3, T4, T6, T7, T8> drop5() {
+        return Tuple.of(_1(), _2(), _3(), _4(), _6(), _7(), _8());
+    }
+    
+    /** @return  a {@link Tuple7} with values from this tuple except for the sixth element. */
+    public default Tuple7<T1, T2, T3, T4, T5, T7, T8> drop6() {
+        return Tuple.of(_1(), _2(), _3(), _4(), _5(), _7(), _8());
+    }
+    
+    /** @return  a {@link Tuple7} with values from this tuple except for the seventh element. */
+    public default Tuple7<T1, T2, T3, T4, T5, T6, T8> drop7() {
+        return Tuple.of(_1(), _2(), _3(), _4(), _5(), _6(), _8());
+    }
+    
+    /** @return  a {@link Tuple7} with values from this tuple except for the eighth element. */
+    public default Tuple7<T1, T2, T3, T4, T5, T6, T7> drop8() {
+        return Tuple.of(_1(), _2(), _3(), _4(), _5(), _6(), _7());
+    }
+    
+    //== drop - mix ==
     
     /**
      * Drops specified elements from this tuple, returning a new tuple with the remaining elements.
