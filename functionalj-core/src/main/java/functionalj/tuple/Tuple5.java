@@ -1240,7 +1240,39 @@ public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, 
         return Tuple.of(new1, new2, new3, new4, new5);
     }
     
-    // == drop ==
+    //== drop each ==
+    
+    /** @return  a {@link Tuple4} with values from this tuple except for the first element. */
+    public default Tuple4<T2, T3, T4, T5> drop() {
+        return drop1();
+    }
+    
+    /** @return  a {@link Tuple4} with values from this tuple except for the first element. */
+    public default Tuple4<T2, T3, T4, T5> drop1() {
+        return Tuple.of(_2(), _3(), _4(), _5());
+    }
+    
+    /** @return  a {@link Tuple4} with values from this tuple except for the second element. */
+    public default Tuple4<T1, T3, T4, T5> drop2() {
+        return Tuple.of(_1(), _3(), _4(), _5());
+    }
+    
+    /** @return  a {@link Tuple4} with values from this tuple except for the third element. */
+    public default Tuple4<T1, T2, T4, T5> drop3() {
+        return Tuple.of(_1(), _2(), _4(), _5());
+    }
+    
+    /** @return  a {@link Tuple4} with values from this tuple except for the forth element. */
+    public default Tuple4<T1, T2, T3, T5> drop4() {
+        return Tuple.of(_1(), _2(), _3(), _5());
+    }
+    
+    /** @return  a {@link Tuple4} with values from this tuple except for the fifth element. */
+    public default Tuple4<T1, T2, T3, T4> drop5() {
+        return Tuple.of(_1(), _2(), _3(), _4());
+    }
+    
+    //== drop - mix ==
     
     /**
      * Drops specified elements from this tuple, returning a new tuple with the remaining elements.
