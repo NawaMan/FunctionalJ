@@ -33,7 +33,4 @@ public interface ToTuple2Func<D, T1, T2> extends Func1<D, Tuple2<T1, T2>> {
         return this.then(reducer::applyTo);
     }
     
-    public default Func1<D, T1> thenDrop() {
-        return this.then(Tuple2::drop);
-    }
 }

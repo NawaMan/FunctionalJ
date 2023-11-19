@@ -58,7 +58,7 @@ public class ImmutableTuple4<T1, T2, T3, T4> implements Tuple4<T1, T2, T3, T4> {
     
     @Override
     public String toString() {
-        return Tuple.toString(this);
+        return "(" + _1 + "," + _2 + "," + _3 + "," + _4 + ")";
     }
     
     @Override

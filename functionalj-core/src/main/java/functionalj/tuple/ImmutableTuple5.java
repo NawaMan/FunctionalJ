@@ -65,7 +65,7 @@ public class ImmutableTuple5<T1, T2, T3, T4, T5> implements Tuple5<T1, T2, T3, T
     
     @Override
     public String toString() {
-        return Tuple.toString(this);
+        return "(" + _1 + "," + _2 + "," + _3 + "," + _4 + "," + _5 + ")";
     }
     
     @Override

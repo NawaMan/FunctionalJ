@@ -1812,7 +1812,7 @@ public class FuncListTest {
         run(FuncList.of(Two, Three, Four, Eleven), list -> {
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            val range = list.calculate(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
+            val range = list.calculate(maxLength, minLength).mapWith((max, min) -> max - min).intValue();
             assertEquals(3, range);
         });
     }
@@ -1833,7 +1833,7 @@ public class FuncListTest {
             val sumLength = new SumLength();
             val avgLength = new AvgLength();
             val minLength = new MinLength();
-            val value = list.calculate(sumLength, avgLength, minLength).mapTo((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
+            val value = list.calculate(sumLength, avgLength, minLength).mapWith((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
             assertAsString("sum: 18, avg: 4, min: 3", value);
         });
     }
@@ -1856,7 +1856,7 @@ public class FuncListTest {
             val avgLength = new AvgLength();
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            val value = list.calculate(sumLength, avgLength, minLength, maxLength).mapTo((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
+            val value = list.calculate(sumLength, avgLength, minLength, maxLength).mapWith((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
             assertAsString("sum: 18, avg: 4, min: 3, max: 6", value);
         });
     }
@@ -1879,7 +1879,7 @@ public class FuncListTest {
             val avgLength = new AvgLength();
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            val value = list.calculate(sumLength, avgLength, minLength, maxLength, sumLength).mapTo((sum, avg, min, max, sum2) -> {
+            val value = list.calculate(sumLength, avgLength, minLength, maxLength, sumLength).mapWith((sum, avg, min, max, sum2) -> {
                 return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2;
             });
             assertAsString("sum: 18, avg: 4, min: 3, max: 6, sum2: 18", value);
@@ -1904,7 +1904,7 @@ public class FuncListTest {
             val avgLength = new AvgLength();
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            val value = list.calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength).mapTo((sum, avg, min, max, sum2, avg2) -> {
+            val value = list.calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength).mapWith((sum, avg, min, max, sum2, avg2) -> {
                 return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2 + ", avg2: " + avg2;
             });
             assertAsString("sum: 18, avg: 4, min: 3, max: 6, sum2: 18, avg2: 4", value);
@@ -2597,7 +2597,13 @@ public class FuncListTest {
     @Test
     public void testRestate_sieveOfEratosthenes() {
         run(IntFuncList.naturalNumbers(300).filter(theInteger.thatIsNotOne()).boxed().toFuncList(), list -> {
-            assertAsString("[" + "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, " + "101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, " + "211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293" + "]", list.restate((head, tail) -> tail.filter(x -> x % head != 0)));
+            assertAsString(
+                    "[" 
+                        + "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, " 
+                        + "101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, " 
+                        + "211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293" 
+                    + "]", 
+                    list.restate((head, tail) -> tail.filter(x -> x % head != 0)));
         });
     }
     

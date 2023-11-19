@@ -1962,7 +1962,7 @@ public class DoubleFuncListTest {
         run(DoubleFuncList.of(Two, Three, Four, Eleven), list -> {
             val minDouble = new MinDouble();
             val maxDouble = new MaxDouble();
-            val range = list.calculate(minDouble, maxDouble).mapTo((max, min) -> max.getAsDouble() + min.getAsDouble());
+            val range = list.calculate(minDouble, maxDouble).mapWith((max, min) -> max.getAsDouble() + min.getAsDouble());
             assertAsString("11.0", range);
         });
     }
@@ -1983,7 +1983,7 @@ public class DoubleFuncListTest {
             val sumHalf = new SumHalf();
             val average = new Average();
             val minDouble = new MinDouble();
-            val value = list.calculate(sumHalf, average, minDouble).mapTo((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
+            val value = list.calculate(sumHalf, average, minDouble).mapWith((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
             assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0]", value);
         });
     }
@@ -2006,7 +2006,7 @@ public class DoubleFuncListTest {
             val average = new Average();
             val minDouble = new MinDouble();
             val maxDouble = new MaxDouble();
-            val value = list.calculate(sumHalf, average, minDouble, maxDouble).mapTo((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
+            val value = list.calculate(sumHalf, average, minDouble, maxDouble).mapWith((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
             assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0], max: OptionalDouble[11.0]", value);
         });
     }
@@ -2031,7 +2031,7 @@ public class DoubleFuncListTest {
             val minDouble = new MinDouble();
             val maxDouble = new MaxDouble();
             val sumDouble = new SumDouble();
-            val value = list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble).mapTo((sumH, avg, min, max, sumI) -> {
+            val value = list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble).mapWith((sumH, avg, min, max, sumI) -> {
                 return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI;
             });
             assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0], max: OptionalDouble[11.0], max: OptionalDouble[11.0], sumI: 20.0", value);
@@ -2060,7 +2060,7 @@ public class DoubleFuncListTest {
             val maxDouble = new MaxDouble();
             val sumDouble = new SumDouble();
             val avgDouble = new AvgDouble();
-            val value = list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble, avgDouble).mapTo((sumH, avg, min, max, sumI, avgI) -> {
+            val value = list.calculate(sumHalf, average, minDouble, maxDouble, sumDouble, avgDouble).mapWith((sumH, avg, min, max, sumI, avgI) -> {
                 return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI + ", avgI: " + avgI;
             });
             assertAsString("sumH: 10.0, avg: OptionalDouble[20.0], min: OptionalDouble[0.0], max: OptionalDouble[11.0], max: OptionalDouble[11.0], sumI: 20.0, avgI: OptionalDouble[5.0]", value);

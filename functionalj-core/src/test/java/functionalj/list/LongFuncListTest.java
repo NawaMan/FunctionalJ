@@ -1967,7 +1967,7 @@ public class LongFuncListTest {
         run(LongFuncList.of(Two, Three, Four, Eleven), list -> {
             val minLong = new MinLong();
             val maxLong = new MaxLong();
-            val range = list.calculate(minLong, maxLong).mapTo((max, min) -> max.getAsLong() + min.getAsLong());
+            val range = list.calculate(minLong, maxLong).mapWith((max, min) -> max.getAsLong() + min.getAsLong());
             assertAsString("11", range);
         });
     }
@@ -1988,7 +1988,7 @@ public class LongFuncListTest {
             val sumHalf = new SumHalf();
             val average = new Average();
             val minLong = new MinLong();
-            val value = list.calculate(sumHalf, average, minLong).mapTo((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
+            val value = list.calculate(sumHalf, average, minLong).mapWith((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
             assertAsString("sumH: 10, " + "avg: OptionalDouble[20.0], " + "min: OptionalLong[0]", value);
         });
     }
@@ -2011,7 +2011,7 @@ public class LongFuncListTest {
             val average = new Average();
             val minLong = new MinLong();
             val maxLong = new MaxLong();
-            val value = list.calculate(sumHalf, average, minLong, maxLong).mapTo((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
+            val value = list.calculate(sumHalf, average, minLong, maxLong).mapWith((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
             assertAsString("sumH: 10, " + "avg: OptionalDouble[20.0], " + "min: OptionalLong[0], " + "max: OptionalLong[11]", value);
         });
     }
@@ -2036,7 +2036,7 @@ public class LongFuncListTest {
             val minLong = new MinLong();
             val maxLong = new MaxLong();
             val sumLong = new SumLong();
-            val value = list.calculate(sumHalf, average, minLong, maxLong, sumLong).mapTo((sumH, avg, min, max, sumI) -> {
+            val value = list.calculate(sumHalf, average, minLong, maxLong, sumLong).mapWith((sumH, avg, min, max, sumI) -> {
                 return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI;
             });
             assertAsString("sumH: 10, " + "avg: OptionalDouble[20.0], " + "min: OptionalLong[0], " + "max: OptionalLong[11], " + "max: OptionalLong[11], " + "sumI: 20", value);
@@ -2065,7 +2065,7 @@ public class LongFuncListTest {
             val maxLong = new MaxLong();
             val sumLong = new SumLong();
             val avgLong = new AvgLong();
-            val value = list.calculate(sumHalf, average, minLong, maxLong, sumLong, avgLong).mapTo((sumH, avg, min, max, sumI, avgI) -> {
+            val value = list.calculate(sumHalf, average, minLong, maxLong, sumLong, avgLong).mapWith((sumH, avg, min, max, sumI, avgI) -> {
                 return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI + ", avgI: " + avgI;
             });
             assertAsString("sumH: 10, " + "avg: OptionalDouble[20.0], " + "min: OptionalLong[0], " + "max: OptionalLong[11], " + "max: OptionalLong[11], " + "sumI: 20, " + "avgI: OptionalLong[5]", value);
