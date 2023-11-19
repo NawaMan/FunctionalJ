@@ -31,11 +31,11 @@ import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Drop;
+import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
@@ -128,211 +128,178 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     }
     
     /**
-     * Creates a new {@link Tuple3} by replacing the first element of this tuple with a new element.
+     * Delegated Tuple.
      * 
-     * @param new1  the new element to replace the first element of the tuple
-     * @return a new {@link Tuple3} object with the first element replaced by the new element and the second element remaining the same
+     * @param <D1>  the first data type.
+     * @param <D2>  the second data type.
+     * @param <D3>  the third data type.
      */
-    public default Tuple3<T1, T2, T3> with1(T1 new1) {
-        return new Tuple3<T1, T2, T3>() {
+    public static class Delegated<D1, D2, D3> 
+                implements Tuple3<D1, D2, D3> {
+        
+        private final Tuple3<D1, D2, D3> source;
+        
+        Delegated(Tuple3<D1, D2, D3> source) {
+            this.source = source;
+        }
+        @Override
+        public D1 _1() {
+            return __data()._1();
+        }
+        @Override
+        public D2 _2() {
+            return source._2();
+        }
+        @Override
+        public D3 _3() {
+            return source._3();
+        }
+    }
+    
+    /**
+     * Creates a new {@link Tuple3} by replacing the first element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the first element of the tuple
+     * @return            the newly {@link Tuple3} with values from this tuple except for the first element.
+     */
+    public default Tuple3<T1, T2, T3> with1(T1 newValue) {
+        return new Tuple3.Delegated<T1, T2, T3>(this) {
             @Override
             public T1 _1() {
-                return new1;
-            }
-            @Override
-            public T2 _2() {
-                return Tuple3.this._2();
-            }
-            @Override
-            public T3 _3() {
-                return Tuple3.this._3();
+                return newValue;
             }
         };
     }
     
     /**
      * Creates a new {@link Tuple3} by replacing the first element of this tuple with the result of a supplier function.
-     * 
-     * @param supplier1  a {@link Supplier} of T1 that provides the new first element
-     * @return a new {@link Tuple3} object with the first element replaced by the result of the supplier function and the second element remaining the same
+     *
+     * @param supplier1   a supplier ({@link Func0}) of T1 that provides the new first element
+     * @return            the newly {@link Tuple3} with values from this tuple except for the first element.
      */
-    public default Tuple3<T1, T2, T3> with1(Supplier<T1> supplier1) {
-        return new Tuple3<T1, T2, T3>() {
+    public default Tuple3<T1, T2, T3> with1(Func0<T1> supplier1) {
+        return new Tuple3.Delegated<T1, T2, T3>(this) {
             @Override
             public T1 _1() {
-                return supplier1.get();
-            }
-            @Override
-            public T2 _2() {
-                return Tuple3.this._2();
-            }
-            @Override
-            public T3 _3() {
-                return Tuple3.this._3();
+                val newValue = supplier1.get();
+                return newValue;
             }
         };
     }
     
     /**
-     * Creates a new {@link Tuple3} by applying a function to the first element of this tuple.
-     * 
-     * @param function1  a {@link Func1} function that takes and returns a T1, applied to the first element of this tuple
-     * @return a new {@link Tuple3} object with the first element transformed by the provided function and the second element remaining the same
+     * Creates a new {@link Tuple3} by applying a function to the second element of this tuple.
+     *
+     * @param  function1   a function ({@link Func1}) function that takes and returns a T1, applied to the first element of this tuple
+     * @return             the newly {@link Tuple3} with values from this tuple except for the first element.
      */
     public default Tuple3<T1, T2, T3> with1(Func1<T1, T1> function1) {
-        return new Tuple3<T1, T2, T3>() {
+        return new Tuple3.Delegated<T1, T2, T3>(this) {
             @Override
             public T1 _1() {
-                return function1.apply(Tuple3.this._1());
-            }
-            @Override
-            public T2 _2() {
-                return Tuple3.this._2();
-            }
-            @Override
-            public T3 _3() {
-                return Tuple3.this._3();
+                val oldValue = Tuple3.this._1();
+                val newValue = function1.apply(oldValue);
+                return newValue;
             }
         };
     }
     
     /**
      * Creates a new {@link Tuple3} by replacing the second element of this tuple with a new element.
-     * 
-     * @param new2  the new element to replace the second element of the tuple
-     * @return a new {@link Tuple3} object with the second element replaced by the new element and the first element remaining the same
+     *
+     * @param newValue  the new value to replace the second element of the tuple
+     * @return            the newly {@link Tuple3} with values from this tuple except for the second element.
      */
-    public default Tuple3<T1, T2, T3> with2(T2 new2) {
-        return new Tuple3<T1, T2, T3>() {
-            @Override
-            public T1 _1() {
-                return Tuple3.this._1();
-            }
+    public default Tuple3<T1, T2, T3> with2(T2 newValue) {
+        return new Tuple3.Delegated<T1, T2, T3>(this) {
             @Override
             public T2 _2() {
-                return new2;
-            }
-            @Override
-            public T3 _3() {
-                return Tuple3.this._3();
+                return newValue;
             }
         };
     }
     
     /**
      * Creates a new {@link Tuple3} by replacing the second element of this tuple with the result of a supplier function.
-     * 
-     * @param supplier2  a {@link Supplier} of T2 that provides the new second element
-     * @return a new {@link Tuple3} object with the second element replaced by the result of the supplier function and the first element remaining the same
+     *
+     * @param supplier2   a supplier ({@link Func0}) of T2 that provides the new second element
+     * @return            the newly {@link Tuple3} with values from this tuple except for the second element.
      */
-    public default Tuple3<T1, T2, T3> with2(Supplier<T2> supplier2) {
-        return new Tuple3<T1, T2, T3>() {
-            @Override
-            public T1 _1() {
-                return Tuple3.this._1();
-            }
+    public default Tuple3<T1, T2, T3> with2(Func0<T2> supplier2) {
+        return new Tuple3.Delegated<T1, T2, T3>(this) {
             @Override
             public T2 _2() {
-                return supplier2.get();
-            }
-            @Override
-            public T3 _3() {
-                return Tuple3.this._3();
+                val newValue = supplier2.get();
+                return newValue;
             }
         };
     }
     
     /**
      * Creates a new {@link Tuple3} by applying a function to the second element of this tuple.
-     * 
-     * @param function2  a {@link Func1} function that takes and returns a T2, applied to the second element of this tuple
-     * @return a new {@link Tuple3} object with the second element transformed by the provided function and the first element remaining the same
+     *
+     * @param  function2   a function ({@link Func1}) function that takes and returns a T2, applied to the second element of this tuple
+     * @return             the newly {@link Tuple3} with values from this tuple except for the second element.
      */
     public default Tuple3<T1, T2, T3> with2(Func1<T2, T2> function2) {
-        return new Tuple3<T1, T2, T3>() {
-            @Override
-            public T1 _1() {
-                return Tuple3.this._1();
-            }
+        return new Tuple3.Delegated<T1, T2, T3>(this) {
             @Override
             public T2 _2() {
-                return function2.apply(Tuple3.this._2());
-            }
-            @Override
-            public T3 _3() {
-                return Tuple3.this._3();
+                val oldValue = Tuple3.this._2();
+                val newValue = function2.apply(oldValue);
+                return newValue;
             }
         };
     }
     
     /**
-     * Creates a new {@link Tuple3} by replacing the second element of this tuple with a new element.
-     * 
-     * @param new3  the new element to replace the second element of the tuple
-     * @return a new {@link Tuple3} object with the second element replaced by the new element and the first element remaining the same
+     * Creates a new {@link Tuple3} by replacing the third element of this tuple with a new element.
+     *
+     * @param newValue  the new value to replace the third element of the tuple
+     * @return            the newly {@link Tuple3} with values from this tuple except for the third element.
      */
-    public default Tuple3<T1, T2, T3> with3(T3 new3) {
-        return new Tuple3<T1, T2, T3>() {
-            @Override
-            public T1 _1() {
-                return Tuple3.this._1();
-            }
-            @Override
-            public T2 _2() {
-                return Tuple3.this._2();
-            }
+    public default Tuple3<T1, T2, T3> with3(T3 newValue) {
+        return new Tuple3.Delegated<T1, T2, T3>(this) {
             @Override
             public T3 _3() {
-                return new3;
+                return newValue;
             }
         };
     }
     
     /**
-     * Creates a new {@link Tuple3} by replacing the second element of this tuple with the result of a supplier function.
-     * 
-     * @param supplier2  a {@link Supplier} of T3 that provides the new second element
-     * @return a new {@link Tuple3} object with the second element replaced by the result of the supplier function and the first element remaining the same
+     * Creates a new {@link Tuple3} by replacing the third element of this tuple with the result of a supplier function.
+     *
+     * @param supplier3   a supplier ({@link Func0}) of T3 that provides the new third element
+     * @return            the newly {@link Tuple3} with values from this tuple except for the third element.
      */
-    public default Tuple3<T1, T2, T3> with3(Supplier<T3> supplier3) {
-        return new Tuple3<T1, T2, T3>() {
-            @Override
-            public T1 _1() {
-                return Tuple3.this._1();
-            }
-            @Override
-            public T2 _2() {
-                return Tuple3.this._2();
-            }
+    public default Tuple3<T1, T2, T3> with3(Func0<T3> supplier3) {
+        return new Tuple3.Delegated<T1, T2, T3>(this) {
             @Override
             public T3 _3() {
-                return supplier3.get();
+                val newValue = supplier3.get();
+                return newValue;
             }
         };
     }
     
     /**
      * Creates a new {@link Tuple3} by applying a function to the second element of this tuple.
-     * 
-     * @param function3  a {@link Func1} function that takes and returns a T3, applied to the second element of this tuple
-     * @return a new {@link Tuple3} object with the second element transformed by the provided function and the first element remaining the same
+     *
+     * @param  function3   a function ({@link Func1}) function that takes and returns a T3, applied to the third element of this tuple
+     * @return             the newly {@link Tuple3} with values from this tuple except for the third element.
      */
     public default Tuple3<T1, T2, T3> with3(Func1<T3, T3> function3) {
-        return new Tuple3<T1, T2, T3>() {
-            @Override
-            public T1 _1() {
-                return Tuple3.this._1();
-            }
-            @Override
-            public T2 _2() {
-                return Tuple3.this._2();
-            }
+        return new Tuple3.Delegated<T1, T2, T3>(this) {
             @Override
             public T3 _3() {
-                return function3.apply(Tuple3.this._3());
+                val oldValue = Tuple3.this._3();
+                val newValue = function3.apply(oldValue);
+                return newValue;
             }
         };
     }
+    
     
     //== Converts ==
     
