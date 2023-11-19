@@ -274,8 +274,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
     /**
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
-     * @param  function4   a function ({@link Func1}) function that takes and returns a T1, applied to the first element of this tuple
-     * @return            the newly {@link Tuple10} with values from this tuple except for the first element.
+     * @param  function1   a function ({@link Func1}) function that takes and returns a T1, applied to the first element of this tuple
+     * @return             the newly {@link Tuple10} with values from this tuple except for the first element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with1(Func1<T1, T1> function1) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
@@ -322,8 +322,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
     /**
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
-     * @param  function4   a function ({@link Func1}) function that takes and returns a T2, applied to the second element of this tuple
-     * @return            the newly {@link Tuple10} with values from this tuple except for the second element.
+     * @param  function2   a function ({@link Func1}) function that takes and returns a T2, applied to the second element of this tuple
+     * @return             the newly {@link Tuple10} with values from this tuple except for the second element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with2(Func1<T2, T2> function2) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
@@ -370,8 +370,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
     /**
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
-     * @param  function4   a function ({@link Func1}) function that takes and returns a T3, applied to the third element of this tuple
-     * @return            the newly {@link Tuple10} with values from this tuple except for the third element.
+     * @param  function3   a function ({@link Func1}) function that takes and returns a T3, applied to the third element of this tuple
+     * @return             the newly {@link Tuple10} with values from this tuple except for the third element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with3(Func1<T3, T3> function3) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
@@ -419,7 +419,7 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
      * @param  function4   a function ({@link Func1}) function that takes and returns a T4, applied to the forth element of this tuple
-     * @return            the newly {@link Tuple10} with values from this tuple except for the forth element.
+     * @return             the newly {@link Tuple10} with values from this tuple except for the forth element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with4(Func1<T4, T4> function4) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
@@ -466,8 +466,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
     /**
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
-     * @param  function4   a function ({@link Func1}) function that takes and returns a T5, applied to the fifth element of this tuple
-     * @return            the newly {@link Tuple10} with values from this tuple except for the fifth element.
+     * @param  function5   a function ({@link Func1}) function that takes and returns a T5, applied to the fifth element of this tuple
+     * @return             the newly {@link Tuple10} with values from this tuple except for the fifth element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with5(Func1<T5, T5> function5) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
@@ -514,8 +514,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
     /**
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
-     * @param  function4   a function ({@link Func1}) function that takes and returns a T6, applied to the sixth element of this tuple
-     * @return            the newly {@link Tuple10} with values from this tuple except for the sixth element.
+     * @param  function6   a function ({@link Func1}) function that takes and returns a T6, applied to the sixth element of this tuple
+     * @return             the newly {@link Tuple10} with values from this tuple except for the sixth element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with6(Func1<T6, T6> function6) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
@@ -562,8 +562,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
     /**
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
-     * @param  function4   a function ({@link Func1}) function that takes and returns a T7, applied to the seventh element of this tuple
-     * @return            the newly {@link Tuple10} with values from this tuple except for the seventh element.
+     * @param  function7   a function ({@link Func1}) function that takes and returns a T7, applied to the seventh element of this tuple
+     * @return             the newly {@link Tuple10} with values from this tuple except for the seventh element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with7(Func1<T7, T7> function7) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
@@ -610,8 +610,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
     /**
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
-     * @param  function4   a function ({@link Func1}) function that takes and returns a T8, applied to the eighth element of this tuple
-     * @return            the newly {@link Tuple10} with values from this tuple except for the eighth element.
+     * @param  function8   a function ({@link Func1}) function that takes and returns a T8, applied to the eighth element of this tuple
+     * @return             the newly {@link Tuple10} with values from this tuple except for the eighth element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with8(Func1<T8, T8> function8) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
@@ -658,8 +658,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
     /**
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
-     * @param  function4   a function ({@link Func1}) function that takes and returns a T9, applied to the ninth element of this tuple
-     * @return            the newly {@link Tuple10} with values from this tuple except for the ninth element.
+     * @param  function9   a function ({@link Func1}) function that takes and returns a T9, applied to the ninth element of this tuple
+     * @return             the newly {@link Tuple10} with values from this tuple except for the ninth element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with9(Func1<T9, T9> function9) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
@@ -706,8 +706,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
     /**
      * Creates a new {@link Tuple10} by applying a function to the second element of this tuple.
      *
-     * @param  function4  a function ({@link Func1}) function that takes and returns a T10, applied to the tenth element of this tuple
-     * @return           the newly {@link Tuple10} with values from this tuple except for the tenth element.
+     * @param  function10  a function ({@link Func1}) function that takes and returns a T10, applied to the tenth element of this tuple
+     * @return            the newly {@link Tuple10} with values from this tuple except for the tenth element.
      */
     public default Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with10(Func1<T10, T10> function10) {
         return new Tuple10.Delegated<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this) {
