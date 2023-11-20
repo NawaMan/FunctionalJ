@@ -25,6 +25,9 @@ package functionalj.tuple;
 
 import java.util.Objects;
 
+import functionalj.function.Func0;
+import functionalj.function.Func1;
+
 /**
  * Represents an immutable 10-element tuple, providing a way to store ten different values of possibly differing types.
  * This class implements {@link Tuple10}, ensuring that the values cannot be modified after creation.
@@ -150,6 +153,157 @@ public class ImmutableTuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> implement
     public T10 _10() {
         return _10;
     }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with1(T1 new1) {
+        return new ImmutableTuple10<>(new1, _2, _3, _4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with1(Func0<T1> supplier1) {
+        return new ImmutableTuple10<>(supplier1.get(), _2, _3, _4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with1(Func1<T1, T1> function1) {
+        return new ImmutableTuple10<>(function1.apply(_1()), _2, _3, _4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with2(T2 new2) {
+        return new ImmutableTuple10<>(_1, new2, _3, _4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with2(Func0<T2> supplier2) {
+        return new ImmutableTuple10<>(_1, supplier2.get(), _3, _4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with2(Func1<T2, T2> function2) {
+        return new ImmutableTuple10<>(_1, function2.apply(_2()), _3, _4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with3(T3 new3) {
+        return new ImmutableTuple10<>(_1, _2, new3, _4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with3(Func0<T3> supplier3) {
+        return new ImmutableTuple10<>(_1, _2, supplier3.get(), _4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with3(Func1<T3, T3> function3) {
+        return new ImmutableTuple10<>(_1, _2, function3.apply(_3()), _4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with4(T4 new4) {
+        return new ImmutableTuple10<>(_1, _2, _3, new4, _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with4(Func0<T4> supplier4) {
+        return new ImmutableTuple10<>(_1, _2, _3, supplier4.get(), _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with4(Func1<T4, T4> function4) {
+        return new ImmutableTuple10<>(_1, _2, _3, function4.apply(_4()), _5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with5(T5 new5) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, new5, _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with5(Func0<T5> supplier5) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, supplier5.get(), _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with5(Func1<T5, T5> function5) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, function5.apply(_5()), _6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with6(T6 new6) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, new6, _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with6(Func0<T6> supplier6) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, supplier6.get(), _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with6(Func1<T6, T6> function6) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, function6.apply(_6()), _7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with7(T7 new7) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, new7, _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with7(Func0<T7> supplier7) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, supplier7.get(), _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with7(Func1<T7, T7> function7) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, function7.apply(_7()), _8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with8(T8 new8) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, _7, new8, _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with8(Func0<T8> supplier8) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, _7, supplier8.get(), _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with8(Func1<T8, T8> function8) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, _7, function8.apply(_8()), _9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with9(T9 new9) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, _7, _8, new9, _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with9(Func0<T9> supplier9) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, _7, _8, supplier9.get(), _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with9(Func1<T9, T9> function9) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, _7, _8, function9.apply(_9()), _10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with10(T10 new10) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, _7, _8, _9, new10);
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with10(Func0<T10> supplier10) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, _7, _8, _9, supplier10.get());
+    }
+    
+    @Override
+    public Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> with10(Func1<T10, T10> function10) {
+        return new ImmutableTuple10<>(_1, _2, _3, _4, _5, _6, _7, _8, _9, function10.apply(_10()));
+    }
+    
     
     @Override
     public String toString() {
