@@ -24,15 +24,33 @@
 package functionalj.tuple;
 
 import java.util.Map;
-import java.util.function.Supplier;
+
+import functionalj.function.Func0;
 import functionalj.function.Func1;
 
+/**
+ * Represents an immutable 2-element tuple, providing a way to store seven different values of possibly differing types.
+ * This class implements {@link Tuple2}, ensuring that the values cannot be modified after creation.
+ * 
+ * @param <T1>  the type of the first element in the tuple
+ * @param <T2>  the type of the second element in the tuple
+ */
 public class ImmutableTuple2<T1, T2> implements Tuple2<T1, T2>, Map.Entry<T1, T2> {
     
+    /** The first element of the tuple. */
     public final T1 _1;
     
+    /** The second element of the tuple. */
     public final T2 _2;
     
+    /**
+     * Constructs an immutable 2-element tuple with the specified values.
+     * Each parameter corresponds to an element in the tuple, with its position in the parameter list 
+     * reflecting its position in the tuple.
+     *
+     * @param _1  the value of the first element
+     * @param _2  the value of the second element
+     */
     public ImmutableTuple2(T1 _1, T2 _2) {
         this._1 = _1;
         this._2 = _2;
@@ -43,10 +61,12 @@ public class ImmutableTuple2<T1, T2> implements Tuple2<T1, T2>, Map.Entry<T1, T2
         this._2 = entry.getValue();
     }
     
+    @Override
     public T1 _1() {
         return _1;
     }
     
+    @Override
     public T2 _2() {
         return _2;
     }
@@ -68,33 +88,64 @@ public class ImmutableTuple2<T1, T2> implements Tuple2<T1, T2>, Map.Entry<T1, T2
     
     @Override
     public Tuple2<T1, T2> with1(T1 new1) {
-        return new ImmutableTuple2<>(new1, _2());
+        return new ImmutableTuple2<>(new1, _2);
     }
     
     @Override
-    public Tuple2<T1, T2> with1(Supplier<T1> supplier1) {
-        return new ImmutableTuple2<>(supplier1.get(), _2());
+    public Tuple2<T1, T2> with1(Func0<T1> supplier1) {
+        return new ImmutableTuple2<>(supplier1.get(), _2);
     }
     
     @Override
     public Tuple2<T1, T2> with1(Func1<T1, T1> function1) {
-        return new ImmutableTuple2<>(function1.apply(_1()), _2());
+        return new ImmutableTuple2<>(function1.apply(_1()), _2);
     }
     
     @Override
     public Tuple2<T1, T2> with2(T2 new2) {
-        return new ImmutableTuple2<>(_1(), new2);
+        return new ImmutableTuple2<>(_1, new2);
     }
     
     @Override
-    public Tuple2<T1, T2> with2(Supplier<T2> supplier2) {
-        return new ImmutableTuple2<>(_1(), supplier2.get());
+    public Tuple2<T1, T2> with2(Func0<T2> supplier2) {
+        return new ImmutableTuple2<>(_1, supplier2.get());
     }
     
     @Override
     public Tuple2<T1, T2> with2(Func1<T2, T2> function2) {
-        return new ImmutableTuple2<>(_1(), function2.apply(_2()));
+        return new ImmutableTuple2<>(_1, function2.apply(_2()));
     }
+    
+    @Override
+    public Tuple2<T1, T2> withFirst(T1 new1) {
+        return new ImmutableTuple2<>(new1, _2);
+    }
+    
+    @Override
+    public Tuple2<T1, T2> withFirst(Func0<T1> supplier1) {
+        return new ImmutableTuple2<>(supplier1.get(), _2);
+    }
+    
+    @Override
+    public Tuple2<T1, T2> withFirst(Func1<T1, T1> function1) {
+        return new ImmutableTuple2<>(function1.apply(_1()), _2);
+    }
+    
+    @Override
+    public Tuple2<T1, T2> withSecond(T2 new2) {
+        return new ImmutableTuple2<>(_1, new2);
+    }
+    
+    @Override
+    public Tuple2<T1, T2> withSecond(Func0<T2> supplier2) {
+        return new ImmutableTuple2<>(_1, supplier2.get());
+    }
+    
+    @Override
+    public Tuple2<T1, T2> withSecond(Func1<T2, T2> function2) {
+        return new ImmutableTuple2<>(_1, function2.apply(_2()));
+    }
+    
     
     @Override
     public String toString() {
