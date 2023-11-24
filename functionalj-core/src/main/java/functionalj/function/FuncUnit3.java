@@ -132,7 +132,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<Object>> forPromise() {
         return (promise1, promise2, promise3) -> {
             val func0 = this.thenReturnNull();
-            return Promise.from(input1 -> promise1, input2 -> promise2, input3 -> promise3, func0);
+            return Promise.from(promise1, promise2, promise3, func0);
         };
     }
     

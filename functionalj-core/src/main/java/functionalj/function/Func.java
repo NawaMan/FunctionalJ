@@ -50,6 +50,12 @@ import lombok.val;
 
 public interface Func {
     
+    
+    
+    //==================================================
+    //== STATIC METHODS ================================
+    //==================================================
+    
     // == Provide different name for more readability ==
     /**
      * A shorter way to use Function.identity() -- alias for itself() and themAll().
@@ -224,6 +230,86 @@ public interface Func {
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return function;
     }
+    
+    /**
+     * Constructs a {@link Func7} from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result {@link Func7}.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> of(Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> function) {
+        return function;
+    }
+    
+    /**
+     * Constructs a {@link Func8} from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result {@link Func8}.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> of(Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> function) {
+        return function;
+    }
+    
+    /**
+     * Constructs a {@link Func9} from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <INPUT9>  the ninth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result {@link Func9}.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> of(Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> function) {
+        return function;
+    }
+    
+    /**
+     * Constructs a {@link Func10} from function or lambda.
+     *
+     * @param  function   the function or lambda.
+     * @param  <INPUT1>   the first input data type.
+     * @param  <INPUT2>   the second input data type.
+     * @param  <INPUT3>   the third input data type.
+     * @param  <INPUT4>   the forth input data type.
+     * @param  <INPUT5>   the fifth input data type.
+     * @param  <INPUT6>   the sixth input data type.
+     * @param  <INPUT7>   the seventh input data type.
+     * @param  <INPUT8>   the eighth input data type.
+     * @param  <INPUT9>   the ninth input data type.
+     * @param  <INPUT10>  the tenth input data type.
+     * @param  <OUTPUT>   the output data type.
+     * @return            the result {@link Func10}.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> of(Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> function) {
+        return function;
+    }
+    
+    //== FuncUnit1 ==
     
     public static <INPUT> FuncUnit1<INPUT> of(FuncUnit1<INPUT> consumer) {
         return FuncUnit1.of(consumer);

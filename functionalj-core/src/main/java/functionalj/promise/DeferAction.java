@@ -40,15 +40,18 @@ import java.util.function.Supplier;
 import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
+import functionalj.function.Func10;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.Func7;
+import functionalj.function.Func8;
+import functionalj.function.Func9;
 import functionalj.function.FuncUnit0;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
-import functionalj.function.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
@@ -146,10 +149,26 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return Race(actions);
     }
     
-    public static <D, T1, T2> DeferAction<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, Func2<T1, T2, D> merger) {
+    //== From - HasPromise ==
+    
+    /**
+     * Creates a {@code DeferAction} from two {@code HasPromise} instances and a {@code Func2} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param merger    the {@code Func2} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2> DeferAction<D> from(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    Func2<T1, T2, D> merger) {
         val merge = (Func1) f((FuncList<Result> results) -> {
-            val result1 = (Result<T1>) results.get(0);
-            val result2 = (Result<T2>) results.get(1);
+            val result1  = (Result<T1>) results.get(0);
+            val result2  = (Result<T2>) results.get(1);
             val mergedResult = Result.ofResults(result1, result2, merger);
             return (Result<D>) mergedResult;
         });
@@ -159,11 +178,27 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
-    public static <D, T1, T2, T3> DeferAction<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, NamedExpression<HasPromise<T3>> promise3, Func3<T1, T2, T3, D> merger) {
+    /**
+     * Creates a {@code DeferAction} from three {@code HasPromise} instances and a {@code Func3} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param merger    the {@code Func3} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3> DeferAction<D> from(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    Func3<T1, T2, T3, D> merger) {
         val merge = (Func1) f((FuncList<Result> results) -> {
-            val result1 = (Result<T1>) results.get(0);
-            val result2 = (Result<T2>) results.get(1);
-            val result3 = (Result<T3>) results.get(2);
+            val result1  = (Result<T1>) results.get(0);
+            val result2  = (Result<T2>) results.get(1);
+            val result3  = (Result<T3>) results.get(2);
             val mergedResult = Result.ofResults(result1, result2, result3, merger);
             return (Result<D>) mergedResult;
         });
@@ -173,12 +208,30 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
-    public static <D, T1, T2, T3, T4> DeferAction<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, NamedExpression<HasPromise<T3>> promise3, NamedExpression<HasPromise<T4>> promise4, Func4<T1, T2, T3, T4, D> merger) {
+    /**
+     * Creates a {@code DeferAction} from four {@code HasPromise} instances and a {@code Func4} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param merger    the {@code Func4} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4> DeferAction<D> from(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    Func4<T1, T2, T3, T4, D> merger) {
         val merge = (Func1) f((FuncList<Result> results) -> {
-            val result1 = (Result<T1>) results.get(0);
-            val result2 = (Result<T2>) results.get(1);
-            val result3 = (Result<T3>) results.get(2);
-            val result4 = (Result<T4>) results.get(3);
+            val result1  = (Result<T1>) results.get(0);
+            val result2  = (Result<T2>) results.get(1);
+            val result3  = (Result<T3>) results.get(2);
+            val result4  = (Result<T4>) results.get(3);
             val mergedResult = Result.ofResults(result1, result2, result3, result4, merger);
             return (Result<D>) mergedResult;
         });
@@ -188,13 +241,33 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
-    public static <D, T1, T2, T3, T4, T5> DeferAction<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, NamedExpression<HasPromise<T3>> promise3, NamedExpression<HasPromise<T4>> promise4, NamedExpression<HasPromise<T5>> promise5, Func5<T1, T2, T3, T4, T5, D> merger) {
+    /**
+     * Creates a {@code DeferAction} from five {@code HasPromise} instances and a {@code Func5} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param merger    the {@code Func5} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5> DeferAction<D> from(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    Func5<T1, T2, T3, T4, T5, D> merger) {
         val merge = (Func1) f((FuncList<Result> results) -> {
-            val result1 = (Result<T1>) results.get(0);
-            val result2 = (Result<T2>) results.get(1);
-            val result3 = (Result<T3>) results.get(2);
-            val result4 = (Result<T4>) results.get(3);
-            val result5 = (Result<T5>) results.get(4);
+            val result1  = (Result<T1>) results.get(0);
+            val result2  = (Result<T2>) results.get(1);
+            val result3  = (Result<T3>) results.get(2);
+            val result4  = (Result<T4>) results.get(3);
+            val result5  = (Result<T5>) results.get(4);
             val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, merger);
             return (Result<D>) mergedResult;
         });
@@ -204,24 +277,243 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
-    public static <D, T1, T2, T3, T4, T5, T6> DeferAction<D> from(NamedExpression<HasPromise<T1>> promise1, NamedExpression<HasPromise<T2>> promise2, NamedExpression<HasPromise<T3>> promise3, NamedExpression<HasPromise<T4>> promise4, NamedExpression<HasPromise<T5>> promise5, NamedExpression<HasPromise<T6>> promise6, Func6<T1, T2, T3, T4, T5, T6, D> merger) {
+    /**
+     * Creates a {@code DeferAction} from six {@code HasPromise} instances and a {@code Func6} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param promise6  the sixth promise.
+     * @param merger    the {@code Func6} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6> DeferAction<D> from(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    Func6<T1, T2, T3, T4, T5, T6, D> merger) {
         val merge = (Func1) f((FuncList<Result> results) -> {
-            val result1 = (Result<T1>) results.get(0);
-            val result2 = (Result<T2>) results.get(1);
-            val result3 = (Result<T3>) results.get(2);
-            val result4 = (Result<T4>) results.get(3);
-            val result5 = (Result<T5>) results.get(4);
-            val result6 = (Result<T6>) results.get(5);
+            val result1  = (Result<T1>) results.get(0);
+            val result2  = (Result<T2>) results.get(1);
+            val result3  = (Result<T3>) results.get(2);
+            val result4  = (Result<T4>) results.get(3);
+            val result5  = (Result<T5>) results.get(4);
+            val result6  = (Result<T6>) results.get(5);
             val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, merger);
             return (Result<D>) mergedResult;
         });
-        val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6);
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6, promise6);
         val combiner = new CombineResult(promises, merge);
         val action = combiner.getDeferAction();
         return action;
     }
     
-    public static <D, T> DeferAction<D> from(Func1<FuncList<T>, D> merger, NamedExpression<HasPromise<T>>... promises) {
+    /**
+     * Creates a {@code DeferAction} from seven {@code HasPromise} instances and a {@code Func7} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param promise6  the sixth promise.
+     * @param promise7  the seventh promise.
+     * @param merger    the {@code Func7} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7> DeferAction<D> from(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    HasPromise<T7> promise7,
+                    Func7<T1, T2, T3, T4, T5, T6, T7, D> merger) {
+        val merge = (Func1) f((FuncList<Result> results) -> {
+            val result1  = (Result<T1>) results.get(0);
+            val result2  = (Result<T2>) results.get(1);
+            val result3  = (Result<T3>) results.get(2);
+            val result4  = (Result<T4>) results.get(3);
+            val result5  = (Result<T5>) results.get(4);
+            val result6  = (Result<T6>) results.get(5);
+            val result7  = (Result<T7>) results.get(6);
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, result7, merger);
+            return (Result<D>) mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6, promise6, promise7);
+        val combiner = new CombineResult(promises, merge);
+        val action = combiner.getDeferAction();
+        return action;
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from eight {@code HasPromise} instances and a {@code Func8} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param promise6  the sixth promise.
+     * @param promise7  the seventh promise.
+     * @param promise8  the eighth promise.
+     * @param merger    the {@code Func8} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7, T8> DeferAction<D> from(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    HasPromise<T7> promise7,
+                    HasPromise<T8> promise8,
+                    Func8<T1, T2, T3, T4, T5, T6, T7, T8, D> merger) {
+        val merge = (Func1) f((FuncList<Result> results) -> {
+            val result1  = (Result<T1>) results.get(0);
+            val result2  = (Result<T2>) results.get(1);
+            val result3  = (Result<T3>) results.get(2);
+            val result4  = (Result<T4>) results.get(3);
+            val result5  = (Result<T5>) results.get(4);
+            val result6  = (Result<T6>) results.get(5);
+            val result7  = (Result<T7>) results.get(6);
+            val result8  = (Result<T8>) results.get(7);
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, result7, result8, merger);
+            return (Result<D>) mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6, promise6, promise7, promise8);
+        val combiner = new CombineResult(promises, merge);
+        val action = combiner.getDeferAction();
+        return action;
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from nine {@code HasPromise} instances and a {@code Func9} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param promise6  the sixth promise.
+     * @param promise7  the seventh promise.
+     * @param promise8  the eighth promise.
+     * @param promise9  the ninth promise.
+     * @param merger    the {@code Func9} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7, T8, T9> DeferAction<D> from(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    HasPromise<T7> promise7,
+                    HasPromise<T8> promise8,
+                    HasPromise<T9> promise9,
+                    Func9<T1, T2, T3, T4, T5, T6, T7, T8, T9, D> merger) {
+        val merge = (Func1) f((FuncList<Result> results) -> {
+            val result1  = (Result<T1>) results.get(0);
+            val result2  = (Result<T2>) results.get(1);
+            val result3  = (Result<T3>) results.get(2);
+            val result4  = (Result<T4>) results.get(3);
+            val result5  = (Result<T5>) results.get(4);
+            val result6  = (Result<T6>) results.get(5);
+            val result7  = (Result<T7>) results.get(6);
+            val result8  = (Result<T8>) results.get(7);
+            val result9  = (Result<T9>) results.get(8);
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, result7, result8, result9, merger);
+            return (Result<D>) mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6, promise6, promise7, promise8, promise9);
+        val combiner = new CombineResult(promises, merge);
+        val action = combiner.getDeferAction();
+        return action;
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from ten {@code HasPromise} instances and a {@code Func10} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1   the first promise.
+     * @param promise2   the second promise.
+     * @param promise3   the third promise.
+     * @param promise4   the fourth promise.
+     * @param promise5   the fifth promise.
+     * @param promise6   the sixth promise.
+     * @param promise7   the seventh promise.
+     * @param promise8   the eighth promise.
+     * @param promise9   the ninth promise.
+     * @param promise10  the tenth promise.
+     * @param merger     the {@code Func10} function that merges the results of the promises.
+     * @return           a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> DeferAction<D> from(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    HasPromise<T7> promise7,
+                    HasPromise<T8> promise8,
+                    HasPromise<T9> promise9,
+                    HasPromise<T10> promise10,
+                    Func10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, D> merger) {
+        val merge = (Func1) f((FuncList<Result> results) -> {
+            val result1  = (Result<T1>) results.get(0);
+            val result2  = (Result<T2>) results.get(1);
+            val result3  = (Result<T3>) results.get(2);
+            val result4  = (Result<T4>) results.get(3);
+            val result5  = (Result<T5>) results.get(4);
+            val result6  = (Result<T6>) results.get(5);
+            val result7  = (Result<T7>) results.get(6);
+            val result8  = (Result<T8>) results.get(7);
+            val result9  = (Result<T9>) results.get(8);
+            val result10 = (Result<T10>)results.get(9);
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, result7, result8, result9, result10, merger);
+            return (Result<D>) mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6, promise7, promise8, promise9, promise10);
+        val combiner = new CombineResult(promises, merge);
+        val action = combiner.getDeferAction();
+        return action;
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from an array of {@code HasPromise} instances and a merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D>  the type of the result produced by the merger function.
+     * @param <T>  the type of the results provided by the promises.
+     * 
+     * @param merger    a {@code Func1} function that takes a {@code FuncList<T>} of results and merges them into a type {@code D}.
+     * @param promises  a varargs array of {@code HasPromise<T>} instances.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T> DeferAction<D> from(Func1<FuncList<T>, D> merger, HasPromise<T> ... promises) {
         val merge = f((Result<T>[] results) -> {
             val resultList = listOf(results).map(Result::get);
             val mergedResult = merger.apply(resultList);
@@ -232,6 +524,8 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         val action = combiner.getDeferAction();
         return action;
     }
+    
+    //== Create ==
     
     public static <D> DeferAction<D> create(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, AsyncRunner runner) {
         return DeferActionCreator.current.value().create(supplier, onStart, interruptOnCancel, runner);
