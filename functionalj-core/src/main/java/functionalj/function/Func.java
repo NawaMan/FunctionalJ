@@ -50,12 +50,6 @@ import lombok.val;
 
 public interface Func {
     
-    
-    
-    //==================================================
-    //== STATIC METHODS ================================
-    //==================================================
-    
     // == Provide different name for more readability ==
     /**
      * A shorter way to use Function.identity() -- alias for itself() and themAll().
