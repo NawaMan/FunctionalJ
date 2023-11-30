@@ -34,7 +34,7 @@ import nullablej.nullable.Nullable;
 public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> {
     
     /**
-     * Wraps a given Func9 instance, providing a method reference or lambda expression.
+     * Wraps a given {@link Func9} instance, providing a method reference or lambda expression.
      *
      * @param <I1>  the type of the first input parameter of the function
      * @param <I2>  the type of the second input parameter of the function
@@ -46,15 +46,15 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param <I8>  the type of the eighth input parameter of the function
      * @param <I9>  the type of the ninth input parameter of the function
      * @param <O>   the type of the output of the function
-     * @param func  the Func9 instance to wrap
-     * @return a new Func9 instance that delegates to the provided func
+     * @param func  the {@link Func9} instance to wrap
+     * @return a new {@link Func9} instance that delegates to the provided func
      */
     public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> of(Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func) {
         return func;
     }
     
     /**
-     * Creates a Func9 instance from an existing Func9.
+     * Creates a {@link Func9} instance from an existing Func9.
      *
      * @param <I1>  the type of the first input parameter of the function
      * @param <I2>  the type of the second input parameter of the function
@@ -65,17 +65,16 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param <I7>  the type of the seventh input parameter of the function
      * @param <I8>  the type of the eighth input parameter of the function
      * @param <I9>  the type of the ninth input parameter of the function
-     * @param <I10> the type of the tenth input parameter of the function
      * @param <O>   the type of the output of the function
-     * @param func  the existing Func9 instance
-     * @return a new Func9 instance that behaves identically to the provided func
+     * @param func  the existing {@link Func9} instance
+     * @return a new {@link Func9} instance that behaves identically to the provided func
      */
     public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> from(Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func) {
         return func;
     }
     
     /**
-     * Represents a function that takes ten input parameters and produces an output.
+     * Represents a function that takes nine input parameters and produces an output.
      * This is a functional interface whose functional method is {@link #applyUnsafe}.
      * 
      * @param <INPUT1>  the type of the first input parameter
@@ -87,7 +86,6 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param <INPUT7>  the type of the seventh input parameter
      * @param <INPUT8>  the type of the eighth input parameter
      * @param <INPUT9>  the type of the ninth input parameter
-     * @param <INPUT10> the type of the tenth input parameter
      * @param <OUTPUT>  the type of the output produced by this function
      * @return the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
@@ -152,7 +150,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function to ten optional input parameters, returning an {@code Optional} of the output.
+     * Applies this function to nine optional input parameters, returning an {@code Optional} of the output.
      * If any input is empty, the function short-circuits and returns {@code Optional.empty()}.
      * 
      * @param input1  optional first input parameter.
@@ -198,7 +196,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function to ten {@link Nullable} input parameters, returning a {@code Nullable} of the output.
+     * Applies this function to nine {@link Nullable} input parameters, returning a {@code Nullable} of the output.
      * If any input is null, the function short-circuits and returns {@code Nullable.empty()}.
      * 
      * @param input1  nullable first input parameter.
@@ -244,7 +242,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function to ten {@code HasPromise} instances, returning a {@code Promise} of the output.
+     * Applies this function to nine {@code HasPromise} instances, returning a {@code Promise} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first promise.
@@ -272,7 +270,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function to ten {@code Func0} instances, returning a {@code Func0} that produces the output.
+     * Applies this function to nine {@code Func0} instances, returning a {@code Func0} that produces the output.
      * This method allows for lazy evaluation of the function, only invoking the input functions and applying this function 
      *      when the returned {@code Func0} is invoked.
      * 
@@ -313,20 +311,19 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function safely to ten input parameters, returning a {@code Result<OUTPUT>}.
+     * Applies this function safely to nine input parameters, returning a {@code Result<OUTPUT>}.
      * This method wraps the function application in a try-catch block, capturing any exceptions that occur during execution.
      * 
-     * @param input1   the first input parameter.
-     * @param input2   the second input parameter.
-     * @param input3   the third input parameter.
-     * @param input4   the fourth input parameter.
-     * @param input5   the fifth input parameter.
-     * @param input6   the sixth input parameter.
-     * @param input7   the seventh input parameter.
-     * @param input8   the eighth input parameter.
-     * @param input9   the ninth input parameter.
-     * @param  the tenth input parameter.
-     * @return         a {@code Result<OUTPUT>} containing the result if successful, or an exception if an error occurs during function application.
+     * @param input1  the first input parameter.
+     * @param input2  the second input parameter.
+     * @param input3  the third input parameter.
+     * @param input4  the fourth input parameter.
+     * @param input5  the fifth input parameter.
+     * @param input6  the sixth input parameter.
+     * @param input7  the seventh input parameter.
+     * @param input8  the eighth input parameter.
+     * @param input9  the ninth input parameter.
+     * @return        a {@code Result<OUTPUT>} containing the result if successful, or an exception if an error occurs during function application.
      */
     public default Result<OUTPUT> applySafely(
                     INPUT1  input1,
@@ -615,7 +612,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     
     /**
      * Applies this function to the given arguments, returning a default value if the function result is null.
-     * This method safely applies the function to the ten given arguments and returns the default value if the result is null.
+     * This method safely applies the function to the nine given arguments and returns the default value if the result is null.
      *
      * @param input1        the first input parameter
      * @param input2        the second input parameter
@@ -626,7 +623,6 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param input7        the seventh input parameter
      * @param input8        the eighth input parameter
      * @param input9        the ninth input parameter
-     * @param       the tenth input parameter
      * @param defaultValue  the default value to return if the function result is null
      * @return              the result of the function or the default value if the result is null
      */
@@ -647,7 +643,6 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param input7           the seventh input parameter
      * @param input8           the eighth input parameter
      * @param input9           the ninth input parameter
-     * @param          the tenth input parameter
      * @param defaultSupplier  the supplier function to provide a default output value
      * @return                 the result of applying the function to the input parameters or the default value if the application results in null
      */
@@ -660,7 +655,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * The resulting function handles any exceptions during the application of this function, 
      *      encapsulating the result or exception within a Result object.
      *
-     * @return a function that takes ten parameters and returns a Result object containing 
+     * @return a function that takes nine parameters and returns a Result object containing 
      *              either the function's output of type OUTPUT or any exception thrown
      */
     public default Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Result<OUTPUT>> safely() {
@@ -672,7 +667,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * This method ensures that any exceptions thrown during the function's execution result in an empty Optional, 
      * rather than propagating the exception.
      *
-     * @return  a function that takes ten parameters and returns an Optional containing the output of type OUTPUT, or an empty Optional if an exception occurs
+     * @return  a function that takes nine parameters and returns an Optional containing the output of type OUTPUT, or an empty Optional if an exception occurs
      */
     public default Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Optional<OUTPUT>> optionally() {
         return (input1, input2, input3, input4, input5, input6, input7, input8, input9) -> {
@@ -688,7 +683,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * Converts this function into an asynchronous version returning a Promise of the output type.
      * The function execution is deferred and managed in an asynchronous manner, with the result encapsulated in a Promise.
      *
-     * @return a function that takes ten parameters and returns a Promise containing the output of type OUTPUT
+     * @return a function that takes nine parameters and returns a Promise containing the output of type OUTPUT
      */
     public default Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Promise<OUTPUT>> async() {
         return (input1, input2, input3, input4, input5, input6, input7, input8, input9) -> {
@@ -703,7 +698,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * Transforms this function into a deferred execution, returning a DeferAction that can be used to manage the execution.
      * The actual execution of the function is deferred until the DeferAction is explicitly started.
      *
-     * @return a function that takes ten parameters and returns a DeferAction encapsulating the deferred execution of this function, producing an output of type OUTPUT
+     * @return a function that takes nine parameters and returns a DeferAction encapsulating the deferred execution of this function, producing an output of type OUTPUT
      */
     public default Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, DeferAction<OUTPUT>> defer() {
         return (input1, input2, input3, input4, input5, input6, input7, input8, input9) -> {
@@ -718,7 +713,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * Adapts this function to work with promises, returning a function that takes promises as input and returns a promise.
      * This method allows the function to be applied to inputs that are encapsulated within Promise objects, combining them into a single output Promise.
      *
-     * @return a function that takes ten HasPromise parameters, each containing promises, and returns a Promise of type OUTPUT
+     * @return a function that takes nine HasPromise parameters, each containing promises, and returns a Promise of type OUTPUT
      */
     public default Func9<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<INPUT6>, HasPromise<INPUT7>, HasPromise<INPUT8>, HasPromise<INPUT9>, Promise<OUTPUT>> forPromise() {
         return (promise1, promise2, promise3, promise4, promise5, promise6, promise7, promise8, promise9) -> {
@@ -727,10 +722,10 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Converts this function to accept a single Tuple10 parameter, allowing for grouped input parameters.
+     * Converts this function to accept a single {@link Tuple9} parameter, allowing for grouped input parameters.
      * This method facilitates the use of a single tuple to pass all the necessary inputs to the function.
      *
-     * @return a function that takes a Tuple10 containing ten parameters and returns the output of type OUTPUT
+     * @return a function that takes a {@link Tuple9} containing nine parameters and returns the output of type OUTPUT
      */
     public default Func1<Tuple9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9>, OUTPUT> wholly() {
         return t -> {
@@ -759,7 +754,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     //== Elevate ==
     
     /**
-     * Transforms this ten-parameter function into a function that returns a single-parameter function.
+     * Transforms this nine-parameter function into a function that returns a single-parameter function.
      * This method elevates the first input parameter, allowing the other nine parameters to be preset, and the first parameter to be applied later.
      *
      * @return a function that takes nine parameters and returns a single-parameter function of type INPUT1, which in turn returns an OUTPUT
@@ -769,19 +764,18 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Creates a single-parameter function by pre-setting the other nine parameters of this ten-parameter function.
+     * Creates a single-parameter function by pre-setting the other nine parameters of this nine-parameter function.
      * The resulting function takes the first parameter and applies it along with the pre-set values.
      *
-     * @param i2   the second input parameter
-     * @param i3   the third input parameter
-     * @param i4   the fourth input parameter
-     * @param i5   the fifth input parameter
-     * @param i6   the sixth input parameter
-     * @param i7   the seventh input parameter
-     * @param i8   the eighth input parameter
-     * @param i9   the ninth input parameter
-     * @param i10  the tenth input parameter
-     * @return     a function that takes a single parameter of type INPUT1 and returns an OUTPUT
+     * @param i2  the second input parameter
+     * @param i3  the third input parameter
+     * @param i4  the fourth input parameter
+     * @param i5  the fifth input parameter
+     * @param i6  the sixth input parameter
+     * @param i7  the seventh input parameter
+     * @param i8  the eighth input parameter
+     * @param i9  the ninth input parameter
+     * @return    a function that takes a single parameter of type INPUT1 and returns an OUTPUT
      */
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6, INPUT7 i7, INPUT8 i8, INPUT9 i9) {
         return (i1) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6, i7, i8, i9);
@@ -790,8 +784,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     //== Split ==
     
     /**
-     * Splits this ten-parameter function into a two-level function composition.
-     * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
+     * Splits this nine-parameter function into a two-level function composition.
+     * The first level takes the first input parameter, returning a function that takes the remaining eight parameters to produce the output.
      *
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
      */
@@ -800,8 +794,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Splits this ten-parameter function into a two-level function composition.
-     * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
+     * Splits this nine-parameter function into a two-level function composition.
+     * The first level takes the first input parameter, returning a function that takes the remaining eight parameters to produce the output.
      *
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
      */
@@ -810,8 +804,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Splits this ten-parameter function into a two-stage function.
-     * The first stage takes the first two input parameters, returning a function that accepts the remaining eight parameters to produce the output.
+     * Splits this nine-parameter function into a two-stage function.
+     * The first stage takes the first two input parameters, returning a function that accepts the remaining seven parameters to produce the output.
      *
      * @return a function that takes two parameters of types INPUT1 and INPUT2, and returns a function that takes the remaining eight parameters, to produce an OUTPUT
      */
@@ -820,8 +814,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Divides this ten-parameter function into a two-level function.
-     * The first level takes the first three input parameters, and returns a function that requires the remaining seven parameters to produce the output.
+     * Divides this nine-parameter function into a two-level function.
+     * The first level takes the first three input parameters, and returns a function that requires the remaining six parameters to produce the output.
      *
      * @return a function that takes three parameters of types INPUT1, INPUT2, and INPUT3, and returns a function that accepts the remaining seven parameters, to yield an OUTPUT
      */
@@ -830,8 +824,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Segments this ten-parameter function into a two-tiered function structure.
-     * The initial tier takes the first four input parameters and returns a function that requires the final six parameters to generate the output.
+     * Segments this nine-parameter function into a two-tiered function structure.
+     * The initial tier takes the first four input parameters and returns a function that requires the final five parameters to generate the output.
      *
      * @return a function that accepts four parameters of types INPUT1, INPUT2, INPUT3, and INPUT4, and returns a function that takes the last six parameters, to produce an OUTPUT
      */
@@ -840,8 +834,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Splits this ten-parameter function into a dual-layer function composition.
-     * The first layer accepts the first five input parameters, yielding a function that requires the remaining five parameters to compute the output.
+     * Splits this nine-parameter function into a dual-layer function composition.
+     * The first layer accepts the first five input parameters, yielding a function that requires the remaining four parameters to compute the output.
      *
      * @return a function that takes five parameters of types INPUT1, INPUT2, INPUT3, INPUT4, and INPUT5, and returns a function that operates on the final five parameters, to generate an OUTPUT
      */
@@ -850,8 +844,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Divides this ten-parameter function into two stages.
-     * The initial stage handles the first six input parameters, leading to a function that demands the last four parameters for producing the output.
+     * Divides this nine-parameter function into two stages.
+     * The initial stage handles the first six input parameters, leading to a function that demands the last three parameters for producing the output.
      *
      * @return a function that receives six parameters of types INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, and INPUT6, and returns a function that processes the remaining four parameters, to create an OUTPUT
      */
@@ -860,8 +854,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Segments this ten-parameter function into a two-layer composition.
-     * The first layer captures the first seven input parameters, providing a function that requires the last three parameters to produce the output.
+     * Segments this nine-parameter function into a two-layer composition.
+     * The first layer captures the first seven input parameters, providing a function that requires the last two parameters to produce the output.
      *
      * @return a function that takes seven parameters of types INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, and INPUT7, and returns a function that operates on the final three parameters, to yield an OUTPUT
      */
@@ -870,8 +864,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Breaks down this ten-parameter function into a hierarchical two-tier function.
-     * The first tier handles the first eight input parameters, setting up a function that takes the last two parameters to generate the output.
+     * Breaks down this nine-parameter function into a hierarchical two-tier function.
+     * The first tier handles the first eight input parameters, setting up a function that takes the last one parameters to generate the output.
      *
      * @return a function that accepts eight parameters of types INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, and INPUT8, and returns a function that processes the remaining two parameters, to produce an OUTPUT
      */
@@ -882,7 +876,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     // == Partially apply functions ==
     
     /**
-     * Reduces this function by fixing the first parameter, resulting in a nine-parameter function.
+     * Reduces this function by fixing the first parameter, resulting in a eight-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
      * @param i2  the value to fix for the first parameter
@@ -893,7 +887,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Reduces this function by fixing the second parameter, resulting in a nine-parameter function.
+     * Reduces this function by fixing the second parameter, resulting in a eight-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
      * @param i2  the value to fix for the second parameter
@@ -904,7 +898,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Reduces this function by fixing the third parameter, resulting in a nine-parameter function.
+     * Reduces this function by fixing the third parameter, resulting in a eight-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
      * @param i3  the value to fix for the third parameter
@@ -915,7 +909,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Reduces this function by fixing the fourth parameter, resulting in a nine-parameter function.
+     * Reduces this function by fixing the fourth parameter, resulting in a eight-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
      * @param i4  the value to fix for the fourth parameter
@@ -926,7 +920,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Modifies this function by setting a constant value for the fifth parameter, creating a nine-parameter function.
+     * Modifies this function by setting a constant value for the fifth parameter, creating a eight-parameter function.
      * The fixed fifth input is used in all subsequent function calls.
      *
      * @param i5  the value to fix for the fifth parameter
@@ -937,7 +931,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Adjusts this function by permanently assigning a value to the sixth parameter, resulting in a nine-parameter function.
+     * Adjusts this function by permanently assigning a value to the sixth parameter, resulting in a eight-parameter function.
      * This fixed value for the sixth input is consistently used in future function calls.
      *
      * @param i6  the constant value for the sixth parameter
@@ -948,7 +942,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Alters this function by fixing the seventh parameter's value, transforming it into a nine-parameter function.
+     * Alters this function by fixing the seventh parameter's value, transforming it into a eight-parameter function.
      * The established value for the seventh input is utilized in all subsequent executions of the function.
      *
      * @param i7  the predetermined value for the seventh parameter
@@ -959,7 +953,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Alters this function by fixing the eighth parameter's value, transforming it into a nine-parameter function.
+     * Alters this function by fixing the eighth parameter's value, transforming it into a eight-parameter function.
      * The established value for the eighth input is utilized in all subsequent executions of the function.
      *
      * @param i8  the predetermined value for the eighth parameter
@@ -970,7 +964,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Alters this function by fixing the ninth parameter's value, transforming it into a nine-parameter function.
+     * Alters this function by fixing the ninth parameter's value, transforming it into a eight-parameter function.
      * The established value for the ninth input is utilized in all subsequent executions of the function.
      *
      * @param i9  the predetermined value for the ninth parameter

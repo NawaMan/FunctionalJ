@@ -58,7 +58,7 @@ import nullablej.nullable.Nullable;
 public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> {
     
     /**
-     * Wraps a given Func10 instance, providing a method reference or lambda expression.
+     * Wraps a given {@link Func10} instance, providing a method reference or lambda expression.
      *
      * @param <I1>  the type of the first input parameter of the function
      * @param <I2>  the type of the second input parameter of the function
@@ -71,8 +71,8 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
      * @param <I9>  the type of the ninth input parameter of the function
      * @param <I10> the type of the tenth input parameter of the function
      * @param <O>   the type of the output of the function
-     * @param func  the Func10 instance to wrap
-     * @return a new Func10 instance that delegates to the provided func
+     * @param func  the {@link Func10} instance to wrap
+     * @return a new {@link Func10} instance that delegates to the provided func
      */
     public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> of(Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func) {
         return func;
@@ -92,8 +92,8 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
      * @param <I9>  the type of the ninth input parameter of the function
      * @param <I10> the type of the tenth input parameter of the function
      * @param <O>   the type of the output of the function
-     * @param func  the existing Func10 instance
-     * @return a new Func10 instance that behaves identically to the provided func
+     * @param func  the existing {@link Func10} instance
+     * @return a new {@link Func10} instance that behaves identically to the provided func
      */
     public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> from(Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func) {
         return func;
