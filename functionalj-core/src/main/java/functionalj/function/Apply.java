@@ -67,145 +67,367 @@ import nullablej.nullable.Nullable;
 
 public interface Apply {
     
+    /**
+     * Applies a zero-argument function and returns its result.
+     * 
+     * @param  func the zero-argument function to be applied
+     * @return      the result of applying the provided function
+     */
     public static <O> O apply(Func0<O> func) {
         return func.get();
     }
     
+    /**
+     * Retrieves the value referenced by the given Ref object.
+     * 
+     * @param  ref  the Ref object containing the value to be retrieved
+     * @return      the value referenced by the provided Ref object
+     */
     public static <O> O apply(Ref<O> ref) {
         return ref.value();
     }
     
+    //-- Func1 --
+    
+    /**
+     * Applies a single-argument function to the given input and returns the result.
+     * 
+     * @param  func   the function to be applied
+     * @param  input  the input to the function
+     * @return        the result of applying the function to the provided input
+     */
     public static <I, O> O apply(Func1<I, O> func, I input) {
         return func.apply(input);
     }
     
+    //-- Func2 --
+    
+    /**
+     * Applies a two-argument function to the given inputs and returns the result.
+     * 
+     * @param  func    the function to be applied
+     * @param  input1  the first input to the function
+     * @param  input2  the second input to the function
+     * @return         the result of applying the function to the provided inputs
+     */
     public static <I1, I2, O> O apply(Func2<I1, I2, O> func, I1 input1, I2 input2) {
         return func.apply(input1, input2);
     }
     
+    /**
+     * Partially applies a two-argument function to its first argument, returning a function that takes the second argument.
+     * 
+     * @param  func    the two-argument function to be partially applied
+     * @param  input1  the first argument to be applied to the function
+     * @return         a function that takes the second argument and returns the result of the original function
+     */
     public static <I1, I2, O> Func1<I2, O> apply(Func2<I1, I2, O> func, I1 input1) {
         return input2 -> func.apply(input1, input2);
     }
     
+    //-- Func3 --
+    
+    /**
+     * Applies a three-argument function to the given inputs and returns the result.
+     * 
+     * @param  func    the function to be applied
+     * @param  input1  the first input to the function
+     * @param  input2  the second input to the function
+     * @param  input3  the third input to the function
+     * @return         the result of applying the function to the provided inputs
+     */
     public static <I1, I2, I3, O> O apply(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
         return func.apply(input1, input2, input3);
     }
     
+    /**
+     * Partially applies a three-argument function to its first argument, returning a function that takes the remaining two arguments.
+     * 
+     * @param  func    the three-argument function to be partially applied
+     * @param  input1  the first argument to be applied to the function
+     * @return         a function that takes the second and third arguments and returns the result of the original function
+     */
     public static <I1, I2, I3, O> Func2<I2, I3, O> apply(Func3<I1, I2, I3, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
-    public static <I1, I2, I3, O> Func1<I3, O> apply(Func3<I1, I2, I3, O> func, I1 input1, I2 input2) {
-        return func.applyTo(input1).applyTo(input2);
-    }
+    //-- Func4 --
     
+    /**
+     * Applies a four-argument function to the given inputs and returns the result.
+     * 
+     * @param  func    the function to be applied
+     * @param  input1  the first input to the function
+     * @param  input2  the second input to the function
+     * @param  input3  the third input to the function
+     * @param  input4  the fourth input to the function
+     * @return         the result of applying the function to the provided inputs
+     */
     public static <I1, I2, I3, I4, O> O apply(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
         return func.apply(input1, input2, input3, input4);
     }
     
+    /**
+     * Partially applies a four-argument function to its first argument, returning a function that takes the remaining nine arguments.
+     * 
+     * @param  func    the four-argument function to be partially applied
+     * @param  input1  the first argument to be applied to the function
+     * @return         a function that takes the remaining nine arguments and returns the result of the original function
+     */
     public static <I1, I2, I3, I4, O> Func3<I2, I3, I4, O> apply(Func4<I1, I2, I3, I4, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
-    public static <I1, I2, I3, I4, O> Func2<I3, I4, O> apply(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2) {
-        return func.applyTo(input1).applyTo(input2);
-    }
+    //-- Func5 --
     
-    public static <I1, I2, I3, I4, O> Func1<I4, O> apply(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3);
-    }
-    
+    /**
+     * Applies a five-argument function to the given inputs and returns the result.
+     * 
+     * @param  func    the function to be applied
+     * @param  input1  the first input to the function
+     * @param  input2  the second input to the function
+     * @param  input3  the third input to the function
+     * @param  input4  the fourth input to the function
+     * @param  input5  the fifth input to the function
+     * @return         the result of applying the function to the provided inputs
+     */
     public static <I1, I2, I3, I4, I5, O> O apply(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) {
         return func.apply(input1, input2, input3, input4, input5);
     }
     
+    /**
+     * Partially applies a four-argument function to its first argument, returning a function that takes the remaining nine arguments.
+     * 
+     * @param  func    the four-argument function to be partially applied
+     * @param  input1  the first argument to be applied to the function
+     * @return         a function that takes the remaining nine arguments and returns the result of the original function
+     */
     public static <I1, I2, I3, I4, I5, O> Func4<I2, I3, I4, I5, O> apply(Func5<I1, I2, I3, I4, I5, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
-    public static <I1, I2, I3, I4, I5, O> Func3<I3, I4, I5, O> apply(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2) {
-        return func.applyTo(input1).applyTo(input2);
-    }
+    //-- Func6 --
     
-    public static <I1, I2, I3, I4, I5, O> Func2<I4, I5, O> apply(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3);
-    }
-    
-    public static <I1, I2, I3, I4, I5, O> Func1<I5, O> apply(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3).applyTo(input4);
-    }
-    
+    /**
+     * Applies a six-argument function to the given inputs and returns the result.
+     * 
+     * @param  func    the function to be applied
+     * @param  input1  the first input to the function
+     * @param  input2  the second input to the function
+     * @param  input3  the third input to the function
+     * @param  input4  the fourth input to the function
+     * @param  input5  the fifth input to the function
+     * @param  input6  the sixth input to the function
+     * @return         the result of applying the function to the provided inputs
+     */
     public static <I1, I2, I3, I4, I5, I6, O> O apply(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) {
         return func.apply(input1, input2, input3, input4, input5, input6);
     }
     
+    /**
+     * Partially applies a five-argument function to its first argument, returning a function that takes the remaining nine arguments.
+     * 
+     * @param  func    the five-argument function to be partially applied
+     * @param  input1  the first argument to be applied to the function
+     * @return         a function that takes the remaining nine arguments and returns the result of the original function
+     */
     public static <I1, I2, I3, I4, I5, I6, O> Func5<I2, I3, I4, I5, I6, O> apply(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
-    public static <I1, I2, I3, I4, I5, I6, O> Func4<I3, I4, I5, I6, O> apply(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2) {
-        return func.applyTo(input1).applyTo(input2);
+    //-- Func7 --
+    
+    /**
+     * Applies a seven-argument function to the given inputs and returns the result.
+     * 
+     * @param  func    the function to be applied
+     * @param  input1  the first input to the function
+     * @param  input2  the second input to the function
+     * @param  input3  the third input to the function
+     * @param  input4  the fourth input to the function
+     * @param  input5  the fifth input to the function
+     * @param  input6  the sixth input to the function
+     * @param  input7  the seventh input to the function
+     * @return         the result of applying the function to the provided inputs
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, O> O apply(Func7<I1, I2, I3, I4, I5, I6, I7, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7) {
+        return func.apply(input1, input2, input3, input4, input5, input6, input7);
     }
     
-    public static <I1, I2, I3, I4, I5, I6, O> Func3<I4, I5, I6, O> apply(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3);
+    /**
+     * Partially applies a six-argument function to its first argument, returning a function that takes the remaining nine arguments.
+     * 
+     * @param  func    the six-argument function to be partially applied
+     * @param  input1  the first argument to be applied to the function
+     * @return         a function that takes the remaining nine arguments and returns the result of the original function
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, O> Func6<I2, I3, I4, I5, I6, I7, O> apply(Func7<I1, I2, I3, I4, I5, I6, I7, O> func, I1 input1) {
+        return func.apply(input1);
     }
     
-    public static <I1, I2, I3, I4, I5, I6, O> Func2<I5, I6, O> apply(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3).applyTo(input4);
+    //-- Func8 --
+    
+    /**
+     * Applies a nine-argument function to the given inputs and returns the result.
+     * 
+     * @param  func    the function to be applied
+     * @param  input1  the first input to the function
+     * @param  input2  the second input to the function
+     * @param  input3  the third input to the function
+     * @param  input4  the fourth input to the function
+     * @param  input5  the fifth input to the function
+     * @param  input6  the sixth input to the function
+     * @param  input7  the seventh input to the function
+     * @param  input8  the eighth input to the function
+     * @return         the result of applying the function to the provided inputs
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> O apply(Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8) {
+        return func.apply(input1, input2, input3, input4, input5, input6, input7, input8);
     }
     
-    public static <I1, I2, I3, I4, I5, I6, O> Func1<I6, O> apply(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3).applyTo(input4).applyTo(input5);
+    /**
+     * Partially applies a seven-argument function to its first argument, returning a function that takes the remaining nine arguments.
+     * 
+     * @param  func    the seven-argument function to be partially applied
+     * @param  input1  the first argument to be applied to the function
+     * @return         a function that takes the remaining nine arguments and returns the result of the original function
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Func7<I2, I3, I4, I5, I6, I7, I8, O> apply(Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func, I1 input1) {
+        return func.apply(input1);
     }
+    
+    //-- Func9 --
+    
+    /**
+     * Applies a nine-argument function to the given inputs and returns the result.
+     * 
+     * @param  func    the function to be applied
+     * @param  input1  the first input to the function
+     * @param  input2  the second input to the function
+     * @param  input3  the third input to the function
+     * @param  input4  the fourth input to the function
+     * @param  input5  the fifth input to the function
+     * @param  input6  the sixth input to the function
+     * @param  input7  the seventh input to the function
+     * @param  input8  the eighth input to the function
+     * @param  input9  the ninth input to the function
+     * @return         the result of applying the function to the provided inputs
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> O apply(Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9) {
+        return func.apply(input1, input2, input3, input4, input5, input6, input7, input8, input9);
+    }
+    
+    /**
+     * Partially applies a nine-argument function to its first argument, returning a function that takes the remaining nine arguments.
+     * 
+     * @param  func    the nine-argument function to be partially applied
+     * @param  input1  the first argument to be applied to the function
+     * @return         a function that takes the remaining nine arguments and returns the result of the original function
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Func8<I2, I3, I4, I5, I6, I7, I8, I9, O> apply(Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func, I1 input1) {
+        return func.apply(input1);
+    }
+    
+    //-- Func10 --
+    
+    /**
+     * Applies a ten-argument function to the given inputs and returns the result.
+     * 
+     * @param  func     the function to be applied
+     * @param  input1   the first input to the function
+     * @param  input2   the second input to the function
+     * @param  input3   the third input to the function
+     * @param  input4   the fourth input to the function
+     * @param  input5   the fifth input to the function
+     * @param  input6   the sixth input to the function
+     * @param  input7   the seventh input to the function
+     * @param  input8   the eighth input to the function
+     * @param  input9   the ninth input to the function
+     * @param  input10  the tenth input to the function
+     * @return          the result of applying the function to the provided inputs
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> O apply(Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9, I10 input10) {
+        return func.apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+    }
+    
+    /**
+     * Partially applies a ten-argument function to its first argument, returning a function that takes the remaining nine arguments.
+     * 
+     * @param  func    the ten-argument function to be partially applied
+     * @param  input1  the first argument to be applied to the function
+     * @return         a function that takes the remaining nine arguments and returns the result of the original function
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Func9<I2, I3, I4, I5, I6, I7, I8, I9, I10, O> apply(Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func, I1 input1) {
+        return func.apply(input1);
+    }
+    
     
     // == $ ==
+    
+    /**
+     * Invokes a Supplier function and returns its result.
+     * 
+     * @param  func  the Supplier function to be invoked
+     * @return       the result of invoking the Supplier function
+     */
     public static <O> O $(Supplier<O> func) {
         return func.get();
     }
     
+    /**
+     * Retrieves the value referenced by the given Ref object.
+     * 
+     * @param  ref  the Ref object containing the value to be retrieved
+     * @return      the value referenced by the provided Ref object
+     */
     public static <O> O $(Ref<O> ref) {
         return ref.value();
     }
     
+    /**
+     * Retrieves the value referenced by the given Ref object.
+     * 
+     * @param  ref  the Ref object containing the value to be retrieved
+     * @return      the value referenced by the provided Ref object
+     */
     public static <I, O> O $(Function<I, O> func, I input) {
         return func.apply(input);
     }
     
     public static <I, O> Result<O> $(Function<I, O> func, Result<I> input) {
-        return Func1.from(func).applyTo(input);
+        return Func1.from(func).apply(input);
     }
     
     public static <I, O> Optional<O> $(Function<I, O> func, Optional<I> input) {
-        return Func1.from(func).applyTo(input);
+        return Func1.from(func).apply(input);
     }
     
     public static <I, O> Nullable<O> $(Function<I, O> func, Nullable<I> input) {
-        return Func1.from(func).applyTo(input);
+        return Func1.from(func).apply(input);
     }
     
     public static <I, O> FuncList<O> $(Function<I, O> func, List<I> input) {
-        return Func1.from(func).applyTo(input);
+        return Func1.from(func).apply(input);
     }
     
     public static <K, I, O> FuncMap<K, O> $(Function<I, O> func, Map<K, I> input) {
-        return Func1.from(func).applyTo(input);
+        return Func1.from(func).apply(input);
     }
     
     public static <I, O> Func0<O> $(Function<I, O> func, Supplier<I> input) {
-        return Func1.from(func).applyTo(input);
+        return Func1.from(func).apply(input);
     }
     
     public static <S, I, O> Func1<S, O> $(Function<I, O> func, Function<S, I> input) {
-        return Func1.from(func).applyTo(input);
+        return Func1.from(func).apply(input);
     }
     
     public static <I, O> Promise<O> $(Function<I, O> func, HasPromise<I> input) {
-        return Func1.from(func).applyTo(input);
+        return Func1.from(func).apply(input);
     }
     
     public static <I, O> Task<O> $(Function<I, O> func, Task<I> input) {
-        return Func1.from(func).applyTo(input);
+        return Func1.from(func).apply(input);
     }
     
     public static <I1, I2, O> O $(BiFunction<I1, I2, O> func, I1 input1, I2 input2) {
@@ -217,47 +439,47 @@ public interface Apply {
     }
     
     public static <I1, I2, O> Result<O> $(BiFunction<I1, I2, O> func, Result<I1> input1, Result<I2> input2) {
-        return Func2.from(func).applyTo(input1, input2);
+        return Func2.from(func).apply(input1, input2);
     }
     
     public static <I1, I2, O> Optional<O> $(BiFunction<I1, I2, O> func, Optional<I1> input1, Optional<I2> input2) {
-        return Func2.from(func).applyTo(input1, input2);
+        return Func2.from(func).apply(input1, input2);
     }
     
     public static <I1, I2, O> Nullable<O> $(BiFunction<I1, I2, O> func, Nullable<I1> input1, Nullable<I2> input2) {
-        return Func2.from(func).applyTo(input1, input2);
+        return Func2.from(func).apply(input1, input2);
     }
     
     public static <I1, I2, O> FuncList<O> $(BiFunction<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2) {
-        return Func2.from(func).applyTo(input1, input2);
+        return Func2.from(func).apply(input1, input2);
     }
     
     public static <I1, I2, O> FuncList<O> $(BiFunction<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2, ZipWithOption option) {
-        return Func2.from(func).applyTo(input1, input2, option);
+        return Func2.from(func).apply(input1, input2, option);
     }
     
     public static <K, I1, I2, O> FuncMap<K, O> $(BiFunction<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2) {
-        return Func2.from(func).applyTo(input1, input2);
+        return Func2.from(func).apply(input1, input2);
     }
     
     public static <K, I1, I2, O> FuncMap<K, O> $(BiFunction<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2, ZipWithOption option) {
-        return Func2.from(func).applyTo(input1, input2, option);
+        return Func2.from(func).apply(input1, input2, option);
     }
     
     public static <I1, I2, O> Func0<O> $(BiFunction<I1, I2, O> func, Supplier<I1> input1, Supplier<I2> input2) {
-        return Func2.from(func).applyTo(input1, input2);
+        return Func2.from(func).apply(input1, input2);
     }
     
     public static <I1, I2, O> Promise<O> $(BiFunction<I1, I2, O> func, HasPromise<I1> input1, HasPromise<I2> input2) {
-        return Func2.from(func).applyTo(input1, input2);
+        return Func2.from(func).apply(input1, input2);
     }
     
     public static <I1, I2, O> Task<O> $(BiFunction<I1, I2, O> func, Task<I1> input1, Task<I2> input2) {
-        return Func2.from(func).applyTo(input1, input2);
+        return Func2.from(func).apply(input1, input2);
     }
     
     public static <S, I1, I2, O> Func1<S, O> $(BiFunction<I1, I2, O> func, Func1<S, I1> input1, Func1<S, I2> input2) {
-        return Func2.from(func).applyTo(input1, input2);
+        return Func2.from(func).apply(input1, input2);
     }
     
     public static <I1, I2, I3, O> O $(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
@@ -265,35 +487,35 @@ public interface Apply {
     }
     
     public static <I1, I2, I3, O> Func2<I2, I3, O> $(Func3<I1, I2, I3, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     public static <I1, I2, I3, O> Func1<I3, O> $(Func3<I1, I2, I3, O> func, I1 input1, I2 input2) {
-        return func.applyTo(input1).applyTo(input2);
+        return func.apply(input1).apply(input2);
     }
     
     public static <I1, I2, I3, O> Result<O> $(Func3<I1, I2, I3, O> func, Result<I1> input1, Result<I2> input2, Result<I3> input3) {
-        return func.applyTo(input1, input2, input3);
+        return func.apply(input1, input2, input3);
     }
     
     public static <I1, I2, I3, O> Optional<O> $(Func3<I1, I2, I3, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3) {
-        return func.applyTo(input1, input2, input3);
+        return func.apply(input1, input2, input3);
     }
     
     public static <I1, I2, I3, O> Nullable<O> $(Func3<I1, I2, I3, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3) {
-        return func.applyTo(input1, input2, input3);
+        return func.apply(input1, input2, input3);
     }
     
     public static <I1, I2, I3, O> Func0<O> $(Func3<I1, I2, I3, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3) {
-        return func.applyTo(input1, input2, input3);
+        return func.apply(input1, input2, input3);
     }
     
     public static <I1, I2, I3, O> Promise<O> $(Func3<I1, I2, I3, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3) {
-        return func.applyTo(input1, input2, input3);
+        return func.apply(input1, input2, input3);
     }
     
     public static <I1, I2, I3, O> Task<O> $(Func3<I1, I2, I3, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3) {
-        return func.applyTo(input1, input2, input3);
+        return func.apply(input1, input2, input3);
     }
     
     public static <I1, I2, I3, I4, O> O $(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
@@ -301,39 +523,39 @@ public interface Apply {
     }
     
     public static <I1, I2, I3, I4, O> Func3<I2, I3, I4, O> $(Func4<I1, I2, I3, I4, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     public static <I1, I2, I3, I4, O> Func2<I3, I4, O> $(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2) {
-        return func.applyTo(input1).applyTo(input2);
+        return func.apply(input1).apply(input2);
     }
     
     public static <I1, I2, I3, I4, O> Func1<I4, O> $(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3);
+        return func.apply(input1).apply(input2).apply(input3);
     }
     
     public static <I1, I2, I3, I4, O> Result<O> $(Func4<I1, I2, I3, I4, O> func, Result<I1> input1, Result<I2> input2, Result<I3> input3, Result<I4> input4) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, O> Optional<O> $(Func4<I1, I2, I3, I4, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3, Optional<I4> input4) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, O> Nullable<O> $(Func4<I1, I2, I3, I4, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, O> Func0<O> $(Func4<I1, I2, I3, I4, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3, Supplier<I4> input4) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, O> Promise<O> $(Func4<I1, I2, I3, I4, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3, HasPromise<I4> input4) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, O> Task<O> $(Func4<I1, I2, I3, I4, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I, I1, O> Func1<I, O> $(Func1<I1, O> func, Func1<I, I1> input1) {
@@ -398,47 +620,47 @@ public interface Apply {
     }
     
     public static <I1, I2, I3, I4, I5, O> Func4<I2, I3, I4, I5, O> $(Func5<I1, I2, I3, I4, I5, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     public static <I1, I2, I3, I4, I5, O> Func3<I3, I4, I5, O> $(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2) {
-        return func.applyTo(input1).applyTo(input2);
+        return func.apply(input1).apply(input2);
     }
     
     public static <I1, I2, I3, I4, I5, O> Func2<I4, I5, O> $(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3);
+        return func.apply(input1).apply(input2).apply(input3);
     }
     
     public static <I1, I2, I3, I4, I5, O> Func1<I5, O> $(Func5<I1, I2, I3, I4, I5, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3).applyTo(input4);
+        return func.apply(input1).apply(input2).apply(input3).apply(input4);
     }
     
     public static <I1, I2, I3, I4, I5, O> Result<O> $(Func4<I1, I2, I3, I4, O> func, Result<I1> input1, Result<I2> input2, Result<I3> input3, Result<I4> input4, Result<I5> input5) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, O> Optional<O> $(Func4<I1, I2, I3, I4, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3, Optional<I4> input4, Optional<I5> input5) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, O> Nullable<O> $(Func4<I1, I2, I3, I4, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4, Nullable<I5> input5) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, O> Func0<O> $(Func4<I1, I2, I3, I4, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3, Supplier<I4> input4, Supplier<I5> input5) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, O> Promise<O> $(Func4<I1, I2, I3, I4, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3, HasPromise<I4> input4, HasPromise<I5> input5) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, O> Task<O> $(Func4<I1, I2, I3, I4, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <S, I1, I2, I3, I4, I5, O> Func1<S, O> $(Func4<I1, I2, I3, I4, O> func, Func1<S, I1> input1, Func1<S, I2> input2, Func1<S, I3> input3, Func1<S, I4> input4, Func1<S, I5> input5) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> O $(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) {
@@ -446,51 +668,51 @@ public interface Apply {
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Func5<I2, I3, I4, I5, I6, O> $(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Func4<I3, I4, I5, I6, O> $(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2) {
-        return func.applyTo(input1).applyTo(input2);
+        return func.apply(input1).apply(input2);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Func3<I4, I5, I6, O> $(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3);
+        return func.apply(input1).apply(input2).apply(input3);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Func2<I5, I6, O> $(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3).applyTo(input4);
+        return func.apply(input1).apply(input2).apply(input3).apply(input4);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Func1<I6, O> $(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) {
-        return func.applyTo(input1).applyTo(input2).applyTo(input3).applyTo(input4).applyTo(input5);
+        return func.apply(input1).apply(input2).apply(input3).apply(input4).apply(input5);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Result<O> $(Func4<I1, I2, I3, I4, O> func, Result<I1> input1, Result<I2> input2, Result<I3> input3, Result<I4> input4, Result<I5> input5, Result<I6> input6) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Optional<O> $(Func4<I1, I2, I3, I4, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3, Optional<I4> input4, Optional<I5> input5, Optional<I6> input6) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Nullable<O> $(Func4<I1, I2, I3, I4, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4, Nullable<I5> input5, Nullable<I6> input6) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Func0<O> $(Func4<I1, I2, I3, I4, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3, Supplier<I4> input4, Supplier<I5> input5, Supplier<I6> input6) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Promise<O> $(Func4<I1, I2, I3, I4, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3, HasPromise<I4> input4, HasPromise<I5> input5, HasPromise<I6> input6) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <I1, I2, I3, I4, I5, I6, O> Task<O> $(Func4<I1, I2, I3, I4, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5, Task<I6> input6) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     public static <S, I1, I2, I3, I4, I5, I6, O> Func1<S, O> $(Func4<I1, I2, I3, I4, O> func, Func1<S, I1> input1, Func1<S, I2> input2, Func1<S, I3> input3, Func1<S, I4> input4, Func1<S, I5> input5, Func1<S, I6> input6) {
-        return func.applyTo(input1, input2, input3, input4);
+        return func.apply(input1, input2, input3, input4);
     }
     
     // == $$ ==

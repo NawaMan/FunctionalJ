@@ -30,11 +30,15 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
+import functionalj.function.Func10;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.Func7;
+import functionalj.function.Func8;
+import functionalj.function.Func9;
 import functionalj.function.FuncUnit1;
 import functionalj.function.Named;
 import functionalj.list.FuncList;
@@ -52,6 +56,10 @@ import functionalj.task.Tasks.TaskMerge3;
 import functionalj.task.Tasks.TaskMerge4;
 import functionalj.task.Tasks.TaskMerge5;
 import functionalj.task.Tasks.TaskMerge6;
+import functionalj.task.Tasks.TaskMerge7;
+import functionalj.task.Tasks.TaskMerge8;
+import functionalj.task.Tasks.TaskMerge9;
+import functionalj.task.Tasks.TaskMerge10;
 import functionalj.task.Tasks.TaskPeek;
 import functionalj.task.Tasks.TaskPromise;
 import functionalj.task.Tasks.TaskRace;
@@ -80,25 +88,234 @@ public interface Task<DATA> {
         return new TaskPromise<>(promise);
     }
     
+    //== Merge ==
+    
+    /**
+     * Creates a new {@link TaskMerge2} instance that merges the results of two tasks using a specified merger function.
+     * This static method facilitates the combination of multiple asynchronous tasks into a single Task object.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <D>   the type of the data produced by the merger of the task results
+     * 
+     * @param io1     the first task
+     * @param io2     the second task
+     * @param merger  the function to merge the results of the tasks
+     * @return a new {@link TaskMerge2} instance that merges the results of the specified tasks
+     */
     public static <I1, I2, D> Task<D> from(Task<I1> io1, Task<I2> io2, Func2<I1, I2, D> merger) {
         return new TaskMerge2<>(io1, io2, merger);
     }
     
+    /**
+     * Creates a new {@link TaskMerge3} instance that merges the results of three tasks using a specified merger function.
+     * This static method facilitates the combination of multiple asynchronous tasks into a single Task object.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <D>   the type of the data produced by the merger of the task results
+     * 
+     * @param io1     the first task
+     * @param io2     the second task
+     * @param io3     the third task
+     * @param merger  the function to merge the results of the tasks
+     * @return a new {@link TaskMerge3} instance that merges the results of the specified tasks
+     */
     public static <I1, I2, I3, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Func3<I1, I2, I3, D> merger) {
         return new TaskMerge3<>(io1, io2, io3, merger);
     }
     
+    /**
+     * Creates a new {@link TaskMerge4} instance that merges the results of four tasks using a specified merger function.
+     * This static method facilitates the combination of multiple asynchronous tasks into a single Task object.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <D>   the type of the data produced by the merger of the task results
+     * 
+     * @param io1     the first task
+     * @param io2     the second task
+     * @param io3     the third task
+     * @param io4     the fourth task
+     * @param merger  the function to merge the results of the tasks
+     * @return a new {@link TaskMerge4} instance that merges the results of the specified tasks
+     */
     public static <I1, I2, I3, I4, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Func4<I1, I2, I3, I4, D> merger) {
         return new TaskMerge4<>(io1, io2, io3, io4, merger);
     }
     
+    /**
+     * Creates a new {@link TaskMerge5} instance that merges the results of five tasks using a specified merger function.
+     * This static method facilitates the combination of multiple asynchronous tasks into a single Task object.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <D>   the type of the data produced by the merger of the task results
+     * 
+     * @param io1     the first task
+     * @param io2     the second task
+     * @param io3     the third task
+     * @param io4     the fourth task
+     * @param io5     the fifth task
+     * @param merger  the function to merge the results of the tasks
+     * @return a new {@link TaskMerge5} instance that merges the results of the specified tasks
+     */
     public static <I1, I2, I3, I4, I5, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Task<I5> io5, Func5<I1, I2, I3, I4, I5, D> merger) {
         return new TaskMerge5<>(io1, io2, io3, io4, io5, merger);
     }
     
+    /**
+     * Creates a new {@link TaskMerge6} instance that merges the results of six tasks using a specified merger function.
+     * This static method facilitates the combination of multiple asynchronous tasks into a single Task object.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <I6>  the type of the result of the sixth task
+     * @param <D>   the type of the data produced by the merger of the task results
+     * 
+     * @param io1     the first task
+     * @param io2     the second task
+     * @param io3     the third task
+     * @param io4     the fourth task
+     * @param io5     the fifth task
+     * @param io6     the sixth task
+     * @param merger  the function to merge the results of the tasks
+     * @return a new {@link TaskMerge6} instance that merges the results of the specified tasks
+     */
     public static <I1, I2, I3, I4, I5, I6, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Task<I5> io5, Task<I6> io6, Func6<I1, I2, I3, I4, I5, I6, D> merger) {
         return new TaskMerge6<>(io1, io2, io3, io4, io5, io6, merger);
     }
+    
+    /**
+     * Creates a new {@link TaskMerge7} instance that merges the results of seven tasks using a specified merger function.
+     * This static method facilitates the combination of multiple asynchronous tasks into a single Task object.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <I6>  the type of the result of the sixth task
+     * @param <I7>  the type of the result of the seventh task
+     * @param <D>   the type of the data produced by the merger of the task results
+     * 
+     * @param io1     the first task
+     * @param io2     the second task
+     * @param io3     the third task
+     * @param io4     the fourth task
+     * @param io5     the fifth task
+     * @param io6     the sixth task
+     * @param io7     the seventh task
+     * @param merger  the function to merge the results of the tasks
+     * @return a new {@link TaskMerge7} instance that merges the results of the specified tasks
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Task<I5> io5, Task<I6> io6, Task<I7> io7, Func7<I1, I2, I3, I4, I5, I6, I7, D> merger) {
+        return new TaskMerge7<>(io1, io2, io3, io4, io5, io6, io7, merger);
+    }
+    
+    /**
+     * Creates a new {@link TaskMerge8} instance that merges the results of eight tasks using a specified merger function.
+     * This static method facilitates the combination of multiple asynchronous tasks into a single Task object.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <I6>  the type of the result of the sixth task
+     * @param <I7>  the type of the result of the seventh task
+     * @param <I8>  the type of the result of the eighth task
+     * @param <D>   the type of the data produced by the merger of the task results
+     * 
+     * @param io1     the first task
+     * @param io2     the second task
+     * @param io3     the third task
+     * @param io4     the fourth task
+     * @param io5     the fifth task
+     * @param io6     the sixth task
+     * @param io7     the seventh task
+     * @param io8     the eighth task
+     * @param merger  the function to merge the results of the tasks
+     * @return a new {@link TaskMerge8} instance that merges the results of the specified tasks
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Task<I5> io5, Task<I6> io6, Task<I7> io7, Task<I8> io8, Func8<I1, I2, I3, I4, I5, I6, I7, I8, D> merger) {
+        return new TaskMerge8<>(io1, io2, io3, io4, io5, io6, io7, io8, merger);
+    }
+    
+    /**
+     * Creates a new {@link TaskMerge9} instance that merges the results of nine tasks using a specified merger function.
+     * This static method facilitates the combination of multiple asynchronous tasks into a single Task object.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <I6>  the type of the result of the sixth task
+     * @param <I7>  the type of the result of the seventh task
+     * @param <I8>  the type of the result of the eighth task
+     * @param <I9>  the type of the result of the ninth task
+     * @param <D>   the type of the data produced by the merger of the task results
+     * 
+     * @param io1     the first task
+     * @param io2     the second task
+     * @param io3     the third task
+     * @param io4     the fourth task
+     * @param io5     the fifth task
+     * @param io6     the sixth task
+     * @param io7     the seventh task
+     * @param io8     the eighth task
+     * @param io9     the ninth task
+     * @param merger  the function to merge the results of the tasks
+     * @return a new {@link TaskMerge9} instance that merges the results of the specified tasks
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Task<I5> io5, Task<I6> io6, Task<I7> io7, Task<I8> io8, Task<I9> io9, Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, D> merger) {
+        return new TaskMerge9<>(io1, io2, io3, io4, io5, io6, io7, io8, io9, merger);
+    }
+    
+    /**
+     * Creates a new {@link TaskMerge10} instance that merges the results of ten tasks using a specified merger function.
+     * This static method facilitates the combination of multiple asynchronous tasks into a single Task object.
+     * 
+     * @param <I1>   the type of the result of the first task
+     * @param <I2>   the type of the result of the second task
+     * @param <I3>   the type of the result of the third task
+     * @param <I4>   the type of the result of the fourth task
+     * @param <I5>   the type of the result of the fifth task
+     * @param <I6>   the type of the result of the sixth task
+     * @param <I7>   the type of the result of the seventh task
+     * @param <I8>   the type of the result of the eighth task
+     * @param <I9>   the type of the result of the ninth task
+     * @param <I10>  the type of the result of the tenth task
+     * @param <D>    the type of the data produced by the merger of the task results
+     * 
+     * @param io1     the first task
+     * @param io2     the second task
+     * @param io3     the third task
+     * @param io4     the fourth task
+     * @param io5     the fifth task
+     * @param io6     the sixth task
+     * @param io7     the seventh task
+     * @param io8     the eighth task
+     * @param io9     the ninth task
+     * @param i10     the tenth task
+     * @param merger  the function to merge the results of the tasks
+     * @return a new {@link TaskMerge10} instance that merges the results of the specified tasks
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, D> Task<D> from(Task<I1> io1, Task<I2> io2, Task<I3> io3, Task<I4> io4, Task<I5> io5, Task<I6> io6, Task<I7> io7, Task<I8> io8, Task<I9> io9, Task<I10> i10, Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, D> merger) {
+        return new TaskMerge10<>(io1, io2, io3, io4, io5, io6, io7, io8, io9, i10, merger);
+    }
+    
+    //==
     
     @SafeVarargs
     public static <D> Task<D> firstOf(Task<D>... ios) {

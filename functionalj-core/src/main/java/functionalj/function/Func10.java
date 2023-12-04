@@ -32,6 +32,7 @@ import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
+import functionalj.task.Task;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple10;
 import lombok.val;
@@ -118,6 +119,42 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
      * @throws Exception if the function execution encounters an error
      */
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7, INPUT8 input8, INPUT9 input9, INPUT10 input10) throws Exception;
+    
+    
+    /**
+     * Applies this function safely to ten input parameters, returning a {@code Result<OUTPUT>}.
+     * This method wraps the function application in a try-catch block, capturing any exceptions that occur during execution.
+     * 
+     * @param input1   the first input parameter.
+     * @param input2   the second input parameter.
+     * @param input3   the third input parameter.
+     * @param input4   the fourth input parameter.
+     * @param input5   the fifth input parameter.
+     * @param input6   the sixth input parameter.
+     * @param input7   the seventh input parameter.
+     * @param input8   the eighth input parameter.
+     * @param input9   the ninth input parameter.
+     * @param input10  the tenth input parameter.
+     * @return         a {@code Result<OUTPUT>} containing the result if successful, or an exception if an error occurs during function application.
+     */
+    public default Result<OUTPUT> applySafely(
+                    INPUT1  input1,
+                    INPUT2  input2,
+                    INPUT3  input3,
+                    INPUT4  input4,
+                    INPUT5  input5,
+                    INPUT6  input6,
+                    INPUT7  input7,
+                    INPUT8  input8,
+                    INPUT9  input9,
+                    INPUT10 input10) {
+        try {
+            val output = applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+            return Result.valueOf(output);
+        } catch (Exception exception) {
+            return Result.ofException(exception);
+        }
+    }
     
     
     //== Apply ==
@@ -279,6 +316,56 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
     }
     
     /**
+     * Applies this function to ten {@code Result} instances, returning a {@code Result} of the output.
+     * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
+     * 
+     * @param input1   the first promise.
+     * @param input2   the second promise.
+     * @param input3   the third promise.
+     * @param input4   the fourth promise.
+     * @param input5   the fifth promise.
+     * @param input6   the sixth promise.
+     * @param input7   the seventh promise.
+     * @param input8   the eighth promise.
+     * @param input9   the ninth promise.
+     * @param input10  the tenth promise.
+     * @return         a {@code Result<OUTPUT>} that will be fulfilled with the result of applying this function to the results of the promises.
+     */
+    public default Result<OUTPUT> apply(
+                                    Result<INPUT1>  input1,
+                                    Result<INPUT2>  input2,
+                                    Result<INPUT3>  input3,
+                                    Result<INPUT4>  input4,
+                                    Result<INPUT5>  input5,
+                                    Result<INPUT6>  input6,
+                                    Result<INPUT7>  input7,
+                                    Result<INPUT8>  input8,
+                                    Result<INPUT9>  input9,
+                                    Result<INPUT10> input10) {
+        return input1.flatMap(i1 -> {
+            return input2.flatMap(i2 -> {
+                return input3.flatMap(i3 -> {
+                    return input4.flatMap(i4 -> {
+                        return input5.flatMap(i5 -> {
+                            return input6.flatMap(i6 -> {
+                                return input7.flatMap(i7 -> {
+                                    return input8.flatMap(i8 -> {
+                                        return input9.flatMap(i9 -> {
+                                            return input10.map(i10 -> {
+                                                return Func10.this.apply(i1, i2, i3, i4, i5, i6, i7, i8, i9, i10);
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    }
+    
+    /**
      * Applies this function to ten {@code HasPromise} instances, returning a {@code Promise} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
@@ -306,6 +393,36 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
                                     HasPromise<INPUT9>  input9, 
                                     HasPromise<INPUT10> input10) {
         return Promise.from(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10, this);
+    }
+    
+    /**
+     * Applies this function to ten {@code Task} instances, returning a {@code Task} of the output.
+     * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
+     * 
+     * @param input1   the first task.
+     * @param input2   the second task.
+     * @param input3   the third task.
+     * @param input4   the fourth task.
+     * @param input5   the fifth task.
+     * @param input6   the sixth task.
+     * @param input7   the seventh task.
+     * @param input8   the eighth task.
+     * @param input9   the ninth task.
+     * @param input10  the tenth task.
+     * @return         a {@code Task<OUTPUT>} that will be fulfilled with the result of applying this function.
+     */
+    public default Task<OUTPUT> apply(
+                                    Task<INPUT1>  input1,
+                                    Task<INPUT2>  input2,
+                                    Task<INPUT3>  input3,
+                                    Task<INPUT4>  input4,
+                                    Task<INPUT5>  input5,
+                                    Task<INPUT6>  input6,
+                                    Task<INPUT7>  input7,
+                                    Task<INPUT8>  input8,
+                                    Task<INPUT9>  input9,
+                                    Task<INPUT10> input10) {
+        return Task.from(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10, this);
     }
     
     /**
@@ -350,41 +467,6 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
             val output  = apply(value1, value2, value3, value4, value5, value6, value7, value8, value9, value10);
             return output;
         };
-    }
-    
-    /**
-     * Applies this function safely to ten input parameters, returning a {@code Result<OUTPUT>}.
-     * This method wraps the function application in a try-catch block, capturing any exceptions that occur during execution.
-     * 
-     * @param input1   the first input parameter.
-     * @param input2   the second input parameter.
-     * @param input3   the third input parameter.
-     * @param input4   the fourth input parameter.
-     * @param input5   the fifth input parameter.
-     * @param input6   the sixth input parameter.
-     * @param input7   the seventh input parameter.
-     * @param input8   the eighth input parameter.
-     * @param input9   the ninth input parameter.
-     * @param input10  the tenth input parameter.
-     * @return         a {@code Result<OUTPUT>} containing the result if successful, or an exception if an error occurs during function application.
-     */
-    public default Result<OUTPUT> applySafely(
-                    INPUT1  input1,
-                    INPUT2  input2,
-                    INPUT3  input3,
-                    INPUT4  input4,
-                    INPUT5  input5,
-                    INPUT6  input6,
-                    INPUT7  input7,
-                    INPUT8  input8,
-                    INPUT9  input9,
-                    INPUT10 input10) {
-        try {
-            val output = applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
-            return Result.valueOf(output);
-        } catch (Exception exception) {
-            return Result.ofException(exception);
-        }
     }
     
     /**
