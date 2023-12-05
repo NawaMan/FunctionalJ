@@ -233,15 +233,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
                                     Result<INPUT2> input2,
                                     Result<INPUT3> input3,
                                     Result<INPUT4> input4) {
-        return input1.flatMap(i1 -> {
-            return input2.flatMap(i2 -> {
-                return input3.flatMap(i3 -> {
-                    return input4.map(i4 -> {
-                        return Func4.this.apply(i1, i2, i3, i4);
-                    });
-                });
-            });
-        });
+        return Result.ofResults(input1, input2, input3, input4, this);
     }
     
     /**
@@ -603,6 +595,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         return applySafely(input1, input2, input3, input4).orGet(defaultSupplier);
     }
     
+    //== Convert == 
+    
     /**
      * Wraps this function in a safe wrapper that returns a Result object encapsulating the outcome.
      * The resulting function handles any exceptions during the application of this function, 
@@ -702,7 +696,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     //== Elevate ==
     
     /**
-     * Transforms this ten-parameter function into a function that returns a single-parameter function.
+     * Transforms this function into a function that returns a single-parameter function.
      * This method elevates the first input parameter, allowing the other nine parameters to be preset, and the first parameter to be applied later.
      *
      * @return a function that takes nine parameters and returns a single-parameter function of type INPUT1, which in turn returns an OUTPUT
@@ -712,7 +706,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     }
     
     /**
-     * Creates a single-parameter function by pre-setting the other nine parameters of this ten-parameter function.
+     * Creates a single-parameter function by pre-setting the other nine parameters of this function.
      * The resulting function takes the first parameter and applies it along with the pre-set values.
      *
      * @param i2  the second input parameter
@@ -727,7 +721,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     //== Split ==
     
     /**
-     * Splits this ten-parameter function into a two-level function composition.
+     * Splits this function into a two-level function composition.
      * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
      *
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
@@ -737,7 +731,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     }
     
     /**
-     * Splits this ten-parameter function into a two-level function composition.
+     * Splits this function into a two-level function composition.
      * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
      *
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
@@ -747,7 +741,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     }
     
     /**
-     * Splits this ten-parameter function into a two-stage function.
+     * Splits this function into a two-stage function.
      * The first stage takes the first two input parameters, returning a function that accepts the remaining eight parameters to produce the output.
      *
      * @return a function that takes two parameters of types INPUT1 and INPUT2, and returns a function that takes the remaining eight parameters, to produce an OUTPUT
@@ -757,7 +751,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     }
     
     /**
-     * Divides this ten-parameter function into a two-level function.
+     * Divides this function into a two-level function.
      * The first level takes the first three input parameters, and returns a function that requires the remaining seven parameters to produce the output.
      *
      * @return a function that takes three parameters of types INPUT1, INPUT2, and INPUT3, and returns a function that accepts the remaining seven parameters, to yield an OUTPUT

@@ -300,25 +300,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
                                     Result<INPUT7> input7,
                                     Result<INPUT8> input8,
                                     Result<INPUT9> input9) {
-        return input1.flatMap(i1 -> {
-            return input2.flatMap(i2 -> {
-                return input3.flatMap(i3 -> {
-                    return input4.flatMap(i4 -> {
-                        return input5.flatMap(i5 -> {
-                            return input6.flatMap(i6 -> {
-                                return input7.flatMap(i7 -> {
-                                    return input8.flatMap(i8 -> {
-                                        return input9.map(i9 -> {
-                                            return Func9.this.apply(i1, i2, i3, i4, i5, i6, i7, i8, i9);
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
+        return Result.ofResults(input1, input2, input3, input4, input5, input6, input7, input8, input9, this);
     }
     
     /**
@@ -724,6 +706,8 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     public default OUTPUT orGet(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7, INPUT8 input8, INPUT9 input9, Func0<OUTPUT> defaultSupplier) {
         return applySafely(input1, input2, input3, input4, input5, input6, input7, input8, input9).orGet(defaultSupplier);
     }
+    
+    //== Convert == 
     
     /**
      * Wraps this function in a safe wrapper that returns a Result object encapsulating the outcome.

@@ -1002,14 +1002,15 @@ public interface Func {
     }
     
     // == Recursive ==
+    
     public static <I1, I2, R> Func1<I1, R> recusive(Absent absent, I2 i2, Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
         Func2<I1, I2, R> grt = recusive(func3);
-        return grt.bind(absent, i2);
+        return grt.curry(absent, i2);
     }
     
     public static <I1, I2, R> Func1<I2, R> recusive(I1 i1, Absent absent, Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
         Func2<I1, I2, R> grt = recusive(func3);
-        return grt.bind(i1, absent);
+        return grt.curry(i1, absent);
     }
     
     public static <I, R> Func1<I, R> recusive(Func2<Func1<I, R>, I, R> func2) {

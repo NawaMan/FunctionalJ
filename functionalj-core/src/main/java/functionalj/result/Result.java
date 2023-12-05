@@ -730,6 +730,8 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         }));
     }
     
+    //== Function ==
+    
     /**
      * Returns the value hold by this {@link Result}.
      * 

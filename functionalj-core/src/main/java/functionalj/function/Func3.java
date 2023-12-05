@@ -35,7 +35,6 @@ import functionalj.result.Result;
 import functionalj.task.Task;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple3;
-import functionalj.tuple.Tuple5;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
@@ -81,8 +80,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     }
     
     /**
-     * Represents a function that takes ten input parameters and produces an output.
-     * This is a functional interface whose functional method is {@link #applyUnsafe}.
+     * Applies this function to the given arguments, potentially throwing an exception.
      * 
      * @param <INPUT1>  the type of the first input parameter
      * @param <INPUT2>  the type of the second input parameter
@@ -216,13 +214,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
                                     Result<INPUT1> input1,
                                     Result<INPUT2> input2,
                                     Result<INPUT3> input3) {
-        return input1.flatMap(i1 -> {
-            return input2.flatMap(i2 -> {
-                return input3.map(i3 -> {
-                    return Func3.this.apply(i1, i2, i3);
-                });
-            });
-        });
+        return Result.ofResults(input1, input2, input3, this);
     }
     
     /**
@@ -251,9 +243,9 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return        a {@code Task<OUTPUT>} that will be fulfilled with the result of applying this function.
      */
     public default Task<OUTPUT> apply(
-                                    Task<INPUT1>  input1,
-                                    Task<INPUT2>  input2,
-                                    Task<INPUT3>  input3) {
+                                    Task<INPUT1> input1,
+                                    Task<INPUT2> input2,
+                                    Task<INPUT3> input3) {
         return Task.from(input1, input2, input3, this);
     }
     
@@ -575,6 +567,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return applySafely(input1, input2, input3).orGet(defaultSupplier);
     }
     
+    //== Convert == 
+    
     /**
      * Wraps this function in a safe wrapper that returns a Result object encapsulating the outcome.
      * The resulting function handles any exceptions during the application of this function, 
@@ -647,10 +641,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     }
     
     /**
-     * Converts this function to accept a single {@link Tuple5} parameter, allowing for grouped input parameters.
+     * Converts this function to accept a single {@link Tuple3} parameter, allowing for grouped input parameters.
      * This method facilitates the use of a single tuple to pass all the necessary inputs to the function.
      *
-     * @return a function that takes a {@link Tuple5} containing ten parameters and returns the output of type OUTPUT
+     * @return a function that takes a {@link Tuple3} containing ten parameters and returns the output of type OUTPUT
      */
     public default Func1<Tuple3<INPUT1, INPUT2, INPUT3>, OUTPUT> wholly() {
         return t -> {
@@ -673,7 +667,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     //== Elevate ==
     
     /**
-     * Transforms this ten-parameter function into a function that returns a single-parameter function.
+     * Transforms this function into a function that returns a single-parameter function.
      * This method elevates the first input parameter, allowing the other nine parameters to be preset, and the first parameter to be applied later.
      *
      * @return a function that takes nine parameters and returns a single-parameter function of type INPUT1, which in turn returns an OUTPUT
@@ -683,7 +677,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     }
     
     /**
-     * Creates a single-parameter function by pre-setting the other nine parameters of this ten-parameter function.
+     * Creates a single-parameter function by pre-setting the other nine parameters of this function.
      * The resulting function takes the first parameter and applies it along with the pre-set values.
      *
      * @param i2  the second input parameter
@@ -697,7 +691,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     //== Split ==
     
     /**
-     * Splits this ten-parameter function into a two-level function composition.
+     * Splits this function into a two-level function composition.
      * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
      *
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
@@ -707,7 +701,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     }
     
     /**
-     * Splits this ten-parameter function into a two-level function composition.
+     * Splits this function into a two-level function composition.
      * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
      *
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
@@ -717,7 +711,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     }
     
     /**
-     * Splits this ten-parameter function into a two-stage function.
+     * Splits this function into a two-stage function.
      * The first stage takes the first two input parameters, returning a function that accepts the remaining eight parameters to produce the output.
      *
      * @return a function that takes two parameters of types INPUT1 and INPUT2, and returns a function that takes the remaining eight parameters, to produce an OUTPUT

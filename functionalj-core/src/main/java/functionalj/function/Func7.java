@@ -264,21 +264,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
                                     Result<INPUT5> input5,
                                     Result<INPUT6> input6,
                                     Result<INPUT7> input7) {
-        return input1.flatMap(i1 -> {
-            return input2.flatMap(i2 -> {
-                return input3.flatMap(i3 -> {
-                    return input4.flatMap(i4 -> {
-                        return input5.flatMap(i5 -> {
-                            return input6.flatMap(i6 -> {
-                                return input7.map(i7 -> {
-                                    return Func7.this.apply(i1, i2, i3, i4, i5, i6, i7);
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
+        return Result.ofResults(input1, input2, input3, input4, input5, input6, input7, this);
     }
     
     /**
@@ -667,6 +653,8 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
         return applySafely(input1, input2, input3, input4, input5, input6, input7).orGet(defaultSupplier);
     }
     
+    //== Convert == 
+    
     /**
      * Wraps this function in a safe wrapper that returns a Result object encapsulating the outcome.
      * The resulting function handles any exceptions during the application of this function, 
@@ -769,7 +757,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     //== Elevate ==
     
     /**
-     * Transforms this ten-parameter function into a function that returns a single-parameter function.
+     * Transforms this function into a function that returns a single-parameter function.
      * This method elevates the first input parameter, allowing the other nine parameters to be preset, and the first parameter to be applied later.
      *
      * @return a function that takes nine parameters and returns a single-parameter function of type INPUT1, which in turn returns an OUTPUT
@@ -779,7 +767,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     }
     
     /**
-     * Creates a single-parameter function by pre-setting the other nine parameters of this ten-parameter function.
+     * Creates a single-parameter function by pre-setting the other nine parameters of this function.
      * The resulting function takes the first parameter and applies it along with the pre-set values.
      *
      * @param i2  the second input parameter
@@ -797,7 +785,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     //== Split ==
     
     /**
-     * Splits this ten-parameter function into a two-level function composition.
+     * Splits this function into a two-level function composition.
      * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
      *
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
@@ -807,7 +795,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     }
     
     /**
-     * Splits this ten-parameter function into a two-level function composition.
+     * Splits this function into a two-level function composition.
      * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
      *
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
@@ -817,7 +805,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     }
     
     /**
-     * Splits this ten-parameter function into a two-stage function.
+     * Splits this function into a two-stage function.
      * The first stage takes the first two input parameters, returning a function that accepts the remaining eight parameters to produce the output.
      *
      * @return a function that takes two parameters of types INPUT1 and INPUT2, and returns a function that takes the remaining eight parameters, to produce an OUTPUT
@@ -827,7 +815,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     }
     
     /**
-     * Divides this ten-parameter function into a two-level function.
+     * Divides this function into a two-level function.
      * The first level takes the first three input parameters, and returns a function that requires the remaining seven parameters to produce the output.
      *
      * @return a function that takes three parameters of types INPUT1, INPUT2, and INPUT3, and returns a function that accepts the remaining seven parameters, to yield an OUTPUT
@@ -837,7 +825,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     }
     
     /**
-     * Segments this ten-parameter function into a two-tiered function structure.
+     * Segments this function into a two-tiered function structure.
      * The initial tier takes the first four input parameters and returns a function that requires the final six parameters to generate the output.
      *
      * @return a function that accepts four parameters of types INPUT1, INPUT2, INPUT3, and INPUT4, and returns a function that takes the last six parameters, to produce an OUTPUT
@@ -847,7 +835,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     }
     
     /**
-     * Splits this ten-parameter function into a dual-layer function composition.
+     * Splits this function into a dual-layer function composition.
      * The first layer accepts the first five input parameters, yielding a function that requires the remaining five parameters to compute the output.
      *
      * @return a function that takes five parameters of types INPUT1, INPUT2, INPUT3, INPUT4, and INPUT5, and returns a function that operates on the final five parameters, to generate an OUTPUT
@@ -857,7 +845,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     }
     
     /**
-     * Divides this ten-parameter function into two stages.
+     * Divides this function into two stages.
      * The initial stage handles the first six input parameters, leading to a function that demands the last four parameters for producing the output.
      *
      * @return a function that receives six parameters of types INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, and INPUT6, and returns a function that processes the remaining four parameters, to create an OUTPUT
