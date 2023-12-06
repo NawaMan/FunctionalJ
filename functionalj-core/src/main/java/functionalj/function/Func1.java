@@ -144,55 +144,55 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         }
     }
     
-    public default OUTPUT applyToNull() {
+    public default OUTPUT applyNull() {
         return apply((INPUT) null);
     }
     
-    public default Result<OUTPUT> applyTo(Result<INPUT> input) {
+    public default Result<OUTPUT> apply(Result<INPUT> input) {
         return input.map(this);
     }
     
-    public default Optional<OUTPUT> applyTo(Optional<INPUT> input) {
+    public default Optional<OUTPUT> apply(Optional<INPUT> input) {
         return input.map(this);
     }
     
-    public default Nullable<OUTPUT> applyTo(Nullable<INPUT> input) {
+    public default Nullable<OUTPUT> apply(Nullable<INPUT> input) {
         return input.map(this);
     }
     
-    public default Promise<OUTPUT> applyTo(HasPromise<INPUT> input) {
+    public default Promise<OUTPUT> apply(HasPromise<INPUT> input) {
         return input.getPromise().map(this);
     }
     
-    public default Task<OUTPUT> applyTo(Task<INPUT> input) {
+    public default Task<OUTPUT> apply(Task<INPUT> input) {
         return input.map(this);
     }
     
-    public default StreamPlus<OUTPUT> applyTo(Stream<INPUT> input) {
+    public default StreamPlus<OUTPUT> apply(Stream<INPUT> input) {
         return StreamPlus.from(input).map(this);
     }
     
-    public default FuncList<OUTPUT> applyTo(List<INPUT> input) {
+    public default FuncList<OUTPUT> apply(List<INPUT> input) {
         return FuncList.from(input).map(this);
     }
     
-    public default <KEY> FuncMap<KEY, OUTPUT> applyTo(Map<KEY, INPUT> input) {
+    public default <KEY> FuncMap<KEY, OUTPUT> apply(Map<KEY, INPUT> input) {
         return FuncMap.from(input).map(this);
     }
     
-    public default FuncList<OUTPUT> applyTo(FuncList<INPUT> input) {
+    public default FuncList<OUTPUT> apply(FuncList<INPUT> input) {
         return input.map(this);
     }
     
-    public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
+    public default <KEY> FuncMap<KEY, OUTPUT> apply(FuncMap<KEY, INPUT> input) {
         return FuncMap.from(input).map(this);
     }
     
-    public default Func0<OUTPUT> applyTo(Supplier<INPUT> input) {
+    public default Func0<OUTPUT> apply(Supplier<INPUT> input) {
         return () -> apply(input.get());
     }
     
-    public default <T> Func1<T, OUTPUT> applyTo(Function<T, INPUT> input) {
+    public default <T> Func1<T, OUTPUT> apply(Function<T, INPUT> input) {
         return t -> apply(input.apply(t));
     }
     
@@ -309,7 +309,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(e);
@@ -357,7 +357,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return (input) -> {
             try {
                 val outputValue = this.applyUnsafe(input);
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(e);

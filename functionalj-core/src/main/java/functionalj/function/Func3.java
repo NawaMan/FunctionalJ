@@ -525,7 +525,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return (input1, input2, input3) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2, input3);
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(e);
@@ -625,7 +625,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return (input1, input2, input3) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2, input3);
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);

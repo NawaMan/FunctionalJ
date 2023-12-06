@@ -628,7 +628,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
         return (input1, input2, input3, input4, input5, input6, input7, input8) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8);
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(e);
@@ -728,7 +728,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
         return (input1, input2, input3, input4, input5, input6, input7, input8) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8);
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);

@@ -65,6 +65,9 @@ import functionalj.task.Task;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
+/**
+ * The class contains static methods for applying functions.
+ */
 public interface Apply {
     
     /**
@@ -506,7 +509,7 @@ public interface Apply {
         return func.apply(input1, input2, input3);
     }
     
-    public static <I1, I2, I3, O> Func0<O> $(Func3<I1, I2, I3, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3) {
+    public static <I1, I2, I3, O> Func0<O> $(Func3<I1, I2, I3, O> func, Func0<I1> input1, Func0<I2> input2, Func0<I3> input3) {
         return func.apply(input1, input2, input3);
     }
     
@@ -546,7 +549,7 @@ public interface Apply {
         return func.apply(input1, input2, input3, input4);
     }
     
-    public static <I1, I2, I3, I4, O> Func0<O> $(Func4<I1, I2, I3, I4, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3, Supplier<I4> input4) {
+    public static <I1, I2, I3, I4, O> Func0<O> $(Func4<I1, I2, I3, I4, O> func, Func0<I1> input1, Func0<I2> input2, Func0<I3> input3, Func0<I4> input4) {
         return func.apply(input1, input2, input3, input4);
     }
     
@@ -635,31 +638,27 @@ public interface Apply {
         return func.apply(input1).apply(input2).apply(input3).apply(input4);
     }
     
-    public static <I1, I2, I3, I4, I5, O> Result<O> $(Func4<I1, I2, I3, I4, O> func, Result<I1> input1, Result<I2> input2, Result<I3> input3, Result<I4> input4, Result<I5> input5) {
+    public static <I1, I2, I3, I4, O> Optional<O> $(Func4<I1, I2, I3, I4, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3, Optional<I4> input4, Optional<I5> input5) {
         return func.apply(input1, input2, input3, input4);
     }
     
-    public static <I1, I2, I3, I4, I5, O> Optional<O> $(Func4<I1, I2, I3, I4, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3, Optional<I4> input4, Optional<I5> input5) {
+    public static <I1, I2, I3, I4, O> Nullable<O> $(Func4<I1, I2, I3, I4, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4, Nullable<I5> input5) {
         return func.apply(input1, input2, input3, input4);
     }
     
-    public static <I1, I2, I3, I4, I5, O> Nullable<O> $(Func4<I1, I2, I3, I4, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4, Nullable<I5> input5) {
+    public static <I1, I2, I3, I4, O> Func0<O> $(Func4<I1, I2, I3, I4, O> func, Func0<I1> input1, Func0<I2> input2, Func0<I3> input3, Func0<I4> input4) {
         return func.apply(input1, input2, input3, input4);
     }
     
-    public static <I1, I2, I3, I4, I5, O> Func0<O> $(Func4<I1, I2, I3, I4, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3, Supplier<I4> input4, Supplier<I5> input5) {
+    public static <I1, I2, I3, I4, O> Promise<O> $(Func4<I1, I2, I3, I4, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3, HasPromise<I4> input4, HasPromise<I5> input5) {
         return func.apply(input1, input2, input3, input4);
     }
     
-    public static <I1, I2, I3, I4, I5, O> Promise<O> $(Func4<I1, I2, I3, I4, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3, HasPromise<I4> input4, HasPromise<I5> input5) {
+    public static <I1, I2, I3, I4, O> Task<O> $(Func4<I1, I2, I3, I4, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5) {
         return func.apply(input1, input2, input3, input4);
     }
     
-    public static <I1, I2, I3, I4, I5, O> Task<O> $(Func4<I1, I2, I3, I4, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5) {
-        return func.apply(input1, input2, input3, input4);
-    }
-    
-    public static <S, I1, I2, I3, I4, I5, O> Func1<S, O> $(Func4<I1, I2, I3, I4, O> func, Func1<S, I1> input1, Func1<S, I2> input2, Func1<S, I3> input3, Func1<S, I4> input4, Func1<S, I5> input5) {
+    public static <S, I1, I2, I3, I4, O> Func1<S, O> $(Func4<I1, I2, I3, I4, O> func, Func1<S, I1> input1, Func1<S, I2> input2, Func1<S, I3> input3, Func1<S, I4> input4) {
         return func.apply(input1, input2, input3, input4);
     }
     
@@ -699,7 +698,7 @@ public interface Apply {
         return func.apply(input1, input2, input3, input4);
     }
     
-    public static <I1, I2, I3, I4, I5, I6, O> Func0<O> $(Func4<I1, I2, I3, I4, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3, Supplier<I4> input4, Supplier<I5> input5, Supplier<I6> input6) {
+    public static <I1, I2, I3, I4, I5, I6, O> Func0<O> $(Func4<I1, I2, I3, I4, O> func, Func0<I1> input1, Func0<I2> input2, Func0<I3> input3, Func0<I4> input4, Func0<I5> input5, Func0<I6> input6) {
         return func.apply(input1, input2, input3, input4);
     }
     

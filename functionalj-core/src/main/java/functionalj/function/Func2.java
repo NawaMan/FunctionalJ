@@ -622,7 +622,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(e);
@@ -722,7 +722,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return (input1, input2) -> {
             try {
                 val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
