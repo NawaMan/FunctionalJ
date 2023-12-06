@@ -650,6 +650,25 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
+     * Applies this function to the given arguments, using a function to map either the input tuple and an exception, or the input tuple and null, to an output value.
+     * If the function result is null or an exception is caught, the exception mapper is applied to the tuple of inputs and the exception (or null if the result is just absent) to provide a return value.
+     *
+     * @param exceptionMapper  the function to map a tuple of inputs and an exception (or null if the result is absent) to an output value
+     * @return                 a new function that applies this function to the given arguments, using the exception mapper to provide a return value in case of null result or exceptions
+     */
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func3<INPUT1, INPUT2, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2) -> {
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(input1, input2, null);
+                return returnValue;
+            } catch (Exception e) {
+                return exceptionMapper.apply(input1, input2, e);
+            }
+        };
+    }
+    
+    /**
      * Applies this function to the given arguments, using a specified handler for exceptions and returning a default value if the result is null or an exception occurs.
      * If an exception is caught during the function execution, the exception handler is invoked and the default value is returned. The default value is also returned if the function result is null.
      *
