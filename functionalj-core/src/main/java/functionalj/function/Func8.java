@@ -72,7 +72,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Represents a function that takes ten input parameters and produces an output.
+     * Represents a function that takes eight input parameters and produces an output.
      * This is a functional interface whose functional method is {@link #applyUnsafe}.
      * 
      * @param <INPUT1>  the type of the first input parameter
@@ -90,7 +90,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7, INPUT8 input8) throws Exception;
     
     /**
-     * Applies this function safely to ten input parameters, returning a {@code Result<OUTPUT>}.
+     * Applies this function safely to eight input parameters, returning a {@code Result<OUTPUT>}.
      * This method wraps the function application in a try-catch block, capturing any exceptions that occur during execution.
      * 
      * @param input1  the first input parameter.
@@ -165,18 +165,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function partially, taking the first input parameter and returning a function that takes the remaining parameters.
-     * @param  input1  the first input parameter.
-     * @return         a {@code Func8} function that takes the remaining nine parameters and produces an output.
-     */
-    public default Func7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> apply(INPUT1 input1) {
-        return (input2, input3, input4, input5, input6, input7, input8) -> {
-            return apply(input1, input2, input3, input4, input5, input6, input7, input8);
-        };
-    }
-    
-    /**
-     * Applies this function to ten optional input parameters, returning an {@code Optional} of the output.
+     * Applies this function to nine optional input parameters, returning an {@code Optional} of the output.
      * If any input is empty, the function short-circuits and returns {@code Optional.empty()}.
      * 
      * @param input1  optional first input parameter.
@@ -218,7 +207,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function to ten {@link Nullable} input parameters, returning a {@code Nullable} of the output.
+     * Applies this function to nine {@link Nullable} input parameters, returning a {@code Nullable} of the output.
      * If any input is null, the function short-circuits and returns {@code Nullable.empty()}.
      * 
      * @param input1  nullable first input parameter.
@@ -260,7 +249,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function to ten {@code Result} instances, returning a {@code Result} of the output.
+     * Applies this function to nine {@code Result} instances, returning a {@code Result} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first promise.
@@ -286,7 +275,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function to ten {@code HasPromise} instances, returning a {@code Promise} of the output.
+     * Applies this function to nine {@code HasPromise} instances, returning a {@code Promise} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first promise.
@@ -312,7 +301,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function to ten {@code Task} instances, returning a {@code Task} of the output.
+     * Applies this function to nine {@code Task} instances, returning a {@code Task} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first task.
@@ -338,7 +327,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     }
     
     /**
-     * Applies this function to ten {@code Func0} instances, returning a {@code Func0} that produces the output.
+     * Applies this function to nine {@code Func0} instances, returning a {@code Func0} that produces the output.
      * This method allows for lazy evaluation of the function, only invoking the input functions and applying this function 
      *      when the returned {@code Func0} is invoked.
      * 
@@ -374,6 +363,114 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
             return output;
         };
     }
+    
+    //== Single ==
+    
+    /**
+     * Applies this function partially, taking the first input parameter and returning a function that takes the remaining parameters.
+     * 
+     * @param  input1  the first input parameter.
+     * @return         a {@code Func7} function that takes the remaining parameters and produces an output.
+     */
+    public default Func7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> apply(INPUT1 input1) {
+        return (input2, input3, input4, input5, input6, input7, input8) -> {
+            return apply(input1, input2, input3, input4, input5, input6, input7, input8);
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of an {@code Optional} of the first input and remaining inputs, returning a {@code Func7} function.
+     * The resulting function takes the remaining inputs and produces an {@code Optional} of the output. If the first input is empty, the function returns an empty {@code Optional}.
+     *
+     * @param optional1  the {@code Optional} of the first input.
+     * @return           a {@code Func7} function that takes the remaining inputs and returns an {@code Optional} of the output.
+     */
+    public default Func7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, Optional<OUTPUT>> apply(Optional<INPUT1> optional1) {
+        return (input2, input3, input4, input5, input6, input7, input8) -> {
+            return optional1.map(input1 -> {
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8);
+            });
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of a {@code Nullable} of the first input and remaining inputs, returning a {@code Func7} function.
+     * The resulting function takes the remaining inputs and produces a {@code Nullable} of the output. If the first input is null, the function returns a null output.
+     *
+     * @param nullable1  the {@code Nullable} of the first input.
+     * @return           a {@code Func7} function that takes the remaining inputs and returns a {@code Nullable} of the output.
+     */
+    public default Func7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, Nullable<OUTPUT>> apply(Nullable<INPUT1> nullable1) {
+        return (input2, input3, input4, input5, input6, input7, input8) -> {
+            return nullable1.map(input1 -> {
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8);
+            });
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of a {@code Result} of the first input and remaining inputs, returning a {@code Func7} function.
+     * The resulting function takes the remaining inputs and produces a {@code Result} of the output. If the first input is an unsuccessful result, the function propagates this result.
+     *
+     * @param result1  the {@code Result} of the first input.
+     * @return         a {@code Func7} function that takes the remaining inputs and returns a {@code Result} of the output.
+     */
+    public default Func7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, Result<OUTPUT>> apply(Result<INPUT1> result1) {
+        return (input2, input3, input4, input5, input6, input7, input8) -> {
+            return result1.map(input1 -> {
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8);
+            });
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of a promise from {@code HasPromise} of the first input and the remaining inputs, returning a {@code Func7} function.
+     * The resulting function takes the remaining inputs and produces a {@code Promise} of the output. It retrieves the promise of the first input from the given {@code HasPromise} object.
+     *
+     * @param hasPromise1  the {@code HasPromise} containing the promise of the first input.
+     * @return             a {@code Func7} function that takes the remaining inputs and returns a {@code Promise} of the output.
+     */
+    public default Func7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, Promise<OUTPUT>> apply(HasPromise<INPUT1> hasPromise1) {
+        return (input2, input3, input4, input5, input6, input7, input8) -> {
+            return hasPromise1.getPromise().map(input1 -> {
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8);
+            });
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of a supplier for the first input and the remaining inputs, returning a {@code Func7} function.
+     * The resulting function takes the remaining inputs and produces a {@code Func0} that, when invoked, supplies the first input and applies the function to all inputs.
+     *
+     * @param supplier1  the {@code Func0} supplier for the first input.
+     * @return           a {@code Func7} function that takes the remaining inputs and returns a {@code Func0} producing the output.
+     */
+    public default Func7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, Func0<OUTPUT>> apply(Func0<INPUT1> supplier1) {
+        return (input2, input3, input4, input5, input6, input7, input8) -> {
+            return () -> {
+                val input1 = supplier1.get();
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8);
+            };
+        };
+    }
+    
+    /**
+     * Transforms the first input using a given function and applies the original function to the transformed input and remaining inputs, returning a {@code Func7} function.
+     * The resulting function takes the remaining inputs and a function that transforms an additional input into the first input type, then applies the original function to all inputs.
+     *
+     * @param function1  the {@code Func1} function to transform an additional input into the first input type.
+     * @return           a {@code Func7} function that takes the remaining inputs and a function to transform an additional input, then returns a {@code Func1} producing the output.
+     */
+    public default <INPUT> Func7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, Func1<INPUT, OUTPUT>> apply(Func1<INPUT, INPUT1> function1) {
+        return (input2, input3, input4, input5, input6, input7, input8) -> {
+            return input -> {
+                val input1 = function1.apply(input);
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8);
+            };
+        };
+    }
+    
+    //== Compose ==
     
     /**
      * Compose this function to the given function.
@@ -644,7 +741,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
     
     /**
      * Applies this function to the given arguments, returning a default value if the function result is null.
-     * This method safely applies the function to the ten given arguments and returns the default value if the result is null.
+     * This method safely applies the function to the all given arguments and returns the default value if the result is null.
      *
      * @param input1        the first input parameter
      * @param input2        the second input parameter
@@ -687,7 +784,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * The resulting function handles any exceptions during the application of this function, 
      *      encapsulating the result or exception within a Result object.
      *
-     * @return a function that takes ten parameters and returns a Result object containing 
+     * @return a function that takes all parameters and returns a Result object containing 
      *              either the function's output of type OUTPUT or any exception thrown
      */
     public default Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, Result<OUTPUT>> safely() {
@@ -699,7 +796,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * This method ensures that any exceptions thrown during the function's execution result in an empty Optional, 
      * rather than propagating the exception.
      *
-     * @return  a function that takes ten parameters and returns an Optional containing the output of type OUTPUT, or an empty Optional if an exception occurs
+     * @return  a function that takes all parameters and returns an Optional containing the output of type OUTPUT, or an empty Optional if an exception occurs
      */
     public default Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, Optional<OUTPUT>> optionally() {
         return (input1, input2, input3, input4, input5, input6, input7, input8) -> {
@@ -715,7 +812,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * Converts this function into an asynchronous version returning a Promise of the output type.
      * The function execution is deferred and managed in an asynchronous manner, with the result encapsulated in a Promise.
      *
-     * @return a function that takes ten parameters and returns a Promise containing the output of type OUTPUT
+     * @return a function that takes all parameters and returns a Promise containing the output of type OUTPUT
      */
     public default Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, Promise<OUTPUT>> async() {
         return (input1, input2, input3, input4, input5, input6, input7, input8) -> {
@@ -730,7 +827,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * Transforms this function into a deferred execution, returning a DeferAction that can be used to manage the execution.
      * The actual execution of the function is deferred until the DeferAction is explicitly started.
      *
-     * @return a function that takes ten parameters and returns a DeferAction encapsulating the deferred execution of this function, producing an output of type OUTPUT
+     * @return a function that takes all parameters and returns a DeferAction encapsulating the deferred execution of this function, producing an output of type OUTPUT
      */
     public default Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, DeferAction<OUTPUT>> defer() {
         return (input1, input2, input3, input4, input5, input6, input7, input8) -> {
@@ -745,7 +842,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * Adapts this function to work with promises, returning a function that takes promises as input and returns a promise.
      * This method allows the function to be applied to inputs that are encapsulated within Promise objects, combining them into a single output Promise.
      *
-     * @return a function that takes ten HasPromise parameters, each containing promises, and returns a Promise of type OUTPUT
+     * @return a function that takes all HasPromise parameters, each containing promises, and returns a Promise of type OUTPUT
      */
     public default Func8<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<INPUT6>, HasPromise<INPUT7>, HasPromise<INPUT8>, Promise<OUTPUT>> forPromise() {
         return (promise1, promise2, promise3, promise4, promise5, promise6, promise7, promise8) -> {
@@ -757,7 +854,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * Converts this function to accept a single {@link Tuple8} parameter, allowing for grouped input parameters.
      * This method facilitates the use of a single tuple to pass all the necessary inputs to the function.
      *
-     * @return a function that takes a {@link Tuple8} containing ten parameters and returns the output of type OUTPUT
+     * @return a function that takes a {@link Tuple8} containing all parameters and returns the output of type OUTPUT
      */
     public default Func1<Tuple8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8>, OUTPUT> wholly() {
         return t -> {

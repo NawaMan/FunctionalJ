@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 import functionalj.function.Func1;
-import functionalj.function.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
@@ -50,13 +49,13 @@ public class CombineResult<D> {
     
     private final Promise<D> promise;
     
-    CombineResult(FuncList<NamedExpression<HasPromise<Object>>> hasPromises, Func1<FuncList<Result>, Result<D>> mergeFunc) {
+    CombineResult(FuncList<HasPromise<Object>> hasPromises, Func1<FuncList<Result>, Result<D>> mergeFunc) {
         this.mergeFunc = mergeFunc;
         this.count = hasPromises.size();
         this.results = new Result[count];
         this.subscriptions = new SubscriptionRecord[count];
         this.isDone = new AtomicBoolean(false);
-        val promises = hasPromises.map(promise -> promise.getExpression()).map(promise -> promise.getPromise());
+        val promises = hasPromises.map(promise -> promise.getPromise());
         this.action = DeferAction.of((Class<D>) null, OnStart.run(() -> {
             promises.forEach(promise -> promise.start());
         }));

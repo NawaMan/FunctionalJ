@@ -205,17 +205,6 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
     }
     
     /**
-     * Applies this function partially, taking the first input parameter and returning a function that takes the remaining parameters.
-     * @param  input1  the first input parameter.
-     * @return         a {@code Func9} function that takes the remaining nine parameters and produces an output.
-     */
-    public default Func9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> apply(INPUT1 input1) {
-        return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
-            return apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
-        };
-    }
-    
-    /**
      * Applies this function to ten optional input parameters, returning an {@code Optional} of the output.
      * If any input is empty, the function short-circuits and returns {@code Optional.empty()}.
      * 
@@ -464,6 +453,114 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
             return target;
         };
     }
+    
+    //== Single ==
+    
+    /**
+     * Applies this function partially, taking the first input parameter and returning a function that takes the remaining parameters.
+     * 
+     * @param  input1  the first input parameter.
+     * @return         a {@code Func9} function that takes the remaining parameters and produces an output.
+     */
+    public default Func9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> apply(INPUT1 input1) {
+        return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
+            return apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of an {@code Optional} of the first input and remaining inputs, returning a {@code Func9} function.
+     * The resulting function takes the remaining inputs and produces an {@code Optional} of the output. If the first input is empty, the function returns an empty {@code Optional}.
+     *
+     * @param optional1  the {@code Optional} of the first input.
+     * @return           a {@code Func9} function that takes the next inputs and returns an {@code Optional} of the output.
+     */
+    public default Func9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, Optional<OUTPUT>> apply(Optional<INPUT1> optional1) {
+        return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
+            return optional1.map(input1 -> {
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+            });
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of a {@code Nullable} of the first input and remaining inputs, returning a {@code Func9} function.
+     * The resulting function takes the remaining inputs and produces a {@code Nullable} of the output. If the first input is null, the function returns a null output.
+     *
+     * @param nullable1  the {@code Nullable} of the first input.
+     * @return           a {@code Func9} function that takes the next inputs and returns a {@code Nullable} of the output.
+     */
+    public default Func9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, Nullable<OUTPUT>> apply(Nullable<INPUT1> nullable1) {
+        return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
+            return nullable1.map(input1 -> {
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+            });
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of a {@code Result} of the first input and remaining inputs, returning a {@code Func9} function.
+     * The resulting function takes the remaining inputs and produces a {@code Result} of the output. If the first input is an unsuccessful result, the function propagates this result.
+     *
+     * @param result1  the {@code Result} of the first input.
+     * @return         a {@code Func9} function that takes the next inputs and returns a {@code Result} of the output.
+     */
+    public default Func9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, Result<OUTPUT>> apply(Result<INPUT1> result1) {
+        return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
+            return result1.map(input1 -> {
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+            });
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of a promise from {@code HasPromise} of the first input and the remaining inputs, returning a {@code Func9} function.
+     * The resulting function takes the remaining inputs and produces a {@code Promise} of the output. It retrieves the promise of the first input from the given {@code HasPromise} object.
+     *
+     * @param hasPromise1  the {@code HasPromise} containing the promise of the first input.
+     * @return             a {@code Func9} function that takes the next inputs and returns a {@code Promise} of the output.
+     */
+    public default Func9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, Promise<OUTPUT>> apply(HasPromise<INPUT1> hasPromise1) {
+        return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
+            return hasPromise1.getPromise().map(input1 -> {
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+            });
+        };
+    }
+    
+    /**
+     * Applies the function to a combination of a supplier for the first input and the remaining inputs, returning a {@code Func9} function.
+     * The resulting function takes the remaining inputs and produces a {@code Func0} that, when invoked, supplies the first input and applies the function to all ten inputs.
+     *
+     * @param supplier1  the {@code Func0} supplier for the first input.
+     * @return           a {@code Func9} function that takes the next inputs and returns a {@code Func0} producing the output.
+     */
+    public default Func9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, Func0<OUTPUT>> apply(Func0<INPUT1> supplier1) {
+        return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
+            return () -> {
+                val input1 = supplier1.get();
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+            };
+        };
+    }
+    
+    /**
+     * Transforms the first input using a given function and applies the original function to the transformed input and remaining inputs, returning a {@code Func9} function.
+     * The resulting function takes the remaining inputs and a function that transforms an additional input into the first input type, then applies the original function to all inputs.
+     *
+     * @param function1  the {@code Func1} function to transform an additional input into the first input type.
+     * @return           a {@code Func9} function that takes the next inputs and a function to transform an additional input, then returns a {@code Func1} producing the output.
+     */
+    public default <INPUT> Func9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, Func1<INPUT, OUTPUT>> apply(Func1<INPUT, INPUT1> function1) {
+        return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
+            return input -> {
+                val input1 = function1.apply(input);
+                return apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+            };
+        };
+    }
+    
+    //== Compose ==
     
     /**
      * Compose this function to the given function.

@@ -669,7 +669,7 @@ public class DeferActionTest {
             return s;
         });
         val concat = f(String::concat);
-        val result = concat.applyTo(action1.getPromise(), action2.getPromise());
+        val result = concat.apply(action1.getPromise(), action2.getPromise());
         Thread.sleep(10);
         logs.add("Before getting result!");
         logs.add("Result: " + result.getResult());

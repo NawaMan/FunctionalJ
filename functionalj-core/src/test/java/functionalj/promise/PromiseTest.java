@@ -362,8 +362,8 @@ public class PromiseTest {
         val a = Sleep(50).thenReturn(20).defer();
         val b = Sleep(50).thenReturn(1).defer();
         val c = Sleep(50).thenReturn(2).defer();
-        val r1 = add.applyTo(a, b);
-        val r2 = mul.applyTo(add.applyTo(a, b), c);
+        val r1 = add.apply(a, b);
+        val r2 = mul.apply(add.apply(a, b), c);
         // val r3 = add
         // .then(mul.elevateWith(c)) // This does not work as c is a promise.
         // .apply(a, b);
