@@ -145,7 +145,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param  input the tuple input.
      * @return       the function result.
      */
-    public default OUTPUT apply(Tuple7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> input) {
+    public default OUTPUT applyTo(Tuple7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> input) {
         val _1  = input._1();
         val _2  = input._2();
         val _3  = input._3();
@@ -169,7 +169,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param input7  optional seventh input parameter.
      * @return        an {@code Optional<OUTPUT>} containing the result, if all inputs are present; otherwise, {@code Optional.empty()}.
      */
-    public default Optional<OUTPUT> apply(
+    public default Optional<OUTPUT> applyTo(
                                         Optional<INPUT1> input1,
                                         Optional<INPUT2> input2,
                                         Optional<INPUT3> input3,
@@ -207,7 +207,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param input7  nullable seventh input parameter.
      * @return        a {@code Nullable<OUTPUT>} containing the result, if all inputs are non-null; otherwise, {@code Nullable.empty()}.
      */
-    public default Nullable<OUTPUT> apply(
+    public default Nullable<OUTPUT> applyTo(
                                         Nullable<INPUT1> input1,
                                         Nullable<INPUT2> input2,
                                         Nullable<INPUT3> input3,
@@ -245,7 +245,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param input7  the seventh promise.
      * @return        a {@code Result<OUTPUT>} that will be fulfilled with the result of applying this function to the results of the promises.
      */
-    public default Result<OUTPUT> apply(
+    public default Result<OUTPUT> applyTo(
                                     Result<INPUT1> input1,
                                     Result<INPUT2> input2,
                                     Result<INPUT3> input3,
@@ -269,7 +269,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param input7  the seventh promise.
      * @return        a {@code Promise<OUTPUT>} that will be fulfilled with the result of applying this function to the results of the promises.
      */
-    public default Promise<OUTPUT> apply(
+    public default Promise<OUTPUT> applyTo(
                                     HasPromise<INPUT1> input1,
                                     HasPromise<INPUT2> input2,
                                     HasPromise<INPUT3> input3,
@@ -293,7 +293,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param input7  the seventh task.
      * @return        a {@code Task<OUTPUT>} that will be fulfilled with the result of applying this function.
      */
-    public default Task<OUTPUT> apply(
+    public default Task<OUTPUT> applyTo(
                                     Task<INPUT1>  input1,
                                     Task<INPUT2>  input2,
                                     Task<INPUT3>  input3,
@@ -318,7 +318,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param input7  the seventh {@code Func0} providing {@code INPUT7}.
      * @return        a {@code Func0<OUTPUT>} that, when invoked, returns the result of applying this function to the values provided by the input functions.
      */
-    public default Func0<OUTPUT> apply(
+    public default Func0<OUTPUT> applyTo(
                                     Func0<INPUT1> input1,
                                     Func0<INPUT2> input2,
                                     Func0<INPUT3> input3,
@@ -336,22 +336,6 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
             val value7  = input7.get();
             val output  = apply(value1, value2, value3, value4, value5, value6, value7);
             return output;
-        };
-    }
-    
-    /**
-     * Compose this function to the given function.
-     * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
-     * @param  after     the function to be run after this function.
-     * @return           the composed function.
-     */
-    public default <TARGET> Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, TARGET> then(Func1<? super OUTPUT, ? extends TARGET> after) {
-        return (input1, input2, input3, input4, input5, input6, input7) -> {
-            val output = this.applyUnsafe(input1, input2, input3, input4, input5, input6, input7);
-            val target = Func.applyUnsafe(after, output);
-            return target;
         };
     }
     
@@ -376,7 +360,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param optional1  the {@code Optional} of the first input.
      * @return           a {@code Func6} function that takes the remaining inputs and returns an {@code Optional} of the output.
      */
-    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Optional<OUTPUT>> apply(Optional<INPUT1> optional1) {
+    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Optional<OUTPUT>> applyTo(Optional<INPUT1> optional1) {
         return (input2, input3, input4, input5, input6, input7) -> {
             return optional1.map(input1 -> {
                 return apply(input1, input2, input3, input4, input5, input6, input7);
@@ -391,7 +375,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param nullable1  the {@code Nullable} of the first input.
      * @return           a {@code Func6} function that takes the remaining inputs and returns a {@code Nullable} of the output.
      */
-    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Nullable<OUTPUT>> apply(Nullable<INPUT1> nullable1) {
+    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Nullable<OUTPUT>> applyTo(Nullable<INPUT1> nullable1) {
         return (input2, input3, input4, input5, input6, input7) -> {
             return nullable1.map(input1 -> {
                 return apply(input1, input2, input3, input4, input5, input6, input7);
@@ -406,7 +390,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param result1  the {@code Result} of the first input.
      * @return         a {@code Func6} function that takes the next remaining inputs and returns a {@code Result} of the output.
      */
-    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Result<OUTPUT>> apply(Result<INPUT1> result1) {
+    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Result<OUTPUT>> applyTo(Result<INPUT1> result1) {
         return (input2, input3, input4, input5, input6, input7) -> {
             return result1.map(input1 -> {
                 return apply(input1, input2, input3, input4, input5, input6, input7);
@@ -421,7 +405,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param hasPromise1  the {@code HasPromise} containing the promise of the first input.
      * @return             a {@code Func6} function that takes the remaining nine inputs and returns a {@code Promise} of the output.
      */
-    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Promise<OUTPUT>> apply(HasPromise<INPUT1> hasPromise1) {
+    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Promise<OUTPUT>> applyTo(HasPromise<INPUT1> hasPromise1) {
         return (input2, input3, input4, input5, input6, input7) -> {
             return hasPromise1.getPromise().map(input1 -> {
                 return apply(input1, input2, input3, input4, input5, input6, input7);
@@ -436,7 +420,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param supplier1  the {@code Func0} supplier for the first input.
      * @return           a {@code Func6} function that takes the remaining nine inputs and returns a {@code Func0} producing the output.
      */
-    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Func0<OUTPUT>> apply(Func0<INPUT1> supplier1) {
+    public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Func0<OUTPUT>> applyTo(Func0<INPUT1> supplier1) {
         return (input2, input3, input4, input5, input6, input7) -> {
             return () -> {
                 val input1 = supplier1.get();
@@ -452,7 +436,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * @param function1  the {@code Func1} function to transform an additional input into the first input type.
      * @return           a {@code Func6} function that takes the remaining inputs and a function to transform an additional input, then returns a {@code Func1} producing the output.
      */
-    public default <INPUT> Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Func1<INPUT, OUTPUT>> apply(Func1<INPUT, INPUT1> function1) {
+    public default <INPUT> Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, Func1<INPUT, OUTPUT>> applyTo(Func1<INPUT, INPUT1> function1) {
         return (input2, input3, input4, input5, input6, input7) -> {
             return input -> {
                 val input1 = function1.apply(input);
@@ -462,6 +446,22 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
     }
     
     //== Compose ==
+    
+    /**
+     * Compose this function to the given function.
+     * NOTE: Too bad the name 'compose' is already been taken :-(
+     *
+     * @param  <TARGET>  the target result value.
+     * @param  after     the function to be run after this function.
+     * @return           the composed function.
+     */
+    public default <TARGET> Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, TARGET> then(Func1<? super OUTPUT, ? extends TARGET> after) {
+        return (input1, input2, input3, input4, input5, input6, input7) -> {
+            val output = this.applyUnsafe(input1, input2, input3, input4, input5, input6, input7);
+            val target = Func.applyUnsafe(after, output);
+            return target;
+        };
+    }
     
     /**
      * Compose this function to the given function.

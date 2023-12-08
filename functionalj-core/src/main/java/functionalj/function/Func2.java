@@ -156,7 +156,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param  input the tuple input.
      * @return       the function result.
      */
-    public default OUTPUT apply(Tuple2<INPUT1, INPUT2> input) {
+    public default OUTPUT applyTo(Tuple2<INPUT1, INPUT2> input) {
         val _1  = input._1();
         val _2  = input._2();
         return apply(_1, _2);
@@ -170,7 +170,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  optional second input parameter.
      * @return        an {@code Optional<OUTPUT>} containing the result, if all inputs are present; otherwise, {@code Optional.empty()}.
      */
-    public default Optional<OUTPUT> apply(
+    public default Optional<OUTPUT> applyTo(
                                         Optional<INPUT1> input1,
                                         Optional<INPUT2> input2) {
         return input1.flatMap(i1 -> {
@@ -188,7 +188,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  nullable second input parameter.
      * @return        a {@code Nullable<OUTPUT>} containing the result, if all inputs are non-null; otherwise, {@code Nullable.empty()}.
      */
-    public default Nullable<OUTPUT> apply(
+    public default Nullable<OUTPUT> applyTo(
                                         Nullable<INPUT1> input1,
                                         Nullable<INPUT2> input2) {
         return input1.flatMap(i1 -> {
@@ -206,7 +206,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  the second promise.
      * @return        a {@code Result<OUTPUT>} that will be fulfilled with the result of applying this function to the results of the promises.
      */
-    public default Result<OUTPUT> apply(
+    public default Result<OUTPUT> applyTo(
                                     Result<INPUT1> input1,
                                     Result<INPUT2> input2) {
         return Result.ofResults(input1, input2, this);
@@ -220,7 +220,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  the second promise.
      * @return        a {@code Promise<OUTPUT>} that will be fulfilled with the result of applying this function to the results of the promises.
      */
-    public default Promise<OUTPUT> apply(
+    public default Promise<OUTPUT> applyTo(
                                     HasPromise<INPUT1> input1,
                                     HasPromise<INPUT2> input2) {
         return Promise.from(input1, input2, this);
@@ -234,7 +234,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  the second task.
      * @return        a {@code Task<OUTPUT>} that will be fulfilled with the result of applying this function.
      */
-    public default Task<OUTPUT> apply(
+    public default Task<OUTPUT> applyTo(
                                     Task<INPUT1> input1,
                                     Task<INPUT2> input2) {
         return Task.from(input1, input2, this);
@@ -249,7 +249,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  the second {@code Func0} providing {@code INPUT2}.
      * @return        a {@code Func0<OUTPUT>} that, when invoked, returns the result of applying this function to the values provided by the input functions.
      */
-    public default Func0<OUTPUT> apply(
+    public default Func0<OUTPUT> applyTo(
                                     Func0<INPUT1> input1,
                                     Func0<INPUT2> input2) {
         return () -> {
@@ -268,7 +268,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param  input1  the first input parameter.
      * @return         a {@code Func1} function that takes the remaining parameters and produces an output.
      */
-    public default Func1<INPUT2, OUTPUT> apply(INPUT1 input1) {
+    public default Func1<INPUT2, OUTPUT> applyTo(INPUT1 input1) {
         return (input2) -> {
             return apply(input1, input2);
         };
@@ -281,7 +281,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param optional1  the {@code Optional} of the first input.
      * @return           a {@code Func1} function that takes the remaining inputs and returns an {@code Optional} of the output.
      */
-    public default Func1<INPUT2, Optional<OUTPUT>> apply(Optional<INPUT1> optional1) {
+    public default Func1<INPUT2, Optional<OUTPUT>> applyTo(Optional<INPUT1> optional1) {
         return (input2) -> {
             return optional1.map(input1 -> {
                 return apply(input1, input2);
@@ -296,7 +296,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param nullable1  the {@code Nullable} of the first input.
      * @return           a {@code Func1} function that takes the remaining inputs and returns a {@code Nullable} of the output.
      */
-    public default Func1<INPUT2, Nullable<OUTPUT>> apply(Nullable<INPUT1> nullable1) {
+    public default Func1<INPUT2, Nullable<OUTPUT>> applyTo(Nullable<INPUT1> nullable1) {
         return (input2) -> {
             return nullable1.map(input1 -> {
                 return apply(input1, input2);
@@ -311,7 +311,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param result1  the {@code Result} of the first input.
      * @return         a {@code Func1} function that takes the next remaining inputs and returns a {@code Result} of the output.
      */
-    public default Func1<INPUT2, Result<OUTPUT>> apply(Result<INPUT1> result1) {
+    public default Func1<INPUT2, Result<OUTPUT>> applyTo(Result<INPUT1> result1) {
         return (input2) -> {
             return result1.map(input1 -> {
                 return apply(input1, input2);
@@ -326,7 +326,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param hasPromise1  the {@code HasPromise} containing the promise of the first input.
      * @return             a {@code Func1} function that takes the remaining nine inputs and returns a {@code Promise} of the output.
      */
-    public default Func1<INPUT2, Promise<OUTPUT>> apply(HasPromise<INPUT1> hasPromise1) {
+    public default Func1<INPUT2, Promise<OUTPUT>> applyTo(HasPromise<INPUT1> hasPromise1) {
         return (input2) -> {
             return hasPromise1.getPromise().map(input1 -> {
                 return apply(input1, input2);
@@ -341,7 +341,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param supplier1  the {@code Func0} supplier for the first input.
      * @return           a {@code Func1} function that takes the remaining nine inputs and returns a {@code Func0} producing the output.
      */
-    public default Func1<INPUT2, Func0<OUTPUT>> apply(Func0<INPUT1> supplier1) {
+    public default Func1<INPUT2, Func0<OUTPUT>> applyTo(Func0<INPUT1> supplier1) {
         return (input2) -> {
             return () -> {
                 val input1 = supplier1.get();
@@ -357,7 +357,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param function1  the {@code Func1} function to transform an additional input into the first input type.
      * @return           a {@code Func1} function that takes the remaining inputs and a function to transform an additional input, then returns a {@code Func1} producing the output.
      */
-    public default <INPUT> Func1<INPUT2, Func1<INPUT, OUTPUT>> apply(Func1<INPUT, INPUT1> function1) {
+    public default <INPUT> Func1<INPUT2, Func1<INPUT, OUTPUT>> applyTo(Func1<INPUT, INPUT1> function1) {
         return (input2) -> {
             return input -> {
                 val input1 = function1.apply(input);
@@ -930,7 +930,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @return a {@link Func1} that takes a {@link Result} of the first input and returns a {@link Result} of the output
      */
     public default Func1<Result<INPUT1>, Result<OUTPUT>> elevateWith(Result<INPUT2> i2) {
-        return (i1) -> this.apply(i1, i2);
+        return (i1) -> this.applyTo(i1, i2);
     }
     
     /**
@@ -940,7 +940,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @return a {@link Func1} that takes a {@link HasPromise} of the first input and returns a {@link Promise} of the output
      */
     public default Func1<HasPromise<INPUT1>, Promise<OUTPUT>> elevateWith(HasPromise<INPUT2> i2) {
-        return (i1) -> this.apply(i1, i2);
+        return (i1) -> this.applyTo(i1, i2);
     }
     
     //== Split ==
