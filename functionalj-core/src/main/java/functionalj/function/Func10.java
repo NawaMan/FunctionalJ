@@ -156,7 +156,6 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
         }
     }
     
-    
     //== Apply ==
     
     /**
@@ -1087,17 +1086,16 @@ public interface Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, 
         };
     }
     
-    // TODO - Uncomment that.
-//    /**
-//     * Ignore the result.
-//     * 
-//     * @return a {@link FuncUnit10} from this function.
-//     **/
-//    public default FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> ignoreResult() {
-//        return (input1, input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
-//            applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
-//        };
-//    }
+    /**
+     * Ignore the result.
+     * 
+     * @return a {@link FuncUnit10} from this function.
+     **/
+    public default FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> ignoreResult() {
+        return (input1, input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
+            applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+        };
+    }
     
     /**
      * Converts this function to accept a single Tuple10 parameter, allowing for grouped input parameters.
