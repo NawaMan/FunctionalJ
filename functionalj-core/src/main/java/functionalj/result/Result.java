@@ -360,7 +360,7 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         return Result.valueOf(value);
     }
     
-    public static <D, T1, T2> Result<D> of(T1 value1, T2 value2, BiFunction<T1, T2, D> merger) {
+    public static <D, T1, T2> Result<D> of(T1 value1, T2 value2, Func2<T1, T2, D> merger) {
         return Result.of(Func0.of(() -> {
             val value = Func.applyUnsafe(merger, value1, value2);
             return value;

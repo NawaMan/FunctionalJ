@@ -112,7 +112,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception;
 
     /**
-     * Applies this function safely to ten input parameters, returning a {@code Result<OUTPUT>}.
+     * Applies this function safely to two input parameters, returning a {@code Result<OUTPUT>}.
      * This method wraps the function application in a try-catch block, capturing any exceptions that occur during execution.
      * 
      * @param input1  the first input parameter.
@@ -163,7 +163,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to ten optional input parameters, returning an {@code Optional} of the output.
+     * Applies this function to two optional input parameters, returning an {@code Optional} of the output.
      * If any input is empty, the function short-circuits and returns {@code Optional.empty()}.
      * 
      * @param input1  optional first input parameter.
@@ -181,7 +181,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to ten {@link Nullable} input parameters, returning a {@code Nullable} of the output.
+     * Applies this function to two {@link Nullable} input parameters, returning a {@code Nullable} of the output.
      * If any input is null, the function short-circuits and returns {@code Nullable.empty()}.
      * 
      * @param input1  nullable first input parameter.
@@ -199,7 +199,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to ten {@code Result} instances, returning a {@code Result} of the output.
+     * Applies this function to two {@code Result} instances, returning a {@code Result} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first promise.
@@ -213,7 +213,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to ten {@code HasPromise} instances, returning a {@code Promise} of the output.
+     * Applies this function to two {@code HasPromise} instances, returning a {@code Promise} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first promise.
@@ -227,7 +227,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to ten {@code Task} instances, returning a {@code Task} of the output.
+     * Applies this function to two {@code Task} instances, returning a {@code Task} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first task.
@@ -241,7 +241,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to ten {@code Func0} instances, returning a {@code Func0} that produces the output.
+     * Applies this function to two {@code Func0} instances, returning a {@code Func0} that produces the output.
      * This method allows for lazy evaluation of the function, only invoking the input functions and applying this function 
      *      when the returned {@code Func0} is invoked.
      * 
@@ -257,6 +257,22 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             val value2  = input2.get();
             val output  = apply(value1, value2);
             return output;
+        };
+    }
+    
+    /**
+     * Composes this function with two other functions, each mapping a source value to respective inputs of this function.
+     *
+     * @param <SOURCE>  the type of the source value for the input functions
+     * @param input1    the function that maps the source to the first input of this function
+     * @param input2    the function that maps the source to the second input of this function
+     * @return          a {@link Func1} that, when applied to a source value, computes the respective inputs using input1 and input2 and then applies this function to those inputs
+     */
+    public default <SOURCE> Func1<SOURCE, OUTPUT> apply(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2) {
+        return source -> {
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            return apply(i1, i2);
         };
     }
     
@@ -448,22 +464,6 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      */
     public default Func0<OUTPUT> apply(Supplier<INPUT1> input1, Supplier<INPUT2> input2) {
         return () -> apply(input1.get(), input2.get());
-    }
-    
-    /**
-     * Composes this function with two other functions, each mapping a source value to respective inputs of this function.
-     *
-     * @param <SOURCE>  the type of the source value for the input functions
-     * @param input1    the function that maps the source to the first input of this function
-     * @param input2    the function that maps the source to the second input of this function
-     * @return          a {@link Func1} that, when applied to a source value, computes the respective inputs using input1 and input2 and then applies this function to those inputs
-     */
-    public default <SOURCE> Func1<SOURCE, OUTPUT> apply(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2) {
-        return source -> {
-            val i1 = input1.apply(source);
-            val i2 = input2.apply(source);
-            return apply(i1, i2);
-        };
     }
     
     /**
@@ -754,7 +754,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     /**
      * Applies this function to the given arguments, returning a default value if the function result is null.
-     * This method safely applies the function to the ten given arguments and returns the default value if the result is null.
+     * This method safely applies the function to the two given arguments and returns the default value if the result is null.
      *
      * @param input1        the first input parameter
      * @param input2        the second input parameter
@@ -785,7 +785,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * The resulting function handles any exceptions during the application of this function, 
      *      encapsulating the result or exception within a Result object.
      *
-     * @return a function that takes ten parameters and returns a Result object containing 
+     * @return a function that takes two parameters and returns a Result object containing 
      *              either the function's output of type OUTPUT or any exception thrown
      */
     public default Func2<INPUT1, INPUT2, Result<OUTPUT>> safely() {
@@ -797,7 +797,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * This method ensures that any exceptions thrown during the function's execution result in an empty Optional, 
      * rather than propagating the exception.
      *
-     * @return  a function that takes ten parameters and returns an Optional containing the output of type OUTPUT, or an empty Optional if an exception occurs
+     * @return  a function that takes two parameters and returns an Optional containing the output of type OUTPUT, or an empty Optional if an exception occurs
      */
     public default Func2<INPUT1, INPUT2, Optional<OUTPUT>> optionally() {
         return (input1, input2) -> {
@@ -813,7 +813,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * Converts this function into an asynchronous version returning a Promise of the output type.
      * The function execution is deferred and managed in an asynchronous manner, with the result encapsulated in a Promise.
      *
-     * @return a function that takes ten parameters and returns a Promise containing the output of type OUTPUT
+     * @return a function that takes two parameters and returns a Promise containing the output of type OUTPUT
      */
     public default Func2<INPUT1, INPUT2, Promise<OUTPUT>> async() {
         return (input1, input2) -> {
@@ -828,7 +828,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * Transforms this function into a deferred execution, returning a DeferAction that can be used to manage the execution.
      * The actual execution of the function is deferred until the DeferAction is explicitly started.
      *
-     * @return a function that takes ten parameters and returns a DeferAction encapsulating the deferred execution of this function, producing an output of type OUTPUT
+     * @return a function that takes two parameters and returns a DeferAction encapsulating the deferred execution of this function, producing an output of type OUTPUT
      */
     public default Func2<INPUT1, INPUT2, DeferAction<OUTPUT>> defer() {
         return (input1, input2) -> {
@@ -839,11 +839,51 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         };
     }
     
+    //== forXXX() -- lift ==
+    
     /**
-     * Adapts this function to work with promises, returning a function that takes promises as input and returns a promise.
-     * This method allows the function to be applied to inputs that are encapsulated within Promise objects, combining them into a single output Promise.
+     * Lift this function to works with {@link Optional}.
      *
-     * @return a function that takes ten HasPromise parameters, each containing promises, and returns a Promise of type OUTPUT
+     * @return a function that takes two {@link Optional} and return {@link Optional}.
+     */
+    public default Func2<Optional<INPUT1>, Optional<INPUT2>, Optional<OUTPUT>> forOptional() {
+        return (input1, input2) -> {
+            return input1.flatMap(value1 -> {
+                return input2.map(value2 -> {
+                    return apply(value1, value2);
+                });
+            });
+        };
+    }
+    
+    /**
+     * Lift this function to works with {@link Nullable}.
+     *
+     * @return a function that takes two {@link Nullable} and return {@link Nullable}.
+     */
+    public default Func2<Nullable<INPUT1>, Nullable<INPUT2>, Nullable<OUTPUT>> forNullable() {
+        return (input1, input2) -> {
+            return input1.flatMap(value1 -> {
+                return input2.map(value2 -> {
+                    return apply(value1, value2);
+                });
+            });
+        };
+    }
+    
+    /**
+     * Lift this function to works with {@link Result}.
+     *
+     * @return a function that takes two {@link Result} and return {@link Result}.
+     */
+    public default Func2<Result<INPUT1>, Result<INPUT2>, Result<OUTPUT>> forResult() {
+        return (input1, input2) -> Result.ofResults(input1, input2, this);
+    }
+    
+    /**
+     * Lift this function to works with {@link HasPromise}.
+     *
+     * @return a function that takes two {@link HasPromise} and return {@link Promise}.
      */
     public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<OUTPUT>> forPromise() {
         return (promise1, promise2) -> {
@@ -852,10 +892,46 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
+     * Lift this function to works with {@link Task}.
+     *
+     * @return a function that takes two {@link Task} and return {@link Task}.
+     */
+    public default Func2<Task<INPUT1>, Task<INPUT2>, Task<OUTPUT>> forTask() {
+        return (input1, input2) ->Task.from(input1, input2, this);
+    }
+    
+    /**
+     * Lift this function to works with {@link Func0}.
+     *
+     * @return a function that takes two {@link Func0} and return {@link Func0}.
+     */
+    public default Func2<Func0<INPUT1>, Func0<INPUT2>, Func0<OUTPUT>> forFunc0() {
+        return (input1, input2) -> {
+            return this.applyTo(input1, input2);
+        };
+    }
+    
+    /**
+     * Lift this function to works with {@link Func1} from SOURCE.
+     *
+     *@param <SOURCE>  the source type.
+     * @return a function that takes two {@link Func1} and return {@link Func1}.
+     */
+    public default <SOURCE> Func2<Func1<SOURCE, INPUT1>, Func1<SOURCE, INPUT2>, Func1<SOURCE, OUTPUT>> forFunc1() {
+        return (input1, input2) -> {
+            return source -> {
+                val i1 = input1.apply(source);
+                val i2 = input2.apply(source);
+                return apply(i1, i2);
+            };
+        };
+    }
+    
+    /**
      * Converts this function to accept a single {@link Tuple2} parameter, allowing for grouped input parameters.
      * This method facilitates the use of a single tuple to pass all the necessary inputs to the function.
      *
-     * @return a function that takes a {@link Tuple2} containing ten parameters and returns the output of type OUTPUT
+     * @return a function that takes a {@link Tuple2} containing two parameters and returns the output of type OUTPUT
      */
     public default Func1<Tuple2<INPUT1, INPUT2>, OUTPUT> wholly() {
         return t -> {
@@ -865,10 +941,14 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         };
     }
     
-    // TODO - Add this back
-//    public default FuncUnit2<INPUT1, INPUT2> ignoreResult() {
-//        return FuncUnit2.of((input1, input2) -> applyUnsafe(input1, input2));
-//    }
+    /**
+     * Ignore the result.
+     * 
+     * @return a {@link FuncUnit2} from this function.
+     **/
+    public default FuncUnit2<INPUT1, INPUT2> ignoreResult() {
+        return FuncUnit2.of((input1, input2) -> applyUnsafe(input1, input2));
+    }
     
     /**
      * Converts this function into a {@link BiPredicate} that evaluates the function and returns true if the result is {@link Boolean#TRUE}.
@@ -921,26 +1001,6 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      */
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2) {
         return (i1) -> this.applyUnsafe(i1, i2);
-    }
-    
-    /**
-     * Elevates this function to operate on {@link Result} objects, returning a {@link Result} of the output.
-     *
-     * @param i2 the second input parameter wrapped in a {@link Result}
-     * @return a {@link Func1} that takes a {@link Result} of the first input and returns a {@link Result} of the output
-     */
-    public default Func1<Result<INPUT1>, Result<OUTPUT>> elevateWith(Result<INPUT2> i2) {
-        return (i1) -> this.applyTo(i1, i2);
-    }
-    
-    /**
-     * Elevates this function to operate on {@link HasPromise} objects, returning a {@link Promise} of the output.
-     *
-     * @param i2 the second input parameter wrapped in a {@link HasPromise}
-     * @return a {@link Func1} that takes a {@link HasPromise} of the first input and returns a {@link Promise} of the output
-     */
-    public default Func1<HasPromise<INPUT1>, Promise<OUTPUT>> elevateWith(HasPromise<INPUT2> i2) {
-        return (i1) -> this.applyTo(i1, i2);
     }
     
     //== Split ==

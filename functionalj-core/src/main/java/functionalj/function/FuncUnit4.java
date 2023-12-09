@@ -23,20 +23,37 @@
 // ============================================================================
 package functionalj.function;
 
-import static functionalj.function.Func.f;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import functionalj.promise.Promise;
-import functionalj.result.Result;
-
-public class Func2Test {
+/**
+ * Defines a functional interface for a method that takes four input parameters and performs an operation,
+ * potentially throwing an Exception.
+ * 
+ * This interface represents a function that accepts four arguments and returns no result.
+ *
+ * @param <INPUT1>  the first input data type.
+ * @param <INPUT2>  the second input data type.
+ * @param <INPUT3>  the third input data type.
+ * @param <INPUT4>  the forth input data type.
+ * @param <OUTPUT>  the output data type.
+ *
+ * @author NawaMan -- nawa@nawaman.net
+ */
+@FunctionalInterface
+public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
     
-    private Func2<String, String, String> concat = f(String::concat);
+    /**
+     * Performs an operation on the given inputs, potentially throwing an exception.
+     *
+     * @param input1  the first input parameter
+     * @param input2  the second input parameter
+     * @param input3  the third input parameter
+     * @param input4  the fourth input parameter
+     * @throws Exception  when unable to perform the operation
+     */
+    public void acceptUnsafe(
+                    INPUT1 input1,
+                    INPUT2 input2,
+                    INPUT3 input3,
+                    INPUT4 input4)
+                        throws Exception;
     
-    @Test
-    public void testApplyBare() {
-        assertEquals("Hello world!", "" + concat.apply("Hello", " world!"));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Result.valueOf("Hello"), Result.valueOf(" world!")));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Promise.ofValue("Hello"), Promise.ofValue(" world!")).getResult());
-    }
 }

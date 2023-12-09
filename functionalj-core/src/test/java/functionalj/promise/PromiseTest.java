@@ -362,14 +362,14 @@ public class PromiseTest {
         val a = Sleep(50).thenReturn(20).defer();
         val b = Sleep(50).thenReturn(1).defer();
         val c = Sleep(50).thenReturn(2).defer();
-        val r1 = add.apply(a, b);
-        val r2 = mul.apply(add.apply(a, b), c);
+        val r1 = add.applyTo(a, b);
+        val r2 = mul.applyTo(add.applyTo(a, b), c);
         // val r3 = add
         // .then(mul.elevateWith(c)) // This does not work as c is a promise.
         // .apply(a, b);
         val r4 = a.pipeTo(add.elevateWith(b), mul.elevateWith(c));
         val f5 = add.elevateWith(b).andThen(mul.elevateWith(c));
-        val r5 = f5.apply(a);
+        val r5 = f5.applyTo(a);
         assertAsString("Result:{ Value: 21 }", r1.getResult());
         assertAsString("Result:{ Value: 42 }", r2.getResult());
         // assertAsString("Result:{ Value: 42 }", r3.getResult());

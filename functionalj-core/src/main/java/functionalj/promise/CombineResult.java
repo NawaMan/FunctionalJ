@@ -88,7 +88,7 @@ public class CombineResult<D> {
         if (!isDone.compareAndSet(false, true))
             return;
         val resultList = (FuncList) FuncList.from(results);
-        val mergedResult = mergeFunc.apply(resultList);
+        val mergedResult = mergeFunc.applyTo(resultList);
         action.completeWith((Result) mergedResult);
     }
     

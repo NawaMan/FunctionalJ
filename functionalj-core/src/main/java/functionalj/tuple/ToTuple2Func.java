@@ -30,7 +30,7 @@ import functionalj.function.Func2;
 public interface ToTuple2Func<D, T1, T2> extends Func1<D, Tuple2<T1, T2>> {
     
     public default <T> Func1<D, T> thenReduce(Func2<T1, T2, T> reducer) {
-        return this.then(reducer::apply);
+        return this.then(reducer::applyTo);
     }
     
 }

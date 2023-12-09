@@ -45,8 +45,8 @@ public class PipeLineTest {
         assertEquals("TEST", str.pipeTo(pipeLine2));
         assertEquals("8", str.pipeTo(pipeLine, pipeLine2));
         val strNull = Pipeable.of((String) null);
-        assertEquals(null, pipeLine.applyToNull());
-        assertEquals(null, pipeLine2.applyToNull());
+        assertEquals(null, pipeLine.applyNull());
+        assertEquals(null, pipeLine2.applyNull());
         assertEquals(null, strNull.pipeTo(pipeLine));
         assertEquals(null, strNull.pipeTo(pipeLine2));
         assertEquals(null, strNull.pipeTo(pipeLine, pipeLine2));
@@ -56,8 +56,8 @@ public class PipeLineTest {
     public void testHandlingNull() {
         val pipeLine = PipeLine.ofNullable(String.class).then(theString.length()).then(theInteger.time(2)).then(theInteger.asString()).thenReturnOrElse("<none>");
         val pipeLine2 = PipeLine.from(theString.toUpperCase()).thenReturn();
-        assertEquals("<none>", pipeLine.applyToNull());
-        assertEquals(null, pipeLine2.applyToNull());
+        assertEquals("<none>", pipeLine.applyNull());
+        assertEquals(null, pipeLine2.applyNull());
         val str = Pipeable.of((String) null);
         assertEquals("<none>", str.pipeTo(pipeLine));
         assertEquals(null, str.pipeTo(pipeLine2));
@@ -67,7 +67,7 @@ public class PipeLineTest {
     @Test
     public void testHandlingNullCombine() {
         val pipeLine = PipeLine.ofNullable(String.class).then($S.length()).then($I.time(2)).then($I.asString()).then(defaultTo("<none>")).then($S.toUpperCase()).thenReturn();
-        assertEquals("<NONE>", pipeLine.applyToNull());
+        assertEquals("<NONE>", pipeLine.applyNull());
         val str = Pipeable.of((String) null);
         assertEquals("<NONE>", str.pipeTo(pipeLine));
     }
