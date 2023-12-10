@@ -956,7 +956,10 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @return a function that takes nine parameters and returns a single-parameter function of type INPUT1, which in turn returns an OUTPUT
      */
     public default Func3<INPUT2, INPUT3, INPUT4, Func1<INPUT1, OUTPUT>> elevate() {
-        return (i2, i3, i4) -> (i1) -> this.applyUnsafe(i1, i2, i3, i4);
+        return (i2, i3, i4) -> (i1) -> {
+            val output = this.applyUnsafe(i1, i2, i3, i4);
+            return output;
+        };
     }
     
     /**
@@ -969,7 +972,10 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @return    a function that takes a single parameter of type INPUT1 and returns an OUTPUT
      */
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3, INPUT4 i4) {
-        return (i1) -> this.applyUnsafe(i1, i2, i3, i4);
+        return (i1) -> {
+            val output = this.applyUnsafe(i1, i2, i3, i4);
+            return output;
+        };
     }
     
     //== Split ==
@@ -991,7 +997,10 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
      */
     public default Func1<INPUT1, Func3<INPUT2, INPUT3, INPUT4, OUTPUT>> split1() {
-        return (i1) -> (i2, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
+        return (i1) -> (i2, i3, i4) -> {
+            val output = this.applyUnsafe(i1, i2, i3, i4);
+            return output;
+        };
     }
     
     /**
@@ -1011,7 +1020,10 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @return a function that takes three parameters of types INPUT1, INPUT2, and INPUT3, and returns a function that accepts the remaining seven parameters, to yield an OUTPUT
      */
     public default Func3<INPUT1, INPUT2, INPUT3, Func1<INPUT4, OUTPUT>> split3() {
-        return (i1, i2, i3) -> (i4) -> this.applyUnsafe(i1, i2, i3, i4);
+        return (i1, i2, i3) -> (i4) -> {
+            val output = this.applyUnsafe(i1, i2, i3, i4);
+            return output;
+        };
     }
     
     
@@ -1025,7 +1037,10 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @return    a function that takes the rest of the parameters, excluding the first, and returns an OUTPUT
      */
     public default Func3<INPUT2, INPUT3, INPUT4, OUTPUT> apply1(INPUT1 i1) {
-        return (i2, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
+        return (i2, i3, i4) -> {
+            val output = this.applyUnsafe(i1, i2, i3, i4);
+            return output;
+        };
     }
     
     /**
@@ -1036,7 +1051,10 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @return    a function that takes the rest of the parameters, excluding the second, and returns an OUTPUT
      */
     public default Func3<INPUT1, INPUT3, INPUT4, OUTPUT> apply2(INPUT2 i2) {
-        return (i1, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
+        return (i1, i3, i4) -> {
+            val output = this.applyUnsafe(i1, i2, i3, i4);
+            return output;
+        };
     }
     
     /**
@@ -1047,7 +1065,10 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @return    a function that takes the rest of the parameters, excluding the third, and returns an OUTPUT
      */
     public default Func3<INPUT1, INPUT2, INPUT4, OUTPUT> apply3(INPUT3 i3) {
-        return (i1, i2, i4) -> this.applyUnsafe(i1, i2, i3, i4);
+        return (i1, i2, i4) -> {
+            val output = this.applyUnsafe(i1, i2, i3, i4);
+            return output;
+        };
     }
     
     /**
@@ -1058,7 +1079,10 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @return    a function that takes the rest of the parameters, excluding the forth, and returns an OUTPUT
      */
     public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> apply4(INPUT4 i4) {
-        return (i1, i2, i3) -> this.applyUnsafe(i1, i2, i3, i4);
+        return (i1, i2, i3) -> {
+            val output = this.applyUnsafe(i1, i2, i3, i4);
+            return output;
+        };
     }
     
     

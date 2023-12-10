@@ -67,7 +67,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     
     /**
      * Creates a {@link Func3} instance from an existing {@link Func3}.
-     *
+     * 
      * @param <I1>  the type of the first input parameter of the function
      * @param <I2>  the type of the second input parameter of the function
      * @param <I3>  the type of the third input parameter of the function
@@ -80,7 +80,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     }
     
     /**
-     * Applies this function to the given arguments, potentially throwing an exception.
+     * Represents a function that takes three input parameters and produces an output.
+     * This is a functional interface whose functional method is {@link #applyUnsafe}.
      * 
      * @param <INPUT1>  the type of the first input parameter
      * @param <INPUT2>  the type of the second input parameter
@@ -125,7 +126,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      */
     public default OUTPUT apply(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
         try {
-            return applyUnsafe(input1, input2, input3);
+            val output = applyUnsafe(input1, input2, input3);
+            return output;
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -143,7 +145,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         val _1  = input._1();
         val _2  = input._2();
         val _3  = input._3();
-        return apply(_1, _2, _3);
+        val output = apply(_1, _2, _3);
+        return output;
     }
     
     /**
@@ -162,7 +165,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return input1.flatMap(i1 -> {
             return input2.flatMap(i2 -> {
                 return input3.map(i3 -> {
-                    return Func3.this.apply(i1, i2, i3);
+                    val output = Func3.this.apply(i1, i2, i3);
+                    return output;
                 });
             });
         });
@@ -184,7 +188,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return input1.flatMap(i1 -> {
             return input2.flatMap(i2 -> {
                 return input3.map(i3 -> {
-                    return Func3.this.apply(i1, i2, i3);
+                    val output = Func3.this.apply(i1, i2, i3);
+                    return output;
                 });
             });
         });
@@ -203,7 +208,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
                                     Result<INPUT1> input1,
                                     Result<INPUT2> input2,
                                     Result<INPUT3> input3) {
-        return Result.ofResults(input1, input2, input3, this);
+        val output = Result.ofResults(input1, input2, input3, this);
+        return output;
     }
     
     /**
@@ -219,7 +225,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
                                     HasPromise<INPUT1> input1,
                                     HasPromise<INPUT2> input2,
                                     HasPromise<INPUT3> input3) {
-        return Promise.from(input1, input2, input3, this);
+        val output = Promise.from(input1, input2, input3, this);
+        return output;
     }
     
     /**
@@ -235,7 +242,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
                                     Task<INPUT1> input1,
                                     Task<INPUT2> input2,
                                     Task<INPUT3> input3) {
-        return Task.from(input1, input2, input3, this);
+        val output = Task.from(input1, input2, input3, this);
+        return output;
     }
     
     /**
@@ -271,7 +279,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      */
     public default Func2<INPUT2, INPUT3, OUTPUT> applyTo(INPUT1 input1) {
         return (input2, input3) -> {
-            return apply(input1, input2, input3);
+            val output = apply(input1, input2, input3);
+            return output;
         };
     }
     
@@ -285,7 +294,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func2<INPUT2, INPUT3, Optional<OUTPUT>> applyTo(Optional<INPUT1> optional1) {
         return (input2, input3) -> {
             return optional1.map(input1 -> {
-                return apply(input1, input2, input3);
+                val output = apply(input1, input2, input3);
+                return output;
             });
         };
     }
@@ -300,7 +310,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func2<INPUT2, INPUT3, Nullable<OUTPUT>> applyTo(Nullable<INPUT1> nullable1) {
         return (input2, input3) -> {
             return nullable1.map(input1 -> {
-                return apply(input1, input2, input3);
+                val output = apply(input1, input2, input3);
+                return output;
             });
         };
     }
@@ -315,7 +326,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func2<INPUT2, INPUT3, Result<OUTPUT>> applyTo(Result<INPUT1> result1) {
         return (input2, input3) -> {
             return result1.map(input1 -> {
-                return apply(input1, input2, input3);
+                val output = apply(input1, input2, input3);
+                return output;
             });
         };
     }
@@ -330,7 +342,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func2<INPUT2, INPUT3, Promise<OUTPUT>> applyTo(HasPromise<INPUT1> hasPromise1) {
         return (input2, input3) -> {
             return hasPromise1.getPromise().map(input1 -> {
-                return apply(input1, input2, input3);
+                val output = apply(input1, input2, input3);
+                return output;
             });
         };
     }
@@ -346,7 +359,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return (input2, input3) -> {
             return () -> {
                 val input1 = supplier1.get();
-                return apply(input1, input2, input3);
+                val output = apply(input1, input2, input3);
+                return output;
             };
         };
     }
@@ -362,7 +376,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return (input2, input3) -> {
             return input -> {
                 val input1 = function1.apply(input);
-                return apply(input1, input2, input3);
+                val output = apply(input1, input2, input3);
+                return output;
             };
         };
     }
@@ -396,7 +411,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default <TARGET> Func3<INPUT1, INPUT2, INPUT3, TARGET> map(Func1<? super OUTPUT, ? extends TARGET> after) {
         return (input1, input2, input3) -> {
             val output = this.applyUnsafe(input1, input2, input3);
-            val target = (output != null) ? Func.applyUnsafe(after, output) : null;
+            val target = Func.applyUnsafe(after, output);
             return target;
         };
     }
@@ -411,8 +426,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> ifException(FuncUnit1<Exception> exceptionHandler) {
         return (input1, input2, input3) -> {
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3);
-                return outputValue;
+                val output = this.applyUnsafe(input1, input2, input3);
+                return output;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
                 return null;
@@ -429,8 +444,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> ifExceptionThenPrint() {
         return (input1, input2, input3) -> {
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3);
-                return outputValue;
+                val output = this.applyUnsafe(input1, input2, input3);
+                return output;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -448,8 +463,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
         return (input1, input2, input3) -> {
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3);
-                return outputValue;
+                val output = this.applyUnsafe(input1, input2, input3);
+                return output;
             } catch (Exception e) {
                 e.printStackTrace(printStream);
                 return null;
@@ -467,8 +482,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
         return (input1, input2, input3) -> {
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3);
-                return outputValue;
+                val output = this.applyUnsafe(input1, input2, input3);
+                return output;
             } catch (Exception e) {
                 e.printStackTrace(printWriter);
                 return null;
@@ -666,7 +681,9 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return              the result of the function or the default value if the result is null
      */
     public default OUTPUT orElse(INPUT1 input1, INPUT2 input2, INPUT3 input3, OUTPUT defaultValue) {
-        return applySafely(input1, input2, input3).orElse(defaultValue);
+        val result = applySafely(input1, input2, input3);
+        val output = result.orElse(defaultValue);
+        return output;
     }
     
     /**
@@ -680,7 +697,9 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return                 the result of applying the function to the input parameters or the default value if the application results in null
      */
     public default OUTPUT orGet(INPUT1 input1, INPUT2 input2, INPUT3 input3, Func0<OUTPUT> defaultSupplier) {
-        return applySafely(input1, input2, input3).orGet(defaultSupplier);
+        val result = applySafely(input1, input2, input3);
+        val output = result.orGet(defaultSupplier);
+        return output;
     }
     
     //== Convert == 
@@ -707,7 +726,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func3<INPUT1, INPUT2, INPUT3, Optional<OUTPUT>> optionally() {
         return (input1, input2, input3) -> {
             try {
-                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3));
+                val output = this.applyUnsafe(input1, input2, input3);
+                return Optional.ofNullable(output);
             } catch (Exception e) {
                 return Optional.empty();
             }
@@ -723,7 +743,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func3<INPUT1, INPUT2, INPUT3, Promise<OUTPUT>> async() {
         return (input1, input2, input3) -> {
             val supplier = (Func0<OUTPUT>) () -> {
-                return this.applyUnsafe(input1, input2, input3);
+                val output = this.applyUnsafe(input1, input2, input3);
+                return output;
             };
             return DeferAction.from(supplier).start().getPromise();
         };
@@ -738,9 +759,60 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func3<INPUT1, INPUT2, INPUT3, DeferAction<OUTPUT>> defer() {
         return (input1, input2, input3) -> {
             val supplier = (Func0<OUTPUT>) () -> {
-                return this.applyUnsafe(input1, input2, input3);
+                val output = this.applyUnsafe(input1, input2, input3);
+                return output;
             };
             return DeferAction.from(supplier);
+        };
+    }
+    
+    //== forXXX() -- lift ==
+    
+    /**
+     * Lift this function to works with {@link Optional}.
+     *
+     * @return a function that takes two {@link Optional} and return {@link Optional}.
+     */
+    public default Func3<Optional<INPUT1>, Optional<INPUT2>, Optional<INPUT3>, Optional<OUTPUT>> forOptional() {
+        return (input1, input2, input3) -> {
+            return input1.flatMap(value1 -> {
+                return input2.flatMap(value2 -> {
+                    return input3.map(value3 -> {
+                        val output = apply(value1, value2, value3);
+                        return output;
+                    });
+                });
+            });
+        };
+    }
+    
+    /**
+     * Lift this function to works with {@link Nullable}.
+     *
+     * @return a function that takes two {@link Nullable} and return {@link Nullable}.
+     */
+    public default Func3<Nullable<INPUT1>, Nullable<INPUT2>, Nullable<INPUT3>, Nullable<OUTPUT>> forNullable() {
+        return (input1, input2, input3) -> {
+            return input1.flatMap(value1 -> {
+                return input2.flatMap(value2 -> {
+                    return input3.map(value3 -> {
+                        val output = apply(value1, value2, value3);
+                        return output;
+                    });
+                });
+            });
+        };
+    }
+    
+    /**
+     * Lift this function to works with {@link Result}.
+     *
+     * @return a function that takes two {@link Result} and return {@link Result}.
+     */
+    public default Func3<Result<INPUT1>, Result<INPUT2>, Result<INPUT3>, Result<OUTPUT>> forResult() {
+        return (input1, input2, input3) -> {
+            val result = Result.ofResults(input1, input2, input3, this);
+            return result;
         };
     }
     
@@ -757,6 +829,63 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     }
     
     /**
+     * Lift this function to works with {@link Task}.
+     *
+     * @return a function that takes two {@link Task} and return {@link Task}.
+     */
+    public default Func3<Task<INPUT1>, Task<INPUT2>, Task<INPUT3>, Task<OUTPUT>> forTask() {
+        return (input1, input2, input3) -> {
+            return Task.from(input1, input2, input3, this);
+        };
+    }
+    
+    /**
+     * Lift this function to works with {@link Func0}.
+     *
+     * @return a function that takes two {@link Func0} and return {@link Func0}.
+     */
+    public default Func3<Func0<INPUT1>, Func0<INPUT2>, Func0<INPUT3>, Func0<OUTPUT>> forFunc0() {
+        return (input1, input2, input3) -> {
+            return () -> {
+                val value1 = input1.applyUnsafe();
+                val value2 = input2.applyUnsafe();
+                val value3 = input3.applyUnsafe();
+                val output = applyUnsafe(value1, value2, value3);
+                return output;
+            };
+        };
+    }
+    
+    /**
+     * Lift this function to works with {@link Func1} from SOURCE.
+     *
+     *@param <SOURCE>  the source type.
+     * @return a function that takes two {@link Func1} and return {@link Func1}.
+     */
+    public default <SOURCE> Func3<Func1<SOURCE, INPUT1>, Func1<SOURCE, INPUT2>, Func1<SOURCE, INPUT3>, Func1<SOURCE, OUTPUT>> forFunc1() {
+        return (input1, input2, input3) -> {
+            return source -> {
+                val value1 = input1.applyUnsafe(source);
+                val value2 = input2.applyUnsafe(source);
+                val value3 = input3.applyUnsafe(source);
+                val output = applyUnsafe(value1, value2, value3);
+                return output;
+            };
+        };
+    }
+    
+    /**
+     * Ignore the result.
+     * 
+     * @return a {@link FuncUnit3} from this function.
+     **/
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> ignoreResult() {
+        return (input1, input2, input3) -> {
+            applyUnsafe(input1, input2, input3);
+        };
+    }
+    
+    /**
      * Converts this function to accept a single {@link Tuple3} parameter, allowing for grouped input parameters.
      * This method facilitates the use of a single tuple to pass all the necessary inputs to the function.
      *
@@ -767,7 +896,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
             val _1  = t._1();
             val _2  = t._2();
             val _3  = t._3();
-            return this.applyUnsafe(_1, _2, _3);
+            val output = this.applyUnsafe(_1, _2, _3);
+            return output;
         };
     }
     
@@ -777,7 +907,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return  the {@link Func3} with parameter in a flipped order.
      */
     public default Func3<INPUT3, INPUT2, INPUT1, OUTPUT> flip() {
-        return (i3, i2, i1) -> this.applyUnsafe(i1, i2, i3);
+        return (i3, i2, i1) -> {
+            val output = this.applyUnsafe(i1, i2, i3);
+            return output;
+        };
     }
     
     //== Elevate ==
@@ -789,7 +922,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return a function that takes nine parameters and returns a single-parameter function of type INPUT1, which in turn returns an OUTPUT
      */
     public default Func2<INPUT2, INPUT3, Func1<INPUT1, OUTPUT>> elevate() {
-        return (i2, i3) -> (i1) -> this.applyUnsafe(i1, i2, i3);
+        return (i2, i3) -> (i1) -> {
+            val output = this.applyUnsafe(i1, i2, i3);
+            return output;
+        };
     }
     
     /**
@@ -801,7 +937,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return    a function that takes a single parameter of type INPUT1 and returns an OUTPUT
      */
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3) {
-        return (i1) -> this.applyUnsafe(i1, i2, i3);
+        return (i1) -> {
+            val output = this.applyUnsafe(i1, i2, i3);
+            return output;
+        };
     }
     
     //== Split ==
@@ -823,7 +962,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters, to produce an OUTPUT
      */
     public default Func1<INPUT1, Func2<INPUT2, INPUT3, OUTPUT>> split1() {
-        return (i1) -> (i2, i3) -> this.applyUnsafe(i1, i2, i3);
+        return (i1) -> (i2, i3) -> {
+            val output = this.applyUnsafe(i1, i2, i3);
+            return output;
+        };
     }
     
     /**
@@ -833,7 +975,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return a function that takes two parameters of types INPUT1 and INPUT2, and returns a function that takes the remaining eight parameters, to produce an OUTPUT
      */
     public default Func2<INPUT1, INPUT2, Func1<INPUT3, OUTPUT>> split2() {
-        return (i1, i2) -> (i3) -> this.applyUnsafe(i1, i2, i3);
+        return (i1, i2) -> (i3) -> {
+            val output = this.applyUnsafe(i1, i2, i3);
+            return output;
+        };
     }
     
     
@@ -847,7 +992,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return    a function that takes the rest of the parameters, excluding the first, and returns an OUTPUT
      */
     public default Func2<INPUT2, INPUT3, OUTPUT> apply1(INPUT1 i1) {
-        return (i2, i3) -> this.applyUnsafe(i1, i2, i3);
+        return (i2, i3) -> {
+            val output = this.applyUnsafe(i1, i2, i3);
+            return output;
+        };
     }
     
     /**
@@ -858,7 +1006,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return    a function that takes the rest of the parameters, excluding the second, and returns an OUTPUT
      */
     public default Func2<INPUT1, INPUT3, OUTPUT> apply2(INPUT2 i2) {
-        return (i1, i3) -> this.applyUnsafe(i1, i2, i3);
+        return (i1, i3) -> {
+            val output = this.applyUnsafe(i1, i2, i3);
+            return output;
+        };
     }
     
     /**
@@ -869,7 +1020,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return    a function that takes the rest of the parameters, excluding the third, and returns an OUTPUT
      */
     public default Func2<INPUT1, INPUT2, OUTPUT> apply3(INPUT3 i3) {
-        return (i1, i2) -> this.applyUnsafe(i1, i2, i3);
+        return (i1, i2) -> {
+            val output = this.applyUnsafe(i1, i2, i3);
+            return output;
+        };
     }
     
     
