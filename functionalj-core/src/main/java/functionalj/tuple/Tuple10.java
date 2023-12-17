@@ -818,7 +818,7 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
      * @return a Stream containing the elements of this tuple
      */
     public default Stream<Object> toLazyStream() {
-        val index       = new AtomicInteger();
+        AtomicInteger index = new AtomicInteger();
         val spliterator = new Spliterators.AbstractSpliterator<Object>(10, Spliterator.ORDERED) {
             @Override
             public boolean tryAdvance(Consumer<? super Object> action) {
@@ -1140,8 +1140,8 @@ public interface Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends Pipeab
      * @return          the result of the reduction, of type TARGET
      */
     public default <TARGET> TARGET reduce(Func2<T1, T2, TARGET> reducer) {
-        val _1 = _1();
-        val _2 = _2();
+        T1 _1 = _1();
+        T2 _2 = _2();
         val target = reducer.apply(_1, _2);
         return target;
     }

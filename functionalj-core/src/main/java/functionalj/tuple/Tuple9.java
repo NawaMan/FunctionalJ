@@ -804,8 +804,8 @@ public interface Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> extends Pipeable<Tup
      * @return a Stream containing the elements of this tuple
      */
     public default Stream<Object> toLazyStream() {
-        val index       = new AtomicInteger();
-        val spliterator = new Spliterators.AbstractSpliterator<Object>(9, Spliterator.ORDERED) {
+        AtomicInteger       index       = new AtomicInteger();
+        Spliterator<Object> spliterator = new Spliterators.AbstractSpliterator<Object>(9, Spliterator.ORDERED) {
             @Override
             public boolean tryAdvance(Consumer<? super Object> action) {
                 int i = index.getAndIncrement();

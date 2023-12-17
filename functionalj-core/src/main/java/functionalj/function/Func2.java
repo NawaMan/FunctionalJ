@@ -266,7 +266,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2    the function that maps the source to the second input of this function
      * @return          a {@link Func1} that, when applied to a source value, computes the respective inputs using input1 and input2 and then applies this function to those inputs
      */
-    public default <SOURCE> Func1<SOURCE, OUTPUT> apply(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2) {
+    public default <SOURCE> Func1<SOURCE, OUTPUT> applyTo(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2) {
         return source -> {
             val i1 = input1.apply(source);
             val i2 = input2.apply(source);

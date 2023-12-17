@@ -269,6 +269,28 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         };
     }
     
+    /**
+     * Transforms a function taking multiple input parameters into a function that takes a single source parameter. 
+     * Each input function extracts a corresponding value from the source, and these values are then applied to this function.
+     *
+     * @param input1  function to extract the first input value from the source
+     * @param input2  function to extract the second input value from the source
+     * @param input3  function to extract the third input value from the source
+     * @return a function that takes a single source parameter and returns an output by applying this function to the extracted input values
+     */
+    public default <SOURCE> Func1<SOURCE,OUTPUT> applyTo(
+                    Func1<SOURCE,INPUT1> input1,
+                    Func1<SOURCE,INPUT2> input2,
+                    Func1<SOURCE,INPUT3> input3) {
+        return source -> {
+            val value1 = input1.applyUnsafe(source);
+            val value2 = input2.applyUnsafe(source);
+            val value3 = input3.applyUnsafe(source);
+            val output = apply(value1, value2, value3);
+            return output;
+        };
+    }
+    
     //== Single ==
     
     /**

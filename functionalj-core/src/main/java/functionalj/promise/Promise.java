@@ -895,7 +895,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return mapResult(result -> {
             val excception = result.exception();
             val value = (excception != null) ? null : result.value();
-            return $(processor, (DATA) value, excception);
+            return $(processor::apply, (DATA)value, excception);
         });
     }
     

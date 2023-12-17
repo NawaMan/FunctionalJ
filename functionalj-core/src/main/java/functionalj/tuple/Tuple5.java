@@ -517,8 +517,8 @@ public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, 
      * @return a Stream containing the elements of this tuple
      */
     public default Stream<Object> toLazyStream() {
-        val index       = new AtomicInteger();
-        val spliterator = new Spliterators.AbstractSpliterator<Object>(5, Spliterator.ORDERED) {
+        AtomicInteger       index       = new AtomicInteger();
+        Spliterator<Object> spliterator = new Spliterators.AbstractSpliterator<Object>(5, Spliterator.ORDERED) {
             @Override
             public boolean tryAdvance(Consumer<? super Object> action) {
                 int i = index.getAndIncrement();

@@ -84,8 +84,9 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
      * @param func  the function to be converted
      * @return      a {@code Func1} instance representing the given function
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <I1, O> Func1<I1, O> from(Function<I1, O> func) {
-        return func::apply;
+        return (func instanceof Func1) ? (Func1)func : func::apply;
     }
     
     
