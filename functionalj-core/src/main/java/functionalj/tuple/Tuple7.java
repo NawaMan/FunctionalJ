@@ -593,13 +593,13 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return an array of {@link Object} containing the elements of this tuple
      */
     public default Object[] toArray() {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return new Object[] { _1, _2, _3, _4, _5, _6, _7 };
     }
     
@@ -614,13 +614,13 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @throws      ArrayStoreException if an element of this tuple is not of the specified type
      */
     public default <T> T[] toArray(Class<T> type) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         val array = Array.newInstance(type, 6);
         Array.set(array, 0, _1);
         Array.set(array, 1, _2);
@@ -643,13 +643,13 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return a {@link FuncList} containing the elements of this tuple
      */
     public default FuncList<Object> toList() {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return FuncList.of(_1, _2, _3, _4, _5, _6, _7);
     }
     
@@ -696,13 +696,13 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return      a {@link FuncMap} containing the mapped keys and tuple elements
      */
     public default <K> FuncMap<K, Object> toMap(K k1, K k2, K k3, K k4, K k5, K k6, K k7) {
-        val e1  = (k1  != null) ? ImmutableTuple.of(k1,  (Object) _1()) : null;
-        val e2  = (k2  != null) ? ImmutableTuple.of(k2,  (Object) _2()) : null;
-        val e3  = (k3  != null) ? ImmutableTuple.of(k3,  (Object) _3()) : null;
-        val e4  = (k4  != null) ? ImmutableTuple.of(k4,  (Object) _4()) : null;
-        val e5  = (k5  != null) ? ImmutableTuple.of(k5,  (Object) _5()) : null;
-        val e6  = (k6  != null) ? ImmutableTuple.of(k6,  (Object) _6()) : null;
-        val e7  = (k7  != null) ? ImmutableTuple.of(k7,  (Object) _7()) : null;
+        ImmutableTuple2<K, Object> e1  = (k1  != null) ? ImmutableTuple.of(k1,  (Object) _1()) : null;
+        ImmutableTuple2<K, Object> e2  = (k2  != null) ? ImmutableTuple.of(k2,  (Object) _2()) : null;
+        ImmutableTuple2<K, Object> e3  = (k3  != null) ? ImmutableTuple.of(k3,  (Object) _3()) : null;
+        ImmutableTuple2<K, Object> e4  = (k4  != null) ? ImmutableTuple.of(k4,  (Object) _4()) : null;
+        ImmutableTuple2<K, Object> e5  = (k5  != null) ? ImmutableTuple.of(k5,  (Object) _5()) : null;
+        ImmutableTuple2<K, Object> e6  = (k6  != null) ? ImmutableTuple.of(k6,  (Object) _6()) : null;
+        ImmutableTuple2<K, Object> e7  = (k7  != null) ? ImmutableTuple.of(k7,  (Object) _7()) : null;
         return ImmutableFuncMap.ofEntries(e1, e2, e3, e4, e5, e6, e7);
     }
     
@@ -718,13 +718,13 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return        the result of applying the mapper function to the tuple elements
      */
     public default <T> T mapWith(Func7<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, T> mapper) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return mapper.apply(_1, _2, _3, _4, _5, _6, _7);
     }
     
@@ -839,13 +839,13 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return        a new {@link Tuple7} as the result of the transformation
      */
     public default <NT1, NT2, NT3, NT4, NT5, NT6, NT7> Tuple7<NT1, NT2, NT3, NT4, NT5, NT6, NT7> mapCombine(Func7<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, Tuple7<NT1, NT2, NT3, NT4, NT5, NT6, NT7>> mapper) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return mapper.apply(_1, _2, _3, _4, _5, _6, _7);
     }
     
@@ -877,21 +877,21 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         the final result of type T obtained after applying all the mapping and combining functions
      */
     public default <NT1, NT2, NT3, NT4, NT5, NT6, NT7, T> T mapCombine(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7, Func7<? super NT1, ? super NT2, ? super NT3, ? super NT4, ? super NT5, ? super NT6, ? super NT7, T> mapper) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
-        val n1 = mapper1.apply(_1);
-        val n2 = mapper2.apply(_2);
-        val n3 = mapper3.apply(_3);
-        val n4 = mapper4.apply(_4);
-        val n5 = mapper5.apply(_5);
-        val n6 = mapper6.apply(_6);
-        val n7 = mapper7.apply(_7);
-        return mapper.apply(n1, n2, n3, n4, n5, n6, n7);
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
+        return mapper.apply(new1, new2, new3, new4, new5, new6, new7);
     }
     
     // == Reduce ==
@@ -905,8 +905,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return          the result of the reduction, of type TARGET
      */
     public default <TARGET> TARGET reduce(Func2<T1, T2, TARGET> reducer) {
-        val _1 = _1();
-        val _2 = _2();
+        T1 _1 = _1();
+        T2 _2 = _2();
         val target = reducer.apply(_1, _2);
         return target;
     }
@@ -920,9 +920,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return          the result of the reduction, of type TARGET
      */
     public default <TARGET> TARGET reduce(Func3<T1, T2, T3, TARGET> reducer) {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
+        T1 _1 = _1();
+        T2 _2 = _2();
+        T3 _3 = _3();
         val target = reducer.apply(_1, _2, _3);
         return target;
     }
@@ -936,10 +936,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return          the result of the reduction, of type TARGET
      */
     public default <TARGET> TARGET reduce(Func4<T1, T2, T3, T4, TARGET> reducer) {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
-        val _4 = _4();
+        T1 _1 = _1();
+        T2 _2 = _2();
+        T3 _3 = _3();
+        T4 _4 = _4();
         val target = reducer.apply(_1, _2, _3, _4);
         return target;
     }
@@ -953,11 +953,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return          the result of the reduction, of type TARGET
      */
     public default <TARGET> TARGET reduce(Func5<T1, T2, T3, T4, T5, TARGET> reducer) {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
-        val _4 = _4();
-        val _5 = _5();
+        T1 _1 = _1();
+        T2 _2 = _2();
+        T3 _3 = _3();
+        T4 _4 = _4();
+        T5 _5 = _5();
         val target = reducer.apply(_1, _2, _3, _4, _5);
         return target;
     }
@@ -971,12 +971,12 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return          the result of the reduction, of type TARGET
      */
     public default <TARGET> TARGET reduce(Func6<T1, T2, T3, T4, T5, T6, TARGET> reducer) {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
-        val _4 = _4();
-        val _5 = _5();
-        val _6 = _6();
+        T1 _1 = _1();
+        T2 _2 = _2();
+        T3 _3 = _3();
+        T4 _4 = _4();
+        T5 _5 = _5();
+        T6 _6 = _6();
         val target = reducer.apply(_1, _2, _3, _4, _5, _6);
         return target;
     }
@@ -990,13 +990,13 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return          the result of the reduction, of type TARGET
      */
     public default <TARGET> TARGET reduce(Func7<T1, T2, T3, T4, T5, T6, T7, TARGET> reducer) {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
-        val _4 = _4();
-        val _5 = _5();
-        val _6 = _6();
-        val _7 = _7();
+        T1 _1 = _1();
+        T2 _2 = _2();
+        T3 _3 = _3();
+        T4 _4 = _4();
+        T5 _5 = _5();
+        T6 _6 = _6();
+        T7 _7 = _7();
         val target = reducer.apply(_1, _2, _3, _4, _5, _6, _7);
         return target;
     }
@@ -1017,14 +1017,14 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1> Tuple7<NT1, T2, T3, T4, T5, T6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
         return Tuple.of(new1, _2, _3, _4, _5, _6, _7);
     }
     
@@ -1042,14 +1042,14 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2> Tuple7<T1, NT2, T3, T4, T5, T6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
         return Tuple.of(_1, new2, _3, _4, _5, _6, _7);
     }
     
@@ -1067,14 +1067,14 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3> Tuple7<T1, T2, NT3, T4, T5, T6, T7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
         return Tuple.of(_1, _2, new3, _4, _5, _6, _7);
     }
     
@@ -1092,14 +1092,14 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT4> Tuple7<T1, T2, T3, NT4, T5, T6, T7> map(Keep keep1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new4 = mapper4.apply(_4);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT4 new4 = mapper4.apply(_4);
         return Tuple.of(_1, _2, _3, new4, _5, _6, _7);
     }
     
@@ -1117,14 +1117,14 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT5> Tuple7<T1, T2, T3, T4, NT5, T6, T7> map(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(_1, _2, _3, _4, new5, _6, _7);
     }
     
@@ -1142,14 +1142,14 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT6> Tuple7<T1, T2, T3, T4, T5, NT6, T7> map(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, _2, _3, _4, _5, new6, _7);
     }
     
@@ -1167,14 +1167,14 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT7> Tuple7<T1, T2, T3, T4, T5, T6, NT7> map(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, _3, _4, _5, _6, new7);
     }
     
@@ -1193,15 +1193,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2> Tuple7<NT1, NT2, T3, T4, T5, T6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
         return Tuple.of(new1, new2, _3, _4, _5, _6, _7);
     }
     
@@ -1220,15 +1220,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3> Tuple7<NT1, T2, NT3, T4, T5, T6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
         return Tuple.of(new1, _2, new3, _4, _5, _6, _7);
     }
     
@@ -1247,15 +1247,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3> Tuple7<T1, NT2, NT3, T4, T5, T6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
         return Tuple.of(_1, new2, new3, _4, _5, _6, _7);
     }
     
@@ -1274,15 +1274,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT4> Tuple7<NT1, T2, T3, NT4, T5, T6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new4 = mapper4.apply(_4);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT4 new4 = mapper4.apply(_4);
         return Tuple.of(new1, _2, _3, new4, _5, _6, _7);
     }
     
@@ -1301,15 +1301,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT4> Tuple7<T1, NT2, T3, NT4, T5, T6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
         return Tuple.of(_1, new2, _3, new4, _5, _6, _7);
     }
     
@@ -1328,15 +1328,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT4> Tuple7<T1, T2, NT3, NT4, T5, T6, T7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
         return Tuple.of(_1, _2, new3, new4, _5, _6, _7);
     }
     
@@ -1355,15 +1355,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT5> Tuple7<NT1, T2, T3, T4, NT5, T6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(new1, _2, _3, _4, new5, _6, _7);
     }
     
@@ -1382,15 +1382,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT5> Tuple7<T1, NT2, T3, T4, NT5, T6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(_1, new2, _3, _4, new5, _6, _7);
     }
     
@@ -1409,15 +1409,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT5> Tuple7<T1, T2, NT3, T4, NT5, T6, T7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(_1, _2, new3, _4, new5, _6, _7);
     }
     
@@ -1436,15 +1436,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT4, NT5> Tuple7<T1, T2, T3, NT4, NT5, T6, T7> map(Keep keep1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(_1, _2, _3, new4, new5, _6, _7);
     }
     
@@ -1463,15 +1463,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT6> Tuple7<NT1, T2, T3, T4, T5, NT6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, _2, _3, _4, _5, new6, _7);
     }
     
@@ -1490,15 +1490,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT6> Tuple7<T1, NT2, T3, T4, T5, NT6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, new2, _3, _4, _5, new6, _7);
     }
     
@@ -1517,15 +1517,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT6> Tuple7<T1, T2, NT3, T4, T5, NT6, T7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, _2, new3, _4, _5, new6, _7);
     }
     
@@ -1544,15 +1544,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT4, NT6> Tuple7<T1, T2, T3, NT4, T5, NT6, T7> map(Keep keep1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, _2, _3, new4, _5, new6, _7);
     }
     
@@ -1571,15 +1571,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT5, NT6> Tuple7<T1, T2, T3, T4, NT5, NT6, T7> map(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, _2, _3, _4, new5, new6, _7);
     }
     
@@ -1598,15 +1598,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT7> Tuple7<NT1, T2, T3, T4, T5, T6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, _3, _4, _5, _6, new7);
     }
     
@@ -1625,15 +1625,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT7> Tuple7<T1, NT2, T3, T4, T5, T6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, _3, _4, _5, _6, new7);
     }
     
@@ -1652,15 +1652,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT7> Tuple7<T1, T2, NT3, T4, T5, T6, NT7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, new3, _4, _5, _6, new7);
     }
     
@@ -1679,15 +1679,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT4, NT7> Tuple7<T1, T2, T3, NT4, T5, T6, NT7> map(Keep keep1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new4 = mapper4.apply(_4);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT4 new4 = mapper4.apply(_4);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, _3, new4, _5, _6, new7);
     }
     
@@ -1706,15 +1706,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT5, NT7> Tuple7<T1, T2, T3, T4, NT5, T6, NT7> map(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, _3, _4, new5, _6, new7);
     }
     
@@ -1733,15 +1733,15 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT6, NT7> Tuple7<T1, T2, T3, T4, T5, NT6, NT7> map(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, _3, _4, _5, new6, new7);
     }
     
@@ -1761,16 +1761,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3> Tuple7<NT1, NT2, NT3, T4, T5, T6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
         return Tuple.of(new1, new2, new3, _4, _5, _6, _7);
     }
     
@@ -1790,16 +1790,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT4> Tuple7<NT1, NT2, T3, NT4, T5, T6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
         return Tuple.of(new1, new2, _3, new4, _5, _6, _7);
     }
     
@@ -1819,16 +1819,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT4> Tuple7<NT1, T2, NT3, NT4, T5, T6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
         return Tuple.of(new1, _2, new3, new4, _5, _6, _7);
     }
     
@@ -1848,16 +1848,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT4> Tuple7<T1, NT2, NT3, NT4, T5, T6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
         return Tuple.of(_1, new2, new3, new4, _5, _6, _7);
     }
     
@@ -1877,16 +1877,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT5> Tuple7<NT1, NT2, T3, T4, NT5, T6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(new1, new2, _3, _4, new5, _6, _7);
     }
     
@@ -1906,16 +1906,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT5> Tuple7<NT1, T2, NT3, T4, NT5, T6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(new1, _2, new3, _4, new5, _6, _7);
     }
     
@@ -1935,16 +1935,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT5> Tuple7<T1, NT2, NT3, T4, NT5, T6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(_1, new2, new3, _4, new5, _6, _7);
     }
     
@@ -1964,16 +1964,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT4, NT5> Tuple7<NT1, T2, T3, NT4, NT5, T6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(new1, _2, _3, new4, new5, _6, _7);
     }
     
@@ -1993,16 +1993,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT4, NT5> Tuple7<T1, NT2, T3, NT4, NT5, T6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(_1, new2, _3, new4, new5, _6, _7);
     }
     
@@ -2022,16 +2022,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT4, NT5> Tuple7<T1, T2, NT3, NT4, NT5, T6, T7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(_1, _2, new3, new4, new5, _6, _7);
     }
     
@@ -2051,16 +2051,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT6> Tuple7<NT1, NT2, T3, T4, T5, NT6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, new2, _3, _4, _5, new6, _7);
     }
     
@@ -2080,16 +2080,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT6> Tuple7<NT1, T2, NT3, T4, T5, NT6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, _2, new3, _4, _5, new6, _7);
     }
     
@@ -2109,16 +2109,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT6> Tuple7<T1, NT2, NT3, T4, T5, NT6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, new2, new3, _4, _5, new6, _7);
     }
     
@@ -2138,16 +2138,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT4, NT6> Tuple7<NT1, T2, T3, NT4, T5, NT6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, _2, _3, new4, _5, new6, _7);
     }
     
@@ -2167,16 +2167,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT4, NT6> Tuple7<T1, NT2, T3, NT4, T5, NT6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, new2, _3, new4, _5, new6, _7);
     }
     
@@ -2196,16 +2196,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT4, NT6> Tuple7<T1, T2, NT3, NT4, T5, NT6, T7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, _2, new3, new4, _5, new6, _7);
     }
     
@@ -2225,16 +2225,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT5, NT6> Tuple7<NT1, T2, T3, T4, NT5, NT6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, _2, _3, _4, new5, new6, _7);
     }
     
@@ -2254,16 +2254,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT5, NT6> Tuple7<T1, NT2, T3, T4, NT5, NT6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, new2, _3, _4, new5, new6, _7);
     }
     
@@ -2283,16 +2283,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT5, NT6> Tuple7<T1, T2, NT3, T4, NT5, NT6, T7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, _2, new3, _4, new5, new6, _7);
     }
     
@@ -2312,16 +2312,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT4, NT5, NT6> Tuple7<T1, T2, T3, NT4, NT5, NT6, T7> map(Keep keep1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, _2, _3, new4, new5, new6, _7);
     }
     
@@ -2341,16 +2341,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT7> Tuple7<NT1, NT2, T3, T4, T5, T6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, _3, _4, _5, _6, new7);
     }
     
@@ -2370,16 +2370,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT7> Tuple7<NT1, T2, NT3, T4, T5, T6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, new3, _4, _5, _6, new7);
     }
     
@@ -2399,16 +2399,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT7> Tuple7<T1, NT2, NT3, T4, T5, T6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, new3, _4, _5, _6, new7);
     }
     
@@ -2428,16 +2428,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT4, NT7> Tuple7<NT1, T2, T3, NT4, T5, T6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new4 = mapper4.apply(_4);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT4 new4 = mapper4.apply(_4);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, _3, new4, _5, _6, new7);
     }
     
@@ -2457,16 +2457,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT4, NT7> Tuple7<T1, NT2, T3, NT4, T5, T6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, _3, new4, _5, _6, new7);
     }
     
@@ -2486,16 +2486,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT4, NT7> Tuple7<T1, T2, NT3, NT4, T5, T6, NT7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, new3, new4, _5, _6, new7);
     }
     
@@ -2515,16 +2515,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT5, NT7> Tuple7<NT1, T2, T3, T4, NT5, T6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, _3, _4, new5, _6, new7);
     }
     
@@ -2544,16 +2544,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT5, NT7> Tuple7<T1, NT2, T3, T4, NT5, T6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, _3, _4, new5, _6, new7);
     }
     
@@ -2573,16 +2573,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT5, NT7> Tuple7<T1, T2, NT3, T4, NT5, T6, NT7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, new3, _4, new5, _6, new7);
     }
     
@@ -2602,16 +2602,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT4, NT5, NT7> Tuple7<T1, T2, T3, NT4, NT5, T6, NT7> map(Keep keep1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, _3, new4, new5, _6, new7);
     }
     
@@ -2631,16 +2631,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT6, NT7> Tuple7<NT1, T2, T3, T4, T5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, _3, _4, _5, new6, new7);
     }
     
@@ -2660,16 +2660,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT6, NT7> Tuple7<T1, NT2, T3, T4, T5, NT6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, _3, _4, _5, new6, new7);
     }
     
@@ -2689,16 +2689,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT6, NT7> Tuple7<T1, T2, NT3, T4, T5, NT6, NT7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, new3, _4, _5, new6, new7);
     }
     
@@ -2718,16 +2718,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT4, NT6, NT7> Tuple7<T1, T2, T3, NT4, T5, NT6, NT7> map(Keep keep1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, _3, new4, _5, new6, new7);
     }
     
@@ -2747,16 +2747,16 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT5, NT6, NT7> Tuple7<T1, T2, T3, T4, NT5, NT6, NT7> map(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, _3, _4, new5, new6, new7);
     }
     
@@ -2777,17 +2777,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT4> Tuple7<NT1, NT2, NT3, NT4, T5, T6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
         return Tuple.of(new1, new2, new3, new4, _5, _6, _7);
     }
     
@@ -2808,17 +2808,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT5> Tuple7<NT1, NT2, NT3, T4, NT5, T6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(new1, new2, new3, _4, new5, _6, _7);
     }
     
@@ -2839,17 +2839,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT4, NT5> Tuple7<NT1, NT2, T3, NT4, NT5, T6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(new1, new2, _3, new4, new5, _6, _7);
     }
     
@@ -2870,17 +2870,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT4, NT5> Tuple7<NT1, T2, NT3, NT4, NT5, T6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(new1, _2, new3, new4, new5, _6, _7);
     }
     
@@ -2901,17 +2901,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT4, NT5> Tuple7<T1, NT2, NT3, NT4, NT5, T6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(_1, new2, new3, new4, new5, _6, _7);
     }
     
@@ -2932,17 +2932,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT6> Tuple7<NT1, NT2, NT3, T4, T5, NT6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, new2, new3, _4, _5, new6, _7);
     }
     
@@ -2963,17 +2963,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT4, NT6> Tuple7<NT1, NT2, T3, NT4, T5, NT6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, new2, _3, new4, _5, new6, _7);
     }
     
@@ -2994,17 +2994,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT4, NT6> Tuple7<NT1, T2, NT3, NT4, T5, NT6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, _2, new3, new4, _5, new6, _7);
     }
     
@@ -3025,17 +3025,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT4, NT6> Tuple7<T1, NT2, NT3, NT4, T5, NT6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, new2, new3, new4, _5, new6, _7);
     }
     
@@ -3056,17 +3056,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT5, NT6> Tuple7<NT1, NT2, T3, T4, NT5, NT6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, new2, _3, _4, new5, new6, _7);
     }
     
@@ -3087,17 +3087,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT5, NT6> Tuple7<NT1, T2, NT3, T4, NT5, NT6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, _2, new3, _4, new5, new6, _7);
     }
     
@@ -3118,17 +3118,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT5, NT6> Tuple7<T1, NT2, NT3, T4, NT5, NT6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, new2, new3, _4, new5, new6, _7);
     }
     
@@ -3149,17 +3149,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT4, NT5, NT6> Tuple7<NT1, T2, T3, NT4, NT5, NT6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, _2, _3, new4, new5, new6, _7);
     }
     
@@ -3180,17 +3180,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT4, NT5, NT6> Tuple7<T1, NT2, T3, NT4, NT5, NT6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, new2, _3, new4, new5, new6, _7);
     }
     
@@ -3211,17 +3211,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT4, NT5, NT6> Tuple7<T1, T2, NT3, NT4, NT5, NT6, T7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, _2, new3, new4, new5, new6, _7);
     }
     
@@ -3242,17 +3242,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT7> Tuple7<NT1, NT2, NT3, T4, T5, T6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, new3, _4, _5, _6, new7);
     }
     
@@ -3273,17 +3273,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT4, NT7> Tuple7<NT1, NT2, T3, NT4, T5, T6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, _3, new4, _5, _6, new7);
     }
     
@@ -3304,17 +3304,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT4, NT7> Tuple7<NT1, T2, NT3, NT4, T5, T6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, new3, new4, _5, _6, new7);
     }
     
@@ -3335,17 +3335,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT4, NT7> Tuple7<T1, NT2, NT3, NT4, T5, T6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, new3, new4, _5, _6, new7);
     }
     
@@ -3366,17 +3366,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT5, NT7> Tuple7<NT1, NT2, T3, T4, NT5, T6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, _3, _4, new5, _6, new7);
     }
     
@@ -3397,17 +3397,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT5, NT7> Tuple7<NT1, T2, NT3, T4, NT5, T6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, new3, _4, new5, _6, new7);
     }
     
@@ -3428,17 +3428,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT5, NT7> Tuple7<T1, NT2, NT3, T4, NT5, T6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, new3, _4, new5, _6, new7);
     }
     
@@ -3459,17 +3459,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT4, NT5, NT7> Tuple7<NT1, T2, T3, NT4, NT5, T6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, _3, new4, new5, _6, new7);
     }
     
@@ -3490,17 +3490,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT4, NT5, NT7> Tuple7<T1, NT2, T3, NT4, NT5, T6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, _3, new4, new5, _6, new7);
     }
     
@@ -3521,17 +3521,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT4, NT5, NT7> Tuple7<T1, T2, NT3, NT4, NT5, T6, NT7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, new3, new4, new5, _6, new7);
     }
     
@@ -3552,17 +3552,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT6, NT7> Tuple7<NT1, NT2, T3, T4, T5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, _3, _4, _5, new6, new7);
     }
     
@@ -3583,17 +3583,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT6, NT7> Tuple7<NT1, T2, NT3, T4, T5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, new3, _4, _5, new6, new7);
     }
     
@@ -3614,17 +3614,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT6, NT7> Tuple7<T1, NT2, NT3, T4, T5, NT6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, new3, _4, _5, new6, new7);
     }
     
@@ -3645,17 +3645,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT4, NT6, NT7> Tuple7<NT1, T2, T3, NT4, T5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, _3, new4, _5, new6, new7);
     }
     
@@ -3676,17 +3676,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT4, NT6, NT7> Tuple7<T1, NT2, T3, NT4, T5, NT6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, _3, new4, _5, new6, new7);
     }
     
@@ -3707,17 +3707,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT4, NT6, NT7> Tuple7<T1, T2, NT3, NT4, T5, NT6, NT7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, new3, new4, _5, new6, new7);
     }
     
@@ -3738,17 +3738,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT5, NT6, NT7> Tuple7<NT1, T2, T3, T4, NT5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, _3, _4, new5, new6, new7);
     }
     
@@ -3769,17 +3769,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT5, NT6, NT7> Tuple7<T1, NT2, T3, T4, NT5, NT6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, _3, _4, new5, new6, new7);
     }
     
@@ -3800,17 +3800,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT5, NT6, NT7> Tuple7<T1, T2, NT3, T4, NT5, NT6, NT7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, new3, _4, new5, new6, new7);
     }
     
@@ -3831,17 +3831,17 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT4, NT5, NT6, NT7> Tuple7<T1, T2, T3, NT4, NT5, NT6, NT7> map(Keep keep1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, _3, new4, new5, new6, new7);
     }
     
@@ -3863,18 +3863,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT4, NT5> Tuple7<NT1, NT2, NT3, NT4, NT5, T6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
         return Tuple.of(new1, new2, new3, new4, new5, _6, _7);
     }
     
@@ -3896,18 +3896,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT4, NT6> Tuple7<NT1, NT2, NT3, NT4, T5, NT6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, new2, new3, new4, _5, new6, _7);
     }
     
@@ -3929,18 +3929,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT5, NT6> Tuple7<NT1, NT2, NT3, T4, NT5, NT6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, new2, new3, _4, new5, new6, _7);
     }
     
@@ -3962,18 +3962,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT4, NT5, NT6> Tuple7<NT1, NT2, T3, NT4, NT5, NT6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, new2, _3, new4, new5, new6, _7);
     }
     
@@ -3995,18 +3995,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT4, NT5, NT6> Tuple7<NT1, T2, NT3, NT4, NT5, NT6, T7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, _2, new3, new4, new5, new6, _7);
     }
     
@@ -4028,18 +4028,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT4, NT5, NT6> Tuple7<T1, NT2, NT3, NT4, NT5, NT6, T7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(_1, new2, new3, new4, new5, new6, _7);
     }
     
@@ -4061,18 +4061,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT4, NT7> Tuple7<NT1, NT2, NT3, NT4, T5, T6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, new3, new4, _5, _6, new7);
     }
     
@@ -4094,18 +4094,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT5, NT7> Tuple7<NT1, NT2, NT3, T4, NT5, T6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, new3, _4, new5, _6, new7);
     }
     
@@ -4127,18 +4127,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT4, NT5, NT7> Tuple7<NT1, NT2, T3, NT4, NT5, T6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, _3, new4, new5, _6, new7);
     }
     
@@ -4160,18 +4160,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT4, NT5, NT7> Tuple7<NT1, T2, NT3, NT4, NT5, T6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, new3, new4, new5, _6, new7);
     }
     
@@ -4193,18 +4193,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT4, NT5, NT7> Tuple7<T1, NT2, NT3, NT4, NT5, T6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, new3, new4, new5, _6, new7);
     }
     
@@ -4226,18 +4226,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT6, NT7> Tuple7<NT1, NT2, NT3, T4, T5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, new3, _4, _5, new6, new7);
     }
     
@@ -4259,18 +4259,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT4, NT6, NT7> Tuple7<NT1, NT2, T3, NT4, T5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, _3, new4, _5, new6, new7);
     }
     
@@ -4292,18 +4292,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT4, NT6, NT7> Tuple7<NT1, T2, NT3, NT4, T5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, new3, new4, _5, new6, new7);
     }
     
@@ -4325,18 +4325,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT4, NT6, NT7> Tuple7<T1, NT2, NT3, NT4, T5, NT6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, new3, new4, _5, new6, new7);
     }
     
@@ -4358,18 +4358,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT5, NT6, NT7> Tuple7<NT1, NT2, T3, T4, NT5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, _3, _4, new5, new6, new7);
     }
     
@@ -4391,18 +4391,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT5, NT6, NT7> Tuple7<NT1, T2, NT3, T4, NT5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, new3, _4, new5, new6, new7);
     }
     
@@ -4424,18 +4424,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT5, NT6, NT7> Tuple7<T1, NT2, NT3, T4, NT5, NT6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, new3, _4, new5, new6, new7);
     }
     
@@ -4457,18 +4457,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT4, NT5, NT6, NT7> Tuple7<NT1, T2, T3, NT4, NT5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, _3, new4, new5, new6, new7);
     }
     
@@ -4490,18 +4490,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT4, NT5, NT6, NT7> Tuple7<T1, NT2, T3, NT4, NT5, NT6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, _3, new4, new5, new6, new7);
     }
     
@@ -4523,18 +4523,18 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT3, NT4, NT5, NT6, NT7> Tuple7<T1, T2, NT3, NT4, NT5, NT6, NT7> map(Keep keep1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, _2, new3, new4, new5, new6, new7);
     }
     
@@ -4557,19 +4557,19 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT4, NT5, NT6> Tuple7<NT1, NT2, NT3, NT4, NT5, NT6, T7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Keep keep7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
         return Tuple.of(new1, new2, new3, new4, new5, new6, _7);
     }
     
@@ -4592,19 +4592,19 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT4, NT5, NT7> Tuple7<NT1, NT2, NT3, NT4, NT5, T6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Keep keep6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, new3, new4, new5, _6, new7);
     }
     
@@ -4627,19 +4627,19 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT4, NT6, NT7> Tuple7<NT1, NT2, NT3, NT4, T5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Keep keep5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, new3, new4, _5, new6, new7);
     }
     
@@ -4662,19 +4662,19 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT5, NT6, NT7> Tuple7<NT1, NT2, NT3, T4, NT5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Keep keep4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, new3, _4, new5, new6, new7);
     }
     
@@ -4697,19 +4697,19 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT4, NT5, NT6, NT7> Tuple7<NT1, NT2, T3, NT4, NT5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Keep keep3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, _3, new4, new5, new6, new7);
     }
     
@@ -4732,19 +4732,19 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT3, NT4, NT5, NT6, NT7> Tuple7<NT1, T2, NT3, NT4, NT5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Keep keep2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, _2, new3, new4, new5, new6, new7);
     }
     
@@ -4767,19 +4767,19 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2, NT3, NT4, NT5, NT6, NT7> Tuple7<T1, NT2, NT3, NT4, NT5, NT6, NT7> map(Keep keep1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(_1, new2, new3, new4, new5, new6, new7);
     }
     
@@ -4803,20 +4803,20 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2, NT3, NT4, NT5, NT6, NT7> Tuple7<NT1, NT2, NT3, NT4, NT5, NT6, NT7> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2, Function<? super T3, NT3> mapper3, Function<? super T4, NT4> mapper4, Function<? super T5, NT5> mapper5, Function<? super T6, NT6> mapper6, Function<? super T7, NT7> mapper7) {
-        val _1   = _1();
-        val _2   = _2();
-        val _3   = _3();
-        val _4   = _4();
-        val _5   = _5();
-        val _6   = _6();
-        val _7   = _7();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
-        val new3 = mapper3.apply(_3);
-        val new4 = mapper4.apply(_4);
-        val new5 = mapper5.apply(_5);
-        val new6 = mapper6.apply(_6);
-        val new7 = mapper7.apply(_7);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        T3 _3   = _3();
+        T4 _4   = _4();
+        T5 _5   = _5();
+        T6 _6   = _6();
+        T7 _7   = _7();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
+        NT3 new3 = mapper3.apply(_3);
+        NT4 new4 = mapper4.apply(_4);
+        NT5 new5 = mapper5.apply(_5);
+        NT6 new6 = mapper6.apply(_6);
+        NT7 new7 = mapper7.apply(_7);
         return Tuple.of(new1, new2, new3, new4, new5, new6, new7);
     }
     
@@ -4877,8 +4877,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T1, T2> drop(Keep keep1, Keep keep2, Drop drop3, Drop drop4, Drop drop5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
+        T1 _1  = _1();
+        T2 _2  = _2();
         return Tuple.of(_1, _2);
     }
     
@@ -4895,8 +4895,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T1, T3> drop(Keep keep1, Drop drop2, Keep keep3, Drop drop4, Drop drop5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _3  = _3();
+        T1 _1  = _1();
+        T3 _3  = _3();
         return Tuple.of(_1, _3);
     }
     
@@ -4913,8 +4913,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T2, T3> drop(Drop drop1, Keep keep2, Keep keep3, Drop drop4, Drop drop5, Drop drop6, Drop drop7) {
-        val _2  = _2();
-        val _3  = _3();
+        T2 _2  = _2();
+        T3 _3  = _3();
         return Tuple.of(_2, _3);
     }
     
@@ -4931,8 +4931,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T1, T4> drop(Keep keep1, Drop drop2, Drop drop3, Keep keep4, Drop drop5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _4  = _4();
+        T1 _1  = _1();
+        T4 _4  = _4();
         return Tuple.of(_1, _4);
     }
     
@@ -4949,8 +4949,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T2, T4> drop(Drop drop1, Keep keep2, Drop drop3, Keep keep4, Drop drop5, Drop drop6, Drop drop7) {
-        val _2  = _2();
-        val _4  = _4();
+        T2 _2  = _2();
+        T4 _4  = _4();
         return Tuple.of(_2, _4);
     }
     
@@ -4967,8 +4967,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T3, T4> drop(Drop drop1, Drop drop2, Keep keep3, Keep keep4, Drop drop5, Drop drop6, Drop drop7) {
-        val _3  = _3();
-        val _4  = _4();
+        T3 _3  = _3();
+        T4 _4  = _4();
         return Tuple.of(_3, _4);
     }
     
@@ -4985,8 +4985,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T1, T5> drop(Keep keep1, Drop drop2, Drop drop3, Drop drop4, Keep keep5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _5  = _5();
+        T1 _1  = _1();
+        T5 _5  = _5();
         return Tuple.of(_1, _5);
     }
     
@@ -5003,8 +5003,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T2, T5> drop(Drop drop1, Keep keep2, Drop drop3, Drop drop4, Keep keep5, Drop drop6, Drop drop7) {
-        val _2  = _2();
-        val _5  = _5();
+        T2 _2  = _2();
+        T5 _5  = _5();
         return Tuple.of(_2, _5);
     }
     
@@ -5021,8 +5021,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T3, T5> drop(Drop drop1, Drop drop2, Keep keep3, Drop drop4, Keep keep5, Drop drop6, Drop drop7) {
-        val _3  = _3();
-        val _5  = _5();
+        T3 _3  = _3();
+        T5 _5  = _5();
         return Tuple.of(_3, _5);
     }
     
@@ -5039,8 +5039,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T4, T5> drop(Drop drop1, Drop drop2, Drop drop3, Keep keep4, Keep keep5, Drop drop6, Drop drop7) {
-        val _4  = _4();
-        val _5  = _5();
+        T4 _4  = _4();
+        T5 _5  = _5();
         return Tuple.of(_4, _5);
     }
     
@@ -5057,8 +5057,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T1, T6> drop(Keep keep1, Drop drop2, Drop drop3, Drop drop4, Drop drop5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _6  = _6();
+        T1 _1  = _1();
+        T6 _6  = _6();
         return Tuple.of(_1, _6);
     }
     
@@ -5075,8 +5075,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T2, T6> drop(Drop drop1, Keep keep2, Drop drop3, Drop drop4, Drop drop5, Keep keep6, Drop drop7) {
-        val _2  = _2();
-        val _6  = _6();
+        T2 _2  = _2();
+        T6 _6  = _6();
         return Tuple.of(_2, _6);
     }
     
@@ -5093,8 +5093,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T3, T6> drop(Drop drop1, Drop drop2, Keep keep3, Drop drop4, Drop drop5, Keep keep6, Drop drop7) {
-        val _3  = _3();
-        val _6  = _6();
+        T3 _3  = _3();
+        T6 _6  = _6();
         return Tuple.of(_3, _6);
     }
     
@@ -5111,8 +5111,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T4, T6> drop(Drop drop1, Drop drop2, Drop drop3, Keep keep4, Drop drop5, Keep keep6, Drop drop7) {
-        val _4  = _4();
-        val _6  = _6();
+        T4 _4  = _4();
+        T6 _6  = _6();
         return Tuple.of(_4, _6);
     }
     
@@ -5129,8 +5129,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T5, T6> drop(Drop drop1, Drop drop2, Drop drop3, Drop drop4, Keep keep5, Keep keep6, Drop drop7) {
-        val _5  = _5();
-        val _6  = _6();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_5, _6);
     }
     
@@ -5147,8 +5147,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T1, T7> drop(Keep keep1, Drop drop2, Drop drop3, Drop drop4, Drop drop5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _7  = _7();
+        T1 _1  = _1();
+        T7 _7  = _7();
         return Tuple.of(_1, _7);
     }
     
@@ -5165,8 +5165,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T2, T7> drop(Drop drop1, Keep keep2, Drop drop3, Drop drop4, Drop drop5, Drop drop6, Keep keep7) {
-        val _2  = _2();
-        val _7  = _7();
+        T2 _2  = _2();
+        T7 _7  = _7();
         return Tuple.of(_2, _7);
     }
     
@@ -5183,8 +5183,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T3, T7> drop(Drop drop1, Drop drop2, Keep keep3, Drop drop4, Drop drop5, Drop drop6, Keep keep7) {
-        val _3  = _3();
-        val _7  = _7();
+        T3 _3  = _3();
+        T7 _7  = _7();
         return Tuple.of(_3, _7);
     }
     
@@ -5201,8 +5201,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T4, T7> drop(Drop drop1, Drop drop2, Drop drop3, Keep keep4, Drop drop5, Drop drop6, Keep keep7) {
-        val _4  = _4();
-        val _7  = _7();
+        T4 _4  = _4();
+        T7 _7  = _7();
         return Tuple.of(_4, _7);
     }
     
@@ -5219,8 +5219,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T5, T7> drop(Drop drop1, Drop drop2, Drop drop3, Drop drop4, Keep keep5, Drop drop6, Keep keep7) {
-        val _5  = _5();
-        val _7  = _7();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_5, _7);
     }
     
@@ -5237,8 +5237,8 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple2<T6, T7> drop(Drop drop1, Drop drop2, Drop drop3, Drop drop4, Drop drop5, Keep keep6, Keep keep7) {
-        val _6  = _6();
-        val _7  = _7();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_6, _7);
     }
     
@@ -5255,9 +5255,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T2, T3> drop(Keep keep1, Keep keep2, Keep keep3, Drop drop4, Drop drop5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
         return Tuple.of(_1, _2, _3);
     }
     
@@ -5274,9 +5274,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T2, T4> drop(Keep keep1, Keep keep2, Drop drop3, Keep keep4, Drop drop5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _4  = _4();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T4 _4  = _4();
         return Tuple.of(_1, _2, _4);
     }
     
@@ -5293,9 +5293,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T3, T4> drop(Keep keep1, Drop drop2, Keep keep3, Keep keep4, Drop drop5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _4  = _4();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T4 _4  = _4();
         return Tuple.of(_1, _3, _4);
     }
     
@@ -5312,9 +5312,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T3, T4> drop(Drop drop1, Keep keep2, Keep keep3, Keep keep4, Drop drop5, Drop drop6, Drop drop7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
         return Tuple.of(_2, _3, _4);
     }
     
@@ -5331,9 +5331,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T2, T5> drop(Keep keep1, Keep keep2, Drop drop3, Drop drop4, Keep keep5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _5  = _5();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T5 _5  = _5();
         return Tuple.of(_1, _2, _5);
     }
     
@@ -5350,9 +5350,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T3, T5> drop(Keep keep1, Drop drop2, Keep keep3, Drop drop4, Keep keep5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _5  = _5();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T5 _5  = _5();
         return Tuple.of(_1, _3, _5);
     }
     
@@ -5369,9 +5369,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T3, T5> drop(Drop drop1, Keep keep2, Keep keep3, Drop drop4, Keep keep5, Drop drop6, Drop drop7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _5  = _5();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T5 _5  = _5();
         return Tuple.of(_2, _3, _5);
     }
     
@@ -5388,9 +5388,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T4, T5> drop(Keep keep1, Drop drop2, Drop drop3, Keep keep4, Keep keep5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _4  = _4();
-        val _5  = _5();
+        T1 _1  = _1();
+        T4 _4  = _4();
+        T5 _5  = _5();
         return Tuple.of(_1, _4, _5);
     }
     
@@ -5407,9 +5407,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T4, T5> drop(Drop drop1, Keep keep2, Drop drop3, Keep keep4, Keep keep5, Drop drop6, Drop drop7) {
-        val _2  = _2();
-        val _4  = _4();
-        val _5  = _5();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T5 _5  = _5();
         return Tuple.of(_2, _4, _5);
     }
     
@@ -5426,9 +5426,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T3, T4, T5> drop(Drop drop1, Drop drop2, Keep keep3, Keep keep4, Keep keep5, Drop drop6, Drop drop7) {
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
         return Tuple.of(_3, _4, _5);
     }
     
@@ -5445,9 +5445,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T2, T6> drop(Keep keep1, Keep keep2, Drop drop3, Drop drop4, Drop drop5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _6  = _6();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T6 _6  = _6();
         return Tuple.of(_1, _2, _6);
     }
     
@@ -5464,9 +5464,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T3, T6> drop(Keep keep1, Drop drop2, Keep keep3, Drop drop4, Drop drop5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _6  = _6();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T6 _6  = _6();
         return Tuple.of(_1, _3, _6);
     }
     
@@ -5483,9 +5483,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T3, T6> drop(Drop drop1, Keep keep2, Keep keep3, Drop drop4, Drop drop5, Keep keep6, Drop drop7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _6  = _6();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T6 _6  = _6();
         return Tuple.of(_2, _3, _6);
     }
     
@@ -5502,9 +5502,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T4, T6> drop(Keep keep1, Drop drop2, Drop drop3, Keep keep4, Drop drop5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _4  = _4();
-        val _6  = _6();
+        T1 _1  = _1();
+        T4 _4  = _4();
+        T6 _6  = _6();
         return Tuple.of(_1, _4, _6);
     }
     
@@ -5521,9 +5521,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T4, T6> drop(Drop drop1, Keep keep2, Drop drop3, Keep keep4, Drop drop5, Keep keep6, Drop drop7) {
-        val _2  = _2();
-        val _4  = _4();
-        val _6  = _6();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T6 _6  = _6();
         return Tuple.of(_2, _4, _6);
     }
     
@@ -5540,9 +5540,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T3, T4, T6> drop(Drop drop1, Drop drop2, Keep keep3, Keep keep4, Drop drop5, Keep keep6, Drop drop7) {
-        val _3  = _3();
-        val _4  = _4();
-        val _6  = _6();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T6 _6  = _6();
         return Tuple.of(_3, _4, _6);
     }
     
@@ -5559,9 +5559,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T5, T6> drop(Keep keep1, Drop drop2, Drop drop3, Drop drop4, Keep keep5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _5  = _5();
-        val _6  = _6();
+        T1 _1  = _1();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_1, _5, _6);
     }
     
@@ -5578,9 +5578,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T5, T6> drop(Drop drop1, Keep keep2, Drop drop3, Drop drop4, Keep keep5, Keep keep6, Drop drop7) {
-        val _2  = _2();
-        val _5  = _5();
-        val _6  = _6();
+        T2 _2  = _2();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_2, _5, _6);
     }
     
@@ -5597,9 +5597,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T3, T5, T6> drop(Drop drop1, Drop drop2, Keep keep3, Drop drop4, Keep keep5, Keep keep6, Drop drop7) {
-        val _3  = _3();
-        val _5  = _5();
-        val _6  = _6();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_3, _5, _6);
     }
     
@@ -5616,9 +5616,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T4, T5, T6> drop(Drop drop1, Drop drop2, Drop drop3, Keep keep4, Keep keep5, Keep keep6, Drop drop7) {
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_4, _5, _6);
     }
     
@@ -5635,9 +5635,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T2, T7> drop(Keep keep1, Keep keep2, Drop drop3, Drop drop4, Drop drop5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _7);
     }
     
@@ -5654,9 +5654,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T3, T7> drop(Keep keep1, Drop drop2, Keep keep3, Drop drop4, Drop drop5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _7  = _7();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T7 _7  = _7();
         return Tuple.of(_1, _3, _7);
     }
     
@@ -5673,9 +5673,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T3, T7> drop(Drop drop1, Keep keep2, Keep keep3, Drop drop4, Drop drop5, Drop drop6, Keep keep7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _7  = _7();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T7 _7  = _7();
         return Tuple.of(_2, _3, _7);
     }
     
@@ -5692,9 +5692,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T4, T7> drop(Keep keep1, Drop drop2, Drop drop3, Keep keep4, Drop drop5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _4  = _4();
-        val _7  = _7();
+        T1 _1  = _1();
+        T4 _4  = _4();
+        T7 _7  = _7();
         return Tuple.of(_1, _4, _7);
     }
     
@@ -5711,9 +5711,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T4, T7> drop(Drop drop1, Keep keep2, Drop drop3, Keep keep4, Drop drop5, Drop drop6, Keep keep7) {
-        val _2  = _2();
-        val _4  = _4();
-        val _7  = _7();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T7 _7  = _7();
         return Tuple.of(_2, _4, _7);
     }
     
@@ -5730,9 +5730,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T3, T4, T7> drop(Drop drop1, Drop drop2, Keep keep3, Keep keep4, Drop drop5, Drop drop6, Keep keep7) {
-        val _3  = _3();
-        val _4  = _4();
-        val _7  = _7();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T7 _7  = _7();
         return Tuple.of(_3, _4, _7);
     }
     
@@ -5749,9 +5749,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T5, T7> drop(Keep keep1, Drop drop2, Drop drop3, Drop drop4, Keep keep5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _5  = _5();
-        val _7  = _7();
+        T1 _1  = _1();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_1, _5, _7);
     }
     
@@ -5768,9 +5768,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T5, T7> drop(Drop drop1, Keep keep2, Drop drop3, Drop drop4, Keep keep5, Drop drop6, Keep keep7) {
-        val _2  = _2();
-        val _5  = _5();
-        val _7  = _7();
+        T2 _2  = _2();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_2, _5, _7);
     }
     
@@ -5787,9 +5787,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T3, T5, T7> drop(Drop drop1, Drop drop2, Keep keep3, Drop drop4, Keep keep5, Drop drop6, Keep keep7) {
-        val _3  = _3();
-        val _5  = _5();
-        val _7  = _7();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_3, _5, _7);
     }
     
@@ -5806,9 +5806,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T4, T5, T7> drop(Drop drop1, Drop drop2, Drop drop3, Keep keep4, Keep keep5, Drop drop6, Keep keep7) {
-        val _4  = _4();
-        val _5  = _5();
-        val _7  = _7();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_4, _5, _7);
     }
     
@@ -5825,9 +5825,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T1, T6, T7> drop(Keep keep1, Drop drop2, Drop drop3, Drop drop4, Drop drop5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _6, _7);
     }
     
@@ -5844,9 +5844,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T2, T6, T7> drop(Drop drop1, Keep keep2, Drop drop3, Drop drop4, Drop drop5, Keep keep6, Keep keep7) {
-        val _2  = _2();
-        val _6  = _6();
-        val _7  = _7();
+        T2 _2  = _2();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_2, _6, _7);
     }
     
@@ -5863,9 +5863,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T3, T6, T7> drop(Drop drop1, Drop drop2, Keep keep3, Drop drop4, Drop drop5, Keep keep6, Keep keep7) {
-        val _3  = _3();
-        val _6  = _6();
-        val _7  = _7();
+        T3 _3  = _3();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_3, _6, _7);
     }
     
@@ -5882,9 +5882,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T4, T6, T7> drop(Drop drop1, Drop drop2, Drop drop3, Keep keep4, Drop drop5, Keep keep6, Keep keep7) {
-        val _4  = _4();
-        val _6  = _6();
-        val _7  = _7();
+        T4 _4  = _4();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_4, _6, _7);
     }
     
@@ -5901,9 +5901,9 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple3<T5, T6, T7> drop(Drop drop1, Drop drop2, Drop drop3, Drop drop4, Keep keep5, Keep keep6, Keep keep7) {
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_5, _6, _7);
     }
     
@@ -5920,10 +5920,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T3, T4> drop(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Drop drop5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
         return Tuple.of(_1, _2, _3, _4);
     }
     
@@ -5940,10 +5940,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T3, T5> drop(Keep keep1, Keep keep2, Keep keep3, Drop drop4, Keep keep5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _5  = _5();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T5 _5  = _5();
         return Tuple.of(_1, _2, _3, _5);
     }
     
@@ -5960,10 +5960,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T4, T5> drop(Keep keep1, Keep keep2, Drop drop3, Keep keep4, Keep keep5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _4  = _4();
-        val _5  = _5();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T5 _5  = _5();
         return Tuple.of(_1, _2, _4, _5);
     }
     
@@ -5980,10 +5980,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T3, T4, T5> drop(Keep keep1, Drop drop2, Keep keep3, Keep keep4, Keep keep5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
         return Tuple.of(_1, _3, _4, _5);
     }
     
@@ -6000,10 +6000,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T3, T4, T5> drop(Drop drop1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Drop drop6, Drop drop7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
         return Tuple.of(_2, _3, _4, _5);
     }
     
@@ -6020,10 +6020,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T3, T6> drop(Keep keep1, Keep keep2, Keep keep3, Drop drop4, Drop drop5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _6  = _6();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T6 _6  = _6();
         return Tuple.of(_1, _2, _3, _6);
     }
     
@@ -6040,10 +6040,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T4, T6> drop(Keep keep1, Keep keep2, Drop drop3, Keep keep4, Drop drop5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _4  = _4();
-        val _6  = _6();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T6 _6  = _6();
         return Tuple.of(_1, _2, _4, _6);
     }
     
@@ -6060,10 +6060,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T3, T4, T6> drop(Keep keep1, Drop drop2, Keep keep3, Keep keep4, Drop drop5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _4  = _4();
-        val _6  = _6();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T6 _6  = _6();
         return Tuple.of(_1, _3, _4, _6);
     }
     
@@ -6080,10 +6080,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T3, T4, T6> drop(Drop drop1, Keep keep2, Keep keep3, Keep keep4, Drop drop5, Keep keep6, Drop drop7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _6  = _6();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T6 _6  = _6();
         return Tuple.of(_2, _3, _4, _6);
     }
     
@@ -6100,10 +6100,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T5, T6> drop(Keep keep1, Keep keep2, Drop drop3, Drop drop4, Keep keep5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _5  = _5();
-        val _6  = _6();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_1, _2, _5, _6);
     }
     
@@ -6120,10 +6120,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T3, T5, T6> drop(Keep keep1, Drop drop2, Keep keep3, Drop drop4, Keep keep5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _5  = _5();
-        val _6  = _6();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_1, _3, _5, _6);
     }
     
@@ -6140,10 +6140,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T3, T5, T6> drop(Drop drop1, Keep keep2, Keep keep3, Drop drop4, Keep keep5, Keep keep6, Drop drop7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _5  = _5();
-        val _6  = _6();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_2, _3, _5, _6);
     }
     
@@ -6160,10 +6160,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T4, T5, T6> drop(Keep keep1, Drop drop2, Drop drop3, Keep keep4, Keep keep5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
+        T1 _1  = _1();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_1, _4, _5, _6);
     }
     
@@ -6180,10 +6180,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T4, T5, T6> drop(Drop drop1, Keep keep2, Drop drop3, Keep keep4, Keep keep5, Keep keep6, Drop drop7) {
-        val _2  = _2();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_2, _4, _5, _6);
     }
     
@@ -6200,10 +6200,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T3, T4, T5, T6> drop(Drop drop1, Drop drop2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Drop drop7) {
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_3, _4, _5, _6);
     }
     
@@ -6220,10 +6220,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T3, T7> drop(Keep keep1, Keep keep2, Keep keep3, Drop drop4, Drop drop5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _3, _7);
     }
     
@@ -6240,10 +6240,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T4, T7> drop(Keep keep1, Keep keep2, Drop drop3, Keep keep4, Drop drop5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _4  = _4();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _4, _7);
     }
     
@@ -6260,10 +6260,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T3, T4, T7> drop(Keep keep1, Drop drop2, Keep keep3, Keep keep4, Drop drop5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _4  = _4();
-        val _7  = _7();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T7 _7  = _7();
         return Tuple.of(_1, _3, _4, _7);
     }
     
@@ -6280,10 +6280,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T3, T4, T7> drop(Drop drop1, Keep keep2, Keep keep3, Keep keep4, Drop drop5, Drop drop6, Keep keep7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _7  = _7();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T7 _7  = _7();
         return Tuple.of(_2, _3, _4, _7);
     }
     
@@ -6300,10 +6300,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T5, T7> drop(Keep keep1, Keep keep2, Drop drop3, Drop drop4, Keep keep5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _5  = _5();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _5, _7);
     }
     
@@ -6320,10 +6320,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T3, T5, T7> drop(Keep keep1, Drop drop2, Keep keep3, Drop drop4, Keep keep5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _5  = _5();
-        val _7  = _7();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_1, _3, _5, _7);
     }
     
@@ -6340,10 +6340,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T3, T5, T7> drop(Drop drop1, Keep keep2, Keep keep3, Drop drop4, Keep keep5, Drop drop6, Keep keep7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _5  = _5();
-        val _7  = _7();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_2, _3, _5, _7);
     }
     
@@ -6360,10 +6360,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T4, T5, T7> drop(Keep keep1, Drop drop2, Drop drop3, Keep keep4, Keep keep5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _4  = _4();
-        val _5  = _5();
-        val _7  = _7();
+        T1 _1  = _1();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_1, _4, _5, _7);
     }
     
@@ -6380,10 +6380,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T4, T5, T7> drop(Drop drop1, Keep keep2, Drop drop3, Keep keep4, Keep keep5, Drop drop6, Keep keep7) {
-        val _2  = _2();
-        val _4  = _4();
-        val _5  = _5();
-        val _7  = _7();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_2, _4, _5, _7);
     }
     
@@ -6400,10 +6400,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T3, T4, T5, T7> drop(Drop drop1, Drop drop2, Keep keep3, Keep keep4, Keep keep5, Drop drop6, Keep keep7) {
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _7  = _7();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_3, _4, _5, _7);
     }
     
@@ -6420,10 +6420,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T2, T6, T7> drop(Keep keep1, Keep keep2, Drop drop3, Drop drop4, Drop drop5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _6, _7);
     }
     
@@ -6440,10 +6440,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T3, T6, T7> drop(Keep keep1, Drop drop2, Keep keep3, Drop drop4, Drop drop5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _3, _6, _7);
     }
     
@@ -6460,10 +6460,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T3, T6, T7> drop(Drop drop1, Keep keep2, Keep keep3, Drop drop4, Drop drop5, Keep keep6, Keep keep7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _6  = _6();
-        val _7  = _7();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_2, _3, _6, _7);
     }
     
@@ -6480,10 +6480,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T4, T6, T7> drop(Keep keep1, Drop drop2, Drop drop3, Keep keep4, Drop drop5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _4  = _4();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T4 _4  = _4();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _4, _6, _7);
     }
     
@@ -6500,10 +6500,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T4, T6, T7> drop(Drop drop1, Keep keep2, Drop drop3, Keep keep4, Drop drop5, Keep keep6, Keep keep7) {
-        val _2  = _2();
-        val _4  = _4();
-        val _6  = _6();
-        val _7  = _7();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_2, _4, _6, _7);
     }
     
@@ -6520,10 +6520,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T3, T4, T6, T7> drop(Drop drop1, Drop drop2, Keep keep3, Keep keep4, Drop drop5, Keep keep6, Keep keep7) {
-        val _3  = _3();
-        val _4  = _4();
-        val _6  = _6();
-        val _7  = _7();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_3, _4, _6, _7);
     }
     
@@ -6540,10 +6540,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T1, T5, T6, T7> drop(Keep keep1, Drop drop2, Drop drop3, Drop drop4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _5, _6, _7);
     }
     
@@ -6560,10 +6560,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T2, T5, T6, T7> drop(Drop drop1, Keep keep2, Drop drop3, Drop drop4, Keep keep5, Keep keep6, Keep keep7) {
-        val _2  = _2();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T2 _2  = _2();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_2, _5, _6, _7);
     }
     
@@ -6580,10 +6580,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T3, T5, T6, T7> drop(Drop drop1, Drop drop2, Keep keep3, Drop drop4, Keep keep5, Keep keep6, Keep keep7) {
-        val _3  = _3();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_3, _5, _6, _7);
     }
     
@@ -6600,10 +6600,10 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple4<T4, T5, T6, T7> drop(Drop drop1, Drop drop2, Drop drop3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_4, _5, _6, _7);
     }
     
@@ -6620,11 +6620,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T3, T4, T5> drop(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Drop drop6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
         return Tuple.of(_1, _2, _3, _4, _5);
     }
     
@@ -6641,11 +6641,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T3, T4, T6> drop(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Drop drop5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _6  = _6();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T6 _6  = _6();
         return Tuple.of(_1, _2, _3, _4, _6);
     }
     
@@ -6662,11 +6662,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T3, T5, T6> drop(Keep keep1, Keep keep2, Keep keep3, Drop drop4, Keep keep5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _5  = _5();
-        val _6  = _6();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_1, _2, _3, _5, _6);
     }
     
@@ -6683,11 +6683,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T4, T5, T6> drop(Keep keep1, Keep keep2, Drop drop3, Keep keep4, Keep keep5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_1, _2, _4, _5, _6);
     }
     
@@ -6704,11 +6704,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T3, T4, T5, T6> drop(Keep keep1, Drop drop2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_1, _3, _4, _5, _6);
     }
     
@@ -6725,11 +6725,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T2, T3, T4, T5, T6> drop(Drop drop1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Drop drop7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_2, _3, _4, _5, _6);
     }
     
@@ -6746,11 +6746,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T3, T4, T7> drop(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Drop drop5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _3, _4, _7);
     }
     
@@ -6767,11 +6767,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T3, T5, T7> drop(Keep keep1, Keep keep2, Keep keep3, Drop drop4, Keep keep5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _5  = _5();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _3, _5, _7);
     }
     
@@ -6788,11 +6788,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T4, T5, T7> drop(Keep keep1, Keep keep2, Drop drop3, Keep keep4, Keep keep5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _4  = _4();
-        val _5  = _5();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _4, _5, _7);
     }
     
@@ -6809,11 +6809,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T3, T4, T5, T7> drop(Keep keep1, Drop drop2, Keep keep3, Keep keep4, Keep keep5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _7  = _7();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_1, _3, _4, _5, _7);
     }
     
@@ -6830,11 +6830,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T2, T3, T4, T5, T7> drop(Drop drop1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Drop drop6, Keep keep7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _7  = _7();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_2, _3, _4, _5, _7);
     }
     
@@ -6851,11 +6851,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T3, T6, T7> drop(Keep keep1, Keep keep2, Keep keep3, Drop drop4, Drop drop5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _3, _6, _7);
     }
     
@@ -6872,11 +6872,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T4, T6, T7> drop(Keep keep1, Keep keep2, Drop drop3, Keep keep4, Drop drop5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _4  = _4();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _4, _6, _7);
     }
     
@@ -6893,11 +6893,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T3, T4, T6, T7> drop(Keep keep1, Drop drop2, Keep keep3, Keep keep4, Drop drop5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _4  = _4();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _3, _4, _6, _7);
     }
     
@@ -6914,11 +6914,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T2, T3, T4, T6, T7> drop(Drop drop1, Keep keep2, Keep keep3, Keep keep4, Drop drop5, Keep keep6, Keep keep7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _6  = _6();
-        val _7  = _7();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_2, _3, _4, _6, _7);
     }
     
@@ -6935,11 +6935,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T2, T5, T6, T7> drop(Keep keep1, Keep keep2, Drop drop3, Drop drop4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _5, _6, _7);
     }
     
@@ -6956,11 +6956,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T3, T5, T6, T7> drop(Keep keep1, Drop drop2, Keep keep3, Drop drop4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _3, _5, _6, _7);
     }
     
@@ -6977,11 +6977,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T2, T3, T5, T6, T7> drop(Drop drop1, Keep keep2, Keep keep3, Drop drop4, Keep keep5, Keep keep6, Keep keep7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_2, _3, _5, _6, _7);
     }
     
@@ -6998,11 +6998,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T1, T4, T5, T6, T7> drop(Keep keep1, Drop drop2, Drop drop3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _4, _5, _6, _7);
     }
     
@@ -7019,11 +7019,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T2, T4, T5, T6, T7> drop(Drop drop1, Keep keep2, Drop drop3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _2  = _2();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_2, _4, _5, _6, _7);
     }
     
@@ -7040,11 +7040,11 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple5<T3, T4, T5, T6, T7> drop(Drop drop1, Drop drop2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_3, _4, _5, _6, _7);
     }
     
@@ -7061,12 +7061,12 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple6<T1, T2, T3, T4, T5, T6> drop(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Drop drop7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
         return Tuple.of(_1, _2, _3, _4, _5, _6);
     }
     
@@ -7083,12 +7083,12 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple6<T1, T2, T3, T4, T5, T7> drop(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Drop drop6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _3, _4, _5, _7);
     }
     
@@ -7105,12 +7105,12 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple6<T1, T2, T3, T4, T6, T7> drop(Keep keep1, Keep keep2, Keep keep3, Keep keep4, Drop drop5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _3, _4, _6, _7);
     }
     
@@ -7127,12 +7127,12 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple6<T1, T2, T3, T5, T6, T7> drop(Keep keep1, Keep keep2, Keep keep3, Drop drop4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _3  = _3();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _3, _5, _6, _7);
     }
     
@@ -7149,12 +7149,12 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple6<T1, T2, T4, T5, T6, T7> drop(Keep keep1, Keep keep2, Drop drop3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _2  = _2();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T2 _2  = _2();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _2, _4, _5, _6, _7);
     }
     
@@ -7171,12 +7171,12 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple6<T1, T3, T4, T5, T6, T7> drop(Keep keep1, Drop drop2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _1  = _1();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T1 _1  = _1();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_1, _3, _4, _5, _6, _7);
     }
     
@@ -7193,12 +7193,12 @@ public interface Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Pipeable<Tuple7<T1, 
      * @return       a new Tuple containing the elements that were kept
      */
     public default Tuple6<T2, T3, T4, T5, T6, T7> drop(Drop drop1, Keep keep2, Keep keep3, Keep keep4, Keep keep5, Keep keep6, Keep keep7) {
-        val _2  = _2();
-        val _3  = _3();
-        val _4  = _4();
-        val _5  = _5();
-        val _6  = _6();
-        val _7  = _7();
+        T2 _2  = _2();
+        T3 _3  = _3();
+        T4 _4  = _4();
+        T5 _5  = _5();
+        T6 _6  = _6();
+        T7 _7  = _7();
         return Tuple.of(_2, _3, _4, _5, _6, _7);
     }
     

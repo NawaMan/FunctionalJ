@@ -24,6 +24,7 @@
 package functionalj.tuple;
 
 import java.util.Map;
+import java.util.Objects;
 
 import functionalj.function.Func0;
 import functionalj.function.Func1;
@@ -154,11 +155,25 @@ public class ImmutableTuple2<T1, T2> implements Tuple2<T1, T2>, Map.Entry<T1, T2
     
     @Override
     public int hashCode() {
-        return Tuple.hashCode(this);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((_1  == null) ? 0 :  _1.hashCode());
+        result = prime * result + ((_2  == null) ? 0 :  _2.hashCode());
+        return result;
     }
     
     @Override
     public boolean equals(Object obj) {
-        return Tuple.equals(this, obj);
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Tuple9))
+            return false;
+        @SuppressWarnings("rawtypes")
+        Tuple9 other = (Tuple9) obj;
+        if (!Objects.equals(_1, other._1()))
+            return false;
+        if (!Objects.equals(_2, other._2()))
+            return false;
+        return true;
     }
 }

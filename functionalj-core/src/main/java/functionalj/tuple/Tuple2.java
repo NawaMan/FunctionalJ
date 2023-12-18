@@ -351,8 +351,8 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
      * @return an array containing the elements of this tuple
      */
     public default Object[] toArray() {
-        val _1 = _1();
-        val _2 = _2();
+        T1 _1 = _1();
+        T2 _2 = _2();
         return new Object[] { _1, _2 };
     }
     
@@ -365,8 +365,8 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
      * @return an array containing the elements of this tuple, of type T
      */
     public default <T> T[] toArray(Class<T> type) {
-        val _1 = _1();
-        val _2 = _2();
+        T1 _1 = _1();
+        T2 _2 = _2();
         val array = Array.newInstance(type, 2);
         Array.set(array, 0, _1);
         Array.set(array, 1, _2);
@@ -381,8 +381,8 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
      * @return a {@link FuncList} containing the elements of this tuple
      */
     public default FuncList<Object> toList() {
-        val _1 = _1();
-        val _2 = _2();
+        T1 _1 = _1();
+        T2 _2 = _2();
         return FuncList.of(_1, _2);
     }
     
@@ -418,8 +418,8 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
      * @return a {@link FuncMap} where the elements of this tuple are mapped to the specified keys
      */
     public default <K> FuncMap<K, Object> toMap(K k1, K k2) {
-        val e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object) _1()) : null;
-        val e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object) _2()) : null;
+        ImmutableTuple2<K, Object> e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object) _1()) : null;
+        ImmutableTuple2<K, Object> e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object) _2()) : null;
         return ImmutableFuncMap.ofEntries(e1, e2);
     }
     
@@ -433,8 +433,8 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
      * @return the result of applying the mapper function to the elements of this tuple
      */
     public default <T> T mapWith(BiFunction<? super T1, ? super T2, T> mapper) {
-        val _1 = _1();
-        val _2 = _2();
+        T1 _1 = _1();
+        T2 _2 = _2();
         return mapper.apply(_1, _2);
     }
     
@@ -463,16 +463,16 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     }
     
     public default <NT1, NT2> Tuple2<NT1, NT2> map(BiFunction<? super T1, ? super T2, Tuple2<NT1, NT2>> mapper) {
-        val _1 = _1();
-        val _2 = _2();
+        T1 _1 = _1();
+        T2 _2 = _2();
         return mapper.apply(_1, _2);
     }
     
     // == Reduce ==
     
     public default <TARGET> TARGET reduce(Func2<T1, T2, TARGET> reducer) {
-        val _1 = _1();
-        val _2 = _2();
+        T1 _1 = _1();
+        T2 _2 = _2();
         val target = reducer.apply(_1, _2);
         return target;
     }
@@ -486,9 +486,9 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1> Tuple2<NT1, T2> map(Function<? super T1, NT1> mapper1, Keep keep2) {
-        val _1   = _1();
-        val _2   = _2();
-        val new1 = mapper1.apply(_1);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        NT1 new1 = mapper1.apply(_1);
         return Tuple.of(new1, _2);
     }
     
@@ -503,9 +503,9 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT2> Tuple2<T1, NT2> map(Keep keep1, Function<? super T2, NT2> mapper2) {
-        val _1   = _1();
-        val _2   = _2();
-        val new2 = mapper2.apply(_2);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        NT2 new2 = mapper2.apply(_2);
         return Tuple.of(_1, new2);
     }
     
@@ -519,10 +519,10 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
      * @return         a new Tuple containing the elements mapped by the provided functions.
      */
     public default <NT1, NT2> Tuple2<NT1, NT2> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2) {
-        val _1   = _1();
-        val _2   = _2();
-        val new1 = mapper1.apply(_1);
-        val new2 = mapper2.apply(_2);
+        T1 _1   = _1();
+        T2 _2   = _2();
+        NT1 new1 = mapper1.apply(_1);
+        NT2 new2 = mapper2.apply(_2);
         return Tuple.of(new1, new2);
     }
     

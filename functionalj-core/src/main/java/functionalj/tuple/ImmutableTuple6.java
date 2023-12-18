@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.tuple;
 
+import java.util.Objects;
+
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 
@@ -206,11 +208,37 @@ public class ImmutableTuple6<T1, T2, T3, T4, T5, T6> implements Tuple6<T1, T2, T
     
     @Override
     public int hashCode() {
-        return Tuple.hashCode(this);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((_1  == null) ? 0 :  _1.hashCode());
+        result = prime * result + ((_2  == null) ? 0 :  _2.hashCode());
+        result = prime * result + ((_3  == null) ? 0 :  _3.hashCode());
+        result = prime * result + ((_4  == null) ? 0 :  _4.hashCode());
+        result = prime * result + ((_5  == null) ? 0 :  _5.hashCode());
+        result = prime * result + ((_6  == null) ? 0 :  _6.hashCode());
+        return result;
     }
     
     @Override
     public boolean equals(Object obj) {
-        return Tuple.equals(this, obj);
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Tuple9))
+            return false;
+        @SuppressWarnings("rawtypes")
+        Tuple9 other = (Tuple9) obj;
+        if (!Objects.equals(_1, other._1()))
+            return false;
+        if (!Objects.equals(_2, other._2()))
+            return false;
+        if (!Objects.equals(_3, other._3()))
+            return false;
+        if (!Objects.equals(_4, other._4()))
+            return false;
+        if (!Objects.equals(_5, other._5()))
+            return false;
+        if (!Objects.equals(_6, other._6()))
+            return false;
+        return true;
     }
 }

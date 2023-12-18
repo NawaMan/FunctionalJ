@@ -24,6 +24,7 @@
 package functionalj.tuple;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
@@ -100,16 +101,26 @@ public class IntLongTuple implements Tuple2<Integer, Long>, Map.Entry<Integer, L
     
     @Override
     public String toString() {
-        return Tuple.toString(this);
+        return "(" + _1() + "," + _2() + ")";
     }
     
     @Override
     public int hashCode() {
-        return Tuple.hashCode(this);
+        return Objects.hash(_1, _2);
     }
     
     @Override
     public boolean equals(Object obj) {
-        return Tuple.equals(this, obj);
+        if (obj == null)
+            return false;
+        if (!(obj instanceof IntLongTuple))
+            return false;
+        
+        IntLongTuple other = (IntLongTuple) obj;
+        if (!Objects.equals(_1, other._1()))
+            return false;
+        if (!Objects.equals(_2, other._2()))
+            return false;
+        return true;
     }
 }

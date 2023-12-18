@@ -24,6 +24,7 @@
 package functionalj.tuple;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 
 public class DoubleDoubleTuple implements Tuple2<Double, Double>, Map.Entry<Double, Double> {
@@ -98,16 +99,26 @@ public class DoubleDoubleTuple implements Tuple2<Double, Double>, Map.Entry<Doub
     
     @Override
     public String toString() {
-        return Tuple.toString(this);
+        return "(" + _1() + "," + _2() + ")";
     }
     
     @Override
     public int hashCode() {
-        return Tuple.hashCode(this);
+        return Objects.hash(_1, _2);
     }
     
     @Override
     public boolean equals(Object obj) {
-        return Tuple.equals(this, obj);
+        if (obj == null)
+            return false;
+        if (!(obj instanceof DoubleDoubleTuple))
+            return false;
+        
+        DoubleDoubleTuple other = (DoubleDoubleTuple) obj;
+        if (!Objects.equals(_1, other._1()))
+            return false;
+        if (!Objects.equals(_2, other._2()))
+            return false;
+        return true;
     }
 }
