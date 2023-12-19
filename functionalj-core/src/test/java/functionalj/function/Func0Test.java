@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.functions;
+package functionalj.function;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -33,7 +33,6 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
-import functionalj.function.Func0;
 import lombok.val;
 
 public class Func0Test {

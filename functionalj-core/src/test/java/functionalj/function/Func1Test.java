@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.functions;
+package functionalj.function;
 
 import static functionalj.function.Absent.__;
 import static functionalj.function.Func.f;
@@ -30,8 +30,9 @@ import static functionalj.lens.Access.$I;
 import static functionalj.pipeable.Pipeable.StartWtih;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
-import functionalj.function.Func;
+
 import functionalj.list.FuncList;
 import functionalj.promise.Promise;
 import functionalj.result.Result;

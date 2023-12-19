@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.functions;
+package functionalj.function;
 
 import static functionalj.function.Apply.$;
 import static functionalj.function.Func.f;
@@ -33,10 +33,6 @@ import java.io.FileNotFoundException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import functionalj.function.Func;
-import functionalj.function.Func2;
-import functionalj.function.Func4;
-import functionalj.function.FunctionInvocationException;
 import functionalj.promise.Promise;
 import lombok.val;
 
