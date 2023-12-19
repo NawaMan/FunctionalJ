@@ -24,13 +24,13 @@
 package functionalj.functions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func0;
@@ -52,7 +52,6 @@ public class Func0Test {
         return (String) null;
     }
     
-    @Ignore("Fail")
     @Test
     public void testSupplier() throws Exception {
         val supplier = (Supplier<Integer>)(() -> 5);
@@ -68,20 +67,21 @@ public class Func0Test {
         assertEquals(5, valueFrom(() -> 5).intValue());
         
         // The following code does not compile.
-        //assertEquals(5, valueFrom(() -> {
-        //    if (value.get()) {
-        //        return 5;
-        //    }
-        //    throw new IOException();
-        //}).intValue());
+//        assertEquals(5, valueFrom(() -> {
+//            if (value.get()) {
+//                return 5;
+//            }
+//            throw new IOException();
+//        }).intValue());
         
         assertEquals(5, valueFrom2(() -> 5).intValue());
-        assertEquals(5, valueFrom2(() -> {
+        val exception = assertThrows(IOException.class, () -> valueFrom2(() -> {
             if (value.get()) {
                 return 5;
             }
             throw new IOException();
-        }).intValue());
+        }));
+        assertEquals("java.io.IOException", String.valueOf(exception));
     }
     
     private Integer valueFrom(Supplier<Integer> supplier) throws Exception {
