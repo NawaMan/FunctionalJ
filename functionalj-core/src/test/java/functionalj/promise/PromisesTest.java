@@ -30,7 +30,6 @@ import static functionalj.result.Result.valueOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.result.Result;
@@ -39,7 +38,6 @@ import lombok.val;
 
 public class PromisesTest {
     
-    @Ignore("Failed!!!")
     @Test
     public void testOf2_happy() {
         val control1 = (PendingAction<String>) DeferAction.of(String.class).start();
@@ -55,8 +53,6 @@ public class PromisesTest {
         assertAsString("Result:{ Value: 8 }", promise.getCurrentResult());
     }
     
-    
-    @Ignore("Failed!!!")
     @Test
     public void testOf2_happy_comprehension() {
         val control1 = DeferAction.of(String.class).start();
@@ -113,7 +109,6 @@ public class PromisesTest {
         assertAsString("Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }", promise.getCurrentResult());
     }
     
-    @Ignore("Failed!!!")
     @Test
     public void testOf6_happy() {
         val control1 = DeferAction.of(Integer.class).start();
@@ -142,7 +137,6 @@ public class PromisesTest {
         assertAsString("Result:{ Value: 42 }", promise.getCurrentResult());
     }
     
-    @Ignore("Failed!!!")
     @Test
     public void testOf6_mix() throws InterruptedException {
         val promise = Promise.from(run(Sleep(50).thenReturn(1)), Result.valueOf(2), run(Sleep(50).thenReturn(3)), valueOf(4), run(Sleep(50).thenReturn(5)), valueOf(6), (_1, _2, _3, _4, _5, _6) -> {

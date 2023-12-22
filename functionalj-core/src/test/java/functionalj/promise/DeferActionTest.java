@@ -654,7 +654,6 @@ public class DeferActionTest {
         assertAsString("5", counter.get());
     }
     
-    @Ignore("Hang!!!")
     @Test
     public void testDelayMethod() throws InterruptedException {
         val logs = new ArrayList<String>();

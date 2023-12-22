@@ -139,7 +139,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to one optional input parameter, returning an {@code Optional} of the output.
+     * Functorial application -- applies this function to one optional input parameter, returning an {@code Optional} of the output.
      * If any input is empty, the function short-circuits and returns {@code Optional.empty()}.
      * 
      * @param input  optional first input parameter.
@@ -150,7 +150,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to one {@link Nullable} input parameter, returning a {@code Nullable} of the output.
+     * Functorial application -- applies this function to one {@link Nullable} input parameter, returning a {@code Nullable} of the output.
      * If any input is null, the function short-circuits and returns {@code Nullable.empty()}.
      * 
      * @param input  nullable first input parameter.
@@ -161,7 +161,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to one {@code Result} instance, returning a {@code Result} of the output.
+     * Functorial application -- applies this function to one {@code Result} instance, returning a {@code Result} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input  the first promise.
@@ -172,7 +172,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to one {@code HasPromise} instance, returning a {@code Promise} of the output.
+     * Functorial application -- applies this function to one {@code HasPromise} instance, returning a {@code Promise} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input  the first promise.
@@ -183,7 +183,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to one {@code Task} instance, returning a {@code Task} of the output.
+     * Functorial application -- applies this function to one {@code Task} instance, returning a {@code Task} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input  the first task.
@@ -194,7 +194,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to each element of the given input stream, resulting in a stream of output elements.
+     * Functorial application -- applies this function to each element of the given input stream, resulting in a stream of output elements.
      * This method facilitates the application of the function to multiple inputs in a streaming context.
      *
      * @param input  the stream of input elements
@@ -205,7 +205,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to each element of the given input list, resulting in a list of output elements.
+     * Functorial application -- applies this function to each element of the given input list, resulting in a list of output elements.
      * This method facilitates the application of the function to a list of inputs, transforming each element according to this function.
      *
      * @param input  the list of input elements
@@ -216,7 +216,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to the values of the given input map, resulting in a map with the same keys and transformed values.
+     * Functorial application -- applies this function to the values of the given input map, resulting in a map with the same keys and transformed values.
      * This method allows for the transformation of map values according to this function, while retaining the original key associations.
      *
      * @param input  the map with keys and input values
@@ -227,7 +227,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to each element of the given {@code FuncList} input, resulting in a {@code FuncList} of output elements.
+     * Functorial application -- applies this function to each element of the given {@code FuncList} input, resulting in a {@code FuncList} of output elements.
      * This method streamlines the process of applying the function to all elements in a {@code FuncList}.
      *
      * @param input  the {@code FuncList} of input elements
@@ -238,18 +238,18 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Applies this function to the values of the given {@code FuncMap} input, resulting in a {@code FuncMap} with the same keys and transformed values.
+     * Functorial application -- applies this function to the values of the given {@code FuncMap} input, resulting in a {@code FuncMap} with the same keys and transformed values.
      * This method enables the transformation of map values using this function, maintaining the original key-value associations.
      *
      * @param input  the {@code FuncMap} with keys and input values
      * @return       a {@code FuncMap} with the same keys and output values resulting from applying this function to each input value
      */
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
-        return FuncMap.from(input).map(this);
+        return input.map(this);
     }
     
     /**
-     * Applies the function to a combination of a supplier for the first input and the remaining inputs, returning a {@code Func1} function.
+     * Functorial application -- applies the function to a combination of a supplier for the first input and the remaining inputs, returning a {@code Func1} function.
      * The resulting function takes the remaining inputs and produces a {@code Func0} that, when invoked, supplies the first input and applies the function to all three inputs.
      *
      * @param supplier  the {@code Func0} supplier for the first input.
@@ -264,7 +264,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Transforms the first input using a given function and applies the original function to the transformed input and remaining inputs, returning a {@code Func1} function.
+     * Functorial application -- a transforms the first input using a given function and applies the original function to the transformed input and remaining inputs, returning a {@code Func1} function.
      * The resulting function takes the remaining inputs and a function that transforms an additional input into the first input type, then applies the original function to all inputs.
      *
      * @param function  the {@code Func1} function to transform an additional input into the first input type.

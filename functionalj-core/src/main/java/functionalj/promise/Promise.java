@@ -582,8 +582,10 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             } finally {
             }
         });
+        
         if (isDone != null)
             return isDone.booleanValue();
+        
         val subscribers = new HashMap<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>>(promise.consumers);
         promise.consumers.clear();
         val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(promise.eavesdroppers);

@@ -46,6 +46,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,8 +67,9 @@ import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.junit.Ignore;
+
 import org.junit.Test;
+
 import functionalj.function.Func0;
 import functionalj.function.aggregator.Aggregation;
 import functionalj.lens.LensTest.Car;
@@ -1574,22 +1576,62 @@ public class StreamPlusTest {
         assertEquals("Result:{ Value: Two }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }", actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
     }
     
-    @Ignore("Tested wiht FuncListTest")
     @Test
     public void testSegmentSize() {
-        assertAsString("[" + "[0, 1, 2, 3, 4, 5], " + "[6, 7, 8, 9, 10, 11], " + "[12, 13, 14, 15, 16, 17], " + "[18, 19]" + "]", IntFuncList.infiniteInt().boxed().streamPlus().limit(20).segment(6));
+        assertAsString(
+                "["
+                + "[0, 1, 2, 3, 4, 5], "
+                + "[6, 7, 8, 9, 10, 11], "
+                + "[12, 13, 14, 15, 16, 17], "
+                + "[18, 19]"
+                + "]", 
+                IntFuncList
+                .infiniteInt()
+                .boxed()
+                .streamPlus()
+                .limit(20)
+                .segment(6)
+                .toListString());
     }
     
-    @Ignore("Tested wiht FuncListTest")
     @Test
     public void testSegmentSize_function() {
-        assertEquals("[], " + "[1], " + "[2, 3], " + "[4, 5, 6, 7], " + "[8, 9, 10, 11, 12, 13, 14, 15], " + "[16, 17, 18, 19]", IntFuncList.infiniteInt().boxed().streamPlus().limit(20).segment(i -> i).map(s -> s.toList()).join(", "));
+        assertEquals(
+                "[1], " 
+                + "[2, 3], " 
+                + "[4, 5, 6, 7], " 
+                + "[8, 9, 10, 11, 12, 13, 14, 15], " 
+                + "[16, 17, 18, 19]", 
+                IntFuncList
+                .infiniteInt()
+                .boxed()
+                .streamPlus()
+                .limit(20)
+                .segment(i -> i)
+                .map(s -> s.toList())
+                .join(", "));
     }
     
-    @Ignore("Tested wiht FuncListTest")
     @Test
     public void testSegmentStartCondition() {
-        assertAsString("[0, 1, 2], " + "[3, 4, 5], " + "[6, 7, 8], " + "[9, 10, 11], " + "[12, 13, 14], " + "[15, 16, 17], " + "[18, 19]", IntFuncList.infiniteInt().boxed().streamPlus().limit(20).segmentWhen(theInteger.thatIsDivisibleBy(3)).map(s -> s.toList()));
+        assertAsString(
+                "["
+                + "[0, 1, 2], "
+                + "[3, 4, 5], "
+                + "[6, 7, 8], "
+                + "[9, 10, 11], "
+                + "[12, 13, 14], "
+                + "[15, 16, 17], "
+                + "[18, 19]"
+                + "]",
+                IntFuncList
+                .infiniteInt()
+                .boxed()
+                .streamPlus()
+                .limit(20)
+                .segmentWhen(theInteger.thatIsDivisibleBy(3))
+                .map(s -> s.toList())
+                .toListString());
     }
     
     // -- StreamPlusWithPeek --

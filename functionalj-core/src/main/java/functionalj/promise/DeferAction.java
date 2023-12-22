@@ -27,6 +27,7 @@ import static functionalj.function.Func.carelessly;
 import static functionalj.function.Func.f;
 import static functionalj.list.FuncList.listOf;
 import static functionalj.promise.RaceResult.Race;
+
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
@@ -37,6 +38,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
 import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
@@ -166,7 +168,7 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
                     HasPromise<T1> promise1,
                     HasPromise<T2> promise2,
                     Func2<T1, T2, D> merger) {
-        val merge = (Func1) f((FuncList<Result> results) -> {
+        val merge = (Func1)f((FuncList<Result<Object>> results) -> {
             val result1  = (Result<T1>) results.get(0);
             val result2  = (Result<T2>) results.get(1);
             val mergedResult = Result.ofResults(result1, result2, merger);

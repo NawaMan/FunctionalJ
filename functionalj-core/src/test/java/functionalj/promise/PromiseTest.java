@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func;
@@ -359,7 +358,6 @@ public class PromiseTest {
         assertAsString("java.io.IOException", ref.get());
     }
     
-    @Ignore("Hang!!!")
     @Test
     public void testDeferMethod() throws InterruptedException {
         val add = Func.f((Integer a, Integer b) -> (a + b));
@@ -369,20 +367,15 @@ public class PromiseTest {
         val c = Sleep(50).thenReturn(2).defer();
         val r1 = add.applyTo(a, b);
         val r2 = mul.applyTo(add.applyTo(a, b), c);
-        // val r3 = add
-        // .then(mul.elevateWith(c)) // This does not work as c is a promise.
-        // .apply(a, b);
         val r4 = a.pipeTo(add.forPromise().elevateWith(b), mul.forPromise().elevateWith(c));
         val f5 = add.forPromise().elevateWith(b).andThen(mul.forPromise().elevateWith(c));
         val r5 = f5.apply(a);
         assertAsString("Result:{ Value: 21 }", r1.getResult());
         assertAsString("Result:{ Value: 42 }", r2.getResult());
-        // assertAsString("Result:{ Value: 42 }", r3.getResult());
         assertAsString("Result:{ Value: 42 }", r4.getResult());
         assertAsString("Result:{ Value: 42 }", r5.getResult());
     }
     
-    @Ignore("Hang!!!")
     @Test
     public void testDeferMethod_PipeLine() throws InterruptedException {
         val add = Func.f((Integer a, Integer b) -> (a + b));

@@ -163,6 +163,15 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         val output = apply(_1, _2);
         return output;
     }
+    
+    /**
+     * Functorial application -- applies this function to three optional input parameters, returning an {@code Optional} of the output.
+     * If any input is empty, the function short-circuits and returns {@code Optional.empty()}.
+     * 
+     * @param input1  optional first input parameter.
+     * @param input2  optional second input parameter.
+     * @return        an {@code Optional<OUTPUT>} containing the result, if all inputs are present; otherwise, {@code Optional.empty()}.
+     */
     public default Optional<OUTPUT> applyTo(
                                         Optional<INPUT1> input1,
                                         Optional<INPUT2> input2) {
@@ -175,7 +184,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to two {@link Nullable} input parameters, returning a {@code Nullable} of the output.
+     * Functorial application -- applies this function to two {@link Nullable} input parameters, returning a {@code Nullable} of the output.
      * If any input is null, the function short-circuits and returns {@code Nullable.empty()}.
      * 
      * @param input1  nullable first input parameter.
@@ -194,7 +203,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to two {@code Result} instances, returning a {@code Result} of the output.
+     * Functorial application -- applies this function to two {@code Result} instances, returning a {@code Result} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first promise.
@@ -209,7 +218,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to two {@code HasPromise} instances, returning a {@code Promise} of the output.
+     * Functorial application -- applies this function to two {@code HasPromise} instances, returning a {@code Promise} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first promise.
@@ -224,7 +233,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to two {@code Task} instances, returning a {@code Task} of the output.
+     * Functorial application -- applies this function to two {@code Task} instances, returning a {@code Task} of the output.
      * This method facilitates the process of waiting for all provided promises to be fulfilled and then applying this function to their results.
      * 
      * @param input1  the first task.
@@ -239,7 +248,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Applies this function to two {@code Func0} instances, returning a {@code Func0} that produces the output.
+     * Functorial application -- applies this function to two {@code Func0} instances, returning a {@code Func0} that produces the output.
      * This method allows for lazy evaluation of the function, only invoking the input functions and applying this function 
      *      when the returned {@code Func0} is invoked.
      * 
@@ -259,7 +268,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     /**
-     * Composes this function with two other functions, each mapping a source value to respective inputs of this function.
+     * Functorial application -- composes this function with two other functions, each mapping a source value to respective inputs of this function.
      *
      * @param <SOURCE>  the type of the source value for the input functions
      * @param input1    the function that maps the source to the first input of this function

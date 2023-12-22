@@ -180,7 +180,6 @@ public class TaskTest {
         assertEquals("Action1 runs!,\n" + "A,\n" + "Result: Result:{ Value: -A- },\n" + "Result: Result:{ Value: -A- },\n" + "Action1 runs!,\n" + "B,\n" + "Result: Result:{ Value: -B- },\n" + "Result: Result:{ Value: -B- }", logs.stream().collect(joining(",\n")));
     }
     
-    @Ignore("Hang")
     @Test
     public void testMerge() {
         val logs = new ArrayList<String>();
@@ -208,7 +207,6 @@ public class TaskTest {
         assertEquals("[" + "Action1 runs!, A, Action2 runs!, a, Result: Result:{ Value: A-a }, " + "Action1 runs!, B, Action2 runs!, b, Result: Result:{ Value: B-b }, " + "Action1 runs!, C, Action2 runs!, c, Result: Result:{ Value: C-c }" + "]", logs.toString());
     }
     
-    @Ignore("Hang")
     @Test
     public void testMerge_ioUsedMultipleTime() {
         val logs = new ArrayList<String>();
@@ -236,7 +234,6 @@ public class TaskTest {
         assertEquals("[" + "Action1 runs!, A, Action1 runs!, B, Action2 runs!, a, Result: Result:{ Value: A-B-a }, " + "Action1 runs!, C, Action1 runs!, D, Action2 runs!, b, Result: Result:{ Value: C-D-b }, " + "Action1 runs!, E, Action1 runs!, F, Action2 runs!, c, Result: Result:{ Value: E-F-c }" + "]", logs.toString());
     }
     
-    @Ignore("Hang")
     @Test
     public void testMerge3_reusable() {
         val logs = new ArrayList<String>();
@@ -265,7 +262,6 @@ public class TaskTest {
         assertEquals("[" + "Action1 runs!, A, " + "Action2 runs!, a, " + "Result: Result:{ Value: A-A-a }, " + "Action2 runs!, b, " + "Result: Result:{ Value: A-A-b }, " + "Action2 runs!, c, " + "Result: Result:{ Value: A-A-c }" + "]", logs.toString());
     }
     
-    @Ignore("Hang")
     @Test
     public void testMerge4_reusable_withRef() {
         val logs = new ArrayList<String>();

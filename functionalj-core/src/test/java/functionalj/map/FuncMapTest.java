@@ -62,7 +62,6 @@ public class FuncMapTest {
         assertAsString("4", counter.get());
     }
     
-    @Ignore("Fail")
     @Test
     public void testEager() {
         val counter = new AtomicInteger(0);
