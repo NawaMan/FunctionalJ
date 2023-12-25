@@ -86,7 +86,7 @@ public class Store<DATA> implements Func0<DATA> {
         if (approveResult.isPresent()) {
             return new ChangeResult<DATA>(this, originalData, NotAllowed(approveResult.get()));
         }
-        val newResult = changer.applySafely(originalData).pipeTo(accepter.applyTo(originalData), this::ensureStore);
+        val newResult = changer.applySafely(originalData).pipeTo(accepter.apply(originalData), this::ensureStore);
         val result = newResult.result();
         if (result.isValue()) {
             val newValue = result.value();

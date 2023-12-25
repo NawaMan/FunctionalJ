@@ -482,7 +482,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param optional1  the {@code Optional} of the first input.
      * @return           a {@code Func8} function that takes the rest of the inputs and returns an {@code Optional} of the output.
      */
-    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Optional<OUTPUT>> applyTo(Optional<INPUT1> optional1) {
+    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Optional<OUTPUT>> applyWith(Optional<INPUT1> optional1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9) -> {
             return optional1.map(input1 -> {
                 val output = apply(input1, input2, input3, input4, input5, input6, input7, input8, input9);
@@ -498,7 +498,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param nullable1  the {@code Nullable} of the first input.
      * @return           a {@code Func8} function that takes the rest of the inputs and returns a {@code Nullable} of the output.
      */
-    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Nullable<OUTPUT>> applyTo(Nullable<INPUT1> nullable1) {
+    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Nullable<OUTPUT>> applyWith(Nullable<INPUT1> nullable1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9) -> {
             return nullable1.map(input1 -> {
                 val output = apply(input1, input2, input3, input4, input5, input6, input7, input8, input9);
@@ -514,7 +514,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param result1  the {@code Result} of the first input.
      * @return         a {@code Func8} function that takes the rest of the inputs and returns a {@code Result} of the output.
      */
-    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Result<OUTPUT>> applyTo(Result<INPUT1> result1) {
+    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Result<OUTPUT>> applyWith(Result<INPUT1> result1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9) -> {
             return result1.map(input1 -> {
                 val output = apply(input1, input2, input3, input4, input5, input6, input7, input8, input9);
@@ -530,7 +530,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param hasPromise1  the {@code HasPromise} containing the promise of the first input.
      * @return             a {@code Func8} function that takes the rest of the inputs and returns a {@code Promise} of the output.
      */
-    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Promise<OUTPUT>> applyTo(HasPromise<INPUT1> hasPromise1) {
+    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Promise<OUTPUT>> applyWith(HasPromise<INPUT1> hasPromise1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9) -> {
             return hasPromise1.getPromise().map(input1 -> {
                 val output = apply(input1, input2, input3, input4, input5, input6, input7, input8, input9);
@@ -546,7 +546,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param supplier1  the {@code Func0} supplier for the first input.
      * @return           a {@code Func8} function that takes the rest of the inputs and returns a {@code Func0} producing the output.
      */
-    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Func0<OUTPUT>> applyTo(Func0<INPUT1> supplier1) {
+    public default Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Func0<OUTPUT>> applyWith(Func0<INPUT1> supplier1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9) -> {
             return () -> {
                 val input1 = supplier1.get();
@@ -563,7 +563,7 @@ public interface Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * @param function1  the {@code Func1} function to transform an additional input into the first input type.
      * @return           a {@code Func8} function that takes the rest of the inputs and a function to transform an additional input, then returns a {@code Func1} producing the output.
      */
-    public default <INPUT> Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Func1<INPUT, OUTPUT>> applyTo(Func1<INPUT, INPUT1> function1) {
+    public default <INPUT> Func8<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, Func1<INPUT, OUTPUT>> applyWith(Func1<INPUT, INPUT1> function1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9) -> {
             return input -> {
                 val input1 = function1.apply(input);

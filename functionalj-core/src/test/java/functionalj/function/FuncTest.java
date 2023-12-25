@@ -30,7 +30,6 @@ import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.promise.Promise;
@@ -90,7 +89,7 @@ public class FuncTest {
     @Test
     public void testAutoCurry() throws Exception {
         val sum4 = f((a, b, c, d) -> "" + a + b + c + d);
-        assertEquals("5432", sum4.applyTo(5).applyTo(4).applyTo(3).apply(2));
+        assertEquals("5432", sum4.apply(5).apply(4).apply(3).apply(2));
     }
     
     @Test

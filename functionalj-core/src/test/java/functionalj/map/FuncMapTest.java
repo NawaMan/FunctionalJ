@@ -23,15 +23,16 @@
 // ============================================================================
 package functionalj.map;
 
-import static functionalj.function.Func.f;
 import static functionalj.TestHelper.assertAsString;
+import static functionalj.function.Func.f;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Ignore;
 import org.junit.Test;
+
 import lombok.val;
 
 public class FuncMapTest {

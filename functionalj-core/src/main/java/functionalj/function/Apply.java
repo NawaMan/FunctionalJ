@@ -265,7 +265,7 @@ public interface Apply {
      *                the original {@link Func2} function with the fixed first input parameter
      */
     public static <I1, I2, O> Func1<I2, O> apply(Func2<I1, I2, O> func, I1 input1) {
-        return Func2.from(func).applyTo(input1);
+        return Func2.from(func).apply(input1);
     }
     
     /**
@@ -280,7 +280,7 @@ public interface Apply {
      * @param input2  the {@link Result} containing the second input value
      * @return        a {@link Result} containing the result of applying the function, or an exception {@link Result} if either input is an exception
      */
-    public static <I1, I2, O> Result<O> applyWith(Func2<I1, I2, O> func, Result<I1> input1, Result<I2> input2) {
+    public static <I1, I2, O> Result<O> applyTo(Func2<I1, I2, O> func, Result<I1> input1, Result<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
     
@@ -296,7 +296,7 @@ public interface Apply {
      * @param input2  the {@link Optional} containing the second input value
      * @return        an {@link Optional} containing the result of applying the function, or empty if either input is empty
      */
-    public static <I1, I2, O> Optional<O> applyWith(Func2<I1, I2, O> func, Optional<I1> input1, Optional<I2> input2) {
+    public static <I1, I2, O> Optional<O> applyTo(Func2<I1, I2, O> func, Optional<I1> input1, Optional<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
     
@@ -312,9 +312,11 @@ public interface Apply {
      * @param input2  the {@link Nullable} containing the second input value
      * @return        a {@link Nullable} containing the result of applying the function, or null if either input is null
      */
-    public static <I1, I2, O> Nullable<O> applyWith(Func2<I1, I2, O> func, Nullable<I1> input1, Nullable<I2> input2) {
+    public static <I1, I2, O> Nullable<O> applyTo(Func2<I1, I2, O> func, Nullable<I1> input1, Nullable<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
+    
+    //-- Zip --
     
     /**
      * Applies a {@link Func2} function to corresponding elements from two {@link FuncList} objects and returns a new
@@ -328,8 +330,8 @@ public interface Apply {
      * @param input2  the second {@link FuncList} of input elements
      * @return        a {@link FuncList} containing the results of applying the function to corresponding elements
      */
-    public static <I1, I2, O> FuncList<O> applyWith(Func2<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2) {
-        return Func2.from(func).apply(input1, input2);
+    public static <I1, I2, O> FuncList<O> applyEachOf(Func2<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2) {
+        return Func2.from(func).applyEachOf(input1, input2);
     }
     
     /**
@@ -345,8 +347,8 @@ public interface Apply {
      * @param option  the option specifying how to handle input lists of different sizes
      * @return        a {@link FuncList} containing the results of applying the function to corresponding elements
      */
-    public static <I1, I2, O> FuncList<O> applyWith(Func2<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2, ZipWithOption option) {
-        return Func2.from(func).apply(input1, input2, option);
+    public static <I1, I2, O> FuncList<O> applyEachOf(Func2<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2, ZipWithOption option) {
+        return Func2.from(func).applyEachOf(input1, input2, option);
     }
     
     /**
@@ -362,8 +364,8 @@ public interface Apply {
      * @param input2  the second input {@link FuncMap}
      * @return        a {@link FuncMap} containing the results of applying the function to corresponding values with matching keys
      */
-    public static <K, I1, I2, O> FuncMap<K, O> applyWith(Func2<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2) {
-        return Func2.from(func).apply(input1, input2);
+    public static <K, I1, I2, O> FuncMap<K, O> applyEachOf(Func2<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2) {
+        return Func2.from(func).applyEachOf(input1, input2);
     }
     
     /**
@@ -381,8 +383,8 @@ public interface Apply {
      * @return        a {@link FuncMap} containing the results of applying the function to corresponding values
      *                  with matching keys or based on the specified option
      */
-    public static <K, I1, I2, O> FuncMap<K, O> applyWith(Func2<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2, ZipWithOption option) {
-        return Func2.from(func).apply(input1, input2, option);
+    public static <K, I1, I2, O> FuncMap<K, O> applyEachOf(Func2<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2, ZipWithOption option) {
+        return Func2.from(func).applyEachOf(input1, input2, option);
     }
     
     /**
@@ -397,7 +399,7 @@ public interface Apply {
      * @param input2  the second {@link Func0} supplier
      * @return        a {@link Func0} containing the result of applying the function to the values supplied by the {@link Func0} suppliers
      */
-    public static <I1, I2, O> Func0<O> applyWith(Func2<I1, I2, O> func, Func0<I1> input1, Func0<I2> input2) {
+    public static <I1, I2, O> Func0<O> applyTo(Func2<I1, I2, O> func, Func0<I1> input1, Func0<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
     
@@ -414,7 +416,7 @@ public interface Apply {
      * @param input2  the second {@link Func1} function producing the second input value
      * @return        a new {@link Func1} function that applies the original {@link Func2} function with the two fixed input parameters
      */
-    public static <S, I1, I2, O> Func1<S, O> applyWith(Func2<I1, I2, O> func, Func1<S, I1> input1, Func1<S, I2> input2) {
+    public static <S, I1, I2, O> Func1<S, O> applyTo(Func2<I1, I2, O> func, Func1<S, I1> input1, Func1<S, I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
     
@@ -430,7 +432,7 @@ public interface Apply {
      * @param input2  the {@link HasPromise} containing the second input value
      * @return        a {@link Promise} containing the result of applying the function, once both input values are ready
      */
-    public static <I1, I2, O> Promise<O> applyWith(Func2<I1, I2, O> func, HasPromise<I1> input1, HasPromise<I2> input2) {
+    public static <I1, I2, O> Promise<O> applyTo(Func2<I1, I2, O> func, HasPromise<I1> input1, HasPromise<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
     
@@ -446,7 +448,7 @@ public interface Apply {
      * @param input2  the {@link Task} containing the second input value
      * @return        a {@link Task} containing the result of applying the function, once both input values are ready
      */
-    public static <I1, I2, O> Task<O> applyWith(Func2<I1, I2, O> func, Task<I1> input1, Task<I2> input2) {
+    public static <I1, I2, O> Task<O> applyTo(Func2<I1, I2, O> func, Task<I1> input1, Task<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
     
@@ -483,7 +485,7 @@ public interface Apply {
      *                and applies the original {@link Func3} function with the fixed first input parameter
      */
     public static <I1, I2, I3, O> Func2<I2, I3, O> apply(Func3<I1, I2, I3, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     /**
@@ -649,7 +651,7 @@ public interface Apply {
      *                  and applies the original {@link Func4} function with the fixed first input parameter
      */
     public static <I1, I2, I3, I4, O> Func3<I2, I3, I4, O> apply(Func4<I1, I2, I3, I4, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     /**
@@ -831,7 +833,7 @@ public interface Apply {
      * @return        a new {@link Func4} function that applies the original Func5 function with the specified input value
      */
     public static <I1, I2, I3, I4, I5, O> Func4<I2, I3, I4, I5, O> apply(Func5<I1, I2, I3, I4, I5, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     /**
@@ -2371,7 +2373,7 @@ public interface Apply {
      *                the original {@link Func2} function with the fixed first input parameter
      */
     public static <I1, I2, O> Func1<I2, O> $(Func2<I1, I2, O> func, I1 input1) {
-        return Func2.from(func).applyTo(input1);
+        return Func2.from(func).apply(input1);
     }
     
     /**
@@ -2435,7 +2437,7 @@ public interface Apply {
      * @return        a {@link FuncList} containing the results of applying the function to corresponding elements
      */
     public static <I1, I2, O> FuncList<O> $(Func2<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2) {
-        return Func2.from(func).apply(input1, input2);
+        return Func2.from(func).applyEachOf(input1, input2);
     }
     
     /**
@@ -2452,7 +2454,7 @@ public interface Apply {
      * @return        a {@link FuncList} containing the results of applying the function to corresponding elements
      */
     public static <I1, I2, O> FuncList<O> $(Func2<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2, ZipWithOption option) {
-        return Func2.from(func).apply(input1, input2, option);
+        return Func2.from(func).applyEachOf(input1, input2, option);
     }
     
     /**
@@ -2469,7 +2471,7 @@ public interface Apply {
      * @return        a {@link FuncMap} containing the results of applying the function to corresponding values with matching keys
      */
     public static <K, I1, I2, O> FuncMap<K, O> $(Func2<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2) {
-        return Func2.from(func).apply(input1, input2);
+        return Func2.from(func).applyEachOf(input1, input2);
     }
     
     /**
@@ -2488,7 +2490,7 @@ public interface Apply {
      *                  with matching keys or based on the specified option
      */
     public static <K, I1, I2, O> FuncMap<K, O> $(Func2<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2, ZipWithOption option) {
-        return Func2.from(func).apply(input1, input2, option);
+        return Func2.from(func).applyEachOf(input1, input2, option);
     }
     
     /**
@@ -2589,7 +2591,7 @@ public interface Apply {
      *                and applies the original {@link Func3} function with the fixed first input parameter
      */
     public static <I1, I2, I3, O> Func2<I2, I3, O> $(Func3<I1, I2, I3, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     /**
@@ -2755,7 +2757,7 @@ public interface Apply {
      *                  and applies the original {@link Func4} function with the fixed first input parameter
      */
     public static <I1, I2, I3, I4, O> Func3<I2, I3, I4, O> $(Func4<I1, I2, I3, I4, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     /**
@@ -2937,7 +2939,7 @@ public interface Apply {
      * @return        a new {@link Func4} function that applies the original Func5 function with the specified input value
      */
     public static <I1, I2, I3, I4, I5, O> Func4<I2, I3, I4, I5, O> $(Func5<I1, I2, I3, I4, I5, O> func, I1 input1) {
-        return func.applyTo(input1);
+        return func.apply(input1);
     }
     
     /**

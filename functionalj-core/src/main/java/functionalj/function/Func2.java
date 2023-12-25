@@ -291,9 +291,29 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param  input1  the first input parameter.
      * @return         a {@code Func1} function that takes the remaining parameters and produces an output.
      */
-    public default Func1<INPUT2, OUTPUT> applyTo(INPUT1 input1) {
+    public default Func1<INPUT2, OUTPUT> applyUnsafe(INPUT1 input1) {
+        return (input2) -> {
+            val output = applyUnsafe(input1, input2);
+            return output;
+        };
+    }
+    
+    /**
+     * Applies this function partially, taking the first input parameter and returning a function that takes the remaining parameters.
+     * 
+     * @param  input1  the first input parameter.
+     * @return         a {@code Func1} function that takes the remaining parameters and produces an output.
+     */
+    public default Func1<INPUT2, OUTPUT> apply(INPUT1 input1) {
         return (input2) -> {
             val output = apply(input1, input2);
+            return output;
+        };
+    }
+    
+    public default Func1<INPUT2, Result<OUTPUT>> applySafely(INPUT1 input1) {
+        return (input2) -> {
+            val output = applySafely(input1, input2);
             return output;
         };
     }
@@ -305,7 +325,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param optional1  the {@code Optional} of the first input.
      * @return           a {@code Func1} function that takes the remaining inputs and returns an {@code Optional} of the output.
      */
-    public default Func1<INPUT2, Optional<OUTPUT>> applyTo(Optional<INPUT1> optional1) {
+    public default Func1<INPUT2, Optional<OUTPUT>> applyWith(Optional<INPUT1> optional1) {
         return (input2) -> {
             return optional1.map(input1 -> {
                 val output = apply(input1, input2);
@@ -321,7 +341,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param nullable1  the {@code Nullable} of the first input.
      * @return           a {@code Func1} function that takes the remaining inputs and returns a {@code Nullable} of the output.
      */
-    public default Func1<INPUT2, Nullable<OUTPUT>> applyTo(Nullable<INPUT1> nullable1) {
+    public default Func1<INPUT2, Nullable<OUTPUT>> applyWith(Nullable<INPUT1> nullable1) {
         return (input2) -> {
             return nullable1.map(input1 -> {
                 val output = apply(input1, input2);
@@ -337,7 +357,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param result1  the {@code Result} of the first input.
      * @return         a {@code Func1} function that takes the next remaining inputs and returns a {@code Result} of the output.
      */
-    public default Func1<INPUT2, Result<OUTPUT>> applyTo(Result<INPUT1> result1) {
+    public default Func1<INPUT2, Result<OUTPUT>> applyWith(Result<INPUT1> result1) {
         return (input2) -> {
             return result1.map(input1 -> {
                 val output = apply(input1, input2);
@@ -353,7 +373,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param hasPromise1  the {@code HasPromise} containing the promise of the first input.
      * @return             a {@code Func1} function that takes the remaining nine inputs and returns a {@code Promise} of the output.
      */
-    public default Func1<INPUT2, Promise<OUTPUT>> applyTo(HasPromise<INPUT1> hasPromise1) {
+    public default Func1<INPUT2, Promise<OUTPUT>> applyWith(HasPromise<INPUT1> hasPromise1) {
         return (input2) -> {
             return hasPromise1.getPromise().map(input1 -> {
                 val output = apply(input1, input2);
@@ -369,7 +389,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param supplier1  the {@code Func0} supplier for the first input.
      * @return           a {@code Func1} function that takes the remaining nine inputs and returns a {@code Func0} producing the output.
      */
-    public default Func1<INPUT2, Func0<OUTPUT>> applyTo(Func0<INPUT1> supplier1) {
+    public default Func1<INPUT2, Func0<OUTPUT>> applyWith(Func0<INPUT1> supplier1) {
         return (input2) -> {
             return () -> {
                 val input1 = supplier1.get();
@@ -386,7 +406,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param function1  the {@code Func1} function to transform an additional input into the first input type.
      * @return           a {@code Func1} function that takes the remaining inputs and a function to transform an additional input, then returns a {@code Func1} producing the output.
      */
-    public default <INPUT> Func1<INPUT2, Func1<INPUT, OUTPUT>> applyTo(Func1<INPUT, INPUT1> function1) {
+    public default <INPUT> Func1<INPUT2, Func1<INPUT, OUTPUT>> applyWith(Func1<INPUT, INPUT1> function1) {
         return (input2) -> {
             return input -> {
                 val input1 = function1.apply(input);
@@ -396,7 +416,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         };
     }
     
-    //== Compose ==
+    //== Zip ==
     
     /**
      * Applies this function to elements from two {@link StreamPlus} instances, pairing elements by their position in the streams.
@@ -405,7 +425,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  the second stream of input elements
      * @return        a {@link StreamPlus} of output elements resulting from applying this function to pairs of elements from input1 and input2
      */
-    public default StreamPlus<OUTPUT> apply(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
+    public default StreamPlus<OUTPUT> applyEachOf(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
     
@@ -417,7 +437,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param option  the {@link ZipWithOption} determining how elements from the two streams are paired
      * @return        a {@link StreamPlus} of output elements resulting from applying this function to pairs of elements from input1 and input2 as per the specified option
      */
-    public default StreamPlus<OUTPUT> apply(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, ZipWithOption option) {
+    public default StreamPlus<OUTPUT> applyEachOf(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, ZipWithOption option) {
         return input1.zipWith(input2, option, this);
     }
     
@@ -428,7 +448,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  the second list of input elements
      * @return        a {@link FuncList} of output elements resulting from applying this function to pairs of elements from input1 and input2
      */
-    public default FuncList<OUTPUT> apply(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
+    public default FuncList<OUTPUT> applyEachOf(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
     
@@ -440,7 +460,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param option  the {@link ZipWithOption} determining how elements from the two lists are paired
      * @return        a {@link FuncList} of output elements resulting from applying this function to pairs of elements from input1 and input2 as per the specified option
      */
-    public default FuncList<OUTPUT> apply(FuncList<INPUT1> input1, FuncList<INPUT2> input2, ZipWithOption option) {
+    public default FuncList<OUTPUT> applyEachOf(FuncList<INPUT1> input1, FuncList<INPUT2> input2, ZipWithOption option) {
         return input1.zipWith(input2, option, this);
     }
     
@@ -452,7 +472,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  the second map of key-value pairs, with values of type INPUT2
      * @return        a {@link FuncMap} of key-output pairs, where each output is the result of applying this function to corresponding values from input1 and input2
      */
-    public default <KEY> FuncMap<KEY, OUTPUT> apply(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
+    public default <KEY> FuncMap<KEY, OUTPUT> applyEachOf(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
     
@@ -465,7 +485,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param option  the {@link ZipWithOption} determining how pairs of values are chosen from the two maps
      * @return        a {@link FuncMap} of key-output pairs, where each output is the result of applying this function to corresponding values from input1 and input2 as per the specified option
      */
-    public default <KEY> FuncMap<KEY, OUTPUT> apply(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2, ZipWithOption option) {
+    public default <KEY> FuncMap<KEY, OUTPUT> applyEachOf(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2, ZipWithOption option) {
         return input1.zipWith(input2, option, this);
     }
     
@@ -476,7 +496,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param input2  the supplier of the second input value
      * @return        a {@link Func0} that, when invoked, applies this function to the values supplied by input1 and input2
      */
-    public default Func0<OUTPUT> apply(Func0<INPUT1> input1, Func0<INPUT2> input2) {
+    public default Func0<OUTPUT> applyEachOf(Func0<INPUT1> input1, Func0<INPUT2> input2) {
         return () -> {
             val value1 = input1.get();
             val value2 = input2.get();
@@ -484,6 +504,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             return output;
         };
     }
+    
+    //== Compose ==
     
     /**
      * Compose this function to the given function.
@@ -812,7 +834,10 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      *              either the function's output of type OUTPUT or any exception thrown
      */
     public default Func2<INPUT1, INPUT2, Result<OUTPUT>> safely() {
-        return Func.of(this::applySafely);
+        return (input1, input2) -> {
+            val output = this.applySafely(input1, input2);
+            return output;
+        };
     }
     
     /**
