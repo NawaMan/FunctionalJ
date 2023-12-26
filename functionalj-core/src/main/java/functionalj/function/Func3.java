@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -118,6 +118,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     
     /**
      * Applies this function to the given input values.
+     * If an exception is thrown, the exception will be handled by {@link ThrowFuncs#exceptionTransformer}.
      *
      * @param  input1  the first input.
      * @param  input2  the second input.
@@ -272,7 +273,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     /**
      * Transforms a function taking multiple input parameters into a function that takes a single source parameter. 
      * Each input function extracts a corresponding value from the source, and these values are then applied to this function.
-     *
+     * 
      * @param input1  function to extract the first input value from the source
      * @param input2  function to extract the second input value from the source
      * @param input3  function to extract the third input value from the source
