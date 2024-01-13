@@ -25,6 +25,8 @@ package functionalj.function;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Optional;
 
 import functionalj.functions.ThrowFuncs;
@@ -38,7 +40,10 @@ import lombok.val;
 import nullablej.nullable.Nullable;
 
 /**
- * Function of three parameters which return no value.
+ * Defines a functional interface for a method that takes three input parameters and performs an operation,
+ * potentially throwing an Exception.
+ * 
+ * This interface represents a function that accepts three arguments and returns no result.
  *
  * @param <INPUT1>  the first input data type.
  * @param <INPUT2>  the second input data type.
@@ -52,10 +57,10 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     /**
      * Wraps a given {@link FuncUnit3} instance, providing a method reference or lambda expression.
      *
-     * @param <I1>  the type of the first input parameter of the function
-     * @param <I2>  the type of the second input parameter of the function
-     * @param <I3>  the type of the third input parameter of the function
-     * @param func  the {@link FuncUnit3} instance to wrap
+     * @param <INPUT1>  the type of the first input parameter of the function
+     * @param <INPUT2>  the type of the second input parameter of the function
+     * @param <INPUT3>  the type of the third input parameter of the function
+     * @param func      the {@link FuncUnit3} instance to wrap
      * @return a new {@link FuncUnit3} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> of(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
@@ -65,10 +70,10 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     /**
      * Creates a {@link FuncUnit3} instance from an existing {@link FuncUnit3}.
      * 
-     * @param <I1>  the type of the first input parameter of the function
-     * @param <I2>  the type of the second input parameter of the function
-     * @param <I3>  the type of the third input parameter of the function
-     * @param func  the existing {@link FuncUnit3} instance
+     * @param <INPUT1>  the type of the first input parameter of the function
+     * @param <INPUT2>  the type of the second input parameter of the function
+     * @param <INPUT3>  the type of the third input parameter of the function
+     * @param func      the existing {@link FuncUnit3} instance
      * @return a new {@link FuncUnit3} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> funcUnit3(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
@@ -78,27 +83,29 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     /**
      * Wraps a given {@link FuncUnit3} instance, providing a method reference or lambda expression.
      *
-     * @param <I1>  the type of the first input parameter of the function
-     * @param <I2>  the type of the second input parameter of the function
-     * @param <I3>  the type of the third input parameter of the function
-     * @return a new {@link FuncUnit3} instance that delegates to the provided func
+     * @param <INPUT1>  the type of the first input parameter of the function
+     * @param <INPUT2>  the type of the second input parameter of the function
+     * @param <INPUT3>  the type of the third input parameter of the function
+     * @return          a new {@link FuncUnit3} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> from(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
         return consumer::accept;
     }
     
     /**
-     * Represents a function that takes three input parameters and produces no output.
-     * This is a functional interface whose functional method is {@link #acceptUnsafe}.
-     * This function may throw an exception.
+     * Performs an operation on the given inputs, potentially throwing an exception and return no result.
      * 
      * @param <INPUT1>  the type of the first input parameter
      * @param <INPUT2>  the type of the second input parameter
      * @param <INPUT3>  the type of the third input parameter
-     * @return the result of applying this function to the input parameters
+     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
-    public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3) throws Exception;
+    public void acceptUnsafe(
+                    INPUT1 input1,
+                    INPUT2 input2,
+                    INPUT3 input3)
+                        throws Exception;
     
     
     /**
@@ -112,7 +119,10 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @return the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
-    public default void acceptCarelessly(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
+    public default void acceptCarelessly(
+                            INPUT1 input1,
+                            INPUT2 input2,
+                            INPUT3 input3) {
         try {
             acceptUnsafe(input1, input2, input3);
         } catch (Exception e) {
@@ -128,7 +138,10 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @param input3  the third input parameter.
      * @return        a {@code Result<OUTPUT>} containing the result if successful, or an exception if an error occurs during function application.
      */
-    public default Result<Void> acceptSafely(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
+    public default Result<Void> acceptSafely(
+                                    INPUT1 input1,
+                                    INPUT2 input2,
+                                    INPUT3 input3) {
         try {
             acceptUnsafe(input1, input2, input3);
             return Result.ofNull();
@@ -144,12 +157,15 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * Accept the given input values.
      * If an exception is thrown, the exception will be handled by {@link ThrowFuncs#exceptionTransformer}.
      *
-     * @param  input1  the first input.
-     * @param  input2  the second input.
-     * @param  input3  the third input.
+     * @param input1  the first input.
+     * @param input2  the second input.
+     * @param input3  the third input.
      * @return         the function result.
      */
-    public default void accept(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
+    public default void accept(
+                            INPUT1 input1,
+                            INPUT2 input2,
+                            INPUT3 input3) {
         try {
             acceptUnsafe(input1, input2, input3);
         } catch (RuntimeException e) {
@@ -415,7 +431,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @return  the {@link Func3}.
      */
     public default <T> Func3<INPUT1, INPUT2, INPUT3, T> thenReturnNull() {
-        return thenReturn(null);
+        return thenReturn((T)null);
     }
     
     /**
@@ -441,6 +457,73 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
             acceptUnsafe(input1, input2, input3);
             val value = supplier.applyUnsafe();
             return value;
+        };
+    }
+    
+    /**
+     * Applies this function to the given arguments, handling any exceptions using the specified exception handler.
+     * If an exception is thrown during the function execution, the exception handler is invoked with the caught exception.
+     *
+     * @param exceptionHandler  the functional interface to handle exceptions thrown by this function
+     * @return                  a new function that applies this function to the given arguments and uses the provided exception handler in case of exceptions
+     */
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> ifException(FuncUnit1<Exception> exceptionHandler) {
+        return (input1, input2, input3) -> {
+            try {
+                this.acceptUnsafe(input1, input2, input3);
+            } catch (Exception e) {
+                exceptionHandler.accept(e);
+            }
+        };
+    }
+    
+    /**
+     * Applies this function to the given arguments and prints the stack trace of any exception that occurs during execution.
+     * If an exception is thrown, it's caught and its stack trace is printed, and the function returns null.
+     *
+     * @return  a new function that applies this function to the given arguments and prints the stack trace in case of exceptions
+     */
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> ifExceptionThenPrint() {
+        return (input1, input2, input3) -> {
+            try {
+                this.acceptUnsafe(input1, input2, input3);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+    }
+    
+    /**
+     * Applies this function to the given arguments, printing the stack trace of any exceptions to the specified print stream.
+     * If an exception occurs during function execution, its stack trace is printed to the given print stream and the function returns null.
+     *
+     * @param printStream  the print stream where exception stack traces are printed
+     * @return             a new function that applies this function to the given arguments, printing any exception stack traces to the specified print stream
+     */
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> ifExceptionThenPrint(PrintStream printStream) {
+        return (input1, input2, input3) -> {
+            try {
+                this.acceptUnsafe(input1, input2, input3);
+            } catch (Exception e) {
+                e.printStackTrace(printStream);
+            }
+        };
+    }
+    
+    /**
+     * Applies this function to the given arguments, printing the stack trace of any exceptions to the specified print writer.
+     * If an exception occurs during function execution, its stack trace is printed to the given print writer, and the function returns null.
+     *
+     * @param printWriter  the print writer where exception stack traces are printed
+     * @return             a new function that applies this function to the given arguments, printing any exception stack traces to the specified print writer
+     */
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> ifExceptionThenPrint(PrintWriter printWriter) {
+        return (input1, input2, input3) -> {
+            try {
+                this.acceptUnsafe(input1, input2, input3);
+            } catch (Exception e) {
+                e.printStackTrace(printWriter);
+            }
         };
     }
     
@@ -575,9 +658,10 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      *
      * @return a function that takes two {@link Task} and return {@link Task}.
      */
-    public default Func3<Task<INPUT1>, Task<INPUT2>, Task<INPUT3>, Task<OUTPUT>> forTask() {
+    public default <OUTPUT> Func3<Task<INPUT1>, Task<INPUT2>, Task<INPUT3>, Task<OUTPUT>> forTask() {
         return (input1, input2, input3) -> {
-            return Task.from(input1, input2, input3, this);
+            val returnNull = this.thenReturn((OUTPUT)null);
+            return Task.from(input1, input2, input3, returnNull);
         };
     }
     
@@ -586,14 +670,14 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      *
      * @return a function that takes two {@link Func0} and return {@link Func0}.
      */
-    public default Func3<Func0<INPUT1>, Func0<INPUT2>, Func0<INPUT3>, Func0<OUTPUT>> forFunc0() {
+    public default <OUTPUT> Func3<Func0<INPUT1>, Func0<INPUT2>, Func0<INPUT3>, Func0<OUTPUT>> forFunc0() {
         return (input1, input2, input3) -> {
             return () -> {
                 val value1 = input1.applyUnsafe();
                 val value2 = input2.applyUnsafe();
                 val value3 = input3.applyUnsafe();
-                val output = applyUnsafe(value1, value2, value3);
-                return output;
+                acceptUnsafe(value1, value2, value3);
+                return (OUTPUT)null;
             };
         };
     }
@@ -604,14 +688,14 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      *@param <SOURCE>  the source type.
      * @return a function that takes two {@link Func1} and return {@link Func1}.
      */
-    public default <SOURCE> Func3<Func1<SOURCE, INPUT1>, Func1<SOURCE, INPUT2>, Func1<SOURCE, INPUT3>, Func1<SOURCE, OUTPUT>> forFunc1() {
+    public default <SOURCE, OUTPUT> Func3<Func1<SOURCE, INPUT1>, Func1<SOURCE, INPUT2>, Func1<SOURCE, INPUT3>, Func1<SOURCE, OUTPUT>> forFunc1() {
         return (input1, input2, input3) -> {
             return source -> {
                 val value1 = input1.applyUnsafe(source);
                 val value2 = input2.applyUnsafe(source);
                 val value3 = input3.applyUnsafe(source);
-                val output = applyUnsafe(value1, value2, value3);
-                return output;
+                acceptUnsafe(value1, value2, value3);
+                return (OUTPUT)null;
             };
         };
     }
@@ -623,49 +707,225 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      **/
     public default FuncUnit3<INPUT1, INPUT2, INPUT3> ignoreResult() {
         return (input1, input2, input3) -> {
-            applyUnsafe(input1, input2, input3);
+            acceptUnsafe(input1, input2, input3);
         };
     }
     
+    /**
+     * Flip the parameter order.
+     *
+     * @return  the {@link Func3} with parameter in a flipped order.
+     */
+    public default FuncUnit3<INPUT3, INPUT2, INPUT1> flip() {
+        return (i3, i2, i1) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
+    }
+    
+    //== Elevate ==
+    
+    /**
+     * Transforms this function into a function that returns a single-parameter function.
+     * This method elevates the first input parameter, allowing the other nine parameters to be preset, and the first parameter to be applied later.
+     *
+     * @return a function that takes nine parameters and returns a single-parameter function of type INPUT1
+     */
+    public default Func2<INPUT2, INPUT3, FuncUnit1<INPUT1>> elevate() {
+        return (i2, i3) -> (i1) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
+    }
+    
+    /**
+     * Creates a single-parameter function by pre-setting the other nine parameters of this function.
+     * The resulting function takes the first parameter and applies it along with the pre-set values.
+     *
+     * @param i2  the second input parameter
+     * @param i3  the third input parameter
+     * @return    a function that takes a single parameter of type INPUT1
+     */
+    public default FuncUnit1<INPUT1> elevateWith(INPUT2 i2, INPUT3 i3) {
+        return (i1) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
+    }
+    
+    //== Split ==
+    
+    /**
+     * Splits this function into a two-level function composition.
+     * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
+     *
+     * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters
+     */
+    public default Func1<INPUT1, FuncUnit2<INPUT2, INPUT3>> split() {
+        return split1();
+    }
+    
+    /**
+     * Splits this function into a two-level function composition.
+     * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
+     *
+     * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters
+     */
+    public default Func1<INPUT1, FuncUnit2<INPUT2, INPUT3>> split1() {
+        return (i1) -> (i2, i3) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
+    }
+    
+    /**
+     * Splits this function into a two-stage function.
+     * The first stage takes the first two input parameters, returning a function that accepts the remaining eight parameters to produce the output.
+     *
+     * @return a function that takes two parameters of types INPUT1 and INPUT2, and returns a function that takes the remaining eight parameters
+     */
+    public default Func2<INPUT1, INPUT2, FuncUnit1<INPUT3>> split2() {
+        return (i1, i2) -> (i3) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
+    }
+    
+    
     // == Partially apply functions ==
     
-    public default FuncUnit0 bind(INPUT1 i1, INPUT2 i2, INPUT3 i3) {
-        return () -> this.acceptUnsafe(i1, i2, i3);
+    /**
+     * Reduces this function by fixing the first parameter, resulting in a nine-parameter function.
+     * The fixed value is used for the fourth input in subsequent calls.
+     *
+     * @param i2  the value to fix for the first parameter
+     * @return    a function that takes the rest of the parameters, excluding the first
+     */
+    public default FuncUnit2<INPUT2, INPUT3> apply1(INPUT1 i1) {
+        return (i2, i3) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
     
-    public default FuncUnit2<INPUT2, INPUT3> bind1(INPUT1 i1) {
-        return (i2, i3) -> this.acceptUnsafe(i1, i2, i3);
+    /**
+     * Reduces this function by fixing the second parameter, resulting in a nine-parameter function.
+     * The fixed value is used for the fourth input in subsequent calls.
+     *
+     * @param i2  the value to fix for the second parameter
+     * @return    a function that takes the rest of the parameters, excluding the second
+     */
+    public default FuncUnit2<INPUT1, INPUT3> apply2(INPUT2 i2) {
+        return (i1, i3) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
     
-    public default FuncUnit2<INPUT1, INPUT3> bind2(INPUT2 i2) {
-        return (i1, i3) -> this.acceptUnsafe(i1, i2, i3);
+    /**
+     * Reduces this function by fixing the third parameter, resulting in a nine-parameter function.
+     * The fixed value is used for the fourth input in subsequent calls.
+     *
+     * @param i3  the value to fix for the third parameter
+     * @return    a function that takes the rest of the parameters, excluding the third
+     */
+    public default FuncUnit2<INPUT1, INPUT2> apply3(INPUT3 i3) {
+        return (i1, i2) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
     
-    public default FuncUnit2<INPUT1, INPUT2> bind3(INPUT3 i3) {
-        return (i1, i2) -> this.acceptUnsafe(i1, i2, i3);
+    
+    // == Partially apply functions -- mix ==
+    /**
+     * Partially apply some inputs while leave some absent, then, returns a function that takes the absent inputs.
+     * 
+     * @param a1  the placeholder for the first input
+     * @param a2  the placeholder for the second input
+     * @param a3  the placeholder for the third input
+     * @return  the new function.
+     **/
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> curry(Absent a1, Absent a2, Absent a3) {
+        return (i1, i2, i3) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
     
-    public default FuncUnit1<INPUT1> bind(Absent a1, INPUT2 i2, INPUT3 i3) {
-        return i1 -> this.acceptUnsafe(i1, i2, i3);
+    /**
+     * Partially apply some inputs while leave some absent, then, returns a function that takes the absent inputs.
+     * 
+     * @param i1  the first input
+     * @param a2  the placeholder for the second input
+     * @param a3  the placeholder for the third input
+     * @return  the new function.
+     **/
+    public default FuncUnit2<INPUT2, INPUT3> curry(INPUT1 i1, Absent a2, Absent a3) {
+        return (i2, i3) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
     
-    public default FuncUnit1<INPUT2> bind(INPUT1 i1, Absent a2, INPUT3 i3) {
-        return i2 -> this.acceptUnsafe(i1, i2, i3);
+    /**
+     * Partially apply some inputs while leave some absent, then, returns a function that takes the absent inputs.
+     * 
+     * @param a1  the placeholder for the first input
+     * @param i2  the second input
+     * @param a3  the placeholder for the third input
+     * @return  the new function.
+     **/
+    public default FuncUnit2<INPUT1, INPUT3> curry(Absent a1, INPUT2 i2, Absent a3) {
+        return (i1, i3) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
     
-    public default FuncUnit1<INPUT3> bind(INPUT1 i1, INPUT2 i2, Absent a3) {
-        return i3 -> this.acceptUnsafe(i1, i2, i3);
+    /**
+     * Partially apply some inputs while leave some absent, then, returns a function that takes the absent inputs.
+     * 
+     * @param i1  the first input
+     * @param i2  the second input
+     * @param a3  the placeholder for the third input
+     * @return  the new function.
+     **/
+    public default FuncUnit1<INPUT3> curry(INPUT1 i1, INPUT2 i2, Absent a3) {
+        return (i3) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
     
-    public default FuncUnit2<INPUT1, INPUT2> bind(Absent a1, Absent a2, INPUT3 i3) {
-        return (i1, i2) -> this.acceptUnsafe(i1, i2, i3);
+    /**
+     * Partially apply some inputs while leave some absent, then, returns a function that takes the absent inputs.
+     * 
+     * @param a1  the placeholder for the first input
+     * @param a2  the placeholder for the second input
+     * @param i3  the third input
+     * @return  the new function.
+     **/
+    public default FuncUnit2<INPUT1, INPUT2> curry(Absent a1, Absent a2, INPUT3 i3) {
+        return (i1, i2) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
     
-    public default FuncUnit2<INPUT1, INPUT3> bind(Absent a1, INPUT2 i2, Absent a3) {
-        return (i1, i3) -> this.acceptUnsafe(i1, i2, i3);
+    /**
+     * Partially apply some inputs while leave some absent, then, returns a function that takes the absent inputs.
+     * 
+     * @param i1  the first input
+     * @param a2  the placeholder for the second input
+     * @param i3  the third input
+     * @return  the new function.
+     **/
+    public default FuncUnit1<INPUT2> curry(INPUT1 i1, Absent a2, INPUT3 i3) {
+        return (i2) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
     
-    public default FuncUnit2<INPUT2, INPUT3> bind(INPUT1 i1, Absent a2, Absent a3) {
-        return (i2, i3) -> this.acceptUnsafe(i1, i2, i3);
+    /**
+     * Partially apply some inputs while leave some absent, then, returns a function that takes the absent inputs.
+     * 
+     * @param a1  the placeholder for the first input
+     * @param i2  the second input
+     * @param i3  the third input
+     * @return  the new function.
+     **/
+    public default FuncUnit1<INPUT1> curry(Absent a1, INPUT2 i2, INPUT3 i3) {
+        return (i1) -> {
+            this.acceptUnsafe(i1, i2, i3);
+        };
     }
+    
 }
