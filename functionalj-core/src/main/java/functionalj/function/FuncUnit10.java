@@ -75,8 +75,8 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * @param <INPUT8>   the type of the eighth input parameter of the function
      * @param <INPUT9>   the type of the nine input parameter of the function
      * @param <INPUT10>  the type of the tenth input parameter of the function
-     * @param func   the {@link FuncUnit3} instance to wrap
-     * @return a new {@link FuncUnit3} instance that delegates to the provided func
+     * @param func   the {@link FuncUnit10} instance to wrap
+     * @return a new {@link FuncUnit10} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> of(FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> consumer) {
         return consumer;
@@ -95,8 +95,8 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * @param <INPUT8>   the type of the eighth input parameter of the function
      * @param <INPUT9>   the type of the nine input parameter of the function
      * @param <INPUT10>  the type of the tenth input parameter of the function
-     * @param func   the existing {@link FuncUnit3} instance
-     * @return a new {@link FuncUnit3} instance that behaves identically to the provided func
+     * @param func   the existing {@link FuncUnit10} instance
+     * @return a new {@link FuncUnit10} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> funcUnit10(FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> consumer) {
         return consumer;
@@ -115,9 +115,9 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * @param <INPUT8>   the type of the eighth input parameter of the function
      * @param <INPUT9>   the type of the nine input parameter of the function
      * @param <INPUT10>  the type of the tenth input parameter of the function
-     * @return a new {@link FuncUnit3} instance that delegates to the provided func
+     * @return a new {@link FuncUnit10} instance that delegates to the provided func
      */
-    public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> from(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> from(FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> consumer) {
         return consumer::accept;
     }
     
@@ -480,7 +480,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * Accept the first parameter and return {@link FuncUnit9} that take the rest of the parameters.
      * 
      * @param  input1  the first input parameter.
-     * @return         a {@code Func9} function that takes the remaining parameters and produces an output.
+     * @return         a {@code FuncUnit9} function that takes the remaining parameters and produces an output.
      */
     public default FuncUnit9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> accept(INPUT1 input1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
@@ -493,7 +493,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * The resulting function takes the remaining inputs and produces an {@code Optional} of the output. If the first input is empty, the function returns an empty {@code Optional}.
      *
      * @param optional1  the {@code Optional} of the first input.
-     * @return           a {@code Func9} function that takes the remaining inputs and returns an {@code Optional} of the output.
+     * @return           a {@code FuncUnit9} function that takes the remaining inputs and returns an {@code Optional} of the output.
      */
     public default FuncUnit9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> acceptWith(Optional<INPUT1> optional1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
@@ -509,7 +509,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * The resulting function takes the remaining inputs and produces a {@code Nullable} of the output. If the first input is null, the function returns a null output.
      *
      * @param nullable1  the {@code Nullable} of the first input.
-     * @return           a {@code Func9} function that takes the remaining inputs and returns a {@code Nullable} of the output.
+     * @return           a {@code FuncUnit9} function that takes the remaining inputs and returns a {@code Nullable} of the output.
      */
     public default FuncUnit9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> acceptWith(Nullable<INPUT1> nullable1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
@@ -525,7 +525,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * The resulting function takes the remaining inputs and produces a {@code Result} of the output. If the first input is an unsuccessful result, the function propagates this result.
      *
      * @param result1  the {@code Result} of the first input.
-     * @return         a {@code Func9} function that takes the next remaining inputs and returns a {@code Result} of the output.
+     * @return         a {@code FuncUnit9} function that takes the next remaining inputs and returns a {@code Result} of the output.
      */
     public default FuncUnit9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> acceptWith(Result<INPUT1> result1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
@@ -541,7 +541,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * The resulting function takes the remaining inputs and produces a {@code Promise} of the output. It retrieves the promise of the first input from the given {@code HasPromise} object.
      *
      * @param hasPromise1  the {@code HasPromise} containing the promise of the first input.
-     * @return             a {@code Func9} function that takes the remaining nine inputs and returns a {@code Promise} of the output.
+     * @return             a {@code FuncUnit9} function that takes the remaining nine inputs and returns a {@code Promise} of the output.
      */
     public default FuncUnit9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> acceptWith(HasPromise<INPUT1> hasPromise1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
@@ -555,7 +555,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * The resulting function takes the remaining inputs and produces a {@code Func0} that, when invoked, supplies the first input and applies the function to all three inputs.
      *
      * @param supplier1  the {@code Func0} supplier for the first input.
-     * @return           a {@code Func9} function that takes the remaining nine inputs and returns a {@code Func0} producing the output.
+     * @return           a {@code FuncUnit9} function that takes the remaining nine inputs and returns a {@code Func0} producing the output.
      */
     public default FuncUnit9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> acceptWith(Func0<INPUT1> supplier1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
@@ -569,7 +569,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * The resulting function takes the remaining inputs and a function that transforms an additional input into the first input type, then applies the original function to all inputs.
      *
      * @param function1  the {@code Func1} function to transform an additional input into the first input type.
-     * @return           a {@code Func9} function that takes the remaining inputs and a function to transform an additional input, then returns a {@code Func1} producing the output.
+     * @return           a {@code FuncUnit9} function that takes the remaining inputs and a function to transform an additional input, then returns a {@code Func1} producing the output.
      */
     public default <INPUT> Func9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, FuncUnit1<INPUT>> applyWith(Func1<INPUT, INPUT1> function1) {
         return (input2, input3, input4, input5, input6, input7, input8, input9, input10) -> {
