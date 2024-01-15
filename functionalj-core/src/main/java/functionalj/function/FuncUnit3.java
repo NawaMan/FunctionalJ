@@ -86,11 +86,12 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @param <INPUT1>  the type of the first input parameter of the function
      * @param <INPUT2>  the type of the second input parameter of the function
      * @param <INPUT3>  the type of the third input parameter of the function
-     * @return          a new {@link FuncUnit3} instance that delegates to the provided func
+     * @return a new {@link FuncUnit3} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> from(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
         return consumer::accept;
     }
+    
     
     /**
      * Performs an operation on the given inputs, potentially throwing an exception and return no result.
@@ -100,7 +101,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @param <INPUT3>  the type of the third input parameter
      * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
-     */
+     */  
     public void acceptUnsafe(
                     INPUT1 input1,
                     INPUT2 input2,
@@ -116,13 +117,13 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @param <INPUT1>  the type of the first input parameter
      * @param <INPUT2>  the type of the second input parameter
      * @param <INPUT3>  the type of the third input parameter
-     * @return the result of applying this function to the input parameters
+     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
-                            INPUT1 input1,
-                            INPUT2 input2,
-                            INPUT3 input3) {
+            INPUT1 input1,
+            INPUT2 input2,
+            INPUT3 input3) {
         try {
             acceptUnsafe(input1, input2, input3);
         } catch (Exception e) {
@@ -139,9 +140,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @return        a {@code Result<OUTPUT>} containing the result if successful, or an exception if an error occurs during function application.
      */
     public default Result<Void> acceptSafely(
-                                    INPUT1 input1,
-                                    INPUT2 input2,
-                                    INPUT3 input3) {
+            INPUT1 input1,
+            INPUT2 input2,
+            INPUT3 input3) {
         try {
             acceptUnsafe(input1, input2, input3);
             return Result.ofNull();
@@ -160,12 +161,12 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @param input1  the first input.
      * @param input2  the second input.
      * @param input3  the third input.
-     * @return         the function result.
+     * @return        the function result.
      */
     public default void accept(
-                            INPUT1 input1,
-                            INPUT2 input2,
-                            INPUT3 input3) {
+            INPUT1 input1,
+            INPUT2 input2,
+            INPUT3 input3) {
         try {
             acceptUnsafe(input1, input2, input3);
         } catch (RuntimeException e) {
@@ -191,15 +192,15 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     /**
      * Accept the given input values wrapped with {@link Result}.
      * 
-     * @param input1  the first promise.
-     * @param input2  the second promise.
-     * @param input3  the third promise.
+     * @param input1  the first result.
+     * @param input2  the second result.
+     * @param input3  the third result.
      * @return        a {@code Result<OUTPUT>} with the result of <code>null</code>.
      */
     public default <OUTPUT> Result<OUTPUT> acceptTo(
-                                    Result<INPUT1> input1,
-                                    Result<INPUT2> input2,
-                                    Result<INPUT3> input3) {
+            Result<INPUT1> input1,
+            Result<INPUT2> input2,
+            Result<INPUT3> input3) {
         return input1.flatMap(value1 -> {
             return input2.flatMap(value2 -> {
                 return input3.map(value3 -> {
@@ -219,9 +220,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @return        a {@code Promise<OUTPUT>} with the result of <code>null</code>.
      */
     public default <OUTPUT> Promise<OUTPUT> acceptTo(
-                                    HasPromise<INPUT1> input1,
-                                    HasPromise<INPUT2> input2,
-                                    HasPromise<INPUT3> input3) {
+            HasPromise<INPUT1> input1,
+            HasPromise<INPUT2> input2,
+            HasPromise<INPUT3> input3) {
         val output = Promise.from(input1, input2, input3, this.thenReturn((OUTPUT)null));
         return output;
     }
@@ -235,9 +236,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @return        a {@code Task<OUTPUT>} with the result of <code>null</code>.
      */
     public default <OUTPUT> Task<OUTPUT> acceptTo(
-                                    Task<INPUT1> input1,
-                                    Task<INPUT2> input2,
-                                    Task<INPUT3> input3) {
+            Task<INPUT1> input1,
+            Task<INPUT2> input2,
+            Task<INPUT3> input3) {
         val output = Task.from(input1, input2, input3, this.thenReturn((OUTPUT)null));
         return output;
     }
@@ -251,13 +252,13 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @return        a {@code Func0<OUTPUT>} with the result of <code>null</code>.
      */
     public default <OUTPUT> Func0<OUTPUT> acceptTo(
-                                    Func0<INPUT1> input1,
-                                    Func0<INPUT2> input2,
-                                    Func0<INPUT3> input3) {
+            Func0<INPUT1>  input1,
+            Func0<INPUT2>  input2,
+            Func0<INPUT3>  input3) {
         return () -> {
-            val value1  = input1.get();
-            val value2  = input2.get();
-            val value3  = input3.get();
+            val value1 = input1.get();
+            val value2 = input2.get();
+            val value3 = input3.get();
             accept(value1, value2, value3);
             return null;
         };
@@ -273,9 +274,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @return a function that takes a single source parameter and returns an output by applying this function to the extracted input values
      */
     public default <SOURCE, OUTPUT> Func1<SOURCE,OUTPUT> acceptTo(
-                    Func1<SOURCE,INPUT1> input1,
-                    Func1<SOURCE,INPUT2> input2,
-                    Func1<SOURCE,INPUT3> input3) {
+            Func1<SOURCE,INPUT1> input1,
+            Func1<SOURCE,INPUT2> input2,
+            Func1<SOURCE,INPUT3> input3) {
         return source -> {
             val value1 = input1.applyUnsafe(source);
             val value2 = input2.applyUnsafe(source);
@@ -291,7 +292,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * Accept the first parameter and return {@link FuncUnit2} that take the rest of the parameters.
      * 
      * @param  input1  the first input parameter.
-     * @return         a {@code Func2} function that takes the remaining parameters and produces an output.
+     * @return         a {@code FuncUnit2} function that takes the remaining parameters and produces an output.
      */
     public default FuncUnit2<INPUT2, INPUT3> accept(INPUT1 input1) {
         return (input2, input3) -> {
@@ -300,11 +301,11 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     }
     
     /**
-     * Applies the function to a combination of an {@code Optional} of the first input and remaining inputs, returning a {@code Func2} function.
+     * Applies the function to a combination of an {@code Optional} of the first input and remaining inputs, returning a {@code FuncUnit2} function.
      * The resulting function takes the remaining inputs and produces an {@code Optional} of the output. If the first input is empty, the function returns an empty {@code Optional}.
      *
      * @param optional1  the {@code Optional} of the first input.
-     * @return           a {@code Func2} function that takes the remaining inputs and returns an {@code Optional} of the output.
+     * @return           a {@code FuncUnit2} function that takes the remaining inputs and returns an {@code Optional} of the output.
      */
     public default FuncUnit2<INPUT2, INPUT3> acceptWith(Optional<INPUT1> optional1) {
         return (input2, input3) -> {
@@ -316,11 +317,11 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     }
     
     /**
-     * Applies the function to a combination of a {@code Nullable} of the first input and remaining inputs, returning a {@code Func2} function.
+     * Applies the function to a combination of a {@code Nullable} of the first input and remaining inputs, returning a {@code FuncUnit2} function.
      * The resulting function takes the remaining inputs and produces a {@code Nullable} of the output. If the first input is null, the function returns a null output.
      *
      * @param nullable1  the {@code Nullable} of the first input.
-     * @return           a {@code Func3} function that takes the remaining inputs and returns a {@code Nullable} of the output.
+     * @return           a {@code FuncUnit2} function that takes the remaining inputs and returns a {@code Nullable} of the output.
      */
     public default FuncUnit2<INPUT2, INPUT3> acceptWith(Nullable<INPUT1> nullable1) {
         return (input2, input3) -> {
@@ -332,11 +333,11 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     }
     
     /**
-     * Applies the function to a combination of a {@code Result} of the first input and remaining inputs, returning a {@code Func2} function.
+     * Applies the function to a combination of a {@code Result} of the first input and remaining inputs, returning a {@code FuncUnit2} function.
      * The resulting function takes the remaining inputs and produces a {@code Result} of the output. If the first input is an unsuccessful result, the function propagates this result.
      *
      * @param result1  the {@code Result} of the first input.
-     * @return         a {@code Func2} function that takes the next remaining inputs and returns a {@code Result} of the output.
+     * @return         a {@code FuncUnit2} function that takes the next remaining inputs and returns a {@code Result} of the output.
      */
     public default FuncUnit2<INPUT2, INPUT3> acceptWith(Result<INPUT1> result1) {
         return (input2, input3) -> {
@@ -348,11 +349,11 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     }
     
     /**
-     * Applies the function to a combination of a promise from {@code HasPromise} of the first input and the remaining inputs, returning a {@code Func2} function.
+     * Applies the function to a combination of a promise from {@code HasPromise} of the first input and the remaining inputs, returning a {@code FuncUnit2} function.
      * The resulting function takes the remaining inputs and produces a {@code Promise} of the output. It retrieves the promise of the first input from the given {@code HasPromise} object.
      *
      * @param hasPromise1  the {@code HasPromise} containing the promise of the first input.
-     * @return             a {@code Func2} function that takes the remaining nine inputs and returns a {@code Promise} of the output.
+     * @return             a {@code FuncUnit2} function that takes the remaining inputs and returns a {@code Promise} of the output.
      */
     public default FuncUnit2<INPUT2, INPUT3> acceptWith(HasPromise<INPUT1> hasPromise1) {
         return (input2, input3) -> {
@@ -362,11 +363,11 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     }
     
     /**
-     * Applies the function to a combination of a supplier for the first input and the remaining inputs, returning a {@code Func2} function.
+     * Applies the function to a combination of a supplier for the first input and the remaining inputs, returning a {@code FuncUnit2} function.
      * The resulting function takes the remaining inputs and produces a {@code Func0} that, when invoked, supplies the first input and applies the function to all three inputs.
      *
      * @param supplier1  the {@code Func0} supplier for the first input.
-     * @return           a {@code Func2} function that takes the remaining nine inputs and returns a {@code Func0} producing the output.
+     * @return           a {@code FuncUnit2} function that takes the remaining inputs and returns a {@code Func0} producing the output.
      */
     public default FuncUnit2<INPUT2, INPUT3> acceptWith(Func0<INPUT1> supplier1) {
         return (input2, input3) -> {
@@ -549,9 +550,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      */
     public default FuncUnit1<Tuple3<INPUT1, INPUT2, INPUT3>> wholly() {
         return tuple -> {
-            val _1 = tuple._1();
-            val _2 = tuple._2();
-            val _3 = tuple._3();
+            val _1  = tuple._1();
+            val _2  = tuple._2();
+            val _3  = tuple._3();
             acceptUnsafe(_1, _2, _3);
         };
     }
@@ -593,26 +594,6 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @return a function that takes two {@link Optional} and return {@link Optional}.
      */
     public default FuncUnit3<Optional<INPUT1>, Optional<INPUT2>, Optional<INPUT3>> forOptional() {
-        return (input1, input2, input3) -> {
-            input1.flatMap(value1 -> {
-                input2.flatMap(value2 -> {
-                    input3.map(value3 -> {
-                        accept(value1, value2, value3);
-                        return null;
-                    });
-                    return null;
-                });
-                return null;
-            });
-        };
-    }
-    
-    /**
-     * Lift this function to works with {@link Nullable}.
-     *
-     * @return a function that takes two {@link Nullable} and return {@link Nullable}.
-     */
-    public default FuncUnit3<Nullable<INPUT1>, Nullable<INPUT2>, Nullable<INPUT3>> forNullable() {
         return (input1, input2, input3) -> {
             input1.flatMap(value1 -> {
                 input2.flatMap(value2 -> {
@@ -714,7 +695,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     /**
      * Flip the parameter order.
      *
-     * @return  the {@link Func3} with parameter in a flipped order.
+     * @return  the {@link FuncUnit3} with parameter in a flipped order.
      */
     public default FuncUnit3<INPUT3, INPUT2, INPUT1> flip() {
         return (i3, i2, i1) -> {
@@ -726,9 +707,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     
     /**
      * Transforms this function into a function that returns a single-parameter function.
-     * This method elevates the first input parameter, allowing the other nine parameters to be preset, and the first parameter to be applied later.
+     * This method elevates the first input parameter, allowing the other parameters to be preset, and the first parameter to be applied later.
      *
-     * @return a function that takes nine parameters and returns a single-parameter function of type INPUT1
+     * @return a function that takes parameters and returns a single-parameter function of type INPUT1
      */
     public default Func2<INPUT2, INPUT3, FuncUnit1<INPUT1>> elevate() {
         return (i2, i3) -> (i1) -> {
@@ -737,7 +718,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     }
     
     /**
-     * Creates a single-parameter function by pre-setting the other nine parameters of this function.
+     * Creates a single-parameter function by pre-setting the other parameters of this function.
      * The resulting function takes the first parameter and applies it along with the pre-set values.
      *
      * @param i2  the second input parameter
@@ -754,9 +735,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     
     /**
      * Splits this function into a two-level function composition.
-     * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
+     * The first level takes the first input parameter, returning a function that takes the remaining parameters to produce the output.
      *
-     * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters
+     * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining parameters
      */
     public default Func1<INPUT1, FuncUnit2<INPUT2, INPUT3>> split() {
         return split1();
@@ -764,9 +745,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     
     /**
      * Splits this function into a two-level function composition.
-     * The first level takes the first input parameter, returning a function that takes the remaining nine parameters to produce the output.
+     * The first level takes the first input parameter, returning a function that takes the remaining parameters to produce the output.
      *
-     * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining nine parameters
+     * @return a function that takes a single parameter of type INPUT1 and returns a function that takes the remaining parameters
      */
     public default Func1<INPUT1, FuncUnit2<INPUT2, INPUT3>> split1() {
         return (i1) -> (i2, i3) -> {
@@ -776,7 +757,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     
     /**
      * Splits this function into a two-stage function.
-     * The first stage takes the first two input parameters, returning a function that accepts the remaining eight parameters to produce the output.
+     * The first stage takes the first two input parameters, returning a function that accepts the remaining parameters to produce the output.
      *
      * @return a function that takes two parameters of types INPUT1 and INPUT2, and returns a function that takes the remaining eight parameters
      */
@@ -790,11 +771,11 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     // == Partially apply functions ==
     
     /**
-     * Reduces this function by fixing the first parameter, resulting in a nine-parameter function.
+     * Reduces this function by fixing the first parameter, resulting in a two-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
      * @param i2  the value to fix for the first parameter
-     * @return    a function that takes the rest of the parameters, excluding the first
+     * @return    a function that takes the rest of the parameters, excluding the first.
      */
     public default FuncUnit2<INPUT2, INPUT3> apply1(INPUT1 i1) {
         return (i2, i3) -> {
@@ -803,11 +784,11 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     }
     
     /**
-     * Reduces this function by fixing the second parameter, resulting in a nine-parameter function.
+     * Reduces this function by fixing the second parameter, resulting in a two-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
      * @param i2  the value to fix for the second parameter
-     * @return    a function that takes the rest of the parameters, excluding the second
+     * @return    a function that takes the rest of the parameters, excluding the second.
      */
     public default FuncUnit2<INPUT1, INPUT3> apply2(INPUT2 i2) {
         return (i1, i3) -> {
@@ -816,11 +797,11 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     }
     
     /**
-     * Reduces this function by fixing the third parameter, resulting in a nine-parameter function.
+     * Reduces this function by fixing the third parameter, resulting in a two-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
      * @param i3  the value to fix for the third parameter
-     * @return    a function that takes the rest of the parameters, excluding the third
+     * @return    a function that takes the rest of the parameters, excluding the third.
      */
     public default FuncUnit2<INPUT1, INPUT2> apply3(INPUT3 i3) {
         return (i1, i2) -> {
@@ -830,6 +811,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     
     
     // == Partially apply functions -- mix ==
+    
     /**
      * Partially apply some inputs while leave some absent, then, returns a function that takes the absent inputs.
      * 
