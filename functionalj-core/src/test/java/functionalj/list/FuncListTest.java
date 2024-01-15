@@ -45,6 +45,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,11 +72,14 @@ import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
 import org.junit.Ignore;
 import org.junit.Test;
+
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
+import functionalj.function.IntFunctionPrimitive;
 import functionalj.function.aggregator.Aggregation;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList.Mode;
@@ -588,6 +592,27 @@ public class FuncListTest {
             assertFalse(list.test(Four));
             assertFalse(list.test(Five));
             assertFalse(list.test(Six));
+        });
+    }
+    
+    //-- IntFunction --
+    @Test
+    public void testIntFunctionApply() {
+        run(FuncList.of(One, Two, Three), list -> {
+            val func = (IntFunctionPrimitive<String>)list;
+            assertEquals(One,   func.apply(0));
+            assertEquals(Two,   func.apply(1));
+            assertEquals(Three, func.apply(2));
+            
+            try {
+                func.apply(3);
+                fail("Except an excaption.");
+            } catch (IndexOutOfBoundsException e) {
+                assertAsString("java.lang.IndexOutOfBoundsException: Index: 3, Size: 3", e);
+            }
+            
+            ;
+            assertEquals("",  func.whenAbsentUse("").apply(3));
         });
     }
     
