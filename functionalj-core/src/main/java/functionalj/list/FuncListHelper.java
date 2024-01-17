@@ -28,7 +28,7 @@ import java.util.List;
 import functionalj.list.doublelist.DoubleFuncList;
 import lombok.val;
 
-public class FuncListHelper {
+class FuncListHelper {
     
     static <D> FuncList<FuncList<D>> segmentByPercentiles(AsFuncList<D> funcList, DoubleFuncList percentiles) {
         val list = funcList.asFuncList();
