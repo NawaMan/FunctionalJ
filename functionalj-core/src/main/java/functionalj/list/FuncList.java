@@ -59,6 +59,7 @@ import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.function.aggregator.AggregationToDouble;
 import functionalj.function.aggregator.AggregationToInt;
 import functionalj.function.aggregator.AggregationToLong;
+import functionalj.lens.lenses.AnyLens;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.doublelist.ImmutableDoubleFuncList;
@@ -1394,6 +1395,19 @@ public interface FuncList<DATA> extends ReadOnlyList<DATA>, Predicate<DATA>, Int
     public default FuncList<IntTuple2<DATA>> query(AggregationToBoolean<? super DATA> aggregation) {
         val check = aggregation.newAggregator();
         return query(check);
+    }
+    
+    //-- Zoom --
+    
+    /**
+     * Zoom in using lens.
+     * 
+     * @param <D>   the target data type.
+     * @param lens  the lens used to zoom.
+     * @return      the zoomed list.
+     */
+    public default <D> ZoomFuncList<D, DATA, FuncList<DATA>> zoomIn(AnyLens<DATA, D> lens) {
+        return new ZoomFuncList<D, DATA, FuncList<DATA>>(this, lens);
     }
     
     // -- de-ambiguous --

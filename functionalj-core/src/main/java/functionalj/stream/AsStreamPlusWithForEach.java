@@ -88,7 +88,5 @@ public interface AsStreamPlusWithForEach<DATA> {
             array[offset + index] = element;
         });
     }
-    // TODO - addAllTo(List|Set)
-    // TODO - insertAllTo(index, List|Set)
-    // TODO - putAllTo(Map)
+    
 }
