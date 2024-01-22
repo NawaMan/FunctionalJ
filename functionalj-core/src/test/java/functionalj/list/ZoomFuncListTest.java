@@ -1,5 +1,6 @@
 package functionalj.list;
 
+import static functionalj.lens.Access.theString;
 import static org.junit.Assert.assertEquals;
 
 import java.util.function.BiFunction;
@@ -15,7 +16,7 @@ import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.StringLens;
 import lombok.val;
 
-public class ZoomedFuncListTest {
+public class ZoomFuncListTest {
     
     public static interface CarSpec {
         
@@ -190,16 +191,19 @@ public class ZoomedFuncListTest {
     }
     
     
+    private final Car car1 = new Car("blue");
+    private final Car car2 = new Car("red");
+    private final Car car3 = new Car("green");
+    private final Driver driver1 = new Driver(car1);
+    private final Driver driver2 = new Driver(car2);
+    private final Driver driver3 = new Driver(car3);
+    
+    private final FuncList<DriverBoss> bosses = (FuncList<DriverBoss>)FuncList.of(new DriverBoss(driver1), new DriverBoss(driver2), new DriverBoss(driver3));
+    
+    
+    
     @Test
     public void testZoomBasic() {
-        val car1 = new Car("blue");
-        val car2 = new Car("red");
-        val car3 = new Car("green");
-        val driver1 = new Driver(car1);
-        val driver2 = new Driver(car2);
-        val driver3 = new Driver(car3);
-        
-        FuncList<DriverBoss> bosses = (FuncList<DriverBoss>)FuncList.of(new DriverBoss(driver1), new DriverBoss(driver2), new DriverBoss(driver3));
         val bossDrivers      = new ZoomFuncList<Driver, DriverBoss, FuncList<DriverBoss>>(bosses, DriverBoss.theDriverBoss.driver);
         val driverCars       = new ZoomZoomFuncList<>(bossDrivers, Driver.theDriver.car);
         val driverCarColors  = new ZoomZoomFuncList<>(driverCars, Car.theCar.color);
@@ -252,6 +256,47 @@ public class ZoomedFuncListTest {
                      .map(String::toUpperCase)
                      .zoomOut()
                      .toListString());
+    }
+    
+    @Test
+    public void testFilter() {
+        assertEquals("[DriverBoss(driver=Driver(car=Car(color=blue))), DriverBoss(driver=Driver(car=Car(color=green)))]", 
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(Car.theCar.color)
+                .filter(theString.thatNotEquals("red"))
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    @Test
+    public void testFlatMap() {
+        val result = bosses
+        .zoomIn(DriverBoss.theDriverBoss.driver)
+        .zoomIn(Driver.theDriver.car)
+        .zoomIn(Car.theCar.color)
+        .flatMap(color -> FuncList.cycle(color).limit(color.length()))
+        .zoomOut()
+        .zoomOut()
+        .zoomOut();
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=blue))), "
+                + "DriverBoss(driver=Driver(car=Car(color=blue))), "
+                + "DriverBoss(driver=Driver(car=Car(color=blue))), "
+                + "DriverBoss(driver=Driver(car=Car(color=blue))), "
+                + "DriverBoss(driver=Driver(car=Car(color=red))), "
+                + "DriverBoss(driver=Driver(car=Car(color=red))), "
+                + "DriverBoss(driver=Driver(car=Car(color=red))), "
+                + "DriverBoss(driver=Driver(car=Car(color=green))), "
+                + "DriverBoss(driver=Driver(car=Car(color=green))), "
+                + "DriverBoss(driver=Driver(car=Car(color=green))), "
+                + "DriverBoss(driver=Driver(car=Car(color=green))), "
+                + "DriverBoss(driver=Driver(car=Car(color=green)))]",
+                result.toListString());
     }
     
 }

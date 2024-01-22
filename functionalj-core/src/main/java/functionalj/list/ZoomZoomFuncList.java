@@ -1,5 +1,7 @@
 package functionalj.list;
 
+import java.util.Collection;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -38,10 +40,14 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
      * @param predicate  the predicate to filter the elements to include.
      * @return           the {@link ZoomFuncList} with only the elements selected by the predicate.
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> filter(Predicate<DATA> filter) {
-        @SuppressWarnings("unchecked")
-        val filtered = (FUNCLIST)source.asFuncList().filter(lens, filter);
-        return new ZoomZoomFuncList<>(filtered, lens);
+        val filtered = source.filter(host -> {
+            val value   = lens.apply(host);
+            val checked = filter.test(value);
+            return checked;
+        });
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(filtered, lens);
     }
     
     /**
@@ -50,9 +56,20 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
      * @param mapper  the mapper function.
      * @return        the {@link ZoomFuncList} with the new element.
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> map(UnaryOperator<DATA> mapper) {
-        val map = source.map(host -> lens.changeTo(d -> mapper.apply(d)).apply(host));
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        val map
+            = source
+            .map(host -> {
+                val newHost
+                    = lens
+                    .changeTo(each -> {
+                        val newValue = mapper.apply(each);
+                        return newValue;
+                    })
+                    .apply(host);
+                return newHost;
+            });
         val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(map, lens);
         return result;
     }
@@ -68,6 +85,27 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
     }
     
     //== Additional Functionality ==
+    
+    //-- from FuncList --
+    
+    // -- FlatMap --
+    /**
+     * Map a value into a list and then flatten that list
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> flatMap(Function<? super DATA, ? extends Collection<? extends DATA>> mapper) {
+        val list = source.flatMap(host -> {
+            val data    = lens.apply(host);
+            val results = mapper.apply(data);
+            return FuncList.from(results)
+                    .map(each -> {
+                        val newValue = lens.changeTo(each).apply(host);
+                        return newValue;
+                    });
+        });
+        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+        return result;
+    }
     
     // TODO - Add more.
     

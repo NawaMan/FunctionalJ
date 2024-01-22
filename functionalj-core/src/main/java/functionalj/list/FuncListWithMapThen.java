@@ -74,4 +74,5 @@ public interface FuncListWithMapThen<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, merger));
     }
+    
 }
