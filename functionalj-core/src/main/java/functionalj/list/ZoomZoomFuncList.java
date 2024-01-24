@@ -32,6 +32,16 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
         
     }
     
+    /**
+     * Zoom out to the source {@link FuncList}.
+     * 
+     * @return  the source (might be modified) {@link FuncList}.
+     */
+    public FUNCLIST zoomOut() {
+        val zoomOut = super.zoomOut();
+        return zoomOut;
+    }
+    
     //== Mandatory Functionality ==
     
     /**
@@ -75,21 +85,6 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
     }
     
     /**
-     * Zoom out to the source {@link FuncList}.
-     * 
-     * @return  the source (might be modified) {@link FuncList}.
-     */
-    public FUNCLIST zoomOut() {
-        val zoomOut = super.zoomOut();
-        return zoomOut;
-    }
-    
-    //== Additional Functionality ==
-    
-    //-- from FuncList --
-    
-    // -- FlatMap --
-    /**
      * Map a value into a list and then flatten that list
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -106,6 +101,11 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
         val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
         return result;
     }
+    
+    //== Additional Functionality ==
+    
+    //-- from FuncList --
+    
     
     // TODO - Add more.
     

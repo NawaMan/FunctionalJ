@@ -1,6 +1,9 @@
 package functionalj.list;
 
 import static functionalj.lens.Access.theString;
+import static functionalj.list.FuncList.ListOf;
+import static functionalj.list.ZoomFuncListTest.Car.theCar;
+import static functionalj.list.ZoomFuncListTest.Driver.theDriver;
 import static org.junit.Assert.assertEquals;
 
 import java.util.function.BiFunction;
@@ -201,9 +204,40 @@ public class ZoomFuncListTest {
     private final FuncList<DriverBoss> bosses = (FuncList<DriverBoss>)FuncList.of(new DriverBoss(driver1), new DriverBoss(driver2), new DriverBoss(driver3));
     
     
+    @Test
+    public void testZoom() {
+        val cars      = ListOf(car1, car2, car3);
+        val carColors = cars.zoomIn(theCar.color);
+        assertEquals(
+                "[BLUE, RED, GREEN]",
+                carColors.map(String::toUpperCase).toListString());
+        assertEquals(
+                "[Car(color=BLUE), Car(color=RED), Car(color=GREEN)]",
+                carColors.map(String::toUpperCase).zoomOut().toListString());
+    }
     
     @Test
-    public void testZoomBasic() {
+    public void testZoom2() {
+        val drivers   = ListOf(driver1, driver2, driver3);
+        val carColors = drivers.zoomIn(theDriver.car);
+        assertEquals(
+                "["
+                + "Car(color=BLUE), "
+                + "Car(color=RED), "
+                + "Car(color=GREEN)"
+                + "]",
+                carColors.map(car -> new Car(car.color.toUpperCase())).toListString());
+        assertEquals(
+                "["
+                + "Driver(car=Car(color=BLUE)), "
+                + "Driver(car=Car(color=RED)), "
+                + "Driver(car=Car(color=GREEN))"
+                + "]",
+                carColors.map(car -> new Car(car.color.toUpperCase())).zoomOut().toListString());
+    }
+    
+    @Test
+    public void testZoomZoom() {
         val bossDrivers      = new ZoomFuncList<Driver, DriverBoss, FuncList<DriverBoss>>(bosses, DriverBoss.theDriverBoss.driver);
         val driverCars       = new ZoomZoomFuncList<>(bossDrivers, Driver.theDriver.car);
         val driverCarColors  = new ZoomZoomFuncList<>(driverCars, Car.theCar.color);

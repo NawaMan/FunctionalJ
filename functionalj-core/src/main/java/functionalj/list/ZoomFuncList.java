@@ -39,6 +39,15 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST>> impleme
         return (FuncList<DATA>)source.asFuncList().map(lens);
     }
     
+    /**
+     * Zoom out to the source {@link FuncList}.
+     * 
+     * @return  the source (might be modified) {@link FuncList}.
+     */
+    public FUNCLIST zoomOut() {
+        return source;
+    }
+    
     //== Mandatory Functionality ==
     
     /**
@@ -89,20 +98,6 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST>> impleme
         return new ZoomZoomFuncList<>(this, lens);
     }
     
-    /**
-     * Zoom out to the source {@link FuncList}.
-     * 
-     * @return  the source (might be modified) {@link FuncList}.
-     */
-    public FUNCLIST zoomOut() {
-        return source;
-    }
-    
-    //== Additional Functionality ==
-    
-    //-- from FuncList --
-    
-    // -- FlatMap --
      /**
       * Map a value into a list and then flatten that list
       */
@@ -118,6 +113,10 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST>> impleme
          });
          return new ZoomFuncList<>(list, lens);
      }
+     
+     //== Additional Functionality ==
+     
+     //-- from FuncList --
     
     
     
