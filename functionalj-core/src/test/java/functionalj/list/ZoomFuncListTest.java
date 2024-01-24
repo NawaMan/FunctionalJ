@@ -6,6 +6,7 @@ import static functionalj.list.ZoomFuncListTest.Car.theCar;
 import static functionalj.list.ZoomFuncListTest.Driver.theDriver;
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -331,6 +332,49 @@ public class ZoomFuncListTest {
                 + "DriverBoss(driver=Driver(car=Car(color=green))), "
                 + "DriverBoss(driver=Driver(car=Car(color=green)))]",
                 result.toListString());
+    }
+    
+    @Test
+    public void testPeek() {
+        val cars      = ListOf(car1, car2, car3);
+        val logs1 = new ArrayList<String>();
+        val logs2 = new ArrayList<String>();
+        cars
+        .zoomIn(Car.theCar.color)
+        .filter(theString.thatNotEquals("red"))
+        .peek(logs1::add)
+        .zoomOut()
+        .peek(car -> logs2.add(car.toString()))
+        .toListString();
+        
+        assertEquals(
+                "[blue, green]",
+                logs1.toString());
+        assertEquals(
+                "[Car(color=blue), Car(color=green)]",
+                logs2.toString());
+        
+        
+        val logs3 = new ArrayList<String>();
+        val logs4 = new ArrayList<String>();
+        bosses
+        .zoomIn(DriverBoss.theDriverBoss.driver)
+        .zoomIn(Driver.theDriver.car)
+        .zoomIn(Car.theCar.color)
+        .filter(theString.thatNotEquals("red"))
+        .peek(logs3::add)
+        .zoomOut()
+        .zoomOut()
+        .zoomOut()
+        .peek(boss -> logs4.add(boss.toString()))
+        .toListString();
+        
+        assertEquals(
+                "[blue, green]",
+                logs3.toString());
+        assertEquals(
+                "[DriverBoss(driver=Driver(car=Car(color=blue))), DriverBoss(driver=Driver(car=Car(color=green)))]",
+                logs4.toString());
     }
     
 }

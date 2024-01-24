@@ -1,6 +1,7 @@
 package functionalj.list;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -16,8 +17,8 @@ import lombok.val;
  * @param <SUPER_HOST>  
  * @param <FUNCLIST>
  */
-public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncList<HOST, SUPER_HOST, ?>> 
-                extends ZoomFuncList<DATA, HOST, FUNCLIST> {
+public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZoomFuncList<HOST, SUPER_HOST, ?>> 
+                extends AbstractZoomFuncList<DATA, HOST, FUNCLIST> {
     
     /**
      * Constructs a {@link ZoomZoomFuncList}.
@@ -32,24 +33,13 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
         
     }
     
-    /**
-     * Zoom out to the source {@link FuncList}.
-     * 
-     * @return  the source (might be modified) {@link FuncList}.
-     */
-    public FUNCLIST zoomOut() {
-        val zoomOut = super.zoomOut();
-        return zoomOut;
+    public <D> ZoomZoomFuncList<D, DATA, HOST, AbstractZoomFuncList<DATA, HOST, FUNCLIST>> zoomIn(AnyLens<DATA, D> lens) {
+        return new ZoomZoomFuncList<>(this, lens);
     }
     
     //== Mandatory Functionality ==
     
-    /**
-     * Filter elements using the {@link Predicate}.
-     * 
-     * @param predicate  the predicate to filter the elements to include.
-     * @return           the {@link ZoomFuncList} with only the elements selected by the predicate.
-     */
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> filter(Predicate<DATA> filter) {
         val filtered = source.filter(host -> {
@@ -60,12 +50,7 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
         return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(filtered, lens);
     }
     
-    /**
-     * Replace the element using the mapper.
-     * 
-     * @param mapper  the mapper function.
-     * @return        the {@link ZoomFuncList} with the new element.
-     */
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> map(UnaryOperator<DATA> mapper) {
         val map
@@ -84,9 +69,7 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
         return result;
     }
     
-    /**
-     * Map a value into a list and then flatten that list
-     */
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> flatMap(Function<? super DATA, ? extends Collection<? extends DATA>> mapper) {
         val list = source.flatMap(host -> {
@@ -97,6 +80,17 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends ZoomFuncL
                         val newValue = lens.changeTo(each).apply(host);
                         return newValue;
                     });
+        });
+        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+        return result;
+    }
+    
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> peek(Consumer<? super DATA> action) {
+        val list = source.peek(host -> {
+            val data = lens.apply(host);
+            action.accept(data);
         });
         val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
         return result;
