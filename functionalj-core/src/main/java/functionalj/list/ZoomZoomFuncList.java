@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import functionalj.function.IntObjBiFunction;
+import functionalj.function.aggregator.Aggregation;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
@@ -69,6 +70,12 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
             });
         val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(map, lens);
         return result;
+    }
+    
+    @Override
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> map(Aggregation<? super DATA, ? extends DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return map(aggregator::apply);
     }
     
     @Override

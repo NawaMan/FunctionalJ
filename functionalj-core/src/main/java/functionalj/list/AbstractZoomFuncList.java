@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import functionalj.function.IntObjBiFunction;
+import functionalj.function.aggregator.Aggregation;
 import functionalj.lens.lenses.AnyLens;
 
 /**
@@ -66,6 +67,11 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * @return        the {@link ZoomFuncList} with the new element.
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> map(UnaryOperator<DATA> mapper);
+    
+    /**
+     * Map each value into other value using the function.
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> map(Aggregation<? super DATA, ? extends DATA> aggregation);
     
      /**
       * Map a value into a list and then flatten that list

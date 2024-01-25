@@ -7,17 +7,22 @@ import static functionalj.list.ZoomFuncListTest.Driver.theDriver;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 import org.junit.Test;
 
 import functionalj.function.Func1;
+import functionalj.function.aggregator.Aggregation;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.StringLens;
+import functionalj.stream.collect.CollectorPlus;
 import lombok.val;
 
 public class ZoomFuncListTest {
@@ -202,12 +207,13 @@ public class ZoomFuncListTest {
     private final Driver driver2 = new Driver(car2);
     private final Driver driver3 = new Driver(car3);
     
-    private final FuncList<DriverBoss> bosses = (FuncList<DriverBoss>)FuncList.of(new DriverBoss(driver1), new DriverBoss(driver2), new DriverBoss(driver3));
+    private final FuncList<Car>        cars    = ListOf(car1, car2, car3);
+    private final FuncList<Driver>     drivers = ListOf(driver1, driver2, driver3);
+    private final FuncList<DriverBoss> bosses  = (FuncList<DriverBoss>)FuncList.of(new DriverBoss(driver1), new DriverBoss(driver2), new DriverBoss(driver3));
     
     
     @Test
     public void testZoom() {
-        val cars      = ListOf(car1, car2, car3);
         val carColors = cars.zoomIn(theCar.color);
         assertEquals(
                 "[BLUE, RED, GREEN]",
@@ -219,7 +225,6 @@ public class ZoomFuncListTest {
     
     @Test
     public void testZoom2() {
-        val drivers   = ListOf(driver1, driver2, driver3);
         val carColors = drivers.zoomIn(theDriver.car);
         assertEquals(
                 "["
@@ -308,6 +313,79 @@ public class ZoomFuncListTest {
     }
     
     @Test
+    public void testMap_function() {
+        assertEquals(
+                "[Car(color=BLUE), Car(color=RED), Car(color=GREEN)]",
+                cars.zoomIn(theCar.color).map(String::toUpperCase).zoomOut().toListString());
+        
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=BLUE))), "
+                + "DriverBoss(driver=Driver(car=Car(color=RED))), "
+                + "DriverBoss(driver=Driver(car=Car(color=GREEN)))"
+                + "]",
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(Car.theCar.color)
+                .map(String::toUpperCase)
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    static class CollectFirst extends Aggregation<String, String> {
+        private CollectorPlus<String, StringBuffer, String> collectorPlus = new CollectorPlus<String, StringBuffer, String>() {
+            public Supplier<StringBuffer> supplier() {
+                return () -> new StringBuffer();
+            }
+            public BiConsumer<StringBuffer, String> accumulator() {
+                return (sb, s) -> sb.append(s.charAt(0));
+            }
+            public BinaryOperator<StringBuffer> combiner() {
+                return (sb1, sb2) -> new StringBuffer().append(sb1).append(sb2);
+            }
+            
+            public Function<StringBuffer, String> finisher() {
+                return sb -> sb.toString();
+            }
+            @Override
+            public Collector<String, StringBuffer, String> collector() {
+                return this;
+            }
+        };
+        
+        public CollectorPlus<String, ?, String> collectorPlus() {
+            return collectorPlus;
+        }
+    }
+    
+    @Test
+    public void testMap_aggregator() {
+        val collectFirst = new CollectFirst();
+        assertEquals(
+                "[Car(color=b), Car(color=br), Car(color=brg)]",
+                cars.zoomIn(theCar.color).map(collectFirst).zoomOut().toListString());
+        
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=b))), "
+                + "DriverBoss(driver=Driver(car=Car(color=br))), "
+                + "DriverBoss(driver=Driver(car=Car(color=brg)))"
+                + "]",
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(Car.theCar.color)
+                .map(collectFirst)
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    @Test
     public void testFlatMap() {
         val result = bosses
         .zoomIn(DriverBoss.theDriverBoss.driver)
@@ -336,7 +414,6 @@ public class ZoomFuncListTest {
     
     @Test
     public void testPeek() {
-        val cars      = ListOf(car1, car2, car3);
         val logs1 = new ArrayList<String>();
         val logs2 = new ArrayList<String>();
         cars
@@ -379,7 +456,6 @@ public class ZoomFuncListTest {
     
     @Test
     public void testWith() {
-        val cars = (FuncList<Car>)ListOf(car1, car2, car3);
         assertEquals(
                 "[Car(color=blue), Car(color=yellow), Car(color=green)]",
                 cars.zoomIn(Car.theCar.color).with(1, "yellow").zoomOut().toListString());
@@ -439,7 +515,6 @@ public class ZoomFuncListTest {
     
     @Test
     public void testExclude() {
-        val cars = (FuncList<Car>)ListOf(car1, car2, car3);
         assertEquals(
                 "[Car(color=red), Car(color=green)]",
                 cars.zoomIn(Car.theCar.color).exclude("blue").zoomOut().toListString());
