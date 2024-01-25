@@ -437,4 +437,27 @@ public class ZoomFuncListTest {
                 .toListString());
     }
     
+    @Test
+    public void testExclude() {
+        val cars = (FuncList<Car>)ListOf(car1, car2, car3);
+        assertEquals(
+                "[Car(color=red), Car(color=green)]",
+                cars.zoomIn(Car.theCar.color).exclude("blue").zoomOut().toListString());
+        
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=red))), "
+                + "DriverBoss(driver=Driver(car=Car(color=green)))"
+                + "]",
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(Car.theCar.color)
+                .exclude("blue")
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
 }

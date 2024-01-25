@@ -96,6 +96,9 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> with(int index, IntObjBiFunction<DATA, DATA> mapper);
     
-    
+    /**
+     * Returns the new list from this list without the element.
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> exclude(DATA element);
     
 }

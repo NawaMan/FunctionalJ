@@ -1,6 +1,7 @@
 package functionalj.list;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -133,6 +134,14 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
             }).apply(sourceItem);
             return newItem;
         });
+        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+        return result;
+    }
+    
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> exclude(DATA element) {
+        val list = source.filter(host -> !Objects.equals(lens.apply(host), element));
         val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
         return result;
     }
