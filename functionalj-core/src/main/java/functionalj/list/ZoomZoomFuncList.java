@@ -95,6 +95,12 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
     }
     
     @Override
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> flatMap(Aggregation<? super DATA, ? extends Collection<? extends DATA>> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return flatMap(aggregator::apply);
+    }
+    
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> peek(Consumer<? super DATA> action) {
         val list = source.peek(host -> {

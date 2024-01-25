@@ -73,19 +73,24 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> map(Aggregation<? super DATA, ? extends DATA> aggregation);
     
-     /**
-      * Map a value into a list and then flatten that list
-      */
-     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> flatMap(Function<? super DATA, ? extends Collection<? extends DATA>> mapper);
-     
-     /**
-      * Consume each value using the action whenever a termination operation is called
-      */
+    /**
+     * Map a value into a list and then flatten that list
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> flatMap(Function<? super DATA, ? extends Collection<? extends DATA>> mapper);
+    
+    /**
+     * Map a value into a list and then flatten that list
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> flatMap(Aggregation<? super DATA, ? extends Collection<? extends DATA>> aggregation);
+    
+    /**
+     * Consume each value using the action whenever a termination operation is called
+     */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> peek(Consumer<? super DATA> action);
-     
-     //== Additional Functionality ==
-     
-     //-- from FuncList --
+    
+    //== Additional Functionality ==
+    
+    //-- from FuncList --
     
     /**
      * Returns a new functional list with the value replacing at the index.

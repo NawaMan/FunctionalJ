@@ -85,6 +85,12 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends FuncList<HOST>> extends A
         return new ZoomFuncList<>(list, lens);
     }
     
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends FuncList<HOST>> flatMap(Aggregation<? super DATA, ? extends Collection<? extends DATA>> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return flatMap(aggregator::apply);
+    }
+    
     /**
      * Consume each value using the action whenever a termination operation is called
      */

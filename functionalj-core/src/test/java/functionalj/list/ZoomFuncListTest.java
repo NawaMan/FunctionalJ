@@ -412,6 +412,68 @@ public class ZoomFuncListTest {
                 result.toListString());
     }
     
+    static class CollectToList extends Aggregation<String, FuncList<String>> {
+        private CollectorPlus<String, ArrayList<String>, FuncList<String>> collectorPlus = new CollectorPlus<String, ArrayList<String>, FuncList<String>>() {
+            public Supplier<ArrayList<String>> supplier() {
+                return () -> new ArrayList<String>();
+            }
+            public BiConsumer<ArrayList<String>, String> accumulator() {
+                return (sb, s) -> sb.add("" + s.charAt(0));
+            }
+            public BinaryOperator<ArrayList<String>> combiner() {
+                return (sb1, sb2) -> {
+                    val list = new ArrayList<String>();
+                    list.addAll(sb1);
+                    list.addAll(sb2);
+                    return list;
+                };
+            }
+            
+            public Function<ArrayList<String>, FuncList<String>> finisher() {
+                return sb -> FuncList.from(sb);
+            }
+            @Override
+            public Collector<String, ArrayList<String>, FuncList<String>> collector() {
+                return this;
+            }
+        };
+        
+        public CollectorPlus<String, ?, FuncList<String>> collectorPlus() {
+            return collectorPlus;
+        }
+    }
+    
+    @Test
+    public void testFlatMap_aggregator() {
+        // [b]
+        // [b, r]
+        // [b, r, g]
+        
+        val collectToList = new CollectToList();
+        assertEquals(
+                "[Car(color=b), Car(color=b), Car(color=r), Car(color=b), Car(color=r), Car(color=g)]",
+                cars.zoomIn(theCar.color).flatMap(collectToList).zoomOut().toListString());
+        
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=b))), "
+                + "DriverBoss(driver=Driver(car=Car(color=b))), "
+                + "DriverBoss(driver=Driver(car=Car(color=r))), "
+                + "DriverBoss(driver=Driver(car=Car(color=b))), "
+                + "DriverBoss(driver=Driver(car=Car(color=r))), "
+                + "DriverBoss(driver=Driver(car=Car(color=g)))"
+                + "]",
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(Car.theCar.color)
+                .flatMap(collectToList)
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
     @Test
     public void testPeek() {
         val logs1 = new ArrayList<String>();
