@@ -377,4 +377,64 @@ public class ZoomFuncListTest {
                 logs4.toString());
     }
     
+    @Test
+    public void testWith() {
+        val cars = (FuncList<Car>)ListOf(car1, car2, car3);
+        assertEquals(
+                "[Car(color=blue), Car(color=yellow), Car(color=green)]",
+                cars.zoomIn(Car.theCar.color).with(1, "yellow").zoomOut().toListString());
+        assertEquals(
+                "[Car(color=blue), Car(color=red), Car(color=darkgreen)]",
+                cars.zoomIn(Car.theCar.color).with(2, c -> "dark" + c).zoomOut().toListString());
+        assertEquals(
+                "[Car(color=blue), Car(color=red), Car(color=darkgreen#2)]",
+                cars.zoomIn(Car.theCar.color).with(2, (i,c) -> "dark" + c + "#" + i).zoomOut().toListString());
+        
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=blue))), "
+                + "DriverBoss(driver=Driver(car=Car(color=yellow))), "
+                + "DriverBoss(driver=Driver(car=Car(color=green)))"
+                + "]",
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(Car.theCar.color)
+                .with(1, "yellow")
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=blue))), "
+                + "DriverBoss(driver=Driver(car=Car(color=red))), "
+                + "DriverBoss(driver=Driver(car=Car(color=darkgreen)))"
+                + "]",
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(Car.theCar.color)
+                .with(2, c -> "dark" + c)
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=blue))), "
+                + "DriverBoss(driver=Driver(car=Car(color=red))), "
+                + "DriverBoss(driver=Driver(car=Car(color=darkgreen#2)))"
+                + "]",
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(Car.theCar.color)
+                .with(2, (i,c) -> "dark" + c + "#" + i)
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
 }

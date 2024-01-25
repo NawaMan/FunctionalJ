@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import functionalj.function.IntObjBiFunction;
 import functionalj.lens.lenses.AnyLens;
 
 /**
@@ -79,6 +80,21 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      //== Additional Functionality ==
      
      //-- from FuncList --
+    
+    /**
+     * Returns a new functional list with the value replacing at the index.
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> with(int index, DATA value);
+    
+    /**
+     * Returns a new functional list with the new value (calculated from the mapper) replacing at the index.
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> with(int index, Function<DATA, DATA> mapper);
+    
+    /**
+     * Returns a new functional list with the new value (calculated from the mapper) replacing at the index.
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> with(int index, IntObjBiFunction<DATA, DATA> mapper);
     
     
     

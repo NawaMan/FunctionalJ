@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import functionalj.function.IntObjBiFunction;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
@@ -99,6 +100,42 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
     //== Additional Functionality ==
     
     //-- from FuncList --
+    
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> with(int index, DATA value) {
+        val list = source.with(index, sourceItem -> {
+            val newItem = lens.changeTo(value).apply(sourceItem);
+            return newItem;
+        });
+        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+        return result;
+    }
+    
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> with(int index, Function<DATA, DATA> mapper) {
+        val list = source.with(index, sourceItem -> {
+            val newItem = lens.changeTo(mapper).apply(sourceItem);
+            return newItem;
+        });
+        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+        return result;
+    }
+    
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> with(int index, IntObjBiFunction<DATA, DATA> mapper) {
+        val list = source.with(index, sourceItem -> {
+            val newItem = lens.changeTo(oldValue -> {
+                val newValue = mapper.apply(index, oldValue);
+                return newValue;
+            }).apply(sourceItem);
+            return newItem;
+        });
+        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+        return result;
+    }
     
     
     // TODO - Add more.

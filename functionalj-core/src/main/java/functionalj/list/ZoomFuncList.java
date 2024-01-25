@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import functionalj.function.IntObjBiFunction;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
@@ -91,6 +92,35 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends FuncList<HOST>> extends A
      
      //-- from FuncList --
     
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> with(int index, DATA value) {
+        val list = source.asFuncList().with(index, sourceItem -> {
+            val newItem = lens.changeTo(value).apply(sourceItem);
+            return newItem;
+        });
+        return new ZoomFuncList<>(list, lens);
+    }
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> with(int index, Function<DATA, DATA> mapper) {
+        val list = source.asFuncList().with(index, sourceItem -> {
+            val newItem = lens.changeTo(mapper).apply(sourceItem);
+            return newItem;
+        });
+        return new ZoomFuncList<>(list, lens);
+    }
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> with(int index, IntObjBiFunction<DATA, DATA> mapper) {
+        val list = source.asFuncList().with(index, sourceItem -> {
+            val newItem = lens.changeTo(oldValue -> {
+                val newValue = mapper.apply(index, oldValue);
+                return newValue;
+            }).apply(sourceItem);
+            return newItem;
+        });
+        return new ZoomFuncList<>(list, lens);
+    }
     
     
     
