@@ -1274,6 +1274,20 @@ public interface FuncList<DATA> extends ReadOnlyList<DATA>, Predicate<DATA>, Int
     }
     
     /**
+     * Returns a new functional list with the new value (calculated from the mapper) replacing at the index.
+     */
+    public default FuncList<DATA> with(int index, IntObjBiFunction<DATA, DATA> mapper) {
+        if (index < 0)
+            throw new IndexOutOfBoundsException(index + "");
+        if (index >= size())
+            throw new IndexOutOfBoundsException(index + " vs " + size());
+        return mapWithIndex((i, value) -> {
+            val newValue = (i == index) ? mapper.apply(i, value) : value;
+            return newValue;
+        });
+    }
+    
+    /**
      * Returns a new list with the given elements inserts into at the given index.
      *
      * This method is for convenient. It is not really efficient if used to add a lot of data.
