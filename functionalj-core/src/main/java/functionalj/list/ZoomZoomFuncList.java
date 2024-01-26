@@ -9,6 +9,7 @@ import java.util.function.UnaryOperator;
 
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
@@ -51,6 +52,12 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
             return checked;
         });
         return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(filtered, lens);
+    }
+    
+    @Override
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> filter(AggregationToBoolean<? super DATA> aggregation) {
+        val aggregator = aggregation.newAggregator();
+        return filter(aggregator::apply);
     }
     
     @Override

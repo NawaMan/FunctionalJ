@@ -10,6 +10,7 @@ import java.util.function.UnaryOperator;
 
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.lens.lenses.AnyLens;
 
 /**
@@ -59,6 +60,11 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * @return           the {@link ZoomFuncList} with only the elements selected by the predicate.
      */
     public abstract AbstractZoomFuncList<DATA, HOST, FUNCLIST> filter(Predicate<DATA> predicate);
+    
+    /**
+     * Select only the element that passes the predicate
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, FUNCLIST> filter(AggregationToBoolean<? super DATA> aggregation);
     
     /**
      * Replace the element using the mapper.

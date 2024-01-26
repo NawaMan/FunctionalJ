@@ -7,10 +7,15 @@ import static functionalj.list.ZoomFuncListTest.Driver.theDriver;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
@@ -18,11 +23,13 @@ import org.junit.Test;
 
 import functionalj.function.Func1;
 import functionalj.function.aggregator.Aggregation;
+import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.StringLens;
 import functionalj.stream.collect.CollectorPlus;
+import functionalj.stream.collect.CollectorToBooleanPlus;
 import lombok.val;
 
 public class ZoomFuncListTest {
@@ -211,6 +218,95 @@ public class ZoomFuncListTest {
     private final FuncList<Driver>     drivers = ListOf(driver1, driver2, driver3);
     private final FuncList<DriverBoss> bosses  = (FuncList<DriverBoss>)FuncList.of(new DriverBoss(driver1), new DriverBoss(driver2), new DriverBoss(driver3));
     
+    static class CollectFirst extends Aggregation<String, String> {
+        private CollectorPlus<String, StringBuffer, String> collectorPlus = new CollectorPlus<String, StringBuffer, String>() {
+            public Supplier<StringBuffer> supplier() {
+                return () -> new StringBuffer();
+            }
+            public BiConsumer<StringBuffer, String> accumulator() {
+                return (sb, s) -> sb.append(s.charAt(0));
+            }
+            public BinaryOperator<StringBuffer> combiner() {
+                return (sb1, sb2) -> new StringBuffer().append(sb1).append(sb2);
+            }
+            
+            public Function<StringBuffer, String> finisher() {
+                return sb -> sb.toString();
+            }
+            @Override
+            public Collector<String, StringBuffer, String> collector() {
+                return this;
+            }
+        };
+        
+        public CollectorPlus<String, ?, String> collectorPlus() {
+            return collectorPlus;
+        }
+    }
+    
+    static class CollectToList extends Aggregation<String, FuncList<String>> {
+        private CollectorPlus<String, ArrayList<String>, FuncList<String>> collectorPlus = new CollectorPlus<String, ArrayList<String>, FuncList<String>>() {
+            public Supplier<ArrayList<String>> supplier() {
+                return () -> new ArrayList<String>();
+            }
+            public BiConsumer<ArrayList<String>, String> accumulator() {
+                return (sb, s) -> sb.add("" + s.charAt(0));
+            }
+            public BinaryOperator<ArrayList<String>> combiner() {
+                return (sb1, sb2) -> {
+                    val list = new ArrayList<String>();
+                    list.addAll(sb1);
+                    list.addAll(sb2);
+                    return list;
+                };
+            }
+            
+            public Function<ArrayList<String>, FuncList<String>> finisher() {
+                return sb -> FuncList.from(sb);
+            }
+            @Override
+            public Collector<String, ArrayList<String>, FuncList<String>> collector() {
+                return this;
+            }
+        };
+        
+        public CollectorPlus<String, ?, FuncList<String>> collectorPlus() {
+            return collectorPlus;
+        }
+    }
+    
+    static class Alternative extends AggregationToBoolean<String> {
+        private CollectorToBooleanPlus<String, AtomicBoolean> collector = new CollectorToBooleanPlus<String, AtomicBoolean>() {
+            @Override
+            public Collector<String, AtomicBoolean, Boolean> collector() {
+                return this;
+            }
+            @Override
+            public Supplier<AtomicBoolean> supplier() {
+                return () -> new AtomicBoolean();
+            }
+            @Override
+            public BiConsumer<AtomicBoolean, String> accumulator() {
+                return (a, s) -> a.set(!a.get());
+            }
+            @Override
+            public BinaryOperator<AtomicBoolean> combiner() {
+                return (a, b) -> new AtomicBoolean(a.get() != b.get());
+            }
+            @Override
+            public Predicate<AtomicBoolean> finisherToBoolean() {
+                return a -> a.get();
+            }
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Collections.emptySet();
+            }
+        };
+        @Override
+        public CollectorToBooleanPlus<String, ?> collectorToBooleanPlus() {
+            return collector;
+        }
+    }
     
     @Test
     public void testZoom() {
@@ -313,6 +409,26 @@ public class ZoomFuncListTest {
     }
     
     @Test
+    public void testFilter_aggregate() {
+        val alternative = new Alternative();
+        
+        assertEquals(
+                "[Car(color=blue), Car(color=green)]",
+                cars.zoomIn(theCar.color).filter(alternative).zoomOut().toListString());
+        
+        assertEquals("[DriverBoss(driver=Driver(car=Car(color=blue))), DriverBoss(driver=Driver(car=Car(color=green)))]", 
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(Car.theCar.color)
+                .filter(alternative)
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    @Test
     public void testMap_function() {
         assertEquals(
                 "[Car(color=BLUE), Car(color=RED), Car(color=GREEN)]",
@@ -333,32 +449,6 @@ public class ZoomFuncListTest {
                 .zoomOut()
                 .zoomOut()
                 .toListString());
-    }
-    
-    static class CollectFirst extends Aggregation<String, String> {
-        private CollectorPlus<String, StringBuffer, String> collectorPlus = new CollectorPlus<String, StringBuffer, String>() {
-            public Supplier<StringBuffer> supplier() {
-                return () -> new StringBuffer();
-            }
-            public BiConsumer<StringBuffer, String> accumulator() {
-                return (sb, s) -> sb.append(s.charAt(0));
-            }
-            public BinaryOperator<StringBuffer> combiner() {
-                return (sb1, sb2) -> new StringBuffer().append(sb1).append(sb2);
-            }
-            
-            public Function<StringBuffer, String> finisher() {
-                return sb -> sb.toString();
-            }
-            @Override
-            public Collector<String, StringBuffer, String> collector() {
-                return this;
-            }
-        };
-        
-        public CollectorPlus<String, ?, String> collectorPlus() {
-            return collectorPlus;
-        }
     }
     
     @Test
@@ -410,37 +500,6 @@ public class ZoomFuncListTest {
                 + "DriverBoss(driver=Driver(car=Car(color=green))), "
                 + "DriverBoss(driver=Driver(car=Car(color=green)))]",
                 result.toListString());
-    }
-    
-    static class CollectToList extends Aggregation<String, FuncList<String>> {
-        private CollectorPlus<String, ArrayList<String>, FuncList<String>> collectorPlus = new CollectorPlus<String, ArrayList<String>, FuncList<String>>() {
-            public Supplier<ArrayList<String>> supplier() {
-                return () -> new ArrayList<String>();
-            }
-            public BiConsumer<ArrayList<String>, String> accumulator() {
-                return (sb, s) -> sb.add("" + s.charAt(0));
-            }
-            public BinaryOperator<ArrayList<String>> combiner() {
-                return (sb1, sb2) -> {
-                    val list = new ArrayList<String>();
-                    list.addAll(sb1);
-                    list.addAll(sb2);
-                    return list;
-                };
-            }
-            
-            public Function<ArrayList<String>, FuncList<String>> finisher() {
-                return sb -> FuncList.from(sb);
-            }
-            @Override
-            public Collector<String, ArrayList<String>, FuncList<String>> collector() {
-                return this;
-            }
-        };
-        
-        public CollectorPlus<String, ?, FuncList<String>> collectorPlus() {
-            return collectorPlus;
-        }
     }
     
     @Test
