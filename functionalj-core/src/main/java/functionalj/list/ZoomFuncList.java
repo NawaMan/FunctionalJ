@@ -99,16 +99,27 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends FuncList<HOST>> extends A
         return flatMap(aggregator::apply);
     }
     
-    /**
-     * Consume each value using the action whenever a termination operation is called
-     */
+    @Override
     public ZoomFuncList<DATA, HOST, ? extends FuncList<HOST>> peek(Consumer<? super DATA> action) {
-         val list = source.asFuncList().peek(host -> {
-             val data = lens.apply(host);
-             action.accept(data);
-         });
-         return new ZoomFuncList<>(list, lens);
-     }
+        val list = source.asFuncList().peek(host -> {
+            val data = lens.apply(host);
+            action.accept(data);
+        });
+        return new ZoomFuncList<>(list, lens);
+    }
+    
+    // -- Limit/Skip --
+    @Override
+    public AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> limit(long maxSize) {
+        val list = source.asFuncList().limit(maxSize);
+        return new ZoomFuncList<>(list, lens);
+    }
+    
+    @Override
+    public AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> skip(long n) {
+        val list = source.asFuncList().skip(n);
+        return new ZoomFuncList<>(list, lens);
+    }
     
     // == Access list ==
     
@@ -183,6 +194,25 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends FuncList<HOST>> extends A
         });
         return new ZoomFuncList<>(list, lens);
     }
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> first(int count) {
+        val list = source.asFuncList().first(count);
+        return new ZoomFuncList<>(list, lens);
+    }
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> last(int count) {
+        val list = source.asFuncList().last(count);
+        return new ZoomFuncList<>(list, lens);
+    }
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> tail() {
+        val list = source.asFuncList().tail();
+        return new ZoomFuncList<>(list, lens);
+    }
+    
     
     // TODO - Add more.
     

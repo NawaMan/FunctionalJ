@@ -579,6 +579,51 @@ public class ZoomFuncListTest {
     }
     
     @Test
+    public void testLimitSkip() {
+        assertEquals(
+                "[Car(color=blue), Car(color=red)]",
+                cars
+                .zoomIn(theCar.color)
+                .limit(2)
+                .zoomOut()
+                .toListString());
+        
+        assertEquals(
+                "[Car(color=red), Car(color=green)]",
+                cars
+                .zoomIn(theCar.color)
+                .skip(1)
+                .limit(2)
+                .zoomOut()
+                .toListString());
+        
+        assertEquals(
+                "[DriverBoss(driver=Driver(car=Car(color=blue))), DriverBoss(driver=Driver(car=Car(color=red)))]",
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(theCar.color)
+                .limit(2)
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+        
+        assertEquals(
+                "[DriverBoss(driver=Driver(car=Car(color=red))), DriverBoss(driver=Driver(car=Car(color=green)))]",
+                bosses
+                .zoomIn(DriverBoss.theDriverBoss.driver)
+                .zoomIn(Driver.theDriver.car)
+                .zoomIn(theCar.color)
+                .skip(1)
+                .limit(2)
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    @Test
     public void testContains() {
         assertTrue(cars.zoomIn(theCar.color).contains("red"));
         assertFalse(cars.zoomIn(theCar.color).contains("brown"));
@@ -784,6 +829,68 @@ public class ZoomFuncListTest {
                 .zoomIn(theDriver.car)
                 .zoomIn(theCar.color)
                 .sorted(Comparator.reverseOrder())
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    // First, First(count), Last, Last(count), tail
+    
+    @Test
+    public void testFirst() {
+        assertEquals(
+                "Optional[blue]",
+                cars
+                .zoomIn(theCar.color)
+                .first()
+                .toString());
+        
+        assertEquals(
+                "Optional[blue]",
+                bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .first()
+                .toString());
+    }
+    
+    @Test
+    public void testFirst_count() {
+        assertEquals(
+                "[blue, red]",
+                cars
+                .zoomIn(theCar.color)
+                .first(2)
+                .toListString());
+        assertEquals(
+                "[Car(color=blue), Car(color=red)]",
+                cars
+                .zoomIn(theCar.color)
+                .first(2)
+                .zoomOut()
+                .toListString());
+        
+        assertEquals(
+                "[blue, red]",
+                bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .first(2)
+                .toListString());
+        
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=blue))), "
+                + "DriverBoss(driver=Driver(car=Car(color=red)))"
+                + "]",
+                bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .first(2)
                 .zoomOut()
                 .zoomOut()
                 .zoomOut()

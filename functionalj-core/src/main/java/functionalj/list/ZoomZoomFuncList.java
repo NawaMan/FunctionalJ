@@ -116,6 +116,21 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
         return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
+    // -- Limit/Skip --
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> limit(long maxSize) {
+        val list = source.limit(maxSize);
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
+    
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> skip(long n) {
+        val list = source.skip(n);
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
+    
     // == Access list ==
     
     @Override
@@ -193,6 +208,27 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
             val valueB = lens.apply(hostB);
             return comparator.compare(valueA, valueB);
         });
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
+    
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> first(int count) {
+        val list = source.first(count);
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
+    
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> last(int count) {
+        val list = source.last(count);
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
+    
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> tail() {
+        val list = source.tail();
         return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     

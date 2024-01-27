@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -15,7 +16,9 @@ import functionalj.function.IntObjBiFunction;
 import functionalj.function.aggregator.Aggregation;
 import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.lens.lenses.AnyLens;
+import functionalj.result.Result;
 import functionalj.stream.StreamPlusHelper;
+import nullablej.nullable.Nullable;
 
 /**
  * {@link FuncList} that is zoomed in from another {@link FuncList}.
@@ -97,6 +100,17 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * Consume each value using the action whenever a termination operation is called
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> peek(Consumer<? super DATA> action);
+    
+    // -- Limit/Skip --
+    /**
+     * Limit the size
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> limit(long maxSize);
+    
+    /**
+     * Trim off the first n values
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> skip(long n);
     
     // == Access list ==
     
@@ -229,5 +243,54 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * Sort the values in the list using the given comparator
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> sorted(Comparator<? super DATA> comparator);
+    
+    // == Nullable, Optional and Result
+    public Nullable<AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>>> __nullable() {
+        return Nullable.of(this);
+    }
+    
+    public Optional<AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>>> __optional() {
+        return Optional.of(this);
+    }
+    
+    public Result<AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>>> __result() {
+        return Result.valueOf(this);
+    }
+    
+    /**
+     * Returns the first element.
+     */
+    public Optional<DATA> first() {
+        return stream().limit(1).findFirst();
+    }
+    
+    /**
+     * Returns the first elements
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> first(int count);
+    
+    /**
+     * Returns the last element.
+     */
+    public Optional<DATA> last() {
+        return last(1).findFirst();
+    }
+    
+    /**
+     * Returns the last elements
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> last(int count);
+    
+    /**
+     * Returns the element at the index.
+     */
+    public Optional<DATA> at(int index) {
+        return skip(index).limit(1).findFirst();
+    }
+    
+    /**
+     * Returns the second to the last elements.
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> tail();
     
 }
