@@ -108,6 +108,14 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends FuncList<HOST>> extends A
          });
          return new ZoomFuncList<>(list, lens);
      }
+    
+    // == Access list ==
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> subList(int fromIndexInclusive, int toIndexExclusive) {
+        val list = source.asFuncList().subList(fromIndexInclusive, toIndexExclusive);
+        return new ZoomFuncList<>(list, lens);
+    }
      
      //== Additional Functionality ==
      

@@ -3,6 +3,8 @@ package functionalj.list;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
+import java.util.ListIterator;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -12,6 +14,7 @@ import functionalj.function.IntObjBiFunction;
 import functionalj.function.aggregator.Aggregation;
 import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.lens.lenses.AnyLens;
+import functionalj.stream.StreamPlusHelper;
 
 /**
  * {@link FuncList} that is zoomed in from another {@link FuncList}.
@@ -93,6 +96,94 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * Consume each value using the action whenever a termination operation is called
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> peek(Consumer<? super DATA> action);
+    
+    // == Access list ==
+    
+    /**
+     * Check if this list is empty.
+     * 
+     * @return  <code>true</code> if this list is empty.
+     */
+    public boolean isEmpty() {
+        return !StreamPlusHelper.hasAt(stream(), 0);
+    }
+    
+    /**
+     * Check if the list contains the given data.
+     * 
+     * @param data  the data.
+     * @return  <code>true</code> if the list contains the data.
+     */
+    public boolean contains(DATA data) {
+        return asFuncList().contains(data);
+    }
+    
+    /**
+     * Check if the list contains all of the given data.
+     * 
+     * @param data  the data.
+     * @return  <code>true</code> if the list contains the data.
+     */
+    public boolean containsAll(Collection<?> c) {
+        return c.stream().allMatch(each -> stream().anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    /**
+     * Get the data at the index.
+     * 
+     * @param index  the index.
+     * @return       the data at the index.
+     */
+    public DATA get(int index) {
+        return asFuncList().get(index);
+    }
+    
+    /**
+     * Returns the first index that the given data is found or -1 if the data is not found.
+     * 
+     * @param data  the data.
+     * @return      the index that the data is first found or -1.
+     */
+    public int indexOf(Object data) {
+        return asFuncList().indexOf(data);
+    }
+    
+    /**
+     * Returns the last index that the given data is found or -1 if the data is not found.
+     * 
+     * @param data  the data.
+     * @return      the index that the data is last found or -1.
+     */
+    public int lastIndexOf(Object o) {
+        return asFuncList().lastIndexOf(o);
+    }
+    
+    /**
+     * Returns the list iterator representing this list.
+     * 
+     * @return  the list iterator.
+     */
+    public ListIterator<DATA> listIterator() {
+        return asFuncList().listIterator();
+    }
+    
+    /**
+     * Returns the list iterator representing this list at the index.
+     * 
+     * @return  the list iterator.
+     */
+    public ListIterator<DATA> listIterator(int index) {
+        return asFuncList().listIterator(index);
+    }
+    
+    /**
+     * Provide the part of the list from and to.
+     * 
+     * @param fromIndexInclusive  the start index inclusively.
+     * @param toIndexExclusive    the end index exclusively.
+     * @return
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> subList(int fromIndexInclusive, int toIndexExclusive);
     
     //== Additional Functionality ==
     

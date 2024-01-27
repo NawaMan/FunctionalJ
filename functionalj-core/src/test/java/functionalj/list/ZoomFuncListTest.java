@@ -4,11 +4,13 @@ import static functionalj.lens.Access.theString;
 import static functionalj.list.FuncList.ListOf;
 import static functionalj.list.ZoomFuncListTest.Car.theCar;
 import static functionalj.list.ZoomFuncListTest.Driver.theDriver;
+import static functionalj.list.ZoomFuncListTest.DriverBoss.theDriverBoss;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
@@ -340,9 +342,9 @@ public class ZoomFuncListTest {
     
     @Test
     public void testZoomZoom() {
-        val bossDrivers      = new ZoomFuncList<Driver, DriverBoss, FuncList<DriverBoss>>(bosses, DriverBoss.theDriverBoss.driver);
-        val driverCars       = new ZoomZoomFuncList<>(bossDrivers, Driver.theDriver.car);
-        val driverCarColors  = new ZoomZoomFuncList<>(driverCars, Car.theCar.color);
+        val bossDrivers      = new ZoomFuncList<Driver, DriverBoss, FuncList<DriverBoss>>(bosses, theDriverBoss.driver);
+        val driverCars       = new ZoomZoomFuncList<>(bossDrivers, theDriver.car);
+        val driverCarColors  = new ZoomZoomFuncList<>(driverCars, theCar.color);
         val carsWithNewColor = driverCarColors.map(String::toUpperCase);
         
         assertEquals("[BLUE, RED, GREEN]",                      carsWithNewColor.toListString());
@@ -372,9 +374,9 @@ public class ZoomFuncListTest {
         
         assertEquals("[DriverBoss(driver=Driver(car=Car(color=BLUE))), DriverBoss(driver=Driver(car=Car(color=RED))), DriverBoss(driver=Driver(car=Car(color=GREEN)))]", 
                 bosses
-                .zoomIn(DriverBoss.theDriverBoss.driver)
-                .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
                 .map(String::toUpperCase)
                 .zoomOut()
                 .zoomOut()
@@ -383,12 +385,12 @@ public class ZoomFuncListTest {
         
         assertEquals("[BLUE, RED, GREEN]",
                      bosses
-                     .zoomIn(DriverBoss.theDriverBoss.driver.car.color)
+                     .zoomIn(theDriverBoss.driver.car.color)
                      .map(String::toUpperCase)
                      .toListString());
         assertEquals("[DriverBoss(driver=Driver(car=Car(color=BLUE))), DriverBoss(driver=Driver(car=Car(color=RED))), DriverBoss(driver=Driver(car=Car(color=GREEN)))]",
                      bosses
-                     .zoomIn(DriverBoss.theDriverBoss.driver.car.color)
+                     .zoomIn(theDriverBoss.driver.car.color)
                      .map(String::toUpperCase)
                      .zoomOut()
                      .toListString());
@@ -398,9 +400,9 @@ public class ZoomFuncListTest {
     public void testFilter() {
         assertEquals("[DriverBoss(driver=Driver(car=Car(color=blue))), DriverBoss(driver=Driver(car=Car(color=green)))]", 
                 bosses
-                .zoomIn(DriverBoss.theDriverBoss.driver)
-                .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
                 .filter(theString.thatNotEquals("red"))
                 .zoomOut()
                 .zoomOut()
@@ -420,7 +422,7 @@ public class ZoomFuncListTest {
                 bosses
                 .zoomIn(DriverBoss.theDriverBoss.driver)
                 .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theCar.color)
                 .filter(alternative)
                 .zoomOut()
                 .zoomOut()
@@ -441,9 +443,9 @@ public class ZoomFuncListTest {
                 + "DriverBoss(driver=Driver(car=Car(color=GREEN)))"
                 + "]",
                 bosses
-                .zoomIn(DriverBoss.theDriverBoss.driver)
-                .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
                 .map(String::toUpperCase)
                 .zoomOut()
                 .zoomOut()
@@ -467,7 +469,7 @@ public class ZoomFuncListTest {
                 bosses
                 .zoomIn(DriverBoss.theDriverBoss.driver)
                 .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theCar.color)
                 .map(collectFirst)
                 .zoomOut()
                 .zoomOut()
@@ -480,7 +482,7 @@ public class ZoomFuncListTest {
         val result = bosses
         .zoomIn(DriverBoss.theDriverBoss.driver)
         .zoomIn(Driver.theDriver.car)
-        .zoomIn(Car.theCar.color)
+        .zoomIn(theCar.color)
         .flatMap(color -> FuncList.cycle(color).limit(color.length()))
         .zoomOut()
         .zoomOut()
@@ -525,7 +527,7 @@ public class ZoomFuncListTest {
                 bosses
                 .zoomIn(DriverBoss.theDriverBoss.driver)
                 .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theCar.color)
                 .flatMap(collectToList)
                 .zoomOut()
                 .zoomOut()
@@ -538,7 +540,7 @@ public class ZoomFuncListTest {
         val logs1 = new ArrayList<String>();
         val logs2 = new ArrayList<String>();
         cars
-        .zoomIn(Car.theCar.color)
+        .zoomIn(theCar.color)
         .filter(theString.thatNotEquals("red"))
         .peek(logs1::add)
         .zoomOut()
@@ -558,7 +560,7 @@ public class ZoomFuncListTest {
         bosses
         .zoomIn(DriverBoss.theDriverBoss.driver)
         .zoomIn(Driver.theDriver.car)
-        .zoomIn(Car.theCar.color)
+        .zoomIn(theCar.color)
         .filter(theString.thatNotEquals("red"))
         .peek(logs3::add)
         .zoomOut()
@@ -576,16 +578,73 @@ public class ZoomFuncListTest {
     }
     
     @Test
+    public void testContains() {
+        assertTrue(cars.zoomIn(theCar.color).contains("red"));
+        assertFalse(cars.zoomIn(theCar.color).contains("brown"));
+        
+        assertTrue(bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .contains("red"));
+        
+        assertFalse(bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .contains("brown"));
+    }
+    
+    @Test
+    public void testGet() {
+        assertTrue(cars.zoomIn(theCar.color).contains("red"));
+        assertFalse(cars.zoomIn(theCar.color).contains("brown"));
+        
+        assertEquals("red",
+                "" + bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .get(1));
+        
+        assertEquals("red",
+                "" + bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .get(1));
+    }
+    
+    @Test
+    public void testSubList() {
+        assertEquals(
+                "[Car(color=red)]",
+                cars.zoomIn(theCar.color).subList(1, 2).zoomOut().toListString());
+        
+        assertEquals(
+                "[DriverBoss(driver=Driver(car=Car(color=red)))]",
+                bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .subList(1, 2)
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    @Test
     public void testWith() {
         assertEquals(
                 "[Car(color=blue), Car(color=yellow), Car(color=green)]",
-                cars.zoomIn(Car.theCar.color).with(1, "yellow").zoomOut().toListString());
+                cars.zoomIn(theCar.color).with(1, "yellow").zoomOut().toListString());
         assertEquals(
                 "[Car(color=blue), Car(color=red), Car(color=darkgreen)]",
-                cars.zoomIn(Car.theCar.color).with(2, c -> "dark" + c).zoomOut().toListString());
+                cars.zoomIn(theCar.color).with(2, c -> "dark" + c).zoomOut().toListString());
         assertEquals(
                 "[Car(color=blue), Car(color=red), Car(color=darkgreen#2)]",
-                cars.zoomIn(Car.theCar.color).with(2, (i,c) -> "dark" + c + "#" + i).zoomOut().toListString());
+                cars.zoomIn(theCar.color).with(2, (i,c) -> "dark" + c + "#" + i).zoomOut().toListString());
         
         assertEquals(
                 "["
@@ -594,9 +653,9 @@ public class ZoomFuncListTest {
                 + "DriverBoss(driver=Driver(car=Car(color=green)))"
                 + "]",
                 bosses
-                .zoomIn(DriverBoss.theDriverBoss.driver)
-                .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
                 .with(1, "yellow")
                 .zoomOut()
                 .zoomOut()
@@ -609,9 +668,9 @@ public class ZoomFuncListTest {
                 + "DriverBoss(driver=Driver(car=Car(color=darkgreen)))"
                 + "]",
                 bosses
-                .zoomIn(DriverBoss.theDriverBoss.driver)
-                .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
                 .with(2, c -> "dark" + c)
                 .zoomOut()
                 .zoomOut()
@@ -624,9 +683,9 @@ public class ZoomFuncListTest {
                 + "DriverBoss(driver=Driver(car=Car(color=darkgreen#2)))"
                 + "]",
                 bosses
-                .zoomIn(DriverBoss.theDriverBoss.driver)
-                .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
                 .with(2, (i,c) -> "dark" + c + "#" + i)
                 .zoomOut()
                 .zoomOut()
@@ -638,7 +697,7 @@ public class ZoomFuncListTest {
     public void testExclude() {
         assertEquals(
                 "[Car(color=red), Car(color=green)]",
-                cars.zoomIn(Car.theCar.color).exclude("blue").zoomOut().toListString());
+                cars.zoomIn(theCar.color).exclude("blue").zoomOut().toListString());
         
         assertEquals(
                 "["
@@ -646,9 +705,9 @@ public class ZoomFuncListTest {
                 + "DriverBoss(driver=Driver(car=Car(color=green)))"
                 + "]",
                 bosses
-                .zoomIn(DriverBoss.theDriverBoss.driver)
-                .zoomIn(Driver.theDriver.car)
-                .zoomIn(Car.theCar.color)
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
                 .exclude("blue")
                 .zoomOut()
                 .zoomOut()

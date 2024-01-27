@@ -118,6 +118,16 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
         return result;
     }
     
+    // == Access list ==
+    
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> subList(int fromIndexInclusive, int toIndexExclusive) {
+        val list = source.subList(fromIndexInclusive, toIndexExclusive);
+        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+        return result;
+    }
+    
     //== Additional Functionality ==
     
     //-- from FuncList --
