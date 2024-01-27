@@ -1,6 +1,7 @@
 package functionalj.list;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -157,87 +158,34 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends FuncList<HOST>> extends A
         return new ZoomFuncList<>(list, lens);
     }
     
+    // -- Sorted --
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> sorted() {
+        val list = source.asFuncList().sorted((hostA, hostB) -> {
+            val valueA = lens.apply(hostA);
+            val valueB = lens.apply(hostB);
+            
+            val comparableA = (Comparable)valueA;
+            val comparableB = (Comparable)valueB;
+            return ((Comparable)comparableA).compareTo(comparableB);
+        });
+        return new ZoomFuncList<>(list, lens);
+    }
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> sorted(Comparator<? super DATA> comparator) {
+        val list = source.asFuncList().sorted((hostA, hostB) -> {
+            val valueA = lens.apply(hostA);
+            val valueB = lens.apply(hostB);
+            return comparator.compare(valueA, valueB);
+        });
+        return new ZoomFuncList<>(list, lens);
+    }
     
     // TODO - Add more.
     
-    
-    // FlatMap
-    // FuncListWithFilter
-    // FuncListWithFillNull
-    // sortedBy?
-//    
-//    // -- Peek --
-//    /**
-//     * Consume each value using the action whenever a termination operation is called
-//     */
-//    public default FuncList<DATA> peek(Consumer<? super DATA> action) {
-//        return deriveFrom(this, stream -> stream.peek(action));
-//    }
-//    
-//    // -- Filter --
-//    /**
-//     * Select only the element that passes the predicate
-//     */
-//    public default FuncList<DATA> filter(Predicate<? super DATA> predicate) {
-//        return deriveFrom(this, stream -> stream.filter(predicate));
-//    }
-//    
-//    /**
-//     * Select only the element that passes the predicate
-//     */
-//    public default FuncList<DATA> filter(AggregationToBoolean<? super DATA> aggregation) {
-//        val mapper = aggregation.newAggregator();
-//        return filter(mapper);
-//    }
-//    
-//    /**
-//     * Returns the new list from this list without the element.
-//     */
-//    public default FuncList<DATA> exclude(Object element) {
-//        return filter(each -> !Objects.equals(each, element));
-//    }
-//    
-//    /**
-//     * Returns the new list from this list without the element at the index.
-//     */
-//    public default FuncList<DATA> excludeAt(int index) {
-//        if (index < 0)
-//            throw new IndexOutOfBoundsException("index: " + index);
-//        val first = limit(index);
-//        val tail = skip(index + 1);
-//        return FuncList.concat(first, tail);
-//    }
-//    
-//    /**
-//     * Returns the new list from this list without the `count` elements starting at `fromIndexInclusive`.
-//     */
-//    public default FuncList<DATA> excludeFrom(int fromIndexInclusive, int count) {
-//        if (fromIndexInclusive < 0)
-//            throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
-//        if (count <= 0)
-//            throw new IndexOutOfBoundsException("count: " + count);
-//        val first = limit(fromIndexInclusive);
-//        val tail = skip(fromIndexInclusive + count);
-//        return FuncList.concat(first, tail);
-//    }
-//    
-//    /**
-//     * Returns the new list from this list without the element starting at `fromIndexInclusive` to `toIndexExclusive`.
-//     */
-//    public default FuncList<DATA> excludeBetween(int fromIndexInclusive, int toIndexExclusive) {
-//        if (fromIndexInclusive < 0)
-//            throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
-//        if (toIndexExclusive < 0)
-//            throw new IndexOutOfBoundsException("toIndexExclusive: " + toIndexExclusive);
-//        if (fromIndexInclusive > toIndexExclusive)
-//            throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive + ", toIndexExclusive: " + toIndexExclusive);
-//        if (fromIndexInclusive == toIndexExclusive)
-//            return this;
-//        val first = limit(fromIndexInclusive);
-//        val tail = skip(toIndexExclusive);
-//        return FuncList.concat(first, tail);
-//    }
     
 //    
 //    /**

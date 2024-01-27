@@ -1,6 +1,7 @@
 package functionalj.list;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -63,7 +64,7 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> map(UnaryOperator<DATA> mapper) {
-        val map
+        val list
             = source
             .map(host -> {
                 val newHost
@@ -75,8 +76,7 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
                     .apply(host);
                 return newHost;
             });
-        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(map, lens);
-        return result;
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
     @Override
@@ -97,8 +97,7 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
                         return newValue;
                     });
         });
-        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
-        return result;
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
     @Override
@@ -114,8 +113,7 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
             val data = lens.apply(host);
             action.accept(data);
         });
-        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
-        return result;
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
     // == Access list ==
@@ -124,8 +122,7 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> subList(int fromIndexInclusive, int toIndexExclusive) {
         val list = source.subList(fromIndexInclusive, toIndexExclusive);
-        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
-        return result;
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
     //== Additional Functionality ==
@@ -139,8 +136,7 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
             val newItem = lens.changeTo(value).apply(sourceItem);
             return newItem;
         });
-        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
-        return result;
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
     @Override
@@ -150,8 +146,7 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
             val newItem = lens.changeTo(mapper).apply(sourceItem);
             return newItem;
         });
-        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
-        return result;
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
     @Override
@@ -164,16 +159,41 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
             }).apply(sourceItem);
             return newItem;
         });
-        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
-        return result;
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> exclude(DATA element) {
         val list = source.filter(host -> !Objects.equals(lens.apply(host), element));
-        val result = (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
-        return result;
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
+    
+    // -- Sorted --
+    
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> sorted() {
+        val list = source.sorted((hostA, hostB) -> {
+            val valueA = lens.apply(hostA);
+            val valueB = lens.apply(hostB);
+            
+            val comparableA = (Comparable)valueA;
+            val comparableB = (Comparable)valueB;
+            return ((Comparable)comparableA).compareTo(comparableB);
+        });
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
+    
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> sorted(Comparator<? super DATA> comparator) {
+        val list = source.sorted((hostA, hostB) -> {
+            val valueA = lens.apply(hostA);
+            val valueB = lens.apply(hostB);
+            return comparator.compare(valueA, valueB);
+        });
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
     

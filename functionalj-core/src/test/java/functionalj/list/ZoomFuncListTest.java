@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
@@ -619,7 +620,11 @@ public class ZoomFuncListTest {
     public void testSubList() {
         assertEquals(
                 "[Car(color=red)]",
-                cars.zoomIn(theCar.color).subList(1, 2).zoomOut().toListString());
+                cars
+                .zoomIn(theCar.color)
+                .subList(1, 2)
+                .zoomOut()
+                .toListString());
         
         assertEquals(
                 "[DriverBoss(driver=Driver(car=Car(color=red)))]",
@@ -638,13 +643,25 @@ public class ZoomFuncListTest {
     public void testWith() {
         assertEquals(
                 "[Car(color=blue), Car(color=yellow), Car(color=green)]",
-                cars.zoomIn(theCar.color).with(1, "yellow").zoomOut().toListString());
+                cars
+                .zoomIn(theCar.color)
+                .with(1, "yellow")
+                .zoomOut()
+                .toListString());
         assertEquals(
                 "[Car(color=blue), Car(color=red), Car(color=darkgreen)]",
-                cars.zoomIn(theCar.color).with(2, c -> "dark" + c).zoomOut().toListString());
+                cars
+                .zoomIn(theCar.color)
+                .with(2, c -> "dark" + c)
+                .zoomOut()
+                .toListString());
         assertEquals(
                 "[Car(color=blue), Car(color=red), Car(color=darkgreen#2)]",
-                cars.zoomIn(theCar.color).with(2, (i,c) -> "dark" + c + "#" + i).zoomOut().toListString());
+                cars
+                .zoomIn(theCar.color)
+                .with(2, (i,c) -> "dark" + c + "#" + i)
+                .zoomOut()
+                .toListString());
         
         assertEquals(
                 "["
@@ -697,7 +714,11 @@ public class ZoomFuncListTest {
     public void testExclude() {
         assertEquals(
                 "[Car(color=red), Car(color=green)]",
-                cars.zoomIn(theCar.color).exclude("blue").zoomOut().toListString());
+                cars
+                .zoomIn(theCar.color)
+                .exclude("blue")
+                .zoomOut()
+                .toListString());
         
         assertEquals(
                 "["
@@ -709,6 +730,60 @@ public class ZoomFuncListTest {
                 .zoomIn(theDriver.car)
                 .zoomIn(theCar.color)
                 .exclude("blue")
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    @Test
+    public void testSort() {
+        assertEquals(
+                "[Car(color=blue), Car(color=green), Car(color=red)]",
+                cars
+                .zoomIn(theCar.color)
+                .sorted()
+                .zoomOut()
+                .toListString());
+        
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=blue))), "
+                + "DriverBoss(driver=Driver(car=Car(color=green))), "
+                + "DriverBoss(driver=Driver(car=Car(color=red)))"
+                + "]",
+                bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .sorted()
+                .zoomOut()
+                .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    @Test
+    public void testSort_withComparator() {
+        assertEquals(
+                "[Car(color=red), Car(color=green), Car(color=blue)]",
+                cars
+                .zoomIn(theCar.color)
+                .sorted(Comparator.reverseOrder())
+                .zoomOut()
+                .toListString());
+        
+        assertEquals(
+                "["
+                + "DriverBoss(driver=Driver(car=Car(color=red))), "
+                + "DriverBoss(driver=Driver(car=Car(color=green))), "
+                + "DriverBoss(driver=Driver(car=Car(color=blue)))"
+                + "]",
+                bosses
+                .zoomIn(theDriverBoss.driver)
+                .zoomIn(theDriver.car)
+                .zoomIn(theCar.color)
+                .sorted(Comparator.reverseOrder())
                 .zoomOut()
                 .zoomOut()
                 .zoomOut()

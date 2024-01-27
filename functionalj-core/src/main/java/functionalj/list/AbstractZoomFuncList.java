@@ -3,6 +3,7 @@ package functionalj.list;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -208,5 +209,25 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * Returns the new list from this list without the element.
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> exclude(DATA element);
+    
+//    // -- Distinct --
+//    // This cannot be done in the stable way ... let's think about it some more.
+//    /**
+//     * Remove duplicates
+//     */
+//    public default FuncList<DATA> distinct() {
+//        return deriveFrom(this, stream -> stream.distinct());
+//    }
+    
+    // -- Sorted --
+    /**
+     * Sort the values in this list
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> sorted();
+    
+    /**
+     * Sort the values in the list using the given comparator
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> sorted(Comparator<? super DATA> comparator);
     
 }
