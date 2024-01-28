@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import functionalj.function.IntObjBiFunction;
@@ -213,6 +214,49 @@ public class ZoomFuncList<DATA, HOST, FUNCLIST extends FuncList<HOST>> extends A
         return new ZoomFuncList<>(list, lens);
     }
     
+    //== FuncListWithFillNull ==
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> fillNull(DATA replacement) {
+        val list = source.asFuncList().map(host -> {
+            val data = lens.apply(host);
+            if (data != null) {
+                return host;
+            }
+            val newData = replacement;
+            val newHost = lens.changeTo(newData).apply(host);
+            return newHost;
+        });
+        return new ZoomFuncList<>(list, lens);
+    }
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> fillNull(Supplier<DATA> replacement) {
+        val list = source.asFuncList().map(host -> {
+            val data = lens.apply(host);
+            if (data != null) {
+                return host;
+            }
+            val newData = replacement.get();
+            val newHost = lens.changeTo(newData).apply(host);
+            return newHost;
+        });
+        return new ZoomFuncList<>(list, lens);
+    }
+    
+    @Override
+    public ZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> fillNull(Function<HOST, DATA> replacement) {
+        val list = source.asFuncList().map(host -> {
+            val data = lens.apply(host);
+            if (data != null) {
+                return host;
+            }
+            val newData = replacement.apply(host);
+            val newHost = lens.changeTo(newData).apply(host);
+            return newHost;
+        });
+        return new ZoomFuncList<>(list, lens);
+    }
     
     // TODO - Add more.
     

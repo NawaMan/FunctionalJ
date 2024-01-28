@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import functionalj.function.IntObjBiFunction;
@@ -232,6 +233,52 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
         return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
     }
     
+    //== FuncListWithFillNull ==
+    
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> fillNull(DATA replacement) {
+        val list = source.map(host -> {
+            val data = lens.apply(host);
+            if (data != null) {
+                return host;
+            }
+            val newData = replacement;
+            val newHost = lens.changeTo(newData).apply(host);
+            return newHost;
+        });
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
+    
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> fillNull(Supplier<DATA> replacement) {
+        val list = source.map(host -> {
+            val data = lens.apply(host);
+            if (data != null) {
+                return host;
+            }
+            val newData = replacement.get();
+            val newHost = lens.changeTo(newData).apply(host);
+            return newHost;
+        });
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
+    
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST> fillNull(Function<HOST, DATA> replacement) {
+        val list = source.map(host -> {
+            val data = lens.apply(host);
+            if (data != null) {
+                return host;
+            }
+            val newData = replacement.apply(host);
+            val newHost = lens.changeTo(newData).apply(host);
+            return newHost;
+        });
+        return (ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST>)new ZoomZoomFuncList(list, lens);
+    }
     
     // TODO - Add more.
     

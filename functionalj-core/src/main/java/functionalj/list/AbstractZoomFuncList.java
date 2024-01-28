@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import functionalj.function.IntObjBiFunction;
@@ -173,6 +174,22 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
         return asFuncList().lastIndexOf(o);
     }
     
+    // TODO - Once we have ZoomedIntFuncList (IntFuncList that can zoom out), we can do this.
+//    /**
+//     * Find any indexes that the elements match the predicate
+//     */
+//    public default IntFuncList indexesOf(Predicate<? super DATA> predicate) {
+//        return this.mapToIntWithIndex((index, data) -> predicate.test(data) ? index : -1).filter($I.thatNotEquals(-1)).toImmutableList();
+//    }
+//    
+//    /**
+//     * Find any indexes that the elements match the predicate
+//     */
+//    public default IntFuncList indexesOf(AggregationToBoolean<? super DATA> aggregation) {
+//        val check = aggregation.newAggregator();
+//        return indexesOf(check);
+//    }
+    
     /**
      * Returns the list iterator representing this list.
      * 
@@ -292,5 +309,39 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * Returns the second to the last elements.
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> tail();
+    
+//    // -- Query --
+//    TODO - This will need mapWithIndex first.
+//    /**
+//     * Returns the list of tuple of the index and the value for which the value match the predicate.
+//     */
+//    public default FuncList<IntTuple2<DATA>> query(Predicate<? super DATA> predicate) {
+//        return this.mapWithIndex((index, data) -> predicate.test(data) ? new IntTuple2<DATA>(index, data) : null).filterNonNull();
+//    }
+//    
+//    /**
+//     * Returns the list of tuple of the index and the value for which the value match the predicate.
+//     */
+//    public default FuncList<IntTuple2<DATA>> query(AggregationToBoolean<? super DATA> aggregation) {
+//        val check = aggregation.newAggregator();
+//        return query(check);
+//    }
+    
+    //== FuncListWithFillNull ==
+    
+    /**
+     * Replace any null value with the given replacement.
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> fillNull(DATA replacement);
+    
+    /**
+     * Replace any null value with the given replacement.
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> fillNull(Supplier<DATA> replacement);
+    
+    /**
+     * Replace any null value with the given replacement.
+     */
+    public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> fillNull(Function<HOST, DATA> replacement);
     
 }

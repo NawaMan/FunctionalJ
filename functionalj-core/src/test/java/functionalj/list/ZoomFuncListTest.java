@@ -1,6 +1,7 @@
 package functionalj.list;
 
 import static functionalj.lens.Access.theString;
+import static functionalj.list.FuncList.AllOf;
 import static functionalj.list.FuncList.ListOf;
 import static functionalj.list.ZoomFuncListTest.Car.theCar;
 import static functionalj.list.ZoomFuncListTest.Driver.theDriver;
@@ -893,6 +894,54 @@ public class ZoomFuncListTest {
                 .first(2)
                 .zoomOut()
                 .zoomOut()
+                .zoomOut()
+                .toListString());
+    }
+    
+    @Test
+    public void testFillNull() {
+        val carNull = new Car(null);
+        FuncList<Car> cars = AllOf(car1, car2, carNull, car3);
+        
+        assertEquals(
+                "[blue, red, brown, green]",
+                cars
+                .zoomIn(theCar.color)
+                .fillNull("brown")
+                .toListString());
+        assertEquals(
+                "[Car(color=blue), Car(color=red), Car(color=brown), Car(color=green)]",
+                cars
+                .zoomIn(theCar.color)
+                .fillNull("brown")
+                .zoomOut()
+                .toListString());
+        
+        assertEquals(
+                "[blue, red, brown, green]",
+                cars
+                .zoomIn(theCar.color)
+                .fillNull(() -> "brown")
+                .toListString());
+        assertEquals(
+                "[Car(color=blue), Car(color=red), Car(color=brown), Car(color=green)]",
+                cars
+                .zoomIn(theCar.color)
+                .fillNull(() -> "brown")
+                .zoomOut()
+                .toListString());
+        
+        assertEquals(
+                "[blue, red, brown+Car(color=null), green]",
+                cars
+                .zoomIn(theCar.color)
+                .fillNull(h -> "brown+"+h)
+                .toListString());
+        assertEquals(
+                "[Car(color=blue), Car(color=red), Car(color=brown+Car(color=null)), Car(color=green)]",
+                cars
+                .zoomIn(theCar.color)
+                .fillNull(h -> "brown+"+h)
                 .zoomOut()
                 .toListString());
     }
