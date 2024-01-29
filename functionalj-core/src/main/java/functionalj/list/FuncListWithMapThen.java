@@ -27,10 +27,15 @@ import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import functionalj.function.Func10;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.Func7;
+import functionalj.function.Func8;
+import functionalj.function.Func9;
 import lombok.val;
 
 public interface FuncListWithMapThen<DATA> extends AsFuncList<DATA> {
@@ -73,6 +78,38 @@ public interface FuncListWithMapThen<DATA> extends AsFuncList<DATA> {
     public default <T1, T2, T3, T4, T5, T6, T> FuncList<T> mapThen(Function<? super DATA, T1> mapper1, Function<? super DATA, T2> mapper2, Function<? super DATA, T3> mapper3, Function<? super DATA, T4> mapper4, Function<? super DATA, T5> mapper5, Function<? super DATA, T6> mapper6, Func6<T1, T2, T3, T4, T5, T6, T> merger) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, merger));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T> FuncList<T> mapThen(Function<? super DATA, T1> mapper1, Function<? super DATA, T2> mapper2, Function<? super DATA, T3> mapper3, Function<? super DATA, T4> mapper4, Function<? super DATA, T5> mapper5, Function<? super DATA, T6> mapper6, Function<? super DATA, T7> mapper7, Func7<T1, T2, T3, T4, T5, T6, T7, T> merger) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, merger));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T> FuncList<T> mapThen(Function<? super DATA, T1> mapper1, Function<? super DATA, T2> mapper2, Function<? super DATA, T3> mapper3, Function<? super DATA, T4> mapper4, Function<? super DATA, T5> mapper5, Function<? super DATA, T6> mapper6, Function<? super DATA, T7> mapper7, Function<? super DATA, T8> mapper8, Func8<T1, T2, T3, T4, T5, T6, T7, T8, T> merger) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, merger));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9, T> FuncList<T> mapThen(Function<? super DATA, T1> mapper1, Function<? super DATA, T2> mapper2, Function<? super DATA, T3> mapper3, Function<? super DATA, T4> mapper4, Function<? super DATA, T5> mapper5, Function<? super DATA, T6> mapper6, Function<? super DATA, T7> mapper7, Function<? super DATA, T8> mapper8, Function<? super DATA, T9> mapper9, Func9<T1, T2, T3, T4, T5, T6, T7, T8, T9, T> merger) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9, merger));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T> FuncList<T> mapThen(Function<? super DATA, T1> mapper1, Function<? super DATA, T2> mapper2, Function<? super DATA, T3> mapper3, Function<? super DATA, T4> mapper4, Function<? super DATA, T5> mapper5, Function<? super DATA, T6> mapper6, Function<? super DATA, T7> mapper7, Function<? super DATA, T8> mapper8, Function<? super DATA, T9> mapper9, Function<? super DATA, T10> mapper10, Func10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T> merger) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9, mapper10, merger));
     }
     
 }

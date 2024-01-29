@@ -48,6 +48,17 @@ public interface StreamPlusWithFillNull<DATA> {
             return replaced;
         });
     }
+    /**
+     * Replace any null value with the given replacement.
+     */
+    public default StreamPlus<DATA> fillNull(Supplier<DATA> replacement) {
+        val streamPlus = streamPlus();
+        return streamPlus.map(value -> {
+            val isNull = value == null;
+            val replaced = isNull ? replacement.get() : value;
+            return replaced;
+        });
+    }
     
     /**
      * Replace sub element that is null (accessed with the given lens) with the given replacement.
