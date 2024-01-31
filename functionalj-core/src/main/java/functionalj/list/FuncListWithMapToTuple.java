@@ -25,12 +25,18 @@ package functionalj.list;
 
 import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
+
 import java.util.function.Function;
+
+import functionalj.tuple.Tuple10;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
+import functionalj.tuple.Tuple7;
+import functionalj.tuple.Tuple8;
+import functionalj.tuple.Tuple9;
 import lombok.val;
 
 public interface FuncListWithMapToTuple<DATA> extends AsFuncList<DATA> {
@@ -73,5 +79,37 @@ public interface FuncListWithMapToTuple<DATA> extends AsFuncList<DATA> {
     public default <T1, T2, T3, T4, T5, T6> FuncList<Tuple6<T1, T2, T3, T4, T5, T6>> mapToTuple(Function<? super DATA, ? extends T1> mapper1, Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3, Function<? super DATA, ? extends T4> mapper4, Function<? super DATA, ? extends T5> mapper5, Function<? super DATA, ? extends T6> mapper6) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7> FuncList<Tuple7<T1, T2, T3, T4, T5, T6, T7>> mapToTuple(Function<? super DATA, ? extends T1> mapper1, Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3, Function<? super DATA, ? extends T4> mapper4, Function<? super DATA, ? extends T5> mapper5, Function<? super DATA, ? extends T6> mapper6, Function<? super DATA, ? extends T7> mapper7) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8> FuncList<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> mapToTuple(Function<? super DATA, ? extends T1> mapper1, Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3, Function<? super DATA, ? extends T4> mapper4, Function<? super DATA, ? extends T5> mapper5, Function<? super DATA, ? extends T6> mapper6, Function<? super DATA, ? extends T7> mapper7, Function<? super DATA, ? extends T8> mapper8) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9> FuncList<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> mapToTuple(Function<? super DATA, ? extends T1> mapper1, Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3, Function<? super DATA, ? extends T4> mapper4, Function<? super DATA, ? extends T5> mapper5, Function<? super DATA, ? extends T6> mapper6, Function<? super DATA, ? extends T7> mapper7, Function<? super DATA, ? extends T8> mapper8, Function<? super DATA, ? extends T9> mapper9) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> FuncList<Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>> mapToTuple(Function<? super DATA, ? extends T1> mapper1, Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3, Function<? super DATA, ? extends T4> mapper4, Function<? super DATA, ? extends T5> mapper5, Function<? super DATA, ? extends T6> mapper6, Function<? super DATA, ? extends T7> mapper7, Function<? super DATA, ? extends T8> mapper8, Function<? super DATA, ? extends T9> mapper9, Function<? super DATA, ? extends T10> mapper10) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9, mapper10));
     }
 }
