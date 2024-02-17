@@ -24,12 +24,17 @@
 package functionalj.stream.longstream;
 
 import java.util.function.LongFunction;
+
 import functionalj.stream.StreamPlus;
+import functionalj.tuple.Tuple10;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
+import functionalj.tuple.Tuple7;
+import functionalj.tuple.Tuple8;
+import functionalj.tuple.Tuple9;
 
 public interface LongStreamPlusWithMapToTuple extends LongStreamPlusWithMapThen {
     
@@ -66,5 +71,33 @@ public interface LongStreamPlusWithMapToTuple extends LongStreamPlusWithMapThen 
      */
     public default <T1, T2, T3, T4, T5, T6> StreamPlus<Tuple6<T1, T2, T3, T4, T5, T6>> mapToTuple(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6) {
         return mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, (v1, v2, v3, v4, v5, v6) -> Tuple6.of(v1, v2, v3, v4, v5, v6));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7> StreamPlus<Tuple7<T1, T2, T3, T4, T5, T6, T7>> mapToTuple(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6, LongFunction<? extends T7> mapper7) {
+        return mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, (v1, v2, v3, v4, v5, v6, v7) -> Tuple7.of(v1, v2, v3, v4, v5, v6, v7));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8> StreamPlus<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> mapToTuple(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6, LongFunction<? extends T7> mapper7, LongFunction<? extends T8> mapper8) {
+        return mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, (v1, v2, v3, v4, v5, v6, v7, v8) -> Tuple8.of(v1, v2, v3, v4, v5, v6, v7, v8));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9> StreamPlus<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> mapToTuple(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6, LongFunction<? extends T7> mapper7, LongFunction<? extends T8> mapper8, LongFunction<? extends T9> mapper9) {
+        return mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9, (v1, v2, v3, v4, v5, v6, v7, v8, v9) -> Tuple9.of(v1, v2, v3, v4, v5, v6, v7, v8, v9));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> StreamPlus<Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>> mapToTuple(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6, LongFunction<? extends T7> mapper7, LongFunction<? extends T8> mapper8, LongFunction<? extends T9> mapper9, LongFunction<? extends T10> mapper10) {
+        return mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9, mapper10, (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10) -> Tuple10.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10));
     }
 }

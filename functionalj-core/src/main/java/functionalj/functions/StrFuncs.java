@@ -197,7 +197,7 @@ public class StrFuncs {
      */
     @SuppressWarnings("unchecked")
     public static <I> Func1<I, String> wrapWith(String prefix, String suffix) {
-        return (Func1<I, String>) concat3().bind(prefix, __, suffix);
+        return (Func1<I, String>) concat3().curry(prefix, __, suffix);
     }
     
     /**
@@ -209,7 +209,7 @@ public class StrFuncs {
      */
     @SuppressWarnings("unchecked")
     public static <I> Func1<I, String> prependWith(String prefix) {
-        return (Func1<I, String>) concat3().bind(prefix, __, "");
+        return (Func1<I, String>) concat3().curry(prefix, __, "");
     }
     
     /**
@@ -221,7 +221,7 @@ public class StrFuncs {
      */
     @SuppressWarnings("unchecked")
     public static <I> Func1<I, String> appendWith(String suffix) {
-        return (Func1<I, String>) concat3().bind("", __, suffix);
+        return (Func1<I, String>) concat3().curry("", __, suffix);
     }
     
     public static <I> Func1<I, String> withPrefix(String prefix) {

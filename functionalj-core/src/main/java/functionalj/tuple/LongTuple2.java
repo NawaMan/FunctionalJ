@@ -24,6 +24,7 @@
 package functionalj.tuple;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class LongTuple2<T2> implements Tuple2<Long, T2>, Map.Entry<Long, T2> {
     
@@ -73,16 +74,27 @@ public class LongTuple2<T2> implements Tuple2<Long, T2>, Map.Entry<Long, T2> {
     
     @Override
     public String toString() {
-        return Tuple.toString(this);
+        return "(" + _1() + "," + _2() + ")";
     }
     
     @Override
     public int hashCode() {
-        return Tuple.hashCode(this);
+        return Objects.hash(_1, _2);
     }
     
     @Override
     public boolean equals(Object obj) {
-        return Tuple.equals(this, obj);
+        if (obj == null)
+            return false;
+        if (!(obj instanceof ObjLongTuple))
+            return false;
+        
+        @SuppressWarnings("rawtypes")
+        LongTuple2 other = (LongTuple2) obj;
+        if (!Objects.equals(_1, other._1()))
+            return false;
+        if (!Objects.equals(_2, other._2()))
+            return false;
+        return true;
     }
 }

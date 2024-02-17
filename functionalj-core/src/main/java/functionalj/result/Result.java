@@ -26,6 +26,7 @@ package functionalj.result;
 import static functionalj.function.Func.f;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
@@ -36,14 +37,19 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
 import functionalj.function.Func;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
+import functionalj.function.Func10;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.Func7;
+import functionalj.function.Func8;
+import functionalj.function.Func9;
 import functionalj.function.FunctionInvocationException;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
@@ -354,7 +360,7 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         return Result.valueOf(value);
     }
     
-    public static <D, T1, T2> Result<D> of(T1 value1, T2 value2, BiFunction<T1, T2, D> merger) {
+    public static <D, T1, T2> Result<D> of(T1 value1, T2 value2, Func2<T1, T2, D> merger) {
         return Result.of(Func0.of(() -> {
             val value = Func.applyUnsafe(merger, value1, value2);
             return value;
@@ -417,6 +423,20 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         return Result.ofResults(Try(supplier1), Try(supplier2), Try(supplier3), Try(supplier4), Try(supplier5), Try(supplier6), merger);
     }
     
+    
+    /**
+     * Combines ten {@link HasResult} instances using a provided {@link Func2} merger function.
+     * If any {@link HasResult} instance does not contain a result, this method throws the contained exception.
+     * 
+     * @param <D>      the type of the output result
+     * @param <T1>     the type of the result in the first {@link HasResult} instance
+     * @param <T2>     the type of the result in the second {@link HasResult} instance
+     * 
+     * @param result1  the first {@link HasResult} instance
+     * @param result2  the second {@link HasResult} instance
+     * @param merger   the {@link Func2} function to merge the results
+     * @return a {@link Result} instance containing the merged result or throwing an exception if any result is absent
+     */
     public static <D, T1, T2> Result<D> ofResults(HasResult<T1> result1, HasResult<T2> result2, BiFunction<T1, T2, D> merger) {
         return Result.of(Func0.of(() -> {
             val value1 = result1.getResult().orThrow();
@@ -426,6 +446,21 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         }));
     }
     
+    /**
+     * Combines ten {@link HasResult} instances using a provided {@link Func3} merger function.
+     * If any {@link HasResult} instance does not contain a result, this method throws the contained exception.
+     * 
+     * @param <D>      the type of the output result
+     * @param <T1>     the type of the result in the first {@link HasResult} instance
+     * @param <T2>     the type of the result in the second {@link HasResult} instance
+     * @param <T3>     the type of the result in the third {@link HasResult} instance
+     * 
+     * @param result1  the first {@link HasResult} instance
+     * @param result2  the second {@link HasResult} instance
+     * @param result3  the third {@link HasResult} instance
+     * @param merger   the {@link Func3} function to merge the results
+     * @return a {@link Result} instance containing the merged result or throwing an exception if any result is absent
+     */
     public static <D, T1, T2, T3> Result<D> ofResults(HasResult<T1> result1, HasResult<T2> result2, HasResult<T3> result3, Func3<T1, T2, T3, D> merger) {
         return Result.of(Func0.of(() -> {
             val value1 = result1.getResult().orThrow();
@@ -436,6 +471,23 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         }));
     }
     
+    /**
+     * Combines ten {@link HasResult} instances using a provided {@link Func4} merger function.
+     * If any {@link HasResult} instance does not contain a result, this method throws the contained exception.
+     * 
+     * @param <D>      the type of the output result
+     * @param <T1>     the type of the result in the first {@link HasResult} instance
+     * @param <T2>     the type of the result in the second {@link HasResult} instance
+     * @param <T3>     the type of the result in the third {@link HasResult} instance
+     * @param <T4>     the type of the result in the fourth {@link HasResult} instance
+     * 
+     * @param result1  the first {@link HasResult} instance
+     * @param result2  the second {@link HasResult} instance
+     * @param result3  the third {@link HasResult} instance
+     * @param result4  the fourth {@link HasResult} instance
+     * @param merger   the {@link Func4} function to merge the results
+     * @return a {@link Result} instance containing the merged result or throwing an exception if any result is absent
+     */
     public static <D, T1, T2, T3, T4> Result<D> ofResults(HasResult<T1> result1, HasResult<T2> result2, HasResult<T3> result3, HasResult<T4> result4, Func4<T1, T2, T3, T4, D> merger) {
         return Result.of(Func0.of(() -> {
             val value1 = result1.getResult().orThrow();
@@ -447,6 +499,25 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         }));
     }
     
+    /**
+     * Combines ten {@link HasResult} instances using a provided {@link Func5} merger function.
+     * If any {@link HasResult} instance does not contain a result, this method throws the contained exception.
+     * 
+     * @param <D>      the type of the output result
+     * @param <T1>     the type of the result in the first {@link HasResult} instance
+     * @param <T2>     the type of the result in the second {@link HasResult} instance
+     * @param <T3>     the type of the result in the third {@link HasResult} instance
+     * @param <T4>     the type of the result in the fourth {@link HasResult} instance
+     * @param <T5>     the type of the result in the fifth {@link HasResult} instance
+     * 
+     * @param result1  the first {@link HasResult} instance
+     * @param result2  the second {@link HasResult} instance
+     * @param result3  the third {@link HasResult} instance
+     * @param result4  the fourth {@link HasResult} instance
+     * @param result5  the fifth {@link HasResult} instance
+     * @param merger   the {@link Func5} function to merge the results
+     * @return a {@link Result} instance containing the merged result or throwing an exception if any result is absent
+     */
     public static <D, T1, T2, T3, T4, T5> Result<D> ofResults(HasResult<T1> result1, HasResult<T2> result2, HasResult<T3> result3, HasResult<T4> result4, HasResult<T5> result5, Func5<T1, T2, T3, T4, T5, D> merger) {
         return Result.of(Func0.of(() -> {
             val value1 = result1.getResult().orThrow();
@@ -459,6 +530,27 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         }));
     }
     
+    /**
+     * Combines ten {@link HasResult} instances using a provided {@link Func6} merger function.
+     * If any {@link HasResult} instance does not contain a result, this method throws the contained exception.
+     * 
+     * @param <D>      the type of the output result
+     * @param <T1>     the type of the result in the first {@link HasResult} instance
+     * @param <T2>     the type of the result in the second {@link HasResult} instance
+     * @param <T3>     the type of the result in the third {@link HasResult} instance
+     * @param <T4>     the type of the result in the fourth {@link HasResult} instance
+     * @param <T5>     the type of the result in the fifth {@link HasResult} instance
+     * @param <T6>     the type of the result in the sixth {@link HasResult} instance
+     * 
+     * @param result1  the first {@link HasResult} instance
+     * @param result2  the second {@link HasResult} instance
+     * @param result3  the third {@link HasResult} instance
+     * @param result4  the fourth {@link HasResult} instance
+     * @param result5  the fifth {@link HasResult} instance
+     * @param result6  the sixth {@link HasResult} instance
+     * @param merger   the {@link Func6} function to merge the results
+     * @return a {@link Result} instance containing the merged result or throwing an exception if any result is absent
+     */
     public static <D, T1, T2, T3, T4, T5, T6> Result<D> ofResults(HasResult<T1> result1, HasResult<T2> result2, HasResult<T3> result3, HasResult<T4> result4, HasResult<T5> result5, HasResult<T6> result6, Func6<T1, T2, T3, T4, T5, T6, D> merger) {
         return Result.of(Func0.of(() -> {
             val value1 = result1.getResult().orThrow();
@@ -472,7 +564,181 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         }));
     }
     
+    /**
+     * Combines ten {@link HasResult} instances using a provided {@link Func7} merger function.
+     * If any {@link HasResult} instance does not contain a result, this method throws the contained exception.
+     * 
+     * @param <D>      the type of the output result
+     * @param <T1>     the type of the result in the first {@link HasResult} instance
+     * @param <T2>     the type of the result in the second {@link HasResult} instance
+     * @param <T3>     the type of the result in the third {@link HasResult} instance
+     * @param <T4>     the type of the result in the fourth {@link HasResult} instance
+     * @param <T5>     the type of the result in the fifth {@link HasResult} instance
+     * @param <T6>     the type of the result in the sixth {@link HasResult} instance
+     * @param <T7>     the type of the result in the seventh {@link HasResult} instance
+     * 
+     * @param result1  the first {@link HasResult} instance
+     * @param result2  the second {@link HasResult} instance
+     * @param result3  the third {@link HasResult} instance
+     * @param result4  the fourth {@link HasResult} instance
+     * @param result5  the fifth {@link HasResult} instance
+     * @param result6  the sixth {@link HasResult} instance
+     * @param result7  the seventh {@link HasResult} instance
+     * @param merger   the {@link Func7} function to merge the results
+     * @return a {@link Result} instance containing the merged result or throwing an exception if any result is absent
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7> Result<D> ofResults(HasResult<T1> result1, HasResult<T2> result2, HasResult<T3> result3, HasResult<T4> result4, HasResult<T5> result5, HasResult<T6> result6, HasResult<T7> result7, Func7<T1, T2, T3, T4, T5, T6, T7, D> merger) {
+        return Result.of(Func0.of(() -> {
+            val value1  = result1.getResult().orThrow();
+            val value2  = result2.getResult().orThrow();
+            val value3  = result3.getResult().orThrow();
+            val value4  = result4.getResult().orThrow();
+            val value5  = result5.getResult().orThrow();
+            val value6  = result6.getResult().orThrow();
+            val value7  = result7.getResult().orThrow();
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6, value7);
+            return value;
+        }));
+    }
+    
+    /**
+     * Combines ten {@link HasResult} instances using a provided {@link Func8} merger function.
+     * If any {@link HasResult} instance does not contain a result, this method throws the contained exception.
+     * 
+     * @param <D>      the type of the output result
+     * @param <T1>     the type of the result in the first {@link HasResult} instance
+     * @param <T2>     the type of the result in the second {@link HasResult} instance
+     * @param <T3>     the type of the result in the third {@link HasResult} instance
+     * @param <T4>     the type of the result in the fourth {@link HasResult} instance
+     * @param <T5>     the type of the result in the fifth {@link HasResult} instance
+     * @param <T6>     the type of the result in the sixth {@link HasResult} instance
+     * @param <T7>     the type of the result in the seventh {@link HasResult} instance
+     * @param <T8>     the type of the result in the eighth {@link HasResult} instance
+     * 
+     * @param result1  the first {@link HasResult} instance
+     * @param result2  the second {@link HasResult} instance
+     * @param result3  the third {@link HasResult} instance
+     * @param result4  the fourth {@link HasResult} instance
+     * @param result5  the fifth {@link HasResult} instance
+     * @param result6  the sixth {@link HasResult} instance
+     * @param result7  the seventh {@link HasResult} instance
+     * @param result8  the eighth {@link HasResult} instance
+     * @param merger   the {@link Func8} function to merge the results
+     * @return a {@link Result} instance containing the merged result or throwing an exception if any result is absent
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7, T8> Result<D> ofResults(HasResult<T1> result1, HasResult<T2> result2, HasResult<T3> result3, HasResult<T4> result4, HasResult<T5> result5, HasResult<T6> result6, HasResult<T7> result7, HasResult<T8> result8, Func8<T1, T2, T3, T4, T5, T6, T7, T8, D> merger) {
+        return Result.of(Func0.of(() -> {
+            val value1  = result1.getResult().orThrow();
+            val value2  = result2.getResult().orThrow();
+            val value3  = result3.getResult().orThrow();
+            val value4  = result4.getResult().orThrow();
+            val value5  = result5.getResult().orThrow();
+            val value6  = result6.getResult().orThrow();
+            val value7  = result7.getResult().orThrow();
+            val value8  = result8.getResult().orThrow();
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6, value7, value8);
+            return value;
+        }));
+    }
+    
+    /**
+     * Combines ten {@link HasResult} instances using a provided {@link Func9} merger function.
+     * If any {@link HasResult} instance does not contain a result, this method throws the contained exception.
+     * 
+     * @param <D>      the type of the output result
+     * @param <T1>     the type of the result in the first {@link HasResult} instance
+     * @param <T2>     the type of the result in the second {@link HasResult} instance
+     * @param <T3>     the type of the result in the third {@link HasResult} instance
+     * @param <T4>     the type of the result in the fourth {@link HasResult} instance
+     * @param <T5>     the type of the result in the fifth {@link HasResult} instance
+     * @param <T6>     the type of the result in the sixth {@link HasResult} instance
+     * @param <T7>     the type of the result in the seventh {@link HasResult} instance
+     * @param <T8>     the type of the result in the eighth {@link HasResult} instance
+     * @param <T9>     the type of the result in the ninth {@link HasResult} instance
+     * 
+     * @param result1  the first {@link HasResult} instance
+     * @param result2  the second {@link HasResult} instance
+     * @param result3  the third {@link HasResult} instance
+     * @param result4  the fourth {@link HasResult} instance
+     * @param result5  the fifth {@link HasResult} instance
+     * @param result6  the sixth {@link HasResult} instance
+     * @param result7  the seventh {@link HasResult} instance
+     * @param result8  the eighth {@link HasResult} instance
+     * @param result9  the ninth {@link HasResult} instance
+     * @param merger   the {@link Func9} function to merge the results
+     * @return a {@link Result} instance containing the merged result or throwing an exception if any result is absent
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7, T8, T9> Result<D> ofResults(HasResult<T1> result1, HasResult<T2> result2, HasResult<T3> result3, HasResult<T4> result4, HasResult<T5> result5, HasResult<T6> result6, HasResult<T7> result7, HasResult<T8> result8, HasResult<T9> result9, Func9<T1, T2, T3, T4, T5, T6, T7, T8, T9, D> merger) {
+        return Result.of(Func0.of(() -> {
+            val value1  = result1.getResult().orThrow();
+            val value2  = result2.getResult().orThrow();
+            val value3  = result3.getResult().orThrow();
+            val value4  = result4.getResult().orThrow();
+            val value5  = result5.getResult().orThrow();
+            val value6  = result6.getResult().orThrow();
+            val value7  = result7.getResult().orThrow();
+            val value8  = result8.getResult().orThrow();
+            val value9  = result9.getResult().orThrow();
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6, value7, value8, value9);
+            return value;
+        }));
+    }
+    
+    /**
+     * Combines ten {@link HasResult} instances using a provided {@link Func10} merger function.
+     * If any {@link HasResult} instance does not contain a result, this method throws the contained exception.
+     * 
+     * @param <D>      the type of the output result
+     * @param <T1>     the type of the result in the first {@link HasResult} instance
+     * @param <T2>     the type of the result in the second {@link HasResult} instance
+     * @param <T3>     the type of the result in the third {@link HasResult} instance
+     * @param <T4>     the type of the result in the fourth {@link HasResult} instance
+     * @param <T5>     the type of the result in the fifth {@link HasResult} instance
+     * @param <T6>     the type of the result in the sixth {@link HasResult} instance
+     * @param <T7>     the type of the result in the seventh {@link HasResult} instance
+     * @param <T8>     the type of the result in the eighth {@link HasResult} instance
+     * @param <T9>     the type of the result in the ninth {@link HasResult} instance
+     * @param <T10>    the type of the result in the tenth {@link HasResult} instance
+     * 
+     * @param result1  the first {@link HasResult} instance
+     * @param result2  the second {@link HasResult} instance
+     * @param result3  the third {@link HasResult} instance
+     * @param result4  the fourth {@link HasResult} instance
+     * @param result5  the fifth {@link HasResult} instance
+     * @param result6  the sixth {@link HasResult} instance
+     * @param result7  the seventh {@link HasResult} instance
+     * @param result8  the eighth {@link HasResult} instance
+     * @param result9  the ninth {@link HasResult} instance
+     * @param result10 the tenth {@link HasResult} instance
+     * @param merger   the {@link Func10} function to merge the results
+     * @return a {@link Result} instance containing the merged result or throwing an exception if any result is absent
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> Result<D> ofResults(HasResult<T1> result1, HasResult<T2> result2, HasResult<T3> result3, HasResult<T4> result4, HasResult<T5> result5, HasResult<T6> result6, HasResult<T7> result7, HasResult<T8> result8, HasResult<T9> result9, HasResult<T10> result10, Func10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, D> merger) {
+        return Result.of(Func0.of(() -> {
+            val value1  = result1.getResult().orThrow();
+            val value2  = result2.getResult().orThrow();
+            val value3  = result3.getResult().orThrow();
+            val value4  = result4.getResult().orThrow();
+            val value5  = result5.getResult().orThrow();
+            val value6  = result6.getResult().orThrow();
+            val value7  = result7.getResult().orThrow();
+            val value8  = result8.getResult().orThrow();
+            val value9  = result9.getResult().orThrow();
+            val value10 = result10.getResult().orThrow();
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6, value7, value8, value9, value10);
+            return (D)value;
+        }));
+    }
+    
+    //== Function ==
+    
+    /**
+     * Returns the value hold by this {@link Result}.
+     * 
+     * @return  the value data.
+     */
     abstract Object __valueData();
+    
     
     public Result<DATA> or(Result<DATA> anotherResult) {
         if (this.isPresent())

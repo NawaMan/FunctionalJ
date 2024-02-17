@@ -32,11 +32,15 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
+import functionalj.function.Func10;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.Func7;
+import functionalj.function.Func8;
+import functionalj.function.Func9;
 import functionalj.function.FuncUnit1;
 import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
@@ -316,14 +320,30 @@ public class Tasks {
     }
     
     // merge, race, loop, branch
+    
+    /**
+     * Represents a task that merges the results of two other tasks using a specified merging function.
+     * This class facilitates the combination of multiple asynchronous tasks, merging their results into a single data type.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <DATA> the type of the data produced by the merger of the task results
+     */
     public static class TaskMerge2<I1, I2, DATA> implements Task<DATA> {
         
         private final Task<I1> input1;
-        
         private final Task<I2> input2;
         
         private final Func2<I1, I2, DATA> merger;
         
+        
+        /**
+         * Constructs a {@link TaskMerge2} with the specified tasks and merging function.
+         * 
+         * @param input1  the first task
+         * @param input2  the second task
+         * @param merger  the function to merge the results of the tasks
+         */
         public TaskMerge2(Task<I1> input1, Task<I2> input2, Func2<I1, I2, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
@@ -344,16 +364,32 @@ public class Tasks {
         }
     }
     
+    /**
+     * Represents a task that merges the results of three other tasks using a specified merging function.
+     * This class facilitates the combination of multiple asynchronous tasks, merging their results into a single data type.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <DATA> the type of the data produced by the merger of the task results
+     */
     public static class TaskMerge3<I1, I2, I3, DATA> implements Task<DATA> {
         
         private final Task<I1> input1;
-        
         private final Task<I2> input2;
-        
         private final Task<I3> input3;
         
         private final Func3<I1, I2, I3, DATA> merger;
         
+        
+        /**
+         * Constructs a {@link TaskMerge3} with the specified tasks and merging function.
+         * 
+         * @param input1  the first task
+         * @param input2  the second task
+         * @param input3  the third task
+         * @param merger  the function to merge the results of the tasks
+         */
         public TaskMerge3(Task<I1> input1, Task<I2> input2, Task<I3> input3, Func3<I1, I2, I3, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
@@ -376,18 +412,35 @@ public class Tasks {
         }
     }
     
+    /**
+     * Represents a task that merges the results of four other tasks using a specified merging function.
+     * This class facilitates the combination of multiple asynchronous tasks, merging their results into a single data type.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <DATA> the type of the data produced by the merger of the task results
+     */
     public static class TaskMerge4<I1, I2, I3, I4, DATA> implements Task<DATA> {
         
         private final Task<I1> input1;
-        
         private final Task<I2> input2;
-        
         private final Task<I3> input3;
-        
         private final Task<I4> input4;
         
         private final Func4<I1, I2, I3, I4, DATA> merger;
         
+        
+        /**
+         * Constructs a {@link TaskMerge4} with the specified tasks and merging function.
+         * 
+         * @param input1  the first task
+         * @param input2  the second task
+         * @param input3  the third task
+         * @param input4  the fourth task
+         * @param merger  the function to merge the results of the tasks
+         */
         public TaskMerge4(Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Func4<I1, I2, I3, I4, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
@@ -412,21 +465,45 @@ public class Tasks {
         }
     }
     
+    /**
+     * Represents a task that merges the results of five other tasks using a specified merging function.
+     * This class facilitates the combination of multiple asynchronous tasks, merging their results into a single data type.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <DATA> the type of the data produced by the merger of the task results
+     */
     public static class TaskMerge5<I1, I2, I3, I4, I5, DATA> implements Task<DATA> {
         
-        private final Task<I1> input1;
-        
-        private final Task<I2> input2;
-        
-        private final Task<I3> input3;
-        
-        private final Task<I4> input4;
-        
-        private final Task<I5> input5;
+        private final Task<I1>  input1;
+        private final Task<I2>  input2;
+        private final Task<I3>  input3;
+        private final Task<I4>  input4;
+        private final Task<I5>  input5;
         
         private final Func5<I1, I2, I3, I4, I5, DATA> merger;
         
-        public TaskMerge5(Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5, Func5<I1, I2, I3, I4, I5, DATA> merger) {
+        
+        /**
+         * Constructs a {@link TaskMerge5} with the specified tasks and merging function.
+         * 
+         * @param input1  the first task
+         * @param input2  the second task
+         * @param input3  the third task
+         * @param input4  the fourth task
+         * @param input5  the fifth task
+         * @param merger  the function to merge the results of the tasks
+         */
+        public TaskMerge5(
+                Task<I1> input1,
+                Task<I2> input2,
+                Task<I3> input3,
+                Task<I4> input4,
+                Task<I5> input5,
+                Func5<I1, I2, I3, I4, I5, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
             this.input3 = input3;
@@ -442,7 +519,7 @@ public class Tasks {
             val action3 = input3.createAction();
             val action4 = input4.createAction();
             val action5 = input5.createAction();
-            val action = DeferAction.from(action1, action2, action3, action4, action5, merger);
+            val action  = DeferAction.from(action1, action2, action3, action4, action5, merger);
             return action;
         }
         
@@ -452,23 +529,49 @@ public class Tasks {
         }
     }
     
+    /**
+     * Represents a task that merges the results of six other tasks using a specified merging function.
+     * This class facilitates the combination of multiple asynchronous tasks, merging their results into a single data type.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <I6>  the type of the result of the sixth task
+     * @param <DATA> the type of the data produced by the merger of the task results
+     */
     public static class TaskMerge6<I1, I2, I3, I4, I5, I6, DATA> implements Task<DATA> {
         
-        private final Task<I1> input1;
-        
-        private final Task<I2> input2;
-        
-        private final Task<I3> input3;
-        
-        private final Task<I4> input4;
-        
-        private final Task<I5> input5;
-        
-        private final Task<I6> input6;
+        private final Task<I1>  input1;
+        private final Task<I2>  input2;
+        private final Task<I3>  input3;
+        private final Task<I4>  input4;
+        private final Task<I5>  input5;
+        private final Task<I6>  input6;
         
         private final Func6<I1, I2, I3, I4, I5, I6, DATA> merger;
         
-        public TaskMerge6(Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5, Task<I6> input6, Func6<I1, I2, I3, I4, I5, I6, DATA> merger) {
+        
+        /**
+         * Constructs a {@link TaskMerge6} with the specified tasks and merging function.
+         * 
+         * @param input1  the first task
+         * @param input2  the second task
+         * @param input3  the third task
+         * @param input4  the fourth task
+         * @param input5  the fifth task
+         * @param input6  the sixth task
+         * @param merger  the function to merge the results of the tasks
+         */
+        public TaskMerge6(
+                Task<I1> input1,
+                Task<I2> input2,
+                Task<I3> input3,
+                Task<I4> input4,
+                Task<I5> input5,
+                Task<I6> input6,
+                Func6<I1, I2, I3, I4, I5, I6, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
             this.input3 = input3;
@@ -486,7 +589,7 @@ public class Tasks {
             val action4 = input4.createAction();
             val action5 = input5.createAction();
             val action6 = input6.createAction();
-            val action = DeferAction.from(action1, action2, action3, action4, action5, action6, merger);
+            val action  = DeferAction.from(action1, action2, action3, action4, action5, action6, merger);
             return action;
         }
         
@@ -495,6 +598,367 @@ public class Tasks {
             return merger + "(" + input1 + ", " + input2 + ", " + input3 + ", " + input4 + ", " + input5 + ", " + input6 + ")";
         }
     }
+    
+    /**
+     * Represents a task that merges the results of seven other tasks using a specified merging function.
+     * This class facilitates the combination of multiple asynchronous tasks, merging their results into a single data type.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <I6>  the type of the result of the sixth task
+     * @param <I7>  the type of the result of the seventh task
+     * @param <DATA> the type of the data produced by the merger of the task results
+     */
+    public static class TaskMerge7<I1, I2, I3, I4, I5, I6, I7, DATA> implements Task<DATA> {
+        
+        private final Task<I1>  input1;
+        private final Task<I2>  input2;
+        private final Task<I3>  input3;
+        private final Task<I4>  input4;
+        private final Task<I5>  input5;
+        private final Task<I6>  input6;
+        private final Task<I7>  input7;
+        
+        private final Func7<I1, I2, I3, I4, I5, I6, I7, DATA> merger;
+        
+        
+        /**
+         * Constructs a {@link TaskMerge7} with the specified tasks and merging function.
+         * 
+         * @param input1  the first task
+         * @param input2  the second task
+         * @param input3  the third task
+         * @param input4  the fourth task
+         * @param input5  the fifth task
+         * @param input6  the sixth task
+         * @param input7  the seventh task
+         * @param merger  the function to merge the results of the tasks
+         */
+        public TaskMerge7(
+                Task<I1> input1,
+                Task<I2> input2,
+                Task<I3> input3,
+                Task<I4> input4,
+                Task<I5> input5,
+                Task<I6> input6,
+                Task<I7> input7,
+                Func7<I1, I2, I3, I4, I5, I6, I7, DATA> merger) {
+            this.input1 = input1;
+            this.input2 = input2;
+            this.input3 = input3;
+            this.input4 = input4;
+            this.input5 = input5;
+            this.input6 = input6;
+            this.input7 = input7;
+            this.merger = merger;
+        }
+        
+        @Override
+        public DeferAction<DATA> createAction() {
+            val action1 = input1.createAction();
+            val action2 = input2.createAction();
+            val action3 = input3.createAction();
+            val action4 = input4.createAction();
+            val action5 = input5.createAction();
+            val action6 = input6.createAction();
+            val action7 = input7.createAction();
+            val action  = DeferAction.from(action1, action2, action3, action4, action5, action6, action7, merger);
+            return action;
+        }
+        
+        @Override
+        public String toString() {
+            return merger + "(" + input1 + ", " + input2 + ", " + input3 + ", " + input4 + ", " + input5 + ", " + input6 + ", " + input7 + ")";
+        }
+    }
+    
+    /**
+     * Represents a task that merges the results of eight other tasks using a specified merging function.
+     * This class facilitates the combination of multiple asynchronous tasks, merging their results into a single data type.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <I6>  the type of the result of the sixth task
+     * @param <I7>  the type of the result of the seventh task
+     * @param <I8>  the type of the result of the eighth task
+     * @param <DATA> the type of the data produced by the merger of the task results
+     */
+    public static class TaskMerge8<I1, I2, I3, I4, I5, I6, I7, I8, DATA> implements Task<DATA> {
+        
+        private final Task<I1>  input1;
+        private final Task<I2>  input2;
+        private final Task<I3>  input3;
+        private final Task<I4>  input4;
+        private final Task<I5>  input5;
+        private final Task<I6>  input6;
+        private final Task<I7>  input7;
+        private final Task<I8>  input8;
+        
+        private final Func8<I1, I2, I3, I4, I5, I6, I7, I8, DATA> merger;
+        
+        
+        /**
+         * Constructs a {@link TaskMerge8} with the specified tasks and merging function.
+         * 
+         * @param input1  the first task
+         * @param input2  the second task
+         * @param input3  the third task
+         * @param input4  the fourth task
+         * @param input5  the fifth task
+         * @param input6  the sixth task
+         * @param input7  the seventh task
+         * @param input8  the eighth task
+         * @param merger  the function to merge the results of the tasks
+         */
+        public TaskMerge8(
+                Task<I1> input1,
+                Task<I2> input2,
+                Task<I3> input3,
+                Task<I4> input4,
+                Task<I5> input5,
+                Task<I6> input6,
+                Task<I7> input7,
+                Task<I8> input8,
+                Func8<I1, I2, I3, I4, I5, I6, I7, I8, DATA> merger) {
+            this.input1 = input1;
+            this.input2 = input2;
+            this.input3 = input3;
+            this.input4 = input4;
+            this.input5 = input5;
+            this.input6 = input6;
+            this.input7 = input7;
+            this.input8 = input8;
+            this.merger = merger;
+        }
+        
+        @Override
+        public DeferAction<DATA> createAction() {
+            val action1 = input1.createAction();
+            val action2 = input2.createAction();
+            val action3 = input3.createAction();
+            val action4 = input4.createAction();
+            val action5 = input5.createAction();
+            val action6 = input6.createAction();
+            val action7 = input7.createAction();
+            val action8 = input8.createAction();
+            val action  = DeferAction.from(action1, action2, action3, action4, action5, action6, action7, action8, merger);
+            return action;
+        }
+        
+        @Override
+        public String toString() {
+            return merger + "(" + input1 + ", " + input2 + ", " + input3 + ", " + input4 + ", " + input5 + ", " + input6 + ", " + input7 + ", " + input8 + ")";
+        }
+    }
+    
+    /**
+     * Represents a task that merges the results of nine other tasks using a specified merging function.
+     * This class facilitates the combination of multiple asynchronous tasks, merging their results into a single data type.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <I6>  the type of the result of the sixth task
+     * @param <I7>  the type of the result of the seventh task
+     * @param <I8>  the type of the result of the eighth task
+     * @param <I9>  the type of the result of the ninth task
+     * @param <DATA> the type of the data produced by the merger of the task results
+     */
+    public static class TaskMerge9<I1, I2, I3, I4, I5, I6, I7, I8, I9, DATA> implements Task<DATA> {
+        
+        private final Task<I1>  input1;
+        private final Task<I2>  input2;
+        private final Task<I3>  input3;
+        private final Task<I4>  input4;
+        private final Task<I5>  input5;
+        private final Task<I6>  input6;
+        private final Task<I7>  input7;
+        private final Task<I8>  input8;
+        private final Task<I9>  input9;
+        
+        private final Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, DATA> merger;
+        
+        
+        /**
+         * Constructs a {@link TaskMerge9} with the specified tasks and merging function.
+         * 
+         * @param input1  the first task
+         * @param input2  the second task
+         * @param input3  the third task
+         * @param input4  the fourth task
+         * @param input5  the fifth task
+         * @param input6  the sixth task
+         * @param input7  the seventh task
+         * @param input8  the eighth task
+         * @param input9  the ninth task
+         * @param merger  the function to merge the results of the tasks
+         */
+        public TaskMerge9(
+                Task<I1> input1,
+                Task<I2> input2,
+                Task<I3> input3,
+                Task<I4> input4,
+                Task<I5> input5,
+                Task<I6> input6,
+                Task<I7> input7,
+                Task<I8> input8,
+                Task<I9> input9,
+                Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, DATA> merger) {
+            this.input1 = input1;
+            this.input2 = input2;
+            this.input3 = input3;
+            this.input4 = input4;
+            this.input5 = input5;
+            this.input6 = input6;
+            this.input7 = input7;
+            this.input8 = input8;
+            this.input9 = input9;
+            this.merger = merger;
+        }
+        
+        @Override
+        public DeferAction<DATA> createAction() {
+            val action1 = input1.createAction();
+            val action2 = input2.createAction();
+            val action3 = input3.createAction();
+            val action4 = input4.createAction();
+            val action5 = input5.createAction();
+            val action6 = input6.createAction();
+            val action7 = input7.createAction();
+            val action8 = input8.createAction();
+            val action9 = input9.createAction();
+            val action  = DeferAction.from(action1, action2, action3, action4, action5, action6, action7, action8, action9, merger);
+            return action;
+        }
+        
+        @Override
+        public String toString() {
+            return merger + "(" + input1 + ", " + input2 + ", " + input3 + ", " + input4 + ", " + input5 + ", " + input6 + ", " + input7 + ", " + input8 + ", " + input9 + ")";
+        }
+    }
+    
+    /**
+     * Represents a task that merges the results of ten other tasks using a specified merging function.
+     * This class facilitates the combination of multiple asynchronous tasks, merging their results into a single data type.
+     * 
+     * @param <I1>  the type of the result of the first task
+     * @param <I2>  the type of the result of the second task
+     * @param <I3>  the type of the result of the third task
+     * @param <I4>  the type of the result of the fourth task
+     * @param <I5>  the type of the result of the fifth task
+     * @param <I6>  the type of the result of the sixth task
+     * @param <I7>  the type of the result of the seventh task
+     * @param <I8>  the type of the result of the eighth task
+     * @param <I9>  the type of the result of the ninth task
+     * @param <I10> the type of the result of the tenth task
+     * @param <DATA> the type of the data produced by the merger of the task results
+     */
+    public static class TaskMerge10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, DATA> implements Task<DATA> {
+        
+        private final Task<I1>  input1;
+        private final Task<I2>  input2;
+        private final Task<I3>  input3;
+        private final Task<I4>  input4;
+        private final Task<I5>  input5;
+        private final Task<I6>  input6;
+        private final Task<I7>  input7;
+        private final Task<I8>  input8;
+        private final Task<I9>  input9;
+        private final Task<I10> input10;
+        
+        private final Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, DATA> merger;
+        
+        
+        /**
+         * Constructs a {@link TaskMerge10} with the specified tasks and merging function.
+         * 
+         * @param input1  the first task
+         * @param input2  the second task
+         * @param input3  the third task
+         * @param input4  the fourth task
+         * @param input5  the fifth task
+         * @param input6  the sixth task
+         * @param input7  the seventh task
+         * @param input8  the eighth task
+         * @param input9  the ninth task
+         * @param input10 the tenth task
+         * @param merger  the function to merge the results of the tasks
+         */
+        public TaskMerge10(
+                Task<I1> input1,
+                Task<I2> input2,
+                Task<I3> input3,
+                Task<I4> input4,
+                Task<I5> input5,
+                Task<I6> input6,
+                Task<I7> input7,
+                Task<I8> input8,
+                Task<I9> input9,
+                Task<I10> input10,
+                Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, DATA> merger) {
+            this.input1  = input1;
+            this.input2  = input2;
+            this.input3  = input3;
+            this.input4  = input4;
+            this.input5  = input5;
+            this.input6  = input6;
+            this.input7  = input7;
+            this.input8  = input8;
+            this.input9  = input9;
+            this.input10 = input10;
+            this.merger  = merger;
+        }
+        
+        @Override
+        public DeferAction<DATA> createAction() {
+            val action1  = input1.createAction();
+            val action2  = input2.createAction();
+            val action3  = input3.createAction();
+            val action4  = input4.createAction();
+            val action5  = input5.createAction();
+            val action6  = input6.createAction();
+            val action7  = input7.createAction();
+            val action8  = input8.createAction();
+            val action9  = input9.createAction();
+            val action10 = input10.createAction();
+            val action   = DeferAction.from(action1, action2, action3, action4, action5, action6, action7, action8, action9, action10, merger);
+            return action;
+        }
+        
+        @Override
+        public String toString() {
+            return merger + "(" + input1 + ", " + input2 + ", " + input3 + ", " + input4 + ", " + input5 + ", " + input6 + ", " + input7 + ", " + input8 + ", " + input9 + ", " + input10 + ")";
+        }
+    }
+    
+    //== Tace ==
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     public static class TaskRace<D> implements Task<D> {
         

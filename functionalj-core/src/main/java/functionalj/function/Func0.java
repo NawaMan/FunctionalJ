@@ -194,7 +194,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return () -> {
             try {
                 val outputValue = this.applyUnsafe();
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 return exceptionMapper.apply(e);
@@ -232,7 +232,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return () -> {
             try {
                 val outputValue = this.applyUnsafe();
-                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply(null);
+                val returnValue = (outputValue != null) ? outputValue : exceptionMapper.apply((Exception)null);
                 return returnValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);

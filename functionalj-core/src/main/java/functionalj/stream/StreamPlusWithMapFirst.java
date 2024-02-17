@@ -108,4 +108,36 @@ public interface StreamPlusWithMapFirst<DATA> {
         val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
+    
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> StreamPlus<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2, Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4, Function<? super DATA, T> mapper5, Function<? super DATA, T> mapper6, Function<? super DATA, T> mapper7) {
+        val streamPlus = streamPlus();
+        return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7);
+    }
+    
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> StreamPlus<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2, Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4, Function<? super DATA, T> mapper5, Function<? super DATA, T> mapper6, Function<? super DATA, T> mapper7, Function<? super DATA, T> mapper8) {
+        val streamPlus = streamPlus();
+        return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8);
+    }
+    
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> StreamPlus<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2, Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4, Function<? super DATA, T> mapper5, Function<? super DATA, T> mapper6, Function<? super DATA, T> mapper7, Function<? super DATA, T> mapper8, Function<? super DATA, T> mapper9) {
+        val streamPlus = streamPlus();
+        return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9);
+    }
+    
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     */
+    public default <T> StreamPlus<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2, Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4, Function<? super DATA, T> mapper5, Function<? super DATA, T> mapper6, Function<? super DATA, T> mapper7, Function<? super DATA, T> mapper8, Function<? super DATA, T> mapper9, Function<? super DATA, T> mapper10) {
+        val streamPlus = streamPlus();
+        return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9, mapper10);
+    }
 }

@@ -24,6 +24,7 @@
 package functionalj.stream;
 
 import static functionalj.stream.StreamPlusHelper.sequential;
+
 import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -32,20 +33,29 @@ import java.util.function.IntConsumer;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.StreamSupport;
+
 import functionalj.function.Func1;
+import functionalj.function.Func10;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.Func7;
+import functionalj.function.Func8;
+import functionalj.function.Func9;
 import functionalj.function.ObjectObjectToDoubleFunctionPrimitive;
 import functionalj.function.ObjectObjectToIntFunctionPrimitive;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.tuple.Tuple10;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
+import functionalj.tuple.Tuple7;
+import functionalj.tuple.Tuple8;
+import functionalj.tuple.Tuple9;
 import lombok.val;
 
 class StreamPlusWithMapGroupHelper {
@@ -255,6 +265,88 @@ public interface StreamPlusWithMapGroup<DATA> {
     }
     
     /**
+     * @return  the stream of  each previous value and each current value.
+     */
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<Tuple7<DATA, DATA, DATA, DATA, DATA, DATA, DATA>> mapSeven() {
+        val streamPlus = streamPlus();
+        return StreamPlusWithMapGroupHelper.mapGroup(streamPlus, 7, (array, start, end, consumer) -> {
+            val value1 = (DATA) array[start];
+            val value2 = (DATA) array[start + 1];
+            val value3 = (DATA) array[start + 2];
+            val value4 = (DATA) array[start + 3];
+            val value5 = (DATA) array[start + 4];
+            val value6 = (DATA) array[start + 5];
+            val value7 = (DATA) array[start + 6];
+            consumer.accept(Tuple7.of(value1, value2, value3, value4, value5, value6, value7));
+            return (Void) null;
+        }, null);
+    }
+    
+    /**
+     * @return  the stream of  each previous value and each current value.
+     */
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<Tuple8<DATA, DATA, DATA, DATA, DATA, DATA, DATA, DATA>> mapEight() {
+        val streamPlus = streamPlus();
+        return StreamPlusWithMapGroupHelper.mapGroup(streamPlus, 8, (array, start, end, consumer) -> {
+            val value1 = (DATA) array[start];
+            val value2 = (DATA) array[start + 1];
+            val value3 = (DATA) array[start + 2];
+            val value4 = (DATA) array[start + 3];
+            val value5 = (DATA) array[start + 4];
+            val value6 = (DATA) array[start + 5];
+            val value7 = (DATA) array[start + 6];
+            val value8 = (DATA) array[start + 7];
+            consumer.accept(Tuple8.of(value1, value2, value3, value4, value5, value6, value7, value8));
+            return (Void) null;
+        }, null);
+    }
+    
+    /**
+     * @return  the stream of  each previous value and each current value.
+     */
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<Tuple9<DATA, DATA, DATA, DATA, DATA, DATA, DATA, DATA, DATA>> mapNine() {
+        val streamPlus = streamPlus();
+        return StreamPlusWithMapGroupHelper.mapGroup(streamPlus, 9, (array, start, end, consumer) -> {
+            val value1 = (DATA) array[start];
+            val value2 = (DATA) array[start + 1];
+            val value3 = (DATA) array[start + 2];
+            val value4 = (DATA) array[start + 3];
+            val value5 = (DATA) array[start + 4];
+            val value6 = (DATA) array[start + 5];
+            val value7 = (DATA) array[start + 6];
+            val value8 = (DATA) array[start + 7];
+            val value9 = (DATA) array[start + 8];
+            consumer.accept(Tuple9.of(value1, value2, value3, value4, value5, value6, value7, value8, value9));
+            return (Void) null;
+        }, null);
+    }
+    
+    /**
+     * @return  the stream of  each previous value and each current value.
+     */
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<Tuple10<DATA, DATA, DATA, DATA, DATA, DATA, DATA, DATA, DATA, DATA>> mapTen() {
+        val streamPlus = streamPlus();
+        return StreamPlusWithMapGroupHelper.mapGroup(streamPlus, 10, (array, start, end, consumer) -> {
+            val value1  = (DATA) array[start];
+            val value2  = (DATA) array[start + 1];
+            val value3  = (DATA) array[start + 2];
+            val value4  = (DATA) array[start + 3];
+            val value5  = (DATA) array[start + 4];
+            val value6  = (DATA) array[start + 5];
+            val value7  = (DATA) array[start + 6];
+            val value8  = (DATA) array[start + 7];
+            val value9  = (DATA) array[start + 8];
+            val value10 = (DATA) array[start + 9];
+            consumer.accept(Tuple10.of(value1, value2, value3, value4, value5, value6, value7, value8, value9, value10));
+            return (Void) null;
+        }, null);
+    }
+    
+    /**
      * Create a stream whose value is the combination between the previous value and the current value of this stream.
      */
     @SuppressWarnings("unchecked")
@@ -333,6 +425,88 @@ public interface StreamPlusWithMapGroup<DATA> {
             val value5 = (DATA) array[start + 4];
             val value6 = (DATA) array[start + 5];
             val value = combinator.apply(value1, value2, value3, value4, value5, value6);
+            consumer.accept(value);
+            return (Void) null;
+        }, null);
+    }
+    
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
+    @SuppressWarnings("unchecked")
+    public default <TARGET> StreamPlus<TARGET> mapGroup(Func7<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? extends TARGET> combinator) {
+        return StreamPlusWithMapGroupHelper.mapGroup(streamPlus(), 7, (array, start, end, consumer) -> {
+            val value1 = (DATA) array[start];
+            val value2 = (DATA) array[start + 1];
+            val value3 = (DATA) array[start + 2];
+            val value4 = (DATA) array[start + 3];
+            val value5 = (DATA) array[start + 4];
+            val value6 = (DATA) array[start + 5];
+            val value7 = (DATA) array[start + 6];
+            val value = combinator.apply(value1, value2, value3, value4, value5, value6, value7);
+            consumer.accept(value);
+            return (Void) null;
+        }, null);
+    }
+    
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
+    @SuppressWarnings("unchecked")
+    public default <TARGET> StreamPlus<TARGET> mapGroup(Func8<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? extends TARGET> combinator) {
+        return StreamPlusWithMapGroupHelper.mapGroup(streamPlus(), 8, (array, start, end, consumer) -> {
+            val value1 = (DATA) array[start];
+            val value2 = (DATA) array[start + 1];
+            val value3 = (DATA) array[start + 2];
+            val value4 = (DATA) array[start + 3];
+            val value5 = (DATA) array[start + 4];
+            val value6 = (DATA) array[start + 5];
+            val value7 = (DATA) array[start + 6];
+            val value8 = (DATA) array[start + 7];
+            val value = combinator.apply(value1, value2, value3, value4, value5, value6, value7, value8);
+            consumer.accept(value);
+            return (Void) null;
+        }, null);
+    }
+    
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
+    @SuppressWarnings("unchecked")
+    public default <TARGET> StreamPlus<TARGET> mapGroup(Func9<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? extends TARGET> combinator) {
+        return StreamPlusWithMapGroupHelper.mapGroup(streamPlus(), 9, (array, start, end, consumer) -> {
+            val value1 = (DATA) array[start];
+            val value2 = (DATA) array[start + 1];
+            val value3 = (DATA) array[start + 2];
+            val value4 = (DATA) array[start + 3];
+            val value5 = (DATA) array[start + 4];
+            val value6 = (DATA) array[start + 5];
+            val value7 = (DATA) array[start + 6];
+            val value8 = (DATA) array[start + 7];
+            val value9 = (DATA) array[start + 8];
+            val value = combinator.apply(value1, value2, value3, value4, value5, value6, value7, value8, value9);
+            consumer.accept(value);
+            return (Void) null;
+        }, null);
+    }
+    
+    /**
+     * Create a stream whose value is the combination between the previous value and the current value of this stream.
+     */
+    @SuppressWarnings("unchecked")
+    public default <TARGET> StreamPlus<TARGET> mapGroup(Func10<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? extends TARGET> combinator) {
+        return StreamPlusWithMapGroupHelper.mapGroup(streamPlus(), 10, (array, start, end, consumer) -> {
+            val value1 = (DATA) array[start];
+            val value2 = (DATA) array[start + 1];
+            val value3 = (DATA) array[start + 2];
+            val value4 = (DATA) array[start + 3];
+            val value5 = (DATA) array[start + 4];
+            val value6 = (DATA) array[start + 5];
+            val value7 = (DATA) array[start + 6];
+            val value8 = (DATA) array[start + 7];
+            val value9 = (DATA) array[start + 8];
+            val value10 = (DATA) array[start + 9];
+            val value = combinator.apply(value1, value2, value3, value4, value5, value6, value7, value8, value9, value10);
             consumer.accept(value);
             return (Void) null;
         }, null);

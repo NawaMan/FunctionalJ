@@ -27,9 +27,12 @@ import static functionalj.function.Func.f;
 import static functionalj.lens.Access.$S;
 import static java.util.stream.Collectors.joining;
 import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.Test;
+
 import functionalj.function.Func;
 import functionalj.promise.DeferAction;
 import functionalj.promise.DeferActionBuilder;

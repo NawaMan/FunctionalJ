@@ -21,12 +21,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.functions;
+package functionalj.function;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
+
 import org.junit.Test;
-import functionalj.function.Func0;
+
 import lombok.val;
 
 public class Func0Test {
@@ -43,5 +49,45 @@ public class Func0Test {
     
     private String nullString() {
         return (String) null;
+    }
+    
+    @Test
+    public void testSupplier() throws Exception {
+        val supplier = (Supplier<Integer>)(() -> 5);
+        val func0    = (Func0<Integer>)(() -> 5);
+        
+        assertEquals(5, valueFrom(supplier).intValue());
+        assertEquals(5, valueFrom(func0).intValue());
+        
+        assertEquals(5, valueFrom2(supplier::get).intValue());
+        assertEquals(5, valueFrom2(func0).intValue());
+        
+        val value = new AtomicBoolean();
+        assertEquals(5, valueFrom(() -> 5).intValue());
+        
+        // The following code does not compile.
+//        assertEquals(5, valueFrom(() -> {
+//            if (value.get()) {
+//                return 5;
+//            }
+//            throw new IOException();
+//        }).intValue());
+        
+        assertEquals(5, valueFrom2(() -> 5).intValue());
+        val exception = assertThrows(IOException.class, () -> valueFrom2(() -> {
+            if (value.get()) {
+                return 5;
+            }
+            throw new IOException();
+        }));
+        assertEquals("java.io.IOException", String.valueOf(exception));
+    }
+    
+    private Integer valueFrom(Supplier<Integer> supplier) throws Exception {
+        return Func0.from(supplier).getUnsafe();
+    }
+    
+    private Integer valueFrom2(Func0<Integer> supplier) throws Exception {
+        return Func0.from(supplier).getUnsafe();
     }
 }

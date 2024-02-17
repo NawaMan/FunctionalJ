@@ -24,6 +24,9 @@
 package functionalj.tuple;
 
 import java.util.Map;
+import java.util.Objects;
+
+import lombok.val;
 
 public class IntTuple2<T2> implements Tuple2<Integer, T2>, Map.Entry<Integer, T2> {
     
@@ -73,16 +76,31 @@ public class IntTuple2<T2> implements Tuple2<Integer, T2>, Map.Entry<Integer, T2
     
     @Override
     public String toString() {
-        return Tuple.toString(this);
+        return "(" + _1() + "," + _2() + ")";
     }
     
     @Override
     public int hashCode() {
-        return Tuple.hashCode(this);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + _1;
+        result = prime * result + ((_2  == null) ? 0 :  _2.hashCode());
+        return result;
     }
     
     @Override
     public boolean equals(Object obj) {
-        return Tuple.equals(this, obj);
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Tuple9))
+            return false;
+        
+        @SuppressWarnings("rawtypes")
+        val other = (IntTuple2) obj;
+        if (!Objects.equals(_1, other._1()))
+            return false;
+        if (!Objects.equals(_2, other._2()))
+            return false;
+        return true;
     }
 }

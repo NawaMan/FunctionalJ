@@ -46,6 +46,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,8 +67,9 @@ import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.junit.Ignore;
+
 import org.junit.Test;
+
 import functionalj.function.Func0;
 import functionalj.function.aggregator.Aggregation;
 import functionalj.lens.LensTest.Car;
@@ -883,7 +885,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
         val minLength = new MinLength();
         val maxLength = new MaxLength();
-        val range = stream.calculate(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
+        val range = stream.calculate(maxLength, minLength).mapWith((max, min) -> max - min).intValue();
         assertEquals(3, range);
     }
     
@@ -902,7 +904,7 @@ public class StreamPlusTest {
         val sumLength = new SumLength();
         val avgLength = new AvgLength();
         val minLength = new MinLength();
-        val value = stream.calculate(sumLength, avgLength, minLength).mapTo((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
+        val value = stream.calculate(sumLength, avgLength, minLength).mapWith((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
         assertEquals("sum: 18, avg: 4, min: 3", value);
     }
     
@@ -923,7 +925,7 @@ public class StreamPlusTest {
         val avgLength = new AvgLength();
         val minLength = new MinLength();
         val maxLength = new MaxLength();
-        val value = stream.calculate(sumLength, avgLength, minLength, maxLength).mapTo((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
+        val value = stream.calculate(sumLength, avgLength, minLength, maxLength).mapWith((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
         assertEquals("sum: 18, avg: 4, min: 3, max: 6", value);
     }
     
@@ -944,7 +946,7 @@ public class StreamPlusTest {
         val avgLength = new AvgLength();
         val minLength = new MinLength();
         val maxLength = new MaxLength();
-        val value = stream.calculate(sumLength, avgLength, minLength, maxLength, sumLength).mapTo((sum, avg, min, max, sum2) -> {
+        val value = stream.calculate(sumLength, avgLength, minLength, maxLength, sumLength).mapWith((sum, avg, min, max, sum2) -> {
             return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2;
         });
         assertEquals("sum: 18, avg: 4, min: 3, max: 6, sum2: 18", value);
@@ -967,7 +969,7 @@ public class StreamPlusTest {
         val avgLength = new AvgLength();
         val minLength = new MinLength();
         val maxLength = new MaxLength();
-        val value = stream.calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength).mapTo((sum, avg, min, max, sum2, avg2) -> {
+        val value = stream.calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength).mapWith((sum, avg, min, max, sum2, avg2) -> {
             return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2 + ", avg2: " + avg2;
         });
         assertEquals("sum: 18, avg: 4, min: 3, max: 6, sum2: 18, avg2: 4", value);
@@ -1516,6 +1518,11 @@ public class StreamPlusTest {
         val stream = StreamPlus.of(1, 2, 3, 4, 5);
         assertAsString("1, 12, 123, 1234, 12345", stream.accumulate((prev, current) -> prev * 10 + current).join(", "));
     }
+    @Test
+    public void testAccumulate3() {
+        val stream = StreamPlus.of(1, 2, 3, 4, 5, 6, 7, 8);
+        assertAsString("1, 2, 6, 24, 120, 720, 5040, 40320", stream.accumulate((a, b) -> a * b).join(", "));
+    }
     
     @Test
     public void testRestate1() {
@@ -1569,22 +1576,62 @@ public class StreamPlusTest {
         assertEquals("Result:{ Value: Two }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }", actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
     }
     
-    @Ignore("Tested wiht FuncListTest")
     @Test
     public void testSegmentSize() {
-        assertAsString("[" + "[0, 1, 2, 3, 4, 5], " + "[6, 7, 8, 9, 10, 11], " + "[12, 13, 14, 15, 16, 17], " + "[18, 19]" + "]", IntFuncList.infiniteInt().boxed().streamPlus().limit(20).segment(6));
+        assertAsString(
+                "["
+                + "[0, 1, 2, 3, 4, 5], "
+                + "[6, 7, 8, 9, 10, 11], "
+                + "[12, 13, 14, 15, 16, 17], "
+                + "[18, 19]"
+                + "]", 
+                IntFuncList
+                .infiniteInt()
+                .boxed()
+                .streamPlus()
+                .limit(20)
+                .segment(6)
+                .toListString());
     }
     
-    @Ignore("Tested wiht FuncListTest")
     @Test
     public void testSegmentSize_function() {
-        assertEquals("[], " + "[1], " + "[2, 3], " + "[4, 5, 6, 7], " + "[8, 9, 10, 11, 12, 13, 14, 15], " + "[16, 17, 18, 19]", IntFuncList.infiniteInt().boxed().streamPlus().limit(20).segment(i -> i).map(s -> s.toList()).join(", "));
+        assertEquals(
+                "[1], " 
+                + "[2, 3], " 
+                + "[4, 5, 6, 7], " 
+                + "[8, 9, 10, 11, 12, 13, 14, 15], " 
+                + "[16, 17, 18, 19]", 
+                IntFuncList
+                .infiniteInt()
+                .boxed()
+                .streamPlus()
+                .limit(20)
+                .segment(i -> i)
+                .map(s -> s.toList())
+                .join(", "));
     }
     
-    @Ignore("Tested wiht FuncListTest")
     @Test
     public void testSegmentStartCondition() {
-        assertAsString("[0, 1, 2], " + "[3, 4, 5], " + "[6, 7, 8], " + "[9, 10, 11], " + "[12, 13, 14], " + "[15, 16, 17], " + "[18, 19]", IntFuncList.infiniteInt().boxed().streamPlus().limit(20).segmentWhen(theInteger.thatIsDivisibleBy(3)).map(s -> s.toList()));
+        assertAsString(
+                "["
+                + "[0, 1, 2], "
+                + "[3, 4, 5], "
+                + "[6, 7, 8], "
+                + "[9, 10, 11], "
+                + "[12, 13, 14], "
+                + "[15, 16, 17], "
+                + "[18, 19]"
+                + "]",
+                IntFuncList
+                .infiniteInt()
+                .boxed()
+                .streamPlus()
+                .limit(20)
+                .segmentWhen(theInteger.thatIsDivisibleBy(3))
+                .map(s -> s.toList())
+                .toListString());
     }
     
     // -- StreamPlusWithPeek --

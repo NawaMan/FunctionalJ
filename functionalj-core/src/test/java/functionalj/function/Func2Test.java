@@ -25,7 +25,9 @@ package functionalj.function;
 
 import static functionalj.function.Func.f;
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
+
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 
@@ -36,7 +38,7 @@ public class Func2Test {
     @Test
     public void testApplyBare() {
         assertEquals("Hello world!", "" + concat.apply("Hello", " world!"));
-        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Result.valueOf("Hello"), Result.valueOf(" world!")));
+        assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Result.valueOf("Hello"),  Result.valueOf(" world!")));
         assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Promise.ofValue("Hello"), Promise.ofValue(" world!")).getResult());
     }
 }

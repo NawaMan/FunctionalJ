@@ -31,10 +31,10 @@ import lombok.val;
 public class DoubleFuncListHelper {
     
     static <D> FuncList<DoubleFuncList> segmentByPercentiles(AsDoubleFuncList asList, DoubleFuncList percentiles) {
-        val list = asList.asDoubleFuncList();
-        val size = list.size();
-        DoubleFuncList indexes = percentiles.append(100.0).sorted().map(d -> (int) Math.round(d * size / 100)).toImmutableList();
-        val lists = new ArrayList<GrowOnlyDoubleArray>();
+        val list    = asList.asDoubleFuncList();
+        val size    = list.size();
+        val indexes = percentiles.append(100.0).sorted().map(d -> (int) Math.round(d * size / 100)).toImmutableList();
+        val lists   = new ArrayList<GrowOnlyDoubleArray>();
         for (int i = 0; i < indexes.size(); i++) {
             lists.add(new GrowOnlyDoubleArray());
         }

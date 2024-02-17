@@ -45,6 +45,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,11 +72,14 @@ import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
 import org.junit.Ignore;
 import org.junit.Test;
+
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
+import functionalj.function.IntFunctionPrimitive;
 import functionalj.function.aggregator.Aggregation;
 import functionalj.lens.LensTest.Car;
 import functionalj.list.FuncList.Mode;
@@ -588,6 +592,27 @@ public class FuncListTest {
             assertFalse(list.test(Four));
             assertFalse(list.test(Five));
             assertFalse(list.test(Six));
+        });
+    }
+    
+    //-- IntFunction --
+    @Test
+    public void testIntFunctionApply() {
+        run(FuncList.of(One, Two, Three), list -> {
+            val func = (IntFunctionPrimitive<String>)list;
+            assertEquals(One,   func.apply(0));
+            assertEquals(Two,   func.apply(1));
+            assertEquals(Three, func.apply(2));
+            
+            try {
+                func.apply(3);
+                fail("Except an excaption.");
+            } catch (IndexOutOfBoundsException e) {
+                assertAsString("java.lang.IndexOutOfBoundsException: Index: 3, Size: 3", e);
+            }
+            
+            ;
+            assertEquals("",  func.whenAbsentUse("").apply(3));
         });
     }
     
@@ -1812,7 +1837,7 @@ public class FuncListTest {
         run(FuncList.of(Two, Three, Four, Eleven), list -> {
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            val range = list.calculate(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
+            val range = list.calculate(maxLength, minLength).mapWith((max, min) -> max - min).intValue();
             assertEquals(3, range);
         });
     }
@@ -1833,7 +1858,7 @@ public class FuncListTest {
             val sumLength = new SumLength();
             val avgLength = new AvgLength();
             val minLength = new MinLength();
-            val value = list.calculate(sumLength, avgLength, minLength).mapTo((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
+            val value = list.calculate(sumLength, avgLength, minLength).mapWith((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
             assertAsString("sum: 18, avg: 4, min: 3", value);
         });
     }
@@ -1856,7 +1881,7 @@ public class FuncListTest {
             val avgLength = new AvgLength();
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            val value = list.calculate(sumLength, avgLength, minLength, maxLength).mapTo((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
+            val value = list.calculate(sumLength, avgLength, minLength, maxLength).mapWith((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
             assertAsString("sum: 18, avg: 4, min: 3, max: 6", value);
         });
     }
@@ -1879,7 +1904,7 @@ public class FuncListTest {
             val avgLength = new AvgLength();
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            val value = list.calculate(sumLength, avgLength, minLength, maxLength, sumLength).mapTo((sum, avg, min, max, sum2) -> {
+            val value = list.calculate(sumLength, avgLength, minLength, maxLength, sumLength).mapWith((sum, avg, min, max, sum2) -> {
                 return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2;
             });
             assertAsString("sum: 18, avg: 4, min: 3, max: 6, sum2: 18", value);
@@ -1904,7 +1929,7 @@ public class FuncListTest {
             val avgLength = new AvgLength();
             val minLength = new MinLength();
             val maxLength = new MaxLength();
-            val value = list.calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength).mapTo((sum, avg, min, max, sum2, avg2) -> {
+            val value = list.calculate(sumLength, avgLength, minLength, maxLength, sumLength, avgLength).mapWith((sum, avg, min, max, sum2, avg2) -> {
                 return "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max + ", sum2: " + sum2 + ", avg2: " + avg2;
             });
             assertAsString("sum: 18, avg: 4, min: 3, max: 6, sum2: 18, avg2: 4", value);
@@ -2597,7 +2622,13 @@ public class FuncListTest {
     @Test
     public void testRestate_sieveOfEratosthenes() {
         run(IntFuncList.naturalNumbers(300).filter(theInteger.thatIsNotOne()).boxed().toFuncList(), list -> {
-            assertAsString("[" + "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, " + "101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, " + "211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293" + "]", list.restate((head, tail) -> tail.filter(x -> x % head != 0)));
+            assertAsString(
+                    "[" 
+                        + "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, " 
+                        + "101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, " 
+                        + "211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293" 
+                    + "]", 
+                    list.restate((head, tail) -> tail.filter(x -> x % head != 0)));
         });
     }
     
@@ -2730,7 +2761,14 @@ public class FuncListTest {
     @Test
     public void testSegment() {
         run(IntFuncList.wholeNumbers(20).boxed(), list -> {
-            assertAsString("[" + "[0, 1, 2, 3, 4, 5], " + "[6, 7, 8, 9, 10, 11], " + "[12, 13, 14, 15, 16, 17], " + "[18, 19]" + "]", list.segment(6).map(FuncList::toListString));
+            assertAsString(
+                    "[" 
+                    + "[0, 1, 2, 3, 4, 5], "
+                    + "[6, 7, 8, 9, 10, 11], "
+                    + "[12, 13, 14, 15, 16, 17], "
+                    + "[18, 19]"
+                    + "]", 
+                    list.segment(6).map(FuncList::toListString));
         });
     }
     

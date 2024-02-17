@@ -50,6 +50,7 @@ import java.util.stream.Stream;
 import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func;
+import functionalj.function.IntFunctionPrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.LongLongBiFunction;
@@ -58,6 +59,7 @@ import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.function.aggregator.AggregationToDouble;
 import functionalj.function.aggregator.AggregationToInt;
 import functionalj.function.aggregator.AggregationToLong;
+import functionalj.lens.lenses.AnyLens;
 import functionalj.list.doublelist.AsDoubleFuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.doublelist.ImmutableDoubleFuncList;
@@ -83,7 +85,7 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
-public interface FuncList<DATA> extends ReadOnlyList<DATA>, Predicate<DATA>, AsFuncList<DATA>, FuncListWithCombine<DATA>, FuncListWithFillNull<DATA>, FuncListWithFilter<DATA>, FuncListWithFlatMap<DATA>, FuncListWithLimit<DATA>, FuncListWithMap<DATA>, FuncListWithMapFirst<DATA>, FuncListWithMapGroup<DATA>, FuncListWithMapMulti<DATA>, FuncListWithMapThen<DATA>, FuncListWithMapToMap<DATA>, FuncListWithMapToTuple<DATA>, FuncListWithMapWithIndex<DATA>, FuncListWithModify<DATA>, FuncListWithPeek<DATA>, FuncListWithPipe<DATA>, FuncListWithSegment<DATA>, FuncListWithSort<DATA>, FuncListWithSplit<DATA> {
+public interface FuncList<DATA> extends ReadOnlyList<DATA>, Predicate<DATA>, IntFunctionPrimitive<DATA>, AsFuncList<DATA>, FuncListWithCombine<DATA>, FuncListWithFillNull<DATA>, FuncListWithFilter<DATA>, FuncListWithFlatMap<DATA>, FuncListWithLimit<DATA>, FuncListWithMap<DATA>, FuncListWithMapFirst<DATA>, FuncListWithMapGroup<DATA>, FuncListWithMapMulti<DATA>, FuncListWithMapThen<DATA>, FuncListWithMapToMap<DATA>, FuncListWithMapToTuple<DATA>, FuncListWithMapWithIndex<DATA>, FuncListWithModify<DATA>, FuncListWithPeek<DATA>, FuncListWithPipe<DATA>, FuncListWithSegment<DATA>, FuncListWithSort<DATA>, FuncListWithSplit<DATA> {
     
     public enum Mode {
         
@@ -537,6 +539,8 @@ public interface FuncList<DATA> extends ReadOnlyList<DATA>, Predicate<DATA>, AsF
     }
     
     // == Core ==
+    
+    
     /**
      * Return the stream of data behind this StreamPlus.
      */
@@ -693,12 +697,22 @@ public interface FuncList<DATA> extends ReadOnlyList<DATA>, Predicate<DATA>, AsF
     }
     
     // -- Predicate --
+    
     /**
      * Test if the data is in the list
      */
     @Override
     public default boolean test(DATA value) {
         return contains(value);
+    }
+    
+    //-- IntFunction --
+    
+    /**
+     * Returns the element at the index.
+     */
+    public default DATA applyInt(int index) {
+        return get(index);
     }
     
     // -- Mode --
@@ -1260,6 +1274,20 @@ public interface FuncList<DATA> extends ReadOnlyList<DATA>, Predicate<DATA>, AsF
     }
     
     /**
+     * Returns a new functional list with the new value (calculated from the mapper) replacing at the index.
+     */
+    public default FuncList<DATA> with(int index, IntObjBiFunction<DATA, DATA> mapper) {
+        if (index < 0)
+            throw new IndexOutOfBoundsException(index + "");
+        if (index >= size())
+            throw new IndexOutOfBoundsException(index + " vs " + size());
+        return mapWithIndex((i, value) -> {
+            val newValue = (i == index) ? mapper.apply(i, value) : value;
+            return newValue;
+        });
+    }
+    
+    /**
      * Returns a new list with the given elements inserts into at the given index.
      *
      * This method is for convenient. It is not really efficient if used to add a lot of data.
@@ -1381,6 +1409,19 @@ public interface FuncList<DATA> extends ReadOnlyList<DATA>, Predicate<DATA>, AsF
     public default FuncList<IntTuple2<DATA>> query(AggregationToBoolean<? super DATA> aggregation) {
         val check = aggregation.newAggregator();
         return query(check);
+    }
+    
+    //-- Zoom --
+    
+    /**
+     * Zoom in using lens.
+     * 
+     * @param <D>   the target data type.
+     * @param lens  the lens used to zoom.
+     * @return      the zoomed list.
+     */
+    public default <D> ZoomFuncList<D, DATA, FuncList<DATA>> zoomIn(AnyLens<DATA, D> lens) {
+        return new ZoomFuncList<D, DATA, FuncList<DATA>>(this, lens);
     }
     
     // -- de-ambiguous --
