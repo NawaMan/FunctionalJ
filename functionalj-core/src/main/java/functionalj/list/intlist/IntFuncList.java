@@ -1265,6 +1265,20 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
     }
     
     /**
+     * Returns a new functional list with the new value (calculated from the mapper) replacing at the index.
+     */
+    public default IntFuncList with(int index, IntBinaryOperator mapper) {
+        if (index < 0)
+            throw new IndexOutOfBoundsException(index + "");
+        if (index >= size())
+            throw new IndexOutOfBoundsException(index + " vs " + size());
+        return mapWithIndex((i, value) -> {
+            int newValue = (i == index) ? mapper.applyAsInt(i, value) : value;
+            return newValue;
+        });
+    }
+    
+    /**
      * Returns a new list with the given elements inserts into at the given index.
      */
     public default IntFuncList insertAt(int index, int... elements) {

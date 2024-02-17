@@ -24,12 +24,18 @@
 package functionalj.list.longlist;
 
 import static functionalj.list.longlist.LongFuncList.deriveToObj;
+
 import java.util.function.BiFunction;
 import java.util.function.LongFunction;
+
+import functionalj.function.Func10;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.Func7;
+import functionalj.function.Func8;
+import functionalj.function.Func9;
 import functionalj.list.FuncList;
 
 public interface LongFuncListWithMapThen extends AsLongFuncList {
@@ -67,5 +73,33 @@ public interface LongFuncListWithMapThen extends AsLongFuncList {
      */
     public default <T1, T2, T3, T4, T5, T6, T> FuncList<T> mapThen(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6, Func6<T1, T2, T3, T4, T5, T6, T> function) {
         return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, function));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T> FuncList<T> mapThen(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6, LongFunction<? extends T7> mapper7, Func7<T1, T2, T3, T4, T5, T6, T7, T> function) {
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, function));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T> FuncList<T> mapThen(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6, LongFunction<? extends T7> mapper7, LongFunction<? extends T8> mapper8, Func8<T1, T2, T3, T4, T5, T6, T7, T8, T> function) {
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, function));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9, T> FuncList<T> mapThen(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6, LongFunction<? extends T7> mapper7, LongFunction<? extends T8> mapper8, LongFunction<? extends T9> mapper9, Func9<T1, T2, T3, T4, T5, T6, T7, T8, T9, T> function) {
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9, function));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T> FuncList<T> mapThen(LongFunction<? extends T1> mapper1, LongFunction<? extends T2> mapper2, LongFunction<? extends T3> mapper3, LongFunction<? extends T4> mapper4, LongFunction<? extends T5> mapper5, LongFunction<? extends T6> mapper6, LongFunction<? extends T7> mapper7, LongFunction<? extends T8> mapper8, LongFunction<? extends T9> mapper9, LongFunction<? extends T10> mapper10, Func10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T> function) {
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9, mapper10, function));
     }
 }

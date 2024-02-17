@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,12 +23,16 @@
 // ============================================================================
 package functionalj.function;
 
-@FunctionalInterface
-public interface NamedExpression<DATA> {
+/**
+ * Intance of this class represent an absent of a parameter in functions.
+ *
+ * @author NawaMan -- nawa@nawaman.net
+ */
+public final class Drop {
     
-    public DATA apply(Object dummy);
+    /**
+     * The drop instance indicating that a parameter is drop.
+     */
+    public static final Drop drop = new Drop();
     
-    public default DATA getExpression() {
-        return apply(null);
-    }
 }

@@ -23,8 +23,8 @@
 // ============================================================================
 package functionalj.promise;
 
-import static functionalj.function.Func.f;
 import static functionalj.TestHelper.assertAsString;
+import static functionalj.function.Func.f;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.promise.DeferAction.run;
@@ -37,6 +37,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -50,7 +51,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
+
 import org.junit.Test;
+
 import functionalj.environments.AsyncRunner;
 import functionalj.environments.Console;
 import functionalj.environments.Env;

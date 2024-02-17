@@ -1955,7 +1955,7 @@ public class IntFuncListTest {
         run(IntFuncList.of(Two, Three, Four, Eleven), list -> {
             val minInt = new MinInt();
             val maxInt = new MaxInt();
-            val range = list.calculate(minInt, maxInt).mapTo((max, min) -> max + min);
+            val range = list.calculate(minInt, maxInt).mapWith((max, min) -> max + min);
             assertAsString("11", range);
         });
     }
@@ -1976,7 +1976,7 @@ public class IntFuncListTest {
             val sumHalf = new SumHalf();
             val average = new Average();
             val minInt = new MinInt();
-            val value = list.calculate(sumHalf, average, minInt).mapTo((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
+            val value = list.calculate(sumHalf, average, minInt).mapWith((sumH, avg, min) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min);
             assertAsString("sumH: 10, avg: 5.0, min: 0", value);
         });
     }
@@ -1999,7 +1999,7 @@ public class IntFuncListTest {
             val average = new Average();
             val minInt = new MinInt();
             val maxInt = new MaxInt();
-            val value = list.calculate(sumHalf, average, minInt, maxInt).mapTo((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
+            val value = list.calculate(sumHalf, average, minInt, maxInt).mapWith((sumH, avg, min, max) -> "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max);
             assertAsString("sumH: 10, " + "avg: 5.0, " + "min: 0, " + "max: 11", value);
         });
     }
@@ -2024,7 +2024,7 @@ public class IntFuncListTest {
             val minInt = new MinInt();
             val maxInt = new MaxInt();
             val sumInt = new SumInt();
-            val value = list.calculate(sumHalf, average, minInt, maxInt, sumInt).mapTo((sumH, avg, min, max, sumI) -> {
+            val value = list.calculate(sumHalf, average, minInt, maxInt, sumInt).mapWith((sumH, avg, min, max, sumI) -> {
                 return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI;
             });
             assertAsString("sumH: 10, avg: 5.0, min: 0, max: 11, max: 11, sumI: 20", value);
@@ -2053,7 +2053,7 @@ public class IntFuncListTest {
             val maxInt = new MaxInt();
             val sumInt = new SumInt();
             val avgInt = new AvgInt();
-            val value = list.calculate(sumHalf, average, minInt, maxInt, sumInt, avgInt).mapTo((sumH, avg, min, max, sumI, avgI) -> {
+            val value = list.calculate(sumHalf, average, minInt, maxInt, sumInt, avgInt).mapWith((sumH, avg, min, max, sumI, avgI) -> {
                 return "sumH: " + sumH + ", avg: " + avg + ", min: " + min + ", max: " + max + ", max: " + max + ", sumI: " + sumI + ", avgI: " + avgI;
             });
             assertAsString("sumH: 10, " + "avg: 5.0, " + "min: 0, " + "max: 11, " + "max: 11, " + "sumI: 20, " + "avgI: 5", value);

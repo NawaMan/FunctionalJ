@@ -40,7 +40,6 @@ import lombok.val;
 public class ListAccessTest {
     
     public class WithNames {
-        
         private List<String> names = new ArrayList<>();
         
         public WithNames(List<String> names) {
@@ -59,27 +58,25 @@ public class ListAccessTest {
     @Test
     public void testListAccess() {
         val accSub = new AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>>() {
-        
             @Override
             public List<String> applyUnsafe(WithNames input) throws Exception {
                 return input.names();
             }
-        
+            
             @Override
             public StringAccess<WithNames> createSubAccessFromHost(Function<WithNames, String> accessToParameter) {
                 return accessToParameter::apply;
             }
         };
         val listAcc = new ListAccess<WithNames, String, StringAccess<WithNames>>() {
-        
             @Override
             public AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>> accessParameterized() {
                 return accSub;
             }
         };
-        assertEquals("One", listAcc.first().apply(new WithNames(asList("One", "Two"))));
-        assertEquals("One", Optional.of(new WithNames(asList("One", "Two"))).map(listAcc.first()).get());
+        assertEquals("One",        listAcc.first().apply(new WithNames(asList("One", "Two"))));
+        assertEquals("One",        Optional.of(new WithNames(asList("One", "Two")))                 .map(listAcc.first()).get());
         assertEquals("[One, Two]", Optional.of(new WithNames(asList("One", "Two", "Three", "Four"))).map(listAcc.filter(theString.length().thatEquals(3))).map(theItem().asString()).get());
-        assertEquals("ONE", Optional.of(new WithNames(asList("One", "Two"))).map(listAcc.first()).map(theString.toUpperCase()).get());
+        assertEquals("ONE",        Optional.of(new WithNames(asList("One", "Two")))                 .map(listAcc.first())                                 .map(theString.toUpperCase()).get());
     }
 }

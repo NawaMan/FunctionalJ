@@ -24,13 +24,19 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.DoubleFuncList.deriveToObj;
+
 import java.util.function.DoubleFunction;
+
 import functionalj.list.FuncList;
+import functionalj.tuple.Tuple10;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
+import functionalj.tuple.Tuple7;
+import functionalj.tuple.Tuple8;
+import functionalj.tuple.Tuple9;
 
 public interface DoubleFuncListWithMapToTuple extends AsDoubleFuncList {
     
@@ -67,5 +73,33 @@ public interface DoubleFuncListWithMapToTuple extends AsDoubleFuncList {
      */
     public default <T1, T2, T3, T4, T5, T6> FuncList<Tuple6<T1, T2, T3, T4, T5, T6>> mapToTuple(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, DoubleFunction<? extends T3> mapper3, DoubleFunction<? extends T4> mapper4, DoubleFunction<? extends T5> mapper5, DoubleFunction<? extends T6> mapper6) {
         return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7> FuncList<Tuple7<T1, T2, T3, T4, T5, T6, T7>> mapToTuple(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, DoubleFunction<? extends T3> mapper3, DoubleFunction<? extends T4> mapper4, DoubleFunction<? extends T5> mapper5, DoubleFunction<? extends T6> mapper6, DoubleFunction<? extends T7> mapper7) {
+        return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8> FuncList<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> mapToTuple(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, DoubleFunction<? extends T3> mapper3, DoubleFunction<? extends T4> mapper4, DoubleFunction<? extends T5> mapper5, DoubleFunction<? extends T6> mapper6, DoubleFunction<? extends T7> mapper7, DoubleFunction<? extends T8> mapper8) {
+        return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9> FuncList<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> mapToTuple(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, DoubleFunction<? extends T3> mapper3, DoubleFunction<? extends T4> mapper4, DoubleFunction<? extends T5> mapper5, DoubleFunction<? extends T6> mapper6, DoubleFunction<? extends T7> mapper7, DoubleFunction<? extends T8> mapper8, DoubleFunction<? extends T9> mapper9) {
+        return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9));
+    }
+    
+    /**
+     * Map the value into different values and then combine them with the combinator.
+     */
+    public default <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> FuncList<Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>> mapToTuple(DoubleFunction<? extends T1> mapper1, DoubleFunction<? extends T2> mapper2, DoubleFunction<? extends T3> mapper3, DoubleFunction<? extends T4> mapper4, DoubleFunction<? extends T5> mapper5, DoubleFunction<? extends T6> mapper6, DoubleFunction<? extends T7> mapper7, DoubleFunction<? extends T8> mapper8, DoubleFunction<? extends T9> mapper9, DoubleFunction<? extends T10> mapper10) {
+        return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, mapper7, mapper8, mapper9, mapper10));
     }
 }

@@ -49,7 +49,7 @@ import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
+public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE>, Func1<KEY, VALUE> {
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static enum UnderlineMap {
@@ -1066,6 +1066,14 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE> {
     public static <K, V> FuncMapBuilder<K, V> newBuilder(Class<K> keyClass, Class<V> valueClass) {
         return new FuncMapBuilder<K, V>();
     }
+    
+    //-- Func1 --
+    
+    @Override
+    public VALUE applyUnsafe(KEY key) {
+        return get(key);
+    }
+    
     
     // Functionalities
     public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {

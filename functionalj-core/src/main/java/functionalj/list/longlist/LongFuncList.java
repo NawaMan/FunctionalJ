@@ -24,6 +24,7 @@
 package functionalj.list.longlist;
 
 import static functionalj.lens.Access.theLong;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +47,9 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
 import functionalj.function.Func;
+import functionalj.function.IntLongToLongFunctionPrimitive;
 import functionalj.function.LongComparator;
 import functionalj.function.aggregator.LongAggregation;
 import functionalj.function.aggregator.LongAggregationToBoolean;
@@ -1251,6 +1254,20 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
             throw new IndexOutOfBoundsException(index + " vs " + size());
         return mapWithIndex((i, value) -> {
             return (i == index) ? mapper.applyAsLong(value) : value;
+        });
+    }
+    
+    /**
+     * Returns a new functional list with the new value (calculated from the mapper) replacing at the index.
+     */
+    public default LongFuncList with(int index, IntLongToLongFunctionPrimitive mapper) {
+        if (index < 0)
+            throw new IndexOutOfBoundsException(index + "");
+        if (index >= size())
+            throw new IndexOutOfBoundsException(index + " vs " + size());
+        return mapWithIndex((i, value) -> {
+            long newValue = (i == index) ? mapper.applyAsLong(i, value) : value;
+            return newValue;
         });
     }
     

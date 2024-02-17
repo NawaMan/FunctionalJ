@@ -23,15 +23,18 @@
 // ============================================================================
 package functionalj.promise;
 
-import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.TestHelper.assertAsString;
+import static functionalj.functions.TimeFuncs.Sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
+
 import org.junit.Test;
+
 import functionalj.function.Func;
 import functionalj.pipeable.PipeLine;
 import lombok.val;
@@ -364,15 +367,11 @@ public class PromiseTest {
         val c = Sleep(50).thenReturn(2).defer();
         val r1 = add.applyTo(a, b);
         val r2 = mul.applyTo(add.applyTo(a, b), c);
-        // val r3 = add
-        // .then(mul.elevateWith(c)) // This does not work as c is a promise.
-        // .apply(a, b);
-        val r4 = a.pipeTo(add.elevateWith(b), mul.elevateWith(c));
-        val f5 = add.elevateWith(b).andThen(mul.elevateWith(c));
+        val r4 = a.pipeTo(add.forPromise().elevateWith(b), mul.forPromise().elevateWith(c));
+        val f5 = add.forPromise().elevateWith(b).andThen(mul.forPromise().elevateWith(c));
         val r5 = f5.apply(a);
         assertAsString("Result:{ Value: 21 }", r1.getResult());
         assertAsString("Result:{ Value: 42 }", r2.getResult());
-        // assertAsString("Result:{ Value: 42 }", r3.getResult());
         assertAsString("Result:{ Value: 42 }", r4.getResult());
         assertAsString("Result:{ Value: 42 }", r5.getResult());
     }
@@ -384,7 +383,7 @@ public class PromiseTest {
         val a = Sleep(50).thenReturn(20).defer();
         val b = Sleep(50).thenReturn(1).defer();
         val c = Sleep(50).thenReturn(2).defer();
-        val f6 = PipeLine.from(add.elevateWith(b)).then(nul.elevateWith(c)).thenReturn();
+        val f6 = PipeLine.from(add.forPromise().elevateWith(b)).then(nul.forPromise().elevateWith(c)).thenReturn();
         val r6 = f6.apply(a);
         assertAsString("Result:{ Value: 42 }", r6.getResult());
     }

@@ -23,13 +23,17 @@
 // ============================================================================
 package functionalj.map;
 
-import static functionalj.function.Func.f;
 import static functionalj.TestHelper.assertAsString;
+import static functionalj.function.Func.f;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.Test;
+
+import functionalj.function.Func1;
 import lombok.val;
 
 public class FuncMapTest {
@@ -67,5 +71,16 @@ public class FuncMapTest {
         val value = map.map(i -> counter.getAndIncrement()).entries().limit(4).join(", ");
         assertAsString("1=0, 2=1, 3=2, 4=3", value);
         assertAsString("7", counter.get());
+    }
+    
+    @Test
+    public void testMapFunction() {
+        val map  = FuncMap.of(1, "One", 2, "Two", 3, "Three", 4, "Four");
+        val func = (Func1<Integer, String>)map;
+        assertAsString("One",   "" + func.apply(1));
+        assertAsString("Two",   "" + func.apply(2));
+        assertAsString("Three", "" + func.apply(3));
+        assertAsString("Four",  "" + func.apply(4));
+        assertAsString("null",  "" + func.apply(5));
     }
 }

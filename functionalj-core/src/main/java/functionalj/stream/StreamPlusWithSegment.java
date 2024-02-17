@@ -53,7 +53,6 @@ public interface StreamPlusWithSegment<DATA> {
         val splitr = streamPlus().spliterator();
         val isSequence = false;
         val spliterator = new Spliterators.AbstractSpliterator<FuncList<DATA>>(splitr.estimateSize(), 0) {
-        
             @Override
             public boolean tryAdvance(Consumer<? super FuncList<DATA>> consumer) {
                 val eachListBuilder = FuncList.<DATA>newBuilder();

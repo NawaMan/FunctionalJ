@@ -24,6 +24,7 @@
 package functionalj.list.doublelist;
 
 import static functionalj.lens.Access.theDouble;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -46,8 +47,10 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
 import functionalj.function.DoubleComparator;
 import functionalj.function.Func;
+import functionalj.function.IntDoubleToDoubleFunctionPrimitive;
 import functionalj.function.aggregator.DoubleAggregation;
 import functionalj.function.aggregator.DoubleAggregationToBoolean;
 import functionalj.function.aggregator.DoubleAggregationToDouble;
@@ -1275,6 +1278,20 @@ public interface DoubleFuncList extends AsDoubleFuncList, DoubleIterable, Double
             throw new IndexOutOfBoundsException(index + " vs " + size());
         return mapWithIndex((i, value) -> {
             return (i == index) ? mapper.applyAsDouble(value) : value;
+        });
+    }
+    
+    /**
+     * Returns a new functional list with the new value (calculated from the mapper) replacing at the index.
+     */
+    public default DoubleFuncList with(int index, IntDoubleToDoubleFunctionPrimitive mapper) {
+        if (index < 0)
+            throw new IndexOutOfBoundsException(index + "");
+        if (index >= size())
+            throw new IndexOutOfBoundsException(index + " vs " + size());
+        return mapWithIndex((i, value) -> {
+            double newValue = (i == index) ? mapper.applyAsDouble(i, value) : value;
+            return newValue;
         });
     }
     

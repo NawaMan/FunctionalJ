@@ -23,12 +23,11 @@
 // ============================================================================
 package functionalj.promise;
 
-import functionalj.function.NamedExpression;
 import functionalj.result.AsResult;
 import functionalj.result.Result;
 
 @FunctionalInterface
-public interface HasPromise<DATA> extends NamedExpression<HasPromise<DATA>> {
+public interface HasPromise<DATA> {
     
     public Promise<DATA> getPromise();
     

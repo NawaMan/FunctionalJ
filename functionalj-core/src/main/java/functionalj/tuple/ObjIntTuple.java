@@ -24,6 +24,7 @@
 package functionalj.tuple;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class ObjIntTuple<T1> implements Tuple2<T1, Integer>, Map.Entry<T1, Integer> {
     
@@ -69,16 +70,27 @@ public class ObjIntTuple<T1> implements Tuple2<T1, Integer>, Map.Entry<T1, Integ
     
     @Override
     public String toString() {
-        return Tuple.toString(this);
+        return "(" + _1() + "," + _2() + ")";
     }
     
     @Override
     public int hashCode() {
-        return Tuple.hashCode(this);
+        return Objects.hash(_1, _2);
     }
     
     @Override
     public boolean equals(Object obj) {
-        return Tuple.equals(this, obj);
+        if (obj == null)
+            return false;
+        if (!(obj instanceof ObjIntTuple))
+            return false;
+        
+        @SuppressWarnings("rawtypes")
+        ObjIntTuple other = (ObjIntTuple) obj;
+        if (!Objects.equals(_1, other._1()))
+            return false;
+        if (!Objects.equals(_2, other._2()))
+            return false;
+        return true;
     }
 }

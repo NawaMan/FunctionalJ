@@ -47,7 +47,16 @@ class AsStreamPlusHelper {
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface AsStreamPlus<DATA> extends AsStreamPlusWithCalculate<DATA>, AsStreamPlusWithCollect<DATA>, AsStreamPlusWithConversion<DATA>, AsStreamPlusWithForEach<DATA>, AsStreamPlusWithGroupingBy<DATA>, AsStreamPlusWithMatch<DATA>, AsStreamPlusWithReduce<DATA>, AsStreamPlusWithStatistic<DATA> {
+public interface AsStreamPlus<DATA> 
+        extends
+            AsStreamPlusWithCalculate<DATA>,
+            AsStreamPlusWithCollect<DATA>,
+            AsStreamPlusWithConversion<DATA>,
+            AsStreamPlusWithForEach<DATA>,
+            AsStreamPlusWithGroupingBy<DATA>,
+            AsStreamPlusWithMatch<DATA>,
+            AsStreamPlusWithReduce<DATA>,
+            AsStreamPlusWithStatistic<DATA> {
     
     /**
      * @return  the stream plus instance of this object.

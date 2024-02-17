@@ -102,7 +102,30 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface StreamPlus<DATA> extends Stream<DATA>, AsStreamPlus<DATA>, StreamPlusWithCombine<DATA>, StreamPlusWithFillNull<DATA>, StreamPlusWithFilter<DATA>, StreamPlusWithFlatMap<DATA>, StreamPlusWithLimit<DATA>, StreamPlusWithMap<DATA>, StreamPlusWithMapFirst<DATA>, StreamPlusWithMapFlat<DATA>, StreamPlusWithMapGroup<DATA>, StreamPlusWithMapMulti<DATA>, StreamPlusWithMapThen<DATA>, StreamPlusWithMapToMap<DATA>, StreamPlusWithMapToTuple<DATA>, StreamPlusWithMapWithIndex<DATA>, StreamPlusWithModify<DATA>, StreamPlusWithPeek<DATA>, StreamPlusWithPipe<DATA>, StreamPlusWithSegment<DATA>, StreamPlusWithSort<DATA>, StreamPlusWithSplit<DATA> {
+public interface StreamPlus<DATA> 
+        extends
+            Stream<DATA>, 
+            AsStreamPlus<DATA>,
+            StreamPlusWithCombine<DATA>,
+            StreamPlusWithFillNull<DATA>,
+            StreamPlusWithFilter<DATA>,
+            StreamPlusWithFlatMap<DATA>,
+            StreamPlusWithLimit<DATA>,
+            StreamPlusWithMap<DATA>,
+            StreamPlusWithMapFirst<DATA>,
+            StreamPlusWithMapFlat<DATA>,
+            StreamPlusWithMapGroup<DATA>,
+            StreamPlusWithMapMulti<DATA>,
+            StreamPlusWithMapThen<DATA>,
+            StreamPlusWithMapToMap<DATA>,
+            StreamPlusWithMapToTuple<DATA>,
+            StreamPlusWithMapWithIndex<DATA>,
+            StreamPlusWithModify<DATA>,
+            StreamPlusWithPeek<DATA>,
+            StreamPlusWithPipe<DATA>,
+            StreamPlusWithSegment<DATA>,
+            StreamPlusWithSort<DATA>,
+            StreamPlusWithSplit<DATA> {
     
     /**
      * Throw a no more element exception. This is used for generator.
