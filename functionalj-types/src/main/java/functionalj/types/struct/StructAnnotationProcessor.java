@@ -96,7 +96,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             SourceSpecBuilder sourceSpecBuilder = new SourceSpecBuilder(element);
             String            packageName       = sourceSpecBuilder.packageName();
             String            specTargetName    = sourceSpecBuilder.targetName();
-            prepareLogs(element);
+//            prepareLogs(element);
             try {
                 SourceSpec sourceSpec = sourceSpecBuilder.sourceSpec();
                 if (sourceSpec == null)
