@@ -43,26 +43,26 @@ public class UElmType {
     
     static {
         primitiveTypes = new HashMap<Type, String>();
-        primitiveTypes.put(Type.BOOL, "Bool");
-        primitiveTypes.put(Type.BOOLEAN, "Bool");
-        primitiveTypes.put(Type.BYT, "Int");
-        primitiveTypes.put(Type.BYTE, "Int");
-        primitiveTypes.put(Type.SHRT, "Int");
-        primitiveTypes.put(Type.SHORT, "Int");
-        primitiveTypes.put(Type.INT, "Int");
-        primitiveTypes.put(Type.INTEGER, "Int");
-        primitiveTypes.put(Type.LNG, "Int");
-        primitiveTypes.put(Type.LONG, "Int");
+        primitiveTypes.put(Type.BOOL,       "Bool");
+        primitiveTypes.put(Type.BOOLEAN,    "Bool");
+        primitiveTypes.put(Type.BYT,        "Int");
+        primitiveTypes.put(Type.BYTE,       "Int");
+        primitiveTypes.put(Type.SHRT,       "Int");
+        primitiveTypes.put(Type.SHORT,      "Int");
+        primitiveTypes.put(Type.INT,        "Int");
+        primitiveTypes.put(Type.INTEGER,    "Int");
+        primitiveTypes.put(Type.LNG,        "Int");
+        primitiveTypes.put(Type.LONG,       "Int");
         primitiveTypes.put(Type.BIGINTEGER, "Int");
-        primitiveTypes.put(Type.FLT, "Float");
-        primitiveTypes.put(Type.FLOAT, "Float");
-        primitiveTypes.put(Type.DBL, "Float");
-        primitiveTypes.put(Type.DOUBLE, "Float");
+        primitiveTypes.put(Type.FLT,        "Float");
+        primitiveTypes.put(Type.FLOAT,      "Float");
+        primitiveTypes.put(Type.DBL,        "Float");
+        primitiveTypes.put(Type.DOUBLE,     "Float");
         primitiveTypes.put(Type.BIGDECIMAL, "Float");
-        primitiveTypes.put(Type.CHR, "Char");
-        primitiveTypes.put(Type.CHARACTER, "Char");
-        primitiveTypes.put(Type.STR, "String");
-        primitiveTypes.put(Type.STRING, "String");
+        primitiveTypes.put(Type.CHR,        "Char");
+        primitiveTypes.put(Type.CHARACTER,  "Char");
+        primitiveTypes.put(Type.STR,        "String");
+        primitiveTypes.put(Type.STRING,     "String");
     }
     
     public static String emlType(Type type) {

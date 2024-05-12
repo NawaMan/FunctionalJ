@@ -66,7 +66,7 @@ public class ElmStructWithNullableFieldTest {
         isClass, null, null, // Configurations
         configures, getters, emptyList(), emptyList());
         val spec = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);
-        val struct = new ElmStructBuilder(spec, emptyList(), emptyList());
+        val struct = new ElmStructBuilder(spec, emptyList());
         val genCode = struct.toElmCode();
         val code = genCode.substring(genCode.indexOf('\n') + 1);
         assertEquals(expected, code);

@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.elm;
+package functionalj.types.elm.processor;
 
 import static functionalj.types.DefaultValue.REQUIRED;
 import static java.util.Arrays.asList;
@@ -33,7 +33,6 @@ import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
-import functionalj.types.elm.processor.ElmType;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
 

@@ -54,12 +54,10 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private final ElmChoiceSpec spec;
     
-    // private final List<String>  structTypes;
     private final List<String> choiceTypes;
     
-    public ElmChoiceBuilder(ElmChoiceSpec spec, List<String> structTypes, List<String> choiceTypes) {
+    public ElmChoiceBuilder(ElmChoiceSpec spec, List<String> choiceTypes) {
         this.spec = spec;
-        // this.structTypes = structTypes;
         this.choiceTypes = choiceTypes;
     }
     
