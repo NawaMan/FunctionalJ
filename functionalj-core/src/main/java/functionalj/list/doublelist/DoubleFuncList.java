@@ -1436,14 +1436,17 @@ public interface DoubleFuncList extends AsDoubleFuncList, DoubleIterable, Double
         return doubleStream().anyMatch(i -> i == value);
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsAllOf(double... array) {
         return DoubleStreamPlus.of(array).allMatch(each -> doubleStream().anyMatch(value -> Objects.equals(each, value)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsSomeOf(double... c) {
         return DoubleStreamPlus.of(c).anyMatch(each -> doubleStream().anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsNoneOf(double... c) {
         return DoubleStreamPlus.of(c).noneMatch(each -> doubleStream().anyMatch(o -> Objects.equals(each, o)));
     }
@@ -1460,14 +1463,17 @@ public interface DoubleFuncList extends AsDoubleFuncList, DoubleIterable, Double
         return c.stream().noneMatch(each -> doubleStream().anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsAllOf(DoubleFuncList c) {
         return c.doubleStream().allMatch(each -> doubleStream().anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsSomeOf(DoubleFuncList c) {
         return c.doubleStream().anyMatch(each -> doubleStream().anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsNoneOf(DoubleFuncList c) {
         return c.doubleStream().noneMatch(each -> doubleStream().anyMatch(o -> Objects.equals(each, o)));
     }

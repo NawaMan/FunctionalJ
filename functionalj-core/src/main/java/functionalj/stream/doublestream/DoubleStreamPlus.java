@@ -229,6 +229,7 @@ public interface DoubleStreamPlus extends DoubleStream, AsDoubleStreamPlus, Doub
     /**
      * Concatenate all the given streams.
      */
+    @SuppressWarnings("resource")
     public static DoubleStreamPlus concat(DoubleStream... streams) {
         return StreamPlus.of(streams).map(s -> DoubleStreamPlus.from(s)).flatMapToDouble(s -> s.doubleStream());
     }

@@ -248,10 +248,12 @@ public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStre
         return streamPlus.peek(set::remove).anyMatch(__ -> set.isEmpty());
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsAnyOf(int... values) {
         return intStreamPlus().anyMatch(each -> IntStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsNoneOf(int... values) {
         return intStreamPlus().noneMatch(each -> IntStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }

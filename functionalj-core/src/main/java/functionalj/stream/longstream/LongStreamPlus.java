@@ -229,6 +229,7 @@ public interface LongStreamPlus extends LongStream, AsLongStreamPlus, LongStream
     /**
      * Concatenate all the given streams.
      */
+    @SuppressWarnings("resource")
     public static LongStreamPlus concat(LongStream... streams) {
         return StreamPlus.of(streams).map(s -> LongStreamPlus.from(s)).flatMapToLong(s -> s.longStream());
     }

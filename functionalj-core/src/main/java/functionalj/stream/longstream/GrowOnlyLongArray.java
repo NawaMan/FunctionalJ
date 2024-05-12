@@ -81,6 +81,7 @@ public final class GrowOnlyLongArray {
         return length == 0;
     }
     
+    @SuppressWarnings("resource")
     public LongStreamPlus stream() {
         int aCount = length / ARRAY_LENGTH;
         int residue = length % ARRAY_LENGTH;

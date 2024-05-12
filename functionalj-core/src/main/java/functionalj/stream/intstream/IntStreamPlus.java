@@ -223,6 +223,7 @@ public interface IntStreamPlus extends IntStream, AsIntStreamPlus, IntStreamPlus
     /**
      * Concatenate all the given streams.
      */
+    @SuppressWarnings("resource")
     public static IntStreamPlus concat(IntStream... streams) {
         return StreamPlus.of(streams).map(s -> IntStreamPlus.from(s)).flatMapToInt(s -> s.intStream());
     }

@@ -81,6 +81,7 @@ public final class GrowOnlyDoubleArray {
         return length == 0;
     }
     
+    @SuppressWarnings("resource")
     public DoubleStreamPlus stream() {
         int aCount = length / ARRAY_LENGTH;
         int residue = length % ARRAY_LENGTH;

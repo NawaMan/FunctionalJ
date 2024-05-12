@@ -248,10 +248,12 @@ public interface AsLongStreamPlus extends AsLongStreamPlusWithCalculate, AsLongS
         return streamPlus.peek(set::remove).anyMatch(__ -> set.isEmpty());
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsAnyOf(long... values) {
         return longStreamPlus().anyMatch(each -> LongStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsNoneOf(long... values) {
         return longStreamPlus().noneMatch(each -> LongStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }
