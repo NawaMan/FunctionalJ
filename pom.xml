@@ -90,6 +90,7 @@
         <module>functionalj-types</module>
         <module>functionalj-store</module>
         <module>functionalj-elm</module>
+        <module>functionalj-typescript</module>
         <module>functionalj-all</module>
         <module>functionalj-types-tests</module>
     </modules>
@@ -109,6 +110,11 @@
             <dependency>
                 <groupId>io.functionalj</groupId>
                 <artifactId>functionalj-elm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.functionalj</groupId>
+                <artifactId>functionalj-typescript</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

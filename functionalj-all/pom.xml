@@ -31,6 +31,10 @@
         </dependency>
         <dependency>
             <groupId>io.functionalj</groupId>
+            <artifactId>functionalj-typescript</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.functionalj</groupId>
             <artifactId>functionalj-store</artifactId>
         </dependency>
     </dependencies>

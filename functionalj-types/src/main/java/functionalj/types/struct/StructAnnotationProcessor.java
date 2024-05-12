@@ -123,7 +123,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
-    private void prepareLogs(InputElement element) {
+    void prepareLogs(InputElement element) {
         if (element.isTypeElement()) {
             logs.add("Element is a type: " + element);
             return;
