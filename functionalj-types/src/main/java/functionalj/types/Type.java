@@ -294,6 +294,13 @@ public class Type implements IRequireTypes {
         this.generics = Collections.unmodifiableList(((genericList == null) || genericList.isEmpty()) ? new ArrayList<Generic>() : new ArrayList<Generic>(generics));
     }
     
+    /**
+     * Construct a AbstractType with the parameters.
+     * 
+     * @param encloseName  the enclose component name.
+     * @param simpleName   the simple name.
+     * @param generics     the generic value.
+     */
     public Type(String encloseName, String simpleName, String packageName, boolean isVirtual, List<Generic> generics) {
         this.encloseName = encloseName;
         this.simpleName = simpleName;
@@ -312,6 +319,12 @@ public class Type implements IRequireTypes {
         this.generics = emptyList();
     }
     
+    /**
+     * Create a virtual type.
+     *
+     * @param name  the name of the virtual type.
+     * @return      the virtual type.
+     */
     public static Type newVirtualType(String name) {
         return new Type(name, true);
     }
@@ -329,18 +342,30 @@ public class Type implements IRequireTypes {
         return new Type(pckg, name).withGenerics(asList(generics));
     }
     
+    /**
+     * @return the package name.
+     */
     public String packageName() {
         return packageName;
     }
     
+    /**
+     * @return the enclose name.
+     */
     public String encloseName() {
         return encloseName;
     }
     
+    /**
+     * @return the simple name.
+     */
     public String simpleName() {
         return simpleName;
     }
     
+    /**
+     * @return the simple name.
+     */
     public boolean isVirtual() {
         return isVirtual;
     }

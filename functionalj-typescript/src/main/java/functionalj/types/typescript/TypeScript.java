@@ -21,39 +21,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.elm.processor;
+package functionalj.types.typescript;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Generic utility class.
+ * Annotation for TypeScript -- marking that Struct or Choice types can be used as a template to generate a TypeScript data type..
+ * The generated TypeScript code will be in `generatedDirectory` or "generated/elm" folder if not specified.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
-public class Utils {
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TypeScript {
     
-    public static String toTitleCase(String str) {
-        if ((str == null) || str.isEmpty()) {
-            return str;
-        }
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
+    /** The default base module is from the package name. */
+    public static final String FROM_PACAKGE_NAME = "FROM_PACAKGE_NAME";
     
-    public static String toCamelCase(String str) {
-        if ((str == null) || str.isEmpty()) {
-            return str;
-        }
-        if (str.equals(str.toUpperCase()))
-            return str.toLowerCase();
-        if (str.length() <= 2)
-            return str.toLowerCase();
-        String firstTwo = str.substring(0, 2);
-        if (firstTwo.equals(firstTwo.toUpperCase())) {
-            String first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
-            String rest  = str.substring(first.length());
-            return first.toLowerCase() + rest;
-        } else {
-            String first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
-            String rest  = str.substring(first.length());
-            return first.toLowerCase() + rest;
-        }
-    }
+    /** The default directory to generate code. */
+    public static final String DEFAULT_GENERATED_DIRECTORY = "./generated/ts/";
+    
+    /** The name of the base module. */
+    String baseModule() default FROM_PACAKGE_NAME;
+    
+    /** The name of the generated directory. */
+    String generatedDirectory() default DEFAULT_GENERATED_DIRECTORY;
+    
 }

@@ -28,6 +28,7 @@ import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 
+import functionalj.functions.StrFuncs;
 import functionalj.types.elm.Elm;
 import functionalj.types.input.InputElement;
 import functionalj.types.struct.generator.SourceSpec;
@@ -52,7 +53,7 @@ public class ElmStructSpec {
         this.typeName   = sourceSpec.getTargetClassName();
         
         List<String> baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
-        this.folderName         = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
+        this.folderName         = baseModule.stream().map(StrFuncs::toTitleCase).collect(joining("/"));
         
         String generatedDirectory = element.annotation(Elm.class).generatedDirectory();
         this.generatedDirectory   = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;

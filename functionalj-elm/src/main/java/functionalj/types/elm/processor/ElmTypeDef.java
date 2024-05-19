@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
+import static functionalj.functions.StrFuncs.toCamelCase;
 import static functionalj.types.struct.generator.ILines.line;
 
 import functionalj.types.struct.generator.ILines;
@@ -37,7 +38,7 @@ public interface ElmTypeDef {
     public String typeName();
     
     public default String camelName() {
-        String camelName = Utils.toCamelCase(typeName());
+        String camelName = toCamelCase(typeName());
         return camelName;
     }
     

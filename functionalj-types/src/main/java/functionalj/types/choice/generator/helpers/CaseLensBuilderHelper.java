@@ -28,7 +28,9 @@ import static functionalj.types.struct.generator.model.Modifiability.FINAL;
 import static functionalj.types.struct.generator.model.Scope.INSTANCE;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+
 import java.util.List;
+
 import functionalj.types.Core;
 import functionalj.types.Generic;
 import functionalj.types.Type;
@@ -57,8 +59,9 @@ public class CaseLensBuilderHelper {
             return format("createSubListLens(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
         
         boolean isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
-        String  spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
-        return format("createSubListLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        String  lenseType    = paramType.lensType(packageName, encloseName, withLens).simpleName();
+        String  spec         = isCustomLens ? lenseType + "::new" : lenseType + "::of";
+        return format("createSubListLens(%1$s::%2$s, %1$s::%3$s, (java.util.function.BiFunction<String, LensSpec<HOST, %4$s>, %5$s<HOST>>)%6$s)", dataObjName, name, withName, paramType, lenseType, spec);
     }
     
     public static GenField createGenFuncListLensField(SourceSpec sourceSpec, String dataObjName, String name, Type type, String withName) {

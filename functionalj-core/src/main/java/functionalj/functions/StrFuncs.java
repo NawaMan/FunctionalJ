@@ -105,7 +105,71 @@ public class StrFuncs {
     }
     
     public static String escapeJava(String s) {
-        return s.replace("\\", "\\\\").replace("\t", "\\t").replace("\b", "\\b").replace("\n", "\\n").replace("\r", "\\r").replace("\f", "\\f").replace("\'", "\\'").replace("\"", "\\\"");
+        return s.replace("\\", "\\\\")
+                .replace("\t", "\\t")
+                .replace("\b", "\\b")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\f", "\\f")
+                .replace("\'", "\\'")
+                .replace("\"", "\\\"");
+    }
+    
+    /**
+     * Returns a function that convert the string to lower case.
+     *
+     * @return the function.
+     */
+    public static Func1<String, String> toTitleCase() {
+        return StrFuncs::toTitleCase;
+    }
+    
+    /**
+     * Convert the first character of the string to upper case.
+     *
+     * @param str  the string to convert.
+     * @return     the converted string.
+     */
+    public static String toTitleCase(String str) {
+        if ((str == null) || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+    
+    /**
+     * Returns a function that convert the string to camel case.
+     *
+     * @return the function.
+     */
+    public static Func1<String, String> toCamelCase() {
+        return StrFuncs::toCamelCase;
+    }
+    
+    /**
+     * Convert the string to camel case.
+     *
+     * @param str  the string to convert.
+     * @return     the converted string.
+     */
+    public static String toCamelCase(String str) {
+        if ((str == null) || str.isEmpty()) {
+            return str;
+        }
+        if (str.equals(str.toUpperCase()))
+            return str.toLowerCase();
+        if (str.length() <= 2)
+            return str.toLowerCase();
+        String firstTwo = str.substring(0, 2);
+        if (firstTwo.equals(firstTwo.toUpperCase())) {
+            String first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
+            String rest  = str.substring(first.length());
+            return first.toLowerCase() + rest;
+        } else {
+            String first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
+            String rest  = str.substring(first.length());
+            return first.toLowerCase() + rest;
+        }
     }
     
     /**

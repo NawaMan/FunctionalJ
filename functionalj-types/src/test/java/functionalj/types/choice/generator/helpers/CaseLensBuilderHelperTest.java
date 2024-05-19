@@ -53,7 +53,12 @@ public class CaseLensBuilderHelperTest {
         String withName = "withCommands";
         GenField genField = createGenListLensField(sourceSpec, dataObjName, name, type, withName);
         String generated = genField.toDefinition(packageName).lines().collect(Collectors.joining("\n"));
-        assertAsString("public final ListLens<HOST, String, StringLens<HOST>> " + "commands = createSubListLens(" + "NestedCommand.Commands::commands, " + "NestedCommand.Commands::withCommands, " + "StringLens::of);", generated);
+        assertAsString(
+                "public final ListLens<HOST, String, StringLens<HOST>> "
+              + "commands = createSubListLens("
+              + "NestedCommand.Commands::commands, "
+              + "NestedCommand.Commands::withCommands, "
+              + "(java.util.function.BiFunction<String, LensSpec<HOST, String>, StringLens<HOST>>)StringLens::of);", generated);
     }
     
     @Test
@@ -66,7 +71,12 @@ public class CaseLensBuilderHelperTest {
         String withName = "withCommands";
         GenField genField = createGenListLensField(sourceSpec, dataObjName, name, type, withName);
         String generated = genField.toDefinition(packageName).lines().collect(Collectors.joining("\n"));
-        assertAsString("public final ListLens<HOST, Command, Command.CommandLens<HOST>> " + "commands = createSubListLens(" + "NestedCommand.Commands::commands, " + "NestedCommand.Commands::withCommands, " + "Command.CommandLens::new);", generated);
+        assertAsString(
+                "public final ListLens<HOST, Command, Command.CommandLens<HOST>> "
+              + "commands = createSubListLens("
+              + "NestedCommand.Commands::commands, "
+              + "NestedCommand.Commands::withCommands, "
+              + "(java.util.function.BiFunction<String, LensSpec<HOST, Command>, Command.CommandLens<HOST>>)Command.CommandLens::new);", generated);
     }
     
     @Test
@@ -80,6 +90,10 @@ public class CaseLensBuilderHelperTest {
         String withName = "withCommands";
         GenField genField = createGenListLensField(sourceSpec, dataObjName, name, type, withName);
         String generated = genField.toDefinition(packageName).lines().collect(Collectors.joining("\n"));
-        assertAsString("public final ListLens<HOST, Object, ObjectLens<HOST, Object>> " + "commands = createSubListLens(" + "NestedCommand.Commands::commands, " + "NestedCommand.Commands::withCommands);", generated);
+        assertAsString(
+                "public final ListLens<HOST, Object, ObjectLens<HOST, Object>> "
+              + "commands = createSubListLens("
+              + "NestedCommand.Commands::commands, "
+              + "NestedCommand.Commands::withCommands);", generated);
     }
 }

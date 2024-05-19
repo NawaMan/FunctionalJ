@@ -177,12 +177,30 @@ public class ChoiceSpec {
     }
     
     private List<Method> extractTypeMethods(Type targetType, InputTypeElement typeElement) {
-        return typeElement.enclosedElements().stream().filter(elmt -> elmt.isMethodElement()).map(elmt -> elmt.asMethodElement()).filter(mthd -> !mthd.simpleName().startsWith("__")).filter(mthd -> isPublicOrPackage(mthd)).filter(mthd -> isDefaultOrStatic(mthd)).map(mthd -> createMethodFromMethodElement(targetType, mthd)).collect(toList());
+        return typeElement
+                .enclosedElements()
+                .stream()
+                .filter (elmt -> elmt.isMethodElement())
+                .map    (elmt -> elmt.asMethodElement())
+                .filter (mthd -> !mthd.simpleName().startsWith("__"))
+                .filter (mthd -> isPublicOrPackage(mthd))
+                .filter (mthd -> isDefaultOrStatic(mthd))
+                .map    (mthd -> createMethodFromMethodElement(targetType, mthd))
+                .collect(toList());
     }
     
     private List<Case> extractTypeChoices(Type targetType, InputTypeElement typeElement) {
         try {
-            return typeElement.enclosedElements().stream().filter(elmt -> elmt.isMethodElement()).map(elmt -> elmt.asMethodElement()).filter(mthd -> !mthd.isDefault()).filter(mthd -> mthd.simpleName().matches("^[A-Z].*$")).filter(mthd -> mthd.returnType().isNoType()).map(mthd -> createChoiceFromMethod(targetType, mthd, typeElement.enclosedElements())).collect(toList());
+            return typeElement
+                    .enclosedElements()
+                    .stream()
+                    .filter (elmt -> elmt.isMethodElement())
+                    .map    (elmt -> elmt.asMethodElement())
+                    .filter (mthd -> !mthd.isDefault())
+                    .filter (mthd -> mthd.simpleName().matches("^[A-Z].*$"))
+                    .filter (mthd -> mthd.returnType().isNoType())
+                    .map    (mthd -> createChoiceFromMethod(targetType, mthd, typeElement.enclosedElements()))
+                    .collect(toList());
         } catch (RuntimeException exception) {
             exception.printStackTrace();
             throw exception;

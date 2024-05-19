@@ -140,13 +140,6 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         }
     }
     
-    private void generateElmCode(String generatedPath, String generatedCode, String generatedName) throws IOException {
-        new File(generatedPath).mkdirs();
-        File         generatedFile = new File(generatedName);
-        List<String> lines         = asList(generatedCode.split("\n"));
-        Files.write(generatedFile.toPath(), lines);
-    }
-    
     private boolean handleChoiceType(InputElement element, List<String> choiceTypes) {
         ChoiceSpec choiceSpec     = new ChoiceSpec(element);
         String     packageName    = choiceSpec.packageName();
@@ -172,5 +165,12 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
             element.error(errMsg);
             return !element.hasError();
         }
+    }
+    
+    private void generateElmCode(String generatedPath, String generatedCode, String generatedName) throws IOException {
+        new File(generatedPath).mkdirs();
+        File         generatedFile = new File(generatedName);
+        List<String> lines         = asList(generatedCode.split("\n"));
+        Files.write(generatedFile.toPath(), lines);
     }
 }

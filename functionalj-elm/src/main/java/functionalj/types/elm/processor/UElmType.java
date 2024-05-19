@@ -23,13 +23,14 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
-import static functionalj.types.elm.processor.Utils.toCamelCase;
+import static functionalj.functions.StrFuncs.toCamelCase;
 import static java.util.stream.Collectors.joining;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import functionalj.functions.StrFuncs;
 import functionalj.types.Type;
 
 /**
@@ -91,7 +92,7 @@ public class UElmType {
         if (packageName == null)
             return simpleName;
         
-        String moduleName = Stream.of(packageName.split("\\.")).map(Utils::toTitleCase).collect(joining("."));
+        String moduleName = Stream.of(packageName.split("\\.")).map(StrFuncs::toTitleCase).collect(joining("."));
         if (moduleName.isEmpty())
             return simpleName;
         
@@ -195,7 +196,7 @@ public class UElmType {
         if (primitiveElmType != null)
             return "Json.Decode." + primitiveElmType.toLowerCase();
         
-        String typeName = Utils.toCamelCase(type.simpleName());
+        String typeName = toCamelCase(type.simpleName());
         if (type.isList() || type.isFuncList())
             return typeName + "ListDecode";
         

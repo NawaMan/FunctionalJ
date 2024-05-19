@@ -23,9 +23,9 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
+import static functionalj.functions.StrFuncs.toCamelCase;
 import static functionalj.types.elm.processor.UElmType.decoderNameOf;
 import static functionalj.types.elm.processor.UElmType.encoderNameOf;
-import static functionalj.types.elm.processor.Utils.toCamelCase;
 import static functionalj.types.struct.generator.ILines.indent;
 import static functionalj.types.struct.generator.ILines.line;
 import static functionalj.types.struct.generator.ILines.linesOf;

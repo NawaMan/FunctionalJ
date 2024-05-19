@@ -21,19 +21,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.elm.processor;
+package functionalj.types.typescript.processor.struct;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 
-import functionalj.functions.StrFuncs;
-import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.elm.Elm;
 import functionalj.types.input.InputElement;
+import functionalj.types.struct.generator.SourceSpec;
+import functionalj.types.typescript.TypeScript;
+import functionalj.types.typescript.processor.Utils;
 
-public class ElmChoiceSpec {
+/**
+ * This class represents The spec for a TypeScript structure type.
+ *
+ * @author NawaMan -- nawa@nawaman.net
+ */
+public class TypeScriptStructSpec {
     
     private final SourceSpec sourceSpec;
     
@@ -43,61 +48,72 @@ public class ElmChoiceSpec {
     
     private final String generatedDirectory;
     
-    public ElmChoiceSpec(SourceSpec sourceSpec, InputElement element) {
+    /** Constructs the spec. */
+    public TypeScriptStructSpec(SourceSpec sourceSpec, InputElement element) {
         this.sourceSpec = sourceSpec;
-        this.typeName = sourceSpec.targetName;
+        this.typeName   = sourceSpec.getTargetClassName();
         
         List<String> baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
-        this.folderName = baseModule.stream().map(StrFuncs::toTitleCase).collect(joining("/"));
+        this.folderName         = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
         
-        String generatedDirectory = element.annotation(Elm.class).generatedDirectory();
-        this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
+        String generatedDirectory = element.annotation(TypeScript.class).generatedDirectory();
+        this.generatedDirectory   = (generatedDirectory == null) ? TypeScript.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     
-    ElmChoiceSpec(SourceSpec sourceSpec, String typeName, String folderName) {
-        this(sourceSpec, typeName, folderName, null);
-    }
-    
-    ElmChoiceSpec(SourceSpec sourceSpec, String typeName, String folderName, String generatedDirectory) {
-        this.sourceSpec = sourceSpec;
-        this.typeName = typeName;
-        this.folderName = folderName;
-        this.generatedDirectory = (generatedDirectory == null) ? Elm.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
+    TypeScriptStructSpec(SourceSpec sourceSpec, String typeName, String folderName, String generatedDirectory) {
+        this.sourceSpec         = sourceSpec;
+        this.typeName           = typeName;
+        this.folderName         = folderName;
+        this.generatedDirectory = (generatedDirectory == null) ? TypeScript.DEFAULT_GENERATED_DIRECTORY : generatedDirectory;
     }
     
     private String elmBaseModule(InputElement element, SourceSpec sourceSpec) {
-        String baseModule  = element.annotation(Elm.class).baseModule();
-        String elmtPackage = sourceSpec.sourceType.packageName();
-        return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) ? elmtPackage : baseModule;
+        String baseModule = element.annotation(TypeScript.class).baseModule();
+        String tsPackage  = sourceSpec.getPackageName();
+        return (TypeScript.FROM_PACAKGE_NAME.equals(baseModule)) ? tsPackage : baseModule;
     }
     
+    /** @return the source spec. **/
     public SourceSpec sourceSpec() {
         return sourceSpec;
     }
     
+    /** @return the type name. **/
     public String typeName() {
         return typeName;
     }
     
+    /** @return the file name. **/
     public String fileName() {
-        return typeName + ".elm";
+        return typeName + ".ts";
     }
     
+    /** @return the module name. **/
     public String moduleName() {
         String moduleBase = ((folderName == null) || folderName.isEmpty()) ? "" : (folderName.replace('/', '.') + ".");
         return moduleBase + typeName;
     }
     
+    /** @return the folder name. **/
     public String folderName() {
         return folderName;
     }
     
+    /** @return the generated directory. **/
     public String generatedDirectory() {
         return generatedDirectory;
     }
     
     @Override
     public String toString() {
-        return "ElmStructSpec [" + "typeName=" + typeName + ", " + "fileName=" + fileName() + ", " + "moduleName=" + moduleName() + ", " + "folderName=" + folderName + ", " + "generatedDirectory=" + generatedDirectory + "]";
+        String fileName   = fileName();
+        String moduleName = moduleName();
+        return "TypeScriptStructSpec ["
+                + "typeName=" + typeName + ", " 
+                + "fileName=" + fileName + ", " 
+                + "moduleName=" + moduleName + ", " 
+                + "folderName=" + folderName + ", " 
+                + "generatedDirectory=" + generatedDirectory 
+                + "]";
     }
 }
