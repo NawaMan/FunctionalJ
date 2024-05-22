@@ -6,6 +6,7 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import functionalj.types.choice.generator.model.Case;
@@ -14,8 +15,8 @@ import functionalj.types.choice.generator.model.CaseParam;
 public class TypeScriptChoiceBuilder {
     
     private TypeScriptChoiceSpec choiceSpec;
-//    private List<String>         structTypes;
-//    private List<String>         choiceTypes;
+    private List<String>         structTypes;
+    private List<String>         choiceTypes;
     
     /**
      * Create a builder for the given choice.
@@ -38,12 +39,12 @@ public class TypeScriptChoiceBuilder {
             List<String>         structTypes,
             List<String>         choiceTypes) {
         this.choiceSpec  = choiceSpec;
-//        this.structTypes = structTypes;
-//        this.choiceTypes = choiceTypes;
+        this.structTypes = (structTypes == null) ? Collections.emptyList() : structTypes;
+        this.choiceTypes = choiceTypes;
     }
     
     String tagName() {
-        return choiceSpec.typeName() + "Tag";
+        return "Tag";
     }
     
     /** @return Generate the TypeScript code for the choice. */
@@ -63,9 +64,11 @@ public class TypeScriptChoiceBuilder {
                 .map    (choice -> choiceType(typeName, choice))
                 .collect(joining());
         
-        String combined = combineChoiceType(typeName);
-        String encode   = encodeFunction();
-        String decode   = decodeFunction();
+        String combined    = combineChoiceType(typeName);
+        String encode      = encodeFunction();
+        String decode      = decodeFunction();
+        String encodeArray = encodeArrayFunction();
+        String decodeArray = decodeArrayFunction();
         
         return topLine
                 + "\n"
@@ -77,12 +80,17 @@ public class TypeScriptChoiceBuilder {
                 + "\n"
                 + encode
                 + "\n"
-                + decode;
+                + decode
+                + "\n"
+                + encodeArray
+                + "\n"
+                + decodeArray
+                ;
     }
     
     private String choiceEnum() {
         String template
-                = "enum %1$s {\n"
+                = "export enum %1$s {\n"
                 + "%2$s"
                 + "}\n";
         String eachEnumTemplate
@@ -101,9 +109,9 @@ public class TypeScriptChoiceBuilder {
     
     private String choiceType(String typeName, Case choice) {
         String subTypeTemplate
-                = "export interface %1$s%2$s {\n"
-                + "    __tagged: %3$s.%2$s;\n"
-                + "%4$s"
+                = "export interface %1$s {\n"
+                + "    __tagged: Tag.%1$s;\n"
+                + "%2$s"
                 + "}\n";
         String parameterTemplate
                 = "    %1$s: %2$s;\n";
@@ -115,30 +123,36 @@ public class TypeScriptChoiceBuilder {
             return format(parameterTemplate, paramName, paramType);
         }).collect(joining("\n\n"));
         
-        String tagName   = tagName();
-        String choiceDef = format(subTypeTemplate, typeName, choiceName, tagName, parameters);
+        String choiceDef = format(subTypeTemplate, choiceName, parameters);
         return choiceDef;
     }
     
     private String combineChoiceType(String typeName) {
         String template
                 = "export type %1$s\n"
-                + "            = %2$s;\n";
+                + "            = %2$s;\n"
+                + "\n"
+                + "export type Type = %1$s;\n";
         
         String choiceNames
                 = choiceSpec.sourceSpec()
                 .choices.stream()
-                .map(choice -> typeName + choice.name)
+                .map(choice -> choice.name)
                 .collect(joining("\n            | "));
         String combined
                 = format(template, typeName, choiceNames);
+        
         return combined;
     }
+    
+    // TODO - If the type is of a list type, this will require different encode/decode function.
+    // TODO - For both from and to, we need to check if the type is a list type.
+    // TODO - When use stringify, we need to check if there is no custom type.
     
     private String encodeFunction() {
         String template
                 = "// Function to encode a %1$s to JSON\n"
-                + "export function encode%1$s(%2$s: %1$s): string {\n"
+                + "export function toJson(%2$s: %1$s): string {\n"
                 + "    return JSON.stringify(%2$s);\n"
                 + "}\n";
         
@@ -150,7 +164,7 @@ public class TypeScriptChoiceBuilder {
     private String decodeFunction() {
         String generalTemplate
                 = "// Function to decode a JSON to %1$s\n"
-                + "export function decode%1$s(json: string): %1$s {\n"
+                + "export function fromJson(json: string): %1$s {\n"
                 + "    const obj = JSON.parse(json);\n"
                 + "    switch (obj.__tagged) {\n"
                 + "%2$s"
@@ -162,6 +176,27 @@ public class TypeScriptChoiceBuilder {
         String choices = choiceSpec.sourceSpec().choices.stream().map(this::choiceCode).collect(joining());
         String code    = format(generalTemplate, choiceSpec.typeName(), choices);
         return code;
+    }
+    
+    private String encodeArrayFunction() {
+        String template
+                = "// Function to encode an array of %1$s to JSON\n"
+                + "export function toJsonArray(array: %1$s[]): string {\n"
+                + "    return JSON.stringify(array.map(toJson));\n"
+                + "}\n";
+        String typeName  = choiceSpec.typeName();
+        return format(template, typeName);
+    }
+    
+    private String decodeArrayFunction() {
+        String template
+                = "// Function to decode a JSON to an array of %1$s\n"
+                + "export function fromJsonArray(json: string): %1$s[] {\n"
+                + "    const objArray = JSON.parse(json);\n"
+                + "    return objArray.map(fromJson) as %1$s[];\n"
+                + "}\n";
+        String typeName  = choiceSpec.typeName();
+        return format(template, typeName);
     }
     
     private String choiceCode(Case choice) {
@@ -186,7 +221,6 @@ public class TypeScriptChoiceBuilder {
     }
     
     private String caseParamValidation(CaseParam caseParam) {
-        // TODO If the type of the case-param is one of those custom type, we have to call its decode function.
         String parameterCheckTemplate
                 = "            if (!(typeof obj.%1$s === '%2$s'))\n"
                 + "                throw new Error(\"Invalid %1$s (not a %2$s): \" + obj.%1$s);\n";

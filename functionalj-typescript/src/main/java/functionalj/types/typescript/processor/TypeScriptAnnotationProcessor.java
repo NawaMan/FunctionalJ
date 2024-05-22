@@ -93,7 +93,7 @@ public class TypeScriptAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         boolean hasError = false;
-        List<String> structTypes = collectAllChoiceTypes(roundEnv, Struct.class);
+        List<String> structTypes = collectAllStructTypes(roundEnv, Struct.class);
         List<String> choiceTypes = collectAllChoiceTypes(roundEnv, Choice.class);
         for (Element javaElement : roundEnv.getElementsAnnotatedWith(TypeScript.class)) {
             InputElement element = environment.element(javaElement);
@@ -113,13 +113,28 @@ public class TypeScriptAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
+    private <A extends Annotation> List<String> collectAllStructTypes(RoundEnvironment roundEnv, Class<A> clazz) {
+        List<String> allTypes = new ArrayList<String>();
+        for (Element javaElement : roundEnv.getElementsAnnotatedWith(TypeScript.class)) {
+            InputElement element = environment.element(javaElement);
+            A annotation = element.annotation(clazz);
+            if (annotation != null) {
+                SourceSpecBuilder structSpec = new SourceSpecBuilder(element);
+                String name = structSpec.sourceSpec().getTargetClassName();
+                allTypes.add(name);
+            }
+        }
+        return allTypes;
+    }
+    
     private <A extends Annotation> List<String> collectAllChoiceTypes(RoundEnvironment roundEnv, Class<A> clazz) {
         List<String> allTypes = new ArrayList<String>();
         for (Element javaElement : roundEnv.getElementsAnnotatedWith(TypeScript.class)) {
             InputElement element = environment.element(javaElement);
             A annotation = element.annotation(clazz);
             if (annotation != null) {
-                String name = element.simpleName();
+                ChoiceSpec choiceSpec = new ChoiceSpec(element);
+                String     name       = choiceSpec.targetName();
                 allTypes.add(name);
             }
         }

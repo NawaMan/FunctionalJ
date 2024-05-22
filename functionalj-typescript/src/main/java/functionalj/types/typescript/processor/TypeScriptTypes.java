@@ -68,6 +68,16 @@ public class TypeScriptTypes {
     }
     
     /** @return the TypeScript type for the given Java type. */
+    public static String toTypeScriptType(Type type, Boolean isRequired) {
+        String tsType = toTypeScriptType(type);
+        if ((isRequired == Boolean.FALSE) && !tsType.endsWith("| null")) {
+            return tsType + " | null";
+        }
+        
+        return tsType;
+    }
+    
+    /** @return the TypeScript type for the given Java type. */
     public static String toTypeScriptType(Type type) {
         if (type.isList() || type.isFuncList()) {
             return tsArrayType(type);
