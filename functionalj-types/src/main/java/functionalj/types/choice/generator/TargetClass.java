@@ -74,6 +74,9 @@ public class TargetClass implements Lines {
         imports.add("functionalj.result.Result");
         imports.add("functionalj.pipeable.Pipeable");
         imports.add("functionalj.lens.core.LensSpec");
+        imports.add("functionalj.types.IStruct");
+        imports.add("functionalj.types.choice.*");
+        imports.add("functionalj.pipeable.Pipeable");
         imports.add("functionalj.lens.lenses.*");
         imports.add(Core.Generated.type().fullName());
         
@@ -114,6 +117,45 @@ public class TargetClass implements Lines {
         String        pckgName             = spec.sourceType.packageName();
         List<String>  importLines          = imports.stream().filter(importName -> !samePackage(pckgName, importName)).map(importName -> "import " + importName + ";").collect(toList());
         String        specConstant         = (spec.specObjName == null) ? "    " : "    public static final " + SourceSpec.class.getCanonicalName() + " " + spec.specObjName + " = " + spec.toCode() + ";";
-        return asList(asList(format("package %s;", pckgName)), asList(format("")), importLines, asList(format("")), asList(generated), asList(suppress), asList(format("public abstract class %1$s implements %6$s<%2$s.%2$sFirstSwitch%3$s>, Pipeable<%4$s>%5$s {", type.typeWithGenericDef(), type.simpleName(), type.genericsString(), type.typeWithGenerics(), selfDef, IChoice.class.getSimpleName())), asList(format("    ")), subClassConstructors, asList(format("    ")), specObj, asList(format("    ")), choiceLens, asList(format("    ")), asList(format("    private %s() {}", type.simpleName())), asList(format("    public %1$s __data() throws Exception { return this; }", typeName)), asList(format("    public Result<%1$s> toResult() { return Result.valueOf(this); }", typeName)), asList(format("    ")), fromMapMethod, asList(format("    ")), schemaMethod, asList(format("    ")), subClassDefinitions, asList(format("    ")), targetGeneral, asList(format("    ")), sourceMethods, asList(format("    ")), targetCheckMethods, asList(format("    ")), switchClasses, asList(format("    ")), asList(specConstant), asList(format("    ")), asList(format("}"))).stream().filter(Objects::nonNull).flatMap(List::stream).collect(toList());
+        return asList(
+                (pckgName == null) ? null : asList(format("package %s;", pckgName)), 
+                asList(format("")), 
+                importLines, 
+                asList(format("")), 
+                asList(generated), 
+                asList(suppress), 
+                asList(format("public abstract class %1$s implements %6$s<%2$s.%2$sFirstSwitch%3$s>, Pipeable<%4$s>%5$s {", type.typeWithGenericDef(), type.simpleName(), type.genericsString(), type.typeWithGenerics(), selfDef, IChoice.class.getSimpleName())), 
+                asList(format("    ")), 
+                subClassConstructors, 
+                asList(format("    ")), 
+                specObj, 
+                asList(format("    ")), 
+                choiceLens, 
+                asList(format("    ")), 
+                asList(format("    private %s() {}", type.simpleName())), 
+                asList(format("    public %1$s __data() throws Exception { return this; }", typeName)), 
+                asList(format("    public Result<%1$s> toResult() { return Result.valueOf(this); }", typeName)), 
+                asList(format("    ")), 
+                fromMapMethod, 
+                asList(format("    ")), 
+                schemaMethod, 
+                asList(format("    ")), 
+                subClassDefinitions, 
+                asList(format("    ")), 
+                targetGeneral, 
+                asList(format("    ")), 
+                sourceMethods, 
+                asList(format("    ")), 
+                targetCheckMethods, 
+                asList(format("    ")), 
+                switchClasses, 
+                asList(format("    ")), 
+                asList(specConstant), 
+                asList(format("    ")), 
+                asList(format("}"))
+                ).stream()
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .collect(toList());
     }
 }

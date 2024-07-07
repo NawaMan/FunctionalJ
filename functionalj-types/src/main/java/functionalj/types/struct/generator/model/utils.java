@@ -68,6 +68,9 @@ public class utils {
     }
     
     public static boolean samePackage(String pckgName, String importName) {
+        if (((pckgName == null) || pckgName.isEmpty()))
+            return !importName.contains(".");
+        
         if (!importName.startsWith(pckgName))
             return false;
         String tail = importName.substring(pckgName.length() + 1);

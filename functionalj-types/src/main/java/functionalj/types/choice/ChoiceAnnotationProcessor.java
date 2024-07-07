@@ -87,9 +87,9 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         List<InputElement> elements = roundEnv.getElementsAnnotatedWith(Choice.class).stream().map(environment::element).collect(toList());
         for (InputElement element : elements) {
             ChoiceSpec choiceSpec = new ChoiceSpec(element);
-            String packageName = choiceSpec.packageName();
+            String packageName = ((choiceSpec.packageName() == null) || choiceSpec.packageName().trim().isEmpty()) ? null : choiceSpec.packageName();
             String targetName = choiceSpec.targetName();
-            String className = packageName + "." + targetName;
+            String className = ((packageName == null) ? "" : (packageName + ".")) + targetName;
             SourceSpec sourceSpec = choiceSpec.sourceSpec();
             if (sourceSpec.choices.isEmpty()) {
                 String template = "Choice type must has at least one choice with name starts with a capital letter): %s";

@@ -85,7 +85,7 @@ public class ChoiceSpec {
         }
         List<Generic> generics      = extractTypeGenerics(null, typeElement);
         String        packageName   = typeElement.packageQualifiedName();
-        String        sourceName    = typeElement.qualifiedName().substring(packageName.length() + 1);
+        String        sourceName    = typeElement.qualifiedName().substring(packageName.length() + (packageName.isEmpty() ? 0 : 1));
         String        enclosedClass = extractEncloseClass(simpleName, sourceName);
         Type          sourceType    = new Type(packageName, enclosedClass, simpleName, generics);
         String        targetName    = element.targetName();

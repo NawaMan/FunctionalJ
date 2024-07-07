@@ -288,7 +288,7 @@ public class Type implements IRequireTypes {
     public Type(String packageName, String encloseName, String simpleName, List<Generic> generics) {
         this.encloseName = encloseName;
         this.simpleName = simpleName;
-        this.packageName = packageName;
+        this.packageName = ((packageName != null) && packageName.trim().isEmpty()) ? null : packageName;
         this.isVirtual = false;
         List<Generic> genericList = (generics == null) ? null : generics.stream().filter(Objects::nonNull).collect(toList());
         this.generics = Collections.unmodifiableList(((genericList == null) || genericList.isEmpty()) ? new ArrayList<Generic>() : new ArrayList<Generic>(generics));
@@ -304,7 +304,7 @@ public class Type implements IRequireTypes {
     public Type(String encloseName, String simpleName, String packageName, boolean isVirtual, List<Generic> generics) {
         this.encloseName = encloseName;
         this.simpleName = simpleName;
-        this.packageName = packageName;
+        this.packageName = ((packageName != null) && packageName.trim().isEmpty()) ? null : packageName;
         this.isVirtual = isVirtual;
         this.generics = generics;
     }

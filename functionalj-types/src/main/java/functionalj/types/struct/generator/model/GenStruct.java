@@ -73,7 +73,7 @@ public class GenStruct implements ILines {
         String         packageName = dataClass.type().packageName();
         Stream<String> importList  = importListLines();
         List<String>   importLines = importList.filter(importName -> !samePackage(packageName, importName)).map(importName -> "import " + importName + ";").collect(toList());
-        String         packageDef  = "package " + packageName + ";";
+        String         packageDef  = ((packageName == null) || (packageName.trim().isEmpty())) ? "" : ("package " + packageName + ";");
         ILines         dataObjDef  = dataClass.getClassSpec().toDefinition(packageName);
         String         specName    = (sourceSpec.getSpecName() == null) ? "" : "." + sourceSpec.getSpecName();
         String         source      = sourceSpec.getPackageName() + "." + sourceSpec.getEncloseName() + specName;
@@ -105,7 +105,7 @@ public class GenStruct implements ILines {
         Predicate<String> isLensClass   = (Predicate<String>) ((String name) -> name.equals(lensClass));
         Predicate<String> isSuperClass  = (Predicate<String>) ((String name) -> name.equals(superClass));
         List<Type>        importTypes   = (List<Type>) asList(alwaysImports.stream(), lensImport.stream(), types.stream(), dataClass.innerClasses().stream().map(GenClass::requiredTypes).flatMap(themAll())).stream().flatMap(themAll()).collect(toList());
-        Stream<String>    importList    = importTypes.stream().filter(type -> !type.isVirtual()).filter(type -> !thisPackage.equals(type.packageName()) || !Objects.equals(thisClassName, type.encloseName())).map(Type::declaredType).map(Type::fullName).filter(type -> !implicitImports.contains(type)).filter(isLensClass.negate()).filter(isSuperClass.negate()).sorted().distinct();
+        Stream<String>    importList    = importTypes.stream().filter(type -> !type.isVirtual()).filter(type -> (thisPackage != null) && !thisPackage.equals(type.packageName()) || !Objects.equals(thisClassName, type.encloseName())).map(Type::declaredType).map(Type::fullName).filter(type -> !implicitImports.contains(type)).filter(isLensClass.negate()).filter(isSuperClass.negate()).sorted().distinct();
         return importList;
     }
 }

@@ -90,6 +90,9 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // TODO - Should find a way to warn when a field is not immutable.
+        String javaVersion = System.getProperty("java.version");
+        System.out.println("Java version: " + javaVersion);
+        
         boolean hasError = false;
         List<InputElement> elements = roundEnv.getElementsAnnotatedWith(Struct.class).stream().map(environment::element).collect(toList());
         for (InputElement element : elements) {

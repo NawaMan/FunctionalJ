@@ -106,7 +106,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
             String   dataType       = getDataType(method);
             String   errorMsg       = isBool ? msg : null;
             RuleSpec spec           = new RuleSpec(targetName, enclosingClass, packageName, superType, dataName, dataType, errorMsg, ruleType);
-            String   className      = packageName + "." + targetName;
+            String   className      = (((packageName == null) || packageName.trim().isEmpty()) ? "" : (packageName + ".")) + targetName;
             try {
                 String content = spec.toCode();
                 element.generateCode(className, content);

@@ -34,7 +34,9 @@ public class RuleSpec {
     
     enum RuleType {
         
-        Bool("ToBoolean"), ErrMsg("ToMessage"), Func("ToException");
+        Bool("ToBoolean"),
+        ErrMsg("ToMessage"),
+        Func("ToException");
         
         private final String method;
         
@@ -139,14 +141,37 @@ public class RuleSpec {
         String  validationCall  = validationCall();
         boolean isSubRule       = (superRule != null) && !superRule.equals(IRule.class.getCanonicalName());
         String  superClass      = isSubRule ? superRule : "functionalj.result.Acceptable<" + dataTypeGeneric + "> implements functionalj.types.IRule<" + dataTypeGeneric + ">";
-        String  strTemplate     = "package " + packageName + ";\n" + "public class " + targetName + " extends " + superClass + " {\n" + "    public static " + targetName + " from(" + dataType + " " + dataName + ") { \n" + "        return new " + targetName + "(" + dataName + ");\n" + "    }\n" + "    protected " + targetName + "(" + dataType + " " + dataName + ") {\n" + "        this(" + dataName + ", null);\n" + "    }\n" + "    protected " + targetName + "(" + dataType + " " + dataName + ", functionalj.list.FuncList<functionalj.validator.Validator<? super " + dataTypeGeneric + ">> validators) {\n" + "        super(" + dataName + ", functionalj.list.FuncList.from(validators).prepend(" + validationCall + ".toValidator()));\n" + "    }\n" + "    \n" + "    public " + dataTypeGeneric + " " + dataName + "() { return value(); }\n" + "    public String __dataName()  { return " + toStringLiteral(dataName) + "; }\n" + "    public " + dataTypeGeneric + " __dataValue() { return value(); }\n" + "    public Class<" + dataTypeGeneric + "> __dataType() { return " + dataType + ".class; }\n" + "    public static Class<" + dataTypeGeneric + "> ___dataType() { return " + dataType + ".class; }\n" + "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" + "    public <R extends functionalj.types.IRule<" + dataTypeGeneric + ">> Class<R> __superRule() { \n" + "        return (Class)" + ((superRule == null) ? null : superClass + ".class") + ";\n" + "    }\n" + "}";
+        String  strTemplate
+                = (((packageName == null) || packageName.isEmpty()) ? "" : "package " + packageName + ";\n") 
+                + "public class " + targetName + " extends " + superClass + " {\n" 
+                + "    public static " + targetName + " from(" + dataType + " " + dataName + ") { \n" 
+                + "        return new " + targetName + "(" + dataName + ");\n" 
+                + "    }\n" 
+                + "    protected " + targetName + "(" + dataType + " " + dataName + ") {\n" 
+                + "        this(" + dataName + ", null);\n"
+                + "    }\n" 
+                + "    protected " + targetName + "(" + dataType + " " + dataName + ", functionalj.list.FuncList<functionalj.validator.Validator<? super " + dataTypeGeneric + ">> validators) {\n"
+                + "        super(" + dataName + ", functionalj.list.FuncList.from(validators).prepend(" + validationCall + ".toValidator()));\n"
+                + "    }\n"
+                + "    \n"
+                + "    public " + dataTypeGeneric + " " + dataName + "() { return value(); }\n"
+                + "    public String __dataName()  { return " + toStringLiteral(dataName) + "; }\n"
+                + "    public " + dataTypeGeneric + " __dataValue() { return value(); }\n"
+                + "    public Class<" + dataTypeGeneric + "> __dataType() { return " + dataType + ".class; }\n"
+                + "    public static Class<" + dataTypeGeneric + "> ___dataType() { return " + dataType + ".class; }\n"
+                + "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n"
+                + "    public <R extends functionalj.types.IRule<" + dataTypeGeneric + ">> Class<R> __superRule() { \n"
+                + "        return (Class)" + ((superRule == null) ? null : superClass + ".class") + ";\n"
+                + "    }\n"
+                + "}";
         return strTemplate;
     }
     
     private String validationCall() {
         String validationType = ruleType.getMethod();
         String msgParam       = (ruleType == RuleType.Bool) ? ", " + toStringLiteral(((errorMsg != null) && !errorMsg.isEmpty()) ? errorMsg : targetName) : "";
-        return "functionalj.result.Validation." + validationType + "(" + packageName + "." + enclosingClass + "::" + targetName + msgParam + ")";
+        String enclosingClazz = (((packageName == null) || packageName.isEmpty()) ? "" : packageName + ".") + enclosingClass;
+        return "functionalj.result.Validation." + validationType + "(" + enclosingClazz + "::" + targetName + msgParam + ")";
     }
     
     private String getDataTypeGeneric() {

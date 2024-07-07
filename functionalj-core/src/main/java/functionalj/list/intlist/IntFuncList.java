@@ -538,7 +538,10 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
             case lazy:
                 {
                     return IntFuncList.from(() -> {
-                        val orgStreamPlus = (list instanceof FuncList) ? ((FuncList) list).streamPlus() : StreamPlus.from(list.stream());
+                        val orgStreamPlus
+                                = (list instanceof FuncList) 
+                                ? ((FuncList) list).streamPlus()
+                                : StreamPlus.from(list.stream());
                         val newStream = action.apply(orgStreamPlus);
                         val newStreamPlus = IntStreamPlus.from(newStream);
                         return newStreamPlus;
