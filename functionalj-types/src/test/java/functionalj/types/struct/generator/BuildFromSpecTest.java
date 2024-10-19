@@ -37,6 +37,15 @@ public class BuildFromSpecTest {
     @Test
     public void testFromMap() {
         val fromMap = StructMapGeneratorHelper.generateFromMap(spec);
-        assertEquals("public static Birthday fromMap(Map<String, ? extends Object> map) {\n" + "    Map<String, Getter> $schema = getStructSchema();\n" + "    Birthday obj = new Birthday(\n" + "                (String)$utils.extractPropertyFromMap(Birthday.class, String.class, map, $schema, \"name\"),\n" + "                (LocalDate)$utils.extractPropertyFromMap(Birthday.class, LocalDate.class, map, $schema, \"date\")\n" + "            );\n" + "    return obj;\n" + "}", fromMap.toDefinition("nawa").lines().collect(Collectors.joining("\n")));
+        assertEquals(
+                "public static Birthday fromMap(Map<String, ? extends Object> map) {\n"
+              + "    Map<String, Getter> $schema = getStructSchema();\n"
+              + "    Birthday obj = new Birthday(\n"
+              + "                (String)$utils.extractPropertyFromMap(Birthday.class, String.class, map, $schema, \"name\"),\n"
+              + "                (LocalDate)$utils.extractPropertyFromMap(Birthday.class, LocalDate.class, map, $schema, \"date\")\n"
+              + "            );\n"
+              + "    return obj;\n"
+              + "}",
+              fromMap.toDefinition("nawa").lines().collect(Collectors.joining("\n")));
     }
 }
