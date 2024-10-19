@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>io.functionalj</groupId>
+        <artifactId>functionalj</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <artifactId>functionalj-types-tests-17</artifactId>
+    <name>functionalj-types-tests-17</name>
+    <packaging>pom</packaging>
+    <description>
+        The module for FunctionalJ Type Tests for JDK 17.
+    </description>
+    
+    
+    <properties>
+        <!--==== JAVA+SOURCE ====-->
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>io.nullablej</groupId>
+            <artifactId>nullablej</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.functionalj</groupId>
+            <artifactId>functionalj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.functionalj</groupId>
+            <artifactId>functionalj-types</artifactId>
+        </dependency>
+            
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
