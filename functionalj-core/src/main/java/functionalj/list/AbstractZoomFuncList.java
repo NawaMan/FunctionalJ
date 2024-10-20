@@ -213,7 +213,6 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * 
      * @param fromIndexInclusive  the start index inclusively.
      * @param toIndexExclusive    the end index exclusively.
-     * @return
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> subList(int fromIndexInclusive, int toIndexExclusive);
     

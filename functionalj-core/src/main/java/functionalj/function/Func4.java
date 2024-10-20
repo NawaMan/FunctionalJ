@@ -86,11 +86,6 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * Represents a function that takes four input parameters and produces an output.
      * This is a functional interface whose functional method is {@link #applyUnsafe}.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @param <INPUT3>  the type of the third input parameter
-     * @param <INPUT4>  the type of the fourth input parameter
-     * @param <OUTPUT>  the type of the output produced by this function
      * @return the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */

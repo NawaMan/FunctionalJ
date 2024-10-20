@@ -138,14 +138,6 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @param <INPUT3>  the type of the third input parameter
-     * @param <INPUT4>  the fourth input parameter
-     * @param <INPUT5>  the fifth input parameter
-     * @param <INPUT6>  the sixth input parameter
-     * @param <INPUT7>  the seventh input parameter
-     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
@@ -205,7 +197,6 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * @param input5  the fifth input parameter
      * @param input6  the sixth input parameter
      * @param input7  the seventh input parameter
-     * @return        the function result.
      */
     public default void accept(
             INPUT1 input1,
@@ -227,8 +218,7 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
     /**
      * Accept the given all input values as {@link Tuple7}.
      *
-     * @param  input the tuple input.
-     * @return       the function result.
+     * @param  input  the tuple input.
      */
     public default void acceptTo(Tuple7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> input) {
         val _1  = input._1();
@@ -505,8 +495,7 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
+     * 
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */
@@ -521,8 +510,7 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
+     * 
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */

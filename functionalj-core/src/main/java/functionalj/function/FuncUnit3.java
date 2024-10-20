@@ -96,10 +96,6 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     /**
      * Performs an operation on the given inputs, potentially throwing an exception and return no result.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @param <INPUT3>  the type of the third input parameter
-     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */  
     public void acceptUnsafe(
@@ -114,10 +110,6 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @param <INPUT3>  the type of the third input parameter
-     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
@@ -161,7 +153,6 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @param input1  the first input.
      * @param input2  the second input.
      * @param input3  the third input.
-     * @return        the function result.
      */
     public default void accept(
             INPUT1 input1,
@@ -180,7 +171,6 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * Accept the given all input values as {@link Tuple3}.
      *
      * @param  input the tuple input.
-     * @return       the function result.
      */
     public default void acceptTo(Tuple3<INPUT1, INPUT2, INPUT3> input) {
         val _1  = input._1();
@@ -397,10 +387,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
-     * @param  after     the function to be run after this function.
-     * @return           the composed function.
+     * 
+     * @param  after  the function to be run after this function.
+     * @return        the composed function.
      */
     public default FuncUnit3<INPUT1, INPUT2, INPUT3> then(FuncUnit0 after) {
         requireNonNull(after);
@@ -413,10 +402,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
-     * @param  after     the function to be run after this function.
-     * @return           the composed function.
+     * 
+     * @param  after  the function to be run after this function.
+     * @return        the composed function.
      */
     public default FuncUnit3<INPUT1, INPUT2, INPUT3> then(FuncUnit3<? super INPUT1, ? super INPUT2, ? super INPUT3> after) {
         requireNonNull(after);

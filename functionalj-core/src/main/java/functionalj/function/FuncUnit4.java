@@ -120,11 +120,6 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @param <INPUT3>  the type of the third input parameter
-     * @param <INPUT4>  the fourth input parameter
-     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
@@ -172,7 +167,6 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
      * @param input2  the second input.
      * @param input3  the third input.
      * @param input4  the fourth input parameter
-     * @return        the function result.
      */
     public default void accept(
             INPUT1 input1,
@@ -192,7 +186,6 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
      * Accept the given all input values as {@link Tuple4}.
      *
      * @param  input the tuple input.
-     * @return       the function result.
      */
     public default void acceptTo(Tuple4<INPUT1, INPUT2, INPUT3, INPUT4> input) {
         val _1  = input._1();
@@ -424,8 +417,7 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
+     * 
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */
@@ -440,8 +432,7 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
+     * 
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */

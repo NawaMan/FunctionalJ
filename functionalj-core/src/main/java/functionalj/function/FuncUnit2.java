@@ -93,9 +93,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
     /**
      * Performs an operation on the given inputs, potentially throwing an exception and return no result.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public void acceptUnsafe(INPUT1 input1, INPUT2 input2) throws Exception;
@@ -106,9 +103,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
@@ -147,9 +141,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public default void accept(
@@ -168,7 +159,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Accept the given all input values as {@link Tuple2}.
      *
      * @param  input the tuple input.
-     * @return       the function result.
      */
     public default void acceptTo(Tuple2<INPUT1, INPUT2> input) {
         val _1  = input._1();
@@ -371,9 +361,8 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      *
-     * @param  <TARGET>  the target result value.
-     * @param  after     the function to be run after this function.
-     * @return           the composed function.
+     * @param  after  the function to be run after this function.
+     * @return        the composed function.
      */
     public default FuncUnit2<INPUT1, INPUT2> then(FuncUnit0 after) {
         requireNonNull(after);
@@ -387,9 +376,8 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      *
-     * @param  <TARGET>  the target result value.
-     * @param  after     the function to be run after this function.
-     * @return           the composed function.
+     * @param  after  the function to be run after this function.
+     * @return        the composed function.
      */
     public default FuncUnit2<INPUT1, INPUT2> then(FuncUnit2<? super INPUT1, ? super INPUT2> after) {
         requireNonNull(after);

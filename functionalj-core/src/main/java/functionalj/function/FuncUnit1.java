@@ -94,8 +94,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     /**
      * Performs an operation on the given inputs, potentially throwing an exception and return no result.
      * 
-     * @param <INPUT>  the type of the first input parameter
-     * @return         the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public void acceptUnsafe(INPUT input) throws Exception;
@@ -106,8 +104,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
      * 
-     * @param <INPUT>  the type of the input parameter
-     * @return         the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(INPUT input) {
@@ -141,8 +137,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
      * 
-     * @param <INPUT>  the type of the first input parameter
-     * @return         the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public default void accept(INPUT input) {
@@ -230,7 +224,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      *
-     * @param  <TARGET>  the target result value.
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */
@@ -246,7 +239,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      *
-     * @param  <TARGET>  the target result value.
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */
