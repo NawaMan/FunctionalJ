@@ -49,7 +49,6 @@ import nullablej.nullable.Nullable;
  * @param <INPUT2>  the second input data type.
  * @param <INPUT3>  the third input data type.
  * @param <INPUT4>  the forth input data type.
- * @param <OUTPUT>  the output data type.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
@@ -63,7 +62,7 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
      * @param <INPUT2>  the type of the second input parameter of the function
      * @param <INPUT3>  the type of the third input parameter of the function
      * @param <INPUT4>  the type of the forth input parameter of the function
-     * @param func      the {@link FuncUnit4} instance to wrap
+     * @param consumer  the {@link FuncUnit4} instance to wrap
      * @return a new {@link FuncUnit4} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4> FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> of(FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> consumer) {
@@ -77,7 +76,7 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
      * @param <INPUT2>  the type of the second input parameter of the function
      * @param <INPUT3>  the type of the third input parameter of the function
      * @param <INPUT4>  the type of the forth input parameter of the function
-     * @param func      the existing {@link FuncUnit4} instance
+     * @param consumer  the existing {@link FuncUnit4} instance
      * @return a new {@link FuncUnit4} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4> FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> funcUnit4(FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> consumer) {
@@ -119,8 +118,6 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
      * Represents a function that takes four input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
             INPUT1 input1,
@@ -811,7 +808,7 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
      * Reduces this function by fixing the first parameter, resulting in a nine-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first.
      */
     public default FuncUnit3<INPUT2, INPUT3, INPUT4> apply1(INPUT1 i1) {

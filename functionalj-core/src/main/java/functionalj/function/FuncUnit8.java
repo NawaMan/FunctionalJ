@@ -53,7 +53,6 @@ import nullablej.nullable.Nullable;
  * @param <INPUT6>  the sixth input data type.
  * @param <INPUT7>  the seventh input data type.
  * @param <INPUT8>  the eighth input data type.
- * @param <OUTPUT>  the output data type.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
@@ -71,7 +70,7 @@ public interface FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * @param <INPUT6>  the type of the sixth input parameter of the function
      * @param <INPUT7>  the type of the seventh input parameter of the function
      * @param <INPUT8>  the type of the eighth input parameter of the function
-     * @param func      the {@link FuncUnit8} instance to wrap
+     * @param consumer  the {@link FuncUnit8} instance to wrap
      * @return a new {@link FuncUnit8} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> of(FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> consumer) {
@@ -89,7 +88,7 @@ public interface FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * @param <INPUT6>  the type of the sixth input parameter of the function
      * @param <INPUT7>  the type of the seventh input parameter of the function
      * @param <INPUT8>  the type of the eighth input parameter of the function
-     * @param func      the existing {@link FuncUnit8} instance
+     * @param consumer  the existing {@link FuncUnit8} instance
      * @return a new {@link FuncUnit8} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> funcUnit8(FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> consumer) {
@@ -142,8 +141,6 @@ public interface FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * Represents a function that takes eight input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
             INPUT1 input1,
@@ -990,7 +987,7 @@ public interface FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * Reduces this function by fixing the first parameter, resulting in a parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first.
      */
     public default FuncUnit7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> apply1(INPUT1 i1) {

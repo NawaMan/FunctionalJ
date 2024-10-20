@@ -106,7 +106,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     /**
      * Applies this function to the given arguments, potentially throwing an exception.
      * 
-     * @param input1the first input argument
+     * @param input1  the first input argument
      * @param input2  the second input argument
      * @return        the function result
      * @throws Exception if the function execution encounters an error
@@ -618,8 +618,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * Applies this function to the given arguments, using a supplier to provide a default value if the result is null or an exception occurs.
      * The function attempts to apply the given arguments, invoking the default supplier for a value if the result is null or if an exception is caught.
      *
-     * @param defaultSupplier  the supplier that provides a default value when the function result is null or an exception occurs
-     * @return                 a new function that applies this function to the given arguments, using the default supplier's value when the result is null or an exception occurs
+     * @param defaultValue  the default value when the function result is null or an exception occurs
+     * @return              a new function that applies this function to the given arguments, using the default supplier's value when the result is null or an exception occurs
      */
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input1, input2) -> {
@@ -1021,8 +1021,6 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     /**
      * Converts this function into a {@link BiPredicate} that evaluates the function and returns true if the result is {@link Boolean#TRUE}.
      *
-     * @param i1  the first input parameter of the function
-     * @param i2  the second input parameter of the function
      * @return    a {@link BiPredicate} that returns true if the function applied to the input parameters equals {@link Boolean#TRUE}
      */
     public default BiPredicate<INPUT1, INPUT2> toPredicate() {
@@ -1106,7 +1104,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * Reduces this function by fixing the first parameter, resulting in a nine-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first, and returns an OUTPUT
      */
     public default Func1<INPUT2, OUTPUT> apply1(INPUT1 i1) {
@@ -1137,7 +1135,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * Partially apply some inputs while leave some absent, then, returns a function that takes the absent inputs.
      * 
      * @param a1  the placeholder for the first input
-     * @param i2  the second input
+     * @param a2  the placeholder for the second input
      * @return    the new function.
      **/
     public default Func2<INPUT1, INPUT2, OUTPUT> curry(Absent a1, Absent a2) {

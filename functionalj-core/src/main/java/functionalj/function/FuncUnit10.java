@@ -55,7 +55,6 @@ import nullablej.nullable.Nullable;
  * @param <INPUT8>   the eighth input data type.
  * @param <INPUT9>   the ninth input data type.
  * @param <INPUT10>  the tenth input data type.
- * @param <OUTPUT>   the output data type.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
@@ -75,7 +74,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * @param <INPUT8>   the type of the eighth input parameter of the function
      * @param <INPUT9>   the type of the nine input parameter of the function
      * @param <INPUT10>  the type of the tenth input parameter of the function
-     * @param func   the {@link FuncUnit10} instance to wrap
+     * @param consumer   the {@link FuncUnit10} instance to wrap
      * @return a new {@link FuncUnit10} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> of(FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> consumer) {
@@ -95,7 +94,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * @param <INPUT8>   the type of the eighth input parameter of the function
      * @param <INPUT9>   the type of the nine input parameter of the function
      * @param <INPUT10>  the type of the tenth input parameter of the function
-     * @param func   the existing {@link FuncUnit10} instance
+     * @param consumer   the existing {@link FuncUnit10} instance
      * @return a new {@link FuncUnit10} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> funcUnit10(FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> consumer) {
@@ -154,8 +153,6 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * Represents a function that takes ten input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
             INPUT1  input1,
@@ -1080,7 +1077,7 @@ public interface FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPU
      * Reduces this function by fixing the first parameter, resulting in a nine-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first.
      */
     public default FuncUnit9<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> apply1(INPUT1 i1) {

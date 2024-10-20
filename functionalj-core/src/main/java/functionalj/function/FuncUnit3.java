@@ -60,7 +60,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @param <INPUT1>  the type of the first input parameter of the function
      * @param <INPUT2>  the type of the second input parameter of the function
      * @param <INPUT3>  the type of the third input parameter of the function
-     * @param func      the {@link FuncUnit3} instance to wrap
+     * @param consumer  the {@link FuncUnit3} instance to wrap
      * @return a new {@link FuncUnit3} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> of(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
@@ -73,7 +73,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * @param <INPUT1>  the type of the first input parameter of the function
      * @param <INPUT2>  the type of the second input parameter of the function
      * @param <INPUT3>  the type of the third input parameter of the function
-     * @param func      the existing {@link FuncUnit3} instance
+     * @param consumer  the existing {@link FuncUnit3} instance
      * @return a new {@link FuncUnit3} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> funcUnit3(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
@@ -109,8 +109,6 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * Represents a function that takes three input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
             INPUT1 input1,
@@ -762,7 +760,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
      * Reduces this function by fixing the first parameter, resulting in a two-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first.
      */
     public default FuncUnit2<INPUT2, INPUT3> apply1(INPUT1 i1) {

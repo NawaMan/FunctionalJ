@@ -43,8 +43,6 @@ import lombok.val;
  * 
  * This interface represents a function that accepts three arguments and returns no result.
  *
- * @param <INPUT1>  the first input data type.
- *
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
@@ -103,8 +101,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * Represents a function that takes an input parameter and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(INPUT input) {
         try {
@@ -136,8 +132,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * Represents a function that takes the input parameter and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @throws Exception if the function execution encounters an error
      */
     public default void accept(INPUT input) {
         try {
@@ -152,8 +146,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     /**
      * Accept the given input values wrapped with {@link Result}.
      * 
-     * @param input  the result.
-     * @return       a {@code Result<OUTPUT>} with the result of <code>null</code>.
+     * @return  a {@code Result<OUTPUT>} with the result of <code>null</code>.
      */
     public default <OUTPUT> Result<OUTPUT> acceptTo(Result<INPUT> input1) {
         return input1.map(value1 -> {

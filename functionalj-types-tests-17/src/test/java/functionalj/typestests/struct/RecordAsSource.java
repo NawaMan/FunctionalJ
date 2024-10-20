@@ -1,25 +1,23 @@
 package functionalj.typestests.struct;
 
 import static functionalj.typestests.struct.Point.thePoint;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import functionalj.types.Struct;
-import functionalj.types.choice.Self;
-import functionalj.typestests.choice.LinkedList;
 
 public class RecordAsSource {
     
     @Struct(name = "Point")
     static record PointSpec(int x, int y) {
-        static Self create(int x, int y) {
-            return Self.wrap(new Point(x, y));
-        }
-        double absolute(Self self) {
-            var point = (Point)Self.unwrap(self);
-            return Math.sqrt(point.x()*point.x() + point.y()*point.y());
-        }
+//        static Self create(int x, int y) {
+//            return Self.wrap(new Point(x, y));
+//        }
+//        double absolute(Self self) {
+//            var point = (Point)Self.unwrap(self);
+//            return Math.sqrt(point.x()*point.x() + point.y()*point.y());
+//        }
     }
     
     @Test

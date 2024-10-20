@@ -58,7 +58,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      *
      * @param <INPUT1>  the type of the first input parameter of the function
      * @param <INPUT2>  the type of the second input parameter of the function
-     * @param func      the {@link FuncUnit2} instance to wrap
+     * @param consumer  the {@link FuncUnit2} instance to wrap
      * @return a new {@link FuncUnit2} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> of(FuncUnit2<INPUT1, INPUT2> consumer) {
@@ -70,7 +70,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * 
      * @param <INPUT1>  the type of the first input parameter of the function
      * @param <INPUT2>  the type of the second input parameter of the function
-     * @param func      the existing {@link FuncUnit2} instance
+     * @param consumer  the existing {@link FuncUnit2} instance
      * @return a new {@link FuncUnit2} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> funcUnit2(FuncUnit2<INPUT1, INPUT2> consumer) {
@@ -82,7 +82,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * 
      * @param <INPUT1>  the type of the first input parameter of the function
      * @param <INPUT2>  the type of the second input parameter of the function
-     * @param func      the existing {@link FuncUnit2} instance
+     * @param consumer  the existing {@link FuncUnit2} instance
      * @return a new {@link FuncUnit2} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> from(BiConsumer<INPUT1, INPUT2> consumer) {
@@ -102,8 +102,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Represents a function that takes two input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
             INPUT1 input1,
@@ -140,8 +138,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Represents a function that takes two input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @throws Exception if the function execution encounters an error
      */
     public default void accept(
             INPUT1 input1,
@@ -703,7 +699,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Reduces this function by fixing the first parameter, resulting in a one-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first.
      */
     public default FuncUnit1<INPUT2> apply1(INPUT1 i1) {

@@ -1445,7 +1445,6 @@ public interface Apply {
      * @param <I6>    the type of the sixth input value
      * @param <I7>    the type of the seventh input value
      * @param <I8>    the type of the eighth input value
-     * @param <I9>    the type of the ninth input value
      * @param <O>     the type of the output
      * @param func    the {@link Func8} function to be partially applied
      * @param input1  the fixed first input value
@@ -1520,7 +1519,6 @@ public interface Apply {
      * @param <I6>    the type of the sixth input value
      * @param <I7>    the type of the seventh input value
      * @param <I8>    the type of the eighth input value
-     * @param <I9>    the type of the ninth input value
      * @param <O>     the type of the output
      * @param func    the {@link Func10} function to apply
      * @param input1  the {@link Nullable} containing the first input value
@@ -1531,7 +1529,6 @@ public interface Apply {
      * @param input6  the {@link Nullable} containing the sixth input value
      * @param input7  the {@link Nullable} containing the seventh input value
      * @param input8  the {@link Nullable} containing the eighth input value
-     * @param input9  the {@link Nullable} containing the ninth input value
      * @return        the {@link Nullable} containing the output of the function
      */
     public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Nullable<O> applyWith(Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4, Nullable<I5> input5, Nullable<I6> input6, Nullable<I7> input7, Nullable<I8> input8) {
@@ -3551,7 +3548,6 @@ public interface Apply {
      * @param <I6>    the type of the sixth input value
      * @param <I7>    the type of the seventh input value
      * @param <I8>    the type of the eighth input value
-     * @param <I9>    the type of the ninth input value
      * @param <O>     the type of the output
      * @param func    the {@link Func8} function to be partially applied
      * @param input1  the fixed first input value
@@ -3626,7 +3622,6 @@ public interface Apply {
      * @param <I6>    the type of the sixth input value
      * @param <I7>    the type of the seventh input value
      * @param <I8>    the type of the eighth input value
-     * @param <I9>    the type of the ninth input value
      * @param <O>     the type of the output
      * @param func    the {@link Func10} function to apply
      * @param input1  the {@link Nullable} containing the first input value
@@ -3637,7 +3632,6 @@ public interface Apply {
      * @param input6  the {@link Nullable} containing the sixth input value
      * @param input7  the {@link Nullable} containing the seventh input value
      * @param input8  the {@link Nullable} containing the eighth input value
-     * @param input9  the {@link Nullable} containing the ninth input value
      * @return        the {@link Nullable} containing the output of the function
      */
     public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Nullable<O> $(Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4, Nullable<I5> input5, Nullable<I6> input6, Nullable<I7> input7, Nullable<I8> input8) {

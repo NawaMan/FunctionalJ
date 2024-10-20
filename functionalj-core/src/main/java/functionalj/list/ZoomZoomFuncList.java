@@ -30,8 +30,8 @@ public class ZoomZoomFuncList<DATA, HOST, SUPER_HOST, FUNCLIST extends AbstractZ
      * Constructs a {@link ZoomZoomFuncList}.
      * Only use it when you know what you are doing. Use {@link FuncList#zoomIn(AnyLens)} instead.
      * 
-     * @param source  the source list.
-     * @param lens    the lens.
+     * @param host  the host list.
+     * @param lens  the lens.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ZoomZoomFuncList(FUNCLIST host, AnyLens<HOST, DATA> lens) {

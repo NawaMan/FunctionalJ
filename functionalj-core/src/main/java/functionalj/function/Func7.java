@@ -1205,7 +1205,7 @@ public interface Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, O
      * Reduces this function by fixing the first parameter, resulting in a nine-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first, and returns an OUTPUT
      */
     public default Func6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> apply1(INPUT1 i1) {
