@@ -104,7 +104,7 @@ public class SourceSpecBuilder {
         if (getters.stream().anyMatch(Objects::isNull))
             return null;
         
-        List<Callable> methods     = type.enclosedElements().stream().filter(elmt -> elmt.isMethodElement()).map(elmt -> elmt.asMethodElement()).filter(mthd -> (mthd.isDefault() || mthd.isStatic()) && !mthd.isAbstract() && !mthd.isPrivate()).map(mthd -> extractMethodSpec(element, mthd)).filter(mthd -> mthd != null).collect(toList());
+        List<Callable> methods     = enclosedMethods(element, type);
         String         packageName = type.packageQualifiedName();
         String         encloseName = element.enclosingElement().simpleName();
         String         sourceName  = type.qualifiedName().toString().substring(packageName.length() + 1);
@@ -126,6 +126,17 @@ public class SourceSpecBuilder {
             element.error("Problem generating the class: " + packageName + "." + targetName + ": " + e.getMessage() + ":" + e.getClass() + stream(e.getStackTrace()).map(st -> "\n    @" + st).collect(joining()));
             return null;
         }
+    }
+
+    private List<Callable> enclosedMethods(InputElement element, InputTypeElement type) {
+        return type
+                .enclosedElements().stream()
+                .filter (elmt -> elmt.isMethodElement())
+                .map    (elmt -> elmt.asMethodElement())
+                .filter (mthd -> (mthd.isDefault() || mthd.isStatic()) && !mthd.isAbstract() && !mthd.isPrivate())
+                .map    (mthd -> extractMethodSpec(element, mthd))
+                .filter (mthd -> mthd != null)
+                .collect(toList());
     }
 
     private List<Getter> extractGetters(InputTypeElement type) {
