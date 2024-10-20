@@ -57,6 +57,8 @@ public class DateTimeLensTest {
     
     private boolean isClass = false;
     
+    private boolean isInterface = true;
+    
     private List<Getter> getters = asList(new Getter("child", Type.of(LocalDate.class)));
     
     @Test
@@ -78,7 +80,7 @@ public class DateTimeLensTest {
         null, // targetClassName
         targetClassName, // targetPackageName
         packageName, // isClass
-        isClass, null, null, // Configurations
+        isClass, isInterface, null, null, // Configurations
         configures, getters, emptyList(), emptyList());
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();

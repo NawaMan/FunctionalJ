@@ -238,20 +238,9 @@ public interface InputTypeElement extends InputElement {
         }
     }
     
+    @Override
     public default InputTypeElement asTypeElement() {
         return this;
-    }
-    
-    public default InputMethodElement asMethodElement() {
-        return null;
-    }
-    
-    public default InputVariableElement asVariableElement() {
-        return null;
-    }
-    
-    public default InputTypeParameterElement asTypeParameterElement() {
-        return null;
     }
     
     public String qualifiedName();

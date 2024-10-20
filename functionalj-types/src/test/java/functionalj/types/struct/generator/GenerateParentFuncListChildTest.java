@@ -57,6 +57,8 @@ public class GenerateParentFuncListChildTest {
     
     private boolean isClass = false;
     
+    private boolean isInterface = true;
+    
     private List<Getter> getters = asList(new Getter("names", new Type.TypeBuilder().simpleName("FuncList").generics(asList(new Generic(new Type("java.lang", "String")))).packageName("functionalj.list").build()), new Getter("children", new Type.TypeBuilder().simpleName("FuncList").generics(asList(new Generic(new Type("me.test", "Child")))).packageName("functionalj.list").build()));
     
     private List<Callable> callables = asList(new Callable("name1", new Type("java.lang", "String"), // isVarArgs
@@ -83,7 +85,7 @@ public class GenerateParentFuncListChildTest {
         null, // targetClassName
         targetClassName, // targetPackageName
         packageName, // isClass
-        isClass, null, null, // Configurations
+        isClass, isInterface, null, null, // Configurations
         configures, getters, callables, asList("Child"));
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();

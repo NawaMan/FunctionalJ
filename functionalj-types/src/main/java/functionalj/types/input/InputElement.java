@@ -173,7 +173,16 @@ public interface InputElement {
         
         @Override
         public InputVariableElement asVariableElement() {
-            return (element instanceof VariableElement) ? environment.element(((VariableElement) element)) : null;
+            return (element instanceof VariableElement)
+                    ? environment.element(((VariableElement) element))
+                    : null;
+        }
+        
+        @Override
+        public InputRecordComponentElement asRecordComponentElement() {
+            return element.getKind().toString().equals("RECORD_COMPONENT")
+                    ? environment.recordComponentElement(element)
+                    : null;
         }
         
         @Override
@@ -454,13 +463,26 @@ public interface InputElement {
     public void generateCode(String className, String content) throws IOException;
     
     // == Sub typing ==
-    public InputTypeElement asTypeElement();
     
-    public InputMethodElement asMethodElement();
+    public default InputTypeElement asTypeElement() {
+        return null;
+    }
     
-    public InputVariableElement asVariableElement();
+    public default InputMethodElement asMethodElement() {
+        return null;
+    }
     
-    public InputTypeParameterElement asTypeParameterElement();
+    public default InputVariableElement asVariableElement() {
+        return null;
+    }
+    
+    public default InputRecordComponentElement asRecordComponentElement() {
+        return null;
+    }
+    
+    public default InputTypeParameterElement asTypeParameterElement() {
+        return null;
+    }
     
     // == Derived methods ==
     public default String packageName() {
@@ -481,6 +503,10 @@ public interface InputElement {
     
     public default boolean isClass() {
         return ElementKind.CLASS.equals(kind());
+    }
+    
+    public default boolean isRecord() {
+        return "RECORD".equals(kind().toString());
     }
     
     public default boolean isStatic() {
@@ -534,6 +560,10 @@ public interface InputElement {
     
     public default boolean isVariableElement() {
         return asVariableElement() != null;
+    }
+    
+    public default boolean isRecordComponentElement() {
+        return asRecordComponentElement() != null;
     }
     
     public default boolean isTypeParameterElement() {

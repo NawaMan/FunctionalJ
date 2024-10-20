@@ -24,6 +24,7 @@
 package functionalj.types.input;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
@@ -79,5 +80,9 @@ public class Environment {
     
     public InputTypeParameterElement element(TypeParameterElement element) {
         return new InputTypeParameterElement.Impl(this, element);
+    }
+    
+    public InputRecordComponentElement recordComponentElement(Element element) {
+        return new InputRecordComponentElement.Impl(this, element);
     }
 }

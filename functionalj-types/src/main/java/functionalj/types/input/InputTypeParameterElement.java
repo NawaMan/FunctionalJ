@@ -155,18 +155,7 @@ public interface InputTypeParameterElement extends InputElement {
         }
     }
     
-    public default InputTypeElement asTypeElement() {
-        return null;
-    }
-    
-    public default InputMethodElement asMethodElement() {
-        return null;
-    }
-    
-    public default InputVariableElement asVariableElement() {
-        return null;
-    }
-    
+    @Override
     public default InputTypeParameterElement asTypeParameterElement() {
         return this;
     }

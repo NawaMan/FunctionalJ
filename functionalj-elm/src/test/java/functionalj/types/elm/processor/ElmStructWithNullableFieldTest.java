@@ -53,6 +53,8 @@ public class ElmStructWithNullableFieldTest {
     
     private boolean isClass = false;
     
+    private boolean isInterface = false;
+    
     private List<Getter> getters = asList(new Getter("id", Type.STRING, true, null), new Getter("firstName", Type.STRING), new Getter("lastName", Type.STRING));
     
     @Test
@@ -63,7 +65,7 @@ public class ElmStructWithNullableFieldTest {
         null, // targetClassName
         targetClassName, // targetPackageName
         packageName, // isClass
-        isClass, null, null, // Configurations
+        isClass, isInterface, null, null, // Configurations
         configures, getters, emptyList(), emptyList());
         val spec = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);
         val struct = new ElmStructBuilder(spec, emptyList());

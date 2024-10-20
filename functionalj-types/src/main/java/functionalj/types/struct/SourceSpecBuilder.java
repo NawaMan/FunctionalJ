@@ -30,6 +30,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
@@ -45,6 +46,7 @@ import functionalj.types.Struct;
 import functionalj.types.Type;
 import functionalj.types.input.InputElement;
 import functionalj.types.input.InputMethodElement;
+import functionalj.types.input.InputRecordComponentElement;
 import functionalj.types.input.InputTypeElement;
 import functionalj.types.input.InputType;
 import functionalj.types.input.InputTypeParameterElement;
@@ -81,7 +83,7 @@ public class SourceSpecBuilder {
             return extractSourceSpecType(element);
         if (element.isMethodElement())
             return extractSourceSpecMethod(element);
-        throw new IllegalArgumentException("Record annotation is only support class or method.");
+        throw new IllegalArgumentException("Struct annotation is only support class or method.");
     }
     
     private SourceSpec extractSourceSpecType(InputElement element) {
@@ -89,15 +91,16 @@ public class SourceSpecBuilder {
         String           simpleName  = element.simpleName();
         boolean          isInterface = element.isInterface();
         boolean          isClass     = element.isClass();
-        if (!isInterface && !isClass) {
+        boolean          isRecord    = element.isRecord();
+        if (!isInterface && !isClass && !isRecord) {
             String structName = Struct.class.getSimpleName();
-            String message = format("Only a class or interface can be annotated with %s: %s", structName, simpleName);
+            String message = format("Only a class or interface or record can be annotated with %s: %s. kind=%s", structName, simpleName, element.kind());
             element.error(message);
             return null;
         }
         
         List<String> localTypeWithLens = element.readLocalTypeWithLens();
-        List<Getter> getters           = type.enclosedElements().stream().filter(elmt -> elmt.isMethodElement()).map(elmt -> elmt.asMethodElement()).filter(mthd -> !mthd.isDefault()).filter(mthd -> !isClass || mthd.isAbstract()).filter(mthd -> !(mthd.returnType().isNoType())).filter(mthd -> mthd.parameters().isEmpty()).map(mthd -> createGetterFromMethod(element, mthd)).collect(toList());
+        List<Getter> getters           = extractGetters(type);
         if (getters.stream().anyMatch(Objects::isNull))
             return null;
         
@@ -118,11 +121,62 @@ public class SourceSpecBuilder {
         // TODO - Should look for a validator method.
         String validatorName = (String) null;
         try {
-            return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, specField, validatorName, configures, getters, methods, localTypeWithLens);
+            return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, methods, localTypeWithLens);
         } catch (Exception e) {
             element.error("Problem generating the class: " + packageName + "." + targetName + ": " + e.getMessage() + ":" + e.getClass() + stream(e.getStackTrace()).map(st -> "\n    @" + st).collect(joining()));
             return null;
         }
+    }
+
+    private List<Getter> extractGetters(InputTypeElement type) {
+        if (type.isClass()) {
+            return extractGettersFromClass(type);
+        }
+        if (type.isInterface()) {
+            return extractGettersFromInterface(type);
+        }
+        if (type.isRecord()) {
+            return extractGettersFromRecord(type);
+        }
+        
+        throw new IllegalStateException(
+                format("The type are not a class, interface nor record when it should: type=%s of kind=%s", 
+                        type.simpleName(),
+                        type.kind()));
+    }
+    
+    private List<Getter> extractGettersFromClass(InputTypeElement type) {
+        return type
+                .enclosedElements().stream()
+                .filter (elmt -> elmt.isMethodElement())
+                .map    (elmt -> elmt.asMethodElement())
+                .filter (mthd -> !mthd.isDefault())
+                .filter (mthd -> mthd.isAbstract())
+                .filter (mthd -> !(mthd.returnType().isNoType()))
+                .filter (mthd -> mthd.parameters().isEmpty())
+                .map    (mthd -> createGetterFromMethod(type, mthd))
+                .collect(toList());
+    }
+    
+    private List<Getter> extractGettersFromInterface(InputTypeElement type) {
+        return type
+                .enclosedElements().stream()
+                .filter (elmt -> elmt.isMethodElement())
+                .map    (elmt -> elmt.asMethodElement())
+                .filter (mthd -> !mthd.isDefault())
+                .filter (mthd -> !(mthd.returnType().isNoType()))
+                .filter (mthd -> mthd.parameters().isEmpty())
+                .map    (mthd -> createGetterFromMethod(type, mthd))
+                .collect(toList());
+    }
+    
+    private List<Getter> extractGettersFromRecord(InputTypeElement type) {
+        return type
+                .enclosedElements().stream()
+                .filter (elmt -> elmt.isRecordComponentElement())
+                .map    (elmt -> elmt.asRecordComponentElement())
+                .map    (recd -> createGetterFromRecordComponent(type, recd))
+                .collect(toList());
     }
     
     private Callable extractMethodSpec(InputElement element, InputMethodElement mthdElement) {
@@ -155,6 +209,7 @@ public class SourceSpecBuilder {
         String             specField         = struct.specField();
         List<String>       localTypeWithLens = element.readLocalTypeWithLens();
         Boolean            isClass           = (Boolean) null;
+        Boolean            isInterface       = (Boolean) null;
         String             sourceName        = (String) null;
         String             superPackage      = packageName;
         boolean            isValidate        = isBooleanStringOrValidation(method.returnType());
@@ -175,7 +230,7 @@ public class SourceSpecBuilder {
             return null;
         
         try {
-            return new SourceSpec(sourceName, superPackage, encloseName, specTargetName, packageName, isClass, specField, validatorName, configures, getters, emptyList(), localTypeWithLens);
+            return new SourceSpec(sourceName, superPackage, encloseName, specTargetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, emptyList(), localTypeWithLens);
         } catch (Exception e) {
             String stacktraces = stream(e.getStackTrace()).map(stacktrace -> "\n    @" + stacktrace).collect(joining());
             String errMsg      = format("Problem generating the class: %s.%s: %s:%s%s", packageName, specTargetName, e.getMessage(), e.getClass(), stacktraces);
@@ -282,6 +337,33 @@ public class SourceSpecBuilder {
             e.printStackTrace();
             throw e;
         }
+    }
+    
+    private Getter createGetterFromRecordComponent(InputElement element, InputRecordComponentElement recordComponent) {
+        try {
+            String       name = recordComponent.simpleName().toString();
+            Type         type = getType(element, recordComponent.asType());
+            boolean      isPrimitive = type.isPrimitive();
+            boolean      isNullable  = ((recordComponent.annotation(Nullable.class) != null) || (recordComponent.annotation(DefaultTo.class) != null));
+            boolean      isRequired  = (recordComponent.annotation(Required.class) != null);
+            DefaultValue defTo       = (recordComponent.annotation(DefaultTo.class) != null) ? recordComponent.annotation(DefaultTo.class).value() : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
+            DefaultValue defValue    = ((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(type) : defTo);
+            if (!DefaultValue.isSuitable(type, defValue)) {
+                element.error("Default value is not suitable for the type: " + type.fullName() + " -> DefaultTo " + defTo);
+                return null;
+            }
+            if (isNullable && isRequired) {
+                element.error("Parameter cannot be both Required and Nullable: " + name);
+                return null;
+            }
+            
+            Getter getter = new Getter(name, type, isNullable, defValue);
+            return getter;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        
     }
     
     private Type getType(InputElement element, InputType typeMirror) {

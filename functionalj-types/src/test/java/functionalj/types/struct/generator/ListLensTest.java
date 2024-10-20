@@ -57,6 +57,8 @@ public class ListLensTest {
     
     private boolean isClass = false;
     
+    private boolean isInterface = true;
+    
     private List<Getter> getters;
     
     @Test
@@ -87,7 +89,7 @@ public class ListLensTest {
         null, // targetClassName
         targetClassName, // targetPackageName
         packageName, // isClass
-        isClass, null, null, // Configurations
+        isClass, isInterface, null, null, // Configurations
         configures, getters, emptyList(), emptyList());
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();

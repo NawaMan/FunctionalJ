@@ -56,6 +56,8 @@ public class GenerateParentNullableChildTest {
     
     private boolean isClass = false;
     
+    private boolean isInterface = true;
+    
     private List<Getter> getters = asList(new Getter("nullableName", new Type.TypeBuilder().simpleName("Nullable").generics(asList(new Generic(new Type("java.lang", "String")))).packageName("nullablej.nullable").build()), new Getter("nullableChild", new Type.TypeBuilder().simpleName("Nullable").generics(asList(new Generic(new Type("me.test", "Child")))).packageName("nullablej.nullable").build()));
     
     @Test
@@ -79,7 +81,7 @@ public class GenerateParentNullableChildTest {
         null, // targetClassName
         targetClassName, // targetPackageName
         packageName, // isClass
-        isClass, null, null, // Configurations
+        isClass, isInterface, null, null, // Configurations
         configures, getters, emptyList(), asList("Child"));
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();

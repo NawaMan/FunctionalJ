@@ -88,11 +88,10 @@ public class StructSpecBuilder {
         List<Type> extendeds = new ArrayList<Type>();
         List<Type> implementeds = new ArrayList<Type>();
         if (sourceSpec.getConfigures().coupleWithDefinition) {
-            if (sourceSpec.getIsClass() != null) {
-                if (sourceSpec.isClass())
-                    extendeds.add(sourceSpec.toType());
-                else
-                    implementeds.add(sourceSpec.toType());
+            if ((sourceSpec.getIsClass() != null) && sourceSpec.isClass()) {
+                extendeds.add(sourceSpec.toType());
+            } else if ((sourceSpec.getIsInterface() != null) && sourceSpec.isInterface()) {
+                implementeds.add(sourceSpec.toType());
             }
         }
         
