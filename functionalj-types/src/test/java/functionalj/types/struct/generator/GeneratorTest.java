@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.GenStruct;
@@ -40,14 +41,14 @@ import lombok.val;
 
 public class GeneratorTest {
     
-    private Configurations configures = new Configurations();
+    private Configurations configurations = new Configurations();
     
     {
-        configures.coupleWithDefinition = true;
-        configures.generateNoArgConstructor = true;
-        configures.generateAllArgConstructor = true;
-        configures.generateLensClass = true;
-        configures.toStringTemplate = "";
+        configurations.coupleWithDefinition = true;
+        configurations.generateNoArgConstructor = true;
+        configurations.generateAllArgConstructor = true;
+        configurations.generateLensClass = true;
+        configurations.toStringTemplate = "";
     }
     
     private String definitionClassName = "Definitions.CarDef";
@@ -71,11 +72,11 @@ public class GeneratorTest {
     @Test
     public void testDecouplingWithSuper() {
         val generatedWith = generate(() -> {
-            configures.coupleWithDefinition = true;
+            configurations.coupleWithDefinition = true;
         });
         assertTrue(generatedWith.contains(" implements Definitions.CarDef"));
         val generatedWithout = generate(() -> {
-            configures.coupleWithDefinition = false;
+            configurations.coupleWithDefinition = false;
         });
         assertFalse(generatedWithout.contains(" implements Definitions.CarDef"));
     }
@@ -95,11 +96,11 @@ public class GeneratorTest {
     @Test
     public void testNoArgConstructor() {
         val generatedWith = generate(() -> {
-            configures.generateNoArgConstructor = true;
+            configurations.generateNoArgConstructor = true;
         });
         assertTrue(generatedWith.contains("public Car() {"));
         val generatedWithout = generate(() -> {
-            configures.generateNoArgConstructor = false;
+            configurations.generateNoArgConstructor = false;
         });
         assertFalse(generatedWithout.contains("public Car() {"));
     }
@@ -107,11 +108,11 @@ public class GeneratorTest {
     @Test
     public void testAllArgConstructor() {
         val generatedWith = generate(() -> {
-            configures.generateAllArgConstructor = true;
+            configurations.generateAllArgConstructor = true;
         });
         assertTrue(generatedWith.contains("public Car(int anint, boolean anbool, String anstring) {"));
         val generatedWithout = generate(() -> {
-            configures.generateAllArgConstructor = false;
+            configurations.generateAllArgConstructor = false;
         });
         assertTrue(generatedWithout.contains("private Car(int anint, boolean anbool, String anstring) {"));
     }
@@ -119,15 +120,32 @@ public class GeneratorTest {
     @Test
     public void testLensClass() {
         val generatedWith = generate(() -> {
-            configures.generateLensClass = true;
+            configurations.generateLensClass = true;
         });
         assertTrue(generatedWith.contains("public static final Car.CarLens<Car> theCar = new Car.CarLens<>(\"theCar\", LensSpec.of(Car.class));"));
         assertTrue(generatedWith.contains("public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {"));
         val generatedWithout = generate(() -> {
-            configures.generateLensClass = false;
+            configurations.generateLensClass = false;
         });
         assertFalse(generatedWithout.contains("public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));"));
         assertFalse(generatedWithout.contains("public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {"));
+    }
+    
+    @Test
+    public void testToString() {
+        val generatedWith = generate(() -> {
+            configurations.recordToString = true;
+        });
+        assertTrue(generatedWith.contains("    public String toString() {\n"
+                + "        return \"Car[\" + \"anint=\" + anint() + \", \" + \"anbool=\" + anbool() + \", \" + \"anstring=\" + anstring() + \"]\";\n"
+                + "    }"));
+        
+        val generatedWithout = generate(() -> {
+            configurations.recordToString = false;
+        });
+        assertTrue(generatedWithout.contains("    public String toString() {\n"
+                + "        return \"Car[\" + \"anint: \" + anint() + \", \" + \"anbool: \" + anbool() + \", \" + \"anstring: \" + anstring() + \"]\";\n"
+                + "    }"));
     }
     
     private String generate() {
@@ -137,14 +155,22 @@ public class GeneratorTest {
     private String generate(Runnable setting) {
         if (setting != null)
             setting.run();
-        SourceSpec sourceSpec = new SourceSpec(// specClassName
-        definitionClassName, // packageName
-        packageName, // encloseName
-        null, // targetClassName
-        targetClassName, // targetPackageName
-        packageName, // isClass
-        isClass, isInterface, null, null, // Configurations
-        configures, getters, emptyList(), emptyList());
+        
+        SourceSpec sourceSpec = new SourceSpec(
+                new JavaVersionInfo(8, 8),
+                definitionClassName, // specClassName
+                packageName,         // packageName
+                null,                // encloseName
+                targetClassName,     // targetClassName
+                packageName,         // targetPackageName
+                isClass,
+                isInterface,
+                null,
+                null,
+                configurations,
+                getters,
+                emptyList(),
+                emptyList());
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;

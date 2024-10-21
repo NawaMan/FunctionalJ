@@ -32,6 +32,7 @@ import java.util.List;
 import org.junit.Test;
 
 import functionalj.types.Generic;
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.GenStruct;
@@ -39,14 +40,14 @@ import lombok.val;
 
 public class ListLensTest {
     
-    private Configurations configures = new Configurations();
+    private Configurations configurations = new Configurations();
     
     {
-        configures.coupleWithDefinition = true;
-        configures.generateNoArgConstructor = true;
-        configures.generateAllArgConstructor = true;
-        configures.generateLensClass = true;
-        configures.toStringTemplate = "";
+        configurations.coupleWithDefinition = true;
+        configurations.generateNoArgConstructor = true;
+        configurations.generateAllArgConstructor = true;
+        configurations.generateLensClass = true;
+        configurations.toStringTemplate = "";
     }
     
     private String definitionClassName = "Definitions.PersonDef";
@@ -83,14 +84,21 @@ public class ListLensTest {
     }
     
     private String generate() {
-        SourceSpec sourceSpec = new SourceSpec(// specClassName
-        definitionClassName, // packageName
-        packageName, // encloseName
-        null, // targetClassName
-        targetClassName, // targetPackageName
-        packageName, // isClass
-        isClass, isInterface, null, null, // Configurations
-        configures, getters, emptyList(), emptyList());
+        SourceSpec sourceSpec = new SourceSpec(
+                new JavaVersionInfo(8, 8),
+                definitionClassName, // specClassName
+                packageName,         // packageName
+                null,                // encloseName
+                targetClassName,     // targetClassName
+                packageName,         // targetPackageName
+                isClass,
+                isInterface,
+                null,
+                null,
+                configurations,
+                getters,
+                emptyList(),
+                emptyList());
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;

@@ -103,4 +103,10 @@ public @interface Struct {
      */
     public Serialize.To serialize() default Serialize.To.NOTHING;
     
+    /**
+     * @return if the toString() returns the Java record format. For example, Point[x=3. y=4].
+     *             NOTE: Only when toStringTemplate is "".
+     **/
+    public boolean recordToString() default false;
+    
 }

@@ -29,6 +29,10 @@ import functionalj.types.Struct;
 
 public class ToStringTest {
     
+    @Struct(generateToString = true, toStringTemplate = "")
+    void Personal(String name, String position, int salary) {
+    }
+    
     @Struct(toStringTemplate = "Staff:${name}")
     void Staff(String name, String position, int salary) {
     }

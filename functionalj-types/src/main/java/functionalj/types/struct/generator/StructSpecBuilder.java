@@ -133,7 +133,7 @@ public class StructSpecBuilder {
         GenMethod            toMap           = generateToMap(sourceSpec);
         GenMethod            getStructSchema = generateGetStructScheme(sourceSpec);
         GenMethod            getSchema       = generateGetSchema(sourceSpec);
-        List<GenMethod>      methods         = Arrays.<Stream<GenMethod>>asList(Stream.of(pipeMethod), getterMethods, witherMethods, Stream.of(fromMap, toMap, getSchema, getStructSchema), Stream.of(toString, hashCode, equals).filter(Objects::nonNull), inheriitMethods(sourceSpec.getSpecName(), sourceSpec.getMethods())).stream().flatMap(themAll()).collect(toList());
+        List<GenMethod>      methods         = Arrays.<Stream<GenMethod>>asList(Stream.of(pipeMethod), getterMethods, witherMethods, Stream.of(fromMap, toMap, getSchema, getStructSchema), Stream.of(toString, hashCode, equals).filter(Objects::nonNull), inheriitMethods(sourceSpec, sourceSpec.getMethods())).stream().flatMap(themAll()).collect(toList());
         List<GenConstructor> constructors    = listOf(noArgConstructor(sourceSpec), requiredOnlyConstructor(sourceSpec), allArgConstructor(sourceSpec));
         List<GenClass>       innerClasses    = listOf(lensClass, builderClass);
         StructSpec           dataObjSpec     = new StructSpec(sourceSpec.getTargetClassName(), sourceSpec.getTargetPackageName(), sourceSpec.getSpecName(), sourceSpec.getPackageName(), extendeds, implementeds, constructors, fields, methods, innerClasses, emptyList());

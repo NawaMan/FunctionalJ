@@ -27,6 +27,7 @@ import static functionalj.types.Utils.blankToNull;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -38,6 +39,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -50,6 +52,7 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 import functionalj.types.Choice;
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Serialize;
 import functionalj.types.Struct;
 import functionalj.types.struct.generator.model.Accessibility;
@@ -68,6 +71,11 @@ public interface InputElement {
         Impl(Environment environment, Element element) {
             this.environment = environment;
             this.element = element;
+        }
+        
+        @Override
+        public JavaVersionInfo versionInfo() {
+            return environment.versionInfo;
         }
         
         @Override
@@ -194,6 +202,8 @@ public interface InputElement {
     @SuppressWarnings("rawtypes")
     public static abstract class Mock implements InputElement {
         
+        private final JavaVersionInfo versionInfo;
+        
         private final String simpleName;
         
         private final String packageQualifiedName;
@@ -220,17 +230,34 @@ public interface InputElement {
         
         private AtomicReference<List<InputElement>> enclosedElements = new AtomicReference<>(null);
         
-        public Mock(String simpleName, String packageQualifiedName, ElementKind kind, Set<Modifier> modifiers, InputElement enclosingElement, Supplier<List<InputElement>> enclosedElementsSupplier, Function<Class, Annotation> annotations, InputType asType, String printElement, String toString) {
-            this.simpleName = simpleName;
-            this.packageQualifiedName = packageQualifiedName;
-            this.kind = kind;
-            this.modifiers = modifiers;
-            this.enclosingElement = enclosingElement;
+        public Mock(
+                JavaVersionInfo              versionInfo,
+                String                       simpleName,
+                String                       packageQualifiedName, 
+                ElementKind                  kind, 
+                Set<Modifier>                modifiers, 
+                InputElement                 enclosingElement, 
+                Supplier<List<InputElement>> enclosedElementsSupplier, 
+                Function<Class, Annotation>  annotations, 
+                InputType                    asType, 
+                String                       printElement, 
+                String                       toString) {
+            this.versionInfo              = versionInfo;
+            this.simpleName               = simpleName;
+            this.packageQualifiedName     = packageQualifiedName;
+            this.kind                     = kind;
+            this.modifiers                = modifiers;
+            this.enclosingElement         = enclosingElement;
             this.enclosedElementsSupplier = enclosedElementsSupplier;
-            this.annotations = annotations;
-            this.asType = asType;
-            this.printElement = printElement;
-            this.toString = toString;
+            this.annotations              = annotations;
+            this.asType                   = asType;
+            this.printElement             = printElement;
+            this.toString                 = toString;
+        }
+        
+        @Override
+        public JavaVersionInfo versionInfo() {
+            return versionInfo;
         }
         
         @Override
@@ -319,6 +346,8 @@ public interface InputElement {
         
         // == Builder ==
         public static abstract class Builder {
+            
+            protected JavaVersionInfo versionInfo;
             
             protected String simpleName;
             
@@ -416,6 +445,9 @@ public interface InputElement {
     }
     
     // == Fundamental methods ==
+    
+    public JavaVersionInfo versionInfo();
+    
     public String simpleName();
     
     public String packageQualifiedName();
@@ -450,6 +482,7 @@ public interface InputElement {
     public InputType asType();
     
     // == Action ==
+    
     public String printElement();
     
     public String getToString();

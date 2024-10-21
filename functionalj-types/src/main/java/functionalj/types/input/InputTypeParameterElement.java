@@ -34,6 +34,8 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeVariable;
 
+import functionalj.types.JavaVersionInfo;
+
 /**
  * Represents a formal type parameter of a generic class, interface, method, or constructor element.
  * A type parameter declares a {@link TypeVariable}.
@@ -64,8 +66,8 @@ public interface InputTypeParameterElement extends InputElement {
         
         private final List<InputType> bounds;
         
-        public Mock(String simpleName, String packageQualifiedName, ElementKind kind, Set<Modifier> modifiers, InputElement enclosingElement, Supplier<List<InputElement>> enclosedElements, Function<Class, Annotation> annotations, InputType asType, String printElement, String toString, List<InputType> bounds) {
-            super(simpleName, packageQualifiedName, kind, modifiers, enclosingElement, enclosedElements, annotations, asType, printElement, toString);
+        public Mock(JavaVersionInfo versionInfo, String simpleName, String packageQualifiedName, ElementKind kind, Set<Modifier> modifiers, InputElement enclosingElement, Supplier<List<InputElement>> enclosedElements, Function<Class, Annotation> annotations, InputType asType, String printElement, String toString, List<InputType> bounds) {
+            super(versionInfo, simpleName, packageQualifiedName, kind, modifiers, enclosingElement, enclosedElements, annotations, asType, printElement, toString);
             this.bounds = bounds;
         }
         
@@ -76,81 +78,81 @@ public interface InputTypeParameterElement extends InputElement {
         
         // == Builder ==
         public static class Builder extends InputElement.Mock.Builder {
-        
+            
             protected Object constantValue;
-        
+            
             public Builder simpleName(String simpleName) {
                 super.simpleName(simpleName);
                 return this;
             }
-        
+            
             public Builder packageQualifiedName(String packageQualifiedName) {
                 super.packageQualifiedName(packageQualifiedName);
                 return this;
             }
-        
+            
             public Builder kind(ElementKind kind) {
                 super.kind(kind);
                 return this;
             }
-        
+            
             public Builder modifiers(Modifier... modifiers) {
                 super.modifiers(modifiers);
                 return this;
             }
-        
+            
             public Builder modifiers(Set<Modifier> modifiers) {
                 super.modifiers(modifiers);
                 return this;
             }
-        
+            
             public Builder enclosingElement(InputElement enclosingElement) {
                 super.enclosingElement(enclosingElement);
                 return this;
             }
-        
+            
             public Builder enclosedElements(InputElement... enclosedElements) {
                 super.enclosedElements(enclosedElements);
                 return this;
             }
-        
+            
             public Builder enclosedElements(List<InputElement> enclosedElements) {
                 super.enclosedElements(enclosedElements);
                 return this;
             }
-        
+            
             public Builder annotations(Class clzz, Annotation annotation) {
                 super.annotations(clzz, annotation);
                 return this;
             }
-        
+            
             public Builder annotations(Function<Class, Annotation> annotations) {
                 super.annotations(annotations);
                 return this;
             }
-        
+            
             public Builder asType(InputType asType) {
                 super.asType(asType);
                 return this;
             }
-        
+            
             public Builder printElement(String printElement) {
                 super.printElement(printElement);
                 return this;
             }
-        
+            
             public Builder toString(String toString) {
                 super.toString(toString);
                 return this;
             }
-        
+            
             public Builder constantValue(Object constantValue) {
                 this.constantValue = constantValue;
                 return this;
             }
-        
+            
             public InputVariableElement build() {
-                return new InputVariableElement.Mock(simpleName, packageQualifiedName, kind, modifiers, enclosingElement, enclosedElementsSupplier, annotations, asType, printElement, toString, constantValue);
+                return new InputVariableElement.Mock(versionInfo, simpleName, packageQualifiedName, kind, modifiers, enclosingElement, enclosedElementsSupplier, annotations, asType, printElement, toString, constantValue);
             }
         }
     }

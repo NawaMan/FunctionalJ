@@ -39,7 +39,9 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import functionalj.types.IRule;
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Rule;
+import functionalj.types.VersionUtils;
 import functionalj.types.input.Environment;
 import functionalj.types.input.InputElement;
 import functionalj.types.input.InputMethodElement;
@@ -56,11 +58,12 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        Elements elementUtils = processingEnv.getElementUtils();
-        Types    types        = processingEnv.getTypeUtils();
-        Filer    filer        = processingEnv.getFiler();
-        Messager messager     = processingEnv.getMessager();
-        environment = new Environment(elementUtils, types, messager, filer);
+        Elements        elementUtils = processingEnv.getElementUtils();
+        Types           types        = processingEnv.getTypeUtils();
+        Filer           filer        = processingEnv.getFiler();
+        Messager        messager     = processingEnv.getMessager();
+        JavaVersionInfo versionInfo  = VersionUtils.getJavaVersionInfo(processingEnv);
+        environment = new Environment(versionInfo, elementUtils, types, messager, filer);
     }
     
     @Override

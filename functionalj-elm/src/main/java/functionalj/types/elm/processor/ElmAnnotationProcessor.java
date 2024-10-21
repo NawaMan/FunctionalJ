@@ -48,7 +48,9 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import functionalj.types.Choice;
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Struct;
+import functionalj.types.VersionUtils;
 import functionalj.types.choice.ChoiceSpec;
 import functionalj.types.elm.Elm;
 import functionalj.types.input.Environment;
@@ -66,11 +68,12 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        Elements elementUtils = processingEnv.getElementUtils();
-        Types    typeUtils    = processingEnv.getTypeUtils();
-        Messager messager     = processingEnv.getMessager();
-        Filer    filer        = processingEnv.getFiler();
-        environment = new Environment(elementUtils, typeUtils, messager, filer);
+        Elements        elementUtils = processingEnv.getElementUtils();
+        Types           typeUtils    = processingEnv.getTypeUtils();
+        Messager        messager     = processingEnv.getMessager();
+        Filer           filer        = processingEnv.getFiler();
+        JavaVersionInfo versionInfo  = VersionUtils.getJavaVersionInfo(processingEnv);
+        environment = new Environment(versionInfo, elementUtils, typeUtils, messager, filer);
     }
     
     @Override

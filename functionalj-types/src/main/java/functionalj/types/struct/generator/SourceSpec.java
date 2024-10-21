@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.function.Function;
 
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Serialize;
 import functionalj.types.Serialize.To;
 import functionalj.types.Type;
@@ -43,6 +44,8 @@ import functionalj.types.choice.generator.Utils;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class SourceSpec {
+    
+    private final JavaVersionInfo javaVersionInfo;
     
     private final String specName;
     
@@ -62,7 +65,7 @@ public class SourceSpec {
     
     private final String validatorName;
     
-    private final Configurations configures;
+    private final Configurations configurations;
     
     private final List<Getter> getters;
     
@@ -71,6 +74,7 @@ public class SourceSpec {
     private final List<String> typeWithLens;
     
     public SourceSpec(
+            JavaVersionInfo javaVersionInfo,
             String specName,
             String packageName,
             String encloseName,
@@ -80,10 +84,11 @@ public class SourceSpec {
             Boolean isInterface,
             String specObjName,
             String validatorName,
-            Configurations configures,
+            Configurations configurations,
             List<Getter> getters,
             List<Callable> methods,
             List<String> typeWithLens) {
+        this.javaVersionInfo = javaVersionInfo;
         this.specName = specName;
         this.packageName = packageName;
         this.encloseName = encloseName;
@@ -93,7 +98,7 @@ public class SourceSpec {
         this.isInterface = isInterface;
         this.specObjName = specObjName;
         this.validatorName = validatorName;
-        this.configures = configures;
+        this.configurations = configurations;
         this.getters = getters;
         this.methods = methods;
         this.typeWithLens = typeWithLens;
@@ -136,7 +141,7 @@ public class SourceSpec {
     }
     
     public Configurations getConfigures() {
-        return configures;
+        return configurations;
     }
     
     public List<Getter> getGetters() {
@@ -152,51 +157,51 @@ public class SourceSpec {
     }
     
     public SourceSpec withSpecName(String specName) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withPackageName(String packageName) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withEncloseName(String encloseName) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withTargetClassName(String targetClassName) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withTargetPackageName(String targetPackageName) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withIsClass(Boolean isClass) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withSpecObjName(String specObjName) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withValidatorName(String validatorName) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withConfigures(Configurations configures) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
     }
     
     public SourceSpec withGetters(List<Getter> getters) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withMethods(List<Callable> methods) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withTypeWithLens(List<String> typeWithLens) {
-        return new SourceSpec(specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     /**
@@ -257,30 +262,60 @@ public class SourceSpec {
         /** the target serialization type. */
         public Serialize.To serialize = Serialize.To.NOTHING;
         
+        /**
+         * The toString() returns the Java record format. For example, Point[x=3. y=4].
+         *             NOTE: Only when toStringTemplate is "".
+         **/
+        public boolean recordToString = false;
+        
         public Configurations() {
         }
         
-        public Configurations(boolean coupleWithDefinition, boolean generateNoArgConstructor, boolean generateRequiredOnlyConstructor, boolean generateAllArgConstructor, boolean generateLensClass, boolean generateBuilderClass, boolean publicFields, boolean publicConstructor, String toStringTemplate, Serialize.To serialize) {
+        public Configurations(
+                boolean coupleWithDefinition, 
+                boolean generateNoArgConstructor, 
+                boolean generateRequiredOnlyConstructor, 
+                boolean generateAllArgConstructor, 
+                boolean generateLensClass, 
+                boolean generateBuilderClass, 
+                boolean publicFields, 
+                boolean publicConstructor, 
+                String  toStringTemplate, 
+                Serialize.To serialize,
+                boolean      recordToString) {
             this.coupleWithDefinition = coupleWithDefinition;
-            this.generateNoArgConstructor = generateNoArgConstructor;
+            this.generateNoArgConstructor        = generateNoArgConstructor;
             this.generateRequiredOnlyConstructor = generateRequiredOnlyConstructor;
-            this.generateAllArgConstructor = generateAllArgConstructor;
+            this.generateAllArgConstructor       = generateAllArgConstructor;
             this.generateLensClass = generateLensClass;
             this.generateBuilderClass = generateBuilderClass;
             this.publicFields = publicFields;
             this.publicConstructor = publicConstructor;
             this.toStringTemplate = toStringTemplate;
             this.serialize = (serialize != null) ? serialize : To.NOTHING;
+            this.recordToString = recordToString;
         }
         
         @Override
         public String toString() {
-            return "Configurations [" + "coupleWithDefinition=" + coupleWithDefinition + ", " + "generateNoArgConstructor=" + generateNoArgConstructor + ", " + "generateRequiredOnlyConstructor=" + generateRequiredOnlyConstructor + ", " + "generateAllArgConstructor=" + generateAllArgConstructor + ", " + "generateLensClass=" + generateLensClass + ", " + "generateBuilderClass=" + generateBuilderClass + "," + "publicFields=" + publicFields + "publicConstructor=" + publicConstructor + "toStringTemplate=" + toStringTemplate + "serialize=" + serialize + "]";
+            return "Configurations ["
+                    + "coupleWithDefinition=" + coupleWithDefinition + ", "
+                    + "generateNoArgConstructor=" + generateNoArgConstructor + ", "
+                    + "generateRequiredOnlyConstructor=" + generateRequiredOnlyConstructor + ", "
+                    + "generateAllArgConstructor=" + generateAllArgConstructor + ", "
+                    + "generateLensClass=" + generateLensClass + ", "
+                    + "generateBuilderClass=" + generateBuilderClass + ", "
+                    + "publicFields=" + publicFields + ", "
+                    + "publicConstructor=" + publicConstructor + ", "
+                    + "toStringTemplate=" + toStringTemplate + ", "
+                    + "serialize=" + serialize + ", "
+                    + "recordToString=" + recordToString
+                    + "]";
         }
         
         public String toCode() {
             String       serializeCode = Serialize.class.getCanonicalName() + ".To." + serialize;
-            List<Object> params        = asList(coupleWithDefinition, generateNoArgConstructor, generateRequiredOnlyConstructor, generateAllArgConstructor, generateLensClass, generateBuilderClass, publicFields, publicConstructor, Utils.toStringLiteral(toStringTemplate), serializeCode);
+            List<Object> params        = asList(coupleWithDefinition, generateNoArgConstructor, generateRequiredOnlyConstructor, generateAllArgConstructor, generateLensClass, generateBuilderClass, publicFields, publicConstructor, Utils.toStringLiteral(toStringTemplate), serializeCode, recordToString);
             return "new " + Configurations.class.getCanonicalName() + "(" + params.stream().map(String::valueOf).collect(joining(", ")) + ")";
         }
     }
@@ -313,6 +348,7 @@ public class SourceSpec {
     
     public String toCode() {
         List<Object> params = asList(
+                javaVersionInfo.toCode(),
                 toStringLiteral(specName),
                 toStringLiteral(packageName),
                 toStringLiteral(encloseName),
@@ -322,7 +358,7 @@ public class SourceSpec {
                 isInterface,
                 toStringLiteral(specObjName),
                 toStringLiteral(validatorName),
-                configures.toCode(),
+                configurations.toCode(),
                 toListCode(getters, Getter::toCode),
                 toListCode(methods, Callable::toCode),
                 toListCode(typeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity()));

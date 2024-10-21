@@ -35,7 +35,11 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import functionalj.types.JavaVersionInfo;
+
 public class Environment {
+    
+    final JavaVersionInfo versionInfo;
     
     final Elements elementUtils;
     
@@ -47,11 +51,16 @@ public class Environment {
     
     private final AtomicBoolean hasError = new AtomicBoolean(false);
     
-    public Environment(Elements elementUtils, Types typeUtils, Messager messager, Filer filer) {
+    public Environment(JavaVersionInfo versionInfo, Elements elementUtils, Types typeUtils, Messager messager, Filer filer) {
+        this.versionInfo  = versionInfo;
         this.elementUtils = elementUtils;
-        this.typeUtils = typeUtils;
-        this.messager = messager;
-        this.filer = filer;
+        this.typeUtils    = typeUtils;
+        this.messager     = messager;
+        this.filer        = filer;
+    }
+    
+    public JavaVersionInfo versionInfo() {
+        return versionInfo;
     }
     
     public void markHasError() {

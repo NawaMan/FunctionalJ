@@ -35,10 +35,13 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+
 import javax.lang.model.element.ElementKind;
+
 import functionalj.types.DefaultTo;
 import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Nullable;
 import functionalj.types.Required;
 import functionalj.types.Serialize;
@@ -47,8 +50,8 @@ import functionalj.types.Type;
 import functionalj.types.input.InputElement;
 import functionalj.types.input.InputMethodElement;
 import functionalj.types.input.InputRecordComponentElement;
-import functionalj.types.input.InputTypeElement;
 import functionalj.types.input.InputType;
+import functionalj.types.input.InputTypeElement;
 import functionalj.types.input.InputTypeParameterElement;
 import functionalj.types.struct.generator.Callable;
 import functionalj.types.struct.generator.Getter;
@@ -120,14 +123,16 @@ public class SourceSpecBuilder {
             return null;
         // TODO - Should look for a validator method.
         String validatorName = (String) null;
+        
+        JavaVersionInfo versionInfo = element.versionInfo();
         try {
-            return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, methods, localTypeWithLens);
+            return new SourceSpec(versionInfo, sourceName, packageName, encloseName, targetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, methods, localTypeWithLens);
         } catch (Exception e) {
             element.error("Problem generating the class: " + packageName + "." + targetName + ": " + e.getMessage() + ":" + e.getClass() + stream(e.getStackTrace()).map(st -> "\n    @" + st).collect(joining()));
             return null;
         }
     }
-
+    
     private List<Callable> enclosedMethods(InputElement element, InputTypeElement type) {
         return type
                 .enclosedElements().stream()
@@ -138,7 +143,7 @@ public class SourceSpecBuilder {
                 .filter (mthd -> mthd != null)
                 .collect(toList());
     }
-
+    
     private List<Getter> extractGetters(InputTypeElement type) {
         if (type.isClass()) {
             return extractGettersFromClass(type);
@@ -240,8 +245,10 @@ public class SourceSpecBuilder {
         if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
             return null;
         
+        JavaVersionInfo versionInfo = element.versionInfo();
+        
         try {
-            return new SourceSpec(sourceName, superPackage, encloseName, specTargetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, emptyList(), localTypeWithLens);
+            return new SourceSpec(versionInfo, sourceName, superPackage, encloseName, specTargetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, emptyList(), localTypeWithLens);
         } catch (Exception e) {
             String stacktraces = stream(e.getStackTrace()).map(stacktrace -> "\n    @" + stacktrace).collect(joining());
             String errMsg      = format("Problem generating the class: %s.%s: %s:%s%s", packageName, specTargetName, e.getMessage(), e.getClass(), stacktraces);

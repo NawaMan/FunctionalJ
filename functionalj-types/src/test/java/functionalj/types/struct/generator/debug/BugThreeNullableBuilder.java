@@ -29,6 +29,8 @@ import static functionalj.types.TestHelper.assertAsString;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import org.junit.Test;
+
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Serialize;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.Getter;
@@ -53,14 +55,31 @@ public class BugThreeNullableBuilder {
     private String generate(Runnable setting) {
         if (setting != null)
             setting.run();
-        SourceSpec sourceSpec = new SourceSpec(// specClassName
-        "DataModels.BrandSpec", // packageName
-        "ci.server", // encloseName
-        "DataModels", // targetClassName
-        "Brand", // targetPackageName
-        "ci.server", // isClass
-        false, true, null, null, // Configurations
-        new Configurations(true, false, true, true, true, true, true, true, "", Serialize.To.NOTHING), asList(new Getter("id", new Type("java.lang", null, "String", emptyList()), false, REQUIRED), new Getter("name", new Type("java.lang", null, "String", emptyList()), false, REQUIRED), new Getter("owner", new Type("java.lang", null, "String", emptyList()), true, NULL), new Getter("website", new Type("java.lang", null, "String", emptyList()), true, NULL), new Getter("country", new Type("java.lang", null, "String", emptyList()), true, NULL), new Getter("description", new Type("java.lang", null, "String", emptyList()), true, NULL)), emptyList(), asList("Brand", "Product"));
+        
+        JavaVersionInfo javaVersionInfo = new JavaVersionInfo(8, 8);
+        SourceSpec sourceSpec = new SourceSpec(
+                javaVersionInfo,
+                "DataModels.BrandSpec", // specClassName
+                "ci.server",            // packageName
+                "DataModels",           // encloseName
+                "Brand",                // targetClassName
+                "ci.server",            // targetPackageName
+                false,                  // isClass
+                true,                  // isInterface
+                null, 
+                null,
+                new Configurations(true, false, true, true, true, true, true, true, "", Serialize.To.NOTHING, false),
+                asList(
+                    new Getter("id",          new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
+                    new Getter("name",        new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
+                    new Getter("owner",       new Type("java.lang", null, "String", emptyList()), true,  NULL),
+                    new Getter("website",     new Type("java.lang", null, "String", emptyList()), true,  NULL),
+                    new Getter("country",     new Type("java.lang", null, "String", emptyList()), true,  NULL),
+                    new Getter("description", new Type("java.lang", null, "String", emptyList()), true,  NULL)
+                ),
+                emptyList(), 
+                asList("Brand", "Product")
+        );
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
