@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -53,6 +53,8 @@ public class GenerateParentChildTest {
     
     private boolean isClass = false;
     
+    private boolean isInterface = true;
+    
     private List<Getter> getters = asList(new Getter("child", new Type.TypeBuilder().simpleName("Child").packageName("me.test").build()));
     
     @Test
@@ -74,7 +76,7 @@ public class GenerateParentChildTest {
         null, // targetClassName
         targetClassName, // targetPackageName
         packageName, // isClass
-        isClass, null, null, // Configurations
+        isClass, isInterface, null, null, // Configurations
         configures, getters, emptyList(), asList("Child"));
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,7 +35,7 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
-// TODO - Generate Store that immitate an immutable type and have the changes store inside.
+// TODO - Generate Store that imitate an immutable type and have the changes store inside.
 // TODO - Must mention that this is not thread safe.
 public class Store<DATA> implements Func0<DATA> {
     

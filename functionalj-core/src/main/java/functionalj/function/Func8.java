@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -98,15 +98,6 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * Represents a function that takes eight input parameters and produces an output.
      * This is a functional interface whose functional method is {@link #applyUnsafe}.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @param <INPUT3>  the type of the third input parameter
-     * @param <INPUT4>  the type of the fourth input parameter
-     * @param <INPUT5>  the type of the fifth input parameter
-     * @param <INPUT6>  the type of the sixth input parameter
-     * @param <INPUT7>  the type of the seventh input parameter
-     * @param <INPUT8>  the type of the eighth input parameter
-     * @param <OUTPUT>  the type of the output produced by this function
      * @return the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
@@ -1265,7 +1256,7 @@ public interface Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, I
      * Reduces this function by fixing the first parameter, resulting in a nine-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first, and returns an OUTPUT
      */
     public default Func7<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> apply1(INPUT1 i1) {

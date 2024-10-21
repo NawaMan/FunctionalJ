@@ -92,6 +92,7 @@
         <module>functionalj-elm</module>
         <module>functionalj-all</module>
         <module>functionalj-types-tests</module>
+        <module>functionalj-types-tests-17</module>
     </modules>
     
     <dependencyManagement>

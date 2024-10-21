@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -58,7 +58,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      *
      * @param <INPUT1>  the type of the first input parameter of the function
      * @param <INPUT2>  the type of the second input parameter of the function
-     * @param func      the {@link FuncUnit2} instance to wrap
+     * @param consumer  the {@link FuncUnit2} instance to wrap
      * @return a new {@link FuncUnit2} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> of(FuncUnit2<INPUT1, INPUT2> consumer) {
@@ -70,7 +70,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * 
      * @param <INPUT1>  the type of the first input parameter of the function
      * @param <INPUT2>  the type of the second input parameter of the function
-     * @param func      the existing {@link FuncUnit2} instance
+     * @param consumer  the existing {@link FuncUnit2} instance
      * @return a new {@link FuncUnit2} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> funcUnit2(FuncUnit2<INPUT1, INPUT2> consumer) {
@@ -82,7 +82,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * 
      * @param <INPUT1>  the type of the first input parameter of the function
      * @param <INPUT2>  the type of the second input parameter of the function
-     * @param func      the existing {@link FuncUnit2} instance
+     * @param consumer  the existing {@link FuncUnit2} instance
      * @return a new {@link FuncUnit2} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> from(BiConsumer<INPUT1, INPUT2> consumer) {
@@ -93,9 +93,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
     /**
      * Performs an operation on the given inputs, potentially throwing an exception and return no result.
      * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @return          the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public void acceptUnsafe(INPUT1 input1, INPUT2 input2) throws Exception;
@@ -105,11 +102,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Represents a function that takes two input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @return          the result of applying this function to the input parameters
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
             INPUT1 input1,
@@ -146,11 +138,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Represents a function that takes two input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @return          the result of applying this function to the input parameters
-     * @throws Exception if the function execution encounters an error
      */
     public default void accept(
             INPUT1 input1,
@@ -168,7 +155,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Accept the given all input values as {@link Tuple2}.
      *
      * @param  input the tuple input.
-     * @return       the function result.
      */
     public default void acceptTo(Tuple2<INPUT1, INPUT2> input) {
         val _1  = input._1();
@@ -371,9 +357,8 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      *
-     * @param  <TARGET>  the target result value.
-     * @param  after     the function to be run after this function.
-     * @return           the composed function.
+     * @param  after  the function to be run after this function.
+     * @return        the composed function.
      */
     public default FuncUnit2<INPUT1, INPUT2> then(FuncUnit0 after) {
         requireNonNull(after);
@@ -387,9 +372,8 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      *
-     * @param  <TARGET>  the target result value.
-     * @param  after     the function to be run after this function.
-     * @return           the composed function.
+     * @param  after  the function to be run after this function.
+     * @return        the composed function.
      */
     public default FuncUnit2<INPUT1, INPUT2> then(FuncUnit2<? super INPUT1, ? super INPUT2> after) {
         requireNonNull(after);
@@ -715,7 +699,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * Reduces this function by fixing the first parameter, resulting in a one-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first.
      */
     public default FuncUnit1<INPUT2> apply1(INPUT1 i1) {

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -57,6 +57,8 @@ public class GeneratorTest {
     private String packageName = "me.test";
     
     private boolean isClass = false;
+    
+    private boolean isInterface = true;
     
     private List<Getter> getters = asList(new Getter("anint", Type.INT), new Getter("anbool", Type.BOOL), new Getter("anstring", Type.STRING));
     
@@ -141,7 +143,7 @@ public class GeneratorTest {
         null, // targetClassName
         targetClassName, // targetPackageName
         packageName, // isClass
-        isClass, null, null, // Configurations
+        isClass, isInterface, null, null, // Configurations
         configures, getters, emptyList(), emptyList());
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -1419,14 +1419,17 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
         return intStream().anyMatch(i -> i == value);
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsAllOf(int... array) {
         return IntStreamPlus.of(array).allMatch(each -> intStream().anyMatch(value -> Objects.equals(each, value)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsSomeOf(int... c) {
         return IntStreamPlus.of(c).anyMatch(each -> intStream().anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsNoneOf(int... c) {
         return IntStreamPlus.of(c).noneMatch(each -> intStream().anyMatch(o -> Objects.equals(each, o)));
     }
@@ -1443,14 +1446,17 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
         return c.stream().noneMatch(each -> intStream().anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsAllOf(IntFuncList c) {
         return c.intStream().allMatch(each -> intStream().anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsSomeOf(IntFuncList c) {
         return c.intStream().anyMatch(each -> intStream().anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsNoneOf(IntFuncList c) {
         return c.intStream().noneMatch(each -> intStream().anyMatch(o -> Objects.equals(each, o)));
     }

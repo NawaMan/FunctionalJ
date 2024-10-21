@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,7 +32,7 @@ public class AutoCloseableResult<DATA extends AutoCloseable> extends DerivedResu
         return new AutoCloseableResult<D>(() -> value);
     }
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked", "rawtypes", "resource" })
     public static <D extends AutoCloseable> AutoCloseableResult<D> from(Result<D> result) {
         if (result instanceof AutoCloseableResult)
             return (AutoCloseableResult) result;

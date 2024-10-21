@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -52,7 +52,6 @@ import nullablej.nullable.Nullable;
  * @param <INPUT5>  the fifth input data type.
  * @param <INPUT6>  the sixth input data type.
  * @param <INPUT7>  the seventh input data type.
- * @param <OUTPUT>  the output data type.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
@@ -69,7 +68,7 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * @param <INPUT5>  the type of the fifth input parameter of the function
      * @param <INPUT6>  the type of the sixth input parameter of the function
      * @param <INPUT7>  the type of the seventh input parameter of the function
-     * @param func      the {@link FuncUnit7} instance to wrap
+     * @param consumer  the {@link FuncUnit7} instance to wrap
      * @return a new {@link FuncUnit7} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> of(FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> consumer) {
@@ -86,7 +85,7 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * @param <INPUT5>  the type of the fifth input parameter of the function
      * @param <INPUT6>  the type of the sixth input parameter of the function
      * @param <INPUT7>  the type of the seventh input parameter of the function
-     * @param func      the existing {@link FuncUnit7} instance
+     * @param consumer  the existing {@link FuncUnit7} instance
      * @return a new {@link FuncUnit7} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> funcUnit7(FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> consumer) {
@@ -137,16 +136,6 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * Represents a function that takes seven input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @param <INPUT3>  the type of the third input parameter
-     * @param <INPUT4>  the fourth input parameter
-     * @param <INPUT5>  the fifth input parameter
-     * @param <INPUT6>  the sixth input parameter
-     * @param <INPUT7>  the seventh input parameter
-     * @return          the result of applying this function to the input parameters
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
             INPUT1 input1,
@@ -205,7 +194,6 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * @param input5  the fifth input parameter
      * @param input6  the sixth input parameter
      * @param input7  the seventh input parameter
-     * @return        the function result.
      */
     public default void accept(
             INPUT1 input1,
@@ -227,8 +215,7 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
     /**
      * Accept the given all input values as {@link Tuple7}.
      *
-     * @param  input the tuple input.
-     * @return       the function result.
+     * @param  input  the tuple input.
      */
     public default void acceptTo(Tuple7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> input) {
         val _1  = input._1();
@@ -505,8 +492,7 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
+     * 
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */
@@ -521,8 +507,7 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
+     * 
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */
@@ -958,7 +943,7 @@ public interface FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * Reduces this function by fixing the first parameter, resulting in a six-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first.
      */
     public default FuncUnit6<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> apply1(INPUT1 i1) {

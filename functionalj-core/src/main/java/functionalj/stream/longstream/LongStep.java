@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -202,6 +202,7 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
      * Please don't call. This will blow up.
      */
     @Override
+    @SuppressWarnings("resource")
     public LongFuncList toEager() {
         throw new UnsupportedOperationException("Infinite double step cannot be made an eager list: " + longStreamPlus().limit(5).join(", ") + "...");
     }
@@ -210,6 +211,7 @@ public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function
      * Please don't call. This will blow up.
      */
     @Override
+    @SuppressWarnings("resource")
     public LongFuncList toCache() {
         throw new UnsupportedOperationException("Infinite double step cannot be made a cache list: " + longStreamPlus().limit(5).join(", ") + "...");
     }

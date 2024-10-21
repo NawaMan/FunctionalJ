@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -96,7 +96,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             SourceSpecBuilder sourceSpecBuilder = new SourceSpecBuilder(element);
             String            packageName       = sourceSpecBuilder.packageName();
             String            specTargetName    = sourceSpecBuilder.targetName();
-//            prepareLogs(element);
+            prepareLogs(element);
             try {
                 SourceSpec sourceSpec = sourceSpecBuilder.sourceSpec();
                 if (sourceSpec == null)
@@ -123,6 +123,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
+    @SuppressWarnings("unused")
     private void prepareLogs(InputElement element) {
         if (element.isTypeElement()) {
             logs.add("Element is a type: " + element);

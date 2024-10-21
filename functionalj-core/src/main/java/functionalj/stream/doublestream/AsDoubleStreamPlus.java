@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -249,10 +249,12 @@ public interface AsDoubleStreamPlus extends AsDoubleStreamPlusWithCalculate, AsD
         return streamPlus.peek(set::remove).anyMatch(__ -> set.isEmpty());
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsAnyOf(double... values) {
         return doubleStreamPlus().allMatch(each -> DoubleStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @SuppressWarnings("resource")
     public default boolean containsNoneOf(double... values) {
         return doubleStreamPlus().noneMatch(each -> DoubleStreamPlus.of(values).anyMatch(o -> Objects.equals(each, o)));
     }

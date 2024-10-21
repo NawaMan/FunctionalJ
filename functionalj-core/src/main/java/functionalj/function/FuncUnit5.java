@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -50,7 +50,6 @@ import nullablej.nullable.Nullable;
  * @param <INPUT3>  the third input data type.
  * @param <INPUT4>  the forth input data type.
  * @param <INPUT5>  the fifth input data type.
- * @param <OUTPUT>  the output data type.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
@@ -65,7 +64,6 @@ public interface FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> {
      * @param <INPUT3>  the type of the third input parameter of the function
      * @param <INPUT4>  the type of the forth input parameter of the function
      * @param <INPUT5>  the type of the fifth input parameter of the function
-     * @param func      the {@link FuncUnit5} instance to wrap
      * @return a new {@link FuncUnit5} instance that delegates to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> of(FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> consumer) {
@@ -80,7 +78,7 @@ public interface FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> {
      * @param <INPUT3>  the type of the third input parameter of the function
      * @param <INPUT4>  the type of the forth input parameter of the function
      * @param <INPUT5>  the type of the fifth input parameter of the function
-     * @param func      the existing {@link FuncUnit5} instance
+     * @param consumer  the existing {@link FuncUnit5} instance
      * @return a new {@link FuncUnit5} instance that behaves identically to the provided func
      */
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> funcUnit5(FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> consumer) {
@@ -125,14 +123,6 @@ public interface FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> {
      * Represents a function that takes five input parameters and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @param <INPUT1>  the type of the first input parameter
-     * @param <INPUT2>  the type of the second input parameter
-     * @param <INPUT3>  the type of the third input parameter
-     * @param <INPUT4>  the fourth input parameter
-     * @param <INPUT5>  the fifth input parameter
-     * @return          the result of applying this function to the input parameters
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(
             INPUT1 input1,
@@ -183,7 +173,6 @@ public interface FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> {
      * @param input3  the third input.
      * @param input4  the fourth input parameter
      * @param input5  the fifth input parameter
-     * @return        the function result.
      */
     public default void accept(
             INPUT1 input1,
@@ -204,7 +193,6 @@ public interface FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> {
      * Accept the given all input values as {@link Tuple5}.
      *
      * @param  input the tuple input.
-     * @return       the function result.
      */
     public default void acceptTo(Tuple5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> input) {
         val _1  = input._1();
@@ -451,8 +439,7 @@ public interface FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> {
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
+     * 
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */
@@ -467,8 +454,7 @@ public interface FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> {
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
-     *
-     * @param  <TARGET>  the target result value.
+     * 
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */
@@ -866,7 +852,7 @@ public interface FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> {
      * Reduces this function by fixing the first parameter, result a four-parameter function.
      * The fixed value is used for the fourth input in subsequent calls.
      *
-     * @param i2  the value to fix for the first parameter
+     * @param i1  the value to fix for the first parameter
      * @return    a function that takes the rest of the parameters, excluding the first.
      */
     public default FuncUnit4<INPUT2, INPUT3, INPUT4, INPUT5> apply1(INPUT1 i1) {

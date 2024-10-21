@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -55,8 +55,8 @@ public class ImmutableTuple {
      *
      * @param <T1>   the type of the first element in the tuple
      * @param <T2>   the type of the second element in the tuple
-     * @param entry  the {@link Map.Entry} object containing the elements to be placed in the tuple
-     * @return  a new {@link ImmutableTuple2} object containing the key and value from the {@link Map.Entry} object, 
+     * @param entry  the {@link java.util.Map.Entry} object containing the elements to be placed in the tuple
+     * @return  a new {@link ImmutableTuple2} object containing the key and value from the {@link java.util.Map.Entry} object, 
      *            or a tuple with null values if the entry is null
      */
     public static <T1, T2> ImmutableTuple2<T1, T2> of(Map.Entry<? extends T1, ? extends T2> entry) {
@@ -266,8 +266,6 @@ public class ImmutableTuple {
      *
      * @param <T1>   the type of the first element in the tuple
      * @param <T2>   the type of the second element in the tuple
-     * @param <T3>   the type of the third element in the tuple
-     * @param <T4>   the type of the fourth element in the tuple
      * @param tuple  the {@link Tuple2} object to be converted into an {@link ImmutableTuple2}
      * @return an {@link ImmutableTuple2} object containing the elements from the provided tuple, or a tuple with all null values if the provided tuple is null
      */
@@ -289,7 +287,6 @@ public class ImmutableTuple {
      * @param <T1>   the type of the first element in the tuple
      * @param <T2>   the type of the second element in the tuple
      * @param <T3>   the type of the third element in the tuple
-     * @param <T4>   the type of the fourth element in the tuple
      * @param tuple  the {@link Tuple3} object to be converted into an {@link ImmutableTuple3}
      * @return an {@link ImmutableTuple3} object containing the elements from the provided tuple, or a tuple with all null values if the provided tuple is null
      */

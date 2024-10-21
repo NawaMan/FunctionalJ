@@ -37,8 +37,8 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * Constructs a {@link ZoomFuncList}.
      * Only use it when you know what you are doing. Use {@link FuncList#zoomIn(AnyLens)} instead.
      * 
-     * @param source  the source list.
-     * @param lens    the lens.
+     * @param host  the host list.
+     * @param lens  the lens.
      */
     public AbstractZoomFuncList(FUNCLIST host, AnyLens<HOST, DATA> lens) {
         this.source = requireNonNull(host, "Host list must not be null.");
@@ -137,7 +137,7 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
     /**
      * Check if the list contains all of the given data.
      * 
-     * @param data  the data.
+     * @param c  the data collection.
      * @return  <code>true</code> if the list contains the data.
      */
     public boolean containsAll(Collection<?> c) {
@@ -167,7 +167,7 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
     /**
      * Returns the last index that the given data is found or -1 if the data is not found.
      * 
-     * @param data  the data.
+     * @param o  the data object.
      * @return      the index that the data is last found or -1.
      */
     public int lastIndexOf(Object o) {
@@ -213,7 +213,6 @@ abstract class AbstractZoomFuncList<DATA, HOST, FUNCLIST extends AsFuncList<HOST
      * 
      * @param fromIndexInclusive  the start index inclusively.
      * @param toIndexExclusive    the end index exclusively.
-     * @return
      */
     public abstract AbstractZoomFuncList<DATA, HOST, ? extends AsFuncList<HOST>> subList(int fromIndexInclusive, int toIndexExclusive);
     

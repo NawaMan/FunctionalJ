@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -212,6 +212,7 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
      * Please don't call. This will blow up.
      */
     @Override
+    @SuppressWarnings("resource")
     public DoubleFuncList toEager() {
         throw new UnsupportedOperationException("Infinite double step cannot be made an eager list: " + doubleStreamPlus().limit(5).join(", ") + "...");
     }
@@ -220,6 +221,7 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleFunction<Double>, 
      * Please don't call. This will blow up.
      */
     @Override
+    @SuppressWarnings("resource")
     public DoubleFuncList toCache() {
         throw new UnsupportedOperationException("Infinite double step cannot be made a cache list: " + doubleStreamPlus().limit(5).join(", ") + "...");
     }

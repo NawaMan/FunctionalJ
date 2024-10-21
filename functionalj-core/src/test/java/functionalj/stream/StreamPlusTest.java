@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -82,6 +82,7 @@ import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
+@SuppressWarnings("resource")
 public class StreamPlusTest {
     
     @Test
@@ -137,12 +138,14 @@ public class StreamPlusTest {
     }
     
     @Test
+    @SuppressWarnings("resource")
     public void testConcat() {
         assertAsString("[One, Two, Three, Four]", concat(streamOf("One", "Two"), streamOf("Three", "Four")).toList());
         assertAsString("[One, Two, Three, Four]", concat(() -> streamOf("One", "Two"), () -> streamOf("Three", "Four")).toList());
     }
     
     @Test
+    @SuppressWarnings("resource")
     public void testCombine() {
         assertAsString("[One, Two, Three, Four]", combine(streamOf("One", "Two"), streamOf("Three", "Four")).toList());
         assertAsString("[One, Two, Three, Four]", combine(() -> streamOf("One", "Two"), () -> streamOf("Three", "Four")).toList());

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -38,11 +38,16 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Elm {
     
+    /** The default base module is from the package name. */
     public static final String FROM_PACAKGE_NAME = "FROM_PACAKGE_NAME";
     
+    /** The default directory to generate code. */
     public static final String DEFAULT_GENERATED_DIRECTORY = "./generated/elm/";
     
+    /** The name of the base module. */
     String baseModule() default FROM_PACAKGE_NAME;
     
+    /** The name of the generated directory. */
     String generatedDirectory() default DEFAULT_GENERATED_DIRECTORY;
+    
 }

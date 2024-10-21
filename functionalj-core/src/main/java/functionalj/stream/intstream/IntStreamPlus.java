@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -223,6 +223,7 @@ public interface IntStreamPlus extends IntStream, AsIntStreamPlus, IntStreamPlus
     /**
      * Concatenate all the given streams.
      */
+    @SuppressWarnings("resource")
     public static IntStreamPlus concat(IntStream... streams) {
         return StreamPlus.of(streams).map(s -> IntStreamPlus.from(s)).flatMapToInt(s -> s.intStream());
     }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -56,6 +56,8 @@ public class GenerateParentListChildTest {
     
     private boolean isClass = false;
     
+    private boolean isInterface = true;
+    
     private List<Getter> getters = asList(new Getter("names", new Type.TypeBuilder().simpleName("List").generics(asList(new Generic(new Type("java.lang", "String")))).packageName("java.util").build()), new Getter("children", new Type.TypeBuilder().simpleName("List").generics(asList(new Generic(new Type("me.test", "Child")))).packageName("java.util").build()));
     
     @Test
@@ -79,7 +81,7 @@ public class GenerateParentListChildTest {
         null, // targetClassName
         targetClassName, // targetPackageName
         packageName, // isClass
-        isClass, null, null, // Configurations
+        isClass, isInterface, null, null, // Configurations
         configures, getters, emptyList(), asList("Child"));
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();

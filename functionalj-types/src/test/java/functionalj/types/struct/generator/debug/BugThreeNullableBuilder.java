@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -59,7 +59,7 @@ public class BugThreeNullableBuilder {
         "DataModels", // targetClassName
         "Brand", // targetPackageName
         "ci.server", // isClass
-        false, null, null, // Configurations
+        false, true, null, null, // Configurations
         new Configurations(true, false, true, true, true, true, true, true, "", Serialize.To.NOTHING), asList(new Getter("id", new Type("java.lang", null, "String", emptyList()), false, REQUIRED), new Getter("name", new Type("java.lang", null, "String", emptyList()), false, REQUIRED), new Getter("owner", new Type("java.lang", null, "String", emptyList()), true, NULL), new Getter("website", new Type("java.lang", null, "String", emptyList()), true, NULL), new Getter("country", new Type("java.lang", null, "String", emptyList()), true, NULL), new Getter("description", new Type("java.lang", null, "String", emptyList()), true, NULL)), emptyList(), asList("Brand", "Product"));
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();

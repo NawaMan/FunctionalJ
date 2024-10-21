@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -72,8 +72,8 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
      * @param <T1>   the type of the first element
      * @param <T2>   the type of the second element
      * 
-     * @param _1     the value of the first element
-     * @param _2     the value of the second element
+     * @param t1     the value of the first element
+     * @param t2     the value of the second element
      * @return       a new {@link Tuple2} containing the provided elements
      */
     public static <T1, T2> Tuple2<T1, T2> of(T1 t1, T2 t2) {

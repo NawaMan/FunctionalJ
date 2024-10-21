@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -53,6 +53,8 @@ public class ElmStructTest {
     
     private boolean isClass = false;
     
+    private boolean isInterface = false;
+    
     private List<Getter> getters = asList(new Getter("firstName", Type.STRING), new Getter("lastName", Type.STRING));
     
     @Test
@@ -63,10 +65,10 @@ public class ElmStructTest {
         null, // targetClassName
         targetClassName, // targetPackageName
         packageName, // isClass
-        isClass, null, null, // Configurations
+        isClass, isInterface, null, null, // Configurations
         configures, getters, emptyList(), emptyList());
         val spec = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);
-        val struct = new ElmStructBuilder(spec, emptyList(), emptyList());
+        val struct = new ElmStructBuilder(spec, emptyList());
         val genCode = struct.toElmCode();
         val code = genCode.substring(genCode.indexOf('\n') + 1);
         assertEquals(expected, code);

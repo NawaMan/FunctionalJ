@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -54,12 +54,10 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private final ElmChoiceSpec spec;
     
-    // private final List<String>  structTypes;
     private final List<String> choiceTypes;
     
-    public ElmChoiceBuilder(ElmChoiceSpec spec, List<String> structTypes, List<String> choiceTypes) {
+    public ElmChoiceBuilder(ElmChoiceSpec spec, List<String> choiceTypes) {
         this.spec = spec;
-        // this.structTypes = structTypes;
         this.choiceTypes = choiceTypes;
     }
     

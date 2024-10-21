@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -42,8 +42,6 @@ import lombok.val;
  * potentially throwing an Exception.
  * 
  * This interface represents a function that accepts three arguments and returns no result.
- *
- * @param <INPUT1>  the first input data type.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
@@ -94,8 +92,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     /**
      * Performs an operation on the given inputs, potentially throwing an exception and return no result.
      * 
-     * @param <INPUT>  the type of the first input parameter
-     * @return         the result of applying this function to the input parameters
      * @throws Exception if the function execution encounters an error
      */
     public void acceptUnsafe(INPUT input) throws Exception;
@@ -105,10 +101,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * Represents a function that takes an input parameter and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @param <INPUT>  the type of the input parameter
-     * @return         the result of applying this function to the input parameters
-     * @throws Exception if the function execution encounters an error
      */
     public default void acceptCarelessly(INPUT input) {
         try {
@@ -140,10 +132,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * Represents a function that takes the input parameter and produces no output.
      * This is a functional interface whose functional method is {@link #acceptUnsafe}.
      * This function ignore any exception that might be thrown.
-     * 
-     * @param <INPUT>  the type of the first input parameter
-     * @return         the result of applying this function to the input parameters
-     * @throws Exception if the function execution encounters an error
      */
     public default void accept(INPUT input) {
         try {
@@ -158,8 +146,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     /**
      * Accept the given input values wrapped with {@link Result}.
      * 
-     * @param input  the result.
-     * @return       a {@code Result<OUTPUT>} with the result of <code>null</code>.
+     * @return  a {@code Result<OUTPUT>} with the result of <code>null</code>.
      */
     public default <OUTPUT> Result<OUTPUT> acceptTo(Result<INPUT> input1) {
         return input1.map(value1 -> {
@@ -230,7 +217,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      *
-     * @param  <TARGET>  the target result value.
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */
@@ -246,7 +232,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      *
-     * @param  <TARGET>  the target result value.
      * @param  after     the function to be run after this function.
      * @return           the composed function.
      */

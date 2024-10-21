@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -44,7 +44,7 @@ public class ElmChoiceTest {
         val cases = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
         val choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
         val spec = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
-        val choice = new ElmChoiceBuilder(spec, emptyList(), emptyList());
+        val choice = new ElmChoiceBuilder(spec, emptyList());
         val genCode = choice.toElmCode();
         val code = genCode.substring(genCode.indexOf('\n') + 1);
         assertEquals(expected, code);

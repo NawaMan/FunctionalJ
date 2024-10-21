@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -43,7 +43,7 @@ public class ElmChoiceBuilderWithNullableFieldTest {
         val cases = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
         val choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
         val spec = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
-        val builder = new ElmChoiceBuilder(spec, emptyList(), emptyList());
+        val builder = new ElmChoiceBuilder(spec, emptyList());
         return builder;
     }
     

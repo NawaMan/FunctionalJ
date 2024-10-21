@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -107,9 +107,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
      * Applies this function safely to two input parameters, returning a {@code Result<OUTPUT>}.
      * This method wraps the function application in a try-catch block, capturing any exceptions that occur during execution.
      * 
-     * @param input1  the first input parameter.
-     * @param input2  the second input parameter.
-     * @return        a {@code Result<OUTPUT>} containing the result if successful, or an exception if an error occurs during function application.
+     * @param input  the input parameter.
+     * @return       a {@code Result<OUTPUT>} containing the result if successful, or an exception if an error occurs during function application.
      */
     public default Result<OUTPUT> applySafely(
                     INPUT input) {
@@ -399,8 +398,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
      * Applies this function to the given arguments, using a supplier to provide a default value if the result is null or an exception occurs.
      * The function attempts to apply the given arguments, invoking the default supplier for a value if the result is null or if an exception is caught.
      *
-     * @param defaultSupplier  the supplier that provides a default value when the function result is null or an exception occurs
-     * @return                 a new function that applies this function to the given arguments, using the default supplier's value when the result is null or an exception occurs
+     * @param defaultValue  the default value when the function result is null or an exception occurs
+     * @return              a new function that applies this function to the given arguments, using the default supplier's value when the result is null or an exception occurs
      */
     public default Func1<INPUT, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input) -> {

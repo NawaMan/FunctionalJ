@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -88,36 +88,22 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         boolean hasError = false;
-        List<String> structTypes = collectAllStructTypes(roundEnv);
         List<String> choiceTypes = collectAllChoiceTypes(roundEnv);
         for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
             InputElement element = environment.element(javaElement);
             Struct       struct  = element.annotation(Struct.class);
             if (struct != null) {
-                hasError = hasError | !handleStructType(element, structTypes, choiceTypes);
+                hasError = hasError | !handleStructType(element, choiceTypes);
                 continue;
             }
             Choice choice = element.annotation(Choice.class);
             if (choice != null) {
-                hasError = hasError | !handleChoiceType(element, structTypes, choiceTypes);
+                hasError = hasError | !handleChoiceType(element, choiceTypes);
                 continue;
             }
             element.error("The element must either be a struct or a choice.");
         }
         return hasError;
-    }
-    
-    private List<String> collectAllStructTypes(RoundEnvironment roundEnv) {
-        List<String> allTypes = new ArrayList<String>();
-        for (Element javaElement : roundEnv.getElementsAnnotatedWith(Elm.class)) {
-            InputElement element = environment.element(javaElement);
-            Struct struct = element.annotation(Struct.class);
-            if (struct != null) {
-                String name = element.simpleName();
-                allTypes.add(name);
-            }
-        }
-        return allTypes;
     }
     
     private List<String> collectAllChoiceTypes(RoundEnvironment roundEnv) {
@@ -133,13 +119,13 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         return allTypes;
     }
     
-    private boolean handleStructType(InputElement element, List<String> structTypes, List<String> choiceTypes) {
+    private boolean handleStructType(InputElement element, List<String> choiceTypes) {
         SourceSpecBuilder structSpec     = new SourceSpecBuilder(element);
         String            packageName    = structSpec.packageName();
         String            specTargetName = structSpec.targetName();
         try {
             ElmStructSpec    elmStructSpec = new ElmStructSpec(structSpec.sourceSpec(), element);
-            ElmStructBuilder elmStruct     = new ElmStructBuilder(elmStructSpec, structTypes, choiceTypes);
+            ElmStructBuilder elmStruct     = new ElmStructBuilder(elmStructSpec, choiceTypes);
             String           baseDir       = elmStructSpec.generatedDirectory();
             String           folderName    = elmStructSpec.folderName();
             String           fileName      = elmStructSpec.fileName();
@@ -161,13 +147,13 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         Files.write(generatedFile.toPath(), lines);
     }
     
-    private boolean handleChoiceType(InputElement element, List<String> structTypes, List<String> choiceTypes) {
+    private boolean handleChoiceType(InputElement element, List<String> choiceTypes) {
         ChoiceSpec choiceSpec     = new ChoiceSpec(element);
         String     packageName    = choiceSpec.packageName();
         String     specTargetName = choiceSpec.targetName();
         try {
             ElmChoiceSpec    elmChoiceSpec = new ElmChoiceSpec(choiceSpec.sourceSpec(), element);
-            ElmChoiceBuilder elmChoice     = new ElmChoiceBuilder(elmChoiceSpec, structTypes, choiceTypes);
+            ElmChoiceBuilder elmChoice     = new ElmChoiceBuilder(elmChoiceSpec, choiceTypes);
             String           baseDir       = elmChoiceSpec.generatedDirectory();
             String           folderName    = elmChoiceSpec.folderName();
             String           fileName      = elmChoiceSpec.fileName();

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2023 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -155,18 +155,7 @@ public interface InputTypeParameterElement extends InputElement {
         }
     }
     
-    public default InputTypeElement asTypeElement() {
-        return null;
-    }
-    
-    public default InputMethodElement asMethodElement() {
-        return null;
-    }
-    
-    public default InputVariableElement asVariableElement() {
-        return null;
-    }
-    
+    @Override
     public default InputTypeParameterElement asTypeParameterElement() {
         return this;
     }
