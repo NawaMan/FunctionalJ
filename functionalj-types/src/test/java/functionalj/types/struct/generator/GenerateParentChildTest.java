@@ -28,6 +28,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import java.util.List;
 import org.junit.Test;
+
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.GenStruct;
@@ -35,14 +37,14 @@ import lombok.val;
 
 public class GenerateParentChildTest {
     
-    private Configurations configures = new Configurations();
+    private Configurations configuration = new Configurations();
     
     {
-        configures.coupleWithDefinition = true;
-        configures.generateNoArgConstructor = true;
-        configures.generateAllArgConstructor = true;
-        configures.generateLensClass = true;
-        configures.toStringTemplate = "";
+        configuration.coupleWithDefinition = true;
+        configuration.generateNoArgConstructor = true;
+        configuration.generateAllArgConstructor = true;
+        configuration.generateLensClass = true;
+        configuration.toStringTemplate = "";
     }
     
     private String definitionClassName = "Definitions.ParentDef";
@@ -70,14 +72,21 @@ public class GenerateParentChildTest {
     private String generate(Runnable setting) {
         if (setting != null)
             setting.run();
-        SourceSpec sourceSpec = new SourceSpec(// specClassName
-        definitionClassName, // packageName
-        packageName, // encloseName
-        null, // targetClassName
-        targetClassName, // targetPackageName
-        packageName, // isClass
-        isClass, isInterface, null, null, // Configurations
-        configures, getters, emptyList(), asList("Child"));
+        SourceSpec sourceSpec = new SourceSpec(
+                new JavaVersionInfo(8, 8),
+                definitionClassName, // specClassName
+                packageName,         // packageName
+                null,                // encloseName
+                targetClassName,     // targetClassName
+                packageName,         // targetPackageName
+                isClass,
+                isInterface,
+                null,
+                null,
+                configuration,
+                getters,
+                emptyList(),
+                asList("Child"));
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;

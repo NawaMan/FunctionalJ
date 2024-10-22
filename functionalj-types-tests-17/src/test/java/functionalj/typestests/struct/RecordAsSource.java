@@ -29,6 +29,9 @@ public class RecordAsSource {
         assertEquals("Point[x: 3, y: 5]", point.toString());
         assertEquals("Point[x: 4, y: 5]", point.withX(4).toString());
         assertEquals("5", "" + point.withY(4).pipeTo(thePoint.x.square().plus(thePoint.y.square()).squareRoot().floorToInt()));
+        
+        System.out.println(new PointSpec(3, 4));
+        System.out.println(new Point(3, 4));
     }
     
 }

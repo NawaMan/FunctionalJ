@@ -28,6 +28,8 @@ import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import java.util.List;
 import org.junit.Test;
+
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
@@ -36,13 +38,13 @@ import lombok.val;
 
 public class ElmStructWithNullableFieldTest {
     
-    private Configurations configures = new Configurations();
+    private Configurations configuration = new Configurations();
     
     {
-        configures.coupleWithDefinition = true;
-        configures.generateNoArgConstructor = true;
-        configures.generateAllArgConstructor = true;
-        configures.generateLensClass = true;
+        configuration.coupleWithDefinition = true;
+        configuration.generateNoArgConstructor = true;
+        configuration.generateAllArgConstructor = true;
+        configuration.generateLensClass = true;
     }
     
     private String definitionClassName = "Definitions.DataDef";
@@ -59,14 +61,21 @@ public class ElmStructWithNullableFieldTest {
     
     @Test
     public void test() {
-        val sourceSpec = new SourceSpec(// specClassName
-        definitionClassName, // packageName
-        packageName, // encloseName
-        null, // targetClassName
-        targetClassName, // targetPackageName
-        packageName, // isClass
-        isClass, isInterface, null, null, // Configurations
-        configures, getters, emptyList(), emptyList());
+        val sourceSpec = new SourceSpec(
+                new JavaVersionInfo(8, 8),
+                definitionClassName, // specClassName
+                packageName,         // packageName
+                null,                // encloseName
+                targetClassName,     // targetClassName
+                packageName,         // targetPackageName
+                isClass,
+                isInterface,
+                null,
+                null,
+                configuration,
+                getters,
+                emptyList(), emptyList()
+        );
         val spec = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm", null);
         val struct = new ElmStructBuilder(spec, emptyList());
         val genCode = struct.toElmCode();

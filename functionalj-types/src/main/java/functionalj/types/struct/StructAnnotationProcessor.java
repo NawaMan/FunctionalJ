@@ -43,7 +43,9 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Struct;
+import functionalj.types.VersionUtils;
 import functionalj.types.input.Environment;
 import functionalj.types.input.InputDeclaredType;
 import functionalj.types.input.InputElement;
@@ -66,11 +68,12 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        Elements elementUtils = processingEnv.getElementUtils();
-        Types    types        = processingEnv.getTypeUtils();
-        Messager messager     = processingEnv.getMessager();
-        Filer    filer        = processingEnv.getFiler();
-        environment = new Environment(elementUtils, types, messager, filer);
+        Elements        elementUtils = processingEnv.getElementUtils();
+        Types           types        = processingEnv.getTypeUtils();
+        Messager        messager     = processingEnv.getMessager();
+        Filer           filer        = processingEnv.getFiler();
+        JavaVersionInfo versionInfo  = VersionUtils.getJavaVersionInfo(processingEnv);
+        environment = new Environment(versionInfo, elementUtils, types, messager, filer);
     }
     
     @Override

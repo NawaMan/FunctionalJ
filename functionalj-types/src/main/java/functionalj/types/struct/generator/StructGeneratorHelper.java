@@ -74,7 +74,15 @@ public class StructGeneratorHelper {
                 String strFuncs = Core.StrFunc.packageName() + "." + Core.StrFunc.simpleName();
                 toStringBody = "return " + strFuncs + ".template(" + Utils.toStringLiteral(toStringTemplate) + "," + StructMapGeneratorHelper.METHOD_TO_MAP + "()::get);";
             } else {
-                String body = getters.stream().map(g -> "\"" + g.name() + ": \" + " + g.name() + "()").collect(joining(" + \", \" + "));
+                String template 
+                        = sourceSpec.getConfigures().recordToString
+                        ? "\"%1$s=\" + %1$s()"
+                        : "\"%1$s: \" + %1$s()";
+                
+                String body 
+                        = getters.stream()
+                        .map    (g -> format(template, g.name()))
+                        .collect(joining(" + \", \" + "));
                 toStringBody = "return \"" + sourceSpec.getTargetClassName() + "[\" + " + (body.isEmpty() ? "\"\"" : body) + " + \"]\";";
             }
             toString = new GenMethod("toString", Type.STRING, Accessibility.PUBLIC, Scope.INSTANCE, Modifiability.MODIFIABLE, Collections.emptyList(), line(toStringBody));
@@ -286,7 +294,9 @@ public class StructGeneratorHelper {
         return new GenMethod(name, type, PUBLIC, INSTANCE, MODIFIABLE, params, line(body));
     }
     
-    static GenMethod inheritMethod(String targetClassName, Callable callable) {
+    static GenMethod inheritMethod(SourceSpec sourceSpec, Callable callable) {
+        String targetClassName = sourceSpec.getSpecName();
+        
         // - Accessibility, Modifibility, exception, isVarAgrs
         Accessibility  accessibility = PUBLIC;
         Scope          scope         = callable.scope();
@@ -308,7 +318,7 @@ public class StructGeneratorHelper {
         return new GenParam(param.getName(), param.getType());
     }
     
-    static Stream<GenMethod> inheriitMethods(String targetClassName, List<Callable> callables) {
-        return callables.stream().map(callable -> inheritMethod(targetClassName, callable)).filter(Objects::nonNull);
+    static Stream<GenMethod> inheriitMethods(SourceSpec sourceSpec, List<Callable> callables) {
+        return callables.stream().map(callable -> inheritMethod(sourceSpec, callable)).filter(Objects::nonNull);
     }
 }

@@ -45,6 +45,8 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import functionalj.types.Choice;
+import functionalj.types.JavaVersionInfo;
+import functionalj.types.VersionUtils;
 import functionalj.types.choice.generator.Generator;
 import functionalj.types.choice.generator.model.SourceSpec;
 import functionalj.types.input.Environment;
@@ -62,11 +64,12 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        Elements elementUtils = processingEnv.getElementUtils();
-        Types    types        = processingEnv.getTypeUtils();
-        Messager messager     = processingEnv.getMessager();
-        Filer    filer        = processingEnv.getFiler();
-        environment = new Environment(elementUtils, types, messager, filer);
+        Elements        elementUtils = processingEnv.getElementUtils();
+        Types           types        = processingEnv.getTypeUtils();
+        Messager        messager     = processingEnv.getMessager();
+        Filer           filer        = processingEnv.getFiler();
+        JavaVersionInfo versionInfo  = VersionUtils.getJavaVersionInfo(processingEnv);
+        environment = new Environment(versionInfo, elementUtils, types, messager, filer);
     }
     
     @Override

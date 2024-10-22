@@ -29,6 +29,7 @@ import static java.util.Collections.emptyList;
 import java.util.List;
 import org.junit.Test;
 import functionalj.types.Generic;
+import functionalj.types.JavaVersionInfo;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.Accessibility;
@@ -79,14 +80,21 @@ public class GenerateParentFuncListChildTest {
     private String generate(Runnable setting) {
         if (setting != null)
             setting.run();
-        SourceSpec sourceSpec = new SourceSpec(// specClassName
-        definitionClassName, // packageName
-        packageName, // encloseName
-        null, // targetClassName
-        targetClassName, // targetPackageName
-        packageName, // isClass
-        isClass, isInterface, null, null, // Configurations
-        configures, getters, callables, asList("Child"));
+        SourceSpec sourceSpec = new SourceSpec(
+                new JavaVersionInfo(8, 8),
+                definitionClassName,  // specClassName
+                packageName,          // packageName
+                null,                 // encloseName
+                targetClassName,      // targetPackageName
+                packageName,          // targetPackageName
+                isClass,
+                isInterface,
+                null,
+                null,
+                configures,
+                getters,
+                callables,
+                asList("Child"));
         val dataObjSpec = new StructSpecBuilder(sourceSpec).build();
         val generated = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
