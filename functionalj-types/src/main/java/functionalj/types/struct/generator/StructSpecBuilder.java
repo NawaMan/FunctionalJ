@@ -28,30 +28,29 @@ import static functionalj.types.struct.generator.StructGeneratorHelper.generateE
 import static functionalj.types.struct.generator.StructGeneratorHelper.generateGetSchema;
 import static functionalj.types.struct.generator.StructGeneratorHelper.generateGetStructScheme;
 import static functionalj.types.struct.generator.StructGeneratorHelper.generateHashCode;
+import static functionalj.types.struct.generator.StructGeneratorHelper.generatePipeMethods;
 import static functionalj.types.struct.generator.StructGeneratorHelper.generateSpecField;
 import static functionalj.types.struct.generator.StructGeneratorHelper.generateToString;
 import static functionalj.types.struct.generator.StructGeneratorHelper.getterToField;
 import static functionalj.types.struct.generator.StructGeneratorHelper.getterToGetterMethod;
 import static functionalj.types.struct.generator.StructGeneratorHelper.getterToWitherMethods;
-import static functionalj.types.struct.generator.StructGeneratorHelper.inheriitMethods;
+import static functionalj.types.struct.generator.StructGeneratorHelper.inheritMethods;
 import static functionalj.types.struct.generator.StructGeneratorHelper.noArgConstructor;
 import static functionalj.types.struct.generator.StructGeneratorHelper.requiredOnlyConstructor;
 import static functionalj.types.struct.generator.StructMapGeneratorHelper.generateFromMap;
 import static functionalj.types.struct.generator.StructMapGeneratorHelper.generateToMap;
-import static functionalj.types.struct.generator.model.Accessibility.PUBLIC;
-import static functionalj.types.struct.generator.model.Modifiability.MODIFIABLE;
-import static functionalj.types.struct.generator.model.Scope.INSTANCE;
 import static functionalj.types.struct.generator.utils.listOf;
 import static functionalj.types.struct.generator.utils.themAll;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
 import functionalj.types.Core;
 import functionalj.types.Generic;
 import functionalj.types.IStruct;
@@ -67,6 +66,8 @@ import functionalj.types.struct.generator.model.GenMethod;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class StructSpecBuilder {
+    
+    static final Function<Getter, String> withMethodName = (Function<Getter, String>) (utils::withMethodName);
     
     public final SourceSpec sourceSpec;
     
@@ -105,12 +106,8 @@ public class StructSpecBuilder {
         
         // val serialize = FeatureSerialization.serializeType(input, type, configures);
         // implementeds.add(serialize);
-        GenMethod                pipeMethod     = new GenMethod("__data", targetType, PUBLIC, INSTANCE, MODIFIABLE, emptyList(), emptyList(), false, false, ILines.line("return this;"), emptyList(), asList(Type.of(Exception.class)));
-        Function<Getter, String> withMethodName = (Function<Getter, String>) (utils::withMethodName);
         List<Getter>             getters        = sourceSpec.getGetters();
         Stream<GenField>         getterFields   = getters.stream().map(getter -> getterToField(sourceSpec, getter));
-        Stream<GenMethod>        getterMethods  = getters.stream().map(getter -> getterToGetterMethod(getter));
-        Stream<GenMethod>        witherMethods  = getters.stream().flatMap(getter -> getterToWitherMethods(sourceSpec, withMethodName, getter));
         GenField                 theField       = null;
         GenField                 eachField      = null;
         GenClass                 lensClass      = null;
@@ -124,19 +121,63 @@ public class StructSpecBuilder {
         if (sourceSpec.getConfigures().generateBuilderClass) {
             builderClass = new BuilderGenerator(sourceSpec).build();
         }
-        Stream<GenField>     specField       = generateSpecField(sourceSpec);
-        GenMethod            toString        = generateToString(sourceSpec, getters);
-        GenMethod            hashCode        = generateHashCode(sourceSpec);
-        GenMethod            equals          = generateEquals(sourceSpec);
-        List<GenField>       fields          = listOf(Stream.of(theField, eachField), getterFields, specField);
-        GenMethod            fromMap         = generateFromMap(sourceSpec);
-        GenMethod            toMap           = generateToMap(sourceSpec);
-        GenMethod            getStructSchema = generateGetStructScheme(sourceSpec);
-        GenMethod            getSchema       = generateGetSchema(sourceSpec);
-        List<GenMethod>      methods         = Arrays.<Stream<GenMethod>>asList(Stream.of(pipeMethod), getterMethods, witherMethods, Stream.of(fromMap, toMap, getSchema, getStructSchema), Stream.of(toString, hashCode, equals).filter(Objects::nonNull), inheriitMethods(sourceSpec, sourceSpec.getMethods())).stream().flatMap(themAll()).collect(toList());
-        List<GenConstructor> constructors    = listOf(noArgConstructor(sourceSpec), requiredOnlyConstructor(sourceSpec), allArgConstructor(sourceSpec));
-        List<GenClass>       innerClasses    = listOf(lensClass, builderClass);
-        StructSpec           dataObjSpec     = new StructSpec(sourceSpec.getTargetClassName(), sourceSpec.getTargetPackageName(), sourceSpec.getSpecName(), sourceSpec.getPackageName(), extendeds, implementeds, constructors, fields, methods, innerClasses, emptyList());
+        Stream<GenField>     specField    = generateSpecField(sourceSpec);
+        List<GenField>       fields       = listOf(Stream.of(theField, eachField), getterFields, specField);
+        List<GenMethod>      methods      = generateMethods(targetType);
+        List<GenConstructor> constructors = listOf(noArgConstructor(sourceSpec), requiredOnlyConstructor(sourceSpec), allArgConstructor(sourceSpec));
+        List<GenClass>       innerClasses = listOf(lensClass, builderClass);
+        StructSpec           dataObjSpec  = new StructSpec(sourceSpec.getTargetClassName(), sourceSpec.getTargetPackageName(), sourceSpec.getSpecName(), sourceSpec.getPackageName(), extendeds, implementeds, constructors, fields, methods, innerClasses, emptyList());
         return dataObjSpec;
+    }
+
+    private List<GenMethod> generateMethods(Type targetType) {
+        List<Getter>      getters        = sourceSpec.getGetters();
+        Stream<GenMethod> pipeMethod     = generatePipeMethods(targetType);
+        Stream<GenMethod> getterMethods  = generateGetterMethods(getters);
+        Stream<GenMethod> witherMethods  = generateWitherMethods(getters);
+        Stream<GenMethod> schemaMethods  = generateSchemaMethods();
+        Stream<GenMethod> objectMethods  = generateObjectMethods(getters);
+        Stream<GenMethod> inheritMethods = inheritMethods(sourceSpec, sourceSpec.getMethods());
+        
+        List<GenMethod> methods = asList(
+                    pipeMethod, 
+                    getterMethods,
+                    witherMethods,
+                    schemaMethods,
+                    objectMethods,
+                    inheritMethods
+                )
+                .stream()
+                .flatMap(themAll())
+                .filter(Objects::nonNull)
+                .collect(toList());
+        return methods;
+    }
+    
+    private Stream<GenMethod> generateGetterMethods(List<Getter> getters) {
+        return getters.stream().map(getter -> getterToGetterMethod(getter));
+    }
+    
+    private Stream<GenMethod> generateWitherMethods(List<Getter> getters) {
+        return getters
+                .stream()
+                .flatMap(getter -> getterToWitherMethods(sourceSpec, withMethodName, getter));
+    }
+    
+    private Stream<GenMethod> generateSchemaMethods() {
+        GenMethod         fromMap         = generateFromMap(sourceSpec);
+        GenMethod         toMap           = generateToMap(sourceSpec);
+        GenMethod         getStructSchema = generateGetStructScheme(sourceSpec);
+        GenMethod         getSchema       = generateGetSchema(sourceSpec);
+        Stream<GenMethod> schemaMethods   = Stream.of(fromMap, toMap, getSchema, getStructSchema);
+        return schemaMethods;
+    }
+    
+    private Stream<GenMethod> generateObjectMethods(List<Getter> getters) {
+        GenMethod         toString      = generateToString(sourceSpec, getters);
+        GenMethod         hashCode      = generateHashCode(sourceSpec);
+        GenMethod         equals        = generateEquals(sourceSpec);
+        Stream<GenMethod> objectMethods = Stream.of(toString, hashCode, equals);
+        return objectMethods;
     }
 }

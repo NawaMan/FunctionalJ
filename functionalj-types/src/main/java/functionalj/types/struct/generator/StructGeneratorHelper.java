@@ -37,6 +37,7 @@ import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,6 +50,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import functionalj.types.Core;
 import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
@@ -219,6 +221,26 @@ public class StructGeneratorHelper {
         return new GenParam(paramName, paramType);
     }
     
+    static GenMethod generatePipeMethod(Type targetType) {
+        return new GenMethod(
+                "__data", 
+                targetType, 
+                PUBLIC, 
+                INSTANCE, 
+                MODIFIABLE, 
+                emptyList(), 
+                emptyList(), 
+                false, 
+                false, 
+                line("return this;"), 
+                emptyList(), 
+                asList(Type.of(Exception.class)));
+    }
+    
+    static Stream<GenMethod> generatePipeMethods(Type targetType) {
+        return Stream.of(generatePipeMethod(targetType));
+    }
+    
     static Stream<GenMethod> getterToWitherMethods(SourceSpec sourceSpec, Function<Getter, String> withMethodName, Getter getter) {
         Stream<GenMethod> stream = Stream.of(getterToWitherMethodValue(sourceSpec, withMethodName, getter), getterToWitherMethodSupplier(sourceSpec, withMethodName, getter), getterToWitherMethodFunction(sourceSpec, withMethodName, getter), getterToWitherMethodBiFunction(sourceSpec, withMethodName, getter));
         boolean           isList = getter.type().isList() || getter.type().isFuncList();
@@ -318,7 +340,7 @@ public class StructGeneratorHelper {
         return new GenParam(param.getName(), param.getType());
     }
     
-    static Stream<GenMethod> inheriitMethods(SourceSpec sourceSpec, List<Callable> callables) {
+    static Stream<GenMethod> inheritMethods(SourceSpec sourceSpec, List<Callable> callables) {
         return callables.stream().map(callable -> inheritMethod(sourceSpec, callable)).filter(Objects::nonNull);
     }
 }

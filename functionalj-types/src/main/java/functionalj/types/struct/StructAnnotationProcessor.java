@@ -96,10 +96,11 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         boolean hasError = false;
         List<InputElement> elements = roundEnv.getElementsAnnotatedWith(Struct.class).stream().map(environment::element).collect(toList());
         for (InputElement element : elements) {
+            prepareLogs(element);
+            
             SourceSpecBuilder sourceSpecBuilder = new SourceSpecBuilder(element);
             String            packageName       = sourceSpecBuilder.packageName();
             String            specTargetName    = sourceSpecBuilder.targetName();
-            prepareLogs(element);
             try {
                 SourceSpec sourceSpec = sourceSpecBuilder.sourceSpec();
                 if (sourceSpec == null)
@@ -134,6 +135,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         }
         InputMethodElement method = element.asMethodElement();
         for (InputElement parameter : method.parameters()) {
+            logs.add("  - Parameter [" + parameter.simpleName() + "] under version    : " + environment.versionInfo());
             logs.add("  - Parameter [" + parameter.simpleName() + "] is a type element: " + parameter.isTypeElement());
             logs.add("  - Parameter [" + parameter.simpleName() + "] toString         : " + parameter);
             logs.add("  - Parameter [" + parameter.simpleName() + "] simple name      : " + parameter.simpleName());

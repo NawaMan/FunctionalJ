@@ -27,6 +27,8 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,9 +45,11 @@ import functionalj.types.JavaVersionInfo;
 import functionalj.types.Rule;
 import functionalj.types.VersionUtils;
 import functionalj.types.input.Environment;
+import functionalj.types.input.InputDeclaredType;
 import functionalj.types.input.InputElement;
 import functionalj.types.input.InputMethodElement;
 import functionalj.types.input.InputType;
+import functionalj.types.input.InputTypeArgument;
 import functionalj.types.input.InputTypeElement;
 import functionalj.types.rule.RuleSpec.RuleType;
 import javax.annotation.processing.*;
@@ -66,6 +70,9 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         environment = new Environment(versionInfo, elementUtils, types, messager, filer);
     }
     
+    private final List<String> logs = new ArrayList<>();
+    
+    
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> annotations = new LinkedHashSet<>();
@@ -84,6 +91,8 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         hasError = false;
         List<InputElement> elements = roundEnv.getElementsAnnotatedWith(Rule.class).stream().map(environment::element).collect(toList());
         for (InputElement element : elements) {
+            prepareLogs(element);
+            
             InputMethodElement method = element.asMethodElement();
             Rule               rule   = method.annotation(Rule.class);
             String             msg    = rule.value();
@@ -169,5 +178,51 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
                 return RuleType.Func;
         }
         return null;
+    }
+    
+    @SuppressWarnings("unused")
+    private void prepareLogs(InputElement element) {
+        if (element.isTypeElement()) {
+            logs.add("Element is a type: " + element);
+            return;
+        }
+        InputMethodElement method = element.asMethodElement();
+        for (InputElement parameter : method.parameters()) {
+            logs.add("  - Parameter [" + parameter.simpleName() + "] under version    : " + environment.versionInfo());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] is a type element: " + parameter.isTypeElement());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] toString         : " + parameter);
+            logs.add("  - Parameter [" + parameter.simpleName() + "] simple name      : " + parameter.simpleName());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] asType.toString  : " + parameter.asType());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] asType.kind      : " + parameter.asType().typeKind());
+            logs.add("  - Parameter [" + parameter.simpleName() + "] asType.class     : " + ((InputType.Impl) parameter.asType()).insight());
+            if (parameter.asType().isDeclaredType()) {
+                InputDeclaredType type = parameter.asType().asDeclaredType();
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement                     : " + type.asTypeElement());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.simpleName          : " + type.asTypeElement().simpleName());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.packageQualifiedName: " + type.asTypeElement().packageQualifiedName());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.kind                : " + type.asTypeElement().kind());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.modifiers           : " + type.asTypeElement().modifiers());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.enclosingElement    : " + type.asTypeElement().enclosingElement());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.enclosedElements    : " + type.asTypeElement().enclosedElements());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.qualifiedName       : " + type.asTypeElement().qualifiedName());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.packageName         : " + type.asTypeElement().packageName());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.asType              : " + type.asTypeElement().asType());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.asTypeElement.getToString         : " + type.asTypeElement().getToString());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.isDeclaredType                    : " + type.isDeclaredType());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.isNoType                          : " + type.isNoType());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeKind                          : " + type.typeKind());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.getToString                       : " + type.getToString());
+                logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments                     : " + type.typeArguments());
+                for (int i = 0; i < type.typeArguments().size(); i++) {
+                    InputTypeArgument inputType = type.typeArguments().get(i);
+                    if (inputType instanceof InputType.Impl) {
+                        logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments[" + i + "]               : " + ((InputType.Impl) inputType).insight() + ": " + inputType.getClass());
+                    } else {
+                        logs.add("  - Parameter [" + parameter.simpleName() + "] asType.typeArguments[" + i + "]: inputType=   : " + inputType.getClass());
+                    }
+                }
+                logs.add("------------------------------------------------");
+            }
+        }
     }
 }
