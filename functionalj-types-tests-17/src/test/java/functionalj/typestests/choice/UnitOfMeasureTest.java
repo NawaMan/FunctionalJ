@@ -28,7 +28,7 @@ import static functionalj.typestests.choice.Temperature.Fahrenheit;
 import org.junit.Assert;
 import org.junit.Test;
 import functionalj.types.Choice;
-import functionalj.types.choice.Self;
+import functionalj.types.Self;
 import lombok.val;
 
 public class UnitOfMeasureTest {

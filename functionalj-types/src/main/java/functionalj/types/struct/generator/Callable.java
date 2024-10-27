@@ -119,4 +119,21 @@ public class Callable {
         List<?> params = Arrays.asList(toStringLiteral(name), type.toCode(), isVarAgrs, (accessibility == null) ? "null" : (Accessibility.class.getCanonicalName() + "." + accessibility.name().toUpperCase()), (scope == null) ? "null" : (Scope.class.getCanonicalName() + "." + scope.name().toUpperCase()), (modifiability == null) ? "null" : (Modifiability.class.getCanonicalName() + "." + modifiability.name().toUpperCase()), (concrecity == null) ? "null" : (Concrecity.class.getCanonicalName() + "." + concrecity.name().toUpperCase()), toListCode(parameters, Parameter::toCode), toListCode(generics, Generic::toCode), toListCode(exceptions, Type::toCode));
         return "new functionalj.types.struct.generator.Callable(" + params.stream().map(String::valueOf).collect(Collectors.joining(", ")) + ")";
     }
+    
+    @Override
+    public String toString() {
+        return "Callable ["
+                + "name="          + name          + ", "
+                + "type="          + type          + ", "
+                + "isVarAgrs="     + isVarAgrs     + ", "
+                + "accessibility=" + accessibility + ", "
+                + "scope="         + scope         + ", "
+                + "modifiability=" + modifiability + ", "
+                + "concrecity="    + concrecity    + ", "
+                + "parameters="    + parameters    + ", "
+                + "generics="      + generics      + ", "
+                + "exceptions="    + exceptions    + 
+                "]";
+    }
+    
 }

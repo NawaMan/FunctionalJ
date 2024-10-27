@@ -34,6 +34,7 @@ import java.util.function.LongFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
 import java.util.stream.Collectors;
+
 import functionalj.function.aggregator.LongAggregation;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
@@ -338,6 +339,20 @@ public interface AsLongStreamPlusWithConversion {
     public default <KEY> FuncMap<KEY, Long> toMap(LongAggregation<KEY> keyAggregation, LongBinaryOperator mergeFunction) {
         val keyAggregator = keyAggregation.newAggregator();
         return toMap(keyAggregator, mergeFunction);
+    }
+    
+    /** Create a map from the data from the index and the value. */
+    @Eager
+    @Terminal
+    public default FuncMap<Integer, Long> toMap() {
+        return longStreamPlus().boxed().toMap();
+    }
+    
+    /** Create a map from the data from the value to the index. */
+    @Eager
+    @Terminal
+    public default FuncMap<Long, Integer> toMapRevert() {
+        return longStreamPlus().boxed().toMapRevert();
     }
     
     // -- toSet --

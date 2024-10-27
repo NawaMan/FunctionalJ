@@ -54,4 +54,13 @@ public class Parameter {
         List<String> params = asList(toStringLiteral(name), type.toCode());
         return "new functionalj.types.struct.generator.Parameter(" + params.stream().map(String::valueOf).collect(joining(", ")) + ")";
     }
+    
+    @Override
+    public String toString() {
+        return "Parameter ["
+                + "name=" + name + ", "
+                + "type=" + type + 
+                "]";
+    }
+    
 }

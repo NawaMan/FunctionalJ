@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -34,6 +35,7 @@ import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 
 import functionalj.types.JavaVersionInfo;
 
@@ -61,6 +63,10 @@ public class Environment {
     
     public JavaVersionInfo versionInfo() {
         return versionInfo;
+    }
+    
+    public void warn(Element e, AnnotationMirror a, CharSequence message) {
+        messager.printMessage(Diagnostic.Kind.WARNING, message, e, a);
     }
     
     public void markHasError() {

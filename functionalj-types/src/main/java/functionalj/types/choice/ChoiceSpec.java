@@ -38,6 +38,7 @@ import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
 import functionalj.types.Nullable;
 import functionalj.types.Required;
+import functionalj.types.Self;
 import functionalj.types.Serialize.To;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;

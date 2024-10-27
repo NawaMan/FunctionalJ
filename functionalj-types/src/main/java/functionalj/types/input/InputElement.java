@@ -78,6 +78,10 @@ public interface InputElement {
             return environment.versionInfo;
         }
         
+        public void warn(CharSequence message) {
+            environment.warn(element, null, message);
+        }
+        
         @Override
         public String simpleName() {
             return element.getSimpleName().toString();

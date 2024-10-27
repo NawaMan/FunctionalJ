@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import org.junit.Test;
 import functionalj.types.Choice;
-import functionalj.types.choice.Self;
+import functionalj.types.Self;
 import lombok.val;
 
 public class ChioceTypeLinkedListTest {

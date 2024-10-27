@@ -34,7 +34,7 @@ function build-quick() {
         -Dmaven.javadoc.skip=true \
         -Dgpg.signing.skip=true   \
         -Dsona.staging.skip=true  \
-        clean install
+        clean install  --toolchains ./toolchains.xml
 }
 
 function build-test() {
@@ -47,7 +47,7 @@ function build-test() {
         -Dmaven.javadoc.skip=true \
         -Dgpg.signing.skip=true   \
         -Dsona.staging.skip=true  \
-        clean compile test
+        clean compile test  --toolchains ./toolchains.xml
 }
 
 function build-full() {
@@ -60,7 +60,7 @@ function build-full() {
         -Dmaven.javadoc.skip=false \
         -Dgpg.signing.skip=true    \
         -Dsona.staging.skip=true   \
-        clean install
+        clean install  --toolchains ./toolchains.xml
 }
 
 function build-package() {
@@ -81,7 +81,7 @@ function build-package() {
         -Dmaven.javadoc.skip=false \
         -Dgpg.signing.skip=false   \
         -Dsona.staging.skip=true   \
-        clean install package gpg:sign
+        clean install package gpg:sign  --toolchains ./toolchains.xml
 }
 
 function act() {
@@ -124,7 +124,7 @@ function build-release() {
             -Dmaven.javadoc.skip=false \
             -Dgpg.signing.skip=false   \
             -Dsona.staging.skip=false  \
-            clean install package gpg:sign deploy
+            clean install package gpg:sign deploy  --toolchains ./toolchains.xml
         act git push
         
         act git tag -a v$VERSION -m '"Release: v$VERSION"'

@@ -391,6 +391,20 @@ public interface AsIntStreamPlusWithConversion {
         return toMap(keyAggregator, mergeFunction);
     }
     
+    /** Create a map from the data from the index and the value. */
+    @Eager
+    @Terminal
+    public default FuncMap<Integer, Integer> toMap() {
+        return intStreamPlus().boxed().toMap();
+    }
+    
+    /** Create a map from the data from the value to the index. */
+    @Eager
+    @Terminal
+    public default FuncMap<Integer, Integer> toMapRevert() {
+        return intStreamPlus().boxed().toMapRevert();
+    }
+    
     // -- toSet --
     /**
      * @return  a set of the elements.

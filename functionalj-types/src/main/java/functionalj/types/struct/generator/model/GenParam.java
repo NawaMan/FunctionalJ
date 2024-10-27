@@ -69,4 +69,10 @@ public class GenParam implements IGenerateTerm {
     public String toTerm(String currentPackage) {
         return type.simpleNameWithGeneric(currentPackage) + " " + name;
     }
+    
+    @Override
+    public String toString() {
+        return "GenParam [name=" + name + ", type=" + type + "]";
+    }
+    
 }

@@ -75,33 +75,33 @@ public class SourceSpec {
     
     public SourceSpec(
             JavaVersionInfo javaVersionInfo,
-            String specName,
-            String packageName,
-            String encloseName,
-            String targetClassName,
-            String targetPackageName,
-            Boolean isClass,
-            Boolean isInterface,
-            String specObjName,
-            String validatorName,
-            Configurations configurations,
-            List<Getter> getters,
-            List<Callable> methods,
-            List<String> typeWithLens) {
-        this.javaVersionInfo = javaVersionInfo;
-        this.specName = specName;
-        this.packageName = packageName;
-        this.encloseName = encloseName;
-        this.targetClassName = targetClassName;
+            String          specName,
+            String          packageName,
+            String          encloseName,
+            String          targetClassName,
+            String          targetPackageName,
+            Boolean         isClass,
+            Boolean         isInterface,
+            String          specObjName,
+            String          validatorName,
+            Configurations  configurations,
+            List<Getter>    getters,
+            List<Callable>  methods,
+            List<String>    typeWithLens) {
+        this.javaVersionInfo   = javaVersionInfo;
+        this.specName          = specName;
+        this.packageName       = packageName;
+        this.encloseName       = encloseName;
+        this.targetClassName   = targetClassName;
         this.targetPackageName = targetPackageName;
-        this.isClass = isClass;
-        this.isInterface = isInterface;
-        this.specObjName = specObjName;
-        this.validatorName = validatorName;
-        this.configurations = configurations;
-        this.getters = getters;
-        this.methods = methods;
-        this.typeWithLens = typeWithLens;
+        this.isClass           = isClass;
+        this.isInterface       = isInterface;
+        this.specObjName       = specObjName;
+        this.validatorName     = validatorName;
+        this.configurations    = configurations;
+        this.getters           = getters;
+        this.methods           = methods;
+        this.typeWithLens      = typeWithLens;
     }
     
     public String getSpecName() {
@@ -122,14 +122,6 @@ public class SourceSpec {
     
     public String getTargetPackageName() {
         return targetPackageName;
-    }
-    
-    public Boolean getIsClass() {
-        return isClass;
-    }
-    
-    public Boolean getIsInterface() {
-        return isInterface;
     }
     
     public String getSpecObjName() {
@@ -272,44 +264,44 @@ public class SourceSpec {
         }
         
         public Configurations(
-                boolean coupleWithDefinition, 
-                boolean generateNoArgConstructor, 
-                boolean generateRequiredOnlyConstructor, 
-                boolean generateAllArgConstructor, 
-                boolean generateLensClass, 
-                boolean generateBuilderClass, 
-                boolean publicFields, 
-                boolean publicConstructor, 
-                String  toStringTemplate, 
+                boolean      coupleWithDefinition, 
+                boolean      generateNoArgConstructor, 
+                boolean      generateRequiredOnlyConstructor, 
+                boolean      generateAllArgConstructor, 
+                boolean      generateLensClass, 
+                boolean      generateBuilderClass, 
+                boolean      publicFields, 
+                boolean      publicConstructor, 
+                String       toStringTemplate, 
                 Serialize.To serialize,
                 boolean      recordToString) {
-            this.coupleWithDefinition = coupleWithDefinition;
+            this.coupleWithDefinition            = coupleWithDefinition;
             this.generateNoArgConstructor        = generateNoArgConstructor;
             this.generateRequiredOnlyConstructor = generateRequiredOnlyConstructor;
             this.generateAllArgConstructor       = generateAllArgConstructor;
-            this.generateLensClass = generateLensClass;
-            this.generateBuilderClass = generateBuilderClass;
-            this.publicFields = publicFields;
-            this.publicConstructor = publicConstructor;
-            this.toStringTemplate = toStringTemplate;
-            this.serialize = (serialize != null) ? serialize : To.NOTHING;
-            this.recordToString = recordToString;
+            this.generateLensClass               = generateLensClass;
+            this.generateBuilderClass            = generateBuilderClass;
+            this.publicFields                    = publicFields;
+            this.publicConstructor               = publicConstructor;
+            this.toStringTemplate                = toStringTemplate;
+            this.serialize                       = (serialize != null) ? serialize : To.NOTHING;
+            this.recordToString                  = recordToString;
         }
         
         @Override
         public String toString() {
             return "Configurations ["
-                    + "coupleWithDefinition=" + coupleWithDefinition + ", "
-                    + "generateNoArgConstructor=" + generateNoArgConstructor + ", "
+                    + "coupleWithDefinition="            + coupleWithDefinition            + ", "
+                    + "generateNoArgConstructor="        + generateNoArgConstructor        + ", "
                     + "generateRequiredOnlyConstructor=" + generateRequiredOnlyConstructor + ", "
-                    + "generateAllArgConstructor=" + generateAllArgConstructor + ", "
-                    + "generateLensClass=" + generateLensClass + ", "
-                    + "generateBuilderClass=" + generateBuilderClass + ", "
-                    + "publicFields=" + publicFields + ", "
-                    + "publicConstructor=" + publicConstructor + ", "
-                    + "toStringTemplate=" + toStringTemplate + ", "
-                    + "serialize=" + serialize + ", "
-                    + "recordToString=" + recordToString
+                    + "generateAllArgConstructor="       + generateAllArgConstructor       + ", "
+                    + "generateLensClass="               + generateLensClass               + ", "
+                    + "generateBuilderClass="            + generateBuilderClass            + ", "
+                    + "publicFields="                    + publicFields                    + ", "
+                    + "publicConstructor="               + publicConstructor               + ", "
+                    + "toStringTemplate="                + toStringTemplate                + ", "
+                    + "serialize="                       + serialize                       + ", "
+                    + "recordToString="                  + recordToString
                     + "]";
         }
         
@@ -334,12 +326,19 @@ public class SourceSpec {
         return new Type(packageName, specName);
     }
     
+    /** @return <code>true</code> if the source element is a class. */
     public Boolean isClass() {
         return isClass;
     }
     
+    /** @return <code>true</code> if the source element is an interface. */
     public Boolean isInterface() {
         return isInterface;
+    }
+    
+    /** @return <code>true</code> if the source element is a record. */
+    public Boolean isRecord() {
+        return (!Boolean.TRUE.equals(isClass) && !Boolean.TRUE.equals(isInterface));
     }
     
     public boolean hasSpecField() {

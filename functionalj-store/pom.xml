@@ -9,6 +9,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     
+    <packaging>jar</packaging>
+    
     <artifactId>functionalj-store</artifactId>
     <name>functionalj-store</name>
     <description>
@@ -44,4 +46,24 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>${java.version}</version>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

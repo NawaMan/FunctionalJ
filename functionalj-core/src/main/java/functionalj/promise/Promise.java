@@ -614,6 +614,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     // == Customizable ==
+    
     protected void handleIllegalStatusException(Object data) {
     }
     

@@ -36,10 +36,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import functionalj.types.Core;
+import functionalj.types.Self;
 import functionalj.types.Type;
 import functionalj.types.choice.ChoiceTypeSwitch;
 import functionalj.types.choice.IChoice;
-import functionalj.types.choice.Self;
 import functionalj.types.choice.generator.model.Method;
 // import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.SourceSpec;

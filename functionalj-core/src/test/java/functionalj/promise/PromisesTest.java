@@ -140,7 +140,7 @@ public class PromisesTest {
     @Test
     public void testOf6_mix() throws InterruptedException {
         val promise = Promise.from(run(Sleep(50).thenReturn(1)), Result.valueOf(2), run(Sleep(50).thenReturn(3)), valueOf(4), run(Sleep(50).thenReturn(5)), valueOf(6), (_1, _2, _3, _4, _5, _6) -> {
-            return _1 + _2 + _3 + _4 + _5 + 6;
+            return _1 + _2 + _3 + _4 + _5 + _6;
         });
         Thread.sleep(150);
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
@@ -156,15 +156,17 @@ public class PromisesTest {
         val promise5 = DeferAction.of(Integer.class);
         val promise6 = DeferAction.of(Integer.class);
         val promise = Promise.from(promise1, promise2, promise3, promise4, promise5, promise6, (_1, _2, _3, _4, _5, _6) -> {
-            return _1 + _2 + _3 + _4 + _5 + 6;
+            return _1 + _2 + _3 + _4 + _5 + _6;
         });
         promise.start();
         val subscription = promise.onComplete();
+        // Last subscriber is cancelled, so all the action accept the one that is completed are cancelled.
         subscription.unsubscribe();
         assertAsString("Result:{ Cancelled: No more listener. }", promise.getResult());
+        
         assertAsString("Result:{ Cancelled: No more listener. }", promise1.getResult());
         assertAsString("Result:{ Cancelled: No more listener. }", promise2.getResult());
-        assertAsString("Result:{ Value: 5 }", promise3.getResult());
+        assertAsString("Result:{ Value: 5 }",                     promise3.getResult());
         assertAsString("Result:{ Cancelled: No more listener. }", promise4.getResult());
         assertAsString("Result:{ Cancelled: No more listener. }", promise5.getResult());
         assertAsString("Result:{ Cancelled: No more listener. }", promise6.getResult());

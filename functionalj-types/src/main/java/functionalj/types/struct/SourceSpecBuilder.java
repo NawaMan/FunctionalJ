@@ -30,10 +30,12 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import javax.lang.model.element.ElementKind;
@@ -107,7 +109,7 @@ public class SourceSpecBuilder {
         if (getters.stream().anyMatch(Objects::isNull))
             return null;
         
-        List<Callable> methods     = enclosedMethods(element, type);
+        List<Callable> methods     = enclosedMethods(element, getters);
         String         packageName = type.packageQualifiedName();
         String         encloseName = element.enclosingElement().simpleName();
         String         sourceName  = type.qualifiedName().toString().substring(packageName.length() + 1);
@@ -133,15 +135,68 @@ public class SourceSpecBuilder {
         }
     }
     
-    private List<Callable> enclosedMethods(InputElement element, InputTypeElement type) {
-        return type
-                .enclosedElements().stream()
+    private List<Callable> enclosedMethods(InputElement element, List<Getter> getters) {
+        Set<String> getterNames = getters.stream().map(Getter::name).collect(toSet());
+        
+        List<InputMethodElement> enclosedMethods 
+                = element.enclosedElements().stream()
                 .filter (elmt -> elmt.isMethodElement())
                 .map    (elmt -> elmt.asMethodElement())
-                .filter (mthd -> (mthd.isDefault() || mthd.isStatic()) && !mthd.isAbstract() && !mthd.isPrivate())
-                .map    (mthd -> extractMethodSpec(element, mthd))
+                .filter (elmt -> !isObjectMethod(elmt))
+                .filter (elmt -> !getterNames.contains(elmt.simpleName()))
+                .collect(toList());
+        
+        List<Callable> enclosedCallables
+                = enclosedMethods
+                .stream ()
+                .filter (mthd -> isInteritMethod(element, mthd))
+                .map    (mthd -> extractMethod(element, mthd))
                 .filter (mthd -> mthd != null)
                 .collect(toList());
+        
+        return enclosedCallables;
+    }
+    
+    private boolean isObjectMethod(InputMethodElement methodElement) {
+        String methodName= methodElement.simpleName();
+        return  methodName.equals("toString") ||
+                methodName.equals("hashCode") ||
+                methodName.equals("equals")   ||
+                methodName.equals("wait")     ||
+                methodName.equals("getClass") ||
+                methodName.equals("notify")   ||
+                methodName.equals("notifyAll");
+    }
+    
+    private boolean isInteritMethod(InputElement element, InputMethodElement mthd) {
+        boolean isInteritMethod 
+                =  ((mthd.isDefault() || mthd.isStatic()) && !mthd.isAbstract() && !mthd.isPrivate())
+                || (element.isRecord() && mthd.isStatic());
+        if (!isInteritMethod) {
+            // OK, for `record` as a source, we will also get the getter and object method here.
+            // We need to find a way to screen it out.
+            mthd.warn(String.format(
+                      "Method %s will not be included in the generated method. "
+                    + "A method must either be: "
+                        + "1) default or static and must not be an abstract nor private or "
+                        + "2) static method if the spec is a record.", mthd));
+        }
+        return isInteritMethod;
+    }
+    
+    private Callable extractMethod(InputElement element, InputMethodElement mthdElement) {
+        Function<InputType, Type> extractType   = (Function<InputType, Type>) (typeMirror -> getType(element, typeMirror));
+        String                    name          = mthdElement.simpleName().toString();
+        Type                      type          = getType(element, mthdElement.returnType());
+        boolean                   isVarArgs     = mthdElement.isVarArgs();
+        Accessibility             accessibility = mthdElement.accessibility();
+        Scope                     scope         = mthdElement.scope();
+        Modifiability             modifiability = mthdElement.modifiability();
+        Concrecity                concrecity    = mthdElement.concrecity();
+        List<Generic>             generics      = mthdElement.typeParameters().stream().map(t -> getGenericFromTypeParameter(element, t)).collect(toList());
+        List<Parameter>           parameters    = mthdElement.parameters().stream().map(param -> new Parameter(param.simpleName().toString(), getType(element, param.asType()))).collect(toList());
+        List<Type>                exceptions    = mthdElement.thrownTypes().stream().map(extractType).collect(toList());
+        return new Callable(name, type, isVarArgs, accessibility, scope, modifiability, concrecity, parameters, generics, exceptions);
     }
     
     private List<Getter> extractGetters(InputTypeElement type) {
@@ -193,21 +248,6 @@ public class SourceSpecBuilder {
                 .map    (elmt -> elmt.asRecordComponentElement())
                 .map    (recd -> createGetterFromRecordComponent(type, recd))
                 .collect(toList());
-    }
-    
-    private Callable extractMethodSpec(InputElement element, InputMethodElement mthdElement) {
-        Function<InputType, Type> extractType   = (Function<InputType, Type>) (typeMirror -> getType(element, typeMirror));
-        String                    name          = mthdElement.simpleName().toString();
-        Type                      type          = getType(element, mthdElement.returnType());
-        boolean                   isVarArgs     = mthdElement.isVarArgs();
-        Accessibility             accessibility = mthdElement.accessibility();
-        Scope                     scope         = mthdElement.scope();
-        Modifiability             modifiability = mthdElement.modifiability();
-        Concrecity                concrecity    = mthdElement.concrecity();
-        List<Generic>             generics      = mthdElement.typeParameters().stream().map(t -> getGenericFromTypeParameter(element, t)).collect(toList());
-        List<Parameter>           parameters    = mthdElement.parameters().stream().map(param -> new Parameter(param.simpleName().toString(), getType(element, param.asType()))).collect(toList());
-        List<Type>                exceptions    = mthdElement.thrownTypes().stream().map(extractType).collect(toList());
-        return new Callable(name, type, isVarArgs, accessibility, scope, modifiability, concrecity, parameters, generics, exceptions);
     }
     
     private Generic getGenericFromTypeParameter(InputElement element, InputTypeParameterElement typeParameter) {

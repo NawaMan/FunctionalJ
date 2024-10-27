@@ -89,10 +89,12 @@ public class StructSpecBuilder {
         List<Type> extendeds = new ArrayList<Type>();
         List<Type> implementeds = new ArrayList<Type>();
         if (sourceSpec.getConfigures().coupleWithDefinition) {
-            if ((sourceSpec.getIsClass() != null) && sourceSpec.isClass()) {
+            if ((sourceSpec.isClass() != null) && sourceSpec.isClass()) {
                 extendeds.add(sourceSpec.toType());
-            } else if ((sourceSpec.getIsInterface() != null) && sourceSpec.isInterface()) {
+                
+            } else if ((sourceSpec.isInterface() != null) && sourceSpec.isInterface()) {
                 implementeds.add(sourceSpec.toType());
+                
             }
         }
         
@@ -137,7 +139,7 @@ public class StructSpecBuilder {
         Stream<GenMethod> witherMethods  = generateWitherMethods(getters);
         Stream<GenMethod> schemaMethods  = generateSchemaMethods();
         Stream<GenMethod> objectMethods  = generateObjectMethods(getters);
-        Stream<GenMethod> inheritMethods = inheritMethods(sourceSpec, sourceSpec.getMethods());
+        Stream<GenMethod> inheritMethods = inheritMethods(sourceSpec);
         
         List<GenMethod> methods = asList(
                     pipeMethod, 

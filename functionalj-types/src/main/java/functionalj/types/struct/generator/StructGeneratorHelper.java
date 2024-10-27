@@ -316,7 +316,24 @@ public class StructGeneratorHelper {
         return new GenMethod(name, type, PUBLIC, INSTANCE, MODIFIABLE, params, line(body));
     }
     
+    static GenParam generateParam(Parameter param) {
+        return new GenParam(param.getName(), param.getType());
+    }
+    
+    static Stream<GenMethod> inheritMethods(SourceSpec sourceSpec) {
+        List<Callable> callables = sourceSpec.getMethods();
+        return callables.stream()
+                .map   (callable -> inheritMethod(sourceSpec, callable))
+                .filter(Objects::nonNull);
+    }
+    
     static GenMethod inheritMethod(SourceSpec sourceSpec, Callable callable) {
+        return sourceSpec.isRecord()
+                ? inheritRecordMethod          (sourceSpec, callable)
+                : inheritClassOrInterfaceMethod(sourceSpec, callable);
+    }
+    
+    static GenMethod inheritClassOrInterfaceMethod(SourceSpec sourceSpec, Callable callable) {
         String targetClassName = sourceSpec.getSpecName();
         
         // - Accessibility, Modifibility, exception, isVarAgrs
@@ -336,11 +353,44 @@ public class StructGeneratorHelper {
         return new GenMethod(name, type, accessibility, scope, modifiability, params, generics, false, isVarAgrs, body, usedTypes, exceptions);
     }
     
-    static GenParam generateParam(Parameter param) {
-        return new GenParam(param.getName(), param.getType());
+    static GenMethod inheritRecordMethod(SourceSpec sourceSpec, Callable callable) {
+        boolean isSelfFirstParam 
+                = callable.parameters().stream()
+                .findFirst()
+                .filter   (param -> "self".equals(param.getName()))
+                .filter   (param -> Type.SELF.equals(param.getType()))
+                .map      (Parameter::getType)
+                .isPresent();
+        boolean isReturnSelf = Type.SELF.equals(callable.type());
+        
+        // Replace Self in all parameters.
+        List<Parameter> parameters = callable.parameters().stream().map(param -> Type.SELF.equals(param.getType()) ? new Parameter(param.getName(), sourceSpec.getTargetType()) : param).collect(toList());
+        Type            returnType = isReturnSelf ? sourceSpec.getTargetType() : callable.type();
+        
+        String targetClassName = sourceSpec.getSpecName();
+        
+        // - Accessibility, Modifibility, exception, isVarAgrs
+        Accessibility  accessibility = PUBLIC;
+        Scope          scope         = isSelfFirstParam ? Scope.INSTANCE : Scope.STATIC;
+        Modifiability  modifiability = MODIFIABLE;
+        String         name          = callable.name();
+        List<GenParam> params        = parameters.stream().map(param -> generateParam(param)).collect(toList());
+        String         paramNames    = recordMethodsParameterNames(isSelfFirstParam, parameters);
+        List<Generic>  generics      = callable.generics();
+        String         call          = format("%s.%s(%s)", targetClassName, name, paramNames);
+        ILines         body          = (ILines) (returnType.toString().toLowerCase().equals("void") ? line(call + ";") : line("return " + (isReturnSelf ? ("functionalj.types.Self.unwrap(" + call + ");") : (call + ";"))));
+        List<Type>     usedTypes     = Collections.<Type>emptyList();
+        List<Type>     exceptions    = callable.exceptions();
+        boolean        isVarAgrs     = callable.isVarAgrs();
+        return new GenMethod(name, returnType, accessibility, scope, modifiability, params, generics, false, isVarAgrs, body, usedTypes, exceptions);
     }
     
-    static Stream<GenMethod> inheritMethods(SourceSpec sourceSpec, List<Callable> callables) {
-        return callables.stream().map(callable -> inheritMethod(sourceSpec, callable)).filter(Objects::nonNull);
+    private static String recordMethodsParameterNames(boolean isSelfFirstParam, List<Parameter> parameters) {
+        if (!isSelfFirstParam)
+            return parameters.stream().map(Parameter::getName).collect(joining(", "));
+        
+        Stream<String> first = parameters.stream().limit(1).map(__ -> "functionalj.types.Self.wrap(self)");
+        Stream<String> rest  = parameters.stream().skip(1).map(Parameter::getName);
+        return Stream.of(first, rest).flatMap(Function.identity()).collect(joining(", "));
     }
 }

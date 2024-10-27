@@ -34,7 +34,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.junit.Test;
 import functionalj.types.Choice;
-import functionalj.types.choice.Self1;
+import functionalj.types.Self1;
 
 public class ChoiceTypeWithGenericMethodTest {
     
