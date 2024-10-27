@@ -25,7 +25,7 @@ jobs:
         architecture: 'x64'
     
     - name: Set JAVA_8_HOME
-      run: echo "JAVA_8_HOME=${{ steps.setup-jdk-8.outputs.java-home }}" >> $GITHUB_ENV
+      run: echo "JAVA_8_HOME=$JAVA_HOME_8_X64" >> $GITHUB_ENV
       
     - name: Set up JDK 17
       id:   setup-jdk-17
@@ -36,7 +36,14 @@ jobs:
         architecture: 'x64'
     
     - name: Set JAVA_17_HOME
-      run: echo "JAVA_17_HOME=${{ steps.setup-jdk-17.outputs.java-home }}" >> $GITHUB_ENV
+      run: echo "JAVA_17_HOME=$JAVA_HOME_17_X64" >> $GITHUB_ENV
+      
+    - name: Debug Java Homes
+      run: |
+        echo "JAVA_HOME_8_X64: $JAVA_HOME_8_X64"
+        echo "JAVA_HOME_17_X64: $JAVA_HOME_17_X64"
+        echo "JAVA_8_HOME: $JAVA_8_HOME"
+        echo "JAVA_17_HOME: $JAVA_17_HOME"
     
     - name: Build
       run: ./build.sh
