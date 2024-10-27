@@ -50,6 +50,13 @@ import lombok.val;
 
 public interface Func {
     
+    /**
+     * Return a {@link Supplier} (aka. {@link Func0}) that do nothing and return null.
+     */
+    public static <T> Func0<T> supplyNull() {
+        return () -> null;
+    }
+    
     // == Provide different name for more readability ==
     /**
      * A shorter way to use Function.identity() -- alias for itself() and themAll().
@@ -839,6 +846,7 @@ public interface Func {
     }
     
     // == Elevate (instant bind) ==
+    
     public static <I1, I2, O> Func1<I1, O> elevate(BiFunction<I1, I2, O> func, I2 input2) {
         return input1 -> Func.applyUnsafe(func, input1, input2);
     }

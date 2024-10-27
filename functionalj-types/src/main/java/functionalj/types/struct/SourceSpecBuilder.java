@@ -363,8 +363,10 @@ public class SourceSpecBuilder {
         configures.generateBuilderClass            = struct.generateBuilderClass();
         configures.publicFields                    = struct.publicFields();
         configures.publicConstructor               = struct.publicConstructor();
-        configures.toStringTemplate                = struct.generateToString() ? struct.toStringTemplate() : null;
         configures.serialize                       = (struct.serialize() != null) ? struct.serialize() : Serialize.To.NOTHING;
+        configures.toStringMethod                  = struct.toStringMethod();
+        configures.toStringTemplate                = (struct.toStringTemplate() != null) ? struct.toStringTemplate() : "";
+        
         if (!configures.generateNoArgConstructor && !configures.generateAllArgConstructor) {
             element.error("generateNoArgConstructor and generateAllArgConstructor must be be false at the same time.");
             return null;

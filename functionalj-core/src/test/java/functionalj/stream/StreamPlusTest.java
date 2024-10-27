@@ -558,6 +558,18 @@ public class StreamPlusTest {
     }
     
     @Test
+    public void testToMapIndex() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Five");
+        assertAsString("{0:One, 1:Two, 2:Three, 3:Five}", stream.toMap());
+    }
+    
+    @Test
+    public void testToMapIndexInvert() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Five");
+        assertAsString("{Five:3, One:0, Two:1, Three:2}", stream.toMapRevert());
+    }
+    
+    @Test
     public void testToSet() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val set = stream.toSet();

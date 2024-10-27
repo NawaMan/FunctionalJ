@@ -88,15 +88,6 @@ public @interface Struct {
      */
     public boolean publicConstructor() default true;
     
-    /**
-     * @return the String template for toString or "" (use standard toString generation) - default to "".
-     */
-    public String toStringTemplate() default "";
-    
-    /**
-     * @return the flag indicating that the toString should be generated - default to true.
-     */
-    public boolean generateToString() default true;
     
     /**
      * @return the target serialization type.
@@ -104,9 +95,13 @@ public @interface Struct {
     public Serialize.To serialize() default Serialize.To.NOTHING;
     
     /**
-     * @return if the toString() returns the Java record format. For example, Point[x=3. y=4].
-     *             NOTE: Only when toStringTemplate is "".
+     * @return if the toString() returns the Java record format.
      **/
-    public boolean recordToString() default false;
+    public StructToString toStringMethod() default StructToString.Default;
+    
+    /**
+     * @return the String template for toString or "" (use standard toString generation) - default to "".
+     */
+    public String toStringTemplate() default "";
     
 }

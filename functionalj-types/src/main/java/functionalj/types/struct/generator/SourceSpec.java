@@ -35,6 +35,7 @@ import java.util.function.Function;
 import functionalj.types.JavaVersionInfo;
 import functionalj.types.Serialize;
 import functionalj.types.Serialize.To;
+import functionalj.types.StructToString;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
 
@@ -104,6 +105,10 @@ public class SourceSpec {
         this.typeWithLens      = typeWithLens;
     }
     
+    public JavaVersionInfo getJavaVersionInfo() {
+        return javaVersionInfo;
+    }
+    
     public String getSpecName() {
         return specName;
     }
@@ -146,6 +151,10 @@ public class SourceSpec {
     
     public List<String> getTypeWithLens() {
         return typeWithLens;
+    }
+    
+    public SourceSpec withSpecName(JavaVersionInfo javaVersionInfo) {
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withSpecName(String specName) {
@@ -241,40 +250,34 @@ public class SourceSpec {
          */
         public boolean publicConstructor = true;
         
+        /** the target serialization type. */
+        public Serialize.To serialize = Serialize.To.NOTHING;
+        
         /**
-         * Should generate record instead of a regular class.
-         */
-        public Boolean generateRecord = null;
+         * The toString() method configuration.
+         **/
+        public StructToString toStringMethod = StructToString.Default;
         
         /**
          * Template for toString. null for no toString generated, "" for auto-generate toString, or template
          */
         public String toStringTemplate = "";
         
-        /** the target serialization type. */
-        public Serialize.To serialize = Serialize.To.NOTHING;
-        
-        /**
-         * The toString() returns the Java record format. For example, Point[x=3. y=4].
-         *             NOTE: Only when toStringTemplate is "".
-         **/
-        public boolean recordToString = false;
-        
         public Configurations() {
         }
         
         public Configurations(
-                boolean      coupleWithDefinition, 
-                boolean      generateNoArgConstructor, 
-                boolean      generateRequiredOnlyConstructor, 
-                boolean      generateAllArgConstructor, 
-                boolean      generateLensClass, 
-                boolean      generateBuilderClass, 
-                boolean      publicFields, 
-                boolean      publicConstructor, 
-                String       toStringTemplate, 
-                Serialize.To serialize,
-                boolean      recordToString) {
+                boolean        coupleWithDefinition, 
+                boolean        generateNoArgConstructor, 
+                boolean        generateRequiredOnlyConstructor, 
+                boolean        generateAllArgConstructor, 
+                boolean        generateLensClass, 
+                boolean        generateBuilderClass, 
+                boolean        publicFields, 
+                boolean        publicConstructor, 
+                Serialize.To   serialize,
+                StructToString toStringMethod, 
+                String         toStringTemplate) {
             this.coupleWithDefinition            = coupleWithDefinition;
             this.generateNoArgConstructor        = generateNoArgConstructor;
             this.generateRequiredOnlyConstructor = generateRequiredOnlyConstructor;
@@ -283,9 +286,9 @@ public class SourceSpec {
             this.generateBuilderClass            = generateBuilderClass;
             this.publicFields                    = publicFields;
             this.publicConstructor               = publicConstructor;
-            this.toStringTemplate                = toStringTemplate;
             this.serialize                       = (serialize != null) ? serialize : To.NOTHING;
-            this.recordToString                  = recordToString;
+            this.toStringMethod                  = toStringMethod;
+            this.toStringTemplate                = toStringTemplate;
         }
         
         @Override
@@ -299,15 +302,15 @@ public class SourceSpec {
                     + "generateBuilderClass="            + generateBuilderClass            + ", "
                     + "publicFields="                    + publicFields                    + ", "
                     + "publicConstructor="               + publicConstructor               + ", "
-                    + "toStringTemplate="                + toStringTemplate                + ", "
                     + "serialize="                       + serialize                       + ", "
-                    + "recordToString="                  + recordToString
+                    + "toStringMethod="                  + toStringMethod                  + ", "
+                    + "toStringTemplate="                + toStringTemplate
                     + "]";
         }
         
         public String toCode() {
             String       serializeCode = Serialize.class.getCanonicalName() + ".To." + serialize;
-            List<Object> params        = asList(coupleWithDefinition, generateNoArgConstructor, generateRequiredOnlyConstructor, generateAllArgConstructor, generateLensClass, generateBuilderClass, publicFields, publicConstructor, Utils.toStringLiteral(toStringTemplate), serializeCode, recordToString);
+            List<Object> params        = asList(coupleWithDefinition, generateNoArgConstructor, generateRequiredOnlyConstructor, generateAllArgConstructor, generateLensClass, generateBuilderClass, publicFields, publicConstructor, serializeCode, StructToString.class.getCanonicalName() + "." + toStringMethod, Utils.toStringLiteral(toStringTemplate));
             return "new " + Configurations.class.getCanonicalName() + "(" + params.stream().map(String::valueOf).collect(joining(", ")) + ")";
         }
     }

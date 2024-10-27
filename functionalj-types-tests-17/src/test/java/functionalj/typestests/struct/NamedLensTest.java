@@ -51,7 +51,7 @@ public class NamedLensTest {
     @Test
     public void testPrimitiveLens() {
         val struct = new StructNamedPrimitive(42, 75, 3.14, false);
-        assertAsString("StructNamedPrimitive[intValue: 42, longValue: 75, doubleValue: 3.14, booleanValue: false]", struct);
+        assertAsString("StructNamedPrimitive[intValue=42, longValue=75, doubleValue=3.14, booleanValue=false]", struct);
         assertAsString("theStructNamedPrimitive", theStructNamedPrimitive);
         assertAsString("theStructNamedPrimitive.intValue", theStructNamedPrimitive.intValue);
         assertAsString("theStructNamedPrimitive.longValue", theStructNamedPrimitive.longValue);
@@ -67,7 +67,17 @@ public class NamedLensTest {
     public void testComplexLens() {
         val primitiveStruct = new StructNamedPrimitive(42, 75, 3.14, false);
         val complexStruct = new StructNamedComplex(42, primitiveStruct);
-        assertAsString("StructNamedComplex[" + "intValue: 42, " + "primitiveValue: StructNamedPrimitive[" + "intValue: 42, " + "longValue: 75, " + "doubleValue: 3.14, " + "booleanValue: false" + "]" + "]", complexStruct);
+        assertAsString(
+                "StructNamedComplex["
+                    + "intValue=42, "
+                    + "primitiveValue=StructNamedPrimitive["
+                        + "intValue=42, "
+                        + "longValue=75, "
+                        + "doubleValue=3.14, "
+                        + "booleanValue=false"
+                    + "]"
+                + "]",
+                complexStruct);
         assertAsString("theStructNamedComplex", theStructNamedComplex);
         assertAsString("theStructNamedComplex.intValue", theStructNamedComplex.intValue);
         assertAsString("theStructNamedComplex.primitiveValue", theStructNamedComplex.primitiveValue);
@@ -84,7 +94,12 @@ public class NamedLensTest {
     @Test
     public void testStructNamedOptionalNullableResult() {
         val struct = new StructNamedOptionalNullableResult(Optional.of("One"), Nullable.of("Two"), Result.valueOf("Three"));
-        assertAsString("StructNamedOptionalNullableResult[" + "optText: Optional[One], " + "nullText: Nullable.of(Two), " + "resText: Result:{ Value: Three }" + "]", struct);
+        assertAsString(
+                "StructNamedOptionalNullableResult["
+                    + "optText=Optional[One], "
+                    + "nullText=Nullable.of(Two), "
+                    + "resText=Result:{ Value: Three }"
+                + "]", struct);
         assertAsString("theStructNamedOptionalNullableResult", theStructNamedOptionalNullableResult);
         assertAsString("theStructNamedOptionalNullableResult.optText", theStructNamedOptionalNullableResult.optText);
         assertAsString("theStructNamedOptionalNullableResult.nullText", theStructNamedOptionalNullableResult.nullText);
@@ -98,7 +113,7 @@ public class NamedLensTest {
     @Test
     public void testFuncListLens() {
         val struct = new StructNamedFuncList(42, FuncList.of("One", "Two"));
-        assertAsString("StructNamedFuncList[intValue: 42, texts: [One, Two]]", struct);
+        assertAsString("StructNamedFuncList[intValue=42, texts=[One, Two]]", struct);
         assertAsString("theStructNamedFuncList", theStructNamedFuncList);
         assertAsString("theStructNamedFuncList.intValue", theStructNamedFuncList.intValue);
         assertAsString("theStructNamedFuncList.texts", theStructNamedFuncList.texts);
@@ -114,7 +129,7 @@ public class NamedLensTest {
     @Test
     public void testListLens() {
         val struct = new StructNamedList(42, FuncList.of("One", "Two"));
-        assertAsString("StructNamedList[intValue: 42, texts: [One, Two]]", struct);
+        assertAsString("StructNamedList[intValue=42, texts=[One, Two]]", struct);
         assertAsString("theStructNamedList", theStructNamedList);
         assertAsString("theStructNamedList.intValue", theStructNamedList.intValue);
         assertAsString("theStructNamedList.texts", theStructNamedList.texts);
@@ -130,7 +145,7 @@ public class NamedLensTest {
     @Test
     public void testFuncMapLens() {
         val struct = new StructNamedFuncMap(42, FuncMap.of("One", 1, "Two", 2));
-        assertAsString("StructNamedFuncMap[intValue: 42, ints: {One:1, Two:2}]", struct);
+        assertAsString("StructNamedFuncMap[intValue=42, ints={One:1, Two:2}]", struct);
         assertAsString("theStructNamedFuncMap", theStructNamedFuncMap);
         assertAsString("theStructNamedFuncMap.intValue", theStructNamedFuncMap.intValue);
         assertAsString("theStructNamedFuncMap.ints", theStructNamedFuncMap.ints);
@@ -144,7 +159,7 @@ public class NamedLensTest {
     @Test
     public void testMapLens() {
         val struct = new StructNamedMap(42, FuncMap.of("One", 1, "Two", 2));
-        assertAsString("StructNamedMap[intValue: 42, ints: {One:1, Two:2}]", struct);
+        assertAsString("StructNamedMap[intValue=42, ints={One:1, Two:2}]", struct);
         assertAsString("theStructNamedMap", theStructNamedMap);
         assertAsString("theStructNamedMap.intValue", theStructNamedMap.intValue);
         assertAsString("theStructNamedMap.ints", theStructNamedMap.ints);

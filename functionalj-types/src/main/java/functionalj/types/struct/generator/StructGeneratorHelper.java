@@ -55,6 +55,7 @@ import functionalj.types.Core;
 import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
 import functionalj.types.IPostConstruct;
+import functionalj.types.StructToString;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
 import functionalj.types.struct.generator.model.Accessibility;
@@ -68,28 +69,45 @@ import functionalj.types.struct.generator.model.Scope;
 public class StructGeneratorHelper {
     
     static GenMethod generateToString(SourceSpec sourceSpec, List<Getter> getters) {
-        GenMethod toString = null;
-        String    toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
-        if (toStringTemplate != null) {
-            String toStringBody = null;
-            if (!toStringTemplate.isEmpty()) {
-                String strFuncs = Core.StrFunc.packageName() + "." + Core.StrFunc.simpleName();
-                toStringBody = "return " + strFuncs + ".template(" + Utils.toStringLiteral(toStringTemplate) + "," + StructMapGeneratorHelper.METHOD_TO_MAP + "()::get);";
+        StructToString method = sourceSpec.getConfigures().toStringMethod;
+        if (method == null)
+            return null;
+        
+        if (method == StructToString.Default) {
+            String toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
+            if (toStringTemplate != null && !toStringTemplate.isEmpty()) {
+                method = StructToString.Template;
+            } else if (sourceSpec.getJavaVersionInfo().getSourceVersion() >= 17) {
+                method = StructToString.Record;
             } else {
-                String template 
-                        = sourceSpec.getConfigures().recordToString
-                        ? "\"%1$s=\" + %1$s()"
-                        : "\"%1$s: \" + %1$s()";
-                
-                String body 
-                        = getters.stream()
-                        .map    (g -> format(template, g.name()))
-                        .collect(joining(" + \", \" + "));
-                toStringBody = "return \"" + sourceSpec.getTargetClassName() + "[\" + " + (body.isEmpty() ? "\"\"" : body) + " + \"]\";";
+                method = StructToString.Legacy;
             }
-            toString = new GenMethod("toString", Type.STRING, Accessibility.PUBLIC, Scope.INSTANCE, Modifiability.MODIFIABLE, Collections.emptyList(), line(toStringBody));
         }
-        return toString;
+        
+        if (method == StructToString.Template) {
+            String toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
+            String strFuncs         = Core.StrFunc.packageName() + "." + Core.StrFunc.simpleName();
+            String toStringBody     = "return " + strFuncs + ".template(" + Utils.toStringLiteral(toStringTemplate) + "," + StructMapGeneratorHelper.METHOD_TO_MAP + "()::get);";
+            return generateToStringMethod(toStringBody);
+        }
+        
+        String template 
+                = (method == StructToString.Legacy)
+                ? "\"%1$s: \" + %1$s()"
+                : "\"%1$s=\" + %1$s()";
+        String body 
+                = getters.stream()
+                .map    (g -> format(template, g.name()))
+                .collect(joining(" + \", \" + "));
+        String toStringBody
+                = format("return \"%s[\" + %s + \"]\";", 
+                        sourceSpec.getTargetClassName(),
+                        (body.isEmpty() ? "\"\"" : body));
+        return generateToStringMethod(toStringBody);
+    }
+    
+    private static GenMethod generateToStringMethod(String toStringBody) {
+        return new GenMethod("toString", Type.STRING, Accessibility.PUBLIC, Scope.INSTANCE, Modifiability.MODIFIABLE, Collections.emptyList(), line(toStringBody));
     }
     
     static GenMethod generateHashCode(SourceSpec sourceSpec) {

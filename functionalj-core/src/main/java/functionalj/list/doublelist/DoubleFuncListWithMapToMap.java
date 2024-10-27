@@ -23,22 +23,12 @@
 // ============================================================================
 package functionalj.list.doublelist;
 
-import static functionalj.function.Func.f;
 import static functionalj.list.doublelist.DoubleFuncList.deriveToObj;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BinaryOperator;
 import java.util.function.DoubleFunction;
-import java.util.stream.Collectors;
 
-import functionalj.function.Func;
-import functionalj.function.Func1;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableFuncMap;
-import functionalj.stream.markers.Eager;
-import functionalj.stream.markers.Terminal;
-import lombok.val;
 
 public interface DoubleFuncListWithMapToMap extends AsDoubleFuncList {
     

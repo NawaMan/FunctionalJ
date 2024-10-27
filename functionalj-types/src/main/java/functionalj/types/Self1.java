@@ -23,19 +23,53 @@
 // ============================================================================
 package functionalj.types;
 
-public interface Self1<T> {
+
+/**
+ * Self1 class is to be used to represent the generated class in the specification classes or method signature.
+ * {@link Self1} is like {@link Self} but has one parameter.
+ * 
+ * See {@link Self} documentation for more detail.
+ */
+public interface Self1<TARGET> {
     
+    /**
+     * By default, the object can be unwrapped as itself.
+     * 
+     * @param <T>  the type of the original object.
+     * @return     the original object.
+     */
     @SuppressWarnings("unchecked")
-    public default <TARGET> TARGET unwrap() {
-        return (TARGET) this;
+    public default <T> T unwrap() {
+        return (T) this;
     }
     
-    public static <TARGET, T> TARGET unwrap(Self1<T> self) {
+    /**
+     * Unwrap the {@link Self1} object and return the original object (null self).
+     * 
+     * @param <T>   the type of the original object.
+     * @param <T1>  the type of the first parameter object.
+     * @param self  the self object.
+     * @return      the original object.
+     */
+    public static <T, T1> T unwrap(Self1<T1> self) {
         return self == null ? null : self.unwrap();
     }
     
-    @SuppressWarnings("unchecked")
-    public static <TARGET, T> Self1<T> wrap(TARGET t) {
-        return (Self1<T>) t;
+    /**
+     * Write an object with a {@link Self1}.
+     * 
+     * @param <T>       the original object type.
+     * @param <T1>      the type of the first parameter object.
+     * @param original  the original object.
+     * @return          the {@link Self1} wrapping this object.
+     */
+    public static <T, T1> Self1<T1> wrap(T original) {
+        return new Self1<T1>() {
+            @SuppressWarnings({ "unchecked", "hiding" })
+            @Override
+            public <T> T unwrap() {
+                return (T)original;
+            }
+        };
     }
 }

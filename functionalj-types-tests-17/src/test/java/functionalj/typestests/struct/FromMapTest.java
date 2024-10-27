@@ -80,12 +80,18 @@ public class FromMapTest {
     @Test
     public void testReadCsv() {
         val csvString = "Mazda,2008,Black\nBMW,2010,Black\nToyota,2012,White";
-        assertEquals(Stream.of(csvString.split("\n")).map(line -> Arrays.asList(line.split(","))).map(each -> {
-            val map = new TreeMap<String, String>();
-            map.put("make", each.get(0));
-            map.put("year", each.get(1));
-            map.put("color", each.get(2));
-            return map;
-        }).map(each -> Car.fromMap(each)).collect(Collectors.toList()).toString(), "[Car[make: Mazda, year: 2008, color: Black], Car[make: BMW, year: 2010, color: Black], Car[make: Toyota, year: 2012, color: White]]");
+        assertEquals(
+                "[Car[make=Mazda, year=2008, color=Black], Car[make=BMW, year=2010, color=Black], Car[make=Toyota, year=2012, color=White]]",
+                Stream.of(csvString.split("\n"))
+                .map(line -> Arrays.asList(line.split(",")))
+                .map(each -> {
+                    val map = new TreeMap<String, String>();
+                    map.put("make", each.get(0));
+                    map.put("year", each.get(1));
+                    map.put("color", each.get(2));
+                    return map;
+                })
+                .map(each -> Car.fromMap(each))
+                .collect(Collectors.toList()).toString());
     }
 }

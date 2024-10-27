@@ -23,15 +23,19 @@
 // ============================================================================
 package functionalj.function;
 
+/**
+ * Wrapper for an exception throw while running a function.
+ */
 public class FunctionInvocationException extends RuntimeException {
     
     private static final long serialVersionUID = 1145475380276387579L;
     
-    public FunctionInvocationException(Exception exception) {
-        super(exception);
+    public FunctionInvocationException(Throwable throwable) {
+        super(throwable);
     }
     
     public FunctionInvocationException(String message) {
         super(message);
     }
+    
 }

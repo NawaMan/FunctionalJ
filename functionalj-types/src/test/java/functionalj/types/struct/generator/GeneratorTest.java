@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.types.struct.generator;
 
+import static functionalj.types.StructToString.Legacy;
+import static functionalj.types.StructToString.Record;
 import static functionalj.types.TestHelper.assertAsString;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -134,14 +136,14 @@ public class GeneratorTest {
     @Test
     public void testToString() {
         val generatedWith = generate(() -> {
-            configurations.recordToString = true;
+            configurations.toStringMethod = Record;
         });
         assertTrue(generatedWith.contains("    public String toString() {\n"
                 + "        return \"Car[\" + \"anint=\" + anint() + \", \" + \"anbool=\" + anbool() + \", \" + \"anstring=\" + anstring() + \"]\";\n"
                 + "    }"));
         
         val generatedWithout = generate(() -> {
-            configurations.recordToString = false;
+            configurations.toStringMethod = Legacy;
         });
         assertTrue(generatedWithout.contains("    public String toString() {\n"
                 + "        return \"Car[\" + \"anint: \" + anint() + \", \" + \"anbool: \" + anbool() + \", \" + \"anstring: \" + anstring() + \"]\";\n"

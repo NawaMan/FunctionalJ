@@ -25,9 +25,11 @@ package functionalj.types.struct.generator.debug;
 
 import static functionalj.types.DefaultValue.NULL;
 import static functionalj.types.DefaultValue.REQUIRED;
+import static functionalj.types.StructToString.Legacy;
 import static functionalj.types.TestHelper.assertAsString;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+
 import org.junit.Test;
 
 import functionalj.types.JavaVersionInfo;
@@ -68,7 +70,7 @@ public class BugThreeNullableBuilder {
                 true,                  // isInterface
                 null, 
                 null,
-                new Configurations(true, false, true, true, true, true, true, true, "", Serialize.To.NOTHING, false),
+                new Configurations(true, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""),
                 asList(
                     new Getter("id",          new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
                     new Getter("name",        new Type("java.lang", null, "String", emptyList()), false, REQUIRED),

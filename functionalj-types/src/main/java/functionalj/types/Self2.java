@@ -23,19 +23,55 @@
 // ============================================================================
 package functionalj.types;
 
-public interface Self2<T1, T2> {
+/**
+ * Self2 class is to be used to represent the generated class in the specification classes or method signature.
+ * 
+ * See {@link Self} documentation for more detail.
+ */
+public interface Self2<TARGET1, TARGET2> {
     
+    /**
+     * By default, the object can be unwrapped as itself.
+     * 
+     * @param <T>  the type of the original object.
+     * @return     the original object.
+     */
     @SuppressWarnings("unchecked")
-    public default <TARGET> TARGET unwrap() {
-        return (TARGET) this;
+    public default <T> T unwrap() {
+        return (T)this;
     }
     
-    public static <TARGET, T1, T2> TARGET unwrap(Self2<T1, T2> self) {
+    /**
+     * Unwrap the {@link Self2} object and return the original object (null self).
+     * 
+     * @param <T>   the type of the original object.
+     * @param <T1>  the type of the first parameter object.
+     * @param <T2>  the type of the second parameter object.
+     * @param self  the self object.
+     * @return      the original object.
+     */
+    public static <T, T1, T2> T unwrap(Self2<T1, T2> self) {
         return self == null ? null : self.unwrap();
     }
     
-    @SuppressWarnings("unchecked")
-    public static <TARGET, T1, T2> Self2<T1, T2> wrap(TARGET t) {
-        return (Self2<T1, T2>) t;
+    /**
+     * Write an object with a {@link Self2}.
+     * 
+     * @param <T>       the type of the original object.
+     * @param <T1>      the type of the first parameter object.
+     * @param <T2>      the type of the second parameter object.
+     * @param original  the original object.
+     * @return          the {@link Self2} wrapping this object.
+     */
+    public static <T, T1, T2> Self2<T1, T2> wrap(T original) {
+        return new Self2<T1, T2>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public <TARGET> TARGET unwrap() {
+                return (TARGET)original;
+            }
+            
+        };
     }
+
 }

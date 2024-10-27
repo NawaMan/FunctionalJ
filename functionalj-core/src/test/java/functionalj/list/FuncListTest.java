@@ -1459,6 +1459,7 @@ public class FuncListTest {
     }
     
     // -- toMap --
+    
     @Test
     public void testToMap() {
         run(FuncList.of(One, Three, Five), list -> {
@@ -1484,6 +1485,20 @@ public class FuncListTest {
     public void testToMap_withMergedValue() {
         run(FuncList.of(One, Two, Three, Five), list -> {
             assertAsString("{3:One+Two, 4:Five, 5:Three}", list.toMap(theString.length(), (a, b) -> a + "+" + b).toString());
+        });
+    }
+    
+    @Test
+    public void testToMapIndex() {
+        run(FuncList.of(One, Two, Three, Five), list -> {
+            assertAsString("{0:One, 1:Two, 2:Three, 3:Five}", list.toMap());
+        });
+    }
+    
+    @Test
+    public void testToMapIndexInvert() {
+        run(FuncList.of(One, Two, Three, Five), list -> {
+            assertAsString("{Five:3, One:0, Two:1, Three:2}", list.toMapRevert());
         });
     }
     

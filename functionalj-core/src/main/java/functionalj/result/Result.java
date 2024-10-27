@@ -338,12 +338,21 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         return of(supplier);
     }
     
-    public static <D> Result<D> ofException(String exceptionMsg) {
-        return new Value<D>((D) null, new FunctionInvocationException(exceptionMsg));
+    public static <D> Result<D> ofException(String exceptionMessage) {
+        return new Value<D>((D) null, new FunctionInvocationException(exceptionMessage));
     }
     
     public static <D> Result<D> ofException(Exception exception) {
         return new Value<D>(null, (exception != null) ? exception : new FunctionInvocationException("Unknown reason."));
+    }
+    
+    public static <D> Result<D> ofThrowable(Throwable throwable) {
+        Exception exception
+            = (throwable != null)
+            ? new FunctionInvocationException(throwable)
+            : new FunctionInvocationException("Unknown reason.");
+        return new Value<D>(null, 
+                exception);
     }
     
     public static <D> Result<D> ofResult(Result<D> result) {

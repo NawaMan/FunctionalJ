@@ -23,9 +23,12 @@
 // ============================================================================
 package functionalj.types.struct.generator;
 
+import static functionalj.types.StructToString.Legacy;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
+
 import java.util.stream.Collectors;
+
 import org.junit.Test;
 
 import functionalj.types.JavaVersionInfo;
@@ -45,7 +48,8 @@ public class BuildFromSpecTest {
             null, 
             "spec", 
             null, 
-            new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, true, "", Serialize.To.NOTHING, false), 
+            new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""), 
+            
             java.util.Arrays.asList(
                     new functionalj.types.struct.generator.Getter("name", new functionalj.types.Type("java.lang", null, "String", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), 
                     new functionalj.types.struct.generator.Getter("date", new functionalj.types.Type("java.time", null, "LocalDate", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)
