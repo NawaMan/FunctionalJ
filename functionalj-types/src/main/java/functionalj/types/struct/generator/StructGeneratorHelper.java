@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -372,28 +373,31 @@ public class StructGeneratorHelper {
     }
     
     static GenMethod inheritRecordMethod(SourceSpec sourceSpec, Callable callable) {
-        boolean isSelfFirstParam 
+        Optional<Type> selfFirstParam 
                 = callable.parameters().stream()
                 .findFirst()
                 .filter   (param -> "self".equals(param.getName()))
-                .filter   (param -> Type.SELF.equals(param.getType()))
-                .map      (Parameter::getType)
-                .isPresent();
-        boolean isReturnSelf = Type.SELF.equals(callable.type());
+                .filter   (param -> Type.SELF.equals(param.getType()) || sourceSpec.getTargetType().equals(param.getType()))
+                .map      (Parameter::getType);
+        
+        boolean isSelfMethod     = selfFirstParam.isPresent();
+        boolean isFirstParamSelf = selfFirstParam.filter(Type.SELF::equals).isPresent();
+        boolean isReturnSelf     = Type.SELF.equals(callable.type());
         
         // Replace Self in all parameters.
-        List<Parameter> parameters = callable.parameters().stream().map(param -> Type.SELF.equals(param.getType()) ? new Parameter(param.getName(), sourceSpec.getTargetType()) : param).collect(toList());
+        List<Parameter> parameters = callable.parameters().stream().map(selfParameterReplace(sourceSpec)).collect(toList());
         Type            returnType = isReturnSelf ? sourceSpec.getTargetType() : callable.type();
         
         String targetClassName = sourceSpec.getSpecName();
         
-        // - Accessibility, Modifibility, exception, isVarAgrs
+        // - Accessibility, Modifiability, exception, isVarAgrs
         Accessibility  accessibility = PUBLIC;
-        Scope          scope         = isSelfFirstParam ? Scope.INSTANCE : Scope.STATIC;
+        Scope          scope         = isSelfMethod ? Scope.INSTANCE : Scope.STATIC;
         Modifiability  modifiability = MODIFIABLE;
         String         name          = callable.name();
-        List<GenParam> params        = parameters.stream().map(param -> generateParam(param)).collect(toList());
-        String         paramNames    = recordMethodsParameterNames(isSelfFirstParam, parameters);
+        int            parameSkip    = isSelfMethod ? 1 : 0;
+        List<GenParam> params        = parameters.stream().skip(parameSkip).map(param -> generateParam(param)).collect(toList());
+        String         paramNames    = recordMethodsParameterNames(isSelfMethod, isFirstParamSelf, parameters);
         List<Generic>  generics      = callable.generics();
         String         call          = format("%s.%s(%s)", targetClassName, name, paramNames);
         ILines         body          = (ILines) (returnType.toString().toLowerCase().equals("void") ? line(call + ";") : line("return " + (isReturnSelf ? ("functionalj.types.Self.unwrap(" + call + ");") : (call + ";"))));
@@ -403,11 +407,23 @@ public class StructGeneratorHelper {
         return new GenMethod(name, returnType, accessibility, scope, modifiability, params, generics, false, isVarAgrs, body, usedTypes, exceptions);
     }
     
-    private static String recordMethodsParameterNames(boolean isSelfFirstParam, List<Parameter> parameters) {
-        if (!isSelfFirstParam)
+    private static Function<Parameter, Parameter> selfParameterReplace(SourceSpec sourceSpec) {
+        return selfParameterReplace(sourceSpec.getTargetType());
+    }
+    
+    private static Function<Parameter, Parameter> selfParameterReplace(Type targetType) {
+        return param -> selfParameterReplace(param, targetType);
+    }
+    
+    private static Parameter selfParameterReplace(Parameter param, Type targetType) {
+        return Type.SELF.equals(param.getType()) ? new Parameter(param.getName(), targetType) : param;
+    }
+    
+    private static String recordMethodsParameterNames(boolean isSelfMethod, boolean isFirstParamSelf, List<Parameter> parameters) {
+        if (!isSelfMethod)
             return parameters.stream().map(Parameter::getName).collect(joining(", "));
         
-        Stream<String> first = parameters.stream().limit(1).map(__ -> "functionalj.types.Self.wrap(self)");
+        Stream<String> first = parameters.stream().limit(1).map(__ -> isFirstParamSelf ? "functionalj.types.Self.wrap(this)" : "this");
         Stream<String> rest  = parameters.stream().skip(1).map(Parameter::getName);
         return Stream.of(first, rest).flatMap(Function.identity()).collect(joining(", "));
     }
