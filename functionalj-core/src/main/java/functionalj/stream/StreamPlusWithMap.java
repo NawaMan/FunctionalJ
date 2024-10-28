@@ -25,6 +25,7 @@ package functionalj.stream;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
+
 import lombok.val;
 
 public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
@@ -44,6 +45,18 @@ public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
         return streamPlus.map(value -> {
             val isTrue = condition.test(value);
             val mapped = isTrue ? mapper.apply(value) : value;
+            return mapped;
+        });
+    }
+    
+    /**
+     * Map the value using the mapper only when the condition is true.
+     */
+    public default <SOURCE, TARGET extends DATA> StreamPlus<DATA> mapOnly(Class<SOURCE> clazz, Function<? super SOURCE, TARGET> mapper) {
+        val streamPlus = streamPlus();
+        return streamPlus.map(value -> {
+            val isTrue = clazz.isInstance(value);
+            val mapped = isTrue ? mapper.apply(clazz.cast(value)) : value;
             return mapped;
         });
     }

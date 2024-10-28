@@ -100,6 +100,26 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
         });
     }
     
+    public default BooleanAccess<HOST> thatIsInstanceOf(Class<?> clazz) {
+        return booleanAccess(clazz != null, any -> {
+            return clazz.isInstance(any);
+        });
+    }
+    
+    public default StringAccess<HOST> castToString() {
+        return host -> {
+            val value = apply(host);
+            return String.class.cast(value);
+        };
+    }
+    
+    public default <TARGET> AnyAccess<HOST, TARGET> castTo(Class<TARGET> clazz) {
+        return host -> {
+            val value = apply(host);
+            return clazz.cast(value);
+        };
+    }
+    
     public default IntegerAccess<HOST> getHashCode() {
         return intPrimitiveAccess(Integer.MIN_VALUE, any -> {
             return any.hashCode();

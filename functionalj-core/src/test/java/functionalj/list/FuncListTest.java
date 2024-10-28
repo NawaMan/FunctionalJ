@@ -2317,6 +2317,35 @@ public class FuncListTest {
     }
     
     @Test
+    public void testMapOnlyClass() {
+        val four = new CharSequence() {
+            
+            @Override
+            public CharSequence subSequence(int start, int end) {
+                return toString().subSequence(start, end);
+            }
+            
+            @Override
+            public int length() {
+                return toString().length();
+            }
+            
+            @Override
+            public char charAt(int index) {
+                return toString().charAt(index);
+            }
+            
+            @Override
+            public String toString() {
+                return "Four";
+            }
+        };
+        run(FuncList.of((CharSequence)One, (CharSequence)Two, (CharSequence)Three, four), list -> {
+            assertAsString("[ONE, TWO, THREE, Four]", list.mapOnly(String.class, $S.toUpperCase().castToString()));
+        });
+    }
+    
+    @Test
     public void testMapIf() {
         run(FuncList.of(One, Two, Three), list -> {
             assertAsString("[ONE, TWO, three]", list.mapIf($S.length().thatLessThan(4), $S.toUpperCase(), $S.toLowerCase()));

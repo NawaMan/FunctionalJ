@@ -25,8 +25,10 @@ package functionalj.list;
 
 import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
+
 import lombok.val;
 
 public interface FuncListWithMap<DATA> extends AsFuncList<DATA> {
@@ -37,6 +39,14 @@ public interface FuncListWithMap<DATA> extends AsFuncList<DATA> {
     public default FuncList<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapOnly(checker, mapper));
+    }
+    
+    /**
+     * Map the value using the mapper only when the condition is true.
+     */
+    public default <SOURCE, TARGET extends DATA> FuncList<DATA> mapOnly(Class<SOURCE> clazz, Function<? super SOURCE, TARGET> mapper) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.mapOnly(clazz, mapper));
     }
     
     /**

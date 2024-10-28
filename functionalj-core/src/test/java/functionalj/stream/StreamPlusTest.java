@@ -1302,6 +1302,33 @@ public class StreamPlusTest {
     }
     
     @Test
+    public void testMapOnlyClass() {
+        val stream = StreamPlus.of((CharSequence)"One", (CharSequence)"Two", (CharSequence)"Three", new CharSequence() {
+            
+            @Override
+            public CharSequence subSequence(int start, int end) {
+                return toString().subSequence(start, end);
+            }
+            
+            @Override
+            public int length() {
+                return toString().length();
+            }
+            
+            @Override
+            public char charAt(int index) {
+                return toString().charAt(index);
+            }
+            
+            @Override
+            public String toString() {
+                return "Four";
+            }
+        });
+        assertAsString("[ONE, TWO, THREE, Four]", stream.mapOnly(String.class, $S.toUpperCase().castToString()).toList());
+    }
+    
+    @Test
     public void testMapIf() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertAsString("[ONE, TWO, three]", stream.mapIf($S.length().thatLessThan(4), $S.toUpperCase(), $S.toLowerCase()).toList());
