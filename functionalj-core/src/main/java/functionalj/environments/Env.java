@@ -29,7 +29,7 @@ public final class Env {
     
     public static final class refs {
         
-        public static final Ref<AsyncRunner> async = Ref.ofValue(AsyncRunner.threadFactory);
+        public static final Ref<AsyncRunner> async = Ref.ofValue(AsyncRunner.virtualThread(AsyncRunner.threadFactory));
         
         public static final Ref<Console.Instance> console = Ref.ofValue(Console.System.instance);
         
@@ -49,7 +49,7 @@ public final class Env {
     }
     
     public static AsyncRunner async() {
-        return Env.refs.async.orElse(AsyncRunner.threadFactory);
+        return Env.refs.async.orElse(AsyncRunner.virtualThread(AsyncRunner.threadFactory));
     }
     
     public static Console.Instance console() {

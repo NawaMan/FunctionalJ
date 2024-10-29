@@ -5,7 +5,7 @@
     
     <groupId>io.functionalj</groupId>
     <artifactId>functionalj</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.18-18-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>functionalj</name>
@@ -94,7 +94,8 @@
         <module>functionalj-elm</module>
         <module>functionalj-all</module>
         <module>functionalj-types-tests</module>
-        <module>functionalj-types-tests-17</module>
+        <module>functionalj-tests-17</module>
+        <module>functionalj-tests-21</module>
     </modules>
     
     <dependencyManagement>

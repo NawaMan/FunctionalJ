@@ -6,21 +6,21 @@
     <parent>
         <groupId>io.functionalj</groupId>
         <artifactId>functionalj</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.18-18-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     
     <packaging>jar</packaging>
     
-    <artifactId>functionalj-types-tests-17</artifactId>
-    <name>functionalj-types-tests-17</name>
+    <artifactId>functionalj-tests-21</artifactId>
+    <name>functionalj-tests-21</name>
     <description>
-        The module for FunctionalJ Type Tests for JDK 17.
+        The module for FunctionalJ Tests for JDK 21.
     </description>
     
     <properties>
         <!--==== JAVA+SOURCE ====-->
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>

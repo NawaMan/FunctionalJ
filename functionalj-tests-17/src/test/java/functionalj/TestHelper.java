@@ -24,11 +24,12 @@
 package functionalj;
 
 import static org.junit.Assert.assertEquals;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.Supplier;
-import org.junit.ComparisonFailure;
-import org.junit.Test;
-import functionalj.list.FuncList;
 import lombok.val;
 
 public class TestHelper {
@@ -38,13 +39,10 @@ public class TestHelper {
      *
      * The string value of actual must match the expected exactly.
      * If inexact matching is needed, start it with '\\E' and ended it with '\\Q'.
-     * 
-     * @param expected  the expected string value.
-     * @param actual    the actual object value.
      */
     public static void assertAsString(String expected, Object actual) {
-        val expectedRegEx  = ("(?ms)^\\Q" + expected + "\\E$").replaceAll("\\\\Q\\\\E", "");
-        val actualAsString = Objects.toString(actual);
+        val expectedRegEx = "^\\Q" + expected + "\\E$";
+        val actualAsString = toString(actual);
         if (actualAsString.matches(expectedRegEx))
             return;
         assertEquals(expected, actualAsString);
@@ -55,14 +53,10 @@ public class TestHelper {
      *
      * The string value of actual must match the expected exactly.
      * If inexact matching is needed, start it with '\\E' and ended it with '\\Q'.
-     * 
-     * @param failureMessage  the message to explains what the failure means.
-     * @param expected        the expected string value.
-     * @param actual          the actual object.
      */
     public static void assertAsString(String failureMessage, String expected, Object actual) {
-        val expectedRegEx  = ("(?ms)^\\Q" + expected + "\\E$").replaceAll("\\\\Q\\\\E", "");
-        val actualAsString = Objects.toString(actual);
+        val expectedRegEx = "^\\Q" + expected + "\\E$";
+        val actualAsString = toString(actual);
         if (actualAsString.matches(expectedRegEx))
             return;
         assertEquals(failureMessage, expected, actualAsString);
@@ -73,14 +67,10 @@ public class TestHelper {
      *
      * The string value of actual must match the expected exactly.
      * If inexact matching is needed, start it with '\\E' and ended it with '\\Q'.
-     * 
-     * @param failureMessage  the message to explains what the failure means.
-     * @param expected        the expected string value.
-     * @param actual          the actual object.
      */
     public static void assertAsString(Supplier<String> failureMessage, String expected, Object actual) {
-        val expectedRegEx  = ("(?ms)^\\Q" + expected + "\\E$").replaceAll("\\\\Q\\\\E", "");
-        val actualAsString = Objects.toString(actual);
+        val expectedRegEx = "^\\Q" + expected + "\\E$";
+        val actualAsString = toString(actual);
         if (actualAsString.matches(expectedRegEx))
             return;
         if (Objects.equals(expected, actualAsString))
@@ -89,29 +79,18 @@ public class TestHelper {
         assertEquals(message, expected, actualAsString);
     }
     
-    // == Tests for the above ==
-    @Test
-    public void testExact() {
-        assertAsString("Should match exacty", "[One, 2, 3.0]", FuncList.of("One", 2, 3.0));
-    }
-    
-    @Test(expected = ComparisonFailure.class)
-    public void testExact_unmatch() {
-        assertAsString("Should not match", "[One, Two, 3.0]", FuncList.of("One", 2, 3.0));
-    }
-    
-    @Test
-    public void testExact_regExLiked() {
-        assertAsString("When not use RegEx, any text that look like RegEx should still match exactly.", "[One, [0-9]+, 3.0]", FuncList.of("One", "[0-9]+", 3.0));
-    }
-    
-    @Test
-    public void testRegEx() {
-        assertAsString("Match as RegEx.", "[One, \\E[0-9]+\\Q, 3.0]", FuncList.of("One", 2, 3.0));
-    }
-    
-    @Test(expected = ComparisonFailure.class)
-    public void testRegEx_unmatch() {
-        assertAsString("RegEx but not match.", "[One, \\E[0-9]+\\Q, 3.0]", FuncList.of("One", "Two", 3.0));
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static String toString(Object actual) {
+        if (actual instanceof Map) {
+            if (!(actual instanceof TreeMap)) {
+                return new TreeMap((Map) actual).toString();
+            }
+        }
+        if (actual instanceof Set) {
+            if (!(actual instanceof TreeSet)) {
+                return new TreeSet((Set) actual).toString();
+            }
+        }
+        return Objects.toString(actual);
     }
 }

@@ -408,9 +408,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     //== Data ==
     
     // DATA
-    // StartableAction -> NOT START
-    // consumer        -> Pending
-    // result          -> done.
+    // StartableAction  -> NOT START
+    // consumer         -> Pending
+    // result           -> done.
     // result.cancelled -> aborted
     // result.completed -> completed
     final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers = new ConcurrentHashMap<>(INITIAL_CAPACITY);
@@ -421,25 +421,28 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     final AtomicReference<Object> dataRef = new AtomicReference<>();
     
-    final int id = ID.getAndIncrement();
+    final String name;
     
     public int hashCode() {
-        return id;
+        return name.hashCode();
     }
     
     public String toString() {
-        return "Promise#" + id;
+        return "Promise#" + name;
     }
     
     Promise(OnStart onStart) {
+        name = "" + ID.getAndIncrement();
         dataRef.set(onStart);
     }
     
     Promise(StartableAction<DATA> action) {
+        name = "" + ID.getAndIncrement();
         dataRef.set(action);
     }
     
     Promise(Promise parent) {
+        name = "" + ID.getAndIncrement();
         this.dataRef.set(parent);
     }
     
@@ -524,6 +527,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     boolean abort() {
+//        val cancelResult = (Result<DATA>) Result.ofCancelled("Cancelled: " + this);
         val cancelResult = (Result<DATA>) Result.ofCancelled();
         return makeDone(cancelResult);
     }
@@ -560,6 +564,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     static <DATA> boolean makeDone(Promise<DATA> promise, Result<DATA> result) {
+        System.out.println("promise: " + promise + ", result: " + result);
         val isDone = promise.synchronouseOperation(() -> {
             val data = promise.dataRef.get();
             try {

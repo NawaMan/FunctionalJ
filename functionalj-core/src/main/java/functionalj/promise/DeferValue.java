@@ -157,7 +157,7 @@ public class DeferValue<DATA> extends Promise<DATA> {
     }
     
     public String toString() {
-        return "Later#" + id;
+        return "Later#" + name;
     }
     
     private boolean complete(boolean shouldThrowException, Predicate<DeferValue<DATA>> parentAction, BooleanSupplier superAction) {

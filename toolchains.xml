@@ -19,4 +19,14 @@
             <jdkHome>${env.JAVA_17_HOME}</jdkHome>
         </configuration>
     </toolchain>
+    <toolchain>
+        <type>jdk</type>
+        <provides>
+            <version>21</version>
+            <vendor>oracle</vendor>
+        </provides>
+        <configuration>
+            <jdkHome>${env.JAVA_21_HOME}</jdkHome>
+        </configuration>
+    </toolchain>
 </toolchains>
