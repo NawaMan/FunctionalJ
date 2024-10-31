@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -344,6 +345,152 @@ public class PromiseCancelTest {
                     + "\tat functionalj.promise.PromiseCancelTest.testMap_middleCancel2(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\\E.*\\Q",
                     exceptionWtihStacktrace(result2.getException()));
+        });
+    }
+    
+    @Test
+    public void testMap_cleanUp_success() throws Exception {
+        int startValue    =   42;
+        int subStartValue =    0;
+        int subEndValue   =   -1;
+        int cleanUpValue  = 1024;
+        
+        // Ensure that all thread are clean up.
+        ensureThreadCleanup(() -> {
+            val intValue = new AtomicInteger(startValue);
+            val logMsgs  = new ArrayList<String>();
+            
+            val action = DeferAction.<String>from(() -> {
+                intValue.set(subStartValue);
+                logMsgs.add("Started");
+                
+                Thread.sleep(1000);
+                
+                intValue.set(subEndValue);
+                logMsgs.add("Ended");
+                return "Hello World!";
+            })
+            .onComplete(__ -> {
+                intValue.set(cleanUpValue);
+                logMsgs.add("Clean up");
+            })
+            .start();
+            
+            System.out.println("action: " + action + ", promise: " + action.getPromise());
+            
+            val action1 = action .map($S.concat("!!"));
+            val action2 = action1.map($S.replaceAll("World", "there"));
+            
+            val result  = action.getResult();
+            val result1 = action1.getResult();
+            val result2 = action2.getResult();
+            
+            assertAsString("Result:{ Value: Hello World! }",   result);
+            assertAsString("Result:{ Value: Hello World!!! }", result1);
+            assertAsString("Result:{ Value: Hello there!!! }", result2);
+            
+            // The value of the clean up.
+            assertAsString(cleanUpValue + "", intValue);
+            assertAsString(
+                      "[Started, Ended, Clean up]",
+                    logMsgs);
+        });
+    }
+    
+    @Test
+    public void testMap_cleanUp_aborted() throws Exception {
+        int startValue    =   42;
+        int subStartValue =    0;
+        int subEndValue   =   -1;
+        int cleanUpValue  = 1024;
+        
+        // Ensure that all thread are clean up.
+        ensureThreadCleanup(() -> {
+            val intValue = new AtomicInteger(startValue);
+            val logMsgs  = new ArrayList<String>();
+            
+            val action = DeferAction.<String>from(() -> {
+                intValue.set(subStartValue);
+                logMsgs.add("Started");
+                
+                Thread.sleep(1000);
+                
+                intValue.set(subEndValue);
+                logMsgs.add("Ended");
+                return "Hello World!";
+            })
+            .onComplete(__ -> {
+                intValue.set(cleanUpValue);
+                logMsgs.add("Clean up");
+            })
+            .start();
+            
+            System.out.println("action: " + action + ", promise: " + action.getPromise());
+            
+            val action1 = action .map($S.concat("!!"));
+            val action2 = action1.map($S.replaceAll("World", "there"));
+            action.abort();
+            
+            val result  = action.getResult();
+            val result1 = action1.getResult();
+            val result2 = action2.getResult();
+            
+            assertAsString("Result:{ Cancelled }", result);
+            assertAsString("Result:{ Cancelled }", result1);
+            assertAsString("Result:{ Cancelled }", result2);
+            
+            // The value is from the clean up.
+            assertAsString(cleanUpValue + "", intValue);
+            assertAsString("[Started, Clean up]", logMsgs);
+        });
+    }
+    
+    @Test
+    public void testMap_cleanUp_aborted1() throws Exception {
+        int startValue    =   42;
+        int subStartValue =    0;
+        int subEndValue   =   -1;
+        int cleanUpValue  = 1024;
+        
+        // Ensure that all thread are clean up.
+        ensureThreadCleanup(() -> {
+            val intValue = new AtomicInteger(startValue);
+            val logMsgs  = new ArrayList<String>();
+            
+            val action = DeferAction.<String>from(() -> {
+                intValue.set(subStartValue);
+                logMsgs.add("Started");
+                
+                Thread.sleep(1000);
+                
+                intValue.set(subEndValue);
+                logMsgs.add("Ended");
+                return "Hello World!";
+            })
+            .onComplete(__ -> {
+                intValue.set(cleanUpValue);
+                logMsgs.add("Clean up");
+            })
+            .start();
+            
+            System.out.println("action: " + action + ", promise: " + action.getPromise());
+            
+            val action1 = action .map($S.concat("!!"));
+            val action2 = action1.map($S.replaceAll("World", "there"));
+            
+            action1.abort();
+            
+            val result  = action.getResult();
+            val result1 = action1.getResult();
+            val result2 = action2.getResult();
+            
+            assertAsString("Result:{ Value: Hello World! }", result);
+            assertAsString("Result:{ Cancelled }", result1);
+            assertAsString("Result:{ Cancelled }", result2);
+            
+            // The value is from the clean up.
+            assertAsString(cleanUpValue + "", intValue);
+            assertAsString("[Started, Ended, Clean up]", logMsgs);
         });
     }
     
