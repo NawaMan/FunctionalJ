@@ -24,9 +24,10 @@
 package functionalj.functions;
 
 import java.util.function.Supplier;
+
 import functionalj.environments.Log;
+import functionalj.exception.FunctionInvocationException;
 import functionalj.function.Func1;
-import functionalj.function.FunctionInvocationException;
 import functionalj.ref.Ref;
 import lombok.val;
 

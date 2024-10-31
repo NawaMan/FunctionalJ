@@ -24,8 +24,11 @@
 package functionalj.ref;
 
 import static functionalj.ref.Run.With;
+import static functionalj.ref.Substitution.Scope.allThread;
+import static functionalj.ref.Substitution.Scope.localThread;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+
 import lombok.val;
 
 public class RunTest {
@@ -74,7 +77,7 @@ public class RunTest {
         val refA = Ref.ofValue("A");
         val refB = Ref.ofValue("B");
         val refC = Ref.ofValue("C");
-        With(refB.butWith("b").withinThisThread(true)).run(() -> {
+        With(refB.butWith("b").withinThisThread(localThread)).run(() -> {
             assertEquals("AbC", refA.get() + refB.get() + refC.get());
             assertEquals("a and c should be in effect but B should go back to the original one", "aBc", With(refA.butWith("a")).and(refC.butWith("c")).asynchronously().run(() -> refA.get() + refB.get() + refC.get()).getResult().get());
         });
@@ -96,7 +99,7 @@ public class RunTest {
         val refA = Ref.ofValue("A");
         val refB = Ref.ofValue("B");
         val refC = Ref.ofValue("C");
-        With(refB.butWith("b").withinThisThread(false)).run(() -> {
+        With(refB.butWith("b").withinThisThread(allThread)).run(() -> {
             assertEquals("AbC", refA.get() + refB.get() + refC.get());
             assertEquals("a, and c should be in effect", "abc", With(refA.butWith("a")).and(refC.butWith("c")).asynchronously().run(() -> refA.get() + refB.get() + refC.get()).getResult().get());
         });

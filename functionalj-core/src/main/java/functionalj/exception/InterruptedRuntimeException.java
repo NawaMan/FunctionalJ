@@ -21,28 +21,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj;
+package functionalj.exception;
 
-public class WrapException extends RuntimeException {
+import static java.util.Objects.requireNonNull;
+
+public class InterruptedRuntimeException extends RuntimeException {
     
-    private static final long serialVersionUID = -5814440055771538679L;
+    private static final long serialVersionUID = 8712024055767106665L;
     
-    private Exception exception;
-    
-    public static WrapException of(Exception exception) {
-        if (exception instanceof WrapException)
-            return (WrapException) exception;
-        if (exception == null) {
-            return null;
-        }
-        return new WrapException(exception);
-    }
-    
-    private WrapException(Exception exception) {
-        this.exception = exception;
-    }
-    
-    public Exception getException() {
-        return exception;
+    public InterruptedRuntimeException(Exception cause) {
+        super(requireNonNull(cause));
     }
 }

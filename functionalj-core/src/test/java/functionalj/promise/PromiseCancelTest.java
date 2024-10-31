@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import functionalj.environments.Env;
-import functionalj.ref.Run;
 import lombok.val;
 
 public class PromiseCancelTest {
@@ -56,7 +54,7 @@ public class PromiseCancelTest {
             
             assertAsString(
                       "java.lang.RuntimeException: Stop!\n"
-                    + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E[0-9]+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E[a-zA-Z0-9$]+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\\E.*\\Q",
                     exceptionWtihStacktrace(result.getException()));
         });
@@ -82,7 +80,7 @@ public class PromiseCancelTest {
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E[0-9]+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E[a-zA-Z0-9$]+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testCancel(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\\E.*\\Q",
@@ -114,7 +112,7 @@ public class PromiseCancelTest {
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E[0-9]+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E[a-zA-Z0-9$]+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testUnsubscribe(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\\E.*\\Q",
@@ -353,91 +351,93 @@ public class PromiseCancelTest {
     public void testScopeSuccess() throws Exception {
         // Ensure that all thread are clean up.
         ensureThreadCleanup(() -> {
-            val asyncRunner = Env.refs.async.get().withScope();
-            Run.with(Env.refs.async.butWith(asyncRunner)).run(() -> {
-                val logs = new ArrayList<String>();
-                // Normally, a started defer action start and complete operation.
+            val logs = new ArrayList<String>();
+            // Normally, a started defer action start and complete operation.
+            
+            val deferAction = DeferAction.<String>from(() -> {
+                logs.add("Root.start()");
+                Thread.sleep(50);
                 
-                val deferAction = DeferAction.<String>from(() -> {
-                    logs.add("Root.start()");
+                DeferAction.<String>from(() -> {
+                    logs.add("Sub.start()");
                     Thread.sleep(50);
-                    
-                    DeferAction.<String>from(() -> {
-                        logs.add("Sub.start()");
-                        Thread.sleep(50);
-                        logs.add("Sub.end()");
-                        return "Hello there!";
-                    })
-                    .start()
-                    .getResult();
-                    
-                    logs.add("Root.end()");
-                    return "Hello World!";
-                });
-                val action = deferAction.start();
+                    logs.add("Sub.end()");
+                    return "Hello there!";
+                })
+                .start()
+                .getResult();
                 
-                assertAsString("Result:{ Value: Hello World! }", action.getResult());
-                assertAsString("["
-                        + "Root.start(), "
-                        + "Sub.start(), "
-                        + "Sub.end(), "
-                        + "Root.end()"
-                        + "]",
-                        logs); 
+                logs.add("Root.end()");
+                return "Hello World!";
             });
+            val action = deferAction.start();
+            
+            // Wait for result ... which mean also wait for the result above as well.
+            assertAsString("Result:{ Value: Hello World! }", action.getResult());
+            assertAsString("["
+                    + "Root.start(), "
+                    + "Sub.start(), "
+                    + "Sub.end(), "
+                    + "Root.end()"
+                    + "]",
+                    logs); 
         });
     }
     
     @Test
     public void testScopeSuccess_noWaitForSub() throws Exception {
         // Ensure that all thread are clean up.
-        System.out.println("A: " + Env.refs.async.get());
-        System.out.println("A: " + Thread.currentThread());
         ensureThreadCleanup(() -> {
-            System.out.println("B: " + Env.refs.async.get());
-            System.out.println("B: " + Thread.currentThread());
-            val asyncRunner = Env.refs.async.get().withScope();
-            Run.with(Env.refs.async.butWith(asyncRunner)).run(() -> {
-                System.out.println("C: " + Env.refs.async.get());
-                System.out.println("C: " + Thread.currentThread());
-                val logs = new ArrayList<String>();
-                // Normally, a started defer action start and complete operation.
+            val logs = new ArrayList<String>();
+            // Normally, a started defer action start and complete operation.
+            
+            val deferAction = DeferAction.<String>from(() -> {
+                logs.add("Root.start()");
                 
-                val deferAction = DeferAction.<String>from(() -> {
-                    System.out.println("D: " + Env.refs.async.get());
-                    System.out.println("D: " + Thread.currentThread());
-                    logs.add("Root.start()");
-                    Thread.sleep(50);
-                    
-                    DeferAction.<String>from(() -> {
-                        try {
-                            System.out.println("E: " + Env.refs.async.get());
-                            System.out.println("E: " + Thread.currentThread());
-                            logs.add("Sub.start()");
-                            Thread.sleep(10000);
-                            logs.add("Sub.end()");
-                            return "Hello there!";
-                        } catch (InterruptedException e) {
-                            logs.add("Sub.interrupted()");
-                            throw e;
-                        }
-                    })
-                    .start();
-                    
-                    logs.add("Root.end()");
-                    return "Hello World!";
-                });
-                val action = deferAction.start();
+                DeferAction.<String>from(() -> {
+                    try {
+                        logs.add("Sub.start()");
+                        Thread.sleep(10000);
+                        logs.add("Sub.end()");
+                        return "Hello there!";
+                    } catch (InterruptedException e) {
+                        logs.add("Sub.interrupted()");
+                        throw e;
+                    }
+                })
+                .start();
                 
-                action.abort();
-                
-                assertAsString("Result:{ Value: Hello World! }", action.getResult());
-                assertAsString("["
-                        + "Root.start(), "
-                        + "Sub.start(), "
-                        + "Root.end()]",
-                        logs);
+                logs.add("Root.end()");
+                return "Hello World!";
             });
+            val action = deferAction.start();
+            
+            Thread.sleep(50);
+            action.abort();
+            
+            val result = action.getResult();
+            
+            assertAsString("Result:{ Cancelled }", result);
+            
+            assertAsString(
+                    "functionalj.result.ResultCancelledException\n"
+                    + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.PromiseCancelTest.testScopeSuccess_noWaitForSub(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
+                    + "\\E.*\\Q",
+                    exceptionWtihStacktrace(result.getException()));
+            
+            assertAsString(
+                    "["
+                    + "Root.start(), "
+                    + "Sub.start(), "
+                    + "Sub.interrupted(), "
+                    + "Root.end()"
+                    + "]",
+                    logs);
         });
     }
     

@@ -38,7 +38,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import functionalj.InterruptedRuntimeException;
+
+import functionalj.exception.InterruptedRuntimeException;
 import functionalj.function.FuncUnit1;
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;

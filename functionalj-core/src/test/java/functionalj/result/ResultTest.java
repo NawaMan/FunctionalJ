@@ -154,7 +154,7 @@ public class ResultTest {
     
     @Test
     public void testResultResult_withException() {
-        assertAsString("Result:{ Exception: functionalj.function.FunctionInvocationException: Test fail }", Result.ofResults(Result.valueOf("One"), Result.ofException("Test fail"), Result.valueOf("Three"), (a, b, c) -> a + "," + b + "," + c));
+        assertAsString("Result:{ Exception: functionalj.exception.FunctionInvocationException: Test fail }", Result.ofResults(Result.valueOf("One"), Result.ofException("Test fail"), Result.valueOf("Three"), (a, b, c) -> a + "," + b + "," + c));
     }
     
     @Test

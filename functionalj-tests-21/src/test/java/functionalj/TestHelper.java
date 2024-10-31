@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Supplier;
-import lombok.val;
 
 public class TestHelper {
     
@@ -41,8 +40,8 @@ public class TestHelper {
      * If inexact matching is needed, start it with '\\E' and ended it with '\\Q'.
      */
     public static void assertAsString(String expected, Object actual) {
-        val expectedRegEx = "^\\Q" + expected + "\\E$";
-        val actualAsString = toString(actual);
+        var expectedRegEx = "^\\Q" + expected + "\\E$";
+        var actualAsString = toString(actual);
         if (actualAsString.matches(expectedRegEx))
             return;
         assertEquals(expected, actualAsString);
@@ -55,8 +54,8 @@ public class TestHelper {
      * If inexact matching is needed, start it with '\\E' and ended it with '\\Q'.
      */
     public static void assertAsString(String failureMessage, String expected, Object actual) {
-        val expectedRegEx = "^\\Q" + expected + "\\E$";
-        val actualAsString = toString(actual);
+        var expectedRegEx = "^\\Q" + expected + "\\E$";
+        var actualAsString = toString(actual);
         if (actualAsString.matches(expectedRegEx))
             return;
         assertEquals(failureMessage, expected, actualAsString);
@@ -69,13 +68,13 @@ public class TestHelper {
      * If inexact matching is needed, start it with '\\E' and ended it with '\\Q'.
      */
     public static void assertAsString(Supplier<String> failureMessage, String expected, Object actual) {
-        val expectedRegEx = "^\\Q" + expected + "\\E$";
-        val actualAsString = toString(actual);
+        var expectedRegEx = "^\\Q" + expected + "\\E$";
+        var actualAsString = toString(actual);
         if (actualAsString.matches(expectedRegEx))
             return;
         if (Objects.equals(expected, actualAsString))
             return;
-        val message = failureMessage.get();
+        var message = failureMessage.get();
         assertEquals(message, expected, actualAsString);
     }
     

@@ -23,8 +23,6 @@
 // ============================================================================
 package functionalj.environments;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -32,7 +30,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 
+import functionalj.exception.ExceptionUtils;
+import functionalj.exception.WrapThrowable;
 import functionalj.function.FuncUnit1;
 import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
@@ -64,15 +65,55 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
         });
     }
     
+    public static class SubAsyncRunner implements AsyncRunner {
+        
+        private ConcurrentHashMap<Thread, Thread> scopedThreads  = new ConcurrentHashMap<>();
+        
+        @Override
+        public void acceptUnsafe(Runnable subRunnable) throws Exception {
+            val currentThread = Thread.currentThread();
+            scopedThreads.put(currentThread, currentThread);
+            
+            subRunnable.run();
+        }
+        
+        Substitution<AsyncRunner> substitution() {
+            return Env.refs.async.butWith(this);
+        }
+        
+        void forEach(Consumer<Thread> consumer) {
+            scopedThreads.keySet().forEach(consumer);
+        }
+        
+        void interruptAll() {
+            forEach(thread -> {
+                try {
+                    thread.interrupt();
+                } catch (Throwable throwable) {
+                    /* Do not expect any exception .... Do nothing but printing. */
+                    val message = ExceptionUtils.toString("Unexpected exception: ", throwable);
+                    Env.console().errPrintln(message);
+                }
+            });
+        }
+    }
+    
     public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
-        val action = DeferAction.of((Class<DATA>) null).start();
+        val isScoped = true;
+        
+        
+        val action    = DeferAction.of((Class<DATA>) null).start();
         val theRunner = (runner != null) ? runner : Env.async();
-        val substitutions = Substitution.getCurrentSubstitutions().exclude(Substitution::isThreadLocal);
+        val substitutions
+                = Substitution
+                .getCurrentSubstitutions()
+                .exclude(Substitution::isThreadLocal);
         val latch = new CountDownLatch(1);
         theRunner.accept(() -> {
-            try {
-                Scoped run must be done some where 
-                Run.with(substitutions).run(() -> {
+            val subAsyncRunner = new SubAsyncRunner();
+            
+            try { 
+                Run.with(substitutions).with(subAsyncRunner.substitution()).run(() -> {
                     body.prepared();
                     latch.countDown();
                     DATA value = body.compute();
@@ -81,16 +122,23 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
             } catch (Exception exception) {
                 action.fail(exception);
                 ThrowFuncs.handleNoThrow(exception);
-            } catch (Throwable exception) {
-                // TODO - Make a dedicate exception.
-                action.fail(new Exception(exception));
+            } catch (Throwable throwable) {
+                val exception = new WrapThrowable(throwable);
+                action.fail(exception);
+                ThrowFuncs.handleNoThrow(exception);
+            } finally {
+                if (isScoped) {
+                    subAsyncRunner.interruptAll();
+                }
             }
         });
+        
         try {
             latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        
         val promise = action.getPromise();
         return promise;
     }
@@ -127,80 +175,10 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
         return runnable -> executorService.execute(runnable);
     }
     
-    public static class ScopedAsyncRunner implements AsyncRunner {
-        
-        private final AsyncRunner asyncRunner;
-        
-        public ScopedAsyncRunner(AsyncRunner asyncRunner) {
-            this.asyncRunner = requireNonNull(asyncRunner);
-        }
-        
-        @Override
-        public void acceptUnsafe(Runnable runnable) throws Exception {
-            if (asyncRunner == onSameThread) {
-                runnable.run();
-                return;
-            }
-            
-            val subThreads = new ConcurrentHashMap<Thread, Thread>();
-            
-            val subAsyncRunnder = (new AsyncRunner() {
-                @Override
-                public void acceptUnsafe(Runnable subRunnable) throws Exception {
-                    val currentThread = Thread.currentThread();
-                    subThreads.put(currentThread, currentThread);
-                    
-                    subRunnable.run();
-                }
-            }).withScope();
-            
-            try {
-                System.out.println("subAsyncRunnder: " + subAsyncRunnder);
-                Run.with(Env.refs.async.butWith(subAsyncRunnder)).run(() -> {
-                    System.out.println("F: " + Env.refs.async.get());
-                    System.out.println("F: " + Thread.currentThread());
-                    runnable.run();
-                    
-                    subThreads.keySet().forEach(thread -> {
-                        try {
-                            thread.join();
-                        } catch (Throwable e) {
-                            // Nothing to do.
-                        }
-                    });
-                });
-            } finally {
-                subThreads.keySet().forEach(thread -> {
-                    try {
-                        thread.interrupt();
-                    } catch (Throwable e) {
-                        // Nothing to do.
-                    }
-                });
-            }
-        }
-        
-        @Override
-        public ScopedAsyncRunner withScope() {
-            return this;
-        }
-        
-        @Override
-        public AsyncRunner withNoScope() {
-            return asyncRunner;
-        }
-        
-    }
-    
     //== Functionality ==
     
     @Override
     public void acceptUnsafe(Runnable runnable) throws Exception;
-    
-    /** @return a scoped {@link AsyncRunner} of this {@link AsyncRunner}. **/
-    public default ScopedAsyncRunner withScope() {
-        return new ScopedAsyncRunner(this);
-    }
     
     /** @return a scoped {@link AsyncRunner} of this {@link AsyncRunner}. **/
     public default AsyncRunner withNoScope() {

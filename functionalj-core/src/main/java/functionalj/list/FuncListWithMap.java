@@ -44,9 +44,9 @@ public interface FuncListWithMap<DATA> extends AsFuncList<DATA> {
     /**
      * Map the value using the mapper only when the condition is true.
      */
-    public default <SOURCE, TARGET extends DATA> FuncList<DATA> mapOnly(Class<SOURCE> clazz, Function<? super SOURCE, TARGET> mapper) {
+    public default <SOURCE, TARGET extends DATA> FuncList<DATA> mapFor(Class<SOURCE> clazz, Function<? super SOURCE, TARGET> mapper) {
         val funcList = funcListOf(this);
-        return deriveFrom(funcList, stream -> stream.mapOnly(clazz, mapper));
+        return deriveFrom(funcList, stream -> stream.mapFor(clazz, mapper));
     }
     
     /**

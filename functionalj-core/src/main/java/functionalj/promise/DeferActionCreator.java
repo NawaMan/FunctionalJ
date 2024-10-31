@@ -90,7 +90,7 @@ public class DeferActionCreator {
         }
         
         class Body implements ComputeBody<Void, RuntimeException> {
-        
+            
             public void prepared() {
                 val promise = promiseRef.get();
                 if (!promise.isNotDone())
@@ -98,7 +98,7 @@ public class DeferActionCreator {
                 setupInterruptOnCancel(promise);
                 carelessly(onStart);
             }
-        
+            
             @Override
             public Void compute() throws RuntimeException {
                 val promise = promiseRef.get();
@@ -107,7 +107,7 @@ public class DeferActionCreator {
                 action.completeWith(result);
                 return null;
             }
-        
+            
             private D runSupplier() {
                 try {
                     return supplier.get();
@@ -115,7 +115,7 @@ public class DeferActionCreator {
                     doInterruptOnCancel();
                 }
             }
-        
+            
             private void setupInterruptOnCancel(Promise<D> promise) {
                 if (!interruptOnCancel)
                     return;

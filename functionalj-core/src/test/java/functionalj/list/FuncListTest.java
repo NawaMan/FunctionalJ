@@ -2341,7 +2341,7 @@ public class FuncListTest {
             }
         };
         run(FuncList.of((CharSequence)One, (CharSequence)Two, (CharSequence)Three, four), list -> {
-            assertAsString("[ONE, TWO, THREE, Four]", list.mapOnly(String.class, $S.toUpperCase().castToString()));
+            assertAsString("[ONE, TWO, THREE, Four]", list.mapFor(String.class, $S.toUpperCase().castToString()));
         });
     }
     

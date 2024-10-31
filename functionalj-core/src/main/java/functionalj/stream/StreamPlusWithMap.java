@@ -52,7 +52,7 @@ public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
     /**
      * Map the value using the mapper only when the condition is true.
      */
-    public default <SOURCE, TARGET extends DATA> StreamPlus<DATA> mapOnly(Class<SOURCE> clazz, Function<? super SOURCE, TARGET> mapper) {
+    public default <SOURCE, TARGET extends DATA> StreamPlus<DATA> mapFor(Class<SOURCE> clazz, Function<? super SOURCE, TARGET> mapper) {
         val streamPlus = streamPlus();
         return streamPlus.map(value -> {
             val isTrue = clazz.isInstance(value);

@@ -1325,7 +1325,7 @@ public class StreamPlusTest {
                 return "Four";
             }
         });
-        assertAsString("[ONE, TWO, THREE, Four]", stream.mapOnly(String.class, $S.toUpperCase().castToString()).toList());
+        assertAsString("[ONE, TWO, THREE, Four]", stream.mapFor(String.class, $S.toUpperCase().castToString()).toList());
     }
     
     @Test

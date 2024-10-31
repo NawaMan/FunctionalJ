@@ -38,6 +38,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.exception.FunctionInvocationException;
 import functionalj.function.Func;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
@@ -50,7 +51,6 @@ import functionalj.function.Func6;
 import functionalj.function.Func7;
 import functionalj.function.Func8;
 import functionalj.function.Func9;
-import functionalj.function.FunctionInvocationException;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.HasPromise;
