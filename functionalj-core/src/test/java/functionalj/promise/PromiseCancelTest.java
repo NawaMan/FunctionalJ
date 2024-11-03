@@ -511,20 +511,28 @@ public class PromiseCancelTest {
                     logs.add("Sub.end()");
                     return "Hello there!";
                 })
+                .onComplete(result -> {
+                    logs.add("Sub completed");
+                })
                 .start()
+                // Call `getResult()` so wait.
                 .getResult();
                 
+                Thread.sleep(10);
                 logs.add("Root.end()");
                 return "Hello World!";
             });
             val action = deferAction.start();
+            // Call `getResult()` so wait.
+            val result = action.getResult();
             
             // Wait for result ... which mean also wait for the result above as well.
-            assertAsString("Result:{ Value: Hello World! }", action.getResult());
+            assertAsString("Result:{ Value: Hello World! }", result);
             assertAsString("["
                     + "Root.start(), "
                     + "Sub.start(), "
                     + "Sub.end(), "
+                    + "Sub completed, "
                     + "Root.end()"
                     + "]",
                     logs); 
@@ -544,7 +552,7 @@ public class PromiseCancelTest {
                 DeferAction.<String>from(() -> {
                     try {
                         logs.add("Sub.start()");
-                        Thread.sleep(10000);
+                        Thread.sleep(100000);
                         logs.add("Sub.end()");
                         return "Hello there!";
                     } catch (InterruptedException e) {
@@ -560,7 +568,6 @@ public class PromiseCancelTest {
             val action = deferAction.start();
             
             Thread.sleep(50);
-            action.abort();
             
             val result = action.getResult();
             
