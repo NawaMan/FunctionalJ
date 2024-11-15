@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.environments;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -34,7 +33,7 @@ import java.util.function.Consumer;
 
 import functionalj.exception.ExceptionUtils;
 import functionalj.exception.WrapThrowable;
-import functionalj.function.FuncUnit1;
+import functionalj.function.Annotated;
 import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
@@ -48,7 +47,29 @@ import lombok.val;
  * Runnder for async runnable.
  */
 @FunctionalInterface
-public interface AsyncRunner extends FuncUnit1<Runnable> {
+public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Runnable> {
+    
+    public static AsyncRunner of(functionalj.function.FuncUnit1<java.lang.Runnable> runner) {
+        if (runner instanceof AsyncRunner)
+            return (AsyncRunner)runner;
+        
+        return runner::acceptUnsafe;
+    }
+    
+    public static NamedAsyncRunner of(String name, functionalj.function.FuncUnit1<java.lang.Runnable> runner) {
+        return withName(name, runner);
+    }
+    
+    public static NamedAsyncRunner withName(String name, functionalj.function.FuncUnit1<java.lang.Runnable> runner) {
+        if (runner instanceof NamedAsyncRunner) {
+            val named = (NamedAsyncRunner)runner;
+            if (named.name().equals(name))
+                return named;
+        }
+        
+        return new NamedAsyncRunner(name, runner);
+    }
+    
     
     public static <EXCEPTION extends Exception> Promise<Object> run(RunBody<EXCEPTION> runnable) {
         return run(null, runnable);
@@ -64,6 +85,15 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
             return null;
         });
     }
+    
+    public static class NamedAsyncRunner extends Annotated.FuncUnit1<java.lang.Runnable> implements AsyncRunner {
+        
+        public NamedAsyncRunner(String name, functionalj.function.FuncUnit1<java.lang.Runnable> runner) {
+            super(name, runner);
+        }
+        
+    }
+    
     
     public static class SubAsyncRunner implements AsyncRunner {
         
@@ -143,36 +173,32 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
         return promise;
     }
     
-    public static final AsyncRunner onSameThread = runnable -> {
+    public static final AsyncRunner onSameThread = AsyncRunner.withName("RunOnSameThread", runnable -> {
         runnable.run();
-    };
+    });
     
-    public static final AsyncRunner onNewThread = runnable -> {
+    public static final AsyncRunner onNewThread = AsyncRunner.withName("RunOnNewThread", runnable -> {
         new Thread(runnable).start();
-    };
+    });
     
-    public static final AsyncRunner threadFactory = runnable -> {
+    public static final AsyncRunner threadFactory = AsyncRunner.withName("ThreadFactory", runnable -> {
         Executors.defaultThreadFactory().newThread(runnable).start();
-    };
+    });
     
-    public static final AsyncRunner completeableFuture = runnable -> {
-        CompletableFuture.runAsync(runnable);
-    };
-    
-    public static final AsyncRunner forkJoinPool = runnable -> {
+    public static final AsyncRunner forkJoinPool = AsyncRunner.withName("ForkJoinPool", runnable -> {
         ForkJoinPool.commonPool().execute(runnable);
-    };
+    });
     
     public static AsyncRunner virtualThread(AsyncRunner fallback) {
         return VirtualThreadRunner.asAsyncRunner(fallback);
     }
     
     public static AsyncRunner threadFactory(ThreadFactory threadFactory) {
-        return runnable -> threadFactory.newThread(runnable).start();
+        return AsyncRunner.withName("ThreadFactory:" + threadFactory, runnable -> threadFactory.newThread(runnable).start());
     }
     
     public static AsyncRunner executorService(ExecutorService executorService) {
-        return runnable -> executorService.execute(runnable);
+        return AsyncRunner.withName("ExecutorService:" + executorService, runnable -> executorService.execute(runnable));
     }
     
     //== Functionality ==

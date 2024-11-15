@@ -73,7 +73,7 @@ public abstract class Annotated implements Named, Traced {
     /**
      * Named predicate. *
      */
-    static class Predicate<T> extends Annotated implements java.util.function.Predicate<T> {
+    public static class Predicate<T> extends Annotated implements java.util.function.Predicate<T> {
         
         private final java.util.function.Predicate<T> check;
         
@@ -109,7 +109,7 @@ public abstract class Annotated implements Named, Traced {
     /**
      * Named predicate. *
      */
-    static class BiPredicate<T, U> extends Annotated implements java.util.function.BiPredicate<T, U> {
+    public static class BiPredicate<T, U> extends Annotated implements java.util.function.BiPredicate<T, U> {
         
         private final java.util.function.BiPredicate<T, U> check;
         
@@ -145,7 +145,7 @@ public abstract class Annotated implements Named, Traced {
     /**
      * Named runnable. *
      */
-    static class Runnable extends Annotated implements java.lang.Runnable {
+    public static class Runnable extends Annotated implements java.lang.Runnable {
         
         private final java.lang.Runnable runnable;
         
@@ -181,7 +181,7 @@ public abstract class Annotated implements Named, Traced {
     /**
      * Named supplier
      */
-    static class Supplier<T> extends Annotated implements java.util.function.Supplier<T> {
+    public static class Supplier<T> extends Annotated implements java.util.function.Supplier<T> {
         
         private final java.util.function.Supplier<T> supplier;
         
@@ -217,7 +217,7 @@ public abstract class Annotated implements Named, Traced {
     /**
      * Named consumer. *
      */
-    static class Consumer<T> extends Annotated implements java.util.function.Consumer<T> {
+    public static class Consumer<T> extends Annotated implements java.util.function.Consumer<T> {
         
         private final java.util.function.Consumer<T> consumer;
         
@@ -250,7 +250,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func0<OUTPUT> extends Annotated implements functionalj.function.Func0<OUTPUT> {
+    public static class Func0<OUTPUT> extends Annotated implements functionalj.function.Func0<OUTPUT> {
         
         private final functionalj.function.Func0<OUTPUT> func;
         
@@ -283,7 +283,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func1<INPUT, OUTPUT> extends Annotated implements functionalj.function.Func1<INPUT, OUTPUT> {
+    public static class Func1<INPUT, OUTPUT> extends Annotated implements functionalj.function.Func1<INPUT, OUTPUT> {
         
         private final functionalj.function.Func1<INPUT, OUTPUT> func;
         
@@ -316,7 +316,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func2<INPUT1, INPUT2, OUTPUT> extends Annotated implements functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> {
+    public static class Func2<INPUT1, INPUT2, OUTPUT> extends Annotated implements functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> {
         
         private final functionalj.function.Func2<INPUT1, INPUT2, OUTPUT> func;
         
@@ -349,7 +349,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func3<INPUT1, INPUT2, INPUT3, OUTPUT> extends Annotated implements functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
+    public static class Func3<INPUT1, INPUT2, INPUT3, OUTPUT> extends Annotated implements functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         
         private final functionalj.function.Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func;
         
@@ -382,7 +382,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> extends Annotated implements functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
+    public static class Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> extends Annotated implements functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         
         private final functionalj.function.Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func;
         
@@ -415,7 +415,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> extends Annotated implements functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
+    public static class Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> extends Annotated implements functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
         
         private final functionalj.function.Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func;
         
@@ -448,7 +448,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> extends Annotated implements functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
+    public static class Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> extends Annotated implements functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
         
         private final functionalj.function.Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func;
         
@@ -481,7 +481,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class FuncUnit0 extends Annotated implements functionalj.function.FuncUnit0 {
+    public static class FuncUnit0 extends Annotated implements functionalj.function.FuncUnit0 {
         
         private final functionalj.function.FuncUnit0 func;
         
@@ -514,7 +514,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class FuncUnit1<INPUT> extends Annotated implements functionalj.function.FuncUnit1<INPUT> {
+    public static class FuncUnit1<INPUT> extends Annotated implements functionalj.function.FuncUnit1<INPUT> {
         
         private final functionalj.function.FuncUnit1<INPUT> func;
         
@@ -547,7 +547,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class FuncUnit2<INPUT1, INPUT2> extends Annotated implements functionalj.function.FuncUnit2<INPUT1, INPUT2> {
+    public static class FuncUnit2<INPUT1, INPUT2> extends Annotated implements functionalj.function.FuncUnit2<INPUT1, INPUT2> {
         
         private final functionalj.function.FuncUnit2<INPUT1, INPUT2> func;
         
@@ -580,7 +580,7 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
-    static class FuncUnit3<INPUT1, INPUT2, INPUT3> extends Annotated implements functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> {
+    public static class FuncUnit3<INPUT1, INPUT2, INPUT3> extends Annotated implements functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> {
         
         private final functionalj.function.FuncUnit3<INPUT1, INPUT2, INPUT3> func;
         
