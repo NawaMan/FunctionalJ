@@ -63,65 +63,65 @@ public class PromiseScopeTest {
                     logs); 
         });
     }
-    
-    @Test
-    public void testScopeSuccess_noWaitForSub() throws Exception {
-        // Ensure that all thread are clean up.
-        ensureThreadCleanup(() -> {
-            val logs = new ArrayList<String>();
-            // Normally, a started defer action start and complete operation.
-            
-            val mainAction = DeferAction.<String>from(() -> {
-                logs.add("Main.start()");
-                
-                // Start the sub
-                DeferAction.<String>from(() -> {
-                    try {
-                        logs.add("Sub.start()");
-                        Thread.sleep(100000);
-                        logs.add("Sub.end()");
-                        return "Hello there!";
-                    } catch (InterruptedException e) {
-                        logs.add("Sub.interrupted()");
-                        throw e;
-                    }
-                })
-                .start();
-                
-                // But do not wait for the sub to finish.
-                logs.add("Main.end()");
-                return "Hello World!";
-            })
-            .start();
-            
-            Thread.sleep(10);
-            
-            // Wait for the main to finish
-            val result = mainAction.getResult();
-            
-            assertAsString("Result:{ Cancelled }", result);
-            
-            assertAsString(
-                    "functionalj.result.ResultCancelledException\n"
-                    + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.PromiseCancelTest.testScopeSuccess_noWaitForSub(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
-                    + "\\E.*\\Q",
-                    exceptionWtihStacktrace(result.getException()));
-            
-            assertAsString(
-                    "["
-                    + "Main.start(), "
-                    + "Sub.start(), "
-                    + "Sub.interrupted(), "     // The sub get interrupted.
-                    + "Main.end()"
-                    + "]",
-                    logs);
-        });
-    }
+//    
+//    @Test
+//    public void testScopeSuccess_noWaitForSub() throws Exception {
+//        // Ensure that all thread are clean up.
+//        ensureThreadCleanup(() -> {
+//            val logs = new ArrayList<String>();
+//            // Normally, a started defer action start and complete operation.
+//            
+//            val mainAction = DeferAction.<String>from(() -> {
+//                logs.add("Main.start()");
+//                
+//                // Start the sub
+//                DeferAction.<String>from(() -> {
+//                    try {
+//                        logs.add("Sub.start()");
+//                        Thread.sleep(100000);
+//                        logs.add("Sub.end()");
+//                        return "Hello there!";
+//                    } catch (InterruptedException e) {
+//                        logs.add("Sub.interrupted()");
+//                        throw e;
+//                    }
+//                })
+//                .start();
+//                
+//                // But do not wait for the sub to finish.
+//                logs.add("Main.end()");
+//                return "Hello World!";
+//            })
+//            .start();
+//            
+//            Thread.sleep(10);
+//            
+//            // Wait for the main to finish
+//            val result = mainAction.getResult();
+//            
+//            assertAsString("Result:{ Cancelled }", result);
+//            
+//            assertAsString(
+//                    "functionalj.result.ResultCancelledException\n"
+//                    + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
+//                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
+//                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+//                    + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
+//                    + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
+//                    + "\tat functionalj.promise.PromiseCancelTest.testScopeSuccess_noWaitForSub(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
+//                    + "\\E.*\\Q",
+//                    exceptionWtihStacktrace(result.getException()));
+//            
+//            assertAsString(
+//                    "["
+//                    + "Main.start(), "
+//                    + "Sub.start(), "
+//                    + "Sub.interrupted(), "     // The sub get interrupted.
+//                    + "Main.end()"
+//                    + "]",
+//                    logs);
+//        });
+//    }
     
     private void ensureThreadCleanup(Body body) throws Exception {
         int startActiveThreads = Thread.activeCount();

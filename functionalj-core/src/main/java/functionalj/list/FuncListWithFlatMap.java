@@ -42,7 +42,6 @@ public interface FuncListWithFlatMap<DATA> extends AsFuncList<DATA> {
     /**
      * FlatMap with the mapper if the condition is true, otherwise use another elseMapper.
      */
-    @SuppressWarnings("resource")
     public default <T> FuncList<T> flatMapIf(Predicate<? super DATA> checker, Function<? super DATA, ? extends FuncList<T>> mapper, Function<? super DATA, ? extends FuncList<T>> elseMapper) {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> {
