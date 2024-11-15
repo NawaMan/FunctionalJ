@@ -25,7 +25,7 @@ package functionalj.promise;
 
 import static functionalj.function.Func.getOrElse;
 import java.util.function.Supplier;
-import functionalj.environments.AsyncRunner;
+
 import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;

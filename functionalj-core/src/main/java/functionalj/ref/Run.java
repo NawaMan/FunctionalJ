@@ -24,9 +24,10 @@
 package functionalj.ref;
 
 import java.util.List;
-import functionalj.environments.AsyncRunner;
+
 import functionalj.function.Func;
 import functionalj.list.FuncList;
+import functionalj.promise.AsyncRunner;
 import functionalj.promise.Promise;
 import lombok.val;
 

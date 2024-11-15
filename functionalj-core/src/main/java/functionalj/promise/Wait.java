@@ -23,8 +23,6 @@
 // ============================================================================
 package functionalj.promise;
 
-import functionalj.environments.AsyncRunner;
-
 public abstract class Wait {
     
     public static WaitForever forever() {

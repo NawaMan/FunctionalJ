@@ -54,7 +54,6 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
-import functionalj.environments.AsyncRunner;
 import functionalj.environments.Console;
 import functionalj.environments.Env;
 import functionalj.function.Func0;

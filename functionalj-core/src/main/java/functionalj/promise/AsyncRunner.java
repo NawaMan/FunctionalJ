@@ -21,24 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.environments;
+package functionalj.promise;
 
-import java.util.concurrent.ConcurrentHashMap;
+import static functionalj.promise.AsyncRunnerScope.asyncScope;
+import static functionalj.ref.Run.With;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadFactory;
-import java.util.function.Consumer;
 
-import functionalj.exception.ExceptionUtils;
+import functionalj.environments.Env;
+import functionalj.environments.VirtualThreadRunner;
 import functionalj.exception.WrapThrowable;
 import functionalj.function.Annotated;
 import functionalj.functions.ThrowFuncs;
-import functionalj.promise.DeferAction;
-import functionalj.promise.Promise;
 import functionalj.ref.ComputeBody;
-import functionalj.ref.Run;
 import functionalj.ref.RunBody;
 import functionalj.ref.Substitution;
 import lombok.val;
@@ -94,56 +93,35 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
     }
     
-    
-    public static class SubAsyncRunner implements AsyncRunner {
-        
-        private ConcurrentHashMap<Thread, Thread> scopedThreads  = new ConcurrentHashMap<>();
-        
-        @Override
-        public void acceptUnsafe(Runnable subRunnable) throws Exception {
-            val currentThread = Thread.currentThread();
-            scopedThreads.put(currentThread, currentThread);
-            
-            subRunnable.run();
-        }
-        
-        Substitution<AsyncRunner> substitution() {
-            return Env.refs.async.butWith(this);
-        }
-        
-        void forEach(Consumer<Thread> consumer) {
-            scopedThreads.keySet().forEach(consumer);
-        }
-        
-        void interruptAll() {
-            forEach(thread -> {
-                try {
-                    thread.interrupt();
-                } catch (Throwable throwable) {
-                    /* Do not expect any exception .... Do nothing but printing. */
-                    val message = ExceptionUtils.toString("Unexpected exception: ", throwable);
-                    Env.console().errPrintln(message);
-                }
-            });
-        }
-    }
-    
     public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
-        val isScoped = true;
-        
-        
         val action    = DeferAction.of((Class<DATA>) null).start();
         val theRunner = (runner != null) ? runner : Env.async();
+        
+        System.out.println("subs");
+        Substitution.getCurrentSubstitutions().forEach(each -> System.out.println("    " + each + " " + each.isThreadLocal()));
+        System.out.println();
+        
         val substitutions
                 = Substitution
                 .getCurrentSubstitutions()
                 .exclude(Substitution::isThreadLocal);
+        
+        val parentScope = asyncScope.get();
+        System.out.println("outside parentScope: " + parentScope);
+        
         val latch = new CountDownLatch(1);
         theRunner.accept(() -> {
-            val subAsyncRunner = new SubAsyncRunner();
+            parentScope.onBeforeRun();
             
-            try { 
-                Run.with(substitutions).with(subAsyncRunner.substitution()).run(() -> {
+            val currentScope = new AsyncRunnerLocalScope();
+            System.out.println("currentScope: " + currentScope);
+            
+            try {
+                With(substitutions)
+                .with(asyncScope.butWith(currentScope))
+                .run(() -> {
+                    System.out.println("innerScope: " + asyncScope.get());
+                    
                     body.prepared();
                     latch.countDown();
                     DATA value = body.compute();
@@ -157,9 +135,8 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
                 action.fail(exception);
                 ThrowFuncs.handleNoThrow(exception);
             } finally {
-                if (isScoped) {
-                    subAsyncRunner.interruptAll();
-                }
+                System.out.println("finally: currentScope: " + currentScope);
+                currentScope.onAllDone();
             }
         });
         

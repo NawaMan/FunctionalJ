@@ -25,7 +25,7 @@ package functionalj.promise;
 
 import static functionalj.function.Func.carelessly;
 import java.util.concurrent.atomic.AtomicReference;
-import functionalj.environments.AsyncRunner;
+
 import functionalj.function.Func0;
 import functionalj.ref.ComputeBody;
 import functionalj.ref.Ref;

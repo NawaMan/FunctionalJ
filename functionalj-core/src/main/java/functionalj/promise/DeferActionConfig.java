@@ -24,7 +24,7 @@
 package functionalj.promise;
 
 import java.util.function.Consumer;
-import functionalj.environments.AsyncRunner;
+
 import functionalj.function.Func0;
 import functionalj.function.FuncUnit0;
 import functionalj.ref.Ref;

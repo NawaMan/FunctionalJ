@@ -1,5 +1,6 @@
 package functionalj.environments;
 
+import functionalj.promise.AsyncRunner;
 import lombok.val;
 
 public class VirtualThreadRunner implements AsyncRunner {

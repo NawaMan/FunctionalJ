@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Test;
-import functionalj.environments.AsyncRunner;
+
 import functionalj.list.FuncList;
 import functionalj.tuple.Tuple;
 import lombok.val;

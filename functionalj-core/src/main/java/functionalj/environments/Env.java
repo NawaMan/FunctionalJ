@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.environments;
 
+import functionalj.promise.AsyncRunner;
 import functionalj.ref.Ref;
 
 public final class Env {
