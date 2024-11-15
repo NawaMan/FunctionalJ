@@ -250,6 +250,8 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
+    //== Func ==
+    
     public static class Func0<OUTPUT> extends Annotated implements functionalj.function.Func0<OUTPUT> {
         
         private final functionalj.function.Func0<OUTPUT> func;
@@ -481,6 +483,140 @@ public abstract class Annotated implements Named, Traced {
         }
     }
     
+    public static class Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> extends Annotated implements functionalj.function.Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> {
+        
+        private final functionalj.function.Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the Func7.
+         * @param location  the location of the Func7.
+         * @param func      the Func7 body.
+         */
+        public Func7(String name, String location, functionalj.function.Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> func) {
+            super("F7", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func7.
+         * @param func  the Func7 body.
+         */
+        public Func7(String name, functionalj.function.Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> func) {
+            super("F7", name);
+            this.func = func;
+        }
+        
+        @Override
+        public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7) throws Exception {
+            return func.applyUnsafe(input1, input2, input3, input4, input5, input6, input7);
+        }
+    }
+    
+    public static class Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> extends Annotated implements functionalj.function.Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> {
+        
+        private final functionalj.function.Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the Func8.
+         * @param location  the location of the Func8.
+         * @param func      the Func8 body.
+         */
+        public Func8(String name, String location, functionalj.function.Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> func) {
+            super("F8", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func8.
+         * @param func  the Func8 body.
+         */
+        public Func8(String name, functionalj.function.Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> func) {
+            super("F8", name);
+            this.func = func;
+        }
+        
+        @Override
+        public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7, INPUT8 input8) throws Exception {
+            return func.applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8);
+        }
+    }
+    
+    public static class Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> extends Annotated implements functionalj.function.Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> {
+        
+        private final functionalj.function.Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the Func9.
+         * @param location  the location of the Func9.
+         * @param func      the Func9 body.
+         */
+        public Func9(String name, String location, functionalj.function.Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> func) {
+            super("F9", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func9.
+         * @param func  the Func9 body.
+         */
+        public Func9(String name, functionalj.function.Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> func) {
+            super("F9", name);
+            this.func = func;
+        }
+        
+        @Override
+        public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7, INPUT8 input8, INPUT9 input9) throws Exception {
+            return func.applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9);
+        }
+    }
+    
+    public static class Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> extends Annotated implements functionalj.function.Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> {
+        
+        private final functionalj.function.Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the Func10.
+         * @param location  the location of the Func10.
+         * @param func      the Func10 body.
+         */
+        public Func10(String name, String location, functionalj.function.Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> func) {
+            super("F10", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the Func10.
+         * @param func  the Func10 body.
+         */
+        public Func10(String name, functionalj.function.Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> func) {
+            super("F10", name);
+            this.func = func;
+        }
+        
+        @Override
+        public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7, INPUT8 input8, INPUT9 input9, INPUT10 input10) throws Exception {
+            return func.applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+        }
+    }
+    
+    //== FuncUnit ==
+    
     public static class FuncUnit0 extends Annotated implements functionalj.function.FuncUnit0 {
         
         private final functionalj.function.FuncUnit0 func;
@@ -612,4 +748,236 @@ public abstract class Annotated implements Named, Traced {
             func.acceptUnsafe(input1, input2, input3);
         }
     }
+    
+    public static class FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> extends Annotated implements functionalj.function.FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
+        
+        private final functionalj.function.FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the FuncUnit4.
+         * @param location  the location of the FuncUnit4.
+         * @param func      the FuncUnit4 body.
+         */
+        public FuncUnit4(String name, String location, functionalj.function.FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> func) {
+            super("FU4", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit4.
+         * @param func  the FuncUnit4 body.
+         */
+        public FuncUnit4(String name, functionalj.function.FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> func) {
+            super("FU4", name);
+            this.func = func;
+        }
+        
+        @Override
+        public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) throws Exception {
+            func.acceptUnsafe(input1, input2, input3, input4);
+        }
+    }
+    
+    public static class FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> extends Annotated implements functionalj.function.FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> {
+        
+        private final functionalj.function.FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the FuncUnit5.
+         * @param location  the location of the FuncUnit5.
+         * @param func      the FuncUnit5 body.
+         */
+        public FuncUnit5(String name, String location, functionalj.function.FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> func) {
+            super("FU5", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit5.
+         * @param func  the FuncUnit5 body.
+         */
+        public FuncUnit5(String name, functionalj.function.FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> func) {
+            super("FU5", name);
+            this.func = func;
+        }
+        
+        @Override
+        public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5) throws Exception {
+            func.acceptUnsafe(input1, input2, input3, input4, input5);
+        }
+    }
+    
+    public static class FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> extends Annotated implements functionalj.function.FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> {
+        
+        private final functionalj.function.FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the FuncUnit6.
+         * @param location  the location of the FuncUnit6.
+         * @param func      the FuncUnit6 body.
+         */
+        public FuncUnit6(String name, String location, functionalj.function.FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> func) {
+            super("FU6", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit6.
+         * @param func  the FuncUnit6 body.
+         */
+        public FuncUnit6(String name, functionalj.function.FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> func) {
+            super("FU6", name);
+            this.func = func;
+        }
+        
+        @Override
+        public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6) throws Exception {
+            func.acceptUnsafe(input1, input2, input3, input4, input5, input6);
+        }
+    }
+    
+    public static class FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> extends Annotated implements functionalj.function.FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> {
+        
+        private final functionalj.function.FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the FuncUnit7.
+         * @param location  the location of the FuncUnit7.
+         * @param func      the FuncUnit7 body.
+         */
+        public FuncUnit7(String name, String location, functionalj.function.FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> func) {
+            super("FU7", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit7.
+         * @param func  the FuncUnit7 body.
+         */
+        public FuncUnit7(String name, functionalj.function.FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> func) {
+            super("FU7", name);
+            this.func = func;
+        }
+        
+        @Override
+        public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7) throws Exception {
+            func.acceptUnsafe(input1, input2, input3, input4, input5, input6, input7);
+        }
+    }
+    
+    public static class FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> extends Annotated implements functionalj.function.FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> {
+        
+        private final functionalj.function.FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the FuncUnit8.
+         * @param location  the location of the FuncUnit8.
+         * @param func      the FuncUnit8 body.
+         */
+        public FuncUnit8(String name, String location, functionalj.function.FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> func) {
+            super("FU8", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit8.
+         * @param func  the FuncUnit8 body.
+         */
+        public FuncUnit8(String name, functionalj.function.FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> func) {
+            super("FU8", name);
+            this.func = func;
+        }
+        
+        @Override
+        public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7, INPUT8 input8) throws Exception {
+            func.acceptUnsafe(input1, input2, input3, input4, input5, input6, input7, input8);
+        }
+    }
+    
+    public static class FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> extends Annotated implements functionalj.function.FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> {
+        
+        private final functionalj.function.FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the FuncUnit9.
+         * @param location  the location of the FuncUnit9.
+         * @param func      the FuncUnit9 body.
+         */
+        public FuncUnit9(String name, String location, functionalj.function.FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> func) {
+            super("FU9", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit9.
+         * @param func  the FuncUnit9 body.
+         */
+        public FuncUnit9(String name, functionalj.function.FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> func) {
+            super("FU9", name);
+            this.func = func;
+        }
+        
+        @Override
+        public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7, INPUT8 input8, INPUT9 input9) throws Exception {
+            func.acceptUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9);
+        }
+    }
+    
+    public static class FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> extends Annotated implements functionalj.function.FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> {
+        
+        private final functionalj.function.FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> func;
+        
+        /**
+         * Constructors.
+         * 
+         * @param name      the name of the FuncUnit10.
+         * @param location  the location of the FuncUnit10.
+         * @param func      the FuncUnit10 body.
+         */
+        public FuncUnit10(String name, String location, functionalj.function.FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> func) {
+            super("FU10", name, location);
+            this.func = func;
+        }
+        
+        /**
+         * Constructors.
+         * 
+         * @param name  the name of the FuncUnit10.
+         * @param func  the FuncUnit10 body.
+         */
+        public FuncUnit10(String name, functionalj.function.FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> func) {
+            super("FU10", name);
+            this.func = func;
+        }
+        
+        @Override
+        public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6, INPUT7 input7, INPUT8 input8, INPUT9 input9, INPUT10 input10) throws Exception {
+            func.acceptUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+        }
+    }
+    
 }
