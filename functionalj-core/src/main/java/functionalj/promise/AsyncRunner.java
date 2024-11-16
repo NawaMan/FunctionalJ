@@ -113,7 +113,8 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         theRunner.accept(() -> {
             parentScope.onBeforeSubAction();
             
-            val currentScope = new AsyncRunnerLocalScope();
+            val currentScope = AsyncRunnerScope.NOOP;// new AsyncRunnerLocalScope();
+//            val currentScope = new AsyncRunnerLocalScope();
             System.out.println("currentScope: " + currentScope);
             
             try {

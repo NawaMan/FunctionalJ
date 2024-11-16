@@ -15,7 +15,7 @@ public abstract class AsyncRunnerScope {
     public static final AsyncRunnerScope GLOBAL = new AsyncRunnerGlobalScope();
     
     /** The scope to use. */
-    static Ref<AsyncRunnerScope> asyncScope = Ref.of(AsyncRunnerScope.class).defaultTo(AsyncRunnerScope.GLOBAL);
+    static Ref<AsyncRunnerScope> asyncScope = Ref.of(AsyncRunnerScope.class).defaultTo(AsyncRunnerScope.NOOP);
     
     /** The current scope. **/
     public static Result<AsyncRunnerScope> currentScope() {

@@ -311,7 +311,7 @@ public class DeferActionTest {
     
     @Test
     public void testDeferAction_chain() throws InterruptedException {
-        // This demonstrate that we cah chain a defer action after another.
+        // This demonstrate that we can chain a defer action after another.
         
         val log = new ArrayList<String>();
         val latch = new CountDownLatch(5);
