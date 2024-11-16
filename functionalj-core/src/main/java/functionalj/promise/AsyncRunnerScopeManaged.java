@@ -11,7 +11,7 @@ public abstract class AsyncRunnerScopeManaged extends AsyncRunnerScope {
     protected final ConcurrentHashMap<Thread, Thread> scopedThreads  = new ConcurrentHashMap<>();
     
     @Override
-    protected void onBeforeRun() {
+    protected void onBeforeSubAction() {
         val currentThread = Thread.currentThread();
         scopedThreads.put(currentThread, currentThread);
         System.out.println(this + " adds " + currentThread + ".");

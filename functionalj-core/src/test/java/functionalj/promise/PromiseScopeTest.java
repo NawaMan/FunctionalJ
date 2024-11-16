@@ -4,9 +4,6 @@ import static functionalj.TestHelper.assertAsString;
 import static functionalj.promise.AsyncRunnerScope.asyncScope;
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -118,6 +115,8 @@ public class PromiseScopeTest {
                 })
                 .start();
                 
+                Thread.sleep(10);
+                
                 // But do not wait for the sub to finish.
                 logs.add("Main.end()");
                 return "Hello World!";
@@ -136,9 +135,107 @@ public class PromiseScopeTest {
             assertAsString(
                     "["
                     + "Main.start(), "
-                    + "Main.end(), "
                     + "Sub.start(), "
+                    + "Main.end(), "
                     + "Sub.interrupted()"     // The sub get interrupted.
+                    + "]",
+                    logs);
+        });
+        
+        });
+    }
+    
+    @Test
+    public void testScopeSuccess_noWaitForSubSub() throws Exception {
+        val threadFactory = new ThreadFactory() {
+            private final AtomicInteger ID = new AtomicInteger(0);
+            @Override
+            public Thread newThread(Runnable r) {
+                val currentThread = Thread.currentThread();
+                val id = ID.getAndIncrement();
+                return new Thread(r, "Thread::" + currentThread + "::" + id) {
+                    @Override
+                    public String toString() {
+                        return "Thread::" + currentThread + "::" + id;
+                    }
+                };
+            }
+        };
+        
+        Run.with(Env.refs.async.butWith(AsyncRunner.threadFactory(threadFactory)))
+        .run(() -> {
+        
+        // Ensure that all thread are clean up.
+        ensureThreadCleanup(() -> {
+            System.out.println("mainScope: " + asyncScope.get());
+            
+            
+            val logs = new ArrayList<String>();
+            // Normally, a started defer action start and complete operation.
+            
+            val mainAction = DeferAction.<String>from(() -> {
+                System.out.println("mainScope: " + asyncScope.get());
+                
+                logs.add("Main.start()");
+                
+                // Start the sub
+                DeferAction.<String>from(() -> {
+                    try {
+                        System.out.println("subScope: " + asyncScope.get());
+                        
+                        logs.add("Sub.start()");
+                        
+                        // Start the sub sub
+                        DeferAction.<String>from(() -> {
+                            try {
+                                System.out.println("subScope: " + asyncScope.get());
+                                
+                                logs.add("SubSub.start()");
+                                Thread.sleep(100000);
+                                logs.add("SubSub.end()");
+                                return "Hello there!";
+                            } catch (InterruptedException e) {
+                                logs.add("SubSub.interrupted()");
+                                throw e;
+                            }
+                        })
+                        .start()
+                        .getResult();
+                        
+                        logs.add("Sub.end()");
+                        return "Hello there!";
+                    } catch (UncheckedInterruptedException e) {
+                        logs.add("Sub.interrupted()");
+                        throw e;
+                    }
+                })
+                .start();
+                
+                Thread.sleep(10);
+                
+                // But do not wait for the sub to finish.
+                logs.add("Main.end()");
+                return "Hello World!";
+            })
+            .start();
+            
+            Thread.sleep(50);
+            
+            // Wait for the main to finish
+            val result = mainAction.getResult();
+            
+            assertAsString("Result:{ Value: Hello World! }", result);
+            
+            Thread.sleep(10);
+            
+            assertAsString(
+                    "["
+                    + "Main.start(), "
+                    + "Sub.start(), "
+                    + "SubSub.start(), "
+                    + "Main.end(), "
+                    + "Sub.interrupted(), "
+                    + "SubSub.interrupted()"     // The sub get interrupted.
                     + "]",
                     logs);
         });
@@ -157,14 +254,6 @@ public class PromiseScopeTest {
                 val afterThreads = currentThreads(startActiveThreads);
                 assertEquals(beforeThreads, afterThreads);
             }
-        }
-    }
-    
-    private static String exceptionWtihStacktrace(Throwable throwable) throws IOException {
-        try(val stringWriter = new StringWriter();
-            val printWriter  = new PrintWriter(stringWriter);) {
-            throwable.printStackTrace(printWriter);
-            return stringWriter.toString();
         }
     }
     

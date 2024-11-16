@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.promise;
 
+
+// TODO - Rename this to RuntimeInterruptedException
 public class UncheckedInterruptedException extends RuntimeException {
     
     private static final long serialVersionUID = 4126941862149908606L;

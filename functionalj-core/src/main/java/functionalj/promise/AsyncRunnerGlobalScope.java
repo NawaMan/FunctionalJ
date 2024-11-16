@@ -12,13 +12,13 @@ public class AsyncRunnerGlobalScope extends AsyncRunnerScopeManaged {
     }
     
     @Override
-    protected void onBeforeRun() {
+    protected void onBeforeSubAction() {
         val currentThread = Thread.currentThread();
         scopedThreads.put(currentThread, currentThread);
     }
     
     @Override
-    protected void onAllDone() {
+    protected void onActionCompleted() {
     }
     
 }

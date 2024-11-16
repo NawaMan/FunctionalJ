@@ -12,7 +12,7 @@ public class AsyncRunnerLocalScope extends AsyncRunnerScopeManaged {
     private final int id = ID.getAndIncrement();
     
     @Override
-    protected void onAllDone() {
+    protected void onActionCompleted() {
         interruptAll();
     }
     

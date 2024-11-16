@@ -6,11 +6,11 @@ package functionalj.promise;
 public class AsyncRunnerScopeNoOp extends AsyncRunnerScope {
 
     @Override
-    protected void onBeforeRun() {
+    protected void onBeforeSubAction() {
     }
     
     @Override
-    protected void onAllDone() {
+    protected void onActionCompleted() {
     }
     
 }

@@ -111,7 +111,7 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
         val latch = new CountDownLatch(1);
         theRunner.accept(() -> {
-            parentScope.onBeforeRun();
+            parentScope.onBeforeSubAction();
             
             val currentScope = new AsyncRunnerLocalScope();
             System.out.println("currentScope: " + currentScope);
@@ -136,7 +136,7 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
                 ThrowFuncs.handleNoThrow(exception);
             } finally {
                 System.out.println("finally: currentScope: " + currentScope);
-                currentScope.onAllDone();
+                currentScope.onActionCompleted();
             }
         });
         
