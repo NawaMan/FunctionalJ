@@ -41,12 +41,63 @@ public class RetryableDeferActionCreator {
     public static final Ref<RetryableDeferActionCreator> current = Ref.of(RetryableDeferActionCreator.class).defaultTo(RetryableDeferActionCreator.instance);
     
     public <DATA> DeferAction<DATA> createRetryDeferAction(boolean interruptOnCancel, FuncUnit0 onStart, AsyncRunner runner, Retry<DATA> retry, Func0<DATA> supplier) {
-        DeferAction<DATA> finalAction = DeferAction.createNew();
-        val config = new DeferActionConfig().interruptOnCancel(interruptOnCancel).onStart(onStart).runner(runner);
-        val couter = new AtomicInteger(retry.times());
-        val builder = config.createBuilder(supplier);
-        val onCompleteRef = new AtomicReference<FuncUnit1<Result<DATA>>>();
-        val onComplete = (FuncUnit1<Result<DATA>>) (result -> {
+//        DeferAction<DATA> finalAction = DeferAction.createNew();
+//        val config = new DeferActionConfig().interruptOnCancel(interruptOnCancel).onStart(onStart).runner(runner);
+//        val couter = new AtomicInteger(retry.times());
+//        val builder = config.createBuilder(supplier);
+//        val onCompleteRef = new AtomicReference<FuncUnit1<Result<DATA>>>();
+//        val onComplete = (FuncUnit1<Result<DATA>>) (result -> {
+//            if (result.isPresent()) {
+//                val value = result.value();
+//                finalAction.complete(value);
+//            } else {
+//                val count = couter.decrementAndGet();
+//                if (count == 0) {
+//                    finalAction.abort("Retry exceed: " + retry.times());
+//                } else {
+//                    val period = retry.waitTimeMilliSecond();
+//                    Env.time().sleep(period);
+//                    builder.build().onComplete(onCompleteRef.get()).start();
+//                }
+//            }
+//        });
+        
+        val onComplete = new RetryDeferActionOnComplete<DATA>(interruptOnCancel, onStart, runner, retry, supplier);
+//        onCompleteRef.set(onComplete);
+//        builder.build().onComplete(onComplete).start();
+        return onComplete.finalAction;
+    }
+    
+    static class RetryDeferActionOnComplete<DATA> implements FuncUnit1<Result<DATA>> {
+        
+        private final Retry<DATA>              retry;
+        private final DeferActionConfig        config;
+        private final DeferActionBuilder<DATA> builder;
+        
+        private final AtomicInteger     couter;
+        private final DeferAction<DATA> finalAction;
+        
+        public RetryDeferActionOnComplete(boolean interruptOnCancel, FuncUnit0 onStart, AsyncRunner runner, Retry<DATA> retry, Func0<DATA> supplier) {
+            this.retry   = retry;
+            this.config  = new DeferActionConfig().interruptOnCancel(interruptOnCancel).onStart(onStart).runner(runner);
+            this.builder = config.createBuilder(supplier);
+            
+            this.couter = new AtomicInteger(retry.times());
+            this.finalAction = DeferAction.createNew();
+            
+            this.builder.build().onComplete(this).start();
+        }
+        
+        public DeferAction<DATA> finalAction() {
+            return this.finalAction;
+        }
+        
+        @Override
+        public void acceptUnsafe(Result<DATA> result) {
+            doRetry(result);
+        }
+        
+        private void doRetry(Result<DATA> result) {
             if (result.isPresent()) {
                 val value = result.value();
                 finalAction.complete(value);
@@ -57,12 +108,11 @@ public class RetryableDeferActionCreator {
                 } else {
                     val period = retry.waitTimeMilliSecond();
                     Env.time().sleep(period);
-                    builder.build().onComplete(onCompleteRef.get()).start();
+                    builder.build().onComplete(this).start();
                 }
             }
-        });
-        onCompleteRef.set(onComplete);
-        builder.build().onComplete(onComplete).start();
-        return finalAction;
+        }
+        
     }
+    
 }

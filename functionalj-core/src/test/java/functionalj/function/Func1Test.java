@@ -34,6 +34,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import functionalj.list.FuncList;
+import functionalj.promise.AsyncRunnerScope;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import lombok.val;
@@ -53,7 +54,19 @@ public class Func1Test {
     @Test
     public void testDefer() {
         val startTime = System.currentTimeMillis();
-        val length = Sleep(50).then(String::valueOf).async().apply("Hello!").getPromise().chain(Sleep(50).then(String::length).async()).getResult();
+        val length
+                = Sleep(50)
+                .then(String::valueOf)
+                .async()
+                .apply("Hello!")
+                .getPromise()
+                .chain(str -> {
+                    System.out.println("Chain: " + AsyncRunnerScope.currentScope());
+                    val theString = str;
+                    val theLength = Sleep(50).then(String::length).async().apply(theString);
+                    return theLength;
+                })
+                .getResult();
         val duration = System.currentTimeMillis() - startTime;
         assertEquals(6, length.get().intValue());
         assertTrue(duration > 100);

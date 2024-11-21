@@ -24,6 +24,7 @@
 package functionalj.promise;
 
 import static functionalj.promise.AsyncRunnerScope.asyncScope;
+import static functionalj.promise.AsyncRunnerScopeProvider.asyncScopeProvider;
 import static functionalj.ref.Run.With;
 
 import java.util.concurrent.CountDownLatch;
@@ -113,8 +114,9 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         theRunner.accept(() -> {
             parentScope.onBeforeSubAction();
             
-            val currentScope = AsyncRunnerScope.NOOP;// new AsyncRunnerLocalScope();
+            val currentScope = AsyncRunnerScope.NOOP;
 //            val currentScope = new AsyncRunnerLocalScope();
+//            val currentScope = asyncScopeProvider.get().get();
             System.out.println("currentScope: " + currentScope);
             
             try {

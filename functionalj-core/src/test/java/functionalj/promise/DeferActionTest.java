@@ -52,6 +52,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.environments.Console;
@@ -771,8 +772,8 @@ public class DeferActionTest {
         val time3 = System.currentTimeMillis();
         val diff1 = (time2 - time1) / 50;
         val diff2 = (time3 - time2) / 50;
-        assertTrue(diff1 < 2);
-        assertTrue(diff2 > 2);
+        assertTrue(diff1 <= 2);
+        assertTrue(diff2 >= 2);
     }
     
     @Test

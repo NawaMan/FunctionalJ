@@ -888,7 +888,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return (Promise<TARGET>) newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val targetResult = r.map(mapper);
             targetResult.ifPresent(hasPromise -> {
-                hasPromise.getPromise().onComplete(result -> {
+                hasPromise.getPromise().getResult().getPromise().onComplete(result -> {
                     targetPromise.makeDone((Result<TARGET>) result);
                 });
             });

@@ -3,22 +3,22 @@ package functionalj.promise;
 /**
  * Default implementation of {@link AsyncRunnerScopeProvider} which return global scope first and then locals.
  */
-public class AsyncRunnerScopeProviderDefault implements AsyncRunnerScopeProvider {
+public class AsyncRunnerScopeProviderParent implements AsyncRunnerScopeProvider {
     
     /** Provider for the global scope. */
-    public static final AsyncRunnerScopeProvider INSTANCE = new AsyncRunnerScopeProviderDefault();
+    public static final AsyncRunnerScopeProvider INSTANCE = new AsyncRunnerScopeProviderParent();
     
     
-    AsyncRunnerScopeProviderDefault() {
+    AsyncRunnerScopeProviderParent() {
     }
     
     @Override
     public AsyncRunnerScope applyUnsafe() throws Exception {
-        return new AsyncRunnerLocalScope();
+        return AsyncRunnerScope.asyncScope.get();
     }
     @Override
     public String toString() {
-        return "DEFAULT";
+        return "PARENT";
     }
     
 }
