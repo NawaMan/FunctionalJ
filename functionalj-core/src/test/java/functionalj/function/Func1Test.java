@@ -61,7 +61,6 @@ public class Func1Test {
                 .apply("Hello!")
                 .getPromise()
                 .chain(str -> {
-                    System.out.println("Chain: " + AsyncRunnerScope.currentScope());
                     val theString = str;
                     val theLength = Sleep(50).then(String::length).async().apply(theString);
                     return theLength;

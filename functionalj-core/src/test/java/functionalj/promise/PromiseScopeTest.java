@@ -1,7 +1,6 @@
 package functionalj.promise;
 
 import static functionalj.TestHelper.assertAsString;
-import static functionalj.promise.AsyncRunnerScope.asyncScope;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -92,22 +91,15 @@ public class PromiseScopeTest {
         
         // Ensure that all thread are clean up.
         ensureThreadCleanup(() -> {
-            System.out.println("mainScope: " + asyncScope.get());
-            
-            
             val logs = new ArrayList<String>();
             // Normally, a started defer action start and complete operation.
             
             val mainAction = DeferAction.<String>from(() -> {
-                System.out.println("mainScope: " + asyncScope.get());
-                
                 logs.add("Main.start()");
                 
                 // Start the sub
                 DeferAction.<String>from(() -> {
                     try {
-                        System.out.println("subScope: " + asyncScope.get());
-                        
                         logs.add("Sub.start()");
                         Thread.sleep(100000);
                         logs.add("Sub.end()");
@@ -173,29 +165,20 @@ public class PromiseScopeTest {
         
         // Ensure that all thread are clean up.
         ensureThreadCleanup(() -> {
-            System.out.println("mainScope: " + asyncScope.get());
-            
-            
             val logs = new ArrayList<String>();
             // Normally, a started defer action start and complete operation.
             
             val mainAction = DeferAction.<String>from(() -> {
-                System.out.println("mainScope: " + asyncScope.get());
-                
                 logs.add("Main.start()");
                 
                 // Start the sub
                 DeferAction.<String>from(() -> {
                     try {
-                        System.out.println("subScope: " + asyncScope.get());
-                        
                         logs.add("Sub.start()");
                         
                         // Start the sub sub
                         DeferAction.<String>from(() -> {
                             try {
-                                System.out.println("subScope: " + asyncScope.get());
-                                
                                 logs.add("SubSub.start()");
                                 Thread.sleep(100000);
                                 logs.add("SubSub.end()");

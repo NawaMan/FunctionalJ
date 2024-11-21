@@ -133,10 +133,6 @@ public class PromiseCancelTest {
             });
             val action = deferAction.start();
             
-            action.subscribe(result -> {
-                System.out.println(result);
-            });
-            
             action.abort();
             
             val result = action.getResult();
@@ -206,8 +202,6 @@ public class PromiseCancelTest {
                 return "Hello World!";
             }).start();
             
-            System.out.println("action: " + action + ", promise: " + action.getPromise());
-            
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
             
@@ -266,8 +260,6 @@ public class PromiseCancelTest {
                 return "Hello World!";
             }).start();
             
-            System.out.println("action: " + action + ", promise: " + action.getPromise());
-            
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
             
@@ -316,8 +308,6 @@ public class PromiseCancelTest {
                 Thread.sleep(1000);
                 return "Hello World!";
             }).start();
-            
-            System.out.println("action: " + action + ", promise: " + action.getPromise());
             
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
@@ -376,8 +366,6 @@ public class PromiseCancelTest {
             })
             .start();
             
-            System.out.println("action: " + action + ", promise: " + action.getPromise());
-            
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
             
@@ -425,8 +413,6 @@ public class PromiseCancelTest {
             })
             .start();
             
-            System.out.println("action: " + action + ", promise: " + action.getPromise());
-            
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
             action.abort();
@@ -472,8 +458,6 @@ public class PromiseCancelTest {
                 logMsgs.add("Clean up");
             })
             .start();
-            
-            System.out.println("action: " + action + ", promise: " + action.getPromise());
             
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));

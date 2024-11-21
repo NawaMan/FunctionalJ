@@ -2974,7 +2974,6 @@ public class DoubleFuncListTest {
     public void testSplitTuple() {
         val d = 2.0;
         val d2 = d % 2;
-        System.out.println(d2);
         run(DoubleFuncList.wholeNumbers(20).toFuncList(), list -> {
             assertAsString("(" + "[0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0]," + "[1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0, 17.0, 19.0]" + ")", list.split(theDouble.remainderBy(2).thatIsZero()).toString());
         });

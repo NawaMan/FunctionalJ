@@ -125,31 +125,22 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         val theRunner        = (runner        != null) ? runner        : Env.async();
         val theScioeProvider = (scopeProvider != null) ? scopeProvider : asyncScopeProvider.get();
         
-        System.out.println("subs");
-        Substitution.getCurrentSubstitutions().forEach(each -> System.out.println("    " + each + " " + each.isThreadLocal()));
-        System.out.println();
-        
         val substitutions
                 = Substitution
                 .getCurrentSubstitutions()
                 .exclude(Substitution::isThreadLocal);
-        
         val parentScope = asyncScope.get();
-        System.out.println("outside parentScope: " + parentScope);
         
         val latch = new CountDownLatch(1);
         theRunner.accept(() -> {
             parentScope.onBeforeSubAction();
             
             val currentScope = theScioeProvider.get();
-            System.out.println("currentScope: " + currentScope);
             
             try {
                 With(substitutions)
                 .with(asyncScope.butWith(currentScope))
                 .run(() -> {
-                    System.out.println("innerScope: " + asyncScope.get());
-                    
                     body.prepared();
                     latch.countDown();
                     DATA value = body.compute();
@@ -163,7 +154,6 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
                 action.fail(exception);
                 ThrowFuncs.handleNoThrow(exception);
             } finally {
-                System.out.println("finally: currentScope: " + currentScope);
                 currentScope.onActionCompleted();
             }
         });

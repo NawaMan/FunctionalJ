@@ -564,7 +564,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     static <DATA> boolean makeDone(Promise<DATA> promise, Result<DATA> result) {
-        System.out.println("promise: " + promise + ", result: " + result);
         val isDone = promise.synchronouseOperation(() -> {
             val data = promise.dataRef.get();
             try {

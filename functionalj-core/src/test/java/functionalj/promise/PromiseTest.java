@@ -441,10 +441,6 @@ public class PromiseTest {
         val namedPromise = normalPromise.named(name);
         assertTrue(normalPromise.toString().matches("^Promise#[0-9]*$"));
         assertAsString(namedPromise.toString(), name);
-        System.out.println(normalPromise.getStatus());
-        System.out.println(namedPromise.getStatus());
         promiseControl.complete("DONE!");
-        System.out.println(normalPromise.getStatus());
-        System.out.println(namedPromise.getStatus());
     }
 }
