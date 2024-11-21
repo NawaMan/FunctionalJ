@@ -2972,10 +2972,12 @@ public class DoubleFuncListTest {
     // -- FuncListWithSplit --
     @Test
     public void testSplitTuple() {
-        val d = 2.0;
-        val d2 = d % 2;
         run(DoubleFuncList.wholeNumbers(20).toFuncList(), list -> {
-            assertAsString("(" + "[0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0]," + "[1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0, 17.0, 19.0]" + ")", list.split(theDouble.remainderBy(2).thatIsZero()).toString());
+            assertAsString("("
+                    + "[0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0],"
+                    + "[1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0, 17.0, 19.0]"
+                    + ")",
+                    list.split(theDouble.remainderBy(2).thatIsZero()).toString());
         });
     }
     
@@ -3022,11 +3024,22 @@ public class DoubleFuncListTest {
         Function<DoubleFuncList, DoubleFuncList> listToList = s -> s.toImmutableList();
         run(DoubleFuncList.wholeNumbers(20), list -> {
             String toString = With(FuncMap.underlineMap.butWith(FuncMap.UnderlineMap.LinkedHashMap)).run(() -> {
-                FuncMap<String, DoubleFuncList> splited = list.split("FizzBuzz", i -> i % (3 * 5) == 0, "Buzz", i -> i % 5 == 0, "Fizz", i -> i % 3 == 0, null);
+                FuncMap<String, DoubleFuncList> splited
+                        = list.split(
+                                "FizzBuzz", i -> i % (3 * 5) == 0,
+                                "Buzz",     i -> i %      5  == 0,
+                                "Fizz",     i -> i %  3      == 0,
+                                null);
                 val string = splited.mapValue(listToList).toString();
                 return string;
             });
-            assertEquals("{" + "FizzBuzz:[0.0, 15.0], " + "Buzz:[5.0, 10.0], " + "Fizz:[3.0, 6.0, 9.0, 12.0, 18.0]" + "}", toString);
+            assertEquals(
+                    "{"
+                    + "FizzBuzz:[0.0, 15.0], "
+                    + "Buzz:[5.0, 10.0], "
+                    + "Fizz:[3.0, 6.0, 9.0, 12.0, 18.0]"
+                    + "}",
+                    toString);
         });
     }
 }

@@ -34,7 +34,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import functionalj.list.FuncList;
-import functionalj.promise.AsyncRunnerScope;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import lombok.val;
