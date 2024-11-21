@@ -140,6 +140,14 @@ public class Run {
         public R and(List<Substitution<?>> newSubstitutions) {
             return with(newSubstitutions);
         }
+        
+        public R andWith(Substitution<?>... newSubstitutions) {
+            return and(FuncList.of(newSubstitutions));
+        }
+        
+        public R andWith(List<Substitution<?>> newSubstitutions) {
+            return with(newSubstitutions);
+        }
     }
     
     public static class SyncRunInstance extends RunInstance<SyncRunInstance> {

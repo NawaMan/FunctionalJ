@@ -3,7 +3,7 @@ package functionalj.promise;
 /**
  * This class is a AsyncRunnerScope that do nothing.
  **/
-public class AsyncRunnerScopeNoOp extends AsyncRunnerScope {
+public class AsyncRunnerScopeNoScope extends AsyncRunnerScope {
 
     @Override
     protected void onBeforeSubAction() {

@@ -6,8 +6,18 @@ import functionalj.ref.Ref;
 @FunctionalInterface
 public interface AsyncRunnerScopeProvider extends Func0<AsyncRunnerScope> {
     
+    /** Provider for a no-op scope. */
+    public static final AsyncRunnerScopeProvider noScope = AsyncRunnerScopeProviderNoScope.instance;
+    
+    /** Provider for the global scope. */
+    public static final AsyncRunnerScopeProvider global = AsyncRunnerScopeProviderGlobal.instance;
+    
+    /** Provider for the global scope. */
+    public static final AsyncRunnerScopeProvider nested = AsyncRunnerScopeProviderNested.instance;
+    
+    /** Reference for the provider. **/
     public static final Ref<AsyncRunnerScopeProvider> asyncScopeProvider 
-            = Ref.of(AsyncRunnerScopeProvider.class).defaultTo(AsyncRunnerScopeProviderDefault.INSTANCE);
+            = Ref.of(AsyncRunnerScopeProvider.class).defaultTo(AsyncRunnerScopeProvider.noScope);
     
     /** Provider for specific scope. */
     public static AsyncRunnerScopeProvider forScope(AsyncRunnerScope scope) {
@@ -16,26 +26,8 @@ public interface AsyncRunnerScopeProvider extends Func0<AsyncRunnerScope> {
     
     /** Provider for specific scope. */
     public static AsyncRunnerScopeProvider forScope(String name, AsyncRunnerScope scope) {
-        return new AsyncRunnerScopeProvider() {
-            @Override
-            public AsyncRunnerScope applyUnsafe() throws Exception {
-                return scope;
-            }
-            @Override
-            public String toString() {
-                return name;
-            }
-        };
+        return AsyncRunnerScopeProviderFixScope.forScope(name, scope);
     }
-    
-    /** Provider for a no-op scope. */
-    public static final AsyncRunnerScopeProvider NOOP = forScope("NOOP", AsyncRunnerScope.NOOP);
-    
-    /** Provider for the global scope. */
-    public static final AsyncRunnerScopeProvider GLOBAL = forScope("GLOBAL", AsyncRunnerScope.GLOBAL);
-    
-    /** Provider for the global scope. */
-    public static final AsyncRunnerScopeProvider DEFAULT = AsyncRunnerScopeProviderDefault.INSTANCE;
     
     
     //== Functionality ==

@@ -20,6 +20,7 @@ public class PromiseScopeTest {
     
     @Test
     public void testScopeSuccess() throws Exception {
+        Run.with(ActionAsyncRunner.asyncScopeProvider.butWith(AsyncRunnerScopeProvider.nested)).run(() -> {
         // Ensure that all thread are clean up.
         ensureThreadCleanup(() -> {
             val logs = new ArrayList<String>();
@@ -64,6 +65,7 @@ public class PromiseScopeTest {
                     + "]",
                     logs); 
         });
+        });
     }
     
     @Test
@@ -83,7 +85,9 @@ public class PromiseScopeTest {
             }
         };
         
-        Run.with(Env.refs.async.butWith(AsyncRunner.threadFactory(threadFactory)))
+        Run
+        .with(Env.refs.async.butWith(AsyncRunner.threadFactory(threadFactory)))
+        .and(ActionAsyncRunner.asyncScopeProvider.butWith(AsyncRunnerScopeProvider.nested))
         .run(() -> {
         
         // Ensure that all thread are clean up.
@@ -162,7 +166,9 @@ public class PromiseScopeTest {
             }
         };
         
-        Run.with(Env.refs.async.butWith(AsyncRunner.threadFactory(threadFactory)))
+        Run
+        .with(Env.refs.async.butWith(AsyncRunner.threadFactory(threadFactory)))
+        .and(ActionAsyncRunner.asyncScopeProvider.butWith(AsyncRunnerScopeProvider.nested))
         .run(() -> {
         
         // Ensure that all thread are clean up.

@@ -6,6 +6,9 @@ import functionalj.environments.Env;
 import functionalj.exception.ExceptionUtils;
 import lombok.val;
 
+/**
+ * AsyncRunnder Scope of this kind will manage its sub runner by interrupting them if the current scope ends.
+ **/
 public abstract class AsyncRunnerScopeManaged extends AsyncRunnerScope {
     
     protected final ConcurrentHashMap<Thread, Thread> scopedThreads  = new ConcurrentHashMap<>();

@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * This class is a {@link AsyncRunnerScope} that actually manage and clean up the sub actions (runnables).
  **/
-public class AsyncRunnerLocalScope extends AsyncRunnerScopeManaged {
+public class AsyncRunnerNestedScope extends AsyncRunnerScopeManaged {
     
     private static final AtomicInteger ID = new AtomicInteger(0);
     

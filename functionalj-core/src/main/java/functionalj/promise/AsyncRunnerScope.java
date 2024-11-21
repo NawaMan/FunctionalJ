@@ -9,13 +9,13 @@ import functionalj.result.Result;
 public abstract class AsyncRunnerScope {
     
     /** This scope do nothing - Sub runner will not be cleanup. */
-    public static final AsyncRunnerScope NOOP = new AsyncRunnerScopeNoOp();
+    public static final AsyncRunnerScope noScope = new AsyncRunnerScopeNoScope();
     
-    /** A globally usable local scope is a global scope. */
-    public static final AsyncRunnerScope GLOBAL = new AsyncRunnerGlobalScope();
+    /** A globally usable local scope is a global scope - async runs in this scope will be cleaned up when shutdown. */
+    public static final AsyncRunnerScope global = new AsyncRunnerGlobalScope();
     
     /** The scope to use. */
-    static Ref<AsyncRunnerScope> asyncScope = Ref.of(AsyncRunnerScope.class).defaultTo(AsyncRunnerScope.NOOP);
+    static Ref<AsyncRunnerScope> asyncScope = Ref.of(AsyncRunnerScope.class).defaultTo(AsyncRunnerScope.noScope);
     
     /** The current scope. **/
     public static Result<AsyncRunnerScope> currentScope() {

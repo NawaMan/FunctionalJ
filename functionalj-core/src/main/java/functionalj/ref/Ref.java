@@ -197,6 +197,10 @@ public abstract class Ref<DATA> {
         return whenAbsent(WhenAbsent.Get(defaultSupplier));
     }
     
+    public Ref<DATA> whenAbsentReferTo(Ref<DATA> sourceRef) {
+        return whenAbsent(WhenAbsent.Get(sourceRef::get));
+    }
+    
     public Ref<DATA> whenAbsentUseDefault() {
         return whenAbsentUseDefaultOrGet(null);
     }
