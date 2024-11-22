@@ -40,11 +40,11 @@ public class RetryableDeferActionCreator {
     public static final Ref<RetryableDeferActionCreator> current = Ref.of(RetryableDeferActionCreator.class).defaultTo(RetryableDeferActionCreator.instance);
     
     public <DATA> DeferAction<DATA> createRetryDeferAction(boolean interruptOnCancel, FuncUnit0 onStart, AsyncRunner runner, Retry<DATA> retry, Func0<DATA> supplier) {
-        val onComplete = new RetryDeferActionOnComplete<DATA>(interruptOnCancel, onStart, runner, retry, supplier);
+        val onComplete = new RetryDeferActionOnCompleted<DATA>(interruptOnCancel, onStart, runner, retry, supplier);
         return onComplete.finalAction;
     }
     
-    static class RetryDeferActionOnComplete<DATA> implements FuncUnit1<Result<DATA>> {
+    static class RetryDeferActionOnCompleted<DATA> implements FuncUnit1<Result<DATA>> {
         
         private final Retry<DATA>              retry;
         private final DeferActionConfig        config;
@@ -53,7 +53,7 @@ public class RetryableDeferActionCreator {
         private final AtomicInteger     couter;
         private final DeferAction<DATA> finalAction;
         
-        public RetryDeferActionOnComplete(boolean interruptOnCancel, FuncUnit0 onStart, AsyncRunner runner, Retry<DATA> retry, Func0<DATA> supplier) {
+        public RetryDeferActionOnCompleted(boolean interruptOnCancel, FuncUnit0 onStart, AsyncRunner runner, Retry<DATA> retry, Func0<DATA> supplier) {
             this.retry   = retry;
             this.config  = new DeferActionConfig().interruptOnCancel(interruptOnCancel).onStart(onStart).runner(runner);
             this.builder = config.createBuilder(supplier);
@@ -61,7 +61,7 @@ public class RetryableDeferActionCreator {
             this.couter = new AtomicInteger(retry.times());
             this.finalAction = DeferAction.createNew();
             
-            this.builder.build().onComplete(this).start();
+            this.builder.build().onCompleted(this).start();
         }
         
         public DeferAction<DATA> finalAction() {
@@ -84,7 +84,7 @@ public class RetryableDeferActionCreator {
                 } else {
                     val period = retry.waitTimeMilliSecond();
                     Env.time().sleep(period);
-                    builder.build().onComplete(this).start();
+                    builder.build().onCompleted(this).start();
                 }
             }
         }

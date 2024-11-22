@@ -47,7 +47,7 @@ public class PromiseTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Value: Hello! }", promise.getCurrentResult());
         val ref = new AtomicReference<String>(null);
-        promise.onComplete(r -> ref.set(r.get()));
+        promise.onCompleted(r -> ref.set(r.get()));
         assertAsString("Hello!", ref);
     }
     
@@ -57,7 +57,7 @@ public class PromiseTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         val ref = new AtomicReference<String>(null);
-        promise.onComplete(r -> ref.set("" + r.get()));
+        promise.onCompleted(r -> ref.set("" + r.get()));
         assertAsString("null", ref.get());
     }
     
@@ -67,7 +67,7 @@ public class PromiseTest {
         assertEquals(PromiseStatus.ABORTED, promise.getStatus());
         assertAsString("Result:{ Cancelled }", promise.getCurrentResult());
         val ref = new AtomicReference<String>(null);
-        promise.onComplete(r -> ref.set("" + r.get()));
+        promise.onCompleted(r -> ref.set("" + r.get()));
         assertAsString("null", ref.get());
     }
     
@@ -79,11 +79,11 @@ public class PromiseTest {
         assertEquals(PromiseStatus.NOT_STARTED, promise.getStatus());
         val pendingControl = promiseControl.start();
         assertEquals(PromiseStatus.PENDING, promise.getStatus());
-        promise.onComplete(r -> list.add("1: " + r.toString()));
+        promise.onCompleted(r -> list.add("1: " + r.toString()));
         pendingControl.complete("Forty two");
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertAsString("Result:{ Value: Forty two }", promise.getCurrentResult());
-        promise.onComplete(r -> list.add("2: " + r.toString()));
+        promise.onCompleted(r -> list.add("2: " + r.toString()));
         assertAsString("[" + "1: Result:{ Value: Forty two }, " + "2: Result:{ Value: Forty two }" + "]", list);
     }
     
@@ -105,7 +105,7 @@ public class PromiseTest {
     @Test
     public void testAbort() {
         val ref    = new AtomicReference<String>(null);
-        val action = DeferAction.of(String.class).onComplete(r -> ref.set("" + r)).start();
+        val action = DeferAction.of(String.class).onCompleted(r -> ref.set("" + r)).start();
         assertAsString("Result:{ NotReady }", action.getCurrentResult());
         
         action.abort();
@@ -119,14 +119,14 @@ public class PromiseTest {
         val deferAction   = DeferAction.of(String.class);
         val promise       = deferAction.getPromise();
         val pendingAction = deferAction.start();
-        promise.onComplete(r -> list.add("1: " + r.toString()));
+        promise.onCompleted(r -> list.add("1: " + r.toString()));
         
         pendingAction.complete("Forty two");
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         
         assertAsString("Result:{ Value: Forty two }", promise.getCurrentResult());
         
-        promise.onComplete(r -> list.add("2: " + r.toString()));
+        promise.onCompleted(r -> list.add("2: " + r.toString()));
         assertAsString(
                   "["
                 + "1: Result:{ Value: Forty two }, "
@@ -157,8 +157,8 @@ public class PromiseTest {
         val promise       = deferAction.getPromise();
         val pendingAction = deferAction.start();
         
-        val sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
-        val sub2 = promise.onComplete(r -> list.add("2: " + r.toString()));
+        val sub1 = promise.onCompleted(r -> list.add("1: " + r.toString()));
+        val sub2 = promise.onCompleted(r -> list.add("2: " + r.toString()));
         sub1.unsubscribe();
         
         pendingAction.complete("Forty two");
@@ -180,7 +180,7 @@ public class PromiseTest {
         val pendingAction = deferAction.start();
         
         // Last subscription at this time.
-        val sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
+        val sub1 = promise.onCompleted(r -> list.add("1: " + r.toString()));
         sub1.unsubscribe();
         
         // Complete -- but this is too late.
@@ -189,7 +189,7 @@ public class PromiseTest {
         assertAsString("Result:{ Cancelled: No more listener. }", promise.getCurrentResult());
         
         // This subscription will get cancelled as the result.
-        val sub2 = promise.onComplete(r -> list.add("2: " + r.toString()));
+        val sub2 = promise.onCompleted(r -> list.add("2: " + r.toString()));
         sub2.unsubscribe();
         assertAsString("[2: Result:{ Cancelled: No more listener. }]", list);
     }
@@ -206,7 +206,7 @@ public class PromiseTest {
         promise.eavesdrop(r -> list.add("e: " + r.toString()));
         
         // Last subscription at this time as an eavesdrop does not count.
-        val sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
+        val sub1 = promise.onCompleted(r -> list.add("1: " + r.toString()));
         sub1.unsubscribe();
         
         // Complete -- but this is too late.
@@ -268,7 +268,7 @@ public class PromiseTest {
                 = DeferAction.of(String.class)
                 .abortNoSubsriptionAfter(wait)
                 .eavesdrop(r -> list.add("e: " + r.toString()))
-                .onComplete(r -> list.add("s: " + r.toString()))
+                .onCompleted(r -> list.add("s: " + r.toString()))
                 .start()
                 .getPromise();
         assertEquals(PromiseStatus.PENDING, promise.getStatus());
@@ -280,7 +280,7 @@ public class PromiseTest {
     public void testCreateNew_map_mapBeforeComplete() {
         val list = new ArrayList<String>();
         DeferAction.of(String.class).use(promise -> {
-            promise.map(String::length).onComplete(r -> list.add(r.toString()));
+            promise.map(String::length).onCompleted(r -> list.add(r.toString()));
         }).start().complete("Done!");
         assertAsString("[Result:{ Value: 5 }]", list);
     }
@@ -289,7 +289,7 @@ public class PromiseTest {
     public void testCreateNew_flatMap() {
         val list = new ArrayList<String>();
         DeferAction.of(String.class).use(promise -> {
-            promise.flatMap(str -> Promise.ofValue(str.length())).onComplete(r -> list.add(r.toString()));
+            promise.flatMap(str -> Promise.ofValue(str.length())).onCompleted(r -> list.add(r.toString()));
         }).start().complete("Done!!");
         assertAsString("[Result:{ Value: 6 }]", list);
     }
@@ -299,8 +299,8 @@ public class PromiseTest {
         val list = new ArrayList<String>();
         DeferAction.of(String.class)
         .use(promise -> {
-            promise.filter(str -> str.length() < 3).onComplete(r -> list.add(r.toString()));
-            promise.filter(str -> str.length() > 3).onComplete(r -> list.add(r.toString()));
+            promise.filter(str -> str.length() < 3).onCompleted(r -> list.add(r.toString()));
+            promise.filter(str -> str.length() > 3).onCompleted(r -> list.add(r.toString()));
         }).start().complete("Done!");
         assertTrue(list.toString().contains("Result:{ Value: null }"));
         assertTrue(list.toString().contains("Result:{ Value: Done! }"));
@@ -324,7 +324,7 @@ public class PromiseTest {
         };
         
         DeferAction.of(String.class)
-        .use(promise -> promise.onComplete(wait.orDefaultTo("Not done."), r -> list.add(r.get())))
+        .use(promise -> promise.onCompleted(wait.orDefaultTo("Not done."), r -> list.add(r.get())))
         .start();
         
         onExpireds.forEach(c -> {

@@ -35,7 +35,7 @@ public class PromiseScopeTest {
                     logs.add("Sub.end()");
                     return "Hello there!";
                 })
-                .onComplete(result -> {
+                .onCompleted(result -> {
                     logs.add("Sub completed");
                 })
                 .start();

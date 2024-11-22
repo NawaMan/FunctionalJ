@@ -125,7 +125,7 @@ public interface StreamPlusWithModify<DATA> {
         return sequentialToObj(streamPlus, stream -> {
             val results = new ArrayList<DeferAction<T>>();
             val index = new AtomicInteger(0);
-            FuncUnit1<UncompletedAction<T>> setOnComplete = action -> action.getPromise().onComplete(result -> {
+            FuncUnit1<UncompletedAction<T>> setOnComplete = action -> action.getPromise().onCompleted(result -> {
                 val thisIndex = index.getAndIncrement();
                 val thisAction = results.get(thisIndex);
                 if (result.isValue())

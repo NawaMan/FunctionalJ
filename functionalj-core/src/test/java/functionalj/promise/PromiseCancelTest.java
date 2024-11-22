@@ -360,7 +360,7 @@ public class PromiseCancelTest {
                 logMsgs.add("Ended");
                 return "Hello World!";
             })
-            .onComplete(__ -> {
+            .onCompleted(__ -> {
                 intValue.set(cleanUpValue);
                 logMsgs.add("Clean up");
             })
@@ -407,7 +407,7 @@ public class PromiseCancelTest {
                 logMsgs.add("Ended");
                 return "Hello World!";
             })
-            .onComplete(__ -> {
+            .onCompleted(__ -> {
                 intValue.set(cleanUpValue);
                 logMsgs.add("Clean up");
             })
@@ -453,7 +453,7 @@ public class PromiseCancelTest {
                 logMsgs.add("Ended");
                 return "Hello World!";
             })
-            .onComplete(__ -> {
+            .onCompleted(__ -> {
                 intValue.set(cleanUpValue);
                 logMsgs.add("Clean up");
             })

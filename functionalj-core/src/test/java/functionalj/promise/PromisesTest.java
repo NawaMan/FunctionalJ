@@ -159,7 +159,7 @@ public class PromisesTest {
             return _1 + _2 + _3 + _4 + _5 + _6;
         });
         promise.start();
-        val subscription = promise.onComplete();
+        val subscription = promise.onCompleted();
         // Last subscriber is cancelled, so all the action accept the one that is completed are cancelled.
         subscription.unsubscribe();
         assertAsString("Result:{ Cancelled: No more listener. }", promise.getResult());

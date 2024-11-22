@@ -595,24 +595,24 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return this;
     }
     
-    public DeferAction<DATA> onComplete(FuncUnit1<Result<DATA>> resultConsumer) {
-        promise.onComplete(Wait.forever(), resultConsumer);
+    public DeferAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer) {
+        promise.onCompleted(Wait.forever(), resultConsumer);
         return this;
     }
     
-    public DeferAction<DATA> onComplete(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
-        promise.onComplete(wait, resultConsumer);
+    public DeferAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
+        promise.onCompleted(wait, resultConsumer);
         return this;
     }
     
-    public DeferAction<DATA> onComplete(FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.onComplete(Wait.forever(), resultConsumer);
+    public DeferAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
+        val subscription = promise.onCompleted(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
     
-    public DeferAction<DATA> onComplete(Wait wait, FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.onComplete(wait, resultConsumer);
+    public DeferAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
+        val subscription = promise.onCompleted(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }

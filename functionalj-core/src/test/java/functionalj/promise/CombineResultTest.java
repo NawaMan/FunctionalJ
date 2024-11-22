@@ -43,7 +43,7 @@ public class CombineResultTest {
         val action2 = DeferAction.createNew().start();
         val action3 = DeferAction.createNew().start();
         val combiner = new CombineResult<>(listOf(action1, action2, action3), l -> Result.valueOf(l.toString()));
-        val combine = combiner.getDeferAction().onComplete(result -> {
+        val combine = combiner.getDeferAction().onCompleted(result -> {
             logs.add(result.toString());
         });
         logs.add("Done prepare");

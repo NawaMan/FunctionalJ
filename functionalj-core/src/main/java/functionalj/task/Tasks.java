@@ -1002,7 +1002,7 @@ public class Tasks {
         private void doBody(AtomicReference<DeferAction<D>> actionRef) {
             val bodyAction = body.createAction();
             // Ummm not sure if subscribe is good here
-            bodyAction.onComplete(result -> {
+            bodyAction.onCompleted(result -> {
                 val isToBreak = breakCheck.test(result);
                 if (isToBreak) {
                     val action = actionRef.get().start();

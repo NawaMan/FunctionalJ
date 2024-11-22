@@ -90,7 +90,7 @@ public class DeferActionTest {
         DeferAction.run(() -> {
             Thread.sleep(100);
             return "Hello";
-        }).onComplete(result -> {
+        }).onCompleted(result -> {
             val end = System.currentTimeMillis();
             log.add("End: " + (100 * ((end - start) / 100)));
             log.add("Result: " + result);
@@ -107,7 +107,7 @@ public class DeferActionTest {
         });
         val start = System.currentTimeMillis();
         val endRef = new AtomicLong();
-        val action = deferAction.onComplete(result -> {
+        val action = deferAction.onCompleted(result -> {
             val end = System.currentTimeMillis();
             endRef.set(end - start);
         }).start();
@@ -127,7 +127,7 @@ public class DeferActionTest {
             Thread.sleep(100);
             latch.countDown();
             throw new IOException("Fail hard!");
-        }).onComplete(result -> {
+        }).onCompleted(result -> {
             val end = System.currentTimeMillis();
             endRef.set((int) (20 * ((end - start) / 20)));
             log.add("Result: " + result);
@@ -203,7 +203,7 @@ public class DeferActionTest {
             return "Hello";
         }).onStart(() -> {
             log.add("... onStart ...");
-        }).build().onComplete(result -> {
+        }).build().onCompleted(result -> {
             Thread.sleep(100);
             log.add("Done: " + result);
             latch.countDown();
@@ -236,7 +236,7 @@ public class DeferActionTest {
             return "Hello";
         }).onStart(() -> {
             log.add("... onStart ...");
-        }).build().onComplete(result -> {
+        }).build().onCompleted(result -> {
             log.add("Done: " + result);
             latch.countDown();
             // Exception throw is ignored as Promise `handleResultConsumptionExcepion` is not implemented
@@ -280,7 +280,7 @@ public class DeferActionTest {
             log.add("... onStart ...");
             onStartThread.set(Thread.currentThread().toString());
             latch.countDown();
-        }).build().onComplete(result -> {
+        }).build().onCompleted(result -> {
             Thread.sleep(100);
             log.add("Done: " + result);
             onDoneThread.set(Thread.currentThread().toString());
@@ -337,7 +337,7 @@ public class DeferActionTest {
                 runningThread.set(Thread.currentThread().toString());
                 latch.countDown();
             }).build().start();
-        }).onComplete(result -> {
+        }).onCompleted(result -> {
             log.add("Done #1: " + result);
             latch.countDown();
         }).getResult();
@@ -374,7 +374,7 @@ public class DeferActionTest {
         }).map(value -> {
             Thread.sleep(50);
             return "Total=" + value;
-        }).onComplete(result -> {
+        }).onCompleted(result -> {
             log.add("Done: " + result);
         }).start().getResult();
         
@@ -409,7 +409,7 @@ public class DeferActionTest {
         }).map(value -> {
             Thread.sleep(50);
             return "Total=" + value;
-        }).onComplete(result -> {
+        }).onCompleted(result -> {
             log.add("Done: " + result);
         })
         .start()
@@ -640,7 +640,7 @@ public class DeferActionTest {
                     }
                     latch.countDown();
                 });
-            }).onComplete(result -> {
+            }).onCompleted(result -> {
                 Console.outPrintln(result);
             });
             

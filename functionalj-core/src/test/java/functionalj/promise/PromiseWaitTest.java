@@ -39,7 +39,7 @@ public class PromiseWaitTest {
     @Test
     public void testWaitAWhile_complete() throws InterruptedException {
         val list = new ArrayList<String>();
-        val action = DeferAction.of(String.class).use(promise -> promise.onComplete(Wait.forMilliseconds(100).orDefaultTo("Not done."), r -> list.add(r.get()))).start();
+        val action = DeferAction.of(String.class).use(promise -> promise.onCompleted(Wait.forMilliseconds(100).orDefaultTo("Not done."), r -> list.add(r.get()))).start();
         Thread.sleep(50);
         action.complete("Complete!");
         assertAsString("[Complete!]", list);
@@ -48,7 +48,7 @@ public class PromiseWaitTest {
     @Test
     public void testWaitAWhile_abort() throws InterruptedException {
         val list = new ArrayList<String>();
-        val action = DeferAction.of(String.class).use(promise -> promise.onComplete(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()))).start();
+        val action = DeferAction.of(String.class).use(promise -> promise.onCompleted(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()))).start();
         Thread.sleep(100);
         action.complete("Complete!");
         assertAsString("[Not done.]", list);
@@ -57,7 +57,7 @@ public class PromiseWaitTest {
     @Test
     public void testWaitAWhile_neverStart() throws InterruptedException {
         val list = new ArrayList<String>();
-        DeferAction.of(String.class).onComplete(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()));
+        DeferAction.of(String.class).onCompleted(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()));
         Thread.sleep(100);
         assertAsString("[Not done.]", list);
     }
@@ -73,7 +73,7 @@ public class PromiseWaitTest {
         })));
         runners.forEach(tuple -> {
             val list = new ArrayList<String>();
-            val action = DeferAction.of(String.class).use(promise -> promise.onComplete(Wait.forMilliseconds(150, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get()))).start();
+            val action = DeferAction.of(String.class).use(promise -> promise.onCompleted(Wait.forMilliseconds(150, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get()))).start();
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -95,7 +95,7 @@ public class PromiseWaitTest {
         })));
         runners.forEach(tuple -> {
             val list = new ArrayList<String>();
-            val action = DeferAction.of(String.class).use(promise -> promise.onComplete(Wait.forMilliseconds(50, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get()))).start();
+            val action = DeferAction.of(String.class).use(promise -> promise.onCompleted(Wait.forMilliseconds(50, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get()))).start();
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -116,7 +116,7 @@ public class PromiseWaitTest {
                 threadRef.set(thread);
                 thread.start();
             }).orDefaultTo("Not done.");
-            promise.onComplete(wait, r -> list.add(r.get()));
+            promise.onCompleted(wait, r -> list.add(r.get()));
         }).start();
         Thread.sleep(50);
         threadRef.get().interrupt();
@@ -137,7 +137,7 @@ public class PromiseWaitTest {
                 thread.start();
                 ;
             }).orDefaultTo("Not done.");
-            promise.onComplete(wait, r -> list.add(r.get()));
+            promise.onCompleted(wait, r -> list.add(r.get()));
         }).start();
         Thread.sleep(50);
         action.complete("Complete!");

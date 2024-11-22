@@ -61,9 +61,9 @@ public class Loop<DATA> extends Retry<DATA> {
         val shouldStop = shouldStop();
         val actionBuilder = config.createBuilder(supplier);
         val subscriptionRef = new AtomicReference<SubscriptionRecord<DATA>>();
-        val onComplete = new OnComplete<>(actionBuilder, shouldStop, finalAction, subscriptionRef::get);
+        val onComplete = new OnCompleted<>(actionBuilder, shouldStop, finalAction, subscriptionRef::get);
         val action = actionBuilder.build();
-        val subscription = action.getPromise().onComplete(onComplete);
+        val subscription = action.getPromise().onCompleted(onComplete);
         subscriptionRef.set(subscription);
         action.start();
         return finalAction;
@@ -79,7 +79,7 @@ public class Loop<DATA> extends Retry<DATA> {
         return stopPredicate;
     }
     
-    static class OnComplete<DATA> implements FuncUnit1<Result<DATA>> {
+    static class OnCompleted<DATA> implements FuncUnit1<Result<DATA>> {
         
         private final DeferActionBuilder<DATA> actionBuilder;
         
@@ -89,7 +89,7 @@ public class Loop<DATA> extends Retry<DATA> {
         
         private final Supplier<SubscriptionRecord<DATA>> subscriptionRef;
         
-        public OnComplete(DeferActionBuilder<DATA> actionBuilder, Func1<Result<DATA>, Boolean> shouldStop, DeferAction<DATA> finalAction, Supplier<SubscriptionRecord<DATA>> subscriptionRef) {
+        public OnCompleted(DeferActionBuilder<DATA> actionBuilder, Func1<Result<DATA>, Boolean> shouldStop, DeferAction<DATA> finalAction, Supplier<SubscriptionRecord<DATA>> subscriptionRef) {
             this.actionBuilder = actionBuilder;
             this.shouldStop = shouldStop;
             this.finalAction = finalAction;
@@ -104,7 +104,7 @@ public class Loop<DATA> extends Retry<DATA> {
                 finalAction.complete(value);
             } else {
                 subscriptionRef.get().unsubscribe();
-                actionBuilder.build().onComplete(this).start();
+                actionBuilder.build().onCompleted(this).start();
             }
         }
     }
