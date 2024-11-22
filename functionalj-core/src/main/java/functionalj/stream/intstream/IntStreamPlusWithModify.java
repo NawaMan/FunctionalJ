@@ -184,7 +184,13 @@ public interface IntStreamPlusWithModify {
                 else
                     thisAction.fail(result.exception());
             });
-            List<? extends UncompletedAction<T>> actions = stream.mapToObj(mapToAction).peek(action -> results.add(DeferAction.<T>createNew())).peek(action -> setOnComplete.accept(action)).peek(action -> action.start()).collect(Collectors.toList());
+            List<? extends UncompletedAction<T>> actions 
+                    = stream
+                    .mapToObj(mapToAction)
+                    .peek(action -> results.add(DeferAction.<T>createNew()))
+                    .peek(action -> setOnComplete.accept(action))
+                    .peek(action -> action.start())
+                    .collect(Collectors.toList());
             val resultStream = StreamPlus.from(results.stream().map(action -> action.getResult()));
             resultStream.onClose(() -> actions.forEach(action -> action.abort("Stream closed!")));
             return resultStream;

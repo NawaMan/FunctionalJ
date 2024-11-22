@@ -1591,7 +1591,14 @@ public class StreamPlusTest {
             val duration = Math.round((end - start) / (1.0 * timePrecision)) * timePrecision;
             logs.add(element + " -- " + duration);
         });
-        assertEquals("[" + "Result:{ Value: Two } -- 0, " + "Result:{ Value: Four } -- " + (1 * timePrecision) + ", " + "Result:{ Value: Three } -- " + (2 * timePrecision) + ", " + "Result:{ Value: Eleven } -- " + (3 * timePrecision) + "" + "]", logs.toString());
+        assertEquals(
+                "["
+                    + "Result:{ Value: Two } -- 0, "
+                    + "Result:{ Value: Four } -- " + (1 * timePrecision) + ", "
+                    + "Result:{ Value: Three } -- " + (2 * timePrecision) + ", "
+                    + "Result:{ Value: Eleven } -- " + (3 * timePrecision)
+                + "]",
+                logs.toString());
     }
     
     @Test
@@ -1600,19 +1607,30 @@ public class StreamPlusTest {
         val first = new AtomicLong(-1);
         val actions = new ArrayList<DeferAction<String>>();
         val logs = new ArrayList<String>();
-        stream.spawn(str -> {
+        stream
+        .spawn(str -> {
             val action = Sleep(str.length() * 50 + 5).thenReturn(str).defer();
             actions.add(action);
             return action;
-        }).limit(1).forEach(element -> {
+        })
+        .limit(2)
+        .forEach(element -> {
             first.compareAndSet(-1, System.currentTimeMillis());
             val start = first.get();
             val end = System.currentTimeMillis();
             val duration = Math.round((end - start) / 50.0) * 50;
             logs.add(element + " -- " + duration);
         });
-        assertEquals("[Result:{ Value: Two } -- 0]", logs.toString());
-        assertEquals("Result:{ Value: Two }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }", actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
+        assertEquals("[Result:{ Value: Two } -- 0, Result:{ Value: Four } -- 50]", logs.toString());
+        assertEquals(
+                  "Result:{ Value: Two }, "
+                + "Result:{ Value: Four }, "
+                + "Result:{ Cancelled: Stream closed! }, "
+                + "Result:{ Cancelled: Stream closed! }",
+                actions.stream()
+                .map(DeferAction::getResult)
+                .map(String::valueOf)
+                .collect(Collectors.joining(", ")));
     }
     
     @Test
