@@ -48,7 +48,7 @@ public class BuildFromSpecTest {
             null, 
             "spec", 
             null, 
-            new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""), 
+            new functionalj.types.struct.generator.SourceSpec.Configurations(true, null, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""), 
             
             java.util.Arrays.asList(
                     new functionalj.types.struct.generator.Getter("name", new functionalj.types.Type("java.lang", null, "String", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), 

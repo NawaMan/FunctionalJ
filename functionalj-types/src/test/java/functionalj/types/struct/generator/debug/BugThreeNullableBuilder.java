@@ -70,7 +70,7 @@ public class BugThreeNullableBuilder {
                 true,                  // isInterface
                 null, 
                 null,
-                new Configurations(true, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""),
+                new Configurations(true, null, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""),
                 asList(
                     new Getter("id",          new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
                     new Getter("name",        new Type("java.lang", null, "String", emptyList()), false, REQUIRED),

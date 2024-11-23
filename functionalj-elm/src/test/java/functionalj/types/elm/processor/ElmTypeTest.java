@@ -54,7 +54,7 @@ public class ElmTypeTest {
                     null, 
                     "spec", 
                     null, 
-                    new SourceSpec.Configurations(true, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""),
+                    new SourceSpec.Configurations(true, null, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""),
                     asList(
                         new Getter("firstName", new Type("java.lang", null, "String", emptyList()), false, REQUIRED), 
                         new Getter("lastName", new Type("java.lang", null, "String", emptyList()), false, REQUIRED)),

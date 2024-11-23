@@ -215,6 +215,14 @@ public class SourceSpec {
          */
         public boolean coupleWithDefinition = true;
         
+        
+        /**
+         * Should generate Java Record. The target Java version must be 16 or higher.
+         * If this value is null, <code>true</code> will be used if the Java version is 14 or higher
+         *     while <code>false</code> will be used if the Java version is below 14.
+         */
+        public Boolean generateRecord = null;
+        
         /**
          * Should the no-arguments constructor be created.
          */
@@ -267,18 +275,20 @@ public class SourceSpec {
         }
         
         public Configurations(
-                boolean        coupleWithDefinition, 
+                boolean        coupleWithDefinition,  
+                Boolean        generateRecord, 
                 boolean        generateNoArgConstructor, 
                 boolean        generateRequiredOnlyConstructor, 
                 boolean        generateAllArgConstructor, 
                 boolean        generateLensClass, 
                 boolean        generateBuilderClass, 
                 boolean        publicFields, 
-                boolean        publicConstructor, 
+                boolean        publicConstructor,
                 Serialize.To   serialize,
                 StructToString toStringMethod, 
                 String         toStringTemplate) {
             this.coupleWithDefinition            = coupleWithDefinition;
+            this.generateRecord                  = generateRecord;
             this.generateNoArgConstructor        = generateNoArgConstructor;
             this.generateRequiredOnlyConstructor = generateRequiredOnlyConstructor;
             this.generateAllArgConstructor       = generateAllArgConstructor;
@@ -295,6 +305,7 @@ public class SourceSpec {
         public String toString() {
             return "Configurations ["
                     + "coupleWithDefinition="            + coupleWithDefinition            + ", "
+                    + "generateRecord="                  + generateRecord                  + ", "
                     + "generateNoArgConstructor="        + generateNoArgConstructor        + ", "
                     + "generateRequiredOnlyConstructor=" + generateRequiredOnlyConstructor + ", "
                     + "generateAllArgConstructor="       + generateAllArgConstructor       + ", "
@@ -310,7 +321,20 @@ public class SourceSpec {
         
         public String toCode() {
             String       serializeCode = Serialize.class.getCanonicalName() + ".To." + serialize;
-            List<Object> params        = asList(coupleWithDefinition, generateNoArgConstructor, generateRequiredOnlyConstructor, generateAllArgConstructor, generateLensClass, generateBuilderClass, publicFields, publicConstructor, serializeCode, StructToString.class.getCanonicalName() + "." + toStringMethod, Utils.toStringLiteral(toStringTemplate));
+            List<Object> params        = asList(
+                    coupleWithDefinition, 
+                    generateRecord, 
+                    generateNoArgConstructor, 
+                    generateRequiredOnlyConstructor, 
+                    generateAllArgConstructor, 
+                    generateLensClass, 
+                    generateBuilderClass, 
+                    publicFields, 
+                    publicConstructor, 
+                    serializeCode, 
+                    StructToString.class.getCanonicalName() + "." + toStringMethod, 
+                    Utils.toStringLiteral(toStringTemplate)
+            );
             return "new " + Configurations.class.getCanonicalName() + "(" + params.stream().map(String::valueOf).collect(joining(", ")) + ")";
         }
     }
