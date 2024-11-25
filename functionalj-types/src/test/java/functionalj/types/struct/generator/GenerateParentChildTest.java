@@ -86,7 +86,7 @@ public class GenerateParentChildTest {
               + "    \n"
               + "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(\"theParent\", LensSpec.of(Parent.class));\n"
               + "    public static final Parent.ParentLens<Parent> eachParent = theParent;\n"
-              + "    public final Child child;\n"
+              + "    private final Child child;\n"
               + "    \n"
               + "    public Parent() {\n"
               + "        this(null);\n"

@@ -91,7 +91,7 @@ public class GenerateParentMapChildTest {
               + "    \n"
               + "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(\"theParent\", LensSpec.of(Parent.class));\n"
               + "    public static final Parent.ParentLens<Parent> eachParent = theParent;\n"
-              + "    public final Map<String, Child> children;\n"
+              + "    private final Map<String, Child> children;\n"
               + "    \n"
               + "    public Parent() {\n"
               + "        this(null);\n"

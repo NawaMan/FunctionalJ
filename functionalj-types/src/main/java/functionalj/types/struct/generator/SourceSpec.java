@@ -256,7 +256,7 @@ public class SourceSpec {
         /**
          * Should the fields be made public
          */
-        public boolean publicFields = true;
+        public boolean publicFields = false;
         
         /**
          * Should the constructor be made public (other wise it will be package)
