@@ -78,7 +78,7 @@ public class LensClassBuilder {
         // This ignore the id for now.
         String         consBody    = "super(name, spec);";
         GenConstructor constructor = new GenConstructor(PUBLIC, lensType.simpleName(), consParams, line(consBody));
-        GenClass       lensClass   = new GenClass(PUBLIC, STATIC, MODIFIABLE, lensType, "HOST", asList(superType.withGenerics(asList(new Generic("HOST"), new Generic(dataObjClassName)))), emptyList(), asList(constructor), lensFields.collect(toList()), emptyList(), emptyList(), emptyList());
+        GenClass       lensClass   = new GenClass(null, PUBLIC, STATIC, MODIFIABLE, lensType, "HOST", asList(superType.withGenerics(asList(new Generic("HOST"), new Generic(dataObjClassName)))), emptyList(), asList(constructor), lensFields.collect(toList()), emptyList(), emptyList(), emptyList());
         return lensClass;
     }
     

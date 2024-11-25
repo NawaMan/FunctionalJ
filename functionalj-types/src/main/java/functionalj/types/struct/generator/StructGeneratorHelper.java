@@ -78,7 +78,7 @@ public class StructGeneratorHelper {
             String toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
             if (toStringTemplate != null && !toStringTemplate.isEmpty()) {
                 method = StructToString.Template;
-            } else if (sourceSpec.getJavaVersionInfo().getSourceVersion() >= 17) {
+            } else if (sourceSpec.getJavaVersionInfo().sourceVersion() >= 16) {
                 method = StructToString.Record;
             } else {
                 method = StructToString.Legacy;
@@ -157,39 +157,54 @@ public class StructGeneratorHelper {
     static GenConstructor requiredOnlyConstructor(SourceSpec sourceSpec) {
         if (!sourceSpec.getConfigures().generateRequiredOnlyConstructor)
             return null;
-        if (sourceSpec.getGetters().stream().allMatch(Getter::isRequired))
+        
+        List<Getter> getters = sourceSpec.getGetters();
+        if (getters.stream().allMatch(Getter::isRequired))
             return null;
-        if (sourceSpec.getConfigures().generateNoArgConstructor && sourceSpec.getGetters().stream().noneMatch(Getter::isRequired))
+        if (sourceSpec.getConfigures().generateNoArgConstructor 
+         && getters.stream().noneMatch(Getter::isRequired))
             return null;
         
         String         name              = sourceSpec.getTargetClassName();
-        List<GenParam> params            = sourceSpec.getGetters().stream().filter(getter -> getter.isRequired()).map(StructGeneratorHelper::getterToGenParam).collect(toList());
+        List<GenParam> params            = getters.stream().filter(getter -> getter.isRequired()).map(StructGeneratorHelper::getterToGenParam).collect(toList());
         String         pkgName           = sourceSpec.getPackageName();
         String         eclName           = sourceSpec.getEncloseName();
         String         valName           = sourceSpec.getValidatorName();
-        String         getterParams      = sourceSpec.getGetters().stream().map(getter -> getter.getDefaultValueCode(getter.name())).collect(joining(","));
-        Stream<String> assignGetters     = sourceSpec.getGetters().stream().map(getter -> "this." + getter.name() + " = " + getter.getDefaultValueCode(getter.name()) + ";");
+        String         getterParams      = getters.stream().map(getter -> getter.getDefaultValueCode(getter.name())).collect(joining(","));
         Stream<String> validate          = (Stream<String>) ((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
-        String         ipostConstruct    = Type.of(IPostConstruct.class).simpleName();
-        Stream<String> postConstruct     = Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();");
-        List<String>   assignments       = Stream.of(assignGetters, validate, postConstruct).filter(Objects::nonNull).flatMap(Function.identity()).collect(toList());
+        List<String>   reqOnlyConstBody  = reqOnlyConstBody(getters, validate);
         boolean        publicConstructor = sourceSpec.getConfigures().publicConstructor;
         Accessibility  accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
-        return new GenConstructor(accessibility, name, params, ILines.line(assignments));
+        return new GenConstructor(accessibility, name, params, ILines.line(reqOnlyConstBody));
+    }
+    
+    static List<String> reqOnlyConstBody(List<Getter> getters, Stream<String> validate) {
+        Stream<String> postConstruct    = postConstructor();
+        Stream<String> assignGetters    = Stream.of("this(" + getters.stream().map(getter -> getter.getDefaultValueCode(getter.name())).collect(joining(", ")) + ");");
+        List<String>   assignments      = Stream.of(assignGetters, validate, postConstruct).filter(Objects::nonNull).flatMap(Function.identity()).collect(toList());
+        List<String>   reqOnlyConstBody = assignments;
+        return reqOnlyConstBody;
+    }
+    
+    static Stream<String> postConstructor() {
+        String         ipostConstruct = Type.of(IPostConstruct.class).simpleName();
+        String         code           = "if (" + ipostConstruct + ".class.isInstance(this)) " + ipostConstruct + ".class.cast(this).postConstruct();";
+        Stream<String> postConstruct  = Stream.of(code);
+        return postConstruct;
     }
     
     static GenConstructor allArgConstructor(SourceSpec sourceSpec) {
         BiFunction<SourceSpec, Accessibility, GenConstructor> allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>) ((spec, acc) -> {
-            String         name           = spec.getTargetClassName();
-            List<GenParam> params         = spec.getGetters().stream().map(StructGeneratorHelper::getterToGenParam).collect(toList());
-            String         pkgName        = sourceSpec.getPackageName();
-            String         eclName        = sourceSpec.getEncloseName();
-            String         valName        = sourceSpec.getValidatorName();
-            String         getterParams   = sourceSpec.getGetters().stream().map(getter -> getter.name()).collect(Collectors.joining(","));
-            Stream<String> assignGetters  = spec.getGetters().stream().map(StructGeneratorHelper::initGetterField);
-            Stream<String> validate       = (Stream<String>) ((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
-            String         ipostConstruct = Type.of(IPostConstruct.class).simpleName();
-            Stream<String> body           = Stream.of(assignGetters, validate, Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();")).flatMap(identity());
+            String         name          = spec.getTargetClassName();
+            List<GenParam> params        = spec.getGetters().stream().map(StructGeneratorHelper::getterToGenParam).collect(toList());
+            String         pkgName       = sourceSpec.getPackageName();
+            String         eclName       = sourceSpec.getEncloseName();
+            String         valName       = sourceSpec.getValidatorName();
+            String         getterParams  = sourceSpec.getGetters().stream().map(getter -> getter.name()).collect(Collectors.joining(","));
+            Stream<String> assignGetters = spec.getGetters().stream().map(StructGeneratorHelper::initGetterField);
+            Stream<String> validate      = (Stream<String>) ((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
+            Stream<String> postConstruct = postConstructor();
+            Stream<String> body          = Stream.of(assignGetters, validate, postConstruct).flatMap(identity());
             return new GenConstructor(acc, name, params, ILines.of(() -> body));
         });
         

@@ -96,7 +96,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         boolean hasError = false;
         List<InputElement> elements = roundEnv.getElementsAnnotatedWith(Choice.class).stream().map(environment::element).collect(toList());
         for (InputElement element : elements) {
-            prepareLogs(element);
+//            prepareLogs(element);
             
             ChoiceSpec choiceSpec = new ChoiceSpec(element);
             String packageName = choiceSpec.packageName();

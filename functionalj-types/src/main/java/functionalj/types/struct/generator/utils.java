@@ -87,4 +87,5 @@ class utils {
     static <T> List<T> listOf(Stream<T>... ts) {
         return stream(ts).filter(Objects::nonNull).flatMap(themAll()).filter(Objects::nonNull).collect(toList());
     }
+    
 }

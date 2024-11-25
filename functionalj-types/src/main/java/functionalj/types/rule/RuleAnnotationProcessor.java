@@ -91,7 +91,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         hasError = false;
         List<InputElement> elements = roundEnv.getElementsAnnotatedWith(Rule.class).stream().map(environment::element).collect(toList());
         for (InputElement element : elements) {
-            prepareLogs(element);
+//            prepareLogs(element);
             
             InputMethodElement method = element.asMethodElement();
             Rule               rule   = method.annotation(Rule.class);

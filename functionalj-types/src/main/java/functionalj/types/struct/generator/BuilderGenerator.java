@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 
 import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenClass;
+import functionalj.types.struct.generator.model.GenClass.TargetKind;
 import functionalj.types.struct.generator.model.GenMethod;
 import functionalj.types.struct.generator.model.GenParam;
 
@@ -110,7 +111,7 @@ public class BuilderGenerator {
         GenParam         param            = new GenParam(getterName, new Type(packageName, getterType));
         String           mthd             = "public " + methodType + " " + getterName + "(" + param.toTerm(packageName) + ");";
         List<String>     extraMethodCode  = generateExtraMethods(typeName, builderInterfaces, i, true);
-        GenClass         getterInterface  = new GenClass(PUBLIC, STATIC, MODIFIABLE, false, new Type(packageName, interfaceName), (String) null, emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), asList(ILines.linesOf(ILines.line(mthd), ILines.line(extraMethodCode))));
+        GenClass         getterInterface  = new GenClass(null, PUBLIC, STATIC, MODIFIABLE, TargetKind.INTERFACE, new Type(packageName, interfaceName), (String) null, emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), asList(ILines.linesOf(ILines.line(mthd), ILines.line(extraMethodCode))));
         return getterInterface;
     }
     
@@ -195,10 +196,11 @@ public class BuilderGenerator {
     private GenClass generateReadyInterface(String typeName) {
         String packageName = sourceSpec.getPackageName();
         return new GenClass(
+                null,
                 PUBLIC, 
                 STATIC, 
                 MODIFIABLE, 
-                false, 
+                TargetKind.INTERFACE, 
                 new Type(packageName, typeName + "Builder_ready"), 
                 null, // extends
                 emptyList(), // implementeds
@@ -231,8 +233,10 @@ public class BuilderGenerator {
             emptyList(), // Body
             ILines.line(String.format("return new %1$s();", typeName))
         );
-        List<GenMethod> methods           = asList(buildMthd);
-        GenClass        builderReadyClass = new GenClass(
+        List<GenMethod> methods = asList(buildMthd);
+        
+        GenClass builderReadyClass = new GenClass(
+                null,
                 PUBLIC,
                 STATIC,
                 FINAL, // type
@@ -267,7 +271,7 @@ public class BuilderGenerator {
         List<String>   extra = generateExtraMethods(typeName, builderInterfaces, 0, false);
         List<GenClass> interfaces = generateSubInterfaces(typeName, builderInterfaces);
         GenClass builderClass = new GenClass(
-                PUBLIC, STATIC, FINAL, new Type(pckgName, typeName, "Builder", emptyList()), // generic
+                null, PUBLIC, STATIC, FINAL, new Type(pckgName, typeName, "Builder", emptyList()), // generic
                 null, // extendeds
                 emptyList(), // implementeds
                 emptyList(), // constructors

@@ -24,12 +24,15 @@
 package functionalj.typestests.struct;
 
 import static org.junit.Assert.assertEquals;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.junit.Test;
+
 import functionalj.types.Struct;
 import lombok.val;
 

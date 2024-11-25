@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.types.struct;
 
+import static functionalj.types.OptionalBoolean.toBoolean;
 import static functionalj.types.struct.features.FeatureSerialization.validateSerialization;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -127,8 +128,9 @@ public class SourceSpecBuilder {
         String validatorName = (String) null;
         
         JavaVersionInfo versionInfo = element.versionInfo();
+        SourceKind      sourceKind  = sourceKind(isInterface, isClass);
         try {
-            return new SourceSpec(versionInfo, sourceName, packageName, encloseName, targetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, methods, localTypeWithLens);
+            return new SourceSpec(versionInfo, sourceName, packageName, encloseName, targetName, packageName, sourceKind, specField, validatorName, configures, getters, methods, localTypeWithLens);
         } catch (Exception e) {
             element.error("Problem generating the class: " + packageName + "." + targetName + ": " + e.getMessage() + ":" + e.getClass() + stream(e.getStackTrace()).map(st -> "\n    @" + st).collect(joining()));
             return null;
@@ -172,7 +174,8 @@ public class SourceSpecBuilder {
         boolean isInteritMethod 
                 =  ((mthd.isDefault() || mthd.isStatic()) && !mthd.isAbstract() && !mthd.isPrivate())
                 || (element.isRecord() && mthd.isStatic());
-        if (!isInteritMethod) {
+        boolean isDefaultConstructor = mthd.toString().trim().equals("public non-sealed void <init>()");
+        if (!isInteritMethod && !isDefaultConstructor) {
             // OK, for `record` as a source, we will also get the getter and object method here.
             // We need to find a way to screen it out.
             mthd.warn(String.format(
@@ -264,8 +267,6 @@ public class SourceSpecBuilder {
         String             specTargetName    = targetName();
         String             specField         = struct.specField();
         List<String>       localTypeWithLens = element.readLocalTypeWithLens();
-        Boolean            isClass           = (Boolean) null;
-        Boolean            isInterface       = (Boolean) null;
         String             sourceName        = (String) null;
         String             superPackage      = packageName;
         boolean            isValidate        = isBooleanStringOrValidation(method.returnType());
@@ -286,9 +287,9 @@ public class SourceSpecBuilder {
             return null;
         
         JavaVersionInfo versionInfo = element.versionInfo();
-        
+        SourceKind      sourceKind  = SourceKind.METHOD;
         try {
-            return new SourceSpec(versionInfo, sourceName, superPackage, encloseName, specTargetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, emptyList(), localTypeWithLens);
+            return new SourceSpec(versionInfo, sourceName, superPackage, encloseName, specTargetName, packageName, sourceKind, specField, validatorName, configures, getters, emptyList(), localTypeWithLens);
         } catch (Exception e) {
             String stacktraces = stream(e.getStackTrace()).map(stacktrace -> "\n    @" + stacktrace).collect(joining());
             String errMsg      = format("Problem generating the class: %s.%s: %s:%s%s", packageName, specTargetName, e.getMessage(), e.getClass(), stacktraces);
@@ -356,6 +357,7 @@ public class SourceSpecBuilder {
     private Configurations extractConfigurations(InputElement element, Struct struct) {
         Configurations configures = new Configurations();
         configures.coupleWithDefinition            = struct.coupleWithDefinition();
+        configures.generateRecord                  = toBoolean(struct.generateRecord());
         configures.generateNoArgConstructor        = struct.generateNoArgConstructor();
         configures.generateRequiredOnlyConstructor = struct.generateRequiredOnlyConstructor();
         configures.generateAllArgConstructor       = struct.generateAllArgConstructor();
@@ -423,7 +425,10 @@ public class SourceSpecBuilder {
             e.printStackTrace();
             throw e;
         }
-        
+    }
+    
+    private SourceKind sourceKind(boolean isInterface, boolean isClass) {
+        return isClass ? SourceKind.CLASS : isInterface ? SourceKind.INTERFACE : SourceKind.RECORD;
     }
     
     private Type getType(InputElement element, InputType typeMirror) {
