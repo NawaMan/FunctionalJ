@@ -23,10 +23,10 @@
 // ============================================================================
 package functionalj.typestests.struct;
 
-import static functionalj.types.DefaultValue.NULL;
+// import static functionalj.types.DefaultValue.NULL;
 import java.lang.reflect.InvocationTargetException;
 import org.junit.Test;
-import functionalj.types.DefaultTo;
+// import functionalj.types.DefaultTo;
 import functionalj.types.Struct;
 
 public class DOConstructorTest {
@@ -42,15 +42,19 @@ public class DOConstructorTest {
         DONoNoArgsConstructor.class.getDeclaredConstructor(new Class[0]).newInstance();
     }
     
-    @Struct(name = "DONoAllArgsConstructor", generateNoArgConstructor = true, generateAllArgConstructor = false)
-    public static interface DONoAllArgsConstructorDef {
-        
-        @DefaultTo(NULL)
-        public String name();
-    }
     
-    @Test(expected = NoSuchMethodException.class)
-    public void testNoAllArgsConstructor() throws InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
-        DONoAllArgsConstructor.class.getConstructor(String.class).newInstance("Obj");
-    }
+    // This correctly has a compilation error of:
+    // Problem generating the class: functionalj.typestests.struct.DONoAllArgsConstructor: 
+    //      An All-Arg constructor is need when generate a record.:class java.lang.IllegalArgumentException
+//    @Struct(name = "DONoAllArgsConstructor", generateNoArgConstructor = true, generateAllArgConstructor = false)
+//    public static interface DONoAllArgsConstructorDef {
+//        
+//        @DefaultTo(NULL)
+//        public String name();
+//    }
+//    
+//    @Test(expected = NoSuchMethodException.class)
+//    public void testNoAllArgsConstructor() throws InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
+//        DONoAllArgsConstructor.class.getConstructor(String.class).newInstance("Obj");
+//    }
 }

@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
+import static functionalj.types.struct.SourceKind.METHOD;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
@@ -31,6 +32,7 @@ import org.junit.Test;
 
 import functionalj.types.JavaVersionInfo;
 import functionalj.types.Type;
+import functionalj.types.struct.SourceKind;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
@@ -53,9 +55,7 @@ public class ElmStructTest {
     
     private String packageName = "example.functionalj.elm";
     
-    private boolean isClass = false;
-    
-    private boolean isInterface = false;
+    private SourceKind sourceKind = METHOD;
     
     private List<Getter> getters = asList(new Getter("firstName", Type.STRING), new Getter("lastName", Type.STRING));
     
@@ -68,8 +68,7 @@ public class ElmStructTest {
                 null,                // encloseName
                 targetClassName,     // targetClassName
                 packageName,         // targetPackageName
-                isClass,
-                isInterface,
+                sourceKind,
                 null,
                 null,
                 configuration,

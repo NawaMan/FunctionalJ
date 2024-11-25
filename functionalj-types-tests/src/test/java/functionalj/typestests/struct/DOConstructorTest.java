@@ -24,8 +24,11 @@
 package functionalj.typestests.struct;
 
 import static functionalj.types.DefaultValue.NULL;
+
 import java.lang.reflect.InvocationTargetException;
+
 import org.junit.Test;
+
 import functionalj.types.DefaultTo;
 import functionalj.types.Struct;
 

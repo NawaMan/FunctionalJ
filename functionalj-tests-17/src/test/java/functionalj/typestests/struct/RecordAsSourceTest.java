@@ -41,8 +41,8 @@ public class RecordAsSourceTest {
     @Test
     public void testPoint() {
         var point = new Point(3, 5);
-        assertEquals(3, point.x);
-        assertEquals(5, point.y);
+        assertEquals(3, point.x());
+        assertEquals(5, point.y());
         assertAsString("Point[x=3, y=5]", point);
         assertAsString("Point[x=4, y=5]", point.withX(4));
         assertEquals(5, point.withY(4).pipeTo(thePoint.x.square().plus(thePoint.y.square()).squareRoot().floorToInt()).intValue());
@@ -61,8 +61,8 @@ public class RecordAsSourceTest {
     @Test
     public void testDot() {
         var dot = new Dot(3, 5);
-        assertEquals(3, dot.x);
-        assertEquals(5, dot.y);
+        assertEquals(3, dot.x());
+        assertEquals(5, dot.y());
         assertAsString("Dot[x=3, y=5]", dot);
         assertAsString("Dot[x=4, y=5]", dot.withX(4));
         assertEquals(5, dot.withY(4).pipeTo(theDot.x.square().plus(theDot.y.square()).squareRoot().floorToInt()).intValue());

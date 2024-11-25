@@ -38,6 +38,7 @@ import functionalj.types.Serialize.To;
 import functionalj.types.StructToString;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
+import functionalj.types.struct.SourceKind;
 
 /**
  * Source specification of the data object.
@@ -58,9 +59,7 @@ public class SourceSpec {
     
     private final String targetPackageName;
     
-    private final Boolean isClass;
-    
-    private final Boolean isInterface;
+    private final SourceKind sourceKind;
     
     private final String specObjName;
     
@@ -81,8 +80,7 @@ public class SourceSpec {
             String          encloseName,
             String          targetClassName,
             String          targetPackageName,
-            Boolean         isClass,
-            Boolean         isInterface,
+            SourceKind      sourceKind,
             String          specObjName,
             String          validatorName,
             Configurations  configurations,
@@ -95,8 +93,7 @@ public class SourceSpec {
         this.encloseName       = encloseName;
         this.targetClassName   = targetClassName;
         this.targetPackageName = targetPackageName;
-        this.isClass           = isClass;
-        this.isInterface       = isInterface;
+        this.sourceKind        = sourceKind;
         this.specObjName       = specObjName;
         this.validatorName     = validatorName;
         this.configurations    = configurations;
@@ -153,56 +150,64 @@ public class SourceSpec {
         return typeWithLens;
     }
     
+    public boolean generateRecord() {
+        if (configurations.generateRecord == null) {
+            return Math.min(javaVersionInfo.sourceVersion(), javaVersionInfo.targetVersion()) > 16;
+        }
+        
+        return configurations.generateRecord;
+    }
+    
     public SourceSpec withSpecName(JavaVersionInfo javaVersionInfo) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withSpecName(String specName) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withPackageName(String packageName) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withEncloseName(String encloseName) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withTargetClassName(String targetClassName) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withTargetPackageName(String targetPackageName) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withIsClass(Boolean isClass) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withSpecObjName(String specObjName) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withValidatorName(String validatorName) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withConfigures(Configurations configures) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configures, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configures, getters, methods, typeWithLens);
     }
     
     public SourceSpec withGetters(List<Getter> getters) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withMethods(List<Callable> methods) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     public SourceSpec withTypeWithLens(List<String> typeWithLens) {
-        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, isClass, isInterface, specObjName, validatorName, configurations, getters, methods, typeWithLens);
+        return new SourceSpec(javaVersionInfo, specName, packageName, encloseName, targetClassName, targetPackageName, sourceKind, specObjName, validatorName, configurations, getters, methods, typeWithLens);
     }
     
     /**
@@ -217,7 +222,7 @@ public class SourceSpec {
         
         
         /**
-         * Should generate Java Record. The target Java version must be 16 or higher.
+         * Should generate Java Record. The source and target Java version must be 16 or higher.
          * If this value is null, <code>true</code> will be used if the Java version is 14 or higher
          *     while <code>false</code> will be used if the Java version is below 14.
          */
@@ -335,7 +340,9 @@ public class SourceSpec {
                     StructToString.class.getCanonicalName() + "." + toStringMethod, 
                     Utils.toStringLiteral(toStringTemplate)
             );
-            return "new " + Configurations.class.getCanonicalName() + "(" + params.stream().map(String::valueOf).collect(joining(", ")) + ")";
+            return "new " + Configurations.class.getCanonicalName() + "(" 
+                    + params.stream().map(String::valueOf).collect(joining(", ")) 
+                    + ")";
         }
     }
     
@@ -353,19 +360,33 @@ public class SourceSpec {
         return new Type(packageName, specName);
     }
     
+    /** @return sourceKind. */
+    public SourceKind sourceKind() {
+        return sourceKind;
+    }
+    
     /** @return <code>true</code> if the source element is a class. */
     public Boolean isClass() {
-        return isClass;
+        if ((sourceKind == null) || (sourceKind == SourceKind.METHOD))
+            return null;
+        
+        return sourceKind == SourceKind.CLASS;
     }
     
     /** @return <code>true</code> if the source element is an interface. */
     public Boolean isInterface() {
-        return isInterface;
+        if ((sourceKind == null) || (sourceKind == SourceKind.METHOD))
+            return null;
+        
+        return sourceKind == SourceKind.INTERFACE;
     }
     
     /** @return <code>true</code> if the source element is a record. */
     public Boolean isRecord() {
-        return (!Boolean.TRUE.equals(isClass) && !Boolean.TRUE.equals(isInterface));
+        if ((sourceKind == null) || (sourceKind == SourceKind.METHOD))
+            return null;
+        
+        return sourceKind == SourceKind.RECORD;
     }
     
     public boolean hasSpecField() {
@@ -380,15 +401,16 @@ public class SourceSpec {
                 toStringLiteral(encloseName),
                 toStringLiteral(targetClassName),
                 toStringLiteral(targetPackageName),
-                isClass,
-                isInterface,
+                sourceKind,
                 toStringLiteral(specObjName),
                 toStringLiteral(validatorName),
                 configurations.toCode(),
                 toListCode(getters, Getter::toCode),
                 toListCode(methods, Callable::toCode),
                 toListCode(typeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity()));
-        return "new " + SourceSpec.class.getCanonicalName() + "(" + params.stream().map(String::valueOf).collect(joining(", ")) + ")";
+        return "new " + SourceSpec.class.getCanonicalName() + "(" 
+                + params.stream().map(String::valueOf).collect(joining(", ")) 
+                + ")";
     }
     
 }

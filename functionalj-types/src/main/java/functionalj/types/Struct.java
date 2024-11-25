@@ -54,6 +54,13 @@ public @interface Struct {
     public boolean coupleWithDefinition() default true;
     
     /**
+     *@return  if it is preferred to generate record.
+     *         If WHATEVER is choose, FunctionalJ will select for you based on the Java version.
+     *         If the Java version is 16 or later and the source is interface or record, this will default to Yes.
+     */
+    public OptionalBoolean generateRecord() default OptionalBoolean.WHATEVER;
+    
+    /**
      * @return the flag indicating that the no-arguments constructor should be created - default to true.
      */
     public boolean generateNoArgConstructor() default false;

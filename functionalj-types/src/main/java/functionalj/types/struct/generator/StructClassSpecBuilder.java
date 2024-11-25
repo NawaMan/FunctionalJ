@@ -54,6 +54,7 @@ import java.util.stream.Stream;
 import functionalj.types.Core;
 import functionalj.types.Generic;
 import functionalj.types.IStruct;
+import functionalj.types.StructToString;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenClass;
 import functionalj.types.struct.generator.model.GenConstructor;
@@ -61,11 +62,11 @@ import functionalj.types.struct.generator.model.GenField;
 import functionalj.types.struct.generator.model.GenMethod;
 
 /**
- * Builder for a data object.
+ * Builder for a struct object.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
-public class StructSpecBuilder {
+public class StructClassSpecBuilder {
     
     static final Function<Getter, String> withMethodName = (Function<Getter, String>) (utils::withMethodName);
     
@@ -76,7 +77,7 @@ public class StructSpecBuilder {
      *
      * @param sourceSpec  the source spec.
      */
-    public StructSpecBuilder(SourceSpec sourceSpec) {
+    public StructClassSpecBuilder(SourceSpec sourceSpec) {
         this.sourceSpec = sourceSpec;
     }
     
@@ -85,8 +86,8 @@ public class StructSpecBuilder {
      *
      * @return  the data object.
      */
-    public StructSpec build() {
-        List<Type> extendeds = new ArrayList<Type>();
+    public StructClassSpec build() {
+        List<Type> extendeds    = new ArrayList<Type>();
         List<Type> implementeds = new ArrayList<Type>();
         if (sourceSpec.getConfigures().coupleWithDefinition) {
             if ((sourceSpec.isClass() != null) && sourceSpec.isClass()) {
@@ -108,31 +109,57 @@ public class StructSpecBuilder {
         
         // val serialize = FeatureSerialization.serializeType(input, type, configures);
         // implementeds.add(serialize);
-        List<Getter>             getters        = sourceSpec.getGetters();
-        Stream<GenField>         getterFields   = getters.stream().map(getter -> getterToField(sourceSpec, getter));
-        GenField                 theField       = null;
-        GenField                 eachField      = null;
-        GenClass                 lensClass      = null;
+        
+        List<Getter> getters   = sourceSpec.getGetters();
+        GenClass     lensClass = null;
+        
+        LensClassBuilder lensClassBuilder = null;
         if (sourceSpec.getConfigures().generateLensClass) {
-            LensClassBuilder lensClassBuilder = new LensClassBuilder(sourceSpec);
+            lensClassBuilder = new LensClassBuilder(sourceSpec);
             lensClass = lensClassBuilder.build();
-            theField  = lensClassBuilder.generateTheLensField();
-            eachField = lensClassBuilder.generateEachLensField();
         }
         GenClass builderClass = null;
         if (sourceSpec.getConfigures().generateBuilderClass) {
             builderClass = new BuilderGenerator(sourceSpec).build();
         }
-        Stream<GenField>     specField    = generateSpecField(sourceSpec);
-        List<GenField>       fields       = listOf(Stream.of(theField, eachField), getterFields, specField);
+        
+        List<GenField>       fields       = fields(getters, lensClassBuilder);
         List<GenMethod>      methods      = generateMethods(targetType);
-        List<GenConstructor> constructors = listOf(noArgConstructor(sourceSpec), requiredOnlyConstructor(sourceSpec), allArgConstructor(sourceSpec));
+        List<GenConstructor> constructors = constructors();
         List<GenClass>       innerClasses = listOf(lensClass, builderClass);
-        StructSpec           dataObjSpec  = new StructSpec(sourceSpec.getTargetClassName(), sourceSpec.getTargetPackageName(), sourceSpec.getSpecName(), sourceSpec.getPackageName(), extendeds, implementeds, constructors, fields, methods, innerClasses, emptyList());
+        StructClassSpec      dataObjSpec  = createSpec(extendeds, implementeds, fields, methods, constructors, innerClasses);
         return dataObjSpec;
     }
-
-    private List<GenMethod> generateMethods(Type targetType) {
+    
+    protected List<GenConstructor> constructors() {
+        return listOf(
+                noArgConstructor(sourceSpec), 
+                requiredOnlyConstructor(sourceSpec), 
+                allArgConstructor(sourceSpec)
+        );
+    }
+    
+    protected List<GenField> fields(List<Getter> getters, LensClassBuilder lensClassBuilder) {
+        Stream<GenField> getterFields = getterFields(getters);
+        Stream<GenField> specField    = generateSpecField(sourceSpec);
+        GenField         theField     = null;
+        GenField         eachField    = null;
+        if (lensClassBuilder != null) {
+            theField  = lensClassBuilder.generateTheLensField();
+            eachField = lensClassBuilder.generateEachLensField();
+        }
+        List<GenField> fields = listOf(Stream.of(theField, eachField), getterFields, specField);
+        return fields;
+    }
+    
+    protected Stream<GenField> getterFields(List<Getter> getters) {
+        boolean isRecord = sourceSpec.generateRecord();
+        return isRecord
+                ? Stream.empty()
+                : getters.stream().map(getter -> getterToField(sourceSpec, getter));
+    }
+     
+    protected List<GenMethod> generateMethods(Type targetType) {
         List<Getter>      getters        = sourceSpec.getGetters();
         Stream<GenMethod> pipeMethod     = generatePipeMethods(targetType);
         Stream<GenMethod> getterMethods  = generateGetterMethods(getters);
@@ -156,17 +183,20 @@ public class StructSpecBuilder {
         return methods;
     }
     
-    private Stream<GenMethod> generateGetterMethods(List<Getter> getters) {
-        return getters.stream().map(getter -> getterToGetterMethod(getter));
+    protected Stream<GenMethod> generateGetterMethods(List<Getter> getters) {
+        boolean isRecord = sourceSpec.generateRecord();
+        return isRecord
+                ? Stream.empty()
+                : getters.stream().map(getter -> getterToGetterMethod(getter));
     }
     
-    private Stream<GenMethod> generateWitherMethods(List<Getter> getters) {
+    protected Stream<GenMethod> generateWitherMethods(List<Getter> getters) {
         return getters
                 .stream()
                 .flatMap(getter -> getterToWitherMethods(sourceSpec, withMethodName, getter));
     }
     
-    private Stream<GenMethod> generateSchemaMethods() {
+    protected Stream<GenMethod> generateSchemaMethods() {
         GenMethod         fromMap         = generateFromMap(sourceSpec);
         GenMethod         toMap           = generateToMap(sourceSpec);
         GenMethod         getStructSchema = generateGetStructScheme(sourceSpec);
@@ -175,11 +205,37 @@ public class StructSpecBuilder {
         return schemaMethods;
     }
     
-    private Stream<GenMethod> generateObjectMethods(List<Getter> getters) {
+    protected Stream<GenMethod> generateObjectMethods(List<Getter> getters) {
+        boolean isRecord = sourceSpec.generateRecord();
+        if (isRecord) {
+            if ((sourceSpec.getConfigures().toStringMethod == StructToString.Legacy)
+             || (sourceSpec.getConfigures().toStringMethod == StructToString.Template)) {
+                GenMethod toString = generateToString(sourceSpec, getters);
+                return Stream.of(toString);
+            }
+            if ((sourceSpec.getConfigures().toStringMethod   == StructToString.Default)
+             && (sourceSpec.getConfigures().toStringTemplate != null)) {
+                GenMethod toString = generateToString(sourceSpec, getters);
+                return Stream.of(toString);
+            }
+            
+            return Stream.empty();
+        }
+        
         GenMethod         toString      = generateToString(sourceSpec, getters);
         GenMethod         hashCode      = generateHashCode(sourceSpec);
         GenMethod         equals        = generateEquals(sourceSpec);
         Stream<GenMethod> objectMethods = Stream.of(toString, hashCode, equals);
         return objectMethods;
+    }
+    
+    protected StructClassSpec createSpec(
+            List<Type>           extendeds, 
+            List<Type>           implementeds, 
+            List<GenField>       fields, 
+            List<GenMethod>      methods, 
+            List<GenConstructor> constructors, 
+            List<GenClass>       innerClasses) {
+        return new StructClassSpec(sourceSpec, sourceSpec.getTargetClassName(), sourceSpec.getTargetPackageName(), sourceSpec.getSpecName(), sourceSpec.getPackageName(), extendeds, implementeds, constructors, fields, methods, innerClasses, emptyList());
     }
 }

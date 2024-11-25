@@ -31,8 +31,33 @@ import lombok.val;
 
 public class DOFromClassTest {
     
-    @Struct(name = "DOFromClass")
-    public abstract static class DOFromClassDef {
+    // This is rightly results in a compiler error
+    // Problem generating the class: 
+    //      functionalj.typestests.struct.DOFromClassCouple: 
+    //          With a class as the source and the record as a target, 
+    //              it is not possible to couple them as a record cannot extends a class.
+    //      :class java.lang.IllegalArgumentException
+//    @Struct(name = "DOFromClassCouple", coupleWithDefinition = true)
+//    public abstract static class DOFromClassDefCouple {
+//        
+//        public abstract String name();
+//        
+//        public abstract int count();
+//        
+//        public String nameUpperCase() {
+//            return name().toUpperCase();
+//        }
+//    }
+//    
+//    @Test
+//    public void testFromClassCouple() {
+//        val obj = new DOFromClassCouple("Obj", 5);
+//        assertEquals("Obj", obj.name());
+////        assertEquals("OBJ", obj.nameUpperCase());
+//    }
+    
+    @Struct(name = "DOFromClassNoCouple", coupleWithDefinition = false)
+    public abstract static class DOFromClassDefNoCouple {
         
         public abstract String name();
         
@@ -44,9 +69,9 @@ public class DOFromClassTest {
     }
     
     @Test
-    public void testFromClass() {
-        val obj = new DOFromClass("Obj", 5);
+    public void testFromClassNoCouple() {
+        val obj = new DOFromClassNoCouple("Obj", 5);
         assertEquals("Obj", obj.name());
-        assertEquals("OBJ", obj.nameUpperCase());
+//        assertEquals("OBJ", obj.nameUpperCase());
     }
 }

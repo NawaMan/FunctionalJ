@@ -45,7 +45,6 @@ public class BuildFromSpecTest {
             "Birthday", 
             "functionalj.types.struct", 
             null, 
-            null, 
             "spec", 
             null, 
             new functionalj.types.struct.generator.SourceSpec.Configurations(true, null, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""), 

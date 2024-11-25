@@ -37,10 +37,10 @@ import lombok.val;
 
 public class RequiredConstructorTest {
     
-    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(new JavaVersionInfo(8, 8), null, "example.functionalj.accesslens", "StructTypeExample", "Person", "example.functionalj.accesslens", null, null, "spec", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, null, false, true, true, true, true, false, true, Serialize.To.NOTHING, Legacy, ""), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter("firstName", new Type("java.lang", null, "String", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter("midName", new Type("java.lang", null, "String", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter("lastName", new Type("java.lang", null, "String", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), emptyList(), java.util.Arrays.asList("Person"));
+    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(new JavaVersionInfo(8, 8), null, "example.functionalj.accesslens", "StructTypeExample", "Person", "example.functionalj.accesslens", null, "spec", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, null, false, true, true, true, true, false, true, Serialize.To.NOTHING, Legacy, ""), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter("firstName", new Type("java.lang", null, "String", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter("midName", new Type("java.lang", null, "String", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter("lastName", new Type("java.lang", null, "String", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), emptyList(), java.util.Arrays.asList("Person"));
     
     private String generate() {
-        val dataObjSpec = new StructSpecBuilder(spec).build();
+        val dataObjSpec = new StructClassSpecBuilder(spec).build();
         val generated = new GenStruct(spec, dataObjSpec).toText();
         return generated;
     }
@@ -71,8 +71,7 @@ public class RequiredConstructorTest {
                 + "import java.util.function.Function;\n"
                 + "import java.util.function.Supplier;\n"
                 + "\n"
-                + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"example.functionalj.accesslens.StructTypeExample\")\n"
-                + "\n"
+                + "@Generated(value = \"FunctionalJ\", date = \"\\E[^\"]+\\Q\", comments = \"example.functionalj.accesslens.StructTypeExample\")\n"
                 + "@SuppressWarnings(\"all\")\n"
                 + "\n"
                 + "public class Person implements IStruct,Pipeable<Person> {\n"
@@ -82,19 +81,17 @@ public class RequiredConstructorTest {
                 + "    private final String firstName;\n"
                 + "    private final String midName;\n"
                 + "    private final String lastName;\n"
-                + "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(new functionalj.types.JavaVersionInfo(8, 8), null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, null, false, true, true, true, true, false, true, functionalj.types.Serialize.To.NOTHING, functionalj.types.StructToString.Legacy, \"\"), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Collections.emptyList(), java.util.Arrays.asList(\"Person\"));\n"
+                + "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(new functionalj.types.JavaVersionInfo(8, 8), null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, null, false, true, true, true, true, false, true, functionalj.types.Serialize.To.NOTHING, functionalj.types.StructToString.Legacy, \"\"), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Collections.emptyList(), java.util.Arrays.asList(\"Person\"));\n"
                 + "    \n"
                 + "    public Person(String firstName, String lastName) {\n"
-                + "        this.firstName = $utils.notNull(firstName);\n"
-                + "        this.midName = null;\n"
-                + "        this.lastName = $utils.notNull(lastName);\n"
-                + "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n"
+                + "        this($utils.notNull(firstName), null, $utils.notNull(lastName));\n"
+                + "        if (IPostConstruct.class.isInstance(this)) IPostConstruct.class.cast(this).postConstruct();\n"
                 + "    }\n"
                 + "    public Person(String firstName, String midName, String lastName) {\n"
                 + "        this.firstName = $utils.notNull(firstName);\n"
                 + "        this.midName = java.util.Optional.ofNullable(midName).orElseGet(()->null);\n"
                 + "        this.lastName = $utils.notNull(lastName);\n"
-                + "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n"
+                + "        if (IPostConstruct.class.isInstance(this)) IPostConstruct.class.cast(this).postConstruct();\n"
                 + "    }\n"
                 + "    \n"
                 + "    public Person __data() throws Exception  {\n"

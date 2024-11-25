@@ -24,8 +24,10 @@
 package functionalj.typestests.struct;
 
 import static org.junit.Assert.assertEquals;
+
 // 
 import org.junit.Test;
+
 import functionalj.types.Struct;
 import lombok.val;
 

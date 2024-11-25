@@ -39,13 +39,16 @@ import functionalj.types.struct.generator.model.GenField;
 import functionalj.types.struct.generator.model.GenMethod;
 import functionalj.types.struct.generator.model.Modifiability;
 import functionalj.types.struct.generator.model.Scope;
+import functionalj.types.struct.generator.model.GenClass.TargetKind;
 
 /**
  * Specification for Record.
  *
  * @author NawaMan -- nawa@nawaman.net
  */
-public class StructSpec {
+public class StructClassSpec {
+    
+    private final SourceSpec sourceSpec;
     
     private final GenClass classSpec;
     
@@ -68,10 +71,37 @@ public class StructSpec {
      * @param innerClasses       the list of inner classes.
      * @param mores              other ILines.
      */
-    public StructSpec(String className, String packageName, String sourceName, String sourcePackageName, List<Type> extendeds, List<Type> implementeds, List<GenConstructor> constructors, List<GenField> fields, List<GenMethod> methods, List<GenClass> innerClasses, List<ILines> mores) {
-        this.classSpec = new GenClass(PUBLIC, NONE, MODIFIABLE, new Type(packageName, className), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
-        this.sourceClassName = sourceName;
+    public StructClassSpec( 
+            SourceSpec           sourceSpec,
+            String               className, 
+            String               packageName, 
+            String               sourceName, 
+            String               sourcePackageName, 
+            List<Type>           extendeds, 
+            List<Type>           implementeds, 
+            List<GenConstructor> constructors, 
+            List<GenField>       fields, 
+            List<GenMethod>      methods, 
+            List<GenClass>       innerClasses, 
+            List<ILines>         mores) {
+        this.sourceSpec        = sourceSpec;
+        this.classSpec         = createClass(className, packageName, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
+        this.sourceClassName   = sourceName;
         this.sourcePackageName = sourcePackageName;
+    }
+    
+    protected GenClass createClass(
+            String               className, 
+            String               packageName, 
+            List<Type>           extendeds, 
+            List<Type>           implementeds,
+            List<GenConstructor> constructors, 
+            List<GenField>       fields, 
+            List<GenMethod>      methods,
+            List<GenClass>       innerClasses, 
+            List<ILines>         mores) {
+        Type type = new Type(packageName, className);
+        return new GenClass(sourceSpec, PUBLIC, NONE, MODIFIABLE, type, null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
     }
     
     public GenClass getClassSpec() {
@@ -102,8 +132,8 @@ public class StructSpec {
         return classSpec.modifiability();
     }
     
-    public boolean isClass() {
-        return classSpec.isClass();
+    public TargetKind targetKind() {
+        return classSpec.targetKind();
     }
     
     public Type type() {

@@ -51,7 +51,6 @@ public class ElmTypeTest {
                     "User", 
                     "example.functionalj.elm", 
                     null, 
-                    null, 
                     "spec", 
                     null, 
                     new SourceSpec.Configurations(true, null, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""),

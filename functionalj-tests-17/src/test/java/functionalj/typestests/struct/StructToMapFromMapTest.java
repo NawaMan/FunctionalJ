@@ -106,14 +106,14 @@ public class StructToMapFromMapTest {
         map2.put("myBoolean1", "False");
         map2.put("myBoolean2", "tRue");
         val myStruct4 = MyPrimitiveStruct.fromMap(map2);
-        assertAsString("false", myStruct4.myBoolean1);
-        assertAsString("true", myStruct4.myBoolean2);
+        assertAsString("false", myStruct4.myBoolean1());
+        assertAsString("true", myStruct4.myBoolean2());
         // Test char from int and String
         map2.put("myChar1", 0x61);
         map2.put("myCharacter2", "C");
         val myStruct5 = MyPrimitiveStruct.fromMap(map2);
-        assertAsString("a", myStruct5.myChar1);
-        assertAsString("C", myStruct5.myCharacter2);
+        assertAsString("a", myStruct5.myChar1());
+        assertAsString("C", myStruct5.myCharacter2());
     }
     
     @Struct

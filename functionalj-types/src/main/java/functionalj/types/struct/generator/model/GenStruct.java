@@ -29,19 +29,22 @@ import static functionalj.types.struct.generator.model.utils.samePackage;
 import static functionalj.types.struct.generator.model.utils.themAll;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import java.time.LocalDateTime;
+
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
 import functionalj.types.Core;
 import functionalj.types.IPostConstruct;
 import functionalj.types.Type;
 import functionalj.types.struct.generator.ILines;
 import functionalj.types.struct.generator.SourceSpec;
-import functionalj.types.struct.generator.StructSpec;
+import functionalj.types.struct.generator.StructClassSpec;
 
 /**
  * Representation of Struct class.
@@ -56,7 +59,7 @@ public class GenStruct implements ILines {
     
     private SourceSpec sourceSpec;
     
-    private StructSpec dataClass;
+    private StructClassSpec dataClass;
     
     /**
      * Construct a GenStruct with the data object spec.
@@ -64,7 +67,7 @@ public class GenStruct implements ILines {
      * @param  sourceSpec   the source spec.
      * @param  dataObjSpec  the struct spec.
      */
-    public GenStruct(SourceSpec sourceSpec, StructSpec dataObjSpec) {
+    public GenStruct(SourceSpec sourceSpec, StructClassSpec dataObjSpec) {
         this.sourceSpec = sourceSpec;
         this.dataClass = dataObjSpec;
     }
@@ -77,10 +80,19 @@ public class GenStruct implements ILines {
         ILines         dataObjDef  = dataClass.getClassSpec().toDefinition(packageName);
         String         specName    = (sourceSpec.getSpecName() == null) ? "" : "." + sourceSpec.getSpecName();
         String         source      = sourceSpec.getPackageName() + "." + sourceSpec.getEncloseName() + specName;
-        LocalDateTime  genTime     = LocalDateTime.now();
-        String         generated   = "@Generated(value = \"FunctionalJ\",date = \"" + genTime + "\", comments = \"" + source + "\")";
+        ZonedDateTime  genTime     = ZonedDateTime.now(ZoneOffset.UTC);
+        String         generated   = "@Generated(value = \"FunctionalJ\", date = \"" + genTime + "\", comments = \"" + source + "\")";
         String         suppress    = "@SuppressWarnings(\"all\")";
-        ILines         lines       = linesOf(Stream.of(line(packageDef), line(importLines), line(generated), line(suppress), dataObjDef).filter(Objects::nonNull).flatMap(utils.delimitWith(emptyLine)));
+        ILines lines = linesOf(
+                Stream.of(
+                        line(packageDef), 
+                        line(importLines), 
+                        line(generated, suppress), 
+                        dataObjDef
+                )
+                .filter(Objects::nonNull)
+                .flatMap(utils.delimitWith(emptyLine))
+        );
         return lines.lines();
     }
     
