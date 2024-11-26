@@ -25,17 +25,7 @@ build/
 captures/
 output.json
 
-functionalj-all/target/
-
 functionalj-all/dependency-reduced-pom.xml
-
-functionalj-core/target/
-
-functionalj-elm/target/
-
-functionalj-store/target/
-
-functionalj-types/target/
 
 target/
 
@@ -43,36 +33,9 @@ target/
 
 .settings/
 
-functionalj-all/.classpath
-
-functionalj-all/.factorypath
-
-functionalj-core/.classpath
-
-functionalj-core/.factorypath
-
-functionalj-elm/.classpath
-
-functionalj-store/.classpath
-
-functionalj-store/.factorypath
-
-functionalj-types/.classpath
-
-functionalj-types-tests/.classpath
-
-functionalj-types-tests/.factorypath
-
-functionalj-elm/pom.xml.versionsBackup
-
-functionalj-core/pom.xml.versionsBackup
-
-functionalj-store/pom.xml.versionsBackup
-
-functionalj-all/pom.xml.versionsBackup
-
-functionalj-types/pom.xml.versionsBackup
-
-functionalj-types-tests/pom.xml.versionsBackup
-
-pom.xml.versionsBackup
+**/.classpath
+**/.factorypath
+**/pom.xml.versionsBackup
+**/.apt_tests/
+**/.apt_generated_tests/
+**/target/
