@@ -38,11 +38,18 @@ import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.val;
 
-public class FullGeneratorTest {
+public class GeneratorSealedClassTest {
     
     @Test
     public void testGenerator() {
-        val spec = new SourceSpec("BasicColor", new Type(FullGeneratorTest.class.getPackage().getName(), "ChoiceTypeExampleTest", "ChoiceType1TypeSpec"), false, asList(new Case("White", emptyList()), new Case("Black", emptyList()), new Case("RGB", "__validateRGB", asList(new CaseParam("r", new Type("int"), false), new CaseParam("g", new Type("int"), false), new CaseParam("b", new Type("int"), false)))));
+        val spec = new SourceSpec(
+                "BasicColor", 
+                new Type(GeneratorSealedClassTest.class.getPackage().getName(), "ChoiceTypeExampleTest", "ChoiceType1TypeSpec"), 
+                true, 
+                asList(new Case("White", emptyList()), 
+                       new Case("Black", emptyList()), 
+                       new Case("RGB", "__validateRGB", asList(new CaseParam("r", new Type("int"), false), new CaseParam("g", new Type("int"), false), new CaseParam("b", new Type("int"), false))))
+            );
         val target = new TargetClass(spec);
         val lines = target.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertAsString("package functionalj.types.choice.generator;\n"
@@ -61,7 +68,7 @@ public class FullGeneratorTest {
               + "\n"
               + "@Generated(value = \"FunctionalJ\",date = \"\\E[^\"]+\\Q\", comments = \"functionalj.types.choice.generator.ChoiceTypeExampleTest.ChoiceType1TypeSpec\")\n"
               + "@SuppressWarnings(\"all\")\n"
-              + "public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSwitch>, Pipeable<BasicColor> {\n"
+              + "public sealed abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSwitch>, Pipeable<BasicColor> permits BasicColor.White, BasicColor.Black, BasicColor.RGB {\n"
               + "    \n"
               + "    public static final White white = White.instance;\n"
               + "    public static final White White() {\n"

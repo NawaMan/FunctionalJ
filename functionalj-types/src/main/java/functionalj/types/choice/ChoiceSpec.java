@@ -96,12 +96,13 @@ public class ChoiceSpec {
             element.error("Source spec field name is not a valid identifier: " + specField);
             return null;
         }
-        String       tagMapKeyName = element.choiceTagMapKeyName();
-        To           serialize     = element.specifiedSerialize();
-        List<Case>   choices       = extractTypeChoices(targetType, typeElement);
-        List<Method> methods       = extractTypeMethods(targetType, typeElement);
-        boolean      publicFields  = element.specifiedPublicField();
-        SourceSpec   sourceSpec    = new SourceSpec(targetName, sourceType, specField, publicFields, tagMapKeyName, serialize, generics, choices, methods, localTypeWithLens);
+        String       tagMapKeyName  = element.choiceTagMapKeyName();
+        To           serialize      = element.specifiedSerialize();
+        List<Case>   choices        = extractTypeChoices(targetType, typeElement);
+        List<Method> methods        = extractTypeMethods(targetType, typeElement);
+        boolean      publicFields   = element.specifiedPublicField();
+        boolean      generateSealed = element.generateSealedClass();
+        SourceSpec   sourceSpec     = new SourceSpec(targetName, sourceType, specField, publicFields, tagMapKeyName, generateSealed, serialize, generics, choices, methods, localTypeWithLens);
         return sourceSpec;
     }
     
@@ -300,4 +301,5 @@ public class ChoiceSpec {
         String packageName = element.packageQualifiedName();
         return packageName;
     }
+    
 }
