@@ -42,7 +42,18 @@ import lombok.val;
 
 public class ChoiceWtihOptionalParameterTest {
     
-    public static final SourceSpec spec = new SourceSpec("LoginStatus", new Type("example.functionalj.elm", "ElmExamples", "LoginStatus", emptyList()), null, false, "__tagged", Serialize.To.NOTHING, emptyList(), asList(new Case("Loggined", null, asList(new CaseParam("wealth", new Type("java.util", null, "Optional", asList(new Generic("java.lang.Double", "java.lang.Double", null))), true, null))), new Case("LoggedOut", null, emptyList())), emptyList(), asList("User"));
+    public static final SourceSpec spec = new SourceSpec(
+            "LoginStatus", 
+            new Type("example.functionalj.elm", "ElmExamples", "LoginStatus", emptyList()), 
+            null, 
+            false, 
+            "__tagged", 
+            false,
+            Serialize.To.NOTHING, 
+            emptyList(), 
+            asList(new Case("Loggined", null, asList(new CaseParam("wealth", new Type("java.util", null, "Optional", asList(new Generic("java.lang.Double", "java.lang.Double", null))), true, null))), new Case("LoggedOut", null, emptyList())), 
+            emptyList(), 
+            asList("User"));
     
     @Test
     public void testChoiceWithOptionalDouble() {

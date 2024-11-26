@@ -25,6 +25,7 @@ package functionalj.types.choice.generator;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import functionalj.types.Generic;
 import functionalj.types.Serialize;
 import functionalj.types.Type;
@@ -40,12 +41,12 @@ public class Generator implements Lines {
     
     public final TargetClass targetClass;
     
-    public Generator(String targetName, Type sourceType, List<Case> choices) {
-        this(targetName, sourceType, null, true, null, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
+    public Generator(String targetName, Type sourceType, boolean generateSealed, List<Case> choices) {
+        this(targetName, sourceType, null, true, null, generateSealed, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
     }
     
-    public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
-        this(new SourceSpec(targetName, sourceType, specObjName, publicFields, tagMapKeyName, Serialize.To.NOTHING, generics, choices, methods, localTypeWithLens));
+    public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, boolean generateSealed, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
+        this(new SourceSpec(targetName, sourceType, specObjName, publicFields, tagMapKeyName, generateSealed, Serialize.To.NOTHING, generics, choices, methods, localTypeWithLens));
     }
     
     public Generator(SourceSpec sourceSpec) {

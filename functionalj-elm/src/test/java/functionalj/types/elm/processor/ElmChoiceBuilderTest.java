@@ -41,7 +41,7 @@ public class ElmChoiceBuilderTest {
         val caseParams = asList(new CaseParam("name", Type.STRING, false), new CaseParam("age", Type.INTEGER, false), new CaseParam("years", new Type("java.util", null, "List", asList(genericYear)), false), new CaseParam("wealth", Type.DOUBLE, true), new CaseParam("user", new Type("functionalj.types.elm", null, "User"), false));
         val sourceType = new Type("functionalj.types.elm", null, "LoggedIn");
         val cases = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
-        val choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
+        val choiceSpec = new SourceSpec("LoggedIn", sourceType, false, cases);
         val spec = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
         val builder = new ElmChoiceBuilder(spec, emptyList());
         return builder;

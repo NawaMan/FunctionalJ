@@ -28,9 +28,11 @@ import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+
 import functionalj.types.Generic;
 import functionalj.types.Serialize;
 import functionalj.types.Type;
@@ -49,6 +51,8 @@ public class SourceSpec {
     
     public final String tagMapKeyName;
     
+    public final boolean generateSealed;
+    
     public final Serialize.To serialize;
     
     public final List<Generic> generics;
@@ -59,26 +63,39 @@ public class SourceSpec {
     
     public final List<String> localTypeWithLens;
     
-    public SourceSpec(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, Serialize.To serialize, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
-        this.targetName = targetName;
-        this.sourceType = sourceType;
-        this.specObjName = specObjName;
-        this.publicFields = publicFields;
-        this.tagMapKeyName = (tagMapKeyName != null) ? tagMapKeyName : TAG_MAP_KEY_NAME;
-        this.serialize = (serialize != null) ? serialize : Serialize.To.NOTHING;
-        this.generics = generics;
-        this.choices = choices;
-        this.methods = methods;
+    public SourceSpec(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, boolean generateSealed, Serialize.To serialize, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
+        this.targetName        = targetName;
+        this.sourceType        = sourceType;
+        this.specObjName       = specObjName;
+        this.publicFields      = publicFields;
+        this.tagMapKeyName     = (tagMapKeyName != null) ? tagMapKeyName : TAG_MAP_KEY_NAME;
+        this.generateSealed    = generateSealed;
+        this.serialize         = (serialize     != null) ? serialize     : Serialize.To.NOTHING;
+        this.generics          = generics;
+        this.choices           = choices;
+        this.methods           = methods;
         this.localTypeWithLens = localTypeWithLens;
     }
     
-    public SourceSpec(String targetName, Type sourceType, List<Case> choices) {
-        this(targetName, sourceType, null, false, null, null, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
+    public SourceSpec(String targetName, Type sourceType, boolean generateSealed, List<Case> choices) {
+        this(targetName, sourceType, null, false, null, generateSealed, null, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
     }
     
     public String toCode() {
         String       serializeCode = Serialize.class.getCanonicalName() + ".To." + serialize;
-        List<String> params        = asList(toStringLiteral(targetName), sourceType.toCode(), toStringLiteral(specObjName), "" + publicFields, toStringLiteral(tagMapKeyName), serializeCode, toListCode(generics, Generic::toCode), toListCode(choices, Case::toCode), toListCode(methods, Method::toCode), toListCode(localTypeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity()));
+        List<String> params        = asList(
+                toStringLiteral(targetName), 
+                sourceType.toCode(), 
+                toStringLiteral(specObjName), 
+                "" + publicFields, 
+                toStringLiteral(tagMapKeyName), 
+                "" + generateSealed, 
+                serializeCode, 
+                toListCode(generics, Generic::toCode), 
+                toListCode(choices, Case::toCode), 
+                toListCode(methods, Method::toCode), 
+                toListCode(localTypeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())
+            );
         return "new " + this.getClass().getCanonicalName() + "(" + params.stream().collect(joining(", ")) + ")";
     }
 }

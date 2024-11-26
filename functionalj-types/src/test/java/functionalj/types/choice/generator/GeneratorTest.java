@@ -53,13 +53,13 @@ public class GeneratorTest {
     @Test
     public void testToCamelCase() {
         assertEquals("rgbColor", "RGBColor".toCamelCase());
-        assertEquals("rgb", "RGB".toCamelCase());
-        assertEquals("white", "White".toCamelCase());
+        assertEquals("rgb",      "RGB".toCamelCase());
+        assertEquals("white",    "White".toCamelCase());
     }
     
     @Test
     public void testSubClassConstructor_noParams() {
-        val sourceSpec = new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList());
+        val sourceSpec = new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), false, emptyList());
         val target = new TargetClass(sourceSpec);
         val sub = new SubClassConstructor(target, new Case("White"));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
@@ -69,12 +69,12 @@ public class GeneratorTest {
                 + "    return White.instance;\n"
                 + "}",
                 lines);
-        assertEquals("new functionalj.types.choice.generator.model.SourceSpec(" + "\"Color\", " + "new functionalj.types.Type(" + "\"p1.p2\", " + "null, " + "\"ColorSpec\", " + "java.util.Collections.emptyList()), " + "null, " + "false, " + "\"__tagged\", " + "functionalj.types.Serialize.To.NOTHING, " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList())", sourceSpec.toCode());
+        assertEquals("new functionalj.types.choice.generator.model.SourceSpec(" + "\"Color\", " + "new functionalj.types.Type(" + "\"p1.p2\", " + "null, " + "\"ColorSpec\", " + "java.util.Collections.emptyList()), " + "null, " + "false, " + "\"__tagged\", false, " + "functionalj.types.Serialize.To.NOTHING, " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
     @Test
     public void testSubClassConstructor_withParams() {
-        val sourceSpec = new SourceSpec("Color", new Type("p1.p2", "EncloserClass", "ColorSpec"), emptyList());
+        val sourceSpec = new SourceSpec("Color", new Type("p1.p2", "EncloserClass", "ColorSpec"), false, emptyList());
         val target = new TargetClass(sourceSpec);
         val sub = new SubClassConstructor(target, new Case("RGB", "__validateRGB", asList(new CaseParam("r", new Type("int"), false), new CaseParam("g", new Type("int"), false), new CaseParam("b", new Type("int"), false))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
@@ -84,13 +84,13 @@ public class GeneratorTest {
                 + "    return new RGB(r, g, b);\n"
                 + "}",
                 lines);
-        assertEquals("new functionalj.types.choice.generator.model.SourceSpec(" + "\"Color\", " + "new functionalj.types.Type(" + "\"p1.p2\", " + "\"EncloserClass\", " + "\"ColorSpec\", " + "java.util.Collections.emptyList()), " + "null, " + "false, " + "\"__tagged\", " + "functionalj.types.Serialize.To.NOTHING, " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList()" + ")", sourceSpec.toCode());
+        assertEquals("new functionalj.types.choice.generator.model.SourceSpec(" + "\"Color\", " + "new functionalj.types.Type(" + "\"p1.p2\", " + "\"EncloserClass\", " + "\"ColorSpec\", " + "java.util.Collections.emptyList()), " + "null, " + "false, " + "\"__tagged\", false, " + "functionalj.types.Serialize.To.NOTHING, " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList(), " + "java.util.Collections.emptyList()" + ")", sourceSpec.toCode());
     }
     
     @Test
     public void testSubClassConstructor_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, null, Serialize.To.NOTHING, asList(new Generic("D")), emptyList(), emptyList(), emptyList());
+        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, null, false, Serialize.To.NOTHING, asList(new Generic("D")), emptyList(), emptyList(), emptyList());
         val target = new TargetClass(sourceSpec);
         val sub = new SubClassDefinition(target, new Case("Next", asList(new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
@@ -132,12 +132,12 @@ public class GeneratorTest {
                 + "    }\n"
                 + "}",
                 lines);
-        assertEquals("new functionalj.types.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.types.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))))), \"spec\", false, \"__tagged\", functionalj.types.Serialize.To.NOTHING, java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList())))), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
+        assertEquals("new functionalj.types.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.types.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList()))))), \"spec\", false, \"__tagged\", false, functionalj.types.Serialize.To.NOTHING, java.util.Arrays.asList(new functionalj.types.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.Type(null, null, \"D\", java.util.Collections.emptyList())))), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
     @Test
     public void testSubClassDefinition_noParams() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), false, emptyList()));
         val sub = new SubClassDefinition(target, new Case("White"));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -170,7 +170,7 @@ public class GeneratorTest {
     
     @Test
     public void testSubClassDefinition_withParams() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), false, emptyList()));
         val sub = new SubClassDefinition(target, new Case("RGB", "__validateRGB", asList(new CaseParam("r", new Type("int"), false), new CaseParam("g", new Type("int"), false), new CaseParam("b", new Type("int"), false))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -232,7 +232,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassDefinition_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, null, Serialize.To.NOTHING, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, null, false, Serialize.To.NOTHING, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub = new SubClassDefinition(target, new Case("Next", asList(new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -277,7 +277,7 @@ public class GeneratorTest {
     
     @Test
     public void testSwitchClass_simple_notLast() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), false, emptyList()));
         val sub = new SwitchClass(target, false, asList(new Case("White"), new Case("Black"), new Case("RGB", "__validateRGB", asList(new CaseParam("r", new Type("int"), false), new CaseParam("g", new Type("int"), false), new CaseParam("b", new Type("int"), false)))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals("public static class ColorSwitchWhiteBlackRGB<TARGET> extends ChoiceTypeSwitch<Color, TARGET> {\n"
@@ -306,7 +306,7 @@ public class GeneratorTest {
     
     @Test
     public void testSwitchClass_simple_last() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), false, emptyList()));
         val sub = new SwitchClass(target, false, asList(new Case("White")));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals("public static class ColorSwitchWhite<TARGET> extends ChoiceTypeSwitch<Color, TARGET> {\n"
@@ -335,7 +335,7 @@ public class GeneratorTest {
     
     @Test
     public void testSubCheckMethod() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), false, emptyList()));
         val sub = new SubCheckMethod(target, asList(new Case("White", emptyList()), new Case("Black", emptyList()), new Case("RGB", "__validateRGB", asList(new CaseParam("r", new Type("int"), false), new CaseParam("g", new Type("int"), false), new CaseParam("b", new Type("int"), false)))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -355,7 +355,7 @@ public class GeneratorTest {
     
     @Test
     public void testSourceMethods() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null, Serialize.To.NOTHING, emptyList(), emptyList(), asList(new Method(Kind.DEFAULT, "equals", new Type("boolean"), asList(new MethodParam("c", new Type("p1.p2", "Color")), new MethodParam("obj", Type.OBJECT))), new Method(DEFAULT, "thisName", Type.STRING, asList(new MethodParam("c", new Type("p1.p2", null, "Color")), new MethodParam("c2", new Type("p1.p2", null, "Color")), new MethodParam("s", Type.STRING)), asList(new Generic("T", "T extends Exception", asList(new Type("Exception")))), asList(new Type("T"))), new Method(DEFAULT, "thisSelf", new Type("p1.p2", null, "Color"), asList(new MethodParam("c", new Type("p1.p2", null, "Color")), new MethodParam("c2", new Type("p1.p2", null, "Color")), new MethodParam("s", Type.STRING))), new Method(Kind.STATIC, "toRGBString", new Type("boolean"), asList(new MethodParam("c", new Type("p1.p2", "Color"))))), emptyList()));
+        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null, false, Serialize.To.NOTHING, emptyList(), emptyList(), asList(new Method(Kind.DEFAULT, "equals", new Type("boolean"), asList(new MethodParam("c", new Type("p1.p2", "Color")), new MethodParam("obj", Type.OBJECT))), new Method(DEFAULT, "thisName", Type.STRING, asList(new MethodParam("c", new Type("p1.p2", null, "Color")), new MethodParam("c2", new Type("p1.p2", null, "Color")), new MethodParam("s", Type.STRING)), asList(new Generic("T", "T extends Exception", asList(new Type("Exception")))), asList(new Type("T"))), new Method(DEFAULT, "thisSelf", new Type("p1.p2", null, "Color"), asList(new MethodParam("c", new Type("p1.p2", null, "Color")), new MethodParam("c2", new Type("p1.p2", null, "Color")), new MethodParam("s", Type.STRING))), new Method(Kind.STATIC, "toRGBString", new Type("boolean"), asList(new MethodParam("c", new Type("p1.p2", "Color"))))), emptyList()));
         val sub = new SourceMethod(target);
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals("public boolean equals(java.lang.Object obj) {\n"
@@ -375,7 +375,7 @@ public class GeneratorTest {
     
     @Test
     public void testTargetTypeGeneral_expand() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), false, emptyList()));
         val sub = new TargetTypeGeneral(target, asList(new Case("White", emptyList()), new Case("Black", emptyList()), new Case("RGB", "__validateRGB", asList(new CaseParam("r", new Type("int"), false), new CaseParam("g", new Type("int"), false), new CaseParam("b", new Type("int"), false)))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals("public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n"
@@ -427,7 +427,7 @@ public class GeneratorTest {
     @Test
     public void testTargetTypeGeneral_withMethods() {
         val colorType = new Type("p1.p2", "Color");
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null, Serialize.To.NOTHING, emptyList(), emptyList(), asList(new Method(DEFAULT, "equals", new Type("boolean"), asList(new MethodParam("c", colorType), new MethodParam("obj", Type.OBJECT))), new Method(DEFAULT, "toString", Type.STRING, asList(new MethodParam("c", colorType))), new Method(DEFAULT, "hashCode", new Type("int"), asList(new MethodParam("c", colorType))), new Method(DEFAULT, "thisMethod", Type.STRING, asList(new MethodParam("c", colorType), new MethodParam("c2", colorType), new MethodParam("s", Type.STRING))), new Method(DEFAULT, "thisString", Type.STRING, asList(new MethodParam("s", Type.STRING))), new Method(STATIC, "staticName", Type.STRING, asList(new MethodParam("c", colorType), new MethodParam("c2", colorType), new MethodParam("s", Type.STRING)))), emptyList()));
+        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null, false, Serialize.To.NOTHING, emptyList(), emptyList(), asList(new Method(DEFAULT, "equals", new Type("boolean"), asList(new MethodParam("c", colorType), new MethodParam("obj", Type.OBJECT))), new Method(DEFAULT, "toString", Type.STRING, asList(new MethodParam("c", colorType))), new Method(DEFAULT, "hashCode", new Type("int"), asList(new MethodParam("c", colorType))), new Method(DEFAULT, "thisMethod", Type.STRING, asList(new MethodParam("c", colorType), new MethodParam("c2", colorType), new MethodParam("s", Type.STRING))), new Method(DEFAULT, "thisString", Type.STRING, asList(new MethodParam("s", Type.STRING))), new Method(STATIC, "staticName", Type.STRING, asList(new MethodParam("c", colorType), new MethodParam("c2", colorType), new MethodParam("s", Type.STRING)))), emptyList()));
         val choices = asList(new Case("White", emptyList()), new Case("Black", emptyList()), new Case("RGB", asList(new CaseParam("r", new Type("int"), false), new CaseParam("g", new Type("int"), false), new CaseParam("b", new Type("int"), false))));
         assertEquals("boolean equals(p1.p2.Color, java.lang.Object)\n"
                 + "java.lang.String toString(p1.p2.Color)\n"
@@ -470,7 +470,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassDefinition_withPublicField() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, null, Serialize.To.NOTHING, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, null, false, Serialize.To.NOTHING, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub = new SubClassDefinition(target, new Case("Next", asList(new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals("public static final class Next<D> extends Coroutine<D> {\n"

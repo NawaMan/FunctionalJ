@@ -98,11 +98,11 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         for (InputElement element : elements) {
 //            prepareLogs(element);
             
-            ChoiceSpec choiceSpec = new ChoiceSpec(element);
-            String packageName = choiceSpec.packageName();
-            String targetName = choiceSpec.targetName();
-            String className = packageName + "." + targetName;
-            SourceSpec sourceSpec = choiceSpec.sourceSpec();
+            ChoiceSpec choiceSpec  = new ChoiceSpec(element);
+            String     packageName = choiceSpec.packageName();
+            String     targetName  = choiceSpec.targetName();
+            String     className   = packageName + "." + targetName;
+            SourceSpec sourceSpec  = choiceSpec.sourceSpec();
             if (sourceSpec.choices.isEmpty()) {
                 String template = "Choice type must has at least one choice with name starts with a capital letter): %s";
                 String errMsg = format(template, className);

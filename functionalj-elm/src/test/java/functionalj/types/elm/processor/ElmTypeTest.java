@@ -60,7 +60,7 @@ public class ElmTypeTest {
                     emptyList(),
                     asList("User"));
     
-    public static final functionalj.types.choice.generator.model.SourceSpec loginStatusSpec = new functionalj.types.choice.generator.model.SourceSpec("LoginStatus", new Type("example.functionalj.choice", "ChoiceTypeExamples", "LoginStatusSpec", emptyList()), "spec", false, "__tagged", Serialize.To.NOTHING, emptyList(), asList(new Case("Login", null, asList(new CaseParam("userName", new Type("java.lang", null, "String", emptyList()), true, null))), new Case("Logout", null, emptyList())), emptyList(), emptyList());
+    public static final functionalj.types.choice.generator.model.SourceSpec loginStatusSpec = new functionalj.types.choice.generator.model.SourceSpec("LoginStatus", new Type("example.functionalj.choice", "ChoiceTypeExamples", "LoginStatusSpec", emptyList()), "spec", false, "__tagged", false, Serialize.To.NOTHING, emptyList(), asList(new Case("Login", null, asList(new CaseParam("userName", new Type("java.lang", null, "String", emptyList()), true, null))), new Case("Logout", null, emptyList())), emptyList(), emptyList());
     
     @Test
     public void testBasic() {

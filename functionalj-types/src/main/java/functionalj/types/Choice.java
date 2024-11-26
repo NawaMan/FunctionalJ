@@ -59,7 +59,13 @@ public @interface Choice {
     public boolean publicFields() default false;
     
     /**
+     * @return the optional flat indicating that the generated code would be a sealed class.
+     */
+    public OptionalBoolean generateSealedClass() default OptionalBoolean.WHATEVER;
+    
+    /**
      * @return the target serialization type.
      */
     public Serialize.To serialize() default Serialize.To.NOTHING;
+    
 }
