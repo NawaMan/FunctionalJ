@@ -324,6 +324,34 @@ public interface Func {
         return FuncUnit3.of(consumer);
     }
     
+    public static <INPUT1, INPUT2, INPUT3, INPUT4> FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> of(FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> consumer) {
+        return FuncUnit4.of(consumer);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> of(FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> consumer) {
+        return FuncUnit5.of(consumer);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> of(FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> consumer) {
+        return FuncUnit6.of(consumer);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> of(FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> consumer) {
+        return FuncUnit7.of(consumer);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> of(FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> consumer) {
+        return FuncUnit8.of(consumer);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> of(FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> consumer) {
+        return FuncUnit9.of(consumer);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> of(FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> consumer) {
+        return FuncUnit10.of(consumer);
+    }
+    
     // == From ==
     public static FuncUnit0 from(Runnable runnable) {
         if (runnable instanceof FuncUnit0)
@@ -477,7 +505,85 @@ public interface Func {
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> f(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return function;
     }
-    
+
+    /**
+     * Constructs a Func7 from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func7.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> f(Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> function) {
+        return function;
+    }
+
+    /**
+     * Constructs a Func8 from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func8.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> f(Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> function) {
+        return function;
+    }
+
+    /**
+     * Constructs a Func9 from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <INPUT9>  the ninth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func9.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> f(Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> function) {
+        return function;
+    }
+
+    /**
+     * Constructs a Func10 from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <INPUT9>  the ninth input data type.
+     * @param  <INPUT10> the tenth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func10.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> f(Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> function) {
+        return function;
+    }
+
     public static FuncUnit0 f(FuncUnit0 runnable) {
         return runnable;
     }
@@ -493,7 +599,35 @@ public interface Func {
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> f(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
         return consumer;
     }
-    
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4> FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> f(FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> consumer) {
+        return consumer;
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> f(FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> consumer) {
+        return consumer;
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> f(FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> consumer) {
+        return consumer;
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> f(FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> consumer) {
+        return consumer;
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> f(FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> consumer) {
+        return consumer;
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> f(FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> consumer) {
+        return consumer;
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> f(FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> consumer) {
+        return consumer;
+    }
+
     // == f - with name ==
     /**
      * Constructs a name Func0.
@@ -599,7 +733,89 @@ public interface Func {
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> f(String name, Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return Named.func6(name, function);
     }
-    
+
+    /**
+     * Constructs a Func7 from function or lambda.
+     *
+     * @param  name      the function name.
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func7.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> f(String name, Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> function) {
+        return Named.func7(name, function);
+    }
+
+    /**
+     * Constructs a Func8 from function or lambda.
+     *
+     * @param  name      the function name.
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func8.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> f(String name, Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> function) {
+        return Named.func8(name, function);
+    }
+
+    /**
+     * Constructs a Func9 from function or lambda.
+     *
+     * @param  name      the function name.
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <INPUT9>  the ninth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func9.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> f(String name, Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> function) {
+        return Named.func9(name, function);
+    }
+
+    /**
+     * Constructs a Func10 from function or lambda.
+     *
+     * @param  name      the function name.
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <INPUT9>  the ninth input data type.
+     * @param  <INPUT10> the tenth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func10.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> f(String name, Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> function) {
+        return Named.func10(name, function);
+    }
+
     public static FuncUnit0 f(String name, FuncUnit0 function) {
         return Named.funcUnit0(name, function);
     }
@@ -615,7 +831,35 @@ public interface Func {
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> f(String name, FuncUnit3<INPUT1, INPUT2, INPUT3> function) {
         return Named.funcUnit3(name, function);
     }
-    
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4> FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> f(String name, FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> function) {
+        return Named.funcUnit4(name, function);
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> f(String name, FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> function) {
+        return Named.funcUnit5(name, function);
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> f(String name, FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> function) {
+        return Named.funcUnit6(name, function);
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> f(String name, FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> function) {
+        return Named.funcUnit7(name, function);
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> f(String name, FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> function) {
+        return Named.funcUnit8(name, function);
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> f(String name, FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> function) {
+        return Named.funcUnit9(name, function);
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> f(String name, FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> function) {
+        return Named.funcUnit10(name, function);
+    }
+
     // == F (traced location) - no name ==
     /**
      * Constructs a Func0 from supplier or lambda.
@@ -714,7 +958,85 @@ public interface Func {
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func6(function));
     }
-    
+
+    /**
+     * Constructs a Func7 from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func7.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> F(Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func7(function));
+    }
+
+    /**
+     * Constructs a Func8 from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func8.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> F(Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func8(function));
+    }
+
+    /**
+     * Constructs a Func9 from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <INPUT9>  the ninth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func9.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> F(Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func9(function));
+    }
+
+    /**
+     * Constructs a Func10 from function or lambda.
+     *
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the fourth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <INPUT9>  the ninth input data type.
+     * @param  <INPUT10> the tenth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func10.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> F(Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func10(function));
+    }
+
     public static FuncUnit0 F(FuncUnit0 function) {
         return CallerId.instance.trace(caller -> Traced.FuncUnit0(function));
     }
@@ -726,7 +1048,39 @@ public interface Func {
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> F(FuncUnit2<INPUT1, INPUT2> function) {
         return CallerId.instance.trace(caller -> Traced.FuncUnit2(function));
     }
-    
+
+    public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> F(FuncUnit3<INPUT1, INPUT2, INPUT3> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit3(function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4> FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> F(FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit4(function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> F(FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit5(function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> F(FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit6(function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> F(FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit7(function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> F(FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit8(function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> F(FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit9(function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> F(FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit10(function));
+    }
+
     // == F (traced location) - with name ==
     /**
      * Constructs a Func0 from supplier or lambda.
@@ -832,7 +1186,89 @@ public interface Func {
     public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(String name, Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return CallerId.instance.trace(caller -> Traced.Func6(name, function));
     }
-    
+
+    /**
+     * Constructs a Func7 from function or lambda.
+     *
+     * @param  name      the function name.
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func7.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> F(String name, Func7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func7(name, function));
+    }
+
+    /**
+     * Constructs a Func8 from function or lambda.
+     *
+     * @param  name      the function name.
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func8.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> F(String name, Func8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func8(name, function));
+    }
+
+    /**
+     * Constructs a Func9 from function or lambda.
+     *
+     * @param  name      the function name.
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <INPUT9>  the ninth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func9.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> F(String name, Func9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func9(name, function));
+    }
+
+    /**
+     * Constructs a Func10 from function or lambda.
+     *
+     * @param  name      the function name.
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <INPUT7>  the seventh input data type.
+     * @param  <INPUT8>  the eighth input data type.
+     * @param  <INPUT9>  the ninth input data type.
+     * @param  <INPUT10> the tenth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func10.
+     */
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> F(String name, Func10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func10(name, function));
+    }
+
     public static FuncUnit0 F(String name, FuncUnit0 function) {
         return CallerId.instance.trace(caller -> Traced.FuncUnit0(name, function));
     }
@@ -844,7 +1280,39 @@ public interface Func {
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> F(String name, FuncUnit2<INPUT1, INPUT2> function) {
         return CallerId.instance.trace(caller -> Traced.FuncUnit2(name, function));
     }
-    
+
+    public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> F(String name, FuncUnit3<INPUT1, INPUT2, INPUT3> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit3(name, function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4> FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> F(String name, FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit4(name, function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> F(String name, FuncUnit5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit5(name, function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> F(String name, FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit6(name, function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> F(String name, FuncUnit7<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit7(name, function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> F(String name, FuncUnit8<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit8(name, function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> F(String name, FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit9(name, function));
+    }
+
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> F(String name, FuncUnit10<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT7, INPUT8, INPUT9, INPUT10> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit10(name, function));
+    }
+
     // == Elevate (instant bind) ==
     
     public static <I1, I2, O> Func1<I1, O> elevate(BiFunction<I1, I2, O> func, I2 input2) {
@@ -866,8 +1334,25 @@ public interface Func {
     public static <I1, I2, I3, I4, I5, I6, O> Func1<I1, O> elevate(Func6<I1, I2, I3, I4, I5, I6, O> func, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) {
         return input1 -> func.apply(input1, input2, input3, input4, input5, input6);
     }
-    
+
+    public static <I1, I2, I3, I4, I5, I6, I7, O> Func1<I1, O> elevate(Func7<I1, I2, I3, I4, I5, I6, I7, O> func, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7) {
+        return input1 -> func.apply(input1, input2, input3, input4, input5, input6, input7);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Func1<I1, O> elevate(Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8) {
+        return input1 -> func.apply(input1, input2, input3, input4, input5, input6, input7, input8);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Func1<I1, O> elevate(Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9) {
+        return input1 -> func.apply(input1, input2, input3, input4, input5, input6, input7, input8, input9);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Func1<I1, O> elevate(Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9, I10 input10) {
+        return input1 -> func.apply(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+    }
+
     // == Join with delimit ==
+
     public static <IN> Func1<IN, Stream<IN>> delimitWith(IN delimiter) {
         val isFirst = new AtomicBoolean(true);
         return in -> {
@@ -912,6 +1397,7 @@ public interface Func {
     }
     
     // == Index ==
+
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> withIndex(Func2<INPUT, Integer, OUTPUT> body) {
         val index = new AtomicInteger();
         return input -> body.applyUnsafe(input, index.getAndIncrement());
@@ -1283,6 +1769,7 @@ public interface Func {
     }
     
     // == Conversion ==
+    
     /**
      * Change the input function to a preficate.
      *
