@@ -29,7 +29,9 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import functionalj.environments.Env;
 import functionalj.function.Func0;
+import functionalj.function.Traced;
 import functionalj.result.Result;
+import functionalj.supportive.CallerId;
 import lombok.val;
 
 public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
@@ -43,7 +45,14 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
     private final Holder<Object> data;
     
     public RetainedRef(Ref<DATA> sourceRef, RetainChecker checker, boolean isLocal) {
-        super(sourceRef.getDataType());
+        this(CallerId.instance.trace(Traced::extractLocationString), sourceRef, checker, isLocal);
+    }
+    
+    public RetainedRef(String toString, Ref<DATA> sourceRef, RetainChecker checker, boolean isLocal) {
+        super((toString != null)
+                ? toString
+                : CallerId.instance.trace(Traced::extractLocationString), 
+              sourceRef.getDataType());
         this.sourceRef = sourceRef;
         this.checker = checker;
         this.data = new Holder<>(isLocal);
@@ -125,7 +134,6 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
         }
         
         public Builder<DATA> localThread() {
-            // TODO Auto-generated method stub
             return this;
         }
     }

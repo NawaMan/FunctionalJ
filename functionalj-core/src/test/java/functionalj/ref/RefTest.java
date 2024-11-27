@@ -23,14 +23,18 @@
 // ============================================================================
 package functionalj.ref;
 
+import static functionalj.TestHelper.assertAsString;
 import static functionalj.list.FuncList.listOf;
 import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+
 import org.junit.Test;
+
 import functionalj.environments.Time;
 import functionalj.result.Result;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -100,7 +104,7 @@ public class RefTest {
         val ref2 = ref1;
         assertEquals("Answer [number=42]", "" + ref1.value());
         assertEquals("Answer [number=42]", "" + ref2.value());
-        Ref.runWith(listOf(ref1.butWith(new Answer(123)), ref2.butWith(new Answer(123))), () -> {
+        Ref.runWith(listOf(ref1.butWith(new Answer(123))), () -> {
             assertEquals("Answer [number=123]", "" + ref1.value());
             assertEquals("Answer [number=123]", "" + ref2.value());
         });
@@ -113,7 +117,10 @@ public class RefTest {
         val ref1 = Ref.ofValue("DICTATE!").dictate();
         val ref2 = Ref.of(String.class).dictateTo("DICTATE!!");
         assertEquals("DICTATE! DICTATE!!", ref1.value() + " " + ref2.value());
-        val value = With(ref1.butWith("Weak!")).and(ref2.butWith("Weak!!")).run(() -> ref1.value() + " " + ref2.value());
+        val value = With(ref1.butWith("Weak!"))
+                    .and(ref2.butWith("Weak!!")).run(() -> {
+                        return ref1.value() + " " + ref2.value();
+                    });
         assertEquals("DICTATE! DICTATE!!", value);
     }
     
@@ -126,17 +133,19 @@ public class RefTest {
     @Test
     public void testBasicRetain() {
         val counter0 = new AtomicInteger();
-        val counter1 = new AtomicInteger();
-        val counter2 = new AtomicInteger();
         val ref0 = Ref.of(Integer.class).defaultFrom(counter0::getAndIncrement);
-        val ref1 = Ref.of(Integer.class).defaultFrom(counter1::getAndIncrement).retained().forever();
-        val ref2 = Ref.of(Integer.class).defaultFrom(counter2::getAndIncrement).retained().never();
         assertEquals(0, ref0.value().intValue());
         assertEquals(1, ref0.value().intValue());
         assertEquals(2, ref0.value().intValue());
+        
+        val counter1 = new AtomicInteger();
+        val ref1 = Ref.of(Integer.class).defaultFrom(counter1::getAndIncrement).retained().forever();
         assertEquals(0, ref1.value().intValue());
         assertEquals(0, ref1.value().intValue());
         assertEquals(0, ref1.value().intValue());
+        
+        val counter2 = new AtomicInteger();
+        val ref2 = Ref.of(Integer.class).defaultFrom(counter2::getAndIncrement).retained().never();
         assertEquals(0, ref2.value().intValue());
         assertEquals(1, ref2.value().intValue());
         assertEquals(2, ref2.value().intValue());
@@ -243,7 +252,12 @@ public class RefTest {
         val state = new AtomicInteger(42);
         val counter = new AtomicInteger(0);
         val refState = Ref.of(Integer.class).defaultFrom(state::get);
-        val ref = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement).retained().locally().when(refState).equals();
+        
+        val ref = Ref.of(Integer.class)
+                .defaultFrom(counter::getAndIncrement)
+                .retained().globally().when(refState).equals();
+        
+        // Proof first that when state change the value changes.
         assertEquals(42, state.get());
         assertEquals(0, ref.value().intValue());
         assertEquals(0, ref.value().intValue());
@@ -251,56 +265,84 @@ public class RefTest {
         assertEquals(43, state.get());
         assertEquals(1, ref.value().intValue());
         assertEquals(1, ref.value().intValue());
+        
         val resultRef = new AtomicReference<String>();
         Run.async(() -> {
+            // Since nothing is changed until 50th ms, these value will be 1
             Time.sleep(10);
             val value1 = ref.value();
             Time.sleep(20);
             val value2 = ref.value();
+            
+            // Since the value was renewed to 2 at 50ms, the value3 should be 2
             Time.sleep(100);
             val value3 = ref.value();
+            
             resultRef.set(value1 + " - " + value2 + " - " + value3);
         });
+        
+        // Change happens at 50ms
         Time.sleep(50);
         state.incrementAndGet();
+        
+        // Confirm the state change and value change
         assertEquals(44, state.get());
-        assertEquals(3, ref.value().intValue());
+        assertEquals(2, ref.value().intValue());
+        
+        // Ensure all done.
         Time.sleep(200);
-        assertEquals("2 - 2 - 4", resultRef.toString());
+        assertEquals("1 - 1 - 2", resultRef.toString());
     }
     
-    // TODO - Fix this. :-(
-    // @Ignore("Fail test, need fix first.")
     @Test
     public void testRetain_localThread() throws InterruptedException {
         val state = new ThreadLocal<Integer>();
         val counter = new AtomicInteger(0);
+        
         val refState = Ref.of(Integer.class).defaultFrom(state::get);
-        val ref = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement).retained().locally().when(refState).equals();
+        val refValue 
+                = Ref.of(Integer.class)
+                .defaultFrom(counter::getAndIncrement)
+                .retained().locally().when(refState).equals();
+        
+        // Proof first that when state change the value changes.
         state.set(42);
         assertEquals(42, state.get().intValue());
-        assertEquals(0, ref.value().intValue());
-        assertEquals(0, ref.value().intValue());
+        assertEquals(0, refValue.value().intValue());
+        assertEquals(0, refValue.value().intValue());
         state.set(state.get() + 1);
         assertEquals(43, state.get().intValue());
-        assertEquals(1, ref.value().intValue());
-        assertEquals(1, ref.value().intValue());
+        assertEquals(1, refValue.value().intValue());
+        assertEquals(1, refValue.value().intValue());
+        
         val asyncResultRef = new AtomicReference<Result<String>>();
         Run.async(() -> {
-            state.set(42);
-            return IntStreamPlus.infinite().limit(5).peek(i -> Time.sleep(40)).map(i -> ref.value()).join(" - ");
+            // Change the state
+            state.set(40);
+            // All these values must be 2 (+1 from before state changed)
+            return IntStreamPlus.infinite()
+                    .limit(5)
+                    .peek(__ -> Time.sleep(40))
+                    .map (__ -> refValue.value())
+                    .join(" - ");
         }).onCompleted(r -> asyncResultRef.set(r));
+        
         Time.sleep(100);
-        for (int i = 0; i < 5; i++) {
-            // value in the local thread change as we change the state ... but retained when the value stay.
-            Time.sleep(40);
+        for (int i = 0; i < 10; i++) {
+            // value in the local thread change as we change the state.
+            Time.sleep(20);
             state.set(state.get() + 1);
+            
+            // The value is updated in every loop.
+            // But none of this changes affected the value inside the aboce `Run.async(...)`
+            
             assertEquals(44 + i, state.get().intValue());
-            assertEquals(3 + i, ref.value().intValue());
-            assertEquals(3 + i, ref.value().intValue());
+            assertEquals( 3 + i, refValue.value().intValue());
+            assertEquals( 3 + i, refValue.value().intValue());
+            
             Time.sleep(10);
-            assertEquals(3 + i, ref.value().intValue());
-            assertEquals(3 + i, ref.value().intValue());
+            assertEquals( 3 + i, refValue.value().intValue());
+            assertEquals( 3 + i, refValue.value().intValue());
         }
         // Async result stay the same the whole time
         assertEquals("2 - 2 - 2 - 2 - 2", asyncResultRef.get().value());
@@ -317,5 +359,18 @@ public class RefTest {
         assertEquals("3", supplier.get());
         assertEquals("4", supplier.get());
         assertEquals("5", supplier.get());
+    }
+    
+    @Test
+    public void testToString() {
+        // By default, `toString()` will use the location.
+        assertAsString(
+                this.getClass().getCanonicalName() + "#\\E[0-9]+\\Q",
+                Ref.of(String.class).defaultToNull().toString());
+        
+        // A specfic name can be used.
+        assertAsString(
+                "MyRef",
+                Ref.of("MyRef", String.class).defaultToNull().toString());
     }
 }

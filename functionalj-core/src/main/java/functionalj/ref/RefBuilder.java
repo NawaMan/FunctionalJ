@@ -26,21 +26,26 @@ package functionalj.ref;
 import static functionalj.ref.WhenAbsent.UseDefault;
 import java.util.function.Supplier;
 import functionalj.function.Func0;
+import functionalj.function.Traced;
 import functionalj.result.Result;
+import functionalj.supportive.CallerId;
 import lombok.val;
 
 public class RefBuilder<DATA> {
+    
+    private final String toString;
     
     private final Class<DATA> dataClass;
     
     private final Supplier<DATA> elseSupplier;
     
-    RefBuilder(Class<DATA> dataClass) {
-        this(dataClass, null);
+    RefBuilder(String toString, Class<DATA> dataClass) {
+        this(toString, dataClass, null);
     }
     
-    RefBuilder(Class<DATA> dataClass, Supplier<DATA> elseSupplier) {
-        this.dataClass = dataClass;
+    RefBuilder(String toString, Class<DATA> dataClass, Supplier<DATA> elseSupplier) {
+        this.toString     = (toString != null) ? toString : CallerId.instance.trace(Traced::extractLocationString);
+        this.dataClass    = dataClass;
         this.elseSupplier = elseSupplier;
     }
     
@@ -53,46 +58,46 @@ public class RefBuilder<DATA> {
     }
     
     public RefBuilder<DATA> whenAbsentUse(DATA defaultValue) {
-        return new RefBuilder<DATA>(dataClass, WhenAbsent.Use(defaultValue));
+        return new RefBuilder<DATA>(toString, dataClass, WhenAbsent.Use(defaultValue));
     }
     
     public RefBuilder<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
-        return new RefBuilder<DATA>(dataClass, WhenAbsent.Get(defaultSupplier));
+        return new RefBuilder<DATA>(toString, dataClass, WhenAbsent.Get(defaultSupplier));
     }
     
     public RefBuilder<DATA> whenAbsentReferTo(Ref<DATA> sourceRef) {
-        return new RefBuilder<DATA>(dataClass, WhenAbsent.Get(sourceRef::get));
+        return new RefBuilder<DATA>(toString, dataClass, WhenAbsent.Get(sourceRef::get));
     }
     
     public RefBuilder<DATA> whenAbsentUseTypeDefault() {
-        return new RefBuilder<DATA>(dataClass, WhenAbsent.UseDefault(dataClass));
+        return new RefBuilder<DATA>(toString, dataClass, WhenAbsent.UseDefault(dataClass));
     }
     
     public Ref<DATA> defaultToNull() {
         @SuppressWarnings("unchecked")
         val result = (Result<DATA>) Result.ofNull();
-        val ref = new RefOf.FromResult<>(dataClass, result, elseSupplier);
+        val ref = new RefOf.FromResult<>(toString, dataClass, result, elseSupplier);
         return ref;
     }
     
     public Ref<DATA> defaultTo(DATA value) {
         val result = Result.valueOf(value);
-        val ref = new RefOf.FromResult<>(dataClass, result, elseSupplier);
+        val ref = new RefOf.FromResult<>(toString, dataClass, result, elseSupplier);
         return ref;
     }
     
     public Ref<DATA> defaultFrom(Ref<DATA> anotherRef) {
-        val ref = new RefOf.FromRef<DATA>(dataClass, anotherRef, elseSupplier);
+        val ref = new RefOf.FromRef<DATA>(toString, dataClass, anotherRef, elseSupplier);
         return ref;
     }
     
     public Ref<DATA> defaultFrom(Func0<DATA> supplier) {
-        val ref = new RefOf.FromSupplier<DATA>(dataClass, supplier, elseSupplier);
+        val ref = new RefOf.FromSupplier<DATA>(toString, dataClass, supplier, elseSupplier);
         return ref;
     }
     
     public Ref<DATA> defaultToTypeDefault() {
-        return new RefBuilder<DATA>(dataClass, UseDefault(dataClass)).defaultFrom(UseDefault(dataClass));
+        return new RefBuilder<DATA>(toString, dataClass, UseDefault(dataClass)).defaultFrom(UseDefault(dataClass));
     }
     
     public Ref<DATA> dictateToNull() {

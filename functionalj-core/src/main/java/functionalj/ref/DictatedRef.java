@@ -25,15 +25,21 @@ package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
 import functionalj.function.Func0;
+import functionalj.function.Traced;
 import functionalj.result.Result;
+import functionalj.supportive.CallerId;
 import lombok.val;
 
 public class DictatedRef<DATA> extends Ref<DATA> {
     
     private final Ref<DATA> ref;
     
-    DictatedRef(Ref<DATA> ref) {
-        super(ref.getDataType(), ref.getElseSupplier());
+    DictatedRef(String toString, Ref<DATA> ref) {
+        super((toString != null)
+                ? toString
+                : CallerId.instance.trace(Traced::extractLocationString), 
+              ref.getDataType(), 
+              ref.getElseSupplier());
         this.ref = requireNonNull(ref);
     }
     

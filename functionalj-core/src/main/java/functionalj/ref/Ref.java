@@ -34,40 +34,68 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func0;
 import functionalj.function.Func1;
+import functionalj.function.Traced;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
+import functionalj.supportive.CallerId;
 import lombok.val;
 
 public abstract class Ref<DATA> {
     
     private static final ThreadLocal<Entry> refEntry = ThreadLocal.withInitial(() -> new Entry(null, null));
     
+    public static <D> Ref<D> to(String name, Class<D> dataClass) {
+        return new RefTo<D>(name, dataClass);
+    }
+    
     public static <D> Ref<D> to(Class<D> dataClass) {
-        return new RefTo<D>(dataClass);
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new RefTo<D>(location, dataClass);
+    }
+    
+    public static <D> RefBuilder<D> of(String name, Class<D> dataClass) {
+        return new RefBuilder<D>(name, dataClass);
     }
     
     public static <D> RefBuilder<D> of(Class<D> dataClass) {
-        return new RefBuilder<D>(dataClass);
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new RefBuilder<D>(location, dataClass);
     }
     
-    public static <D> Ref<D> ofValue(D value) {
-        @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
+    public static <D> Ref<D> ofValue(String name, D value) {
         val dataClass = (Class<D>) value.getClass();
-        val result = Result.valueOf(value);
-        val ref = new RefOf.FromResult<D>(dataClass, result, null);
+        val result    = Result.valueOf(value);
+        val ref       = new RefOf.FromResult<D>(name, dataClass, result, null);
         return ref;
     }
     
+    @SuppressWarnings("unchecked")
+    public static <D> Ref<D> ofValue(D value) {
+        val location  = CallerId.instance.trace(Traced::extractLocationString);
+        val dataClass = (Class<D>) value.getClass();
+        val result    = Result.valueOf(value);
+        val ref       = new RefOf.FromResult<D>(location, dataClass, result, null);
+        return ref;
+    }
+    
+    @SuppressWarnings("unchecked")
     public static <D> Ref<D> dictactedTo(D value) {
-        val ref = ofValue(value);
+        val location  = CallerId.instance.trace(Traced::extractLocationString);
+        val dataClass = (Class<D>) value.getClass();
+        val result    = Result.valueOf(value);
+        val ref       = new RefOf.FromResult<D>(location, dataClass, result, null);
         return ref.dictate();
     }
+    
+    final String toString;
     
     final Class<DATA> dataClass;
     
     final Supplier<DATA> whenAbsentSupplier;
     
-    Ref(Class<DATA> dataClass, Supplier<DATA> whenAbsentSupplier) {
+    Ref(String toString, Class<DATA> dataClass, Supplier<DATA> whenAbsentSupplier) {
+        this.toString  = toString;
         this.dataClass = requireNonNull(dataClass);
         this.whenAbsentSupplier = whenAbsentSupplier;
     }
@@ -213,11 +241,16 @@ public abstract class Ref<DATA> {
     }
     
     public DictatedRef<DATA> dictate() {
-        return new DictatedRef<DATA>(this);
+        return new DictatedRef<DATA>(toString, this);
     }
     
     public RetainedRef.Builder<DATA> retained() {
         return new RetainedRef.Builder<DATA>(this, true);
+    }
+    
+    @Override
+    public String toString() {
+        return toString;
     }
     
     // == Overriability ==
