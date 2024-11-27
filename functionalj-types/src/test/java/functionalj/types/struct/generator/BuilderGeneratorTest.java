@@ -23,14 +23,19 @@
 // ============================================================================
 package functionalj.types.struct.generator;
 
+import static functionalj.types.struct.SourceKind.METHOD;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
+
 import java.util.List;
+
 import org.junit.Test;
+
 import functionalj.types.DefaultValue;
 import functionalj.types.JavaVersionInfo;
 import functionalj.types.Type;
+import functionalj.types.struct.SourceKind;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import lombok.val;
 
@@ -53,9 +58,7 @@ public class BuilderGeneratorTest {
     
     private String packageName = "me.test";
     
-    private boolean isClass = false;
-    
-    private boolean isInterface = false;
+    private SourceKind sourceKind = METHOD;
     
     @Test
     public void testMixed() {
@@ -67,8 +70,7 @@ public class BuilderGeneratorTest {
                 null,                // encloseName
                 targetClassName,     // targetClassName
                 packageName,         // targetPackageName
-                isClass,
-                isInterface,
+                sourceKind,
                 null,
                 null,
                 configuration,
@@ -85,12 +87,11 @@ public class BuilderGeneratorTest {
         val sourceSpec = new SourceSpec(
                 javaVersionInfo,
                 definitionClassName, // specClassName
-                packageName, // packageName
-                null, // encloseName
-                targetClassName, // targetClassName
-                packageName, // targetPackageName
-                isClass, // isClass
-                isInterface, 
+                packageName,         // packageName
+                null,                // encloseName
+                targetClassName,     // targetClassName
+                packageName,         // targetPackageName
+                sourceKind,          // sourceKind
                 null, 
                 null,
                 configuration, 
@@ -111,8 +112,7 @@ public class BuilderGeneratorTest {
                 null,                 // encloseName
                 targetClassName,      // targetClassName
                 packageName,          // targetPackageName
-                isClass, 
-                isInterface, 
+                sourceKind, 
                 null, 
                 null,
                 configuration, 
@@ -133,8 +133,7 @@ public class BuilderGeneratorTest {
                 null,                // encloseName
                 targetClassName,     // targetClassName
                 packageName,         // targetPackageName
-                isClass, 
-                isInterface, 
+                sourceKind, 
                 null, 
                 null,
                 configuration, 
@@ -155,8 +154,7 @@ public class BuilderGeneratorTest {
                 null,                // encloseName
                 targetClassName,     // targetClassName
                 packageName,         // targetPackageName
-                isClass, 
-                isInterface, 
+                sourceKind, 
                 null, 
                 null,
                 configuration, 
@@ -177,8 +175,7 @@ public class BuilderGeneratorTest {
                 null,                // encloseName
                 targetClassName,     // targetClassName
                 packageName,         // targetPackageName
-                isClass,
-                isInterface,
+                sourceKind,
                 null,
                 null,
                 configuration,

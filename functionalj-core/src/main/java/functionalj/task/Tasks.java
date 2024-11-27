@@ -46,6 +46,7 @@ import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
 import functionalj.promise.DeferActionBuilder;
 import functionalj.promise.Promise;
+import functionalj.promise.RaceFailedException;
 import functionalj.promise.RaceResult;
 import functionalj.result.Result;
 import lombok.val;
@@ -939,26 +940,7 @@ public class Tasks {
         }
     }
     
-    //== Tace ==
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    //== Race ==
     
     public static class TaskRace<D> implements Task<D> {
         
@@ -981,10 +963,10 @@ public class Tasks {
             if (promise != null) {
                 promise.eavesdrop(result -> {
                     val pendingAction = action.start();
-                    if (result.isValue())
+                    if (result.isValue() || result.isNull())
                         pendingAction.complete(result.getValue());
                     else
-                        pendingAction.fail(result.getException());
+                        pendingAction.fail(new RaceFailedException(raceResult));
                 });
             }
             return action;
@@ -1020,7 +1002,7 @@ public class Tasks {
         private void doBody(AtomicReference<DeferAction<D>> actionRef) {
             val bodyAction = body.createAction();
             // Ummm not sure if subscribe is good here
-            bodyAction.onComplete(result -> {
+            bodyAction.onCompleted(result -> {
                 val isToBreak = breakCheck.test(result);
                 if (isToBreak) {
                     val action = actionRef.get().start();

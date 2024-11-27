@@ -25,7 +25,7 @@ package functionalj.promise;
 
 import static functionalj.function.Func.getOrElse;
 import java.util.function.Supplier;
-import functionalj.environments.AsyncRunner;
+
 import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
@@ -87,7 +87,7 @@ public abstract class WaitAwhile extends Wait {
         @Override
         public WaitSession newSession() {
             val session = new WaitSession();
-            AsyncRunner.run(asyncRunner, () -> {
+            ActionAsyncRunner.run(asyncRunner, () -> {
                 // TODO - Once scheduling is available, use it.
                 try {
                     Thread.sleep(time);

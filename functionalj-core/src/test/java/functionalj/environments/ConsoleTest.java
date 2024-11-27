@@ -200,7 +200,7 @@ public class ConsoleTest {
     @Test
     public void testUseStub_Holder_Promise() {
         // This might be a bit more useful as we can have UI interact with this.
-        val action = DeferAction.of(ConsoleInQueue.class).onComplete(inQueueResult -> {
+        val action = DeferAction.of(ConsoleInQueue.class).onCompleted(inQueueResult -> {
             inQueueResult.ifPresent(inQueue -> {
                 new Thread(() -> {
                     try {

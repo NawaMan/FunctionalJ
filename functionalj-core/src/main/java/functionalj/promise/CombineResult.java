@@ -63,7 +63,7 @@ public class CombineResult<D> {
         
         promises
         .mapWithIndex((index, promise) -> {
-            return promise.onComplete(result -> {
+            return promise.onCompleted(result -> {
                 processResult(index, result);
             });
         })

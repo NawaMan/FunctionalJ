@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 
 import org.junit.Test;
 
+import functionalj.exception.FunctionInvocationException;
 import functionalj.promise.Promise;
 import lombok.val;
 

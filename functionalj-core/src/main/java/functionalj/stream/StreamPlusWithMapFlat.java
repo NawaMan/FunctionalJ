@@ -33,7 +33,6 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
-@SuppressWarnings("resource")
 public interface StreamPlusWithMapFlat<DATA> {
     
     public StreamPlus<DATA> streamPlus();

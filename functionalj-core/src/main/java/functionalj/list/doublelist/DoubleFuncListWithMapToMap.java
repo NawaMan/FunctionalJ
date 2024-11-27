@@ -24,7 +24,9 @@
 package functionalj.list.doublelist;
 
 import static functionalj.list.doublelist.DoubleFuncList.deriveToObj;
+
 import java.util.function.DoubleFunction;
+
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 
@@ -99,4 +101,5 @@ public interface DoubleFuncListWithMapToMap extends AsDoubleFuncList {
     public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1, DoubleFunction<? extends VALUE> mapper1, KEY key2, DoubleFunction<? extends VALUE> mapper2, KEY key3, DoubleFunction<? extends VALUE> mapper3, KEY key4, DoubleFunction<? extends VALUE> mapper4, KEY key5, DoubleFunction<? extends VALUE> mapper5, KEY key6, DoubleFunction<? extends VALUE> mapper6, KEY key7, DoubleFunction<? extends VALUE> mapper7, KEY key8, DoubleFunction<? extends VALUE> mapper8, KEY key9, DoubleFunction<? extends VALUE> mapper9, KEY key10, DoubleFunction<? extends VALUE> mapper10) {
         return deriveToObj(this, stream -> stream.mapToMap(key1, mapper1, key2, mapper2, key3, mapper3, key4, mapper4, key5, mapper5, key6, mapper6, key7, mapper7, key8, mapper8, key9, mapper9, key10, mapper10));
     }
+    
 }

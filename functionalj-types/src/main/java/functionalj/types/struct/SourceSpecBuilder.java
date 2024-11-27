@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.types.struct;
 
+import static functionalj.types.OptionalBoolean.toBoolean;
 import static functionalj.types.struct.features.FeatureSerialization.validateSerialization;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -30,10 +31,12 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import javax.lang.model.element.ElementKind;
@@ -107,7 +110,7 @@ public class SourceSpecBuilder {
         if (getters.stream().anyMatch(Objects::isNull))
             return null;
         
-        List<Callable> methods     = enclosedMethods(element, type);
+        List<Callable> methods     = enclosedMethods(element, getters);
         String         packageName = type.packageQualifiedName();
         String         encloseName = element.enclosingElement().simpleName();
         String         sourceName  = type.qualifiedName().toString().substring(packageName.length() + 1);
@@ -125,23 +128,78 @@ public class SourceSpecBuilder {
         String validatorName = (String) null;
         
         JavaVersionInfo versionInfo = element.versionInfo();
+        SourceKind      sourceKind  = sourceKind(isInterface, isClass);
         try {
-            return new SourceSpec(versionInfo, sourceName, packageName, encloseName, targetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, methods, localTypeWithLens);
+            return new SourceSpec(versionInfo, sourceName, packageName, encloseName, targetName, packageName, sourceKind, specField, validatorName, configures, getters, methods, localTypeWithLens);
         } catch (Exception e) {
             element.error("Problem generating the class: " + packageName + "." + targetName + ": " + e.getMessage() + ":" + e.getClass() + stream(e.getStackTrace()).map(st -> "\n    @" + st).collect(joining()));
             return null;
         }
     }
     
-    private List<Callable> enclosedMethods(InputElement element, InputTypeElement type) {
-        return type
-                .enclosedElements().stream()
+    private List<Callable> enclosedMethods(InputElement element, List<Getter> getters) {
+        Set<String> getterNames = getters.stream().map(Getter::name).collect(toSet());
+        
+        List<InputMethodElement> enclosedMethods 
+                = element.enclosedElements().stream()
                 .filter (elmt -> elmt.isMethodElement())
                 .map    (elmt -> elmt.asMethodElement())
-                .filter (mthd -> (mthd.isDefault() || mthd.isStatic()) && !mthd.isAbstract() && !mthd.isPrivate())
-                .map    (mthd -> extractMethodSpec(element, mthd))
+                .filter (elmt -> !isObjectMethod(elmt))
+                .filter (elmt -> !getterNames.contains(elmt.simpleName()))
+                .collect(toList());
+        
+        List<Callable> enclosedCallables
+                = enclosedMethods
+                .stream ()
+                .filter (mthd -> isInteritMethod(element, mthd))
+                .map    (mthd -> extractMethod(element, mthd))
                 .filter (mthd -> mthd != null)
                 .collect(toList());
+        
+        return enclosedCallables;
+    }
+    
+    private boolean isObjectMethod(InputMethodElement methodElement) {
+        String methodName= methodElement.simpleName();
+        return  methodName.equals("toString") ||
+                methodName.equals("hashCode") ||
+                methodName.equals("equals")   ||
+                methodName.equals("wait")     ||
+                methodName.equals("getClass") ||
+                methodName.equals("notify")   ||
+                methodName.equals("notifyAll");
+    }
+    
+    private boolean isInteritMethod(InputElement element, InputMethodElement mthd) {
+        boolean isInteritMethod 
+                =  ((mthd.isDefault() || mthd.isStatic()) && !mthd.isAbstract() && !mthd.isPrivate())
+                || (element.isRecord() && mthd.isStatic());
+        boolean isDefaultConstructor = mthd.toString().trim().equals("public non-sealed void <init>()");
+        if (!isInteritMethod && !isDefaultConstructor) {
+            // OK, for `record` as a source, we will also get the getter and object method here.
+            // We need to find a way to screen it out.
+            mthd.warn(String.format(
+                      "Method %s will not be included in the generated method. "
+                    + "A method must either be: "
+                        + "1) default or static and must not be an abstract nor private or "
+                        + "2) static method if the spec is a record.", mthd));
+        }
+        return isInteritMethod;
+    }
+    
+    private Callable extractMethod(InputElement element, InputMethodElement mthdElement) {
+        Function<InputType, Type> extractType   = (Function<InputType, Type>) (typeMirror -> getType(element, typeMirror));
+        String                    name          = mthdElement.simpleName().toString();
+        Type                      type          = getType(element, mthdElement.returnType());
+        boolean                   isVarArgs     = mthdElement.isVarArgs();
+        Accessibility             accessibility = mthdElement.accessibility();
+        Scope                     scope         = mthdElement.scope();
+        Modifiability             modifiability = mthdElement.modifiability();
+        Concrecity                concrecity    = mthdElement.concrecity();
+        List<Generic>             generics      = mthdElement.typeParameters().stream().map(t -> getGenericFromTypeParameter(element, t)).collect(toList());
+        List<Parameter>           parameters    = mthdElement.parameters().stream().map(param -> new Parameter(param.simpleName().toString(), getType(element, param.asType()))).collect(toList());
+        List<Type>                exceptions    = mthdElement.thrownTypes().stream().map(extractType).collect(toList());
+        return new Callable(name, type, isVarArgs, accessibility, scope, modifiability, concrecity, parameters, generics, exceptions);
     }
     
     private List<Getter> extractGetters(InputTypeElement type) {
@@ -195,21 +253,6 @@ public class SourceSpecBuilder {
                 .collect(toList());
     }
     
-    private Callable extractMethodSpec(InputElement element, InputMethodElement mthdElement) {
-        Function<InputType, Type> extractType   = (Function<InputType, Type>) (typeMirror -> getType(element, typeMirror));
-        String                    name          = mthdElement.simpleName().toString();
-        Type                      type          = getType(element, mthdElement.returnType());
-        boolean                   isVarArgs     = mthdElement.isVarArgs();
-        Accessibility             accessibility = mthdElement.accessibility();
-        Scope                     scope         = mthdElement.scope();
-        Modifiability             modifiability = mthdElement.modifiability();
-        Concrecity                concrecity    = mthdElement.concrecity();
-        List<Generic>             generics      = mthdElement.typeParameters().stream().map(t -> getGenericFromTypeParameter(element, t)).collect(toList());
-        List<Parameter>           parameters    = mthdElement.parameters().stream().map(param -> new Parameter(param.simpleName().toString(), getType(element, param.asType()))).collect(toList());
-        List<Type>                exceptions    = mthdElement.thrownTypes().stream().map(extractType).collect(toList());
-        return new Callable(name, type, isVarArgs, accessibility, scope, modifiability, concrecity, parameters, generics, exceptions);
-    }
-    
     private Generic getGenericFromTypeParameter(InputElement element, InputTypeParameterElement typeParameter) {
         String     name   = typeParameter.simpleName();
         List<Type> bounds = typeParameter.bounds().stream().map(bound -> getType(element, bound)).collect(toList());
@@ -224,8 +267,6 @@ public class SourceSpecBuilder {
         String             specTargetName    = targetName();
         String             specField         = struct.specField();
         List<String>       localTypeWithLens = element.readLocalTypeWithLens();
-        Boolean            isClass           = (Boolean) null;
-        Boolean            isInterface       = (Boolean) null;
         String             sourceName        = (String) null;
         String             superPackage      = packageName;
         boolean            isValidate        = isBooleanStringOrValidation(method.returnType());
@@ -246,9 +287,9 @@ public class SourceSpecBuilder {
             return null;
         
         JavaVersionInfo versionInfo = element.versionInfo();
-        
+        SourceKind      sourceKind  = SourceKind.METHOD;
         try {
-            return new SourceSpec(versionInfo, sourceName, superPackage, encloseName, specTargetName, packageName, isClass, isInterface, specField, validatorName, configures, getters, emptyList(), localTypeWithLens);
+            return new SourceSpec(versionInfo, sourceName, superPackage, encloseName, specTargetName, packageName, sourceKind, specField, validatorName, configures, getters, emptyList(), localTypeWithLens);
         } catch (Exception e) {
             String stacktraces = stream(e.getStackTrace()).map(stacktrace -> "\n    @" + stacktrace).collect(joining());
             String errMsg      = format("Problem generating the class: %s.%s: %s:%s%s", packageName, specTargetName, e.getMessage(), e.getClass(), stacktraces);
@@ -316,6 +357,7 @@ public class SourceSpecBuilder {
     private Configurations extractConfigurations(InputElement element, Struct struct) {
         Configurations configures = new Configurations();
         configures.coupleWithDefinition            = struct.coupleWithDefinition();
+        configures.generateRecord                  = toBoolean(struct.generateRecord());
         configures.generateNoArgConstructor        = struct.generateNoArgConstructor();
         configures.generateRequiredOnlyConstructor = struct.generateRequiredOnlyConstructor();
         configures.generateAllArgConstructor       = struct.generateAllArgConstructor();
@@ -323,8 +365,10 @@ public class SourceSpecBuilder {
         configures.generateBuilderClass            = struct.generateBuilderClass();
         configures.publicFields                    = struct.publicFields();
         configures.publicConstructor               = struct.publicConstructor();
-        configures.toStringTemplate                = struct.generateToString() ? struct.toStringTemplate() : null;
         configures.serialize                       = (struct.serialize() != null) ? struct.serialize() : Serialize.To.NOTHING;
+        configures.toStringMethod                  = struct.toStringMethod();
+        configures.toStringTemplate                = (struct.toStringTemplate() != null) ? struct.toStringTemplate() : "";
+        
         if (!configures.generateNoArgConstructor && !configures.generateAllArgConstructor) {
             element.error("generateNoArgConstructor and generateAllArgConstructor must be be false at the same time.");
             return null;
@@ -381,7 +425,10 @@ public class SourceSpecBuilder {
             e.printStackTrace();
             throw e;
         }
-        
+    }
+    
+    private SourceKind sourceKind(boolean isInterface, boolean isClass) {
+        return isClass ? SourceKind.CLASS : isInterface ? SourceKind.INTERFACE : SourceKind.RECORD;
     }
     
     private Type getType(InputElement element, InputType typeMirror) {

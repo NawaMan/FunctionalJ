@@ -289,7 +289,7 @@ public class RefTest {
         Run.async(() -> {
             state.set(42);
             return IntStreamPlus.infinite().limit(5).peek(i -> Time.sleep(40)).map(i -> ref.value()).join(" - ");
-        }).onComplete(r -> asyncResultRef.set(r));
+        }).onCompleted(r -> asyncResultRef.set(r));
         Time.sleep(100);
         for (int i = 0; i < 5; i++) {
             // value in the local thread change as we change the state ... but retained when the value stay.

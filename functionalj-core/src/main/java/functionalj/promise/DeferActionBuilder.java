@@ -26,7 +26,7 @@ package functionalj.promise;
 import static java.util.Objects.requireNonNull;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import functionalj.environments.AsyncRunner;
+
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit0;

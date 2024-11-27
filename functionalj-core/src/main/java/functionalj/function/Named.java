@@ -210,6 +210,38 @@ public interface Named {
         return new Annotated.Func6<I1, I2, I3, I4, I5, I6, O>(name, func);
     }
     
+    public static <I1, I2, I3, I4, I5, I6, I7, O> Annotated.Func7<I1, I2, I3, I4, I5, I6, I7, O> func7(String name, Func7<I1, I2, I3, I4, I5, I6, I7, O> func) {
+        return new Annotated.Func7<I1, I2, I3, I4, I5, I6, I7, O>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, O> Annotated.Func7<I1, I2, I3, I4, I5, I6, I7, O> Func7(String name, Func7<I1, I2, I3, I4, I5, I6, I7, O> func) {
+        return new Annotated.Func7<I1, I2, I3, I4, I5, I6, I7, O>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Annotated.Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func8(String name, Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func) {
+        return new Annotated.Func8<I1, I2, I3, I4, I5, I6, I7, I8, O>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Annotated.Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> Func8(String name, Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func) {
+        return new Annotated.Func8<I1, I2, I3, I4, I5, I6, I7, I8, O>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Annotated.Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func9(String name, Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func) {
+        return new Annotated.Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Annotated.Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Func9(String name, Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func) {
+        return new Annotated.Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Annotated.Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func10(String name, Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func) {
+        return new Annotated.Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Annotated.Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Func10(String name, Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func) {
+        return new Annotated.Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O>(name, func);
+    }
+    
     public static <O> Annotated.FuncUnit0 funcUnit0(String name, FuncUnit0 func) {
         return new Annotated.FuncUnit0(name, func);
     }
@@ -240,5 +272,61 @@ public interface Named {
     
     public static <I1, I2, I3> Annotated.FuncUnit3<I1, I2, I3> FuncUnit3(String name, FuncUnit3<I1, I2, I3> func) {
         return new Annotated.FuncUnit3<I1, I2, I3>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4> Annotated.FuncUnit4<I1, I2, I3, I4> funcUnit4(String name, FuncUnit4<I1, I2, I3, I4> func) {
+        return new Annotated.FuncUnit4<I1, I2, I3, I4>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4> Annotated.FuncUnit4<I1, I2, I3, I4> FuncUnit4(String name, FuncUnit4<I1, I2, I3, I4> func) {
+        return new Annotated.FuncUnit4<I1, I2, I3, I4>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5> Annotated.FuncUnit5<I1, I2, I3, I4, I5> funcUnit5(String name, FuncUnit5<I1, I2, I3, I4, I5> func) {
+        return new Annotated.FuncUnit5<I1, I2, I3, I4, I5>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5> Annotated.FuncUnit5<I1, I2, I3, I4, I5> FuncUnit5(String name, FuncUnit5<I1, I2, I3, I4, I5> func) {
+        return new Annotated.FuncUnit5<I1, I2, I3, I4, I5>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6> Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6> funcUnit6(String name, FuncUnit6<I1, I2, I3, I4, I5, I6> func) {
+        return new Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6> Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6> FuncUnit6(String name, FuncUnit6<I1, I2, I3, I4, I5, I6> func) {
+        return new Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7> Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7> funcUnit7(String name, FuncUnit7<I1, I2, I3, I4, I5, I6, I7> func) {
+        return new Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7> Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7> FuncUnit7(String name, FuncUnit7<I1, I2, I3, I4, I5, I6, I7> func) {
+        return new Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> funcUnit8(String name, FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> func) {
+        return new Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> FuncUnit8(String name, FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> func) {
+        return new Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> funcUnit9(String name, FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> func) {
+        return new Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> FuncUnit9(String name, FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> func) {
+        return new Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> funcUnit10(String name, FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> func) {
+        return new Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10>(name, func);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> FuncUnit10(String name, FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> func) {
+        return new Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10>(name, func);
     }
 }

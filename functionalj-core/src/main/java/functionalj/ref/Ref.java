@@ -23,12 +23,15 @@
 // ============================================================================
 package functionalj.ref;
 
+import static functionalj.ref.Substitution.Scope.allThread;
 import static java.util.Objects.requireNonNull;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
@@ -175,11 +178,11 @@ public abstract class Ref<DATA> {
     // -- Overriding --
     // TODO - These methods should not be for DictatedRef ... but I don't know how to gracefully takecare of this.
     public final Substitution<DATA> butWith(DATA value) {
-        return new Substitution.Value<DATA>(this, false, value);
+        return new Substitution.Value<DATA>(this, allThread, value);
     }
     
     public final Substitution<DATA> butFrom(Func0<DATA> supplier) {
-        return new Substitution.Supplier<DATA>(this, false, supplier);
+        return new Substitution.Supplier<DATA>(this, allThread, supplier);
     }
     
     abstract Ref<DATA> whenAbsent(Func0<DATA> whenAbsent);
@@ -192,6 +195,10 @@ public abstract class Ref<DATA> {
     
     public Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
         return whenAbsent(WhenAbsent.Get(defaultSupplier));
+    }
+    
+    public Ref<DATA> whenAbsentReferTo(Ref<DATA> sourceRef) {
+        return whenAbsent(WhenAbsent.Get(sourceRef::get));
     }
     
     public Ref<DATA> whenAbsentUseDefault() {

@@ -68,24 +68,24 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
         return this;
     }
     
-    public PendingAction<DATA> onComplete(FuncUnit1<Result<DATA>> resultConsumer) {
-        promise.onComplete(Wait.forever(), resultConsumer);
+    public PendingAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer) {
+        promise.onCompleted(Wait.forever(), resultConsumer);
         return this;
     }
     
-    public PendingAction<DATA> onComplete(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
-        promise.onComplete(wait, resultConsumer);
+    public PendingAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
+        promise.onCompleted(wait, resultConsumer);
         return this;
     }
     
-    public PendingAction<DATA> onComplete(FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.onComplete(Wait.forever(), resultConsumer);
+    public PendingAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
+        val subscription = promise.onCompleted(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
     
-    public PendingAction<DATA> onComplete(Wait wait, FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.onComplete(wait, resultConsumer);
+    public PendingAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
+        val subscription = promise.onCompleted(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }

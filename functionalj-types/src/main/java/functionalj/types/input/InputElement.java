@@ -53,6 +53,7 @@ import javax.tools.JavaFileObject;
 
 import functionalj.types.Choice;
 import functionalj.types.JavaVersionInfo;
+import functionalj.types.OptionalBoolean;
 import functionalj.types.Serialize;
 import functionalj.types.Struct;
 import functionalj.types.struct.generator.model.Accessibility;
@@ -76,6 +77,10 @@ public interface InputElement {
         @Override
         public JavaVersionInfo versionInfo() {
             return environment.versionInfo;
+        }
+        
+        public void warn(CharSequence message) {
+            environment.warn(element, null, message);
         }
         
         @Override
@@ -677,6 +682,26 @@ public interface InputElement {
         }
         if (annotation(Choice.class) != null) {
             return annotation(Choice.class).publicFields();
+        }
+        throw new IllegalArgumentException("Unknown element annotation type: " + this);
+    }
+    
+    public default boolean generateSealedClass() {
+        if (annotation(Choice.class) != null) {
+            OptionalBoolean generateSealedClass = annotation(Choice.class).generateSealedClass();
+            int             version             = versionInfo().minVersion();
+            if ((generateSealedClass == OptionalBoolean.TRUE)
+             || (generateSealedClass == OptionalBoolean.FALSE)) {
+                
+                if ((generateSealedClass == OptionalBoolean.TRUE)
+                 && (version < 17)) {
+                    error("Sealed class can only be generated for Java 17 or newer.");
+                }
+                
+                return generateSealedClass.toBoolean();
+            }
+            
+            return version >= 17;
         }
         throw new IllegalArgumentException("Unknown element annotation type: " + this);
     }

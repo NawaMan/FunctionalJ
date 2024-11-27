@@ -114,7 +114,6 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
         Object[] array = stream().limit(count).toArray();
         if ((array.length == 0) && count != 0)
             return AutoCloseableResult.from(Result.ofNoMore());
-        @SuppressWarnings("resource")
         val iterator = (ArrayBackedIteratorPlus<DATA>) new ArrayBackedIteratorPlus<Object>(array);
         return AutoCloseableResult.valueOf(iterator);
     }

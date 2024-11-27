@@ -5,9 +5,11 @@
     <parent>
         <groupId>io.functionalj</groupId>
         <artifactId>functionalj</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.18-18-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+    
+    <packaging>jar</packaging>
     
     <artifactId>functionalj-core</artifactId>
     <name>functionalj-core</name>
@@ -44,4 +46,24 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>${java.version}</version>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

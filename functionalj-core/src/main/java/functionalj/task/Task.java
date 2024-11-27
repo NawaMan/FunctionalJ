@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func10;
@@ -51,6 +52,7 @@ import functionalj.task.Tasks.TaskCachedFor;
 import functionalj.task.Tasks.TaskChain;
 import functionalj.task.Tasks.TaskFilter;
 import functionalj.task.Tasks.TaskMap;
+import functionalj.task.Tasks.TaskMerge10;
 import functionalj.task.Tasks.TaskMerge2;
 import functionalj.task.Tasks.TaskMerge3;
 import functionalj.task.Tasks.TaskMerge4;
@@ -59,12 +61,10 @@ import functionalj.task.Tasks.TaskMerge6;
 import functionalj.task.Tasks.TaskMerge7;
 import functionalj.task.Tasks.TaskMerge8;
 import functionalj.task.Tasks.TaskMerge9;
-import functionalj.task.Tasks.TaskMerge10;
 import functionalj.task.Tasks.TaskPeek;
 import functionalj.task.Tasks.TaskPromise;
 import functionalj.task.Tasks.TaskRace;
 import functionalj.task.Tasks.TaskResult;
-import functionalj.task.Tasks.TaskSupplier;
 import functionalj.task.Tasks.TaskValue;
 
 @FunctionalInterface
@@ -77,7 +77,7 @@ public interface Task<DATA> {
     }
     
     public static <D> DeferActionBuilder<D> from(Func0<D> supplier) {
-        return new TaskSupplier<>(supplier);
+        return DeferActionBuilder.from(supplier);
     }
     
     public static <D> Task<D> from(Result<D> result) {

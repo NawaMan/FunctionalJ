@@ -81,7 +81,6 @@ public final class GrowOnlyIntArray {
         return length == 0;
     }
     
-    @SuppressWarnings("resource")
     public IntStreamPlus stream() {
         int aCount = length / ARRAY_LENGTH;
         int residue = length % ARRAY_LENGTH;

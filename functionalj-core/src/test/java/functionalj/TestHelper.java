@@ -43,7 +43,7 @@ public class TestHelper {
      * @param actual    the actual object value.
      */
     public static void assertAsString(String expected, Object actual) {
-        val expectedRegEx = "^\\Q" + expected + "\\E$";
+        val expectedRegEx  = ("(?ms)^\\Q" + expected + "\\E$").replaceAll("\\\\Q\\\\E", "");
         val actualAsString = Objects.toString(actual);
         if (actualAsString.matches(expectedRegEx))
             return;
@@ -61,7 +61,7 @@ public class TestHelper {
      * @param actual          the actual object.
      */
     public static void assertAsString(String failureMessage, String expected, Object actual) {
-        val expectedRegEx = "^\\Q" + expected + "\\E$";
+        val expectedRegEx  = ("(?ms)^\\Q" + expected + "\\E$").replaceAll("\\\\Q\\\\E", "");
         val actualAsString = Objects.toString(actual);
         if (actualAsString.matches(expectedRegEx))
             return;
@@ -79,7 +79,7 @@ public class TestHelper {
      * @param actual          the actual object.
      */
     public static void assertAsString(Supplier<String> failureMessage, String expected, Object actual) {
-        val expectedRegEx = "^\\Q" + expected + "\\E$";
+        val expectedRegEx  = ("(?ms)^\\Q" + expected + "\\E$").replaceAll("\\\\Q\\\\E", "");
         val actualAsString = Objects.toString(actual);
         if (actualAsString.matches(expectedRegEx))
             return;

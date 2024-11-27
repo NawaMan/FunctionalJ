@@ -53,7 +53,18 @@ public class Func1Test {
     @Test
     public void testDefer() {
         val startTime = System.currentTimeMillis();
-        val length = Sleep(50).then(String::valueOf).async().apply("Hello!").getPromise().chain(Sleep(50).then(String::length).async()).getResult();
+        val length
+                = Sleep(50)
+                .then(String::valueOf)
+                .async()
+                .apply("Hello!")
+                .getPromise()
+                .chain(str -> {
+                    val theString = str;
+                    val theLength = Sleep(50).then(String::length).async().apply(theString);
+                    return theLength;
+                })
+                .getResult();
         val duration = System.currentTimeMillis() - startTime;
         assertEquals(6, length.get().intValue());
         assertTrue(duration > 100);

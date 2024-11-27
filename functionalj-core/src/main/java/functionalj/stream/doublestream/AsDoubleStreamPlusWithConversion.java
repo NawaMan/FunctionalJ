@@ -313,6 +313,20 @@ public interface AsDoubleStreamPlusWithConversion {
         return toMap(keyAggregator, mergeFunction);
     }
     
+    /** Create a map from the data from the index and the value. */
+    @Eager
+    @Terminal
+    public default FuncMap<Integer, Double> toMap() {
+        return doubleStreamPlus().boxed().toMap();
+    }
+    
+    /** Create a map from the data from the value to the index. */
+    @Eager
+    @Terminal
+    public default FuncMap<Double, Integer> toMapRevert() {
+        return doubleStreamPlus().boxed().toMapRevert();
+    }
+    
     // -- toSet --
     /**
      * @return  a set of the elements.

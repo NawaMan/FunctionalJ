@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.environments;
 
-import functionalj.InterruptedRuntimeException;
+import functionalj.exception.InterruptedRuntimeException;
 
 public final class Time {
     

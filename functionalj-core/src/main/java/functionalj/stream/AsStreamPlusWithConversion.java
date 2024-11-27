@@ -29,12 +29,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
+
+import functionalj.function.Func;
 import functionalj.function.ToByteFunction;
 import functionalj.function.aggregator.Aggregation;
 import functionalj.functions.StrFuncs;
@@ -349,6 +352,30 @@ public interface AsStreamPlusWithConversion<DATA> {
     public default <KEY> FuncMap<KEY, DATA> toMap(Aggregation<? super DATA, KEY> keyAggregation, BinaryOperator<DATA> mergeFunction) {
         val keyAggregator = keyAggregation.newAggregator();
         return toMap(keyAggregator, mergeFunction);
+    }
+    
+    /**
+     * Create a map from the data from the index and the value.
+     */
+    @Eager
+    @Terminal
+    public default FuncMap<Integer, DATA> toMap() {
+        val streamPlus    = streamPlus();
+        val index         = new AtomicInteger();
+        val theMap        = streamPlus.collect(Collectors.toMap(__-> index.getAndIncrement(), Func.it()));
+        return ImmutableFuncMap.from(theMap);
+    }
+    
+    /**
+     * Create a map from the data from the value to the index.
+     */
+    @Eager
+    @Terminal
+    public default FuncMap<DATA, Integer> toMapRevert() {
+        val streamPlus    = streamPlus();
+        val index         = new AtomicInteger();
+        val theMap        = streamPlus.collect(Collectors.toMap(Func.it(), __-> index.getAndIncrement()));
+        return ImmutableFuncMap.from(theMap);
     }
     
     // -- toSet --

@@ -53,8 +53,8 @@ import functionalj.types.input.InputMethodElement;
 import functionalj.types.input.InputType;
 import functionalj.types.input.InputTypeArgument;
 import functionalj.types.struct.generator.SourceSpec;
-import functionalj.types.struct.generator.StructSpec;
-import functionalj.types.struct.generator.StructSpecBuilder;
+import functionalj.types.struct.generator.StructClassSpec;
+import functionalj.types.struct.generator.StructClassSpecBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 
 /**
@@ -94,22 +94,25 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // TODO - Should find a way to warn when a field is not immutable.
         boolean hasError = false;
-        List<InputElement> elements = roundEnv.getElementsAnnotatedWith(Struct.class).stream().map(environment::element).collect(toList());
+        List<InputElement> elements = prepareInputElements(roundEnv);
         for (InputElement element : elements) {
+//            prepareLogs(element);
+            
             SourceSpecBuilder sourceSpecBuilder = new SourceSpecBuilder(element);
             String            packageName       = sourceSpecBuilder.packageName();
             String            specTargetName    = sourceSpecBuilder.targetName();
-            prepareLogs(element);
             try {
                 SourceSpec sourceSpec = sourceSpecBuilder.sourceSpec();
                 if (sourceSpec == null)
                     continue;
                 
-                StructSpec structSpec = new StructSpecBuilder(sourceSpec).build();
-                String     className  = structSpec.targetClassName();
-                GenStruct  generator  = new GenStruct(sourceSpec, structSpec);
-                String     content = string(generator.lines());
-                String     logStrings = logs.stream().map("//  "::concat).collect(joining("\n"));
+                validateConfigurations(element, sourceSpec);
+                
+                StructClassSpec structSpec = new StructClassSpecBuilder(sourceSpec).build();
+                String          className  = structSpec.targetClassName();
+                GenStruct       generator  = new GenStruct(sourceSpec, structSpec);
+                String          content    = string(generator.lines());
+                String          logStrings = logs.stream().map("//  "::concat).collect(joining("\n"));
                 element.generateCode(className, content + "\n\n" + logStrings);
             } catch (Exception exception) {
                 String   template   = "Problem generating the class: %s.%s: %s:%s%s";
@@ -126,6 +129,38 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
+    private List<InputElement> prepareInputElements(RoundEnvironment roundEnv) {
+        return roundEnv
+        .getElementsAnnotatedWith(Struct.class)
+        .stream()
+        .map(environment::element)
+        .collect(toList());
+    }
+    
+    private void validateConfigurations(InputElement element, SourceSpec sourceSpec) {
+        if (sourceSpec.getConfigures().coupleWithDefinition
+         && sourceSpec.generateRecord()
+         && sourceSpec.sourceKind().isClass()) {
+            String message 
+                    = "With a class as the source and the record as a target, "
+                    + "it is not possible to couple them "
+                    + "as a record cannot extends a class.";
+            element.error(message);
+        }
+        
+        if ((sourceSpec.getConfigures().generateRecord == Boolean.TRUE)
+         && (sourceSpec.getJavaVersionInfo().targetVersion() < 16)) {
+            String message = "A struct can only be generated as a record for Java 16 and up.";
+            element.error(message);
+        }
+        
+        if (sourceSpec.generateRecord()
+         && !sourceSpec.getConfigures().generateAllArgConstructor) {
+            String message = "An All-Arg constructor is need when generate a record.";
+            element.error(message);
+        }
+    }
+    
     @SuppressWarnings("unused")
     private void prepareLogs(InputElement element) {
         if (element.isTypeElement()) {
@@ -134,6 +169,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         }
         InputMethodElement method = element.asMethodElement();
         for (InputElement parameter : method.parameters()) {
+            logs.add("  - Parameter [" + parameter.simpleName() + "] under version    : " + environment.versionInfo());
             logs.add("  - Parameter [" + parameter.simpleName() + "] is a type element: " + parameter.isTypeElement());
             logs.add("  - Parameter [" + parameter.simpleName() + "] toString         : " + parameter);
             logs.add("  - Parameter [" + parameter.simpleName() + "] simple name      : " + parameter.simpleName());

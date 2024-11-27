@@ -53,6 +53,15 @@ import java.util.stream.Stream;
 
 public class Type implements IRequireTypes {
     
+    /** Self */
+    public static final Type SELF = Type.of(Self.class);
+    
+    /** Self1 */
+    public static final Type SELF1 = Type.of(Self1.class);
+    
+    /** Self2 */
+    public static final Type SELF2 = Type.of(Self2.class);
+    
     /**
      * char AbstractType
      */

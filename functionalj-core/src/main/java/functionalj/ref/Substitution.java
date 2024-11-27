@@ -32,12 +32,17 @@ import lombok.val;
 // TODO - Add a wrapper for various function so the call to it will use the substitution.
 public abstract class Substitution<DATA> {
     
+    public static enum Scope {
+        localThread,
+        allThread
+    }
+    
     public static <D> Substitution<D> of(Ref<D> ref, D value) {
-        return new Substitution.Value<D>(ref, false, value);
+        return new Substitution.Value<D>(ref, Scope.allThread, value);
     }
     
     public static <D> Substitution<D> from(Ref<D> ref, Func0<D> supplier) {
-        return new Substitution.Supplier<D>(ref, false, supplier);
+        return new Substitution.Supplier<D>(ref, Scope.allThread, supplier);
     }
     
     public static final FuncList<Substitution<?>> getCurrentSubstitutions() {
@@ -55,11 +60,11 @@ public abstract class Substitution<DATA> {
     
     private final Ref<DATA> ref;
     
-    private final boolean isThreadLocal;
+    private final Scope scope;
     
-    protected Substitution(Ref<DATA> ref, boolean isThreadLocal) {
-        this.ref = requireNonNull(ref);
-        this.isThreadLocal = isThreadLocal;
+    protected Substitution(Ref<DATA> ref, Scope scope) {
+        this.ref   = requireNonNull(ref);
+        this.scope = scope;
     }
     
     public final Ref<DATA> ref() {
@@ -67,19 +72,19 @@ public abstract class Substitution<DATA> {
     }
     
     public final boolean isThreadLocal() {
-        return isThreadLocal;
+        return scope == Scope.localThread;
     }
     
-    abstract Substitution<DATA> newSubstitution(Ref<DATA> ref, boolean isThreadLocal);
+    abstract Substitution<DATA> newSubstitution(Ref<DATA> ref, Scope scope);
     
     public Substitution<DATA> withinThisThread() {
-        return withinThisThread(true);
+        return withinThisThread(Scope.localThread);
     }
     
-    public Substitution<DATA> withinThisThread(boolean threadLocal) {
-        if (threadLocal == isThreadLocal)
+    public Substitution<DATA> withinThisThread(Scope scope) {
+        if (this.scope == scope)
             return this;
-        return newSubstitution(ref, threadLocal);
+        return newSubstitution(ref, scope);
     }
     
     public abstract Func0<DATA> supplier();
@@ -89,13 +94,13 @@ public abstract class Substitution<DATA> {
         
         private final DATA value;
         
-        public Value(Ref<DATA> ref, boolean isThreadLocal, DATA value) {
-            super(ref, isThreadLocal);
+        public Value(Ref<DATA> ref, Scope scope, DATA value) {
+            super(ref, scope);
             this.value = value;
         }
         
-        Substitution<DATA> newSubstitution(Ref<DATA> ref, boolean isThreadLocal) {
-            return new Substitution.Value<DATA>(ref, isThreadLocal, value);
+        Substitution<DATA> newSubstitution(Ref<DATA> ref, Scope scope) {
+            return new Substitution.Value<DATA>(ref, scope, value);
         }
         
         public final Func0<DATA> supplier() {
@@ -112,13 +117,13 @@ public abstract class Substitution<DATA> {
         
         private final Func0<DATA> supplier;
         
-        public Supplier(Ref<DATA> ref, boolean isThreadLocal, Func0<DATA> supplier) {
-            super(ref, isThreadLocal);
+        public Supplier(Ref<DATA> ref, Scope scope, Func0<DATA> supplier) {
+            super(ref, scope);
             this.supplier = (supplier != null) ? supplier : () -> null;
         }
         
-        Substitution<DATA> newSubstitution(Ref<DATA> ref, boolean isThreadLocal) {
-            return new Substitution.Supplier<DATA>(ref, isThreadLocal, supplier);
+        Substitution<DATA> newSubstitution(Ref<DATA> ref, Scope scope) {
+            return new Substitution.Supplier<DATA>(ref, scope, supplier);
         }
         
         public final Func0<DATA> supplier() {

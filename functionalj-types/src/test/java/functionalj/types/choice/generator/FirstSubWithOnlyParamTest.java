@@ -42,7 +42,7 @@ public class FirstSubWithOnlyParamTest {
     
     @Test
     public void test() {
-        val spec = new SourceSpec("BasicColor", new Type(this.getClass().getPackage().getName(), "ChoiceTypeExampleTest", "ChoiceType1TypeSpec"), asList(new Case("RGB", "__validateRGB", asList(new CaseParam("r", new Type("int"), false))), new Case("White", "RGB(255,255,255)", emptyList())));
+        val spec = new SourceSpec("BasicColor", new Type(this.getClass().getPackage().getName(), "ChoiceTypeExampleTest", "ChoiceType1TypeSpec"), false, asList(new Case("RGB", "__validateRGB", asList(new CaseParam("r", new Type("int"), false))), new Case("White", "RGB(255,255,255)", emptyList())));
         val targetClass = new TargetClass(spec);
         val switchClass = new SwitchClass(targetClass, true, spec.choices);
         val lines = switchClass.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));

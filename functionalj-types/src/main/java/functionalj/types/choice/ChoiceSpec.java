@@ -38,6 +38,7 @@ import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
 import functionalj.types.Nullable;
 import functionalj.types.Required;
+import functionalj.types.Self;
 import functionalj.types.Serialize.To;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
@@ -95,12 +96,13 @@ public class ChoiceSpec {
             element.error("Source spec field name is not a valid identifier: " + specField);
             return null;
         }
-        String       tagMapKeyName = element.choiceTagMapKeyName();
-        To           serialize     = element.specifiedSerialize();
-        List<Case>   choices       = extractTypeChoices(targetType, typeElement);
-        List<Method> methods       = extractTypeMethods(targetType, typeElement);
-        boolean      publicFields  = element.specifiedPublicField();
-        SourceSpec   sourceSpec    = new SourceSpec(targetName, sourceType, specField, publicFields, tagMapKeyName, serialize, generics, choices, methods, localTypeWithLens);
+        String       tagMapKeyName  = element.choiceTagMapKeyName();
+        To           serialize      = element.specifiedSerialize();
+        List<Case>   choices        = extractTypeChoices(targetType, typeElement);
+        List<Method> methods        = extractTypeMethods(targetType, typeElement);
+        boolean      publicFields   = element.specifiedPublicField();
+        boolean      generateSealed = element.generateSealedClass();
+        SourceSpec   sourceSpec     = new SourceSpec(targetName, sourceType, specField, publicFields, tagMapKeyName, generateSealed, serialize, generics, choices, methods, localTypeWithLens);
         return sourceSpec;
     }
     
@@ -299,4 +301,5 @@ public class ChoiceSpec {
         String packageName = element.packageQualifiedName();
         return packageName;
     }
+    
 }

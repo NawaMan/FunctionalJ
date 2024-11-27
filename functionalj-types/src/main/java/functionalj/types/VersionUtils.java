@@ -24,7 +24,7 @@ public class VersionUtils {
     
     private static int parseVersion(String version) {
         try {
-            return Integer.parseInt(version);
+            return "1.8".equals(version) ? 8 : Integer.parseInt(version);
         } catch (NumberFormatException e) {
             System.err.println("Failed to parse version: " + version);
             return -1;

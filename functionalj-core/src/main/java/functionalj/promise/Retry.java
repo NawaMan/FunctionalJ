@@ -115,8 +115,11 @@ public class Retry<DATA> {
         val supplier = builder.supplier();
         val onStart = builder.onStart();
         val runner = builder.runner();
+        
         if (times == Retry.NO_RETRY)
             return DeferAction.create(interruptOnCancel, supplier, onStart, runner);
-        return RetryableDeferActionCreator.current.value().createRetryDeferAction(interruptOnCancel, onStart, runner, this, supplier);
+        
+        return RetryableDeferActionCreator.current.value()
+                .createRetryDeferAction(interruptOnCancel, onStart, runner, this, supplier);
     }
 }

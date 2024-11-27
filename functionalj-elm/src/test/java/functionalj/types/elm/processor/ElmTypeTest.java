@@ -24,10 +24,13 @@
 package functionalj.types.elm.processor;
 
 import static functionalj.types.DefaultValue.REQUIRED;
+import static functionalj.types.StructToString.Legacy;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
+
 import functionalj.types.Generic;
 import functionalj.types.JavaVersionInfo;
 import functionalj.types.Serialize;
@@ -48,17 +51,16 @@ public class ElmTypeTest {
                     "User", 
                     "example.functionalj.elm", 
                     null, 
-                    null, 
                     "spec", 
                     null, 
-                    new SourceSpec.Configurations(true, false, true, true, true, true, true, true, "", Serialize.To.NOTHING, false),
+                    new SourceSpec.Configurations(true, null, false, true, true, true, true, true, true, Serialize.To.NOTHING, Legacy, ""),
                     asList(
                         new Getter("firstName", new Type("java.lang", null, "String", emptyList()), false, REQUIRED), 
                         new Getter("lastName", new Type("java.lang", null, "String", emptyList()), false, REQUIRED)),
                     emptyList(),
                     asList("User"));
     
-    public static final functionalj.types.choice.generator.model.SourceSpec loginStatusSpec = new functionalj.types.choice.generator.model.SourceSpec("LoginStatus", new Type("example.functionalj.choice", "ChoiceTypeExamples", "LoginStatusSpec", emptyList()), "spec", false, "__tagged", Serialize.To.NOTHING, emptyList(), asList(new Case("Login", null, asList(new CaseParam("userName", new Type("java.lang", null, "String", emptyList()), true, null))), new Case("Logout", null, emptyList())), emptyList(), emptyList());
+    public static final functionalj.types.choice.generator.model.SourceSpec loginStatusSpec = new functionalj.types.choice.generator.model.SourceSpec("LoginStatus", new Type("example.functionalj.choice", "ChoiceTypeExamples", "LoginStatusSpec", emptyList()), "spec", false, "__tagged", false, Serialize.To.NOTHING, emptyList(), asList(new Case("Login", null, asList(new CaseParam("userName", new Type("java.lang", null, "String", emptyList()), true, null))), new Case("Logout", null, emptyList())), emptyList(), emptyList());
     
     @Test
     public void testBasic() {

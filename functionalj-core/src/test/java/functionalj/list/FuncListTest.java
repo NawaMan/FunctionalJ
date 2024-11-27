@@ -1459,6 +1459,7 @@ public class FuncListTest {
     }
     
     // -- toMap --
+    
     @Test
     public void testToMap() {
         run(FuncList.of(One, Three, Five), list -> {
@@ -1484,6 +1485,20 @@ public class FuncListTest {
     public void testToMap_withMergedValue() {
         run(FuncList.of(One, Two, Three, Five), list -> {
             assertAsString("{3:One+Two, 4:Five, 5:Three}", list.toMap(theString.length(), (a, b) -> a + "+" + b).toString());
+        });
+    }
+    
+    @Test
+    public void testToMapIndex() {
+        run(FuncList.of(One, Two, Three, Five), list -> {
+            assertAsString("{0:One, 1:Two, 2:Three, 3:Five}", list.toMap());
+        });
+    }
+    
+    @Test
+    public void testToMapIndexInvert() {
+        run(FuncList.of(One, Two, Three, Five), list -> {
+            assertAsString("{Five:3, One:0, Two:1, Three:2}", list.toMapRevert());
         });
     }
     
@@ -2298,6 +2313,35 @@ public class FuncListTest {
     public void testMapOnly() {
         run(FuncList.of(One, Two, Three), list -> {
             assertAsString("[ONE, TWO, Three]", list.mapOnly($S.length().thatLessThan(4), $S.toUpperCase()));
+        });
+    }
+    
+    @Test
+    public void testMapOnlyClass() {
+        val four = new CharSequence() {
+            
+            @Override
+            public CharSequence subSequence(int start, int end) {
+                return toString().subSequence(start, end);
+            }
+            
+            @Override
+            public int length() {
+                return toString().length();
+            }
+            
+            @Override
+            public char charAt(int index) {
+                return toString().charAt(index);
+            }
+            
+            @Override
+            public String toString() {
+                return "Four";
+            }
+        };
+        run(FuncList.of((CharSequence)One, (CharSequence)Two, (CharSequence)Three, four), list -> {
+            assertAsString("[ONE, TWO, THREE, Four]", list.mapFor(String.class, $S.toUpperCase().castToString()));
         });
     }
     

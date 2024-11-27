@@ -47,6 +47,10 @@ import lombok.val;
 @FunctionalInterface
 public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, RuntimeException> {
     
+    public static <T> Func0<T> supplyNull() {
+        return () -> null;
+    }
+    
     public static <T> Func0<T> of(Func0<T> func0) {
         return func0;
     }

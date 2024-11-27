@@ -30,7 +30,8 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Objects;
-import functionalj.types.choice.Self;
+
+import functionalj.types.Self;
 import functionalj.types.choice.generator.model.Method;
 
 public class SourceMethod implements Lines {

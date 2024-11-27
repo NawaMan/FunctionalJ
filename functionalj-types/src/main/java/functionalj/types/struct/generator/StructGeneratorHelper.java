@@ -37,6 +37,7 @@ import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,15 +45,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import functionalj.types.Core;
 import functionalj.types.DefaultValue;
 import functionalj.types.Generic;
 import functionalj.types.IPostConstruct;
+import functionalj.types.StructToString;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
 import functionalj.types.struct.generator.model.Accessibility;
@@ -66,28 +70,45 @@ import functionalj.types.struct.generator.model.Scope;
 public class StructGeneratorHelper {
     
     static GenMethod generateToString(SourceSpec sourceSpec, List<Getter> getters) {
-        GenMethod toString = null;
-        String    toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
-        if (toStringTemplate != null) {
-            String toStringBody = null;
-            if (!toStringTemplate.isEmpty()) {
-                String strFuncs = Core.StrFunc.packageName() + "." + Core.StrFunc.simpleName();
-                toStringBody = "return " + strFuncs + ".template(" + Utils.toStringLiteral(toStringTemplate) + "," + StructMapGeneratorHelper.METHOD_TO_MAP + "()::get);";
+        StructToString method = sourceSpec.getConfigures().toStringMethod;
+        if (method == null)
+            return null;
+        
+        if (method == StructToString.Default) {
+            String toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
+            if (toStringTemplate != null && !toStringTemplate.isEmpty()) {
+                method = StructToString.Template;
+            } else if (sourceSpec.getJavaVersionInfo().sourceVersion() >= 16) {
+                method = StructToString.Record;
             } else {
-                String template 
-                        = sourceSpec.getConfigures().recordToString
-                        ? "\"%1$s=\" + %1$s()"
-                        : "\"%1$s: \" + %1$s()";
-                
-                String body 
-                        = getters.stream()
-                        .map    (g -> format(template, g.name()))
-                        .collect(joining(" + \", \" + "));
-                toStringBody = "return \"" + sourceSpec.getTargetClassName() + "[\" + " + (body.isEmpty() ? "\"\"" : body) + " + \"]\";";
+                method = StructToString.Legacy;
             }
-            toString = new GenMethod("toString", Type.STRING, Accessibility.PUBLIC, Scope.INSTANCE, Modifiability.MODIFIABLE, Collections.emptyList(), line(toStringBody));
         }
-        return toString;
+        
+        if (method == StructToString.Template) {
+            String toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
+            String strFuncs         = Core.StrFunc.packageName() + "." + Core.StrFunc.simpleName();
+            String toStringBody     = "return " + strFuncs + ".template(" + Utils.toStringLiteral(toStringTemplate) + "," + StructMapGeneratorHelper.METHOD_TO_MAP + "()::get);";
+            return generateToStringMethod(toStringBody);
+        }
+        
+        String template 
+                = (method == StructToString.Legacy)
+                ? "\"%1$s: \" + %1$s()"
+                : "\"%1$s=\" + %1$s()";
+        String body 
+                = getters.stream()
+                .map    (g -> format(template, g.name()))
+                .collect(joining(" + \", \" + "));
+        String toStringBody
+                = format("return \"%s[\" + %s + \"]\";", 
+                        sourceSpec.getTargetClassName(),
+                        (body.isEmpty() ? "\"\"" : body));
+        return generateToStringMethod(toStringBody);
+    }
+    
+    private static GenMethod generateToStringMethod(String toStringBody) {
+        return new GenMethod("toString", Type.STRING, Accessibility.PUBLIC, Scope.INSTANCE, Modifiability.MODIFIABLE, Collections.emptyList(), line(toStringBody));
     }
     
     static GenMethod generateHashCode(SourceSpec sourceSpec) {
@@ -136,39 +157,54 @@ public class StructGeneratorHelper {
     static GenConstructor requiredOnlyConstructor(SourceSpec sourceSpec) {
         if (!sourceSpec.getConfigures().generateRequiredOnlyConstructor)
             return null;
-        if (sourceSpec.getGetters().stream().allMatch(Getter::isRequired))
+        
+        List<Getter> getters = sourceSpec.getGetters();
+        if (getters.stream().allMatch(Getter::isRequired))
             return null;
-        if (sourceSpec.getConfigures().generateNoArgConstructor && sourceSpec.getGetters().stream().noneMatch(Getter::isRequired))
+        if (sourceSpec.getConfigures().generateNoArgConstructor 
+         && getters.stream().noneMatch(Getter::isRequired))
             return null;
         
         String         name              = sourceSpec.getTargetClassName();
-        List<GenParam> params            = sourceSpec.getGetters().stream().filter(getter -> getter.isRequired()).map(StructGeneratorHelper::getterToGenParam).collect(toList());
+        List<GenParam> params            = getters.stream().filter(getter -> getter.isRequired()).map(StructGeneratorHelper::getterToGenParam).collect(toList());
         String         pkgName           = sourceSpec.getPackageName();
         String         eclName           = sourceSpec.getEncloseName();
         String         valName           = sourceSpec.getValidatorName();
-        String         getterParams      = sourceSpec.getGetters().stream().map(getter -> getter.getDefaultValueCode(getter.name())).collect(joining(","));
-        Stream<String> assignGetters     = sourceSpec.getGetters().stream().map(getter -> "this." + getter.name() + " = " + getter.getDefaultValueCode(getter.name()) + ";");
+        String         getterParams      = getters.stream().map(getter -> getter.getDefaultValueCode(getter.name())).collect(joining(","));
         Stream<String> validate          = (Stream<String>) ((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
-        String         ipostConstruct    = Type.of(IPostConstruct.class).simpleName();
-        Stream<String> postConstruct     = Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();");
-        List<String>   assignments       = Stream.of(assignGetters, validate, postConstruct).filter(Objects::nonNull).flatMap(Function.identity()).collect(toList());
+        List<String>   reqOnlyConstBody  = reqOnlyConstBody(getters, validate);
         boolean        publicConstructor = sourceSpec.getConfigures().publicConstructor;
         Accessibility  accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
-        return new GenConstructor(accessibility, name, params, ILines.line(assignments));
+        return new GenConstructor(accessibility, name, params, ILines.line(reqOnlyConstBody));
+    }
+    
+    static List<String> reqOnlyConstBody(List<Getter> getters, Stream<String> validate) {
+        Stream<String> postConstruct    = postConstructor();
+        Stream<String> assignGetters    = Stream.of("this(" + getters.stream().map(getter -> getter.getDefaultValueCode(getter.name())).collect(joining(", ")) + ");");
+        List<String>   assignments      = Stream.of(assignGetters, validate, postConstruct).filter(Objects::nonNull).flatMap(Function.identity()).collect(toList());
+        List<String>   reqOnlyConstBody = assignments;
+        return reqOnlyConstBody;
+    }
+    
+    static Stream<String> postConstructor() {
+        String         ipostConstruct = Type.of(IPostConstruct.class).simpleName();
+        String         code           = "if (" + ipostConstruct + ".class.isInstance(this)) " + ipostConstruct + ".class.cast(this).postConstruct();";
+        Stream<String> postConstruct  = Stream.of(code);
+        return postConstruct;
     }
     
     static GenConstructor allArgConstructor(SourceSpec sourceSpec) {
         BiFunction<SourceSpec, Accessibility, GenConstructor> allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>) ((spec, acc) -> {
-            String         name           = spec.getTargetClassName();
-            List<GenParam> params         = spec.getGetters().stream().map(StructGeneratorHelper::getterToGenParam).collect(toList());
-            String         pkgName        = sourceSpec.getPackageName();
-            String         eclName        = sourceSpec.getEncloseName();
-            String         valName        = sourceSpec.getValidatorName();
-            String         getterParams   = sourceSpec.getGetters().stream().map(getter -> getter.name()).collect(Collectors.joining(","));
-            Stream<String> assignGetters  = spec.getGetters().stream().map(StructGeneratorHelper::initGetterField);
-            Stream<String> validate       = (Stream<String>) ((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
-            String         ipostConstruct = Type.of(IPostConstruct.class).simpleName();
-            Stream<String> body           = Stream.of(assignGetters, validate, Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();")).flatMap(identity());
+            String         name          = spec.getTargetClassName();
+            List<GenParam> params        = spec.getGetters().stream().map(StructGeneratorHelper::getterToGenParam).collect(toList());
+            String         pkgName       = sourceSpec.getPackageName();
+            String         eclName       = sourceSpec.getEncloseName();
+            String         valName       = sourceSpec.getValidatorName();
+            String         getterParams  = sourceSpec.getGetters().stream().map(getter -> getter.name()).collect(Collectors.joining(","));
+            Stream<String> assignGetters = spec.getGetters().stream().map(StructGeneratorHelper::initGetterField);
+            Stream<String> validate      = (Stream<String>) ((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
+            Stream<String> postConstruct = postConstructor();
+            Stream<String> body          = Stream.of(assignGetters, validate, postConstruct).flatMap(identity());
             return new GenConstructor(acc, name, params, ILines.of(() -> body));
         });
         
@@ -217,6 +253,26 @@ public class StructGeneratorHelper {
         String paramName = getter.name();
         Type   paramType = getter.type();
         return new GenParam(paramName, paramType);
+    }
+    
+    static GenMethod generatePipeMethod(Type targetType) {
+        return new GenMethod(
+                "__data", 
+                targetType, 
+                PUBLIC, 
+                INSTANCE, 
+                MODIFIABLE, 
+                emptyList(), 
+                emptyList(), 
+                false, 
+                false, 
+                line("return this;"), 
+                emptyList(), 
+                asList(Type.of(Exception.class)));
+    }
+    
+    static Stream<GenMethod> generatePipeMethods(Type targetType) {
+        return Stream.of(generatePipeMethod(targetType));
     }
     
     static Stream<GenMethod> getterToWitherMethods(SourceSpec sourceSpec, Function<Getter, String> withMethodName, Getter getter) {
@@ -294,7 +350,24 @@ public class StructGeneratorHelper {
         return new GenMethod(name, type, PUBLIC, INSTANCE, MODIFIABLE, params, line(body));
     }
     
+    static GenParam generateParam(Parameter param) {
+        return new GenParam(param.getName(), param.getType());
+    }
+    
+    static Stream<GenMethod> inheritMethods(SourceSpec sourceSpec) {
+        List<Callable> callables = sourceSpec.getMethods();
+        return callables.stream()
+                .map   (callable -> inheritMethod(sourceSpec, callable))
+                .filter(Objects::nonNull);
+    }
+    
     static GenMethod inheritMethod(SourceSpec sourceSpec, Callable callable) {
+        return sourceSpec.isRecord()
+                ? inheritRecordMethod          (sourceSpec, callable)
+                : inheritClassOrInterfaceMethod(sourceSpec, callable);
+    }
+    
+    static GenMethod inheritClassOrInterfaceMethod(SourceSpec sourceSpec, Callable callable) {
         String targetClassName = sourceSpec.getSpecName();
         
         // - Accessibility, Modifibility, exception, isVarAgrs
@@ -314,11 +387,59 @@ public class StructGeneratorHelper {
         return new GenMethod(name, type, accessibility, scope, modifiability, params, generics, false, isVarAgrs, body, usedTypes, exceptions);
     }
     
-    static GenParam generateParam(Parameter param) {
-        return new GenParam(param.getName(), param.getType());
+    static GenMethod inheritRecordMethod(SourceSpec sourceSpec, Callable callable) {
+        Optional<Type> selfFirstParam 
+                = callable.parameters().stream()
+                .findFirst()
+                .filter   (param -> "self".equals(param.getName()))
+                .filter   (param -> Type.SELF.equals(param.getType()) || sourceSpec.getTargetType().equals(param.getType()))
+                .map      (Parameter::getType);
+        
+        boolean isSelfMethod     = selfFirstParam.isPresent();
+        boolean isFirstParamSelf = selfFirstParam.filter(Type.SELF::equals).isPresent();
+        boolean isReturnSelf     = Type.SELF.equals(callable.type());
+        
+        // Replace Self in all parameters.
+        List<Parameter> parameters = callable.parameters().stream().map(selfParameterReplace(sourceSpec)).collect(toList());
+        Type            returnType = isReturnSelf ? sourceSpec.getTargetType() : callable.type();
+        
+        String targetClassName = sourceSpec.getSpecName();
+        
+        // - Accessibility, Modifiability, exception, isVarAgrs
+        Accessibility  accessibility = PUBLIC;
+        Scope          scope         = isSelfMethod ? Scope.INSTANCE : Scope.STATIC;
+        Modifiability  modifiability = MODIFIABLE;
+        String         name          = callable.name();
+        int            parameSkip    = isSelfMethod ? 1 : 0;
+        List<GenParam> params        = parameters.stream().skip(parameSkip).map(param -> generateParam(param)).collect(toList());
+        String         paramNames    = recordMethodsParameterNames(isSelfMethod, isFirstParamSelf, parameters);
+        List<Generic>  generics      = callable.generics();
+        String         call          = format("%s.%s(%s)", targetClassName, name, paramNames);
+        ILines         body          = (ILines) (returnType.toString().toLowerCase().equals("void") ? line(call + ";") : line("return " + (isReturnSelf ? ("functionalj.types.Self.unwrap(" + call + ");") : (call + ";"))));
+        List<Type>     usedTypes     = Collections.<Type>emptyList();
+        List<Type>     exceptions    = callable.exceptions();
+        boolean        isVarAgrs     = callable.isVarAgrs();
+        return new GenMethod(name, returnType, accessibility, scope, modifiability, params, generics, false, isVarAgrs, body, usedTypes, exceptions);
     }
     
-    static Stream<GenMethod> inheriitMethods(SourceSpec sourceSpec, List<Callable> callables) {
-        return callables.stream().map(callable -> inheritMethod(sourceSpec, callable)).filter(Objects::nonNull);
+    private static Function<Parameter, Parameter> selfParameterReplace(SourceSpec sourceSpec) {
+        return selfParameterReplace(sourceSpec.getTargetType());
+    }
+    
+    private static Function<Parameter, Parameter> selfParameterReplace(Type targetType) {
+        return param -> selfParameterReplace(param, targetType);
+    }
+    
+    private static Parameter selfParameterReplace(Parameter param, Type targetType) {
+        return Type.SELF.equals(param.getType()) ? new Parameter(param.getName(), targetType) : param;
+    }
+    
+    private static String recordMethodsParameterNames(boolean isSelfMethod, boolean isFirstParamSelf, List<Parameter> parameters) {
+        if (!isSelfMethod)
+            return parameters.stream().map(Parameter::getName).collect(joining(", "));
+        
+        Stream<String> first = parameters.stream().limit(1).map(__ -> isFirstParamSelf ? "functionalj.types.Self.wrap(this)" : "this");
+        Stream<String> rest  = parameters.stream().skip(1).map(Parameter::getName);
+        return Stream.of(first, rest).flatMap(Function.identity()).collect(joining(", "));
     }
 }

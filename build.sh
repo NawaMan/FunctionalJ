@@ -25,7 +25,6 @@ function main() {
 }
 
 function build-quick() {
-    ensure-java-version
     ./mvnw \
         --no-transfer-progress    \
         --batch-mode              \
@@ -34,11 +33,10 @@ function build-quick() {
         -Dmaven.javadoc.skip=true \
         -Dgpg.signing.skip=true   \
         -Dsona.staging.skip=true  \
-        clean install
+        clean install  --toolchains ./toolchains.xml
 }
 
 function build-test() {
-    ensure-java-version
     ./mvnw \
         --no-transfer-progress    \
         --batch-mode              \
@@ -47,11 +45,10 @@ function build-test() {
         -Dmaven.javadoc.skip=true \
         -Dgpg.signing.skip=true   \
         -Dsona.staging.skip=true  \
-        clean compile test
+        clean compile test  --toolchains ./toolchains.xml
 }
 
 function build-full() {
-    ensure-java-version
     ./mvnw \
         --no-transfer-progress     \
         --batch-mode               \
@@ -60,7 +57,7 @@ function build-full() {
         -Dmaven.javadoc.skip=false \
         -Dgpg.signing.skip=true    \
         -Dsona.staging.skip=true   \
-        clean install
+        clean install  --toolchains ./toolchains.xml
 }
 
 function build-package() {
@@ -70,7 +67,6 @@ function build-package() {
     ensure-variable NAWAMAN_SONATYPE_PASSWORD
     ensure-variable "$(cat key-var-name)"
     
-    ensure-java-version
     set-version
     ./mvnw \
         --no-transfer-progress \
@@ -81,7 +77,7 @@ function build-package() {
         -Dmaven.javadoc.skip=false \
         -Dgpg.signing.skip=false   \
         -Dsona.staging.skip=true   \
-        clean install package gpg:sign
+        clean install package gpg:sign  --toolchains ./toolchains.xml
 }
 
 function act() {
@@ -93,7 +89,6 @@ function act() {
 
 function build-release() {
     run-prepackage-hook
-    ensure-java-version
     ensure-master
     ensure-no-files-tracked
     
@@ -124,7 +119,7 @@ function build-release() {
             -Dmaven.javadoc.skip=false \
             -Dgpg.signing.skip=false   \
             -Dsona.staging.skip=false  \
-            clean install package gpg:sign deploy
+            clean install package gpg:sign deploy  --toolchains ./toolchains.xml
         act git push
         
         act git tag -a v$VERSION -m '"Release: v$VERSION"'
@@ -189,18 +184,6 @@ function current-version() {
     
     local PROJECT_VERSION=$(cat "$VERSION_FILE")$(cat "$VERSION_SUFFIX_FILE")"$SNAPSHOT"
     echo -n "$PROJECT_VERSION"
-}
-
-function ensure-java-version() {
-    REQUIRED=$(cat .java-version)
-    CURRENT=$(javac -version 2>&1 | awk '{print $2}')
-    
-    if [[ ! "$CURRENT" == "$REQUIRED"* ]]; then
-        echo "Java Compiler version is not what required."
-        echo "  Required: $REQUIRED"
-        echo "  Current : $CURRENT"
-        exit -1
-    fi
 }
 
 function run-prepackage-hook() {

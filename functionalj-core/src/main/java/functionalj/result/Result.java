@@ -38,6 +38,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.exception.FunctionInvocationException;
 import functionalj.function.Func;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
@@ -50,7 +51,6 @@ import functionalj.function.Func6;
 import functionalj.function.Func7;
 import functionalj.function.Func8;
 import functionalj.function.Func9;
-import functionalj.function.FunctionInvocationException;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.HasPromise;
@@ -338,12 +338,21 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         return of(supplier);
     }
     
-    public static <D> Result<D> ofException(String exceptionMsg) {
-        return new Value<D>((D) null, new FunctionInvocationException(exceptionMsg));
+    public static <D> Result<D> ofException(String exceptionMessage) {
+        return new Value<D>((D) null, new FunctionInvocationException(exceptionMessage));
     }
     
     public static <D> Result<D> ofException(Exception exception) {
         return new Value<D>(null, (exception != null) ? exception : new FunctionInvocationException("Unknown reason."));
+    }
+    
+    public static <D> Result<D> ofThrowable(Throwable throwable) {
+        Exception exception
+            = (throwable != null)
+            ? new FunctionInvocationException(throwable)
+            : new FunctionInvocationException("Unknown reason.");
+        return new Value<D>(null, 
+                exception);
     }
     
     public static <D> Result<D> ofResult(Result<D> result) {

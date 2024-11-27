@@ -39,7 +39,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func10;
@@ -558,8 +557,13 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
             parent.start();
         } else {
             val isStarted = promise.start();
-            if (!isStarted && (task != null))
-                carelessly(task);
+            if (!isStarted && (task != null)) {
+                try {
+                    task.run();
+                } catch (Exception e) {
+                    // Do nothing
+                }
+            }
         }
         return new PendingAction<>(promise);
     }
@@ -591,24 +595,24 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return this;
     }
     
-    public DeferAction<DATA> onComplete(FuncUnit1<Result<DATA>> resultConsumer) {
-        promise.onComplete(Wait.forever(), resultConsumer);
+    public DeferAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer) {
+        promise.onCompleted(Wait.forever(), resultConsumer);
         return this;
     }
     
-    public DeferAction<DATA> onComplete(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
-        promise.onComplete(wait, resultConsumer);
+    public DeferAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
+        promise.onCompleted(wait, resultConsumer);
         return this;
     }
     
-    public DeferAction<DATA> onComplete(FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.onComplete(Wait.forever(), resultConsumer);
+    public DeferAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
+        val subscription = promise.onCompleted(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
     
-    public DeferAction<DATA> onComplete(Wait wait, FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.onComplete(wait, resultConsumer);
+    public DeferAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
+        val subscription = promise.onCompleted(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }

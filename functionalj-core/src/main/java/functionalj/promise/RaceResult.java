@@ -52,12 +52,12 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
     
     public static <D> RaceResult<D> Race(List<? extends StartableAction<D>> actions) {
         DeferAction<D> deferAction = DeferAction.createNew();
-        val pendingAction = deferAction.start();
+        val pendingAction  = deferAction.start();
         val startedActions = FuncList.from(actions).filterNonNull().map(StartableAction::start).toImmutableList();
         val counter = new AtomicInteger(actions.size());
         val hasNull = new AtomicBoolean(false);
         startedActions.forEach(action -> {
-            action.onComplete(result -> {
+            action.onCompleted(result -> {
                 result.ifPresent(value -> {
                     pendingAction.complete(value);
                     startedActions.forEach(PendingAction::abort);
@@ -95,5 +95,12 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
     
     public FuncList<Promise<DATA>> getEachPromises() {
         return eachPromises;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("RaceResult { promise=%s, eachPromises=%s }", 
+                promise, 
+                eachPromises);
     }
 }

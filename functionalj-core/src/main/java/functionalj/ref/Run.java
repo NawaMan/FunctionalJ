@@ -24,9 +24,10 @@
 package functionalj.ref;
 
 import java.util.List;
-import functionalj.environments.AsyncRunner;
+
 import functionalj.function.Func;
 import functionalj.list.FuncList;
+import functionalj.promise.AsyncRunner;
 import functionalj.promise.Promise;
 import lombok.val;
 
@@ -137,6 +138,14 @@ public class Run {
         }
         
         public R and(List<Substitution<?>> newSubstitutions) {
+            return with(newSubstitutions);
+        }
+        
+        public R andWith(Substitution<?>... newSubstitutions) {
+            return and(FuncList.of(newSubstitutions));
+        }
+        
+        public R andWith(List<Substitution<?>> newSubstitutions) {
             return with(newSubstitutions);
         }
     }

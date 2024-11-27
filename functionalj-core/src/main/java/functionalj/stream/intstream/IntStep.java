@@ -203,7 +203,6 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
      * Please don't call. This will blow up.
      */
     @Override
-    @SuppressWarnings("resource")
     public IntFuncList toEager() {
         throw new UnsupportedOperationException("Infinite double step cannot be made an eager list: " + intStreamPlus().limit(5).join(", ") + "...");
     }
@@ -212,7 +211,6 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
      * Please don't call. This will blow up.
      */
     @Override
-    @SuppressWarnings("resource")
     public IntFuncList toCache() {
         throw new UnsupportedOperationException("Infinite double step cannot be made a cache list: " + intStreamPlus().limit(5).join(", ") + "...");
     }

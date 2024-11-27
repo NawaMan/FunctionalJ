@@ -408,9 +408,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     //== Data ==
     
     // DATA
-    // StartableAction -> NOT START
-    // consumer        -> Pending
-    // result          -> done.
+    // StartableAction  -> NOT START
+    // consumer         -> Pending
+    // result           -> done.
     // result.cancelled -> aborted
     // result.completed -> completed
     final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers = new ConcurrentHashMap<>(INITIAL_CAPACITY);
@@ -421,25 +421,28 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     final AtomicReference<Object> dataRef = new AtomicReference<>();
     
-    final int id = ID.getAndIncrement();
+    final String name;
     
     public int hashCode() {
-        return id;
+        return name.hashCode();
     }
     
     public String toString() {
-        return "Promise#" + id;
+        return "Promise#" + name;
     }
     
     Promise(OnStart onStart) {
+        name = "" + ID.getAndIncrement();
         dataRef.set(onStart);
     }
     
     Promise(StartableAction<DATA> action) {
+        name = "" + ID.getAndIncrement();
         dataRef.set(action);
     }
     
     Promise(Promise parent) {
+        name = "" + ID.getAndIncrement();
         this.dataRef.set(parent);
     }
     
@@ -458,7 +461,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             targetPromise.makeDone(r);
         };
         val promise = new NamedPromise<DATA>(this, name);
-        onComplete(resultConsumer.elevateWith(promise));
+        onCompleted(resultConsumer.elevateWith(promise));
         return promise;
     }
     
@@ -524,6 +527,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     boolean abort() {
+//        val cancelResult = (Result<DATA>) Result.ofCancelled("Cancelled: " + this);
         val cancelResult = (Result<DATA>) Result.ofCancelled();
         return makeDone(cancelResult);
     }
@@ -614,6 +618,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     // == Customizable ==
+    
     protected void handleIllegalStatusException(Object data) {
     }
     
@@ -622,7 +627,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     private <T> Promise<T> newSubPromise(FuncUnit2<Result<DATA>, Promise<T>> resultConsumer) {
         val promise = new Promise<T>(this);
-        onComplete(resultConsumer.elevateWith(promise));
+        onCompleted(resultConsumer.elevateWith(promise));
         return promise;
     }
     
@@ -697,7 +702,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (!isDone()) {
             val latch = new CountDownLatch(1);
             synchronouseOperation(() -> {
-                onComplete(result -> {
+                onCompleted(result -> {
                     latch.countDown();
                 });
                 return isDone();
@@ -733,26 +738,26 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     public final SubscriptionRecord<DATA> subscribe(FuncUnit1<DATA> resultConsumer) {
-        return onComplete(Wait.forever(), r -> r.ifPresent(resultConsumer));
+        return onCompleted(Wait.forever(), r -> r.ifPresent(resultConsumer));
     }
     
     public final SubscriptionRecord<DATA> subscribe(Wait wait, FuncUnit1<DATA> resultConsumer) {
         return doSubscribe(false, wait, r -> r.ifPresent(resultConsumer));
     }
     
-    public final SubscriptionHolder<DATA> onComplete() {
+    public final SubscriptionHolder<DATA> onCompleted() {
         return new SubscriptionHolder<>(false, Wait.forever(), this);
     }
     
-    public final SubscriptionRecord<DATA> onComplete(FuncUnit1<Result<DATA>> resultConsumer) {
-        return onComplete(Wait.forever(), resultConsumer);
+    public final SubscriptionRecord<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer) {
+        return onCompleted(Wait.forever(), resultConsumer);
     }
     
-    public final SubscriptionHolder<DATA> onComplete(Wait wait) {
+    public final SubscriptionHolder<DATA> onCompleted(Wait wait) {
         return new SubscriptionHolder<>(false, wait, this);
     }
     
-    public final SubscriptionRecord<DATA> onComplete(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
+    public final SubscriptionRecord<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         return doSubscribe(false, wait, resultConsumer);
     }
     
@@ -773,7 +778,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     public final Promise<DATA> abortNoSubscriptionAfter(Wait wait) {
-        val subscriptionHolder = onComplete(wait);
+        val subscriptionHolder = onCompleted(wait);
         subscriptionHolder.assign(__ -> subscriptionHolder.unsubscribe());
         return this;
     }
@@ -882,7 +887,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return (Promise<TARGET>) newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val targetResult = r.map(mapper);
             targetResult.ifPresent(hasPromise -> {
-                hasPromise.getPromise().onComplete(result -> {
+                hasPromise.getPromise().onCompleted(result -> {
                     targetPromise.makeDone((Result<TARGET>) result);
                 });
             });

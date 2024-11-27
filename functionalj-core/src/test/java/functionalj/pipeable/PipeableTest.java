@@ -33,7 +33,8 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Collections;
 import org.junit.Test;
-import functionalj.function.FunctionInvocationException;
+
+import functionalj.exception.FunctionInvocationException;
 import lombok.val;
 import nullablej.nullable.Nullable;
 

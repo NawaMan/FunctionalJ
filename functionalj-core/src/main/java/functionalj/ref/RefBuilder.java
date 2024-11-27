@@ -60,6 +60,10 @@ public class RefBuilder<DATA> {
         return new RefBuilder<DATA>(dataClass, WhenAbsent.Get(defaultSupplier));
     }
     
+    public RefBuilder<DATA> whenAbsentReferTo(Ref<DATA> sourceRef) {
+        return new RefBuilder<DATA>(dataClass, WhenAbsent.Get(sourceRef::get));
+    }
+    
     public RefBuilder<DATA> whenAbsentUseTypeDefault() {
         return new RefBuilder<DATA>(dataClass, WhenAbsent.UseDefault(dataClass));
     }

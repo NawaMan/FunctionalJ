@@ -25,7 +25,7 @@ package functionalj.promise;
 
 import static functionalj.function.Func.carelessly;
 import java.util.concurrent.atomic.AtomicReference;
-import functionalj.environments.AsyncRunner;
+
 import functionalj.function.Func0;
 import functionalj.ref.ComputeBody;
 import functionalj.ref.Ref;
@@ -77,7 +77,7 @@ public class DeferActionCreator {
         
         @Override
         public void run() {
-            AsyncRunner.run(runner, new Body()).onComplete(result -> {
+            ActionAsyncRunner.run(runner, new Body()).onCompleted(result -> {
                 val promise = promiseRef.get();
                 val action = new PendingAction<D>(promise);
                 if (result.isValue())
@@ -90,7 +90,7 @@ public class DeferActionCreator {
         }
         
         class Body implements ComputeBody<Void, RuntimeException> {
-        
+            
             public void prepared() {
                 val promise = promiseRef.get();
                 if (!promise.isNotDone())
@@ -98,7 +98,7 @@ public class DeferActionCreator {
                 setupInterruptOnCancel(promise);
                 carelessly(onStart);
             }
-        
+            
             @Override
             public Void compute() throws RuntimeException {
                 val promise = promiseRef.get();
@@ -107,7 +107,7 @@ public class DeferActionCreator {
                 action.completeWith(result);
                 return null;
             }
-        
+            
             private D runSupplier() {
                 try {
                     return supplier.get();
@@ -115,7 +115,7 @@ public class DeferActionCreator {
                     doInterruptOnCancel();
                 }
             }
-        
+            
             private void setupInterruptOnCancel(Promise<D> promise) {
                 if (!interruptOnCancel)
                     return;

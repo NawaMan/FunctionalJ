@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.functionalj</groupId>
         <artifactId>functionalj</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.18-18-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     
@@ -40,7 +40,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

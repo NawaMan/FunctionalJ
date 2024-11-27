@@ -10,12 +10,16 @@ public class JavaVersionInfo {
         this.targetVersion = targetVersion;
     }
     
-    public int getSourceVersion() {
+    public int sourceVersion() {
         return sourceVersion;
     }
     
-    public int getTargetVersion() {
+    public int targetVersion() {
         return targetVersion;
+    }
+    
+    public int minVersion() {
+        return Math.min(targetVersion, sourceVersion);
     }
     
     @Override
