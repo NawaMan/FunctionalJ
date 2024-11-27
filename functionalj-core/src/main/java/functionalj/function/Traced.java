@@ -372,7 +372,47 @@ public interface Traced {
         val location = CallerId.instance.trace(Traced::extractLocationString);
         return new Annotated.Func6<I1, I2, I3, I4, I5, I6, O>(null, location, func);
     }
-    
+
+    public static <I1, I2, I3, I4, I5, I6, I7, O> Annotated.Func7<I1, I2, I3, I4, I5, I6, I7, O> Func7(String name, Func7<I1, I2, I3, I4, I5, I6, I7, O> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.Func7<I1, I2, I3, I4, I5, I6, I7, O>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, O> Annotated.Func7<I1, I2, I3, I4, I5, I6, I7, O> Func7(Func7<I1, I2, I3, I4, I5, I6, I7, O> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.Func7<I1, I2, I3, I4, I5, I6, I7, O>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Annotated.Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> Func8(String name, Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.Func8<I1, I2, I3, I4, I5, I6, I7, I8, O>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Annotated.Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> Func8(Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.Func8<I1, I2, I3, I4, I5, I6, I7, I8, O>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Annotated.Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Func9(String name, Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Annotated.Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Func9(Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Annotated.Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Func10(String name, Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Annotated.Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Func10(Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O>(null, location, func);
+    }
+
     public static <O> Annotated.FuncUnit0 funcUnit0(String name, FuncUnit0 func) {
         val location = CallerId.instance.trace(Traced::extractLocationString);
         return new Annotated.FuncUnit0(name, location, func);
@@ -452,4 +492,145 @@ public interface Traced {
         val location = CallerId.instance.trace(Traced::extractLocationString);
         return new Annotated.FuncUnit3<I1, I2, I3>(null, location, func);
     }
+
+    public static <I1, I2, I3, I4> Annotated.FuncUnit4<I1, I2, I3, I4> funcUnit4(String name, FuncUnit4<I1, I2, I3, I4> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit4<I1, I2, I3, I4>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4> Annotated.FuncUnit4<I1, I2, I3, I4> funcUnit4(FuncUnit4<I1, I2, I3, I4> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit4<I1, I2, I3, I4>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4> Annotated.FuncUnit4<I1, I2, I3, I4> FuncUnit4(String name, FuncUnit4<I1, I2, I3, I4> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit4<I1, I2, I3, I4>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4> Annotated.FuncUnit4<I1, I2, I3, I4> FuncUnit4(FuncUnit4<I1, I2, I3, I4> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit4<I1, I2, I3, I4>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5> Annotated.FuncUnit5<I1, I2, I3, I4, I5> funcUnit5(String name, FuncUnit5<I1, I2, I3, I4, I5> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit5<I1, I2, I3, I4, I5>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5> Annotated.FuncUnit5<I1, I2, I3, I4, I5> funcUnit5(FuncUnit5<I1, I2, I3, I4, I5> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit5<I1, I2, I3, I4, I5>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5> Annotated.FuncUnit5<I1, I2, I3, I4, I5> FuncUnit5(String name, FuncUnit5<I1, I2, I3, I4, I5> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit5<I1, I2, I3, I4, I5>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5> Annotated.FuncUnit5<I1, I2, I3, I4, I5> FuncUnit5(FuncUnit5<I1, I2, I3, I4, I5> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit5<I1, I2, I3, I4, I5>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6> Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6> funcUnit6(String name, FuncUnit6<I1, I2, I3, I4, I5, I6> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6> Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6> funcUnit6(FuncUnit6<I1, I2, I3, I4, I5, I6> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6> Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6> FuncUnit6(String name, FuncUnit6<I1, I2, I3, I4, I5, I6> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6> Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6> FuncUnit6(FuncUnit6<I1, I2, I3, I4, I5, I6> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit6<I1, I2, I3, I4, I5, I6>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7> Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7> funcUnit7(String name, FuncUnit7<I1, I2, I3, I4, I5, I6, I7> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7> Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7> funcUnit7(FuncUnit7<I1, I2, I3, I4, I5, I6, I7> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7> Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7> FuncUnit7(String name, FuncUnit7<I1, I2, I3, I4, I5, I6, I7> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7> Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7> FuncUnit7(FuncUnit7<I1, I2, I3, I4, I5, I6, I7> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit7<I1, I2, I3, I4, I5, I6, I7>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> funcUnit8(String name, FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> funcUnit8(FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> FuncUnit8(String name, FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> FuncUnit8(FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> funcUnit9(String name, FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> funcUnit9(FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> FuncUnit9(String name, FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> FuncUnit9(FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> funcUnit10(String name, FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> funcUnit10(FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10>(null, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> FuncUnit10(String name, FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10>(name, location, func);
+    }
+
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> FuncUnit10(FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> func) {
+        val location = CallerId.instance.trace(Traced::extractLocationString);
+        return new Annotated.FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10>(null, location, func);
+    }
+
 }
