@@ -23,8 +23,11 @@
 // ============================================================================
 package functionalj.ref;
 
-import static org.junit.Assert.*;
+import static functionalj.TestHelper.assertAsString;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
+
 import functionalj.function.Func;
 import lombok.val;
 
@@ -38,4 +41,12 @@ public class SubstituteTest {
         val supplierNew = Substitute.Using(value.butWith("Two")).arround(supplierOrg);
         assertEquals("Two", supplierNew.get().toString());
     }
+    
+    @Test
+    public void testToString() {
+        assertAsString(
+                "Value [value=Two, ref()=functionalj.ref.SubstituteTest#\\E[0-9]+\\Q:Ref<String>]", 
+                Ref.ofValue("One").butWith("Two"));
+    }
+    
 }

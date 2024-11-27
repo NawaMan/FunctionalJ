@@ -204,13 +204,42 @@ public abstract class Ref<DATA> {
     }
     
     // -- Overriding --
-    // TODO - These methods should not be for DictatedRef ... but I don't know how to gracefully takecare of this.
+    // TODO - These methods should not be in DictatedRef ... but I don't know how to gracefully takecare of this.
+    
     public final Substitution<DATA> butWith(DATA value) {
-        return new Substitution.Value<DATA>(this, allThread, value);
+        return new Substitution.Value<DATA>(
+                CallerId.instance.trace(Traced::extractLocationString) + ":" + "Substitution(" + this + ")", 
+                this, 
+                allThread, 
+                value);
+    }
+    
+    public final Substitution<DATA> butWith(String name, DATA value) {
+        return new Substitution.Value<DATA>(
+                (name != null)
+                    ? name
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Substitution(" + this + ")"), 
+                this, 
+                allThread, 
+                value);
     }
     
     public final Substitution<DATA> butFrom(Func0<DATA> supplier) {
-        return new Substitution.Supplier<DATA>(this, allThread, supplier);
+        return new Substitution.Supplier<DATA>(
+                CallerId.instance.trace(Traced::extractLocationString) + ":" + "Substitution(" + this + ")", 
+                this, 
+                allThread, 
+                supplier);
+    }
+    
+    public final Substitution<DATA> butFrom(String name, Func0<DATA> supplier) {
+        return new Substitution.Supplier<DATA>(
+                (name != null) 
+                    ? name 
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Substitution(" + this + ")"), 
+                this, 
+                allThread, 
+                supplier);
     }
     
     abstract Ref<DATA> whenAbsent(Func0<DATA> whenAbsent);
