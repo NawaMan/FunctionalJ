@@ -37,7 +37,7 @@ public class DictatedRef<DATA> extends Ref<DATA> {
     DictatedRef(String toString, Ref<DATA> ref) {
         super((toString != null)
                 ? toString
-                : CallerId.instance.trace(Traced::extractLocationString), 
+                : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(ref.dataClass) + ">"), 
               ref.getDataType(), 
               ref.getElseSupplier());
         this.ref = requireNonNull(ref);

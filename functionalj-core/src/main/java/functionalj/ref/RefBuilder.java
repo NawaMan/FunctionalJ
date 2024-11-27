@@ -44,7 +44,11 @@ public class RefBuilder<DATA> {
     }
     
     RefBuilder(String toString, Class<DATA> dataClass, Supplier<DATA> elseSupplier) {
-        this.toString     = (toString != null) ? toString : CallerId.instance.trace(Traced::extractLocationString);
+        this.toString
+                = (toString != null)
+                ? toString
+                : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">");
+        
         this.dataClass    = dataClass;
         this.elseSupplier = elseSupplier;
     }

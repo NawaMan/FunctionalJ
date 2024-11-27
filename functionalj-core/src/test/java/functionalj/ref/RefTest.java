@@ -365,10 +365,10 @@ public class RefTest {
     public void testToString() {
         // By default, `toString()` will use the location.
         assertAsString(
-                this.getClass().getCanonicalName() + "#\\E[0-9]+\\Q",
+                this.getClass().getCanonicalName() + "#\\E[0-9]+\\Q:Ref<String>",
                 Ref.of(String.class).defaultToNull().toString());
         
-        // A specfic name can be used.
+        // A specific name can be used.
         assertAsString(
                 "MyRef",
                 Ref.of("MyRef", String.class).defaultToNull().toString());

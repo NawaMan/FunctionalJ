@@ -38,8 +38,8 @@ public class RefTo<DATA> extends Ref<DATA> {
     
     RefTo(String toString, Class<DATA> dataClass) {
         super((toString != null)
-                    ? toString
-                    : CallerId.instance.trace(Traced::extractLocationString), 
+                ? toString
+                : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"), 
               dataClass, 
               null);
         hashCode = dataClass.hashCode();

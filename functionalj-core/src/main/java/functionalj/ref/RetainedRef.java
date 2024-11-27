@@ -45,13 +45,13 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
     private final Holder<Object> data;
     
     public RetainedRef(Ref<DATA> sourceRef, RetainChecker checker, boolean isLocal) {
-        this(CallerId.instance.trace(Traced::extractLocationString), sourceRef, checker, isLocal);
+        this(CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(sourceRef.dataClass) + ">", sourceRef, checker, isLocal);
     }
     
     public RetainedRef(String toString, Ref<DATA> sourceRef, RetainChecker checker, boolean isLocal) {
         super((toString != null)
                 ? toString
-                : CallerId.instance.trace(Traced::extractLocationString), 
+                : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(sourceRef.dataClass) + ">"), 
               sourceRef.getDataType());
         this.sourceRef = sourceRef;
         this.checker = checker;

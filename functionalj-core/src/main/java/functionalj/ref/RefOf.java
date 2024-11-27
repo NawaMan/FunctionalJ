@@ -38,13 +38,13 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
     private final int hashCode = random.nextInt();
     
     public RefOf(Class<DATA> dataClass) {
-        super(CallerId.instance.trace(Traced::extractLocationString), dataClass, null);
+        super(CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">", dataClass, null);
     }
     
     public RefOf(String name, Class<DATA> dataClass) {
         super((name != null)
                 ? name
-                : CallerId.instance.trace(Traced::extractLocationString),
+                : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
               dataClass,
               null);
     }
@@ -52,7 +52,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
     RefOf(String toString, Class<DATA> dataClass, Supplier<DATA> elseSupplier) {
         super((toString != null)
                 ? toString
-                : CallerId.instance.trace(Traced::extractLocationString),
+                : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
               dataClass, 
               elseSupplier);
     }
@@ -83,7 +83,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         FromResult(String toString, Class<DATA> dataClass, Result<DATA> result, Supplier<DATA> elseSupplier) {
             super((toString != null)
                     ? toString
-                    : CallerId.instance.trace(Traced::extractLocationString),
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
                   dataClass, 
                   elseSupplier);
             this.result = (result != null) ? result : Result.ofNull();
@@ -110,7 +110,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         FromSupplier(String toString, Class<DATA> dataClass, Func0<DATA> supplier, Supplier<DATA> elseSupplier) {
             super((toString != null)
                     ? toString
-                    : CallerId.instance.trace(Traced::extractLocationString),
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
                   dataClass,
                   elseSupplier);
             this.supplier = (supplier != null) ? supplier : notExist;
@@ -134,7 +134,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         FromRef(String toString, Class<DATA> dataClass, Ref<DATA> anotherRef, Supplier<DATA> elseSupplier) {
             super((toString != null)
                     ? toString
-                    : CallerId.instance.trace(Traced::extractLocationString),
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
                   dataClass, 
                   elseSupplier);
             this.anotherRef = anotherRef;

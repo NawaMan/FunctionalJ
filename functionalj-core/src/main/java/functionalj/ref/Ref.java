@@ -49,7 +49,7 @@ public abstract class Ref<DATA> {
     }
     
     public static <D> Ref<D> to(Class<D> dataClass) {
-        val location = CallerId.instance.trace(Traced::extractLocationString);
+        val location = CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">";
         return new RefTo<D>(location, dataClass);
     }
     
@@ -58,7 +58,7 @@ public abstract class Ref<DATA> {
     }
     
     public static <D> RefBuilder<D> of(Class<D> dataClass) {
-        val location = CallerId.instance.trace(Traced::extractLocationString);
+        val location = CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">";
         return new RefBuilder<D>(location, dataClass);
     }
     
@@ -72,8 +72,8 @@ public abstract class Ref<DATA> {
     
     @SuppressWarnings("unchecked")
     public static <D> Ref<D> ofValue(D value) {
-        val location  = CallerId.instance.trace(Traced::extractLocationString);
         val dataClass = (Class<D>) value.getClass();
+        val location  = CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">";
         val result    = Result.valueOf(value);
         val ref       = new RefOf.FromResult<D>(location, dataClass, result, null);
         return ref;
@@ -81,8 +81,8 @@ public abstract class Ref<DATA> {
     
     @SuppressWarnings("unchecked")
     public static <D> Ref<D> dictactedTo(D value) {
-        val location  = CallerId.instance.trace(Traced::extractLocationString);
         val dataClass = (Class<D>) value.getClass();
+        val location  = CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">";
         val result    = Result.valueOf(value);
         val ref       = new RefOf.FromResult<D>(location, dataClass, result, null);
         return ref.dictate();
