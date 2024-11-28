@@ -26,7 +26,9 @@ package functionalj.ref;
 import java.util.Random;
 import java.util.function.Supplier;
 import functionalj.function.Func0;
+import functionalj.function.Traced;
 import functionalj.result.Result;
+import functionalj.supportive.CallerId;
 import lombok.val;
 
 public abstract class RefOf<DATA> extends Ref<DATA> {
@@ -36,11 +38,23 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
     private final int hashCode = random.nextInt();
     
     public RefOf(Class<DATA> dataClass) {
-        super(dataClass, null);
+        super(CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">", dataClass, null);
     }
     
-    RefOf(Class<DATA> dataClass, Supplier<DATA> elseSupplier) {
-        super(dataClass, elseSupplier);
+    public RefOf(String name, Class<DATA> dataClass) {
+        super((name != null)
+                ? name
+                : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
+              dataClass,
+              null);
+    }
+    
+    RefOf(String toString, Class<DATA> dataClass, Supplier<DATA> elseSupplier) {
+        super((toString != null)
+                ? toString
+                : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
+              dataClass, 
+              elseSupplier);
     }
     
     public final int hashCode() {
@@ -66,8 +80,12 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         
         private final Result<DATA> result;
         
-        FromResult(Class<DATA> dataClass, Result<DATA> result, Supplier<DATA> elseSupplier) {
-            super(dataClass, elseSupplier);
+        FromResult(String toString, Class<DATA> dataClass, Result<DATA> result, Supplier<DATA> elseSupplier) {
+            super((toString != null)
+                    ? toString
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
+                  dataClass, 
+                  elseSupplier);
             this.result = (result != null) ? result : Result.ofNull();
         }
         
@@ -77,7 +95,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         }
         
         protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
-            return new RefOf.FromResult<>(getDataType(), result, whenAbsent);
+            return new RefOf.FromResult<>(toString, getDataType(), result, whenAbsent);
         }
     }
     
@@ -89,8 +107,12 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         private final Func0<DATA> supplier;
         
         @SuppressWarnings("unchecked")
-        FromSupplier(Class<DATA> dataClass, Func0<DATA> supplier, Supplier<DATA> elseSupplier) {
-            super(dataClass, elseSupplier);
+        FromSupplier(String toString, Class<DATA> dataClass, Func0<DATA> supplier, Supplier<DATA> elseSupplier) {
+            super((toString != null)
+                    ? toString
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
+                  dataClass,
+                  elseSupplier);
             this.supplier = (supplier != null) ? supplier : notExist;
         }
         
@@ -101,7 +123,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         }
         
         protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
-            return new RefOf.FromSupplier<>(getDataType(), supplier, whenAbsent);
+            return new RefOf.FromSupplier<>(toString, getDataType(), supplier, whenAbsent);
         }
     }
     
@@ -109,8 +131,12 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         
         private final Ref<DATA> anotherRef;
         
-        FromRef(Class<DATA> dataClass, Ref<DATA> anotherRef, Supplier<DATA> elseSupplier) {
-            super(dataClass, elseSupplier);
+        FromRef(String toString, Class<DATA> dataClass, Ref<DATA> anotherRef, Supplier<DATA> elseSupplier) {
+            super((toString != null)
+                    ? toString
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"),
+                  dataClass, 
+                  elseSupplier);
             this.anotherRef = anotherRef;
         }
         
@@ -121,7 +147,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         }
         
         protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
-            return new RefOf.FromRef<>(getDataType(), anotherRef, whenAbsent);
+            return new RefOf.FromRef<>(toString, getDataType(), anotherRef, whenAbsent);
         }
     }
 }

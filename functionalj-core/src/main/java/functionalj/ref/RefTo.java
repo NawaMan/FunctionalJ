@@ -25,7 +25,9 @@ package functionalj.ref;
 
 import defaultj.api.IProvideDefault;
 import functionalj.function.Func0;
+import functionalj.function.Traced;
 import functionalj.result.Result;
+import functionalj.supportive.CallerId;
 import lombok.val;
 
 public class RefTo<DATA> extends Ref<DATA> {
@@ -34,8 +36,12 @@ public class RefTo<DATA> extends Ref<DATA> {
     
     private final int hashCode;
     
-    RefTo(Class<DATA> dataClass) {
-        super(dataClass, null);
+    RefTo(String toString, Class<DATA> dataClass) {
+        super((toString != null)
+                ? toString
+                : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">"), 
+              dataClass, 
+              null);
         hashCode = dataClass.hashCode();
     }
     

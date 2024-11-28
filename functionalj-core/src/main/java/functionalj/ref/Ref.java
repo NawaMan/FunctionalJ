@@ -34,40 +34,68 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func0;
 import functionalj.function.Func1;
+import functionalj.function.Traced;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
+import functionalj.supportive.CallerId;
 import lombok.val;
 
 public abstract class Ref<DATA> {
     
     private static final ThreadLocal<Entry> refEntry = ThreadLocal.withInitial(() -> new Entry(null, null));
     
+    public static <D> Ref<D> to(String name, Class<D> dataClass) {
+        return new RefTo<D>(name, dataClass);
+    }
+    
     public static <D> Ref<D> to(Class<D> dataClass) {
-        return new RefTo<D>(dataClass);
+        val location = CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">";
+        return new RefTo<D>(location, dataClass);
+    }
+    
+    public static <D> RefBuilder<D> of(String name, Class<D> dataClass) {
+        return new RefBuilder<D>(name, dataClass);
     }
     
     public static <D> RefBuilder<D> of(Class<D> dataClass) {
-        return new RefBuilder<D>(dataClass);
+        val location = CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">";
+        return new RefBuilder<D>(location, dataClass);
     }
     
-    public static <D> Ref<D> ofValue(D value) {
-        @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
+    public static <D> Ref<D> ofValue(String name, D value) {
         val dataClass = (Class<D>) value.getClass();
-        val result = Result.valueOf(value);
-        val ref = new RefOf.FromResult<D>(dataClass, result, null);
+        val result    = Result.valueOf(value);
+        val ref       = new RefOf.FromResult<D>(name, dataClass, result, null);
         return ref;
     }
     
+    @SuppressWarnings("unchecked")
+    public static <D> Ref<D> ofValue(D value) {
+        val dataClass = (Class<D>) value.getClass();
+        val location  = CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">";
+        val result    = Result.valueOf(value);
+        val ref       = new RefOf.FromResult<D>(location, dataClass, result, null);
+        return ref;
+    }
+    
+    @SuppressWarnings("unchecked")
     public static <D> Ref<D> dictactedTo(D value) {
-        val ref = ofValue(value);
+        val dataClass = (Class<D>) value.getClass();
+        val location  = CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">";
+        val result    = Result.valueOf(value);
+        val ref       = new RefOf.FromResult<D>(location, dataClass, result, null);
         return ref.dictate();
     }
+    
+    final String toString;
     
     final Class<DATA> dataClass;
     
     final Supplier<DATA> whenAbsentSupplier;
     
-    Ref(Class<DATA> dataClass, Supplier<DATA> whenAbsentSupplier) {
+    Ref(String toString, Class<DATA> dataClass, Supplier<DATA> whenAbsentSupplier) {
+        this.toString  = toString;
         this.dataClass = requireNonNull(dataClass);
         this.whenAbsentSupplier = whenAbsentSupplier;
     }
@@ -176,13 +204,42 @@ public abstract class Ref<DATA> {
     }
     
     // -- Overriding --
-    // TODO - These methods should not be for DictatedRef ... but I don't know how to gracefully takecare of this.
+    // TODO - These methods should not be in DictatedRef ... but I don't know how to gracefully takecare of this.
+    
     public final Substitution<DATA> butWith(DATA value) {
-        return new Substitution.Value<DATA>(this, allThread, value);
+        return new Substitution.Value<DATA>(
+                CallerId.instance.trace(Traced::extractLocationString) + ":" + "Substitution(" + this + ")", 
+                this, 
+                allThread, 
+                value);
+    }
+    
+    public final Substitution<DATA> butWith(String name, DATA value) {
+        return new Substitution.Value<DATA>(
+                (name != null)
+                    ? name
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Substitution(" + this + ")"), 
+                this, 
+                allThread, 
+                value);
     }
     
     public final Substitution<DATA> butFrom(Func0<DATA> supplier) {
-        return new Substitution.Supplier<DATA>(this, allThread, supplier);
+        return new Substitution.Supplier<DATA>(
+                CallerId.instance.trace(Traced::extractLocationString) + ":" + "Substitution(" + this + ")", 
+                this, 
+                allThread, 
+                supplier);
+    }
+    
+    public final Substitution<DATA> butFrom(String name, Func0<DATA> supplier) {
+        return new Substitution.Supplier<DATA>(
+                (name != null) 
+                    ? name 
+                    : (CallerId.instance.trace(Traced::extractLocationString) + ":" + "Substitution(" + this + ")"), 
+                this, 
+                allThread, 
+                supplier);
     }
     
     abstract Ref<DATA> whenAbsent(Func0<DATA> whenAbsent);
@@ -213,11 +270,16 @@ public abstract class Ref<DATA> {
     }
     
     public DictatedRef<DATA> dictate() {
-        return new DictatedRef<DATA>(this);
+        return new DictatedRef<DATA>(toString, this);
     }
     
     public RetainedRef.Builder<DATA> retained() {
         return new RetainedRef.Builder<DATA>(this, true);
+    }
+    
+    @Override
+    public String toString() {
+        return toString;
     }
     
     // == Overriability ==
