@@ -4412,6 +4412,122 @@ public interface Apply {
     }
     
     /**
+     * Apply the function safely (return {@code Result<O>}).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @return        the output as a result.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, O> Result<O> $$(Func7<I1, I2, I3, I4, I5, I6, I7, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7) {
+        return applySafely(func, input1, input2, input3, input4, input5, input6, input7);
+    }
+    
+    /**
+     * Apply the function safely (return {@code Result<O>}).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @return        the output as a result.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Result<O> $$(Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8) {
+        return applySafely(func, input1, input2, input3, input4, input5, input6, input7, input8);
+    }
+    
+    /**
+     * Apply the function safely (return {@code Result<O>}).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <I9>   the input 9 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @param input9  the input 9 to be applied to.
+     * @return        the output as a result.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Result<O> $$(Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9) {
+        return applySafely(func, input1, input2, input3, input4, input5, input6, input7, input8, input9);
+    }
+    
+    /**
+     * Apply the function safely (return {@code Result<O>}).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <I9>   the input 9 data type.
+     * @param <I10>  the input 10 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @param input9  the input 9 to be applied to.
+     * @param input10 the input 10 to be applied to.
+     * @return        the output as a result.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Result<O> $$(Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9, I10 input10) {
+        return applySafely(func, input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+    }
+    
+    /**
      * Apply the function safely (return {@code Result&lt;O&gt;}).
      * 
      * @param <O>  the output data type.
@@ -4558,6 +4674,122 @@ public interface Apply {
         return func.applySafely(input1, input2, input3, input4, input5, input6);
     }
     
+    /**
+     * Apply the function safely (return {@code Result<O>}).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @return        the output as a result.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, O> Result<O> applySafely(Func7<I1, I2, I3, I4, I5, I6, I7, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7) {
+        return func.applySafely(input1, input2, input3, input4, input5, input6, input7);
+    }
+    
+    /**
+     * Apply the function safely (return {@code Result<O>}).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @return        the output as a result.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> Result<O> applySafely(Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8) {
+        return func.applySafely(input1, input2, input3, input4, input5, input6, input7, input8);
+    }
+    
+    /**
+     * Apply the function safely (return {@code Result<O>}).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <I9>   the input 9 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @param input9  the input 9 to be applied to.
+     * @return        the output as a result.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> Result<O> applySafely(Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9) {
+        return func.applySafely(input1, input2, input3, input4, input5, input6, input7, input8, input9);
+    }
+    
+    /**
+     * Apply the function safely (return {@code Result<O>}).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <I9>   the input 9 data type.
+     * @param <I10>  the input 10 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @param input9  the input 9 to be applied to.
+     * @param input10 the input 10 to be applied to.
+     * @return        the output as a result.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> Result<O> applySafely(Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9, I10 input10) {
+        return func.applySafely(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+    }
+    
     // == $$$ ==
     /**
      * Apply the function safely (might throw exception).
@@ -4575,7 +4807,7 @@ public interface Apply {
     }
     
     /**
-     * Apply the function safely (might throw exception).
+     * Apply the function unsafely (might throw exception).
      * 
      * @param <I>  the input data type.
      * @param <O>  the output data type.
@@ -4592,7 +4824,7 @@ public interface Apply {
     }
     
     /**
-     * Apply the function safely (might throw exception).
+     * Apply the function unsafely (might throw exception).
      * 
      * @param <I1>   the input 1 data type.
      * @param <I2>   the input 2 data type.
@@ -4611,7 +4843,7 @@ public interface Apply {
     }
     
     /**
-     * Apply the function safely (might throw exception).
+     * Apply the function unsafely (might throw exception).
      * 
      * @param <I1>   the input 1 data type.
      * @param <I2>   the input 2 data type.
@@ -4630,7 +4862,7 @@ public interface Apply {
     }
     
     /**
-     * Apply the function safely (might throw exception).
+     * Apply the function unsafely (might throw exception).
      * 
      * @param <I1>   the input 1 data type.
      * @param <I2>   the input 2 data type.
@@ -4651,7 +4883,7 @@ public interface Apply {
     }
     
     /**
-     * Apply the function safely (might throw exception).
+     * Apply the function unsafely (might throw exception).
      * 
      * @param <I1>   the input 1 data type.
      * @param <I2>   the input 2 data type.
@@ -4674,7 +4906,7 @@ public interface Apply {
     }
     
     /**
-     * Apply the function safely (might throw exception).
+     * Apply the function unsafely (might throw exception).
      * 
      * @param <I1>   the input 1 data type.
      * @param <I2>   the input 2 data type.
@@ -4696,6 +4928,358 @@ public interface Apply {
      */
     public static <I1, I2, I3, I4, I5, I6, O> O $$$(Func6<I1, I2, I3, I4, I5, I6, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) throws Exception {
         return func.applyUnsafe(input1, input2, input3, input4, input5, input6);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @return        the output as a result.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, O> O $$$(Func7<I1, I2, I3, I4, I5, I6, I7, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7) throws Exception {
+        return func.applyUnsafe(input1, input2, input3, input4, input5, input6, input7);
+    }
+
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @return        the output as a result.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, O> O $$$(Func8<I1, I2, I3, I4, I5, I6, I7, I8, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8) throws Exception {
+        return func.applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <I9>   the input 9 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @param input9  the input 9 to be applied to.
+     * @return        the output as a result.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, O> O $$$(Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9) throws Exception {
+        return func.applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <I9>   the input 9 data type.
+     * @param <I10>  the input 10 data type.
+     * @param <O>    the output data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @param input9  the input 9 to be applied to.
+     * @param input10 the input 10 to be applied to.
+     * @return        the output as a result.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> O $$$(Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, O> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9, I10 input10) throws Exception {
+        return func.applyUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param func  the function to execute.
+     * @throws Exception  the exception from the function.
+     */
+    public static void $$$(FuncUnit0 func) throws Exception {
+        func.runUnsafe();
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1> void $$$(FuncUnit1<I1> func, I1 input1) throws Exception {
+        func.acceptUnsafe(input1);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2> void $$$(FuncUnit2<I1, I2> func, I1 input1, I2 input2) throws Exception {
+        func.acceptUnsafe(input1, input2);
+    }
+    
+    // Similar methods for FuncUnit3 to FuncUnit10
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3> void $$$(FuncUnit3<I1, I2, I3> func, I1 input1, I2 input2, I3 input3) throws Exception {
+        func.acceptUnsafe(input1, input2, input3);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4> void $$$(FuncUnit4<I1, I2, I3, I4> func, I1 input1, I2 input2, I3 input3, I4 input4) throws Exception {
+        func.acceptUnsafe(input1, input2, input3, input4);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5> void $$$(FuncUnit5<I1, I2, I3, I4, I5> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5) throws Exception {
+        func.acceptUnsafe(input1, input2, input3, input4, input5);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5, I6> void $$$(FuncUnit6<I1, I2, I3, I4, I5, I6> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6) throws Exception {
+        func.acceptUnsafe(input1, input2, input3, input4, input5, input6);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7> void $$$(FuncUnit7<I1, I2, I3, I4, I5, I6, I7> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7) throws Exception {
+        func.acceptUnsafe(input1, input2, input3, input4, input5, input6, input7);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> void $$$(FuncUnit8<I1, I2, I3, I4, I5, I6, I7, I8> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8) throws Exception {
+        func.acceptUnsafe(input1, input2, input3, input4, input5, input6, input7, input8);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <I9>   the input 9 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @param input9  the input 9 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> void $$$(FuncUnit9<I1, I2, I3, I4, I5, I6, I7, I8, I9> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9) throws Exception {
+        func.acceptUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9);
+    }
+    
+    /**
+     * Apply the function unsafely (might throw exception).
+     *
+     * @param <I1>   the input 1 data type.
+     * @param <I2>   the input 2 data type.
+     * @param <I3>   the input 3 data type.
+     * @param <I4>   the input 4 data type.
+     * @param <I5>   the input 5 data type.
+     * @param <I6>   the input 6 data type.
+     * @param <I7>   the input 7 data type.
+     * @param <I8>   the input 8 data type.
+     * @param <I9>   the input 9 data type.
+     * @param <I10>  the input 10 data type.
+     *
+     * @param func    the function.
+     * @param input1  the input 1 to be applied to.
+     * @param input2  the input 2 to be applied to.
+     * @param input3  the input 3 to be applied to.
+     * @param input4  the input 4 to be applied to.
+     * @param input5  the input 5 to be applied to.
+     * @param input6  the input 6 to be applied to.
+     * @param input7  the input 7 to be applied to.
+     * @param input8  the input 8 to be applied to.
+     * @param input9  the input 9 to be applied to.
+     * @param input10 the input 10 to be applied to.
+     * @throws Exception  the exception from the function.
+     */
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> void $$$(FuncUnit10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> func, I1 input1, I2 input2, I3 input3, I4 input4, I5 input5, I6 input6, I7 input7, I8 input8, I9 input9, I10 input10) throws Exception {
+        func.acceptUnsafe(input1, input2, input3, input4, input5, input6, input7, input8, input9, input10);
     }
     
     // == Access ==
