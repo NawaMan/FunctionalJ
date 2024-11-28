@@ -303,9 +303,9 @@ public interface FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> {
      * @param input4  the forth {@code Func0} providing {@code INPUT4}.
      * @param input5  the fifth {@code Func0} providing {@code INPUT5}.
      * @param input6  the sixth {@code Func0} providing {@code INPUT6}.
-     * @return        a {@code Func0<OUTPUT>} with the result of <code>null</code>.
+     * @return        a {@code FuncUnit0} with the result of <code>null</code>.
      */
-    public default <OUTPUT> Func0<OUTPUT> acceptTo(
+    public default FuncUnit0 acceptTo(
             Func0<INPUT1>  input1,
             Func0<INPUT2>  input2,
             Func0<INPUT3>  input3,
@@ -320,7 +320,6 @@ public interface FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> {
             val value5 = input5.get();
             val value6 = input6.get();
             accept(value1, value2, value3, value4, value5, value6);
-            return null;
         };
     }
     
@@ -336,7 +335,7 @@ public interface FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> {
      * @param input6  function to extract the sixth input value from the source
      * @return a function that takes a single source parameter and returns an output by applying this function to the extracted input values
      */
-    public default <SOURCE, OUTPUT> Func1<SOURCE,OUTPUT> acceptTo(
+    public default <SOURCE> FuncUnit1<SOURCE> acceptTo(
             Func1<SOURCE,INPUT1> input1,
             Func1<SOURCE,INPUT2> input2,
             Func1<SOURCE,INPUT3> input3,
@@ -351,7 +350,6 @@ public interface FuncUnit6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> {
             val value5 = input5.applyUnsafe(source);
             val value6 = input6.applyUnsafe(source);
             accept(value1, value2, value3, value4, value5, value6);
-            return null;
         };
     }
     

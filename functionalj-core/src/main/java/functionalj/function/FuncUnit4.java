@@ -288,7 +288,7 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
      * @param input4  function to extract the forth input value from the source
      * @return a function that takes a single source parameter and returns an output by applying this function to the extracted input values
      */
-    public default <SOURCE, OUTPUT> Func1<SOURCE,OUTPUT> acceptTo(
+    public default <SOURCE> FuncUnit1<SOURCE> acceptTo(
             Func1<SOURCE,INPUT1> input1,
             Func1<SOURCE,INPUT2> input2,
             Func1<SOURCE,INPUT3> input3,
@@ -299,7 +299,6 @@ public interface FuncUnit4<INPUT1, INPUT2, INPUT3, INPUT4> {
             val value3 = input3.applyUnsafe(source);
             val value4 = input4.applyUnsafe(source);
             accept(value1, value2, value3, value4);
-            return null;
         };
     }
     

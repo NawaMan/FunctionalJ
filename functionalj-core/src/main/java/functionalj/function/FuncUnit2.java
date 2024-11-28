@@ -234,14 +234,13 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
      * @param input2  function to extract the second input value from the source
      * @return a function that takes a single source parameter and returns an output by applying this function to the extracted input values
      */
-    public default <SOURCE, OUTPUT> Func1<SOURCE,OUTPUT> acceptTo(
+    public default <SOURCE> FuncUnit1<SOURCE> acceptTo(
             Func1<SOURCE,INPUT1> input1,
             Func1<SOURCE,INPUT2> input2) {
         return source -> {
             val value1 = input1.applyUnsafe(source);
             val value2 = input2.applyUnsafe(source);
             accept(value1, value2);
-            return null;
         };
     }
     

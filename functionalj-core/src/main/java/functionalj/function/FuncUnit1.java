@@ -202,11 +202,10 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
      * @param input  function to extract the first input value from the source
      * @return       a function that takes a single source parameter and returns an output by applying this function to the extracted input values
      */
-    public default <SOURCE, OUTPUT> Func1<SOURCE,OUTPUT> acceptTo(Func1<SOURCE, INPUT> input) {
+    public default <SOURCE> FuncUnit1<SOURCE> acceptTo(Func1<SOURCE, INPUT> input) {
         return source -> {
             val value = input.applyUnsafe(source);
             accept(value);
-            return null;
         };
     }
     

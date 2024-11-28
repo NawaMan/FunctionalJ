@@ -354,7 +354,7 @@ public interface FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
     }
     
     /**
-     * Accept the given input values that were returned from {@link Func0}.
+     * Accept the given input values that were returned from {@link FuncUnit0}.
      * 
      * @param input1  the first {@code Func0} providing {@code INPUT1}.
      * @param input2  the second {@code Func0} providing {@code INPUT2}.
@@ -365,9 +365,9 @@ public interface FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * @param input7  the seventh {@code Func0} providing {@code INPUT7}.
      * @param input8  the eighth {@code Func0} providing {@code INPUT8}.
      * @param input9  the ninth {@code Func0} providing {@code INPUT9}.
-     * @return        a {@code Func0<OUTPUT>} with the result of <code>null</code>.
+     * @return        a {@code FuncUnit0} with the result of <code>null</code>.
      */
-    public default <OUTPUT> Func0<OUTPUT> acceptTo(
+    public default FuncUnit0 acceptTo(
             Func0<INPUT1>  input1,
             Func0<INPUT2>  input2,
             Func0<INPUT3>  input3,
@@ -388,7 +388,6 @@ public interface FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
             val value8 = input8.get();
             val value9 = input9.get();
             accept(value1, value2, value3, value4, value5, value6, value7, value8, value9);
-            return null;
         };
     }
     
@@ -407,7 +406,7 @@ public interface FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
      * @param input9  function to extract the ninth input value from the source
      * @return a function that takes a single source parameter and returns an output by applying this function to the extracted input values
      */
-    public default <SOURCE, OUTPUT> Func1<SOURCE,OUTPUT> acceptTo(
+    public default <SOURCE> FuncUnit1<SOURCE> acceptTo(
             Func1<SOURCE,INPUT1> input1,
             Func1<SOURCE,INPUT2> input2,
             Func1<SOURCE,INPUT3> input3,
@@ -428,7 +427,6 @@ public interface FuncUnit9<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, INPUT
             val value8 = input8.applyUnsafe(source);
             val value9 = input9.applyUnsafe(source);
             accept(value1, value2, value3, value4, value5, value6, value7, value8, value9);
-            return null;
         };
     }
     
