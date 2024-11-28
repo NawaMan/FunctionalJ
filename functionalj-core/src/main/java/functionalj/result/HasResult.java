@@ -30,7 +30,10 @@ public interface HasResult<DATA> extends HasPromise<DATA> {
     
     public Result<DATA> getResult();
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public default Promise<DATA> getPromise() {
-        return Promise.ofResult(this);
+        return (this instanceof Promise) 
+                ? (Promise)this 
+                : Promise.ofResult(this);
     }
 }

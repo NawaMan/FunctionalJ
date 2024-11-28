@@ -79,6 +79,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public static final Ref<Long> waitTimeout = Ref.ofValue(-1L);
     
     public static <D> Promise<D> ofResult(HasResult<D> asResult) {
+        if (asResult instanceof Promise)
+            return ((Promise<D>) asResult);
         if (asResult instanceof HasPromise)
             return ((HasPromise<D>) asResult).getPromise();
         return DeferActionBuilder.from(() -> asResult.getResult().value()).build().getPromise();
@@ -688,7 +690,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return subscription;
     }
     
-    public final DATA get() throws Exception {
+    public final DATA get() {
         return getResult().get();
     }
     

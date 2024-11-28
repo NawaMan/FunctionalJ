@@ -71,25 +71,23 @@ import nullablej.nullable.Nullable;
 public interface Apply {
     
     /**
-     * Executes a given {@link Func0} function and returns its result. 
+     * Retrieves the value held by a {@link HasPromise}.
      *
-     * @param <O>   the type of the output produced by the func
-     * @param func  the Func0 function to be executed
-     * @return      the result of executing the Func0 function
+     * @param <O>         the type of the value.
+     * @param hasPromise  the value that has a promise containing the value
+     * @return            the value
      */
-    public static <O> O apply(Func0<O> func) {
-        return Func0.from(func).get();
-    }
-    
-    /**
-     * Retrieves the value held by a {@link Ref} reference using a functional approach.
-     *
-     * @param <O>  the type of the value held in the reference
-     * @param ref  the Ref reference containing the value
-     * @return     the value held in the Ref reference
-     */
-    public static <O> O apply(Ref<O> ref) {
-        return $(ref::value);
+    public static <O> O apply(HasPromise<O> hasPromise) {
+        if (hasPromise instanceof Func0)
+            return ((Func0<O>)hasPromise).get();
+        if (hasPromise instanceof Ref)
+            return ((Ref<O>)hasPromise).get();
+        if (hasPromise instanceof Result)
+            return ((Result<O>)hasPromise).get();
+        if (hasPromise instanceof Promise)
+            return ((Promise<O>)hasPromise).get();
+        
+        return hasPromise.getResult().get();
     }
     
     //-- Func1 --
@@ -2176,25 +2174,23 @@ public interface Apply {
     // == $ ==
     
     /**
-     * Executes a given {@link Func0} function and returns its result. 
+     * Retrieves the value held by a {@link HasPromise}.
      *
-     * @param <O>   the type of the output produced by the func
-     * @param func  the Func0 function to be executed
-     * @return      the result of executing the Func0 function
+     * @param <O>         the type of the value.
+     * @param hasPromise  the value that has a promise containing the value
+     * @return            the value
      */
-    public static <O> O $(Func0<O> func) {
-        return Func0.from(func).get();
-    }
-    
-    /**
-     * Retrieves the value held by a {@link Ref} reference using a functional approach.
-     *
-     * @param <O>  the type of the value held in the reference
-     * @param ref  the Ref reference containing the value
-     * @return     the value held in the Ref reference
-     */
-    public static <O> O $(Ref<O> ref) {
-        return $(ref::value);
+    public static <O> O $(HasPromise<O> hasPromise) {
+        if (hasPromise instanceof Func0)
+            return ((Func0<O>)hasPromise).get();
+        if (hasPromise instanceof Ref)
+            return ((Ref<O>)hasPromise).get();
+        if (hasPromise instanceof Result)
+            return ((Result<O>)hasPromise).get();
+        if (hasPromise instanceof Promise)
+            return ((Promise<O>)hasPromise).get();
+        
+        return hasPromise.getResult().get();
     }
     
     //-- Func1 --

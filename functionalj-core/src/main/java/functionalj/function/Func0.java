@@ -34,6 +34,7 @@ import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
 import functionalj.ref.ComputeBody;
+import functionalj.result.AsResult;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -45,7 +46,7 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, RuntimeException> {
+public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, RuntimeException>, AsResult<OUTPUT> {
     
     public static <T> Func0<T> supplyNull() {
         return () -> null;
@@ -100,6 +101,14 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     
     public default Result<OUTPUT> getSafely() {
         return Result.of(this);
+    }
+    
+    public default Result<OUTPUT> asResult() {
+        return Result.of(this);
+    }
+    
+    public default Promise<OUTPUT> getPromise() {
+        return getResult().getPromise();
     }
     
     public default Func0<OUTPUT> memoize() {

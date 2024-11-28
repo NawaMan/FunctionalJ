@@ -36,11 +36,13 @@ import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Traced;
 import functionalj.list.FuncList;
+import functionalj.promise.Promise;
+import functionalj.result.AsResult;
 import functionalj.result.Result;
 import functionalj.supportive.CallerId;
 import lombok.val;
 
-public abstract class Ref<DATA> {
+public abstract class Ref<DATA> implements AsResult<DATA> {
     
     private static final ThreadLocal<Entry> refEntry = ThreadLocal.withInitial(() -> new Entry(null, null));
     
@@ -159,6 +161,11 @@ public abstract class Ref<DATA> {
     
     public final Result<DATA> asResult() {
         return getResult();
+    }
+    
+    
+    public final Promise<DATA> getPromise() {
+        return getResult().getPromise();
     }
     
     public final Optional<DATA> asOptional() {
