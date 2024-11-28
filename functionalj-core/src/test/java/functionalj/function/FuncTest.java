@@ -34,6 +34,7 @@ import org.junit.Test;
 
 import functionalj.exception.FunctionInvocationException;
 import functionalj.promise.Promise;
+import functionalj.ref.Ref;
 import lombok.val;
 
 public class FuncTest {
@@ -146,6 +147,14 @@ public class FuncTest {
         assertEquals(Integer.MIN_VALUE, safeDivide4.apply(-1, 0).intValue());
         assertEquals(Integer.MAX_VALUE, safeDivide5.apply(1, 0).intValue());
         assertEquals(Integer.MIN_VALUE, safeDivide5.apply(-1, 0).intValue());
+    }
+    
+    @Test
+    public void testHasPromise() {
+        val func = f((Integer a, Integer b) -> a + b);
+        val ref  = Ref.of(Integer.class).defaultFrom(() -> 42);
+        val f0   = f(() -> 15);
+        assertEquals(57, $($(func, ref, f0)).intValue());
     }
     
 }
