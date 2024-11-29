@@ -251,6 +251,7 @@ public abstract class Ref<DATA> implements AsResult<DATA> {
     
     abstract Ref<DATA> whenAbsent(Func0<DATA> whenAbsent);
     
+    // TODO - This does not work ... need to fix.
     // These else method has no effect once the Ref become DictatedRef
     // They also has no effect for RefTo.
     public Ref<DATA> whenAbsentUse(DATA defaultValue) {

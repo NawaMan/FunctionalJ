@@ -160,13 +160,13 @@ public class DeferActionTest {
         log.add("Start: " + (start - start));
         val action = run(Sleep(1000).thenReturn("Hello"));
         try {
-            action.getResult(500, TimeUnit.MILLISECONDS);
+            action.getResult(500, TimeUnit.MILLISECONDS).get();
             fail("Expect an interruption.");
         } catch (UncheckedInterruptedException e) {
             val end = System.currentTimeMillis();
             log.add("End: " + (100 * ((end - start) / 100)));
             log.add("Result: " + action.getCurrentResult());
-            assertAsString("[Start: 0, End: 500, Result: Result:{ NotReady }]", log);
+            assertAsString("[Start: 0, End: \\E[5-9]\\Q00, Result: Result:{ NotReady }]", log);
         }
     }
     

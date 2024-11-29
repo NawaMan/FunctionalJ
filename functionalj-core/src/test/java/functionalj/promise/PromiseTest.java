@@ -25,11 +25,13 @@ package functionalj.promise;
 
 import static functionalj.TestHelper.assertAsString;
 import static functionalj.functions.TimeFuncs.Sleep;
+import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
@@ -443,4 +445,40 @@ public class PromiseTest {
         assertAsString(namedPromise.toString(), name);
         promiseControl.complete("DONE!");
     }
+    
+    @Test
+    public void testTimeout_normal() {
+        val start  = System.currentTimeMillis();
+        val action = Sleep(1000).thenReturn(42).defer();
+        val value  = action.start().getResult().get();
+        val end    = System.currentTimeMillis();
+        val period = (end - start) / 1000;
+        assertAsString("42", value);
+        assertAsString("1",  period);
+    }
+    
+    @Test
+    public void testTimeout_timeout() {
+        val start  = System.currentTimeMillis();
+        val action = Sleep(10000).thenReturn(42).defer();
+        val value  = action.start().getResult(50, TimeUnit.MICROSECONDS);
+        val end    = System.currentTimeMillis();
+        val period = (end - start);
+        assertAsString("Result:{ Exception: java.lang.InterruptedException }", value);
+        assertTrue(period< 1000);
+    }
+    
+    @Test
+    public void testTimeout_timeout_ref() {
+        val start  = System.currentTimeMillis();
+        val action = Sleep(1000).thenReturn(42).defer();
+        val value  = With(Promise.waitTimeout.butWith(50L)).run(() -> {
+            return action.start().getResult();
+        });
+        val end    = System.currentTimeMillis();
+        val period = (end - start) / 50;
+        assertAsString("Result:{ Exception: java.lang.InterruptedException }", value);
+        assertAsString("1",  period);
+    }
+    
 }

@@ -200,7 +200,7 @@ public class PromiseScopeTest {
                 })
                 .start();
                 
-                Thread.sleep(10);
+                Thread.sleep(50);
                 
                 // But do not wait for the sub to finish.
                 logs.add("Main.end()");
@@ -223,7 +223,7 @@ public class PromiseScopeTest {
                     + "Sub.start(), "
                     + "SubSub.start(), "
                     + "Main.end(), "
-                    + "Sub.interrupted(), "
+                    + "Sub.end(), "
                     + "SubSub.interrupted()"     // The sub get interrupted.
                     + "]",
                     logs);

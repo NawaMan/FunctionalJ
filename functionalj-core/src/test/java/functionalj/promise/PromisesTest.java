@@ -171,4 +171,5 @@ public class PromisesTest {
         assertAsString("Result:{ Cancelled: No more listener. }", promise5.getResult());
         assertAsString("Result:{ Cancelled: No more listener. }", promise6.getResult());
     }
+    
 }

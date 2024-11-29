@@ -76,6 +76,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     private static final int INITIAL_CAPACITY = 2;
     
+    /** Default wait time in millisecond. -1L is infinity. */
     public static final Ref<Long> waitTimeout = Ref.ofValue(-1L);
     
     public static <D> Promise<D> ofResult(HasResult<D> asResult) {
@@ -695,35 +696,37 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     public final Result<DATA> getResult() {
-        long timeout = waitTimeout.whenAbsentUse(-1L).get().longValue();
+        long timeout = waitTimeout.orElse(-1L);
+        System.out.println(Promise.waitTimeout.get());
+        System.out.println(Promise.waitTimeout.get());
         return getResult(timeout, TimeUnit.MILLISECONDS);
     }
     
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
-        start();
-        if (!isDone()) {
-            val latch = new CountDownLatch(1);
-            synchronouseOperation(() -> {
-                onCompleted(result -> {
-                    latch.countDown();
-                });
-                return isDone();
-            });
+        try {
+            start();
             if (!isDone()) {
-                try {
+                val latch = new CountDownLatch(1);
+                synchronouseOperation(() -> {
+                    onCompleted(result -> {
+                        latch.countDown();
+                    });
+                    return isDone();
+                });
+                if (!isDone()) {
                     if ((timeout < 0) || (unit == null))
                         latch.await();
                     else
                         latch.await(timeout, unit);
-                } catch (InterruptedException exception) {
-                    throw new UncheckedInterruptedException(exception);
                 }
             }
+            if (!isDone())
+                throw new InterruptedException();
+            val currentResult = getCurrentResult();
+            return currentResult;
+        } catch (Exception exception) {
+            return Result.ofException(exception);
         }
-        if (!isDone())
-            throw new UncheckedInterruptedException(new InterruptedException());
-        val currentResult = getCurrentResult();
-        return currentResult;
     }
     
     public final Result<DATA> getCurrentResult() {

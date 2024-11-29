@@ -55,6 +55,7 @@ import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
+import functionalj.promise.UncheckedInterruptedException;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.validator.SimpleValidator;
@@ -75,6 +76,8 @@ public abstract class Result<DATA> implements AsResult<DATA>, Pipeable<Result<DA
         return e -> {
             if (e instanceof RuntimeException)
                 throw e;
+            if (e instanceof InterruptedException)
+                throw new UncheckedInterruptedException((InterruptedException)e);
             throw new RuntimeException(e);
         };
     }
