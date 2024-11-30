@@ -24,6 +24,7 @@
 package functionalj.promise;
 
 import static functionalj.function.Func.carelessly;
+
 import java.util.function.Predicate;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
@@ -46,6 +47,8 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
     }
     
     // == Subscription ==
+    
+    @Override
     public PendingAction<DATA> use(FuncUnit1<Promise<DATA>> consumer) {
         carelessly(() -> {
             consumer.accept(promise);
@@ -58,49 +61,58 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
         return this;
     }
     
+    @Override
     public PendingAction<DATA> subscribe(FuncUnit1<DATA> resultConsumer) {
         promise.subscribe(Wait.forever(), resultConsumer);
         return this;
     }
     
+    @Override
     public final PendingAction<DATA> subscribe(Wait wait, FuncUnit1<DATA> resultConsumer) {
         promise.subscribe(wait, resultConsumer);
         return this;
     }
     
+    @Override
     public PendingAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer) {
         promise.onCompleted(Wait.forever(), resultConsumer);
         return this;
     }
     
+    @Override
     public PendingAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         promise.onCompleted(wait, resultConsumer);
         return this;
     }
     
+    @Override
     public PendingAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.onCompleted(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
     
+    @Override
     public PendingAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.onCompleted(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
     
+    @Override
     public PendingAction<DATA> eavesdrop(FuncUnit1<Result<DATA>> resultConsumer) {
         promise.eavesdrop(resultConsumer);
         return this;
     }
     
+    @Override
     public PendingAction<DATA> eavesdrop(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         promise.eavesdrop(wait, resultConsumer);
         return this;
     }
     
     // == Functional ==
+    
     public final PendingAction<DATA> filter(Predicate<? super DATA> predicate) {
         val newPromise = promise.filter(predicate);
         return new PendingAction<DATA>(newPromise);
@@ -121,5 +133,7 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
         val newPromise = promise.flatMap(mapper);
         return new PendingAction<TARGET>((Promise<TARGET>) newPromise);
     }
+    
     // TODO - Other F-M-FM methods.
+    
 }

@@ -824,13 +824,13 @@ public class DeferActionTest {
         val counter2 = new AtomicInteger(0);
         
         val action1 = DeferAction.from(() -> {
-            String s = "" + (char) ('A' + counter1.getAndIncrement());
+            val s = "" + (char) ('A' + counter1.getAndIncrement());
             logs.add(s);
             return s;
         });
         val action2 = DeferAction.from(() -> {
-            Thread.sleep(10);
-            String s = "" + (char) ('a' + counter2.getAndIncrement());
+            sleep(10);
+            val s = "" + (char) ('a' + counter2.getAndIncrement());
             logs.add(s);
             return s;
         });
@@ -840,7 +840,7 @@ public class DeferActionTest {
                         action1.getPromise(),
                         action2.getPromise());
         
-        Thread.sleep(10);
+        sleep(10);
         logs.add("Before getting result!");
         logs.add("Result: " + result.getResult());
         

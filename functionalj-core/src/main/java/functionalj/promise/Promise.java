@@ -582,7 +582,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                     if (!promise.dataRef.compareAndSet(data, result))
                         return false;
                 } else {
-                    if (!promise.dataRef.compareAndSet(promise.consumers, result))
+                    val changeSuccess = promise.dataRef.compareAndSet(promise.consumers, result);
+                    if (!changeSuccess)
                         return false;
                 }
                 return null;
@@ -635,6 +636,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     // == Basic functionality ==
+    
     public final boolean isStarted() {
         return !PromiseStatus.NOT_STARTED.equals(getStatus());
     }
@@ -697,8 +699,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     public final Result<DATA> getResult() {
         long timeout = waitTimeout.orElse(-1L);
-        System.out.println(Promise.waitTimeout.get());
-        System.out.println(Promise.waitTimeout.get());
         return getResult(timeout, TimeUnit.MILLISECONDS);
     }
     

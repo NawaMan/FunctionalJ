@@ -41,7 +41,6 @@ import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
 import lombok.val;
 
-// @Ignore("Still has problems")
 public class TaskTest {
     
     @Test
@@ -453,11 +452,11 @@ public class TaskTest {
             logs.add(s);
             return s;
         }));
-        val action = Task.firstOf(task1, task2);
-        logs.add("Result: " + action.createAction().getResult());
-        logs.add("Result: " + action.createAction().getResult());
-        logs.add("Result: " + action.createAction().getResult());
-        assertEquals("Race(Task#F0::Action1,Task#F0::Action2)", action.toString());
+        val task   = Task.firstOf(task1, task2);
+        logs.add("Result: " + task.createAction().getResult());
+        logs.add("Result: " + task.createAction().getResult());
+        logs.add("Result: " + task.createAction().getResult());
+        assertEquals("Race(Task#F0::Action1,Task#F0::Action2)", task.toString());
         assertEquals(
                 "Action1 runs!,\n"
               + "A,\n"

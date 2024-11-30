@@ -572,8 +572,40 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return this;
     }
     
+    public final PromiseStatus getStatus() {
+        return promise.getStatus();
+    }
+    
+    public final boolean isStarted() {
+        return !PromiseStatus.NOT_STARTED.equals(getStatus());
+    }
+    
+    public final boolean isPending() {
+        return PromiseStatus.PENDING.equals(getStatus());
+    }
+    
+    public final boolean isAborted() {
+        return PromiseStatus.ABORTED.equals(getStatus());
+    }
+    
+    public final boolean isComplete() {
+        return PromiseStatus.COMPLETED.equals(getStatus());
+    }
+    
+    public final boolean isDone() {
+        val status = getStatus();
+        val isDone = (null != status) && status.isDone();
+        return isDone;
+    }
+    
+    public final boolean isNotDone() {
+        return !isDone();
+    }
+    
     // == Subscription ==
-    public DeferAction<DATA> use(Consumer<Promise<DATA>> consumer) {
+    
+    @Override
+    public DeferAction<DATA> use(FuncUnit1<Promise<DATA>> consumer) {
         carelessly(() -> {
             consumer.accept(promise);
         });
@@ -585,49 +617,58 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return this;
     }
     
+    @Override
     public DeferAction<DATA> subscribe(FuncUnit1<DATA> resultConsumer) {
         promise.subscribe(Wait.forever(), resultConsumer);
         return this;
     }
     
+    @Override
     public final DeferAction<DATA> subscribe(Wait wait, FuncUnit1<DATA> resultConsumer) {
         promise.subscribe(wait, resultConsumer);
         return this;
     }
     
+    @Override
     public DeferAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer) {
         promise.onCompleted(Wait.forever(), resultConsumer);
         return this;
     }
     
+    @Override
     public DeferAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         promise.onCompleted(wait, resultConsumer);
         return this;
     }
     
+    @Override
     public DeferAction<DATA> onCompleted(FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.onCompleted(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
     
+    @Override
     public DeferAction<DATA> onCompleted(Wait wait, FuncUnit1<Result<DATA>> resultConsumer, FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.onCompleted(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
     
+    @Override
     public DeferAction<DATA> eavesdrop(FuncUnit1<Result<DATA>> resultConsumer) {
         promise.eavesdrop(resultConsumer);
         return this;
     }
     
+    @Override
     public DeferAction<DATA> eavesdrop(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         promise.eavesdrop(wait, resultConsumer);
         return this;
     }
     
     // == Functional ==
+    
     public final DeferAction<DATA> filter(Predicate<? super DATA> predicate) {
         val newPromise = promise.filter(predicate);
         return new DeferAction<DATA>(this, newPromise);
