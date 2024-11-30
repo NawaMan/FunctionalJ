@@ -429,14 +429,17 @@ public class StructuredConcurrenctTest {
     @Test
     public void testSpawn_limit() {
         run(FuncList.of(Two, Three, Four, Eleven), list -> {
-            val first = new AtomicLong(-1);
+            val first   = new AtomicLong(-1);
             val actions = new ArrayList<DeferAction<String>>();
-            val logs = new ArrayList<String>();
-            list.spawn(str -> {
+            val logs    = new ArrayList<String>();
+            list
+            .spawn(str -> {
                 DeferAction<String> action = Sleep(str.length() * 50 + 5).thenReturn(str).defer();
                 actions.add(action);
                 return action;
-            }).limit(1).forEach(element -> {
+            })
+            .limit(1)
+            .forEach(element -> {
                 first.compareAndSet(-1, System.currentTimeMillis());
                 val start = first.get();
                 val end = System.currentTimeMillis();
@@ -445,6 +448,41 @@ public class StructuredConcurrenctTest {
             });
             assertEquals("[Result:{ Value: Two } -- 0]", logs.toString());
             assertEquals("Result:{ Value: Two }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }", actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
+        });
+    }
+    
+    @Test
+    public void testSpawn_spawnLimit() {
+        // This aims to test an ability to limit the spawn so not too much.
+        
+        int slot1 = 6;
+        run(FuncList.of(500, 500, 500, 500, 500, 10, 10, 10, 10, 10), list -> {
+            val start  = System.currentTimeMillis();
+            val result =
+                list
+                .spawn(slot1, num -> Sleep(num).thenReturn(num).defer())
+                .findFirst();
+            val end = System.currentTimeMillis();
+            val period = end - start;
+            
+            // There is 6 slot so it is much enough to run the quick one.
+            assertTrue(period < 500);
+            assertEquals("Optional[Result:{ Value: 10 }]", result.toString());
+        });
+        
+        int slot2 = 5;
+        run(FuncList.of(500, 500, 500, 500, 500, 10, 10, 10, 10, 10), list -> {
+            val start  = System.currentTimeMillis();
+            val result =
+                list
+                .spawn(slot2, num -> Sleep(num).thenReturn(num).defer())
+                .findFirst();
+            val end = System.currentTimeMillis();
+            val period = end - start;
+            
+            // There is 5 slot so it is not much enough to run the quick one; thus, it has to wait for long time.
+            assertTrue(period > 500);
+            assertEquals("Optional[Result:{ Value: 500 }]", result.toString());
         });
     }
     
