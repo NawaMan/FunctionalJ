@@ -9,6 +9,8 @@ import functionalj.ref.RunBody;
  **/
 public class ActionAsyncRunner {
     
+    // TODO : Scoping is an experimental feature. Don't use it yet.
+    
     /** Reference for the provider. **/
     public static final Ref<AsyncRunnerScopeProvider> asyncScopeProvider 
             = Ref.of(AsyncRunnerScopeProvider.class)
