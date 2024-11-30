@@ -24,13 +24,16 @@
 package functionalj.stream;
 
 import static functionalj.stream.StreamPlusHelper.sequentialToObj;
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.promise.DeferAction;
@@ -121,21 +124,57 @@ public interface StreamPlusWithModify<DATA> {
      *   the unfinished actions will be canceled.
      */
     public default <T> StreamPlus<Result<T>> spawn(Function<DATA, ? extends UncompletedAction<T>> mapToAction) {
+        return spawn(Integer.MAX_VALUE, mapToAction);
+    }
+    
+    /**
+     * Map each element to a uncompleted action, run them and collect which ever finish first.
+     * The result stream will not be the same order with the original one
+     *   -- as stated, the order will be the order of completion.
+     * If the result StreamPlus is closed (which is done every times a terminal operation is done),
+     *   the unfinished actions will be canceled.
+     */
+    public default <T> StreamPlus<Result<T>> spawn(int inProgressLimit, Function<DATA, ? extends UncompletedAction<T>> mapToAction) {
+        int limit = (inProgressLimit < 0) ? Integer.MAX_VALUE : inProgressLimit;
+        
         val streamPlus = streamPlus();
         return sequentialToObj(streamPlus, stream -> {
-            val results = new ArrayList<DeferAction<T>>();
-            val index = new AtomicInteger(0);
-            FuncUnit1<UncompletedAction<T>> setOnComplete = action -> action.getPromise().onCompleted(result -> {
-                val thisIndex = index.getAndIncrement();
-                val thisAction = results.get(thisIndex);
-                if (result.isValue())
-                    thisAction.complete(result.value());
-                else
-                    thisAction.fail(result.exception());
-            });
-            List<? extends UncompletedAction<T>> actions = stream.mapToObj(mapToAction).peek(action -> results.add(DeferAction.<T>createNew())).peek(action -> setOnComplete.accept(action)).peek(action -> action.start()).collect(Collectors.toList());
+            val results   = new ArrayList<DeferAction<T>>();
+            val index     = new AtomicInteger(0);
+            val semaphore = new Semaphore(limit);
+            
+            FuncUnit1<UncompletedAction<T>> setOnComplete = action -> {
+                action.getPromise().onCompleted(result -> {
+                    semaphore.release();
+                    
+                    val thisIndex  = index.getAndIncrement();
+                    val thisAction = results.get(thisIndex);
+                    if (result.isValue())
+                         thisAction.complete(result.value());
+                    else thisAction.fail(result.exception());
+                });
+            };
+            List<? extends UncompletedAction<T>> actions 
+                    = stream
+                    .mapToObj(mapToAction)
+                    .peek    (action -> results.add(DeferAction.<T>createNew()))
+                    .peek    (action -> setOnComplete.accept(action))
+                    .collect (toList());
             val resultStream = StreamPlus.from(results.stream().map(action -> action.getResult()));
-            resultStream.onClose(() -> actions.forEach(action -> action.abort("Stream closed!")));
+            
+            resultStream.onClose(() -> {
+                actions.forEach(action -> {
+                    action.abort("Stream closed!");
+                });
+            });
+            
+            DeferAction.defer(() -> {
+                for (val action : actions) {
+                    semaphore.acquire();
+                    action.start();
+                }
+            }).start();
+            
             return resultStream;
         });
     }

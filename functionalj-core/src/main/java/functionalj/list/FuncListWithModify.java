@@ -101,6 +101,7 @@ public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
     }
     
     // == Spawn ==
+    
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.
      * The result stream will not be the same order with the original one
@@ -112,6 +113,19 @@ public interface FuncListWithModify<DATA> extends AsFuncList<DATA> {
         val funcList = funcListOf(this);
         return deriveToObj(funcList, stream -> stream.spawn(mapToAction));
     }
+    
+    /**
+     * Map each element to a uncompleted action, run them and collect which ever finish first.
+     * The result stream will not be the same order with the original one
+     *   -- as stated, the order will be the order of completion.
+     * If the result StreamPlus is closed (which is done every times a terminal operation is done),
+     *   the unfinished actions will be canceled.
+     */
+    public default <T> FuncList<Result<T>> spawn(int inProgressLimit, Function<DATA, ? extends UncompletedAction<T>> mapToAction) {
+        val funcList = funcListOf(this);
+        return deriveToObj(funcList, stream -> stream.spawn(inProgressLimit, mapToAction));
+    }
+    
     // TODO - Try to get with timeout.
     // May add similar to iterator or popable
 }
