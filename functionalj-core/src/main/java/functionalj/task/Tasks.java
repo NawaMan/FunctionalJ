@@ -957,6 +957,7 @@ public class Tasks {
             val raceResult = RaceResult.from(actions);
             val promise = raceResult.getResultPromise();
             val action = DeferAction.of((Class<D>) null, () -> {
+                raceResult.start();
                 if (promise != null)
                     promise.start();
             });

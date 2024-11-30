@@ -96,6 +96,34 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         };
     }
     
+    public default <T> Func0<T> thenThrow(Exception exception) {
+        return () -> {
+            runUnsafe();
+            throw exception;
+        };
+    }
+    
+    public default <T> Func0<T> thenThrow(Exception exception, Class<T> clzz) {
+        return () -> {
+            runUnsafe();
+            throw exception;
+        };
+    }
+    
+    public default <T> Func0<T> thenThrow(Func0<Exception> exceptionSupplier) {
+        return () -> {
+            runUnsafe();
+            throw exceptionSupplier.apply();
+        };
+    }
+    
+    public default <T> Func0<T> thenThrow(Func0<Exception> exceptionSupplier, Class<T> clzz) {
+        return () -> {
+            runUnsafe();
+            throw exceptionSupplier.apply();
+        };
+    }
+    
     public default <T> Func0<T> thenGet(Func0<T> supplier) {
         return () -> {
             runUnsafe();
