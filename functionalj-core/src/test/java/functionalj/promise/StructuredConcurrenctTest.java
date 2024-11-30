@@ -1,6 +1,7 @@
 package functionalj.promise;
 
 import static functionalj.TestHelper.assertAsString;
+import static functionalj.function.Func.F;
 import static functionalj.function.Func.f;
 import static functionalj.function.Lambda.λ;
 import static functionalj.functions.TimeFuncs.Sleep;
@@ -11,10 +12,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.function.FuncUnit1;
 import functionalj.functions.TimeFuncs;
+import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -372,5 +377,75 @@ public class StructuredConcurrenctTest {
     }
     
     //== Spawn ==
+    
+    static final String One = "One";
+    
+    static final String Two = "Two";
+    
+    static final String Three = "Three";
+    
+    static final String Four = "Four";
+    
+    static final String Eleven = "Eleven";
+    
+    private <T> void run(FuncList<T> list, FuncUnit1<FuncList<T>> action) {
+        action.accept(list);
+        action.accept(list);
+    }
+    
+    @Test
+    public void testSpawn() {
+        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+            val timePrecision = 100;
+            val first = new AtomicLong(-1);
+            val logs = new ArrayList<String>();
+            list.spawn(str -> Sleep(str.length() * timePrecision + 5).thenReturn(str).defer()).forEach(element -> {
+                first.compareAndSet(-1, System.currentTimeMillis());
+                val start = first.get();
+                val end = System.currentTimeMillis();
+                val duration = Math.round((end - start) / (1.0 * timePrecision)) * timePrecision;
+                logs.add(element + " -- " + duration);
+            });
+            assertEquals("[" + "Result:{ Value: Two } -- 0, " + "Result:{ Value: Four } -- " + (1 * timePrecision) + ", " + "Result:{ Value: Three } -- " + (2 * timePrecision) + ", " + "Result:{ Value: Eleven } -- " + (3 * timePrecision) + "" + "]", logs.toString());
+        });
+        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+            val timePrecision = 100;
+            val first = new AtomicLong(-1);
+            val logs = new ArrayList<String>();
+            list.spawn(F((String str) -> {
+                Thread.sleep(str.length() * timePrecision + 5);
+                return str;
+            }).defer()).forEach(element -> {
+                first.compareAndSet(-1, System.currentTimeMillis());
+                val start = first.get();
+                val end = System.currentTimeMillis();
+                val duration = Math.round((end - start) / (1.0 * timePrecision)) * timePrecision;
+                logs.add(element + " -- " + duration);
+            });
+            assertEquals("[" + "Result:{ Value: Two } -- 0, " + "Result:{ Value: Four } -- " + (1 * timePrecision) + ", " + "Result:{ Value: Three } -- " + (2 * timePrecision) + ", " + "Result:{ Value: Eleven } -- " + (3 * timePrecision) + "" + "]", logs.toString());
+        });
+    }
+    
+    @Test
+    public void testSpawn_limit() {
+        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+            val first = new AtomicLong(-1);
+            val actions = new ArrayList<DeferAction<String>>();
+            val logs = new ArrayList<String>();
+            list.spawn(str -> {
+                DeferAction<String> action = Sleep(str.length() * 50 + 5).thenReturn(str).defer();
+                actions.add(action);
+                return action;
+            }).limit(1).forEach(element -> {
+                first.compareAndSet(-1, System.currentTimeMillis());
+                val start = first.get();
+                val end = System.currentTimeMillis();
+                val duration = Math.round((end - start) / 50.0) * 50;
+                logs.add(element + " -- " + duration);
+            });
+            assertEquals("[Result:{ Value: Two } -- 0]", logs.toString());
+            assertEquals("Result:{ Value: Two }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }, " + "Result:{ Cancelled: Stream closed! }", actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
+        });
+    }
     
 }
