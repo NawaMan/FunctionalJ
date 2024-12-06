@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import functionalj.function.Named;
+import functionalj.function.aggregator.AggregationToBoolean;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
@@ -145,4 +146,21 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
     public default ListLensEach<HOST, TYPE, TYPELENS> eachOf(Predicate<TYPE> checker) {
         return new ListLensEach<>(this, checker);
     }
+    
+    //== Terminal ==
+    
+    // TODO - Others
+    
+    public default BooleanAccess<HOST> thatAllMatchb(AggregationToBoolean<? super TYPE> aggregation) {
+        return booleanAccess(aggregation == null, list -> {
+            return list.allMatch(aggregation);
+        });
+    }
+    
+    public default BooleanAccess<HOST> thatAllMatchb(Predicate<TYPE> check) {
+        return booleanAccess(check == null, list -> {
+            return list.allMatch(check);
+        });
+    }
+    
 }

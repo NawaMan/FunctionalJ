@@ -33,14 +33,17 @@ import functionalj.lens.core.LensType;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
+import functionalj.lens.lenses.FuncListLens;
 import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.Tuple2Lens;
+import functionalj.list.FuncList;
 import functionalj.tuple.Tuple2;
 
 public class Accesses {
     
     // == Internal use only ==
+    
     public static class TheListLens implements ListLens<List<?>, Object, ObjectLens<List<?>, Object>> {
         
         private static final LensSpecParameterized<List<?>, List<?>, Object, ObjectLens<List<?>, Object>> common = LensUtils.createLensSpecParameterized("theList", selfRead(), selfWrite(), ObjectLens::of);
@@ -54,6 +57,23 @@ public class Accesses {
         @SuppressWarnings({ "rawtypes", "unchecked" })
         @Override
         public LensSpecParameterized<List<?>, List<Object>, Object, ObjectLens<List<?>, Object>> lensSpecParameterized() {
+            return (LensSpecParameterized) common;
+        }
+    }
+    
+    public static class TheFuncListLens implements FuncListLens<FuncList<?>, Object, ObjectLens<FuncList<?>, Object>> {
+        
+        private static final LensSpecParameterized<FuncList<?>, FuncList<?>, Object, ObjectLens<FuncList<?>, Object>> common = LensUtils.createLensSpecParameterized("theFuncList", selfRead(), selfWrite(), ObjectLens::of);
+        
+        public <T, SA extends AnyAccess<FuncList<T>, T>, SL extends AnyLens<FuncList<T>, T>> FuncListLens<FuncList<T>, T, SL> of(LensType<FuncList<T>, T, SA, SL> type) {
+            LensSpecParameterized<FuncList<T>, FuncList<T>, T, SL> spec = LensUtils.createLensSpecParameterized(LensSpec.selfRead(), LensSpec.selfWrite(), s -> type.newLens(null, s));
+            FuncListLens<FuncList<T>, T, SL> listLens = FuncListLens.of(spec);
+            return listLens;
+        }
+        
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        @Override
+        public LensSpecParameterized<FuncList<?>, FuncList<Object>, Object, ObjectLens<FuncList<?>, Object>> lensSpecParameterized() {
             return (LensSpecParameterized) common;
         }
     }

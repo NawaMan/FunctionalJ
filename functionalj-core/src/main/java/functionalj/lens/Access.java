@@ -88,6 +88,8 @@ public interface Access {
     
     public static final Accesses.TheListLens theList = new Accesses.TheListLens();
     
+    public static final Accesses.TheFuncListLens theFuncList = new Accesses.TheFuncListLens();
+    
     public static final Accesses.TheTuple2Lens theTuple2 = new Accesses.TheTuple2Lens();
     
     public static <T> AnyLens<T, T> theItem() {
