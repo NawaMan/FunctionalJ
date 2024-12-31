@@ -26,9 +26,11 @@ package functionalj.lens.lenses;
 import static functionalj.lens.core.AccessUtils.createNullableAccess;
 import static functionalj.lens.core.AccessUtils.createOptionalAccess;
 import static functionalj.lens.core.AccessUtils.createResultAccess;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -37,7 +39,11 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+
 import functionalj.function.Func1;
+import functionalj.function.ToCharFunction;
+import functionalj.list.FuncList;
+import functionalj.result.Result;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
@@ -126,6 +132,66 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
         });
     }
     
+    public default BooleanAccess<HOST> asBoolean(BooleanAccessBoxed<DATA> mapper) {
+        return booleanAccess(false, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default BooleanAccessPrimitive<HOST> asBooleanPrimitive(BooleanAccessPrimitive<DATA> mapper) {
+        return booleanPrimitiveAccess(false, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default CharacterAccess<HOST> asCharacter(CharacterAccessBoxed<DATA> mapper) {
+        return characterAccess('\0', any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default CharacterAccessPrimitive<HOST> asCharacterPrimitive(CharacterAccessPrimitive<DATA> mapper) {
+        return characterPrimitiveAccess('\0', any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default IntegerAccess<HOST> asInteger(IntegerAccessBoxed<DATA> mapper) {
+        return intBoxedAccess(0, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default IntegerAccessPrimitive<HOST> asIntegerPrimitive(IntegerAccessPrimitive<DATA> mapper) {
+        return intPrimitiveAccess(0, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default LongAccess<HOST> asLong(LongAccessBoxed<DATA> mapper) {
+        return longAccess(0, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default LongAccessPrimitive<HOST> asLongPrimitive(LongAccessPrimitive<DATA> mapper) {
+        return longPrimitiveAccess(0, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default DoubleAccess<HOST> asDouble(DoubleAccessBoxed<DATA> mapper) {
+        return doubleAccess(0, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default DoubleAccessPrimitive<HOST> asDoublePrimitive(DoubleAccessPrimitive<DATA> mapper) {
+        return doublePrimitiveAccess(0, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
     public default StringAccess<HOST> asString() {
         return stringAccess(null, any -> {
             return any.toString();
@@ -137,6 +203,105 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
             return String.format(template, any);
         });
     }
+    
+    public default StringAccess<HOST> asString(Func1<DATA, String> mapper) {
+        return stringAccess(null, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default BigIntegerAccess<HOST> asBigInteger(BigIntegerAccess<DATA> mapper) {
+        return bigIntegerAccess(null, any -> {
+            return mapper.apply(any);
+        });
+    }
+    
+    public default BigDecimalAccess<HOST> asBigDecimal(BigDecimalAccess<DATA> mapper) {
+        return bigDecimalAccess(null, any -> {
+            return mapper.apply(any);
+        });
+    }
+    // (AnyAccess<Object, Object>)(Object host) -> host
+    public default <T, TA extends AnyAccess<HOST, T>> ListAccess<HOST, T, TA> 
+                    asList(Function<DATA, List<T>>         read,
+                           Function<Function<HOST, T>, TA> createAccess) {
+        return ListAccess.of(
+                (HOST host) -> {
+                    val data = apply(host);
+                    val list = read.apply(data);
+                    return list;
+                },
+                createAccess);
+    }
+    public default ListAccess<HOST, DATA, AnyAccess<HOST, DATA>> asList(Function<DATA, List<DATA>> read) {
+        return asList(read, access -> (AnyAccess<HOST, DATA>)(HOST host) -> access.apply(host));
+    }
+    
+    public default <T, TA extends AnyAccess<HOST, T>> FuncListAccess<HOST, T, TA> 
+                    asFuncList(Function<DATA, FuncList<T>>     read,
+                               Function<Function<HOST, T>, TA> createAccess) {
+        return FuncListAccess.of(
+                (HOST host) -> {
+                    val data = apply(host);
+                    val list = read.apply(data);
+                    return list;
+                },
+                createAccess);
+    }
+    
+    public default FuncListAccess<HOST, DATA, AnyAccess<HOST, DATA>> asFuncList(Function<DATA, FuncList<DATA>> read) {
+        return asFuncList(read, access -> (AnyAccess<HOST, DATA>)(HOST host) -> access.apply(host));
+    }
+    
+    public default <T, SA extends AnyAccess<HOST, T>> NullableAccess<HOST, T, SA>  
+                    asNullable(Function<DATA, Nullable<T>>     read, 
+                               Function<Function<HOST, T>, SA> createAccess) {
+        return NullableAccess.of(
+                (HOST host) -> {
+                    val data = apply(host);
+                    return read.apply(data);
+                },
+                createAccess);
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public default NullableAccess<HOST, DATA, AnyAccess<HOST, DATA>> asNullable() {
+        return (NullableAccess<HOST, DATA, AnyAccess<HOST, DATA>>)(NullableAccess)toNullable();
+    }
+    
+    public default <T, SA extends AnyAccess<HOST, T>> OptionalAccess<HOST, T, SA>  
+                    asOptional(Function<DATA, Optional<T>>     read, 
+                               Function<Function<HOST, T>, SA> createAccess) {
+        return OptionalAccess.of(
+                (HOST host) -> {
+                    val data = apply(host);
+                    val list = read.apply(data);
+                    return list;
+                },
+                createAccess);
+    }
+    
+    public default OptionalAccess<HOST, DATA, AnyAccess<HOST, DATA>> asOptional() {
+        return __internal__.toOptional(this, f -> (AnyAccess<HOST, DATA>) f::apply);
+    }
+    
+    public default <T, SA extends AnyAccess<HOST, T>> ResultAccess<HOST, T, SA>  
+                    asResult(Function<DATA, Result<T>>       read, 
+                             Function<Function<HOST, T>, SA> createAccess) {
+        return ResultAccess.of(
+                (HOST host) -> {
+                    val data = apply(host);
+                    val list = read.apply(data);
+                    return list;
+                },
+                createAccess);
+    }
+    
+    public default ResultAccess<HOST, DATA, AnyAccess<HOST, DATA>> asResult() {
+        return __internal__.toResult(this, f -> (AnyAccess<HOST, DATA>) f::apply);
+    }
+    
+    //== Access conversion ==
     
     public default IntegerAccessBoxed<HOST> intBoxedAccess(int defaultValue, Function<DATA, Integer> function) {
         return host -> {
@@ -174,6 +339,20 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
     }
     
     public default DoubleAccessPrimitive<HOST> doublePrimitiveAccess(double defaultValue, ToDoubleFunction<DATA> function) {
+        return host -> {
+            val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    
+    public default CharacterAccessBoxed<HOST> characterAccess(char defaultValue, Function<DATA, Character> function) {
+        return host -> {
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    
+    public default CharacterAccessPrimitive<HOST> characterPrimitiveAccess(char defaultValue, ToCharFunction<DATA> function) {
         return host -> {
             val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
@@ -274,6 +453,16 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
             if (value == null)
                 return defaultValue;
             val newValue = function.applyAsDouble(value);
+            return newValue;
+        }
+        
+        public static <HOST, DATA> char processValuePrimitive(AnyAccess<HOST, DATA> access, HOST host, char defaultValue, ToCharFunction<DATA> function) {
+            if (host == null)
+                return defaultValue;
+            val value = access.apply(host);
+            if (value == null)
+                return defaultValue;
+            val newValue = function.applyAsChar(value);
             return newValue;
         }
         

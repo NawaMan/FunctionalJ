@@ -24,14 +24,20 @@
 package functionalj.lens.lenses;
 
 import static functionalj.functions.StrFuncs.whenBlank;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
 import functionalj.function.Func1;
 import functionalj.function.Named;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.WriteLens;
+import functionalj.list.FuncList;
 import lombok.val;
 
 @FunctionalInterface
@@ -169,4 +175,154 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
             return apply(host, newData);
         };
     }
+    
+    //== As and To ==
+    
+    public default BooleanLens<HOST> asBoolean(BooleanLens<DATA> mapper) {
+        val read = (Function<HOST, Boolean>)((HOST host) -> {
+            return mapper.read(apply(host));
+        });
+        val write = (WriteLens<HOST, Boolean>)((HOST host, Boolean newValue) -> {
+            val data = apply(host);
+            val newData
+                    = mapper.changeTo(newValue)
+                    .apply(data);
+            return changeTo(newData)
+                    .apply(host);
+        });
+        return BooleanLens.of(new LensSpec<HOST, Boolean>(read, write));
+    }
+    
+//    public default CharacterAccess<HOST> asCharacter(CharacterAccess<DATA> mapper) {
+//        return characterAccess(' ', any -> {
+//            return mapper.apply(any);
+//        });
+//    }
+    
+    public default IntegerLens<HOST> asInteger(IntegerLens<DATA> mapper) {
+        val read = (Function<HOST, Integer>)((HOST host) -> {
+            return mapper.read(apply(host));
+        });
+        val write = (WriteLens<HOST, Integer>)((HOST host, Integer newValue) -> {
+            val data = apply(host);
+            val newData
+                    = mapper.changeTo(newValue)
+                    .apply(data);
+            return changeTo(newData)
+                    .apply(host);
+        });
+        return IntegerLens.of(new LensSpec<HOST, Integer>(read, write));
+    }
+    
+    public default LongLens<HOST> asLong(LongLens<DATA> mapper) {
+        val read = (Function<HOST, Long>)((HOST host) -> {
+            return mapper.read(apply(host));
+        });
+        val write = (WriteLens<HOST, Long>)((HOST host, Long newValue) -> {
+            val data = apply(host);
+            val newData
+                    = mapper.changeTo(newValue)
+                    .apply(data);
+            return changeTo(newData)
+                    .apply(host);
+        });
+        return LongLens.of(new LensSpec<HOST, Long>(read, write));
+    }
+    
+    public default DoubleLens<HOST> asDouble(DoubleLens<DATA> mapper) {
+        val read = (Function<HOST, Double>)((HOST host) -> {
+            return mapper.read(apply(host));
+        });
+        val write = (WriteLens<HOST, Double>)((HOST host, Double newValue) -> {
+            val data = apply(host);
+            val newData
+                    = mapper.changeTo(newValue)
+                    .apply(data);
+            return changeTo(newData)
+                    .apply(host);
+        });
+        return DoubleLens.of(new LensSpec<HOST, Double>(read, write));
+    }
+    
+    public default StringLens<HOST> asString(StringLens<DATA> mapper) {
+        val read = (Function<HOST, String>)((HOST host) -> {
+            return mapper.read(apply(host));
+        });
+        val write = (WriteLens<HOST, String>)((HOST host, String newValue) -> {
+            val data = apply(host);
+            val newData
+                    = mapper.changeTo(newValue)
+                    .apply(data);
+            return changeTo(newData)
+                    .apply(host);
+        });
+        return StringLens.of(new LensSpec<HOST, String>(read, write));
+    }
+    
+    public default BigIntegerLens<HOST> asBigInteger(BigIntegerLens<DATA> mapper) {
+        val read = (Function<HOST, BigInteger>)((HOST host) -> {
+            return mapper.read(apply(host));
+        });
+        val write = (WriteLens<HOST, BigInteger>)((HOST host, BigInteger newValue) -> {
+            val data = apply(host);
+            val newData
+                    = mapper.changeTo(newValue)
+                    .apply(data);
+            return changeTo(newData)
+                    .apply(host);
+        });
+        return BigIntegerLens.of(new LensSpec<HOST, BigInteger>(read, write));
+    }
+    
+    public default BigDecimalLens<HOST> asBigDecimal(BigDecimalLens<DATA> mapper) {
+        val read = (Function<HOST, BigDecimal>)((HOST host) -> {
+            return mapper.read(apply(host));
+        });
+        val write = (WriteLens<HOST, BigDecimal>)((HOST host, BigDecimal newValue) -> {
+            val data = apply(host);
+            val newData
+                    = mapper.changeTo(newValue)
+                    .apply(data);
+            return changeTo(newData)
+                    .apply(host);
+        });
+        return BigDecimalLens.of(new LensSpec<HOST, BigDecimal>(read, write));
+    }
+    
+    public default <T, TL extends AnyLens<HOST, T>> ListAccess<HOST, T, TL> 
+                    asList(Function<DATA, List<T>>         read,
+                           WriteLens<DATA, List<T>>        write,
+                           Function<LensSpec<HOST, T>, TL> subCreator) {
+        Function<HOST, List<T>> readHost = host -> {
+            val data    = apply(host);
+            val newData = read.apply(data);
+            return newData;
+        };
+        WriteLens<HOST, List<T>> writeHost = (host, newValue) -> {
+            val data    = apply(host);
+            val newData = write.apply(data, newValue);
+            return changeTo(newData)
+                    .apply(host);
+        };
+        return ListLens.of(readHost, writeHost, subCreator);
+    }
+    
+    public default <T, TL extends AnyLens<HOST, T>> FuncListAccess<HOST, T, TL> 
+                    asFuncList(Function<DATA, FuncList<T>>     read,
+                               WriteLens<DATA, FuncList<T>>    write,
+                               Function<LensSpec<HOST, T>, TL> subCreator) {
+        Function<HOST, FuncList<T>> readHost = host -> {
+            val data    = apply(host);
+            val newData = read.apply(data);
+            return newData;
+        };
+        WriteLens<HOST, FuncList<T>> writeHost = (host, newValue) -> {
+            val data    = apply(host);
+            val newData = write.apply(data, newValue);
+            return changeTo(newData)
+                    .apply(host);
+        };
+        return FuncListLens.of(readHost, writeHost, subCreator);
+    }
+    
 }
