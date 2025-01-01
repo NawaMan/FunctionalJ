@@ -25,6 +25,7 @@ package functionalj.list;
 
 import static functionalj.TestHelper.assertAsString;
 import static functionalj.function.Func.F;
+import static functionalj.function.Func.itself;
 import static functionalj.functions.StrFuncs.join;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.$S;
@@ -54,6 +55,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
@@ -93,6 +95,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.ZipWithOption;
 import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public class FuncListTest {
@@ -1501,6 +1504,49 @@ public class FuncListTest {
     public void testToMapIndexInvert() {
         run(FuncList.of(One, Two, Three, Five), list -> {
             assertAsString("{Five:3, One:0, Two:1, Three:2}", list.toMapRevert());
+        });
+    }
+    
+    @Test
+    public void testToMapTuple() {
+        run(FuncList.of("A", "B", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            FuncList<Tuple2<String, String>> listOfTuples = listA.zipWith(listB);
+            assertAsString("{A:0, B:1, C:2}", listOfTuples.toMapTuple(itself()));
+        });
+        run(FuncList.of("A", "B", null, "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            FuncList<Tuple2<String, String>> listOfTuples = listA.zipWith(listB);
+            assertAsString("{null:2, A:0, B:1, C:3}", listOfTuples.toMapTuple(itself()));
+        });
+        run(FuncList.of("A", "B", "A", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            FuncList<Tuple2<String, String>> listOfTuples = listA.zipWith(listB);
+            assertAsString("{A:0-2, B:1, C:3}", listOfTuples.toMapTuple(itself(), (a, b) -> a + "-" + b));
+        });
+        run(FuncList.of("A", "B", "A", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            FuncList<Tuple2<String, String>> listOfTuples = listA.zipWith(listB);
+            val exception = assertThrows(IllegalStateException.class, () -> listOfTuples.toMapTuple(itself()));
+            assertAsString("java.lang.IllegalStateException: Duplicate key 0", exception);
+        });
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testToMapEntry() {
+        run(FuncList.of("A", "B", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            FuncList<Tuple2<String, String>> listOfTuples = listA.zipWith(listB);
+            assertAsString("{A:0, B:1, C:2}", listOfTuples.toMapEntry(t -> (Map.Entry<String, String>)t));
+        });
+        run(FuncList.of("A", "B", null, "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            FuncList<Tuple2<String, String>> listOfTuples = listA.zipWith(listB);
+            assertAsString("{null:2, A:0, B:1, C:3}", listOfTuples.toMapEntry(t -> (Map.Entry<String, String>)t));
+        });
+        run(FuncList.of("A", "B", "A", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            FuncList<Tuple2<String, String>> listOfTuples = listA.zipWith(listB);
+            assertAsString("{A:0-2, B:1, C:3}", listOfTuples.toMapEntry(t -> (Map.Entry<String, String>)t, (a, b) -> a + "-" + b));
+        });
+        run(FuncList.of("A", "B", "A", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            FuncList<Tuple2<String, String>> listOfTuples = listA.zipWith(listB);
+            val exception = assertThrows(IllegalStateException.class, () -> listOfTuples.toMapEntry(t -> (Map.Entry<String, String>)t));
+            assertAsString("java.lang.IllegalStateException: Duplicate key 0", exception);
         });
     }
     
