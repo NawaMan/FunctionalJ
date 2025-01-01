@@ -43,6 +43,7 @@ import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -89,6 +90,7 @@ import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.ZipWithOption;
 import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
@@ -1992,6 +1994,29 @@ public class FuncListTest {
         });
         run(FuncList.of("A", "B", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
             assertAsString("A:0, B:1, C:2, null:3, null:4", listA.zipWith(listB, AllowUnpaired, (c, i) -> c + ":" + i).limit(5).join(", "));
+        });
+    }
+    
+    @Test
+    public void testZipToMap() {
+        run(FuncList.of("A", "B", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            assertAsString("{A:0, B:1, C:2}", listA.zipToMap(listB));
+        });
+        run(FuncList.of("A", "B", null, "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            assertAsString("{A:0, B:1, null:2, C:3}", listA.zipToMap(listB));
+        });
+        run(FuncList.of("A", "B", "A", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            val exception = assertThrows(IllegalStateException.class, () -> listA.zipToMap(listB));
+            assertAsString("java.lang.IllegalStateException: Duplicate key: key=A, values=0 and 2", exception);
+        });
+        run(FuncList.of("A", "B", "A", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            assertAsString("{A:0, B:1, C:3, null:4}", listA.zipToMap(listB, (a, b) -> a));
+        });
+        run(FuncList.of("A", "B", "A", "C"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            assertAsString("{A:0, B:1, C:3, null:4}", listA.zipToMap(listB, ZipWithOption.RequireBoth, (a, b) -> a));
+        });
+        run(FuncList.of("A", "B", "A", "C", "A"), IntFuncList.infinite().limit(10).boxed().map(theInteger.asString()).toFuncList(), (listA, listB) -> {
+            assertAsString("{A:A-A-024, B:1, C:3}", listA.zipToMap(listB, ZipWithOption.RequireBoth, (key, a, b) -> key + "-" + (a + b)));
         });
     }
     

@@ -36,6 +36,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.Collectors;
+
 import functionalj.function.IntToByteFunction;
 import functionalj.function.IntToCharFunction;
 import functionalj.function.aggregator.IntAggregation;

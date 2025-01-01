@@ -34,12 +34,16 @@ public final class ImmutableFuncMap<KEY, VALUE> extends FuncMapDerived<KEY, VALU
     
     @SuppressWarnings("unchecked")
     public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> from(Map<? extends KEY, ? extends VALUE> map) {
-        return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<KEY, VALUE>) map : new ImmutableFuncMap<KEY, VALUE>(map);
+        return (map instanceof ImmutableFuncMap)
+                ? (ImmutableFuncMap<KEY, VALUE>) map
+                : new ImmutableFuncMap<KEY, VALUE>(map);
     }
     
     @SuppressWarnings("unchecked")
     public static <KEY, VALUE> ImmutableFuncMap<KEY, VALUE> from(FuncMap<? extends KEY, ? extends VALUE> map) {
-        return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<KEY, VALUE>) map : new ImmutableFuncMap<KEY, VALUE>(map);
+        return (map instanceof ImmutableFuncMap)
+                ? (ImmutableFuncMap<KEY, VALUE>) map
+                : new ImmutableFuncMap<KEY, VALUE>(map);
     }
     
     @SuppressWarnings("unchecked")
@@ -63,7 +67,9 @@ public final class ImmutableFuncMap<KEY, VALUE> extends FuncMapDerived<KEY, VALU
     
     @SuppressWarnings("unchecked")
     private static <K, V> Map<K, V> createBaseMap(Map<? extends K, ? extends V> map) {
-        return (map instanceof ImmutableFuncMap) ? (ImmutableFuncMap<K, V>) map : new LinkedHashMap<K, V>(map);
+        return (map instanceof ImmutableFuncMap) 
+                ? (ImmutableFuncMap<K, V>) map 
+                : new LinkedHashMap<K, V>(map);
     }
     
     public boolean isLazy() {

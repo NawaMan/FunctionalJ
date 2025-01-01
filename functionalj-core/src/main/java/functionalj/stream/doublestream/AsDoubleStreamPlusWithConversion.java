@@ -33,6 +33,7 @@ import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
+
 import functionalj.function.aggregator.DoubleAggregation;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;

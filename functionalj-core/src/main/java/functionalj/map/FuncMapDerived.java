@@ -75,7 +75,10 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     }
     
     private Stream<Map.Entry<KEY, SOURCE>> originalEntryStream() {
-        Stream<Map.Entry<KEY, SOURCE>> stream = (map instanceof FuncMap) ? ((FuncMap<KEY, SOURCE>) map).entries().stream() : map.entrySet().stream();
+        Stream<Map.Entry<KEY, SOURCE>> stream 
+                = (map instanceof FuncMap) 
+                ? ((FuncMap<KEY, SOURCE>) map).entries().stream() 
+                : map.entrySet().stream();
         return stream;
     }
     
