@@ -697,11 +697,17 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return getResult().get();
     }
     
+    /**
+     * Returns the current result and wait for the promise to fulfilled (either success or failed).
+     **/
     public final Result<DATA> getResult() {
         long timeout = waitTimeout.orElse(-1L);
         return getResult(timeout, TimeUnit.MILLISECONDS);
     }
     
+    /**
+     * Returns the current result and wait for the specific amount of time before timeout or the promise is fulfilled.
+     **/
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         try {
             start();
@@ -729,6 +735,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         }
     }
     
+    /**
+     * Returns the current result without starting the action if it has not been started.
+     **/
     public final Result<DATA> getCurrentResult() {
         val data = dataRef.get();
         if (data instanceof Result) {

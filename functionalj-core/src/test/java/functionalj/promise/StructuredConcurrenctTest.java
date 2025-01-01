@@ -1,7 +1,6 @@
 package functionalj.promise;
 
 import static functionalj.TestHelper.assertAsString;
-import static functionalj.function.Func.F;
 import static functionalj.function.Func.f;
 import static functionalj.function.Lambda.λ;
 import static functionalj.functions.TimeFuncs.Sleep;
@@ -56,6 +55,8 @@ public class StructuredConcurrenctTest {
     
     @Test
     public void testCombine_oneFailed() {
+        // One (prefix) of the three success. Other one (suffix) failed while the last one is still working (body).
+        
         val around = f((String prefix, String suffix, String text) -> prefix + text + suffix);
         val prefix = Sleep(  10).thenReturn("[").defer();
         val suffix = Sleep( 100).thenThrow(RuntimeException::new, String.class).defer();
@@ -64,10 +65,12 @@ public class StructuredConcurrenctTest {
         
         string.start();
         
-        assertAsString("Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #1 out of 3 fail. }", string.getResult());
-        assertAsString("Result:{ Value: [ }",                              prefix.getResult());  // TODO - Should be cancelled?
+        assertAsString("Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #1 out of 3 fail. }",
+                       string.getResult());
+        
+        assertAsString("Result:{ Value: [ }",                              prefix.getResult());
         assertAsString("Result:{ Exception: java.lang.RuntimeException }", suffix.getResult());
-        assertAsString("Result:{ Cancelled: No more listener. }",          body  .getResult());  // TODO - Should be cancelled?
+        assertAsString("Result:{ Cancelled: No more listener. }",          body  .getResult());
     }
     @Test
     public void testCombine_abort() throws InterruptedException {
@@ -84,7 +87,7 @@ public class StructuredConcurrenctTest {
         assertAsString("Result:{ Cancelled: Too long }",          string.getResult());
         assertAsString("Result:{ Value: [ }",                     prefix.getResult());
         assertAsString("Result:{ Value: ] }",                     suffix.getResult());
-        assertAsString("Result:{ Cancelled: No more listener. }", body  .getResult());  // TODO - Should be cancelled?
+        assertAsString("Result:{ Cancelled: No more listener. }", body  .getResult());
     }
     
     //== Race ==
@@ -251,7 +254,7 @@ public class StructuredConcurrenctTest {
         
         assertAsString("Result:{ Cancelled: Change my mind. }",   string.getResult());
         assertAsString("Result:{ Value: 1st }",                   first.getResult());
-        assertAsString("Result:{ Cancelled: No more listener. }", second.getResult());  // TODO - Should be cancelled?
+        assertAsString("Result:{ Cancelled: No more listener. }", second.getResult());
         assertAsString("Result:{ Value: 3rd }",                   third.getResult());
         assertAsString("Result:{ Cancelled }",                    forth.getResult());
         assertAsString("Result:{ Cancelled }",                    fifth.getResult());
@@ -399,30 +402,50 @@ public class StructuredConcurrenctTest {
             val timePrecision = 100;
             val first = new AtomicLong(-1);
             val logs = new ArrayList<String>();
-            list.spawn(str -> Sleep(str.length() * timePrecision + 5).thenReturn(str).defer()).forEach(element -> {
+            list
+            .spawn(str -> Sleep(str.length() * timePrecision + 5).thenReturn(str).defer())
+            .forEach(element -> {
                 first.compareAndSet(-1, System.currentTimeMillis());
                 val start = first.get();
                 val end = System.currentTimeMillis();
                 val duration = Math.round((end - start) / (1.0 * timePrecision)) * timePrecision;
                 logs.add(element + " -- " + duration);
             });
-            assertEquals("[" + "Result:{ Value: Two } -- 0, " + "Result:{ Value: Four } -- " + (1 * timePrecision) + ", " + "Result:{ Value: Three } -- " + (2 * timePrecision) + ", " + "Result:{ Value: Eleven } -- " + (3 * timePrecision) + "" + "]", logs.toString());
+            assertEquals(
+                    "[" 
+                        + "Result:{ Value: Two } -- 0, " 
+                        + "Result:{ Value: Four } -- "   + (1 * timePrecision) + ", " 
+                        + "Result:{ Value: Three } -- "  + (2 * timePrecision) + ", " 
+                        + "Result:{ Value: Eleven } -- " + (3 * timePrecision)
+                    + "]", 
+                    logs.toString());
         });
-        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+    }
+    
+    @Test
+    public void testSpawn_order() {
+        // Spawn re-order the incoming result by time so the original order does not matter.
+        run(FuncList.of(Eleven, Three, Two, Four), list -> {
             val timePrecision = 100;
             val first = new AtomicLong(-1);
             val logs = new ArrayList<String>();
-            list.spawn(F((String str) -> {
-                Thread.sleep(str.length() * timePrecision + 5);
-                return str;
-            }).defer()).forEach(element -> {
+            list
+            .spawn(str -> Sleep(str.length() * timePrecision + 5).thenReturn(str).defer())
+            .forEach(element -> {
                 first.compareAndSet(-1, System.currentTimeMillis());
                 val start = first.get();
                 val end = System.currentTimeMillis();
                 val duration = Math.round((end - start) / (1.0 * timePrecision)) * timePrecision;
                 logs.add(element + " -- " + duration);
             });
-            assertEquals("[" + "Result:{ Value: Two } -- 0, " + "Result:{ Value: Four } -- " + (1 * timePrecision) + ", " + "Result:{ Value: Three } -- " + (2 * timePrecision) + ", " + "Result:{ Value: Eleven } -- " + (3 * timePrecision) + "" + "]", logs.toString());
+            assertEquals(
+                    "[" 
+                        + "Result:{ Value: Two } -- 0, " 
+                        + "Result:{ Value: Four } -- "   + (1 * timePrecision) + ", " 
+                        + "Result:{ Value: Three } -- "  + (2 * timePrecision) + ", " 
+                        + "Result:{ Value: Eleven } -- " + (3 * timePrecision)
+                    + "]", 
+                    logs.toString());
         });
     }
     
