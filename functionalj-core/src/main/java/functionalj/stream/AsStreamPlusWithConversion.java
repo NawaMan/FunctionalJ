@@ -25,6 +25,7 @@ package functionalj.stream;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.Spliterator;
@@ -36,8 +37,10 @@ import java.util.function.IntFunction;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import functionalj.function.Func;
+import functionalj.function.Func3;
 import functionalj.function.ToByteFunction;
 import functionalj.function.aggregator.Aggregation;
 import functionalj.functions.StrFuncs;
@@ -376,6 +379,174 @@ public interface AsStreamPlusWithConversion<DATA> {
         val index         = new AtomicInteger();
         val theMap        = streamPlus.collect(Collectors.toMap(Func.it(), __-> index.getAndIncrement()));
         return ImmutableFuncMap.from(theMap);
+    }
+    
+    //-- Zip To Map --
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * An exception will be thrown on any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(AsStreamPlus<VALUE> values) {
+        return zipToMap(values.stream());
+    }
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * An exception will be thrown on any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(Stream<VALUE> values) {
+        return zipToMap(values, ZipWithOption.RequireBoth, (key, a, b) -> {
+            throw new IllegalStateException(String.format("Duplicate key: key=%s, values=%s and %s", key, a, b));
+        });
+    }
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * The combiner will be used to combine values of any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(AsStreamPlus<VALUE> values, BinaryOperator<VALUE> reducer) {
+        return zipToMap(values.stream(), ZipWithOption.AllowUnpaired, reducer);
+    }
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * The combiner will be used to combine values of any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(AsStreamPlus<VALUE> values, ZipWithOption zipWithOption, BinaryOperator<VALUE> reducer) {
+        return zipToMap(values.stream(), reducer);
+    }
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * The combiner will be used to combine values of any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(Stream<VALUE> values, BinaryOperator<VALUE> reducer) {
+        return zipToMap(values, ZipWithOption.AllowUnpaired, (key, a, b) -> reducer.apply(a, b));
+    }
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * The combiner will be used to combine values of any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(Stream<VALUE> values, ZipWithOption zipWithOption, BinaryOperator<VALUE> reducer) {
+        return zipToMap(values, zipWithOption, (key, a, b) -> reducer.apply(a, b));
+    }
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * The combiner will be used to combine values of any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(AsStreamPlus<VALUE> values, Func3<DATA, VALUE, VALUE, VALUE> combiner) {
+        return zipToMap(values, ZipWithOption.AllowUnpaired, combiner);
+    }
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * The combiner will be used to combine values of any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(AsStreamPlus<VALUE> values, ZipWithOption zipWithOption, Func3<DATA, VALUE, VALUE, VALUE> combiner) {
+        return zipToMap(values.stream(), zipWithOption, combiner);
+    }
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * The combiner will be used to combine values of any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(Stream<VALUE> values, Func3<DATA, VALUE, VALUE, VALUE> combiner) {
+        return zipToMap(values, ZipWithOption.AllowUnpaired, combiner);
+    }
+    
+    /**
+     * Create a map by zipping with another list.
+     * The zipping stop when all the element of this list is exhausted.
+     * If not enough element from another list, the value of that entry will be null.
+     * Any null value in this list will be skipped -- meaning that the value at the corresponding list will also be skipped.
+     * The combiner will be used to combine values of any duplicated key.
+     * 
+     * NOTE: This is eager operation so ... it must not be used with infinite stream.
+     */
+    @Eager
+    @Terminal
+    public default <VALUE> FuncMap<DATA, VALUE> zipToMap(Stream<VALUE> values, ZipWithOption zipWithOption, Func3<DATA, VALUE, VALUE, VALUE> combiner) {
+        val streamPlus = streamPlus();
+        val resultMap  = new LinkedHashMap<DATA, VALUE>();
+        streamPlus
+        .zipWith(values, zipWithOption, (data, value) -> {
+            resultMap
+            .compute(data, (__, v) -> {
+                return (v == null)
+                        ? value
+                        : combiner.apply(data, v, value);
+            });
+            
+            return null;
+        })
+        .forEach(__ -> {});
+        return ImmutableFuncMap.from(resultMap);
     }
     
     // -- toSet --
