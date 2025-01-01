@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -465,7 +466,10 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Terminal
     public default <VALUE> FuncMap<DATA, VALUE> zipToMap(Stream<VALUE> values) {
         return zipToMap(values, ZipWithOption.RequireBoth, (key, a, b) -> {
-            throw new IllegalStateException(String.format("Duplicate key: key=%s, values=%s and %s", key, a, b));
+            if (!Objects.equals(a, b))
+                throw new IllegalStateException(String.format("Duplicate key: key=%s, values=%s and %s", key, a, b));
+            
+            return a;
         });
     }
     
