@@ -26,6 +26,7 @@ package functionalj.map;
 import static functionalj.function.Func.it;
 import static functionalj.stream.ZipWithOption.RequireBoth;
 import static java.util.Arrays.stream;
+
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
@@ -34,11 +35,13 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
@@ -46,6 +49,7 @@ import functionalj.function.FuncUnit1;
 import functionalj.list.FuncList;
 import functionalj.ref.Ref;
 import functionalj.stream.ZipWithOption;
+import functionalj.stream.markers.Eager;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -1261,6 +1265,33 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE>, Fu
         });
         return (FuncMap) map;
     }
+    
+    /**
+     * Returns a map with key and value inverted from map.
+     * If there is duplicate of key for different values, an IllegalStateException will be thrown.
+     **/
+    @Eager
+    public FuncMap<VALUE, KEY> invert() {
+        return invert((a, b) -> {
+            if (!Objects.equals(a, b))
+                throw new IllegalStateException(String.format("Duplicate key for values: values=%s and %s", a, b));
+            
+            return a;
+        });
+    }
+    
+    /**
+     * Returns a map with key and value inverted from map.
+     * If there is duplicate of key for different values, the reducer function will be used to determine the value.
+     **/
+    @Eager
+    public FuncMap<VALUE, KEY> invert(BinaryOperator<KEY> reducer) {
+        return (FuncMap<VALUE, KEY>)
+                entries()
+                .toMap(Map.Entry::getValue, Map.Entry::getKey, reducer);
+    }
+    
+    //== Common ==
     
     public String toString() {
         return "{" + entries().map(String::valueOf).collect(Collectors.joining(", ")) + "}";

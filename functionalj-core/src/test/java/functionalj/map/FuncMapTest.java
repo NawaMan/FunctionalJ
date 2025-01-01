@@ -83,4 +83,10 @@ public class FuncMapTest {
         assertAsString("Four",  "" + func.apply(4));
         assertAsString("null",  "" + func.apply(5));
     }
+    
+    @Test
+    public void testMapInvert() {
+        val map  = FuncMap.of(1, "One", 2, "Two", 3, "Three", 4, "Four");
+        assertAsString("{Four:4, One:1, Two:2, Three:3}",  map.invert());
+    }
 }
