@@ -25,13 +25,14 @@ package functionalj.list;
 
 import static functionalj.list.AsFuncListHelper.funcListOf;
 import static functionalj.list.FuncList.deriveFrom;
+
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.IntObjToDoubleBiFunction;
 import functionalj.function.IntObjToIntBiFunction;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
+import functionalj.stream.IndexedItem;
 import functionalj.stream.markers.Sequential;
-import functionalj.tuple.IntTuple2;
 import lombok.val;
 
 public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
@@ -39,7 +40,7 @@ public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
     /**
      * @return  the stream of each value and index.
      */
-    public default FuncList<IntTuple2<DATA>> mapWithIndex() {
+    public default FuncList<IndexedItem<DATA>> mapWithIndex() {
         val funcList = funcListOf(this);
         return deriveFrom(funcList, stream -> stream.mapWithIndex());
     }

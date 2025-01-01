@@ -25,13 +25,15 @@ package functionalj.list.longlist;
 
 import static functionalj.list.longlist.LongFuncList.deriveToLong;
 import static functionalj.list.longlist.LongFuncList.deriveToObj;
+
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
+
 import functionalj.function.IntLongBiFunction;
 import functionalj.function.IntLongToLongFunctionPrimitive;
 import functionalj.function.LongObjBiFunction;
 import functionalj.list.FuncList;
-import functionalj.tuple.IntLongTuple;
+import functionalj.stream.longstream.IndexedLong;
 
 public interface LongFuncListWithMapWithIndex extends AsLongFuncList {
     
@@ -39,7 +41,7 @@ public interface LongFuncListWithMapWithIndex extends AsLongFuncList {
     /**
      * @return  the stream of each value and index.
      */
-    public default FuncList<IntLongTuple> mapWithIndex() {
+    public default FuncList<IndexedLong> mapWithIndex() {
         return deriveToObj(this, stream -> stream.mapWithIndex());
     }
     

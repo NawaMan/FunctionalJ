@@ -67,6 +67,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.GrowOnlyIntArray;
+import functionalj.stream.intstream.IndexedInt;
 import functionalj.stream.intstream.IntIterable;
 import functionalj.stream.intstream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -1399,14 +1400,19 @@ public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, I
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
      */
-    public default FuncList<IntIntTuple> query(IntPredicate check) {
-        return mapToObjWithIndex((index, data) -> check.test(data) ? IntIntTuple.of(index, data) : null).filterNonNull();
+    public default FuncList<IndexedInt> query(IntPredicate check) {
+        return mapToObjWithIndex(
+                (index, data) -> 
+                    check.test(data) 
+                    ? new IndexedInt(index, data) 
+                    : null)
+                .filterNonNull();
     }
     
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
      */
-    public default FuncList<IntIntTuple> query(IntAggregationToBoolean aggregation) {
+    public default FuncList<IndexedInt> query(IntAggregationToBoolean aggregation) {
         val check = aggregation.newAggregator();
         return query(check);
     }

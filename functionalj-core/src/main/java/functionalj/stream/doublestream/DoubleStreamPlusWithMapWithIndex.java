@@ -26,13 +26,13 @@ package functionalj.stream.doublestream;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
+
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntDoubleBiFunction;
 import functionalj.function.IntDoubleToDoubleFunctionPrimitive;
 import functionalj.function.IntDoubleToIntFunction;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.tuple.IntDoubleTuple;
 import lombok.val;
 
 public interface DoubleStreamPlusWithMapWithIndex {
@@ -43,13 +43,12 @@ public interface DoubleStreamPlusWithMapWithIndex {
     /**
      * @return  the stream of each value and index.
      */
-    public default StreamPlus<IntDoubleTuple> mapWithIndex() {
+    public default StreamPlus<IndexedDouble> mapWithIndex() {
         val index = new AtomicInteger();
         val streamPlus = doubleStreamPlus();
         return streamPlus.mapToObj(each -> {
             val currentIndex = index.getAndIncrement();
-            val tuple = IntDoubleTuple.of(currentIndex, each);
-            return tuple;
+            return new IndexedDouble(currentIndex, each);
         });
     }
     

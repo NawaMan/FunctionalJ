@@ -71,6 +71,7 @@ import functionalj.stream.SupplierBackedIterator;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.GrowOnlyLongArray;
+import functionalj.stream.longstream.IndexedLong;
 import functionalj.stream.longstream.LongIterable;
 import functionalj.stream.longstream.LongIteratorPlus;
 import functionalj.stream.longstream.LongStreamPlus;
@@ -78,7 +79,6 @@ import functionalj.stream.longstream.LongStreamPlusHelper;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
-import functionalj.tuple.IntLongTuple;
 import functionalj.tuple.LongLongTuple;
 import lombok.val;
 import nullablej.nullable.Nullable;
@@ -1392,14 +1392,19 @@ public interface LongFuncList extends AsLongFuncList, LongIterable, LongPredicat
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
      */
-    public default FuncList<IntLongTuple> query(LongPredicate check) {
-        return mapToObjWithIndex((index, data) -> check.test(data) ? IntLongTuple.of(index, data) : null).filterNonNull();
+    public default FuncList<IndexedLong> query(LongPredicate check) {
+        return mapToObjWithIndex(
+                (index, data) -> 
+                    check.test(data)
+                    ? new IndexedLong(index, data)
+                    : null)
+                .filterNonNull();
     }
     
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
      */
-    public default FuncList<IntLongTuple> query(LongAggregationToBoolean aggregation) {
+    public default FuncList<IndexedLong> query(LongAggregationToBoolean aggregation) {
         val check = aggregation.newAggregator();
         return query(check);
     }

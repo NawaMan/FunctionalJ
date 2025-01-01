@@ -73,13 +73,13 @@ import functionalj.stream.doublestream.DoubleIteratorPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlusHelper;
 import functionalj.stream.doublestream.GrowOnlyDoubleArray;
+import functionalj.stream.doublestream.IndexedDouble;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.DoubleDoubleTuple;
-import functionalj.tuple.IntDoubleTuple;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
@@ -1416,14 +1416,19 @@ public interface DoubleFuncList extends AsDoubleFuncList, DoubleIterable, Double
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
      */
-    public default FuncList<IntDoubleTuple> query(DoublePredicate check) {
-        return mapToObjWithIndex((index, data) -> check.test(data) ? IntDoubleTuple.of(index, data) : null).filterNonNull();
+    public default FuncList<IndexedDouble> query(DoublePredicate check) {
+        return mapToObjWithIndex(
+                (index, data) -> 
+                    check.test(data)
+                    ? new IndexedDouble(index, data)
+                    : null)
+                .filterNonNull();
     }
     
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
      */
-    public default FuncList<IntDoubleTuple> query(DoubleAggregationToBoolean aggregation) {
+    public default FuncList<IndexedDouble> query(DoubleAggregationToBoolean aggregation) {
         val check = aggregation.newAggregator();
         return query(check);
     }

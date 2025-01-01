@@ -26,6 +26,7 @@ package functionalj.list;
 import static functionalj.TestHelper.assertAsString;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.theDouble;
+import static functionalj.lens.Access.theIndexedDouble;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theLong;
 import static functionalj.ref.Run.With;
@@ -36,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,11 +63,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
-import java.util.stream.Collector.Characteristics;
+
 import org.junit.Test;
+
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.function.aggregator.DoubleAggregation;
@@ -1470,7 +1474,8 @@ public class DoubleFuncListTest {
         run(DoubleFuncList.of(One, Two, Three, Four, Five, Six), list -> {
             assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0, 6.0]", list);
             assertAsString("[(2,3.0), (5,6.0)]", list.query(theDouble.remainderBy(3).thatIsZero()));
-            assertAsString("[1.0, 2.0, 3.0, 4.0, 5.0, 6.0]", list);
+            assertAsString("[2, 5]",             list.query(theDouble.remainderBy(3).thatIsZero()).map(theIndexedDouble.index()));
+            assertAsString("[3.0, 6.0]",         list.query(theDouble.remainderBy(3).thatIsZero()).map(theIndexedDouble.item()));
         });
     }
     
@@ -2694,6 +2699,8 @@ public class DoubleFuncListTest {
     public void testMapWithIndex() {
         run(DoubleFuncList.of(One, Three, Five, Seven, Eleven), list -> {
             assertAsString("[(0,1.0), (1,3.0), (2,5.0), (3,7.0), (4,11.0)]", list.mapWithIndex());
+            assertAsString("[0, 1, 2, 3, 4]",                                list.mapWithIndex().map(theIndexedDouble.index()));
+            assertAsString("[1.0, 3.0, 5.0, 7.0, 11.0]",                     list.mapWithIndex().map(theIndexedDouble.item()));
         });
     }
     

@@ -26,15 +26,17 @@ package functionalj.list.doublelist;
 import static functionalj.list.doublelist.DoubleFuncList.deriveToDouble;
 import static functionalj.list.doublelist.DoubleFuncList.deriveToInt;
 import static functionalj.list.doublelist.DoubleFuncList.deriveToObj;
+
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
+
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.IntDoubleBiFunction;
 import functionalj.function.IntDoubleToDoubleFunctionPrimitive;
 import functionalj.function.IntDoubleToIntFunction;
 import functionalj.list.FuncList;
 import functionalj.list.intlist.IntFuncList;
-import functionalj.tuple.IntDoubleTuple;
+import functionalj.stream.doublestream.IndexedDouble;
 
 public interface DoubleFuncListWithMapWithIndex extends AsDoubleFuncList {
     
@@ -42,7 +44,7 @@ public interface DoubleFuncListWithMapWithIndex extends AsDoubleFuncList {
     /**
      * @return  the stream of each value and index.
      */
-    public default FuncList<IntDoubleTuple> mapWithIndex() {
+    public default FuncList<IndexedDouble> mapWithIndex() {
         return deriveToObj(this, stream -> stream.mapWithIndex());
     }
     

@@ -29,6 +29,7 @@ import static functionalj.function.Func.itself;
 import static functionalj.functions.StrFuncs.join;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.$S;
+import static functionalj.lens.Access.theIndexedItem;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
 import static functionalj.lens.LensTest.Car.theCar;
@@ -91,6 +92,7 @@ import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
+import functionalj.stream.IndexedItem;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.ZipWithOption;
 import functionalj.stream.collect.CollectorToIntPlus;
@@ -1362,9 +1364,9 @@ public class FuncListTest {
     @Test
     public void testShuffle() {
         run(FuncList.of(One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten), list -> {
-            assertAsString("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
+            assertAsString ("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
             assertNotEquals("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list.shuffle().toString());
-            assertAsString("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
+            assertAsString ("[One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten]", list);
         });
     }
     
@@ -1374,6 +1376,11 @@ public class FuncListTest {
             assertAsString("[One, Two, Three, Four, Five, Six]", list);
             assertAsString("[(0,One), (1,Two), (5,Six)]", list.query(value -> value.length() == 3));
             assertAsString("[One, Two, Three, Four, Five, Six]", list);
+            
+            assertAsString("[0, 1, 5]",       list.query(value -> value.length() == 3).map(IndexedItem::index));
+            assertAsString("[One, Two, Six]", list.query(value -> value.length() == 3).map(IndexedItem::item));
+            assertAsString("[0, 1, 5]",       list.query(value -> value.length() == 3).map(theIndexedItem.index()));
+            assertAsString("[One, Two, Six]", list.query(value -> value.length() == 3).map(theIndexedItem.item()));
         });
     }
     
@@ -2677,6 +2684,8 @@ public class FuncListTest {
     public void testMapWithIndex() {
         run(FuncList.of(One, Three, Five, Seven, Eleven), list -> {
             assertAsString("[(0,One), (1,Three), (2,Five), (3,Seven), (4,Eleven)]", list.mapWithIndex());
+            assertAsString("[0, 1, 2, 3, 4]",                                       list.mapWithIndex().map(theIndexedItem.index()));
+            assertAsString("[One, Three, Five, Seven, Eleven]",                     list.mapWithIndex().map(theIndexedItem.item()));
         });
     }
     
