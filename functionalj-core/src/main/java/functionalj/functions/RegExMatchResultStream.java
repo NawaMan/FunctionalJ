@@ -27,9 +27,11 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.MatchResult;
 import java.util.stream.Stream;
 import functionalj.function.IntObjBiFunction;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
 
 @FunctionalInterface
 public interface RegExMatchResultStream extends StreamPlus<RegExMatchResult> {
@@ -45,6 +47,42 @@ public interface RegExMatchResultStream extends StreamPlus<RegExMatchResult> {
     }
     
     public StreamPlus<RegExMatchResult> stream();
+    
+    public default IntStreamPlus indexes() {
+        return stream().mapToInt(RegExMatchResult::index);
+    }
+    
+    public default StreamPlus<MatchResult> results() {
+        return stream().map(RegExMatchResult::result);
+    }
+    
+    public default IntStreamPlus starts() {
+        return stream().mapToInt(RegExMatchResult::start);
+    }
+    
+    public default IntStreamPlus starts(int group) {
+        return stream().mapToInt(r -> r.start(group));
+    }
+    
+    public default IntStreamPlus ends() {
+        return stream().mapToInt(RegExMatchResult::end);
+    }
+    
+    public default IntStreamPlus ends(int group) {
+        return stream().mapToInt(r -> r.end(group));
+    }
+    
+    public default StreamPlus<String> groups() {
+        return stream().map(RegExMatchResult::group);
+    }
+    
+    public default StreamPlus<String> groups(int group) {
+        return stream().map(r -> r.group(group));
+    }
+    
+    public default IntStreamPlus groupCounts() {
+        return stream().mapToInt(RegExMatchResult::groupCount);
+    }
     
     public default StreamPlus<String> texts() {
         return stream().map(RegExMatchResult::text);

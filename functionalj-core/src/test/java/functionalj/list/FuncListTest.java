@@ -3009,6 +3009,6 @@ public class FuncListTest {
     @Test
     public void testCapture() {
         val pattern = Pattern.compile("(?<key>[^:]+): (?<value>.*)");
-        assertAsString("[{value:Nawa, key:name}]", FuncList.of("name: Nawa").map(theString.capture(pattern)));
+        assertAsString("[{value:Nawa, key:name}]", FuncList.of("name: Nawa").flatMap(theString.capture(pattern).toFuncList()));
     }
 }
