@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -50,6 +51,7 @@ import functionalj.map.FuncMap;
 import functionalj.map.ImmutableFuncMap;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
+import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface AsStreamPlusWithConversion<DATA> {
@@ -378,6 +380,58 @@ public interface AsStreamPlusWithConversion<DATA> {
         val streamPlus    = streamPlus();
         val index         = new AtomicInteger();
         val theMap        = streamPlus.collect(Collectors.toMap(Func.it(), __-> index.getAndIncrement()));
+        return ImmutableFuncMap.from(theMap);
+    }
+    
+    /**
+     * Create a map from the data using the mapper to tuple.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     * This is actually useful if the data is already a Tuple.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMapTuple(Function<DATA, Tuple2<KEY, VALUE>> mapper) {
+        val streamPlus = streamPlus();
+        val theMap = streamPlus.map(mapper).collect(Collectors.toMap(Tuple2::_1, Tuple2::_2));
+        return ImmutableFuncMap.from(theMap);
+    }
+    
+    /**
+     * Create a map from the data using the mapper to tuple.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     * This is actually useful if the data is already a Tuple.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMapTuple(Function<DATA, Tuple2<KEY, VALUE>> mapper, BinaryOperator<VALUE> mergeFunction) {
+        val streamPlus = streamPlus();
+        val theMap = streamPlus.map(mapper).collect(Collectors.toMap(Tuple2::_1, Tuple2::_2, mergeFunction));
+        return ImmutableFuncMap.from(theMap);
+    }
+    
+    /**
+     * Create a map from the data using the mapper to tuple.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     * This is actually useful if the data is already a Tuple.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMapEntry(Function<DATA, Map.Entry<KEY, VALUE>> mapper) {
+        val streamPlus = streamPlus();
+        val theMap = streamPlus.map(mapper).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return ImmutableFuncMap.from(theMap);
+    }
+    
+    /**
+     * Create a map from the data using the mapper to tuple.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     * This is actually useful if the data is already a Tuple.
+     */
+    @Eager
+    @Terminal
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMapEntry(Function<DATA, Map.Entry<KEY, VALUE>> mapper, BinaryOperator<VALUE> mergeFunction) {
+        val streamPlus = streamPlus();
+        val theMap = streamPlus.map(mapper).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
         return ImmutableFuncMap.from(theMap);
     }
     
