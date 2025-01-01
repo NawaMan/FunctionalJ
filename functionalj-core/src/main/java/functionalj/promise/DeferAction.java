@@ -132,6 +132,8 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return DeferAction.from(supplier).start();
     }
     
+    //== AnyOf or Race ==
+    
     @SafeVarargs
     public static <D> RaceResult<D> AnyOf(StartableAction<D>... actions) {
         return Race(FuncList.of(actions));
@@ -150,7 +152,275 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return Race(actions);
     }
     
+    //== AllOf - HasPromise ==
+    // `AllOf` is alias for `from`
+    
+    /**
+     * Creates a {@code DeferAction} from two {@code HasPromise} instances and a {@code Func2} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param merger    the {@code Func2} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2> DeferAction<D> AllOf(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    Func2<T1, T2, D> merger) {
+        return from(promise1, promise2, merger);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from three {@code HasPromise} instances and a {@code Func3} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param merger    the {@code Func3} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3> DeferAction<D> AllOf(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    Func3<T1, T2, T3, D> merger) {
+        return from(promise1, promise2, promise3, merger);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from four {@code HasPromise} instances and a {@code Func4} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param merger    the {@code Func4} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4> DeferAction<D> AllOf(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    Func4<T1, T2, T3, T4, D> merger) {
+        return from(promise1, promise2, promise3, promise4, merger);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from five {@code HasPromise} instances and a {@code Func5} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param merger    the {@code Func5} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5> DeferAction<D> AllOf(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    Func5<T1, T2, T3, T4, T5, D> merger) {
+        return from(promise1, promise2, promise3, promise4, promise5, merger);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from six {@code HasPromise} instances and a {@code Func6} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param promise6  the sixth promise.
+     * @param merger    the {@code Func6} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6> DeferAction<D> AllOf(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    Func6<T1, T2, T3, T4, T5, T6, D> merger) {
+        return from(promise1, promise2, promise3, promise4, promise5, promise6, merger);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from seven {@code HasPromise} instances and a {@code Func7} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param promise6  the sixth promise.
+     * @param promise7  the seventh promise.
+     * @param merger    the {@code Func7} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7> DeferAction<D> AllOf(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    HasPromise<T7> promise7,
+                    Func7<T1, T2, T3, T4, T5, T6, T7, D> merger) {
+        return from(promise1, promise2, promise3, promise4, promise5, promise6, promise7, merger);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from eight {@code HasPromise} instances and a {@code Func8} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param promise6  the sixth promise.
+     * @param promise7  the seventh promise.
+     * @param promise8  the eighth promise.
+     * @param merger    the {@code Func8} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7, T8> DeferAction<D> AllOf(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    HasPromise<T7> promise7,
+                    HasPromise<T8> promise8,
+                    Func8<T1, T2, T3, T4, T5, T6, T7, T8, D> merger) {
+        return from(promise1, promise2, promise3, promise4, promise5, promise6, promise7, promise8, merger);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from nine {@code HasPromise} instances and a {@code Func9} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1  the first promise.
+     * @param promise2  the second promise.
+     * @param promise3  the third promise.
+     * @param promise4  the fourth promise.
+     * @param promise5  the fifth promise.
+     * @param promise6  the sixth promise.
+     * @param promise7  the seventh promise.
+     * @param promise8  the eighth promise.
+     * @param promise9  the ninth promise.
+     * @param merger    the {@code Func9} function that merges the results of the promises.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7, T8, T9> DeferAction<D> AllOf(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    HasPromise<T7> promise7,
+                    HasPromise<T8> promise8,
+                    HasPromise<T9> promise9,
+                    Func9<T1, T2, T3, T4, T5, T6, T7, T8, T9, D> merger) {
+        return from(promise1, promise2, promise3, promise4, promise5, promise6, promise7, promise8, promise9, merger);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from ten {@code HasPromise} instances and a {@code Func10} merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D> the type of the result produced by the merger function.
+     * 
+     * @param promise1   the first promise.
+     * @param promise2   the second promise.
+     * @param promise3   the third promise.
+     * @param promise4   the fourth promise.
+     * @param promise5   the fifth promise.
+     * @param promise6   the sixth promise.
+     * @param promise7   the seventh promise.
+     * @param promise8   the eighth promise.
+     * @param promise9   the ninth promise.
+     * @param promise10  the tenth promise.
+     * @param merger     the {@code Func10} function that merges the results of the promises.
+     * @return           a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> DeferAction<D> AllOf(
+                    HasPromise<T1> promise1,
+                    HasPromise<T2> promise2,
+                    HasPromise<T3> promise3,
+                    HasPromise<T4> promise4,
+                    HasPromise<T5> promise5,
+                    HasPromise<T6> promise6,
+                    HasPromise<T7> promise7,
+                    HasPromise<T8> promise8,
+                    HasPromise<T9> promise9,
+                    HasPromise<T10> promise10,
+                    Func10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, D> merger) {
+        return from(promise1, promise2, promise3, promise4, promise5, promise6, promise7, promise8, promise9, promise10, merger);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from an array of {@code HasPromise} instances and a merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D>  the type of the result produced by the merger function.
+     * @param <T>  the type of the results provided by the promises.
+     * 
+     * @param merger    a {@code Func1} function that takes a {@code FuncList<T>} of results and merges them into a type {@code D}.
+     * @param promises  a varargs array of {@code HasPromise<T>} instances.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T> DeferAction<D> AllOf(Func1<FuncList<T>, D> merger, HasPromise<T> ... promises) {
+        return from(merger, promises);
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from an array of {@code HasPromise} instances and a merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D>  the type of the result produced by the merger function.
+     * @param <T>  the type of the results provided by the promises.
+     * 
+     * @param merger    a {@code Func1} function that takes a {@code FuncList<T>} of results and merges them into a type {@code D}.
+     * @param promises  a varargs array of {@code HasPromise<T>} instances.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T> DeferAction<D> AllOf(Func1<FuncList<T>, D> merger, FuncList<HasPromise<T>> promises) {
+        return from(merger, promises);
+    }
+    
     //== From - HasPromise ==
+    // `from` is alias for `AllOf`
     
     /**
      * Creates a {@code DeferAction} from two {@code HasPromise} instances and a {@code Func2} merger function.
@@ -522,6 +792,28 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         });
         val promiseList = listOf(promises);
         val combiner = new CombineResult(promiseList, merge);
+        val action = combiner.getDeferAction();
+        return action;
+    }
+    
+    /**
+     * Creates a {@code DeferAction} from an array of {@code HasPromise} instances and a merger function.
+     * This method combines the results of the promises once they are fulfilled and applies the merger function to them.
+     * 
+     * @param <D>  the type of the result produced by the merger function.
+     * @param <T>  the type of the results provided by the promises.
+     * 
+     * @param merger    a {@code Func1} function that takes a {@code FuncList<T>} of results and merges them into a type {@code D}.
+     * @param promises  a varargs array of {@code HasPromise<T>} instances.
+     * @return          a {@code DeferAction<D>} that will complete with the result of applying the merger to the results of the promises.
+     */
+    public static <D, T> DeferAction<D> from(Func1<FuncList<T>, D> merger, FuncList<HasPromise<T>> promises) {
+        val merge = f((Result<T>[] results) -> {
+            val resultList = listOf(results).map(Result::get);
+            val mergedResult = merger.apply(resultList);
+            return (Result<D>) mergedResult;
+        });
+        val combiner = new CombineResult(promises, merge);
         val action = combiner.getDeferAction();
         return action;
     }
