@@ -38,7 +38,7 @@ import lombok.val;
 @FunctionalInterface
 public interface FuncMapAccess<HOST, KEY, VALUE, KEYACCESS extends AnyAccess<HOST, KEY>, VALUEACCESS extends AnyAccess<HOST, VALUE>> extends AccessParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> {
     
-    public static <H, K, V, KA extends AnyAccess<H, K>, VA extends AnyAccess<H, V>> FuncMapAccess<H, K, V, KA, VA> of(Function<H, Map<K, V>> mapAccess, Function<Function<H, K>, KA> createKeyAccess, Function<Function<H, V>, VA> createValueAccess) {
+    public static <H, K, V, KA extends AnyAccess<H, K>, VA extends AnyAccess<H, V>> FuncMapAccess<H, K, V, KA, VA> of(Function<H, FuncMap<K, V>> mapAccess, Function<Function<H, K>, KA> createKeyAccess, Function<Function<H, V>, VA> createValueAccess) {
         val accessParameterized2 = new AccessParameterized2<H, FuncMap<K, V>, K, V, KA, VA>() {
         
             @Override

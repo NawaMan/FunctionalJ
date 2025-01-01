@@ -25,6 +25,7 @@ package functionalj.functions;
 
 import static functionalj.function.Absent.__;
 import static java.util.stream.Collectors.joining;
+
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,16 +41,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
 import functionalj.function.Func;
 import functionalj.function.Func1;
+import functionalj.function.Func10;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.Func7;
+import functionalj.function.Func8;
+import functionalj.function.Func9;
 import functionalj.functions.RegExMatchResult.RegExMatchResultStreamAccess;
 import functionalj.lens.lenses.FuncListAccess;
 import functionalj.lens.lenses.FuncMapAccess;
+import functionalj.lens.lenses.StreamPlusAccess;
 import functionalj.lens.lenses.StringAccess;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
@@ -65,6 +72,13 @@ public class StrFuncs {
     
     @SuppressWarnings("unused")
     private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
+    
+    /**
+     * Create a regular expression pattern from a string.
+     **/
+    public static Pattern regex(String pattern) {
+        return Pattern.compile(pattern);
+    }
     
     /**
      * Return the string representation of the given object or null if the object is null.
@@ -100,12 +114,35 @@ public class StrFuncs {
         return isBlank(str) ? elseSupplier.get() : str;
     }
     
+    public static Func1<String, String> whenEmpty(String elseValue) {
+        return str -> isEmpty(str) ? elseValue : str;
+    }
+    
+    public static Func1<String, String> whenBlank(String elseValue) {
+        return str -> isBlank(str) ? elseValue : str;
+    }
+    
+    public static Func1<String, String> whenEmpty(Supplier<String> elseSupplier) {
+        return str -> isEmpty(str) ? elseSupplier.get() : str;
+    }
+    
+    public static Func1<String, String> whenBlank(Supplier<String> elseSupplier) {
+        return str -> isBlank(str) ? elseSupplier.get() : str;
+    }
+    
     public static Func1<String, String> escapeJava() {
         return StrFuncs::escapeJava;
     }
     
     public static String escapeJava(String s) {
-        return s.replace("\\", "\\\\").replace("\t", "\\t").replace("\b", "\\b").replace("\n", "\\n").replace("\r", "\\r").replace("\f", "\\f").replace("\'", "\\'").replace("\"", "\\\"");
+        return s.replace("\\", "\\\\")
+                .replace("\t", "\\t")
+                .replace("\b", "\\b")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\f", "\\f")
+                .replace("\'", "\\'")
+                .replace("\"", "\\\"");
     }
     
     /**
@@ -155,6 +192,30 @@ public class StrFuncs {
         return (i1, i2, i3, i4, i5, i6) -> toStr(i1) + toStr(i2) + toStr(i3) + toStr(i4) + toStr(i5) + toStr(i6);
     }
     
+    public static <I1, I2, I3, I4, I5, I6, I7> Func7<I1, I2, I3, I4, I5, I6, I7, String> concat7() {
+        return (i1, i2, i3, i4, i5, i6, i7) -> {
+            return toStr(i1) + toStr(i2) + toStr(i3) + toStr(i4) + toStr(i5) + toStr(i6) + toStr(i7);
+        };
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Func8<I1, I2, I3, I4, I5, I6, I7, I8, String> concat8() {
+        return (i1, i2, i3, i4, i5, i6, i7, i8) -> {
+            return toStr(i1) + toStr(i2) + toStr(i3) + toStr(i4) + toStr(i5) + toStr(i6) + toStr(i7) + toStr(i8);
+        };
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, String> concat9() {
+        return (i1, i2, i3, i4, i5, i6, i7, i8, i9) -> {
+            return toStr(i1) + toStr(i2) + toStr(i3) + toStr(i4) + toStr(i5) + toStr(i6) + toStr(i7) + toStr(i8) + toStr(i9);
+        };
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, String> concat10() {
+        return (i1, i2, i3, i4, i5, i6, i7, i8, i9, i10) -> {
+            return toStr(i1) + toStr(i2) + toStr(i3) + toStr(i4) + toStr(i5) + toStr(i6) + toStr(i7) + toStr(i8) + toStr(i9) + toStr(i10);
+        };
+    }
+    
     public static String joinNonNull(String delimiter, String... parts) {
         return Stream.of(parts).filter(Objects::nonNull).collect(joining(delimiter));
     }
@@ -168,23 +229,102 @@ public class StrFuncs {
     }
     
     public static <I1, I2> Func2<I1, I2, String> join2(String delimiter) {
-        return (i1, i2) -> toStr(i1) + delimiter + toStr(i2);
+        return (i1, i2) -> {
+            return toStr(i1) + delimiter + 
+                   toStr(i2);
+        };
     }
     
     public static <I1, I2, I3> Func3<I1, I2, I3, String> join3(String delimiter) {
-        return (i1, i2, i3) -> toStr(i1) + delimiter + toStr(i2) + delimiter + toStr(i3);
+        return (i1, i2, i3) -> {
+            return toStr(i1) + delimiter + 
+                   toStr(i2) + delimiter + 
+                   toStr(i3);
+        };
     }
     
     public static <I1, I2, I3, I4> Func4<I1, I2, I3, I4, String> join4(String delimiter) {
-        return (i1, i2, i3, i4) -> toStr(i1) + delimiter + toStr(i2) + delimiter + toStr(i3) + delimiter + toStr(i4);
+        return (i1, i2, i3, i4) -> {
+            return toStr(i1) + delimiter + 
+                   toStr(i2) + delimiter + 
+                   toStr(i3) + delimiter + 
+                   toStr(i4);
+        };
     }
     
     public static <I1, I2, I3, I4, I5> Func5<I1, I2, I3, I4, I5, String> join5(String delimiter) {
-        return (i1, i2, i3, i4, i5) -> toStr(i1) + delimiter + toStr(i2) + delimiter + toStr(i3) + delimiter + toStr(i4) + delimiter + toStr(i5);
+        return (i1, i2, i3, i4, i5) -> {
+            return toStr(i1) + delimiter + 
+                   toStr(i2) + delimiter + 
+                   toStr(i3) + delimiter + 
+                   toStr(i4) + delimiter + 
+                   toStr(i5);
+        };
     }
     
     public static <I1, I2, I3, I4, I5, I6> Func6<I1, I2, I3, I4, I5, I6, String> join6(String delimiter) {
-        return (i1, i2, i3, i4, i5, i6) -> toStr(i1) + delimiter + toStr(i2) + delimiter + toStr(i3) + delimiter + toStr(i4) + delimiter + toStr(i5) + delimiter + toStr(i6);
+        return (i1, i2, i3, i4, i5, i6) -> {
+            return toStr(i1) + delimiter + 
+                   toStr(i2) + delimiter + 
+                   toStr(i3) + delimiter + 
+                   toStr(i4) + delimiter + 
+                   toStr(i5) + delimiter + 
+                   toStr(i6);
+        };
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7> Func7<I1, I2, I3, I4, I5, I6, I7, String> join7(String delimiter) {
+        return (i1, i2, i3, i4, i5, i6, i7) -> {
+            return toStr(i1) + delimiter + 
+                   toStr(i2) + delimiter + 
+                   toStr(i3) + delimiter + 
+                   toStr(i4) + delimiter + 
+                   toStr(i5) + delimiter + 
+                   toStr(i6) + delimiter + 
+                   toStr(i7);
+        };
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Func8<I1, I2, I3, I4, I5, I6, I7, I8, String> join8(String delimiter) {
+        return (i1, i2, i3, i4, i5, i6, i7, i8) -> {
+            return toStr(i1) + delimiter + 
+                   toStr(i2) + delimiter + 
+                   toStr(i3) + delimiter + 
+                   toStr(i4) + delimiter + 
+                   toStr(i5) + delimiter + 
+                   toStr(i6) + delimiter + 
+                   toStr(i7) + delimiter + 
+                   toStr(i8);
+        };
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, String> join9(String delimiter) {
+        return (i1, i2, i3, i4, i5, i6, i7, i8, i9) -> {
+            return toStr(i1) + delimiter + 
+                   toStr(i2) + delimiter + 
+                   toStr(i3) + delimiter + 
+                   toStr(i4) + delimiter + 
+                   toStr(i5) + delimiter + 
+                   toStr(i6) + delimiter + 
+                   toStr(i7) + delimiter + 
+                   toStr(i8) + delimiter + 
+                   toStr(i9);
+        };
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, String> join10(String delimiter) {
+        return (i1, i2, i3, i4, i5, i6, i7, i8, i9, i10) -> {
+            return toStr(i1) + delimiter + 
+                   toStr(i2) + delimiter + 
+                   toStr(i3) + delimiter + 
+                   toStr(i4) + delimiter + 
+                   toStr(i5) + delimiter + 
+                   toStr(i6) + delimiter + 
+                   toStr(i7) + delimiter + 
+                   toStr(i8) + delimiter + 
+                   toStr(i9) + delimiter + 
+                   toStr(i10);
+        };
     }
     
     /**
@@ -300,6 +440,22 @@ public class StrFuncs {
         return (i1, i2, i3, i4, i5, i6) -> String.format(template, i1, i2, i3, i4, i5, i6);
     }
     
+    public static <I1, I2, I3, I4, I5, I6, I7> Func7<I1, I2, I3, I4, I5, I6, I7, Object> formatWith7(String template) {
+        return (i1, i2, i3, i4, i5, i6, i7) -> String.format(template, i1, i2, i3, i4, i5, i6, i7);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Func8<I1, I2, I3, I4, I5, I6, I7, I8, Object> formatWith8(String template) {
+        return (i1, i2, i3, i4, i5, i6, i7, i8) -> String.format(template, i1, i2, i3, i4, i5, i6, i7, i8);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Func9<I1, I2, I3, I4, I5, I6, I7, I8, I9, Object> formatWith9(String template) {
+        return (i1, i2, i3, i4, i5, i6, i7, i8, i9) -> String.format(template, i1, i2, i3, i4, i5, i6, i7, i8, i9);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9, I10> Func10<I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, Object> formatWith10(String template) {
+        return (i1, i2, i3, i4, i5, i6, i7, i8, i9, i10) -> String.format(template, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10);
+    }
+    
     public static <I1> Func2<String, I1, String> strFormat1() {
         return (template, i1) -> String.format(template, i1);
     }
@@ -320,7 +476,23 @@ public class StrFuncs {
         return (template, i1, i2, i3, i4, i5) -> String.format(template, i1, i2, i3, i4, i5);
     }
     
-    // TODO Rethink this at some point ..... should this be constance when no generic?
+    public static <I1, I2, I3, I4, I5, I6> Func7<String, I1, I2, I3, I4, I5, I6, String> strFormat6() {
+        return (template, i1, i2, i3, i4, i5, i6) -> String.format(template, i1, i2, i3, i4, i5, i6);
+    }
+    
+    
+    public static <I1, I2, I3, I4, I5, I6, I7> Func8<String, I1, I2, I3, I4, I5, I6, I7, String> strFormat7() {
+        return (template, i1, i2, i3, i4, i5, i6, i7) -> String.format(template, i1, i2, i3, i4, i5, i6, i7);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8> Func9<String, I1, I2, I3, I4, I5, I6, I7, I8, String> strFormat8() {
+        return (template, i1, i2, i3, i4, i5, i6, i7, i8) -> String.format(template, i1, i2, i3, i4, i5, i6, i7, i8);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, I7, I8, I9> Func10<String, I1, I2, I3, I4, I5, I6, I7, I8, I9, String> strFormat9() {
+        return (template, i1, i2, i3, i4, i5, i6, i7, i8, i9) -> String.format(template, i1, i2, i3, i4, i5, i6, i7, i8, i9);
+    }
+    
     public static Func3<String, String, String, String> replaceAll() {
         return (str, regex, replacement) -> str.replaceAll(regex, replacement);
     }
@@ -373,11 +545,9 @@ public class StrFuncs {
         val offset = new AtomicInteger(0);
         val isLast = new AtomicReference<Boolean>(null);
         Iterable<String> iterable = new Iterable<String>() {
-        
             @Override
             public Iterator<String> iterator() {
                 return new Iterator<String>() {
-        
                     @Override
                     public boolean hasNext() {
                         val find = matcher.find();
@@ -391,7 +561,6 @@ public class StrFuncs {
                         }
                         return find;
                     }
-        
                     @Override
                     public String next() {
                         val isLastBoolean = isLast.get();
@@ -431,6 +600,9 @@ public class StrFuncs {
             return str;
         return repeat(prefix, width - str.length()) + str;
     }
+    
+    //== Grab ==
+    //  Getting any text that match the given RegEx. For example, grab("[0-9]+") will grab all the numbers from a string.
     
     public static <TEXT extends CharSequence> FuncListAccess<TEXT, String, StringAccess<TEXT>> grab(String regex) {
         return grab(regex, -1);
@@ -472,16 +644,13 @@ public class StrFuncs {
     
     private static IteratorPlus<String> createMatchIterator(final java.util.regex.Matcher matcher) {
         return new IteratorPlus<String>() {
-        
             @Override
             public Iterator<String> asIterator() {
                 return new Iterator<String>() {
-        
                     @Override
                     public boolean hasNext() {
                         return matcher.find();
                     }
-        
                     @Override
                     public String next() {
                         return matcher.group();
@@ -490,6 +659,12 @@ public class StrFuncs {
             }
         };
     }
+    
+    //== Match ==
+    // Getting any text that match the given RegEx and return as a RegExMatchResult.
+    // This is similar to grab but the result contains more than the matching text.
+    // It returns RegExMatch contains everything in Matcher such as start, end, group and others.
+    // For example, grab("[0-9]+") will grab all the numbers from a string.
     
     public static <TEXT extends CharSequence> RegExMatchResultStreamAccess<TEXT> matches(String regex) {
         return matches(regex, -1);
@@ -525,20 +700,18 @@ public class StrFuncs {
     public static RegExMatchResultStream matches(CharSequence str, Pattern pattern) {
         if (str == null || (str.length() == 0))
             return RegExMatchResultStream.empty;
-        val matcher = pattern.matcher(str);
-        val source = Func.lazy(() -> str.toString());
-        val index = new AtomicInteger();
-        Iterable<RegExMatchResult> iterable = new Iterable<RegExMatchResult>() {
         
+        val matcher  = pattern.matcher(str);
+        val source   = Func.lazy(() -> str.toString());
+        val index    = new AtomicInteger();
+        val iterable = new Iterable<RegExMatchResult>() {
             @Override
             public Iterator<RegExMatchResult> iterator() {
                 return new Iterator<RegExMatchResult>() {
-        
                     @Override
                     public boolean hasNext() {
                         return matcher.find();
                     }
-        
                     @Override
                     public RegExMatchResult next() {
                         return new RegExMatchResult(source, pattern, index.getAndIncrement(), matcher.toMatchResult());
@@ -548,6 +721,81 @@ public class StrFuncs {
         };
         return RegExMatchResultStream.from(StreamSupport.stream(iterable.spliterator(), false));
     }
+    
+    //== Capture ==
+    // Getting capture groups with Regular Expression.
+    // Example:
+    //         assertAsString(
+    //              "[{value:Nawa, key:name}]", 
+    //              capture("name: Nawa", regex("(?<key>[^: ]+): (?<value>[^, ]*)")));
+    
+    public static <TEXT extends CharSequence> 
+            StreamPlusAccess<TEXT, FuncMap<String, String>, FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>>> capture(String regex) {
+        return capture(regex, -1);
+    }
+    
+    public static <TEXT extends CharSequence> 
+            StreamPlusAccess<TEXT, FuncMap<String, String>, FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>>> capture(String regex, RegExFlag flags) {
+        return capture(regex, flags.getIntValue());
+    }
+    
+    public static <TEXT extends CharSequence> 
+            StreamPlusAccess<TEXT, FuncMap<String, String>, FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>>> capture(String regex, int flags) {
+        val pattern = (flags < 0) ? Pattern.compile(regex.toString()) : Pattern.compile(regex.toString(), flags);
+        return capture(pattern);
+    }
+    
+    public static <TEXT extends CharSequence> 
+            StreamPlusAccess<TEXT, FuncMap<String, String>, FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>>> capture(Pattern pattern) {
+        return StreamPlusAccess.of(
+                text   -> capture(text, pattern),
+                access -> FuncMapAccess.of(access, StringAccess::of, StringAccess::of));
+    }
+    
+    public static StreamPlus<FuncMap<String, String>> capture(CharSequence text, String regex) {
+        return capture(text, regex, -1);
+    }
+    
+    public static StreamPlus<FuncMap<String, String>> capture(CharSequence text, String regex, RegExFlag flags) {
+        return capture(text, regex, flags.getIntValue());
+    }
+    
+    public static StreamPlus<FuncMap<String, String>> capture(CharSequence text, String regex, int flags) {
+        if (text == null || (text.length() == 0))
+            return StreamPlus.empty();
+        
+        val pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
+        return capture(text, pattern);
+    }
+    
+    public static StreamPlus<FuncMap<String, String>> capture(CharSequence text, Pattern pattern) {
+        if (text == null || (text.length() == 0))
+            return StreamPlus.empty();
+        
+        val matcher  = pattern.matcher(text);
+        val regEx    = pattern.pattern();
+        val iterable = new Iterable<FuncMap<String, String>>() {
+            @Override
+            public Iterator<FuncMap<String, String>> iterator() {
+                return new Iterator<FuncMap<String, String>>() {
+                    @Override
+                    public boolean hasNext() {
+                        return matcher.find();
+                    }
+                    @Override
+                    public FuncMap<String, String> next() {
+                        return grab(regEx, StrFuncs.GROUP_NAME_PATTERN)
+                                .map  (each -> each.substring(3, each.length() - 1))
+                                .toMap(name -> name, name -> matcher.group(name))
+                                ;
+                    }
+                };
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+    }
+    
+    //== Template ==
     
     /**
      * Create a string using the given template and the replacer.
@@ -572,7 +820,8 @@ public class StrFuncs {
     public static String template(CharSequence str, Func1<String, Object> replacer) {
         if (str == null || (str.length() == 0))
             return "";
-        StringBuffer buffer = new StringBuffer();
+        
+        val buffer = new StringBuffer();
         val pattern = Pattern.compile("(?<!\\$)\\$\\{(?<capture>[a-zA-Z][a-zA-Z0-9_]+[ ]*)\\}");
         val matcher = pattern.matcher(str);
         while (matcher.find()) {
@@ -585,44 +834,4 @@ public class StrFuncs {
         return buffer.toString().replace("$$", "$");
     }
     
-    public static <TEXT extends CharSequence> FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>> capture(String regex) {
-        return capture(regex, -1);
-    }
-    
-    public static <TEXT extends CharSequence> FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>> capture(String regex, RegExFlag flags) {
-        return capture(regex, flags.getIntValue());
-    }
-    
-    public static <TEXT extends CharSequence> FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>> capture(String regex, int flags) {
-        val pattern = (flags < 0) ? Pattern.compile(regex.toString()) : Pattern.compile(regex.toString(), flags);
-        return capture(pattern);
-    }
-    
-    public static <TEXT extends CharSequence> FuncMapAccess<TEXT, String, String, StringAccess<TEXT>, StringAccess<TEXT>> capture(Pattern pattern) {
-        return FuncMapAccess.of(strValue -> capture(strValue, pattern), StringAccess::of, StringAccess::of);
-    }
-    
-    public static Map<String, String> capture(CharSequence text, String regex) {
-        return capture(text, regex, -1);
-    }
-    
-    public static Map<String, String> capture(CharSequence text, String regex, RegExFlag flags) {
-        return capture(text, regex, flags.getIntValue());
-    }
-    
-    public static Map<String, String> capture(CharSequence text, String regex, int flags) {
-        if (text == null || (text.length() == 0))
-            return FuncMap.empty();
-        val pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
-        return capture(text, pattern);
-    }
-    
-    public static Map<String, String> capture(CharSequence text, Pattern pattern) {
-        if (text == null || (text.length() == 0))
-            return FuncMap.empty();
-        val matcher = pattern.matcher(text);
-        if (!matcher.find())
-            return FuncMap.empty();
-        return grab(pattern.pattern(), GROUP_NAME_PATTERN).map(each -> each.substring(3, each.length() - 1)).toMap(name -> name, name -> matcher.group(name));
-    }
 }

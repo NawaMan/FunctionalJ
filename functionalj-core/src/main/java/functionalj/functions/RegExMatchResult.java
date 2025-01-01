@@ -39,7 +39,7 @@ import functionalj.stream.StreamPlus;
 
 public class RegExMatchResult implements MatchResult {
     
-    public static final RegExMatchResultAccess<RegExMatchResult> theResult = new RegExMatchResultAccess<>(itself());
+    public static final RegExMatchResultAccess<RegExMatchResult> theMatch = new RegExMatchResultAccess<>(itself());
     
     public static class RegExMatchResultAccess<HOST> implements AnyAccess<HOST, RegExMatchResult> {
         
@@ -96,12 +96,10 @@ public class RegExMatchResult implements MatchResult {
         public RegExMatchResultStreamAccess(Func1<HOST, RegExMatchResultStream> access) {
             this.access = access;
             this.accessParameterized = new AccessParameterized<HOST, StreamPlus<RegExMatchResult>, RegExMatchResult, RegExMatchResultAccess<HOST>>() {
-        
                 @Override
                 public StreamPlus<RegExMatchResult> applyUnsafe(HOST host) throws Exception {
                     return access.apply(host);
                 }
-        
                 @Override
                 public RegExMatchResultAccess<HOST> createSubAccessFromHost(Function<HOST, RegExMatchResult> accessToParameter) {
                     return new RegExMatchResultAccess<>(accessToParameter::apply);

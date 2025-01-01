@@ -27,6 +27,7 @@ import static functionalj.functions.StrFuncs.toStr;
 import static functionalj.lens.lenses.StringAccessHelper.fromString;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -38,13 +39,15 @@ import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
 import functionalj.function.Func1;
 import functionalj.functions.RegExFlag;
-import functionalj.functions.StrFuncs;
 import functionalj.functions.RegExMatchResult.RegExMatchResultStreamAccess;
+import functionalj.functions.StrFuncs;
 import functionalj.lens.lenses.java.time.LocalDateAccess;
 import functionalj.lens.lenses.java.time.LocalDateTimeAccess;
 import functionalj.list.FuncList;
+import functionalj.map.FuncMap;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -954,31 +957,27 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
         }, StringAccess::of);
     }
     
-    public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(String regex) {
-        return FuncMapAccess.of(host -> {
-            val value = apply(host);
-            return StrFuncs.capture(value, regex);
-        }, StringAccess::of, StringAccess::of);
+    public default StreamPlusAccess<HOST, FuncMap<String, String>, FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>>> capture(String regex) {
+        return StreamPlusAccess.of(
+                host   -> StrFuncs.capture(StringAccess.this.apply(host), Pattern.compile(regex)),
+                access -> FuncMapAccess.of(access, StringAccess::of, StringAccess::of));
     }
     
-    public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(String regex, RegExFlag flags) {
-        return FuncMapAccess.of(host -> {
-            val value = apply(host);
-            return StrFuncs.capture(value, regex, flags);
-        }, StringAccess::of, StringAccess::of);
+    public default StreamPlusAccess<HOST, FuncMap<String, String>, FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>>> capture(String regex, RegExFlag flags) {
+        return StreamPlusAccess.of(
+                host   -> StrFuncs.capture(StringAccess.this.apply(host), Pattern.compile(regex, flags.getIntValue())),
+                access -> FuncMapAccess.of(access, StringAccess::of, StringAccess::of));
     }
     
-    public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(String regex, int flags) {
-        return FuncMapAccess.of(host -> {
-            val value = apply(host);
-            return StrFuncs.capture(value, regex, flags);
-        }, StringAccess::of, StringAccess::of);
+    public default StreamPlusAccess<HOST, FuncMap<String, String>, FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>>> capture(String regex, int flags) {
+        return StreamPlusAccess.of(
+                host   -> StrFuncs.capture(StringAccess.this.apply(host), Pattern.compile(regex, flags)),
+                access -> FuncMapAccess.of(access, StringAccess::of, StringAccess::of));
     }
     
-    public default FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>> capture(Pattern pattern) {
-        return FuncMapAccess.of(host -> {
-            val value = apply(host);
-            return StrFuncs.capture(value, pattern);
-        }, StringAccess::of, StringAccess::of);
+    public default StreamPlusAccess<HOST, FuncMap<String, String>, FuncMapAccess<HOST, String, String, StringAccess<HOST>, StringAccess<HOST>>> capture(Pattern pattern) {
+        return StreamPlusAccess.of(
+                host   -> StrFuncs.capture(StringAccess.this.apply(host), pattern),
+                access -> FuncMapAccess.of(access, StringAccess::of, StringAccess::of));
     }
 }
