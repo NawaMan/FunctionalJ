@@ -24,18 +24,24 @@
 package functionalj.stream;
 
 import static functionalj.stream.collect.Collected.collectedOf;
+
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import functionalj.function.aggregator.Aggregation;
 import functionalj.tuple.Tuple;
+import functionalj.tuple.Tuple10;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
+import functionalj.tuple.Tuple7;
+import functionalj.tuple.Tuple8;
+import functionalj.tuple.Tuple9;
 import lombok.val;
 
 public interface AsStreamPlusWithCalculate<DATA> {
@@ -149,4 +155,181 @@ public interface AsStreamPlusWithCalculate<DATA> {
         });
         return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish(), collected5.finish(), collected6.finish());
     }
+    
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6, RESULT7> Tuple7<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6, RESULT7> calculate(
+                Aggregation<DATA, RESULT1> collector1,
+                Aggregation<DATA, RESULT2> collector2,
+                Aggregation<DATA, RESULT3> collector3,
+                Aggregation<DATA, RESULT4> collector4,
+                Aggregation<DATA, RESULT5> collector5,
+                Aggregation<DATA, RESULT6> collector6,
+                Aggregation<DATA, RESULT7> collector7) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
+        val collected5 = collectedOf(collector5);
+        val collected6 = collectedOf(collector6);
+        val collected7 = collectedOf(collector7);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+            collected6.accumulate(each);
+            collected7.accumulate(each);
+        });
+        return Tuple.of(
+            collected1.finish(),
+            collected2.finish(),
+            collected3.finish(),
+            collected4.finish(),
+            collected5.finish(),
+            collected6.finish(),
+            collected7.finish()
+        );
+    }
+    
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6, RESULT7, RESULT8> Tuple8<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6, RESULT7, RESULT8> calculate(
+                Aggregation<DATA, RESULT1> collector1,
+                Aggregation<DATA, RESULT2> collector2,
+                Aggregation<DATA, RESULT3> collector3,
+                Aggregation<DATA, RESULT4> collector4,
+                Aggregation<DATA, RESULT5> collector5,
+                Aggregation<DATA, RESULT6> collector6,
+                Aggregation<DATA, RESULT7> collector7,
+                Aggregation<DATA, RESULT8> collector8) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
+        val collected5 = collectedOf(collector5);
+        val collected6 = collectedOf(collector6);
+        val collected7 = collectedOf(collector7);
+        val collected8 = collectedOf(collector8);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+            collected6.accumulate(each);
+            collected7.accumulate(each);
+            collected8.accumulate(each);
+        });
+        return Tuple.of(
+            collected1.finish(),
+            collected2.finish(),
+            collected3.finish(),
+            collected4.finish(),
+            collected5.finish(),
+            collected6.finish(),
+            collected7.finish(),
+            collected8.finish()
+        );
+    }
+    
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6, RESULT7, RESULT8, RESULT9> Tuple9<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6, RESULT7, RESULT8, RESULT9> calculate(
+                Aggregation<DATA, RESULT1> collector1,
+                Aggregation<DATA, RESULT2> collector2,
+                Aggregation<DATA, RESULT3> collector3,
+                Aggregation<DATA, RESULT4> collector4,
+                Aggregation<DATA, RESULT5> collector5,
+                Aggregation<DATA, RESULT6> collector6,
+                Aggregation<DATA, RESULT7> collector7,
+                Aggregation<DATA, RESULT8> collector8,
+                Aggregation<DATA, RESULT9> collector9) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
+        val collected5 = collectedOf(collector5);
+        val collected6 = collectedOf(collector6);
+        val collected7 = collectedOf(collector7);
+        val collected8 = collectedOf(collector8);
+        val collected9 = collectedOf(collector9);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+            collected6.accumulate(each);
+            collected7.accumulate(each);
+            collected8.accumulate(each);
+            collected9.accumulate(each);
+        });
+        return Tuple.of(
+            collected1.finish(),
+            collected2.finish(),
+            collected3.finish(),
+            collected4.finish(),
+            collected5.finish(),
+            collected6.finish(),
+            collected7.finish(),
+            collected8.finish(),
+            collected9.finish()
+        );
+    }
+    
+    /**
+     * Perform the calculation using the data of this stream
+     */
+    public default <RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6, RESULT7, RESULT8, RESULT9, RESULT10> Tuple10<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6, RESULT7, RESULT8, RESULT9, RESULT10> calculate(
+                Aggregation<DATA, RESULT1> collector1,
+                Aggregation<DATA, RESULT2> collector2,
+                Aggregation<DATA, RESULT3> collector3,
+                Aggregation<DATA, RESULT4> collector4,
+                Aggregation<DATA, RESULT5> collector5,
+                Aggregation<DATA, RESULT6> collector6,
+                Aggregation<DATA, RESULT7> collector7,
+                Aggregation<DATA, RESULT8> collector8,
+                Aggregation<DATA, RESULT9> collector9,
+                Aggregation<DATA, RESULT10> collector10) {
+        val collected1 = collectedOf(collector1);
+        val collected2 = collectedOf(collector2);
+        val collected3 = collectedOf(collector3);
+        val collected4 = collectedOf(collector4);
+        val collected5 = collectedOf(collector5);
+        val collected6 = collectedOf(collector6);
+        val collected7 = collectedOf(collector7);
+        val collected8 = collectedOf(collector8);
+        val collected9 = collectedOf(collector9);
+        val collected10 = collectedOf(collector10);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+            collected6.accumulate(each);
+            collected7.accumulate(each);
+            collected8.accumulate(each);
+            collected9.accumulate(each);
+            collected10.accumulate(each);
+        });
+        return Tuple.of(
+            collected1.finish(),
+            collected2.finish(),
+            collected3.finish(),
+            collected4.finish(),
+            collected5.finish(),
+            collected6.finish(),
+            collected7.finish(),
+            collected8.finish(),
+            collected9.finish(),
+            collected10.finish()
+        );
+    }
+    
 }
