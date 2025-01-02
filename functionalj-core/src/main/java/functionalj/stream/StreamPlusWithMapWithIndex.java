@@ -23,15 +23,14 @@
 // ============================================================================
 package functionalj.stream;
 
-import static functionalj.tuple.IntTuple2.tuple;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.IntObjToDoubleBiFunction;
 import functionalj.function.IntObjToIntBiFunction;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Sequential;
-import functionalj.tuple.IntTuple2;
 import lombok.val;
 
 public interface StreamPlusWithMapWithIndex<DATA> {
@@ -42,13 +41,12 @@ public interface StreamPlusWithMapWithIndex<DATA> {
      * @return  the stream of each value and index.
      */
     @Sequential
-    public default StreamPlus<IntTuple2<DATA>> mapWithIndex() {
+    public default StreamPlus<IndexedItem<DATA>> mapWithIndex() {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
         return streamPlus.mapToObj(each -> {
             val currentIndex = index.getAndIncrement();
-            val tuple = tuple(currentIndex, each);
-            return tuple;
+            return new IndexedItem<>(currentIndex, each);
         });
     }
     

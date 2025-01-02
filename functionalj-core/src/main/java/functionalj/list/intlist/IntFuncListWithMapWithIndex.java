@@ -25,13 +25,15 @@ package functionalj.list.intlist;
 
 import static functionalj.list.intlist.IntFuncList.deriveToInt;
 import static functionalj.list.intlist.IntFuncList.deriveToObj;
+
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
+
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
-import functionalj.tuple.IntIntTuple;
+import functionalj.stream.intstream.IndexedInt;
 
 public interface IntFuncListWithMapWithIndex extends AsIntFuncList {
     
@@ -39,7 +41,7 @@ public interface IntFuncListWithMapWithIndex extends AsIntFuncList {
     /**
      * @return  the stream of each value and index.
      */
-    public default FuncList<IntIntTuple> mapWithIndex() {
+    public default FuncList<IndexedInt> mapWithIndex() {
         return deriveToObj(this, stream -> stream.mapWithIndex());
     }
     

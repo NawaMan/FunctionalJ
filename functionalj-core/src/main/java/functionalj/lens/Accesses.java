@@ -25,7 +25,11 @@ package functionalj.lens;
 
 import static functionalj.lens.core.LensSpec.selfRead;
 import static functionalj.lens.core.LensSpec.selfWrite;
+
 import java.util.List;
+import java.util.function.Function;
+
+import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.LensSpecParameterized2;
@@ -34,10 +38,18 @@ import functionalj.lens.core.LensUtils;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.FuncListLens;
+import functionalj.lens.lenses.IndexedDoubleAccess;
+import functionalj.lens.lenses.IndexedIntAccess;
+import functionalj.lens.lenses.IndexedItemAccess;
+import functionalj.lens.lenses.IndexedLongAccess;
 import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.Tuple2Lens;
 import functionalj.list.FuncList;
+import functionalj.stream.IndexedItem;
+import functionalj.stream.doublestream.IndexedDouble;
+import functionalj.stream.intstream.IndexedInt;
+import functionalj.stream.longstream.IndexedLong;
 import functionalj.tuple.Tuple2;
 
 public class Accesses {
@@ -79,23 +91,22 @@ public class Accesses {
     }
     
     // -- Tuple2 --
-    public static class TheTuple2Lens implements Tuple2Lens<Tuple2<Object, Object>, Object, Object, ObjectLens<Tuple2<Object, Object>, Object>, ObjectLens<Tuple2<Object, Object>, Object>> {
-        
+    public static class TheTuple2Lens implements Tuple2Lens<Tuple2<?, ?>, Object, Object, ObjectLens<Tuple2<?, ?>, Object>, ObjectLens<Tuple2<?, ?>, Object>> {
         // I am tired .... just goes with this.
-        private static final LensSpecParameterized2<Tuple2<Object, Object>, Tuple2<Object, Object>, Object, Object, ObjectLens<Tuple2<Object, Object>, Object>, ObjectLens<Tuple2<Object, Object>, Object>> common = new LensSpecParameterized2<Tuple2<Object, Object>, Tuple2<Object, Object>, Object, Object, ObjectLens<Tuple2<Object, Object>, Object>, ObjectLens<Tuple2<Object, Object>, Object>>() {
-        
+        private static final LensSpecParameterized2<Tuple2<?, ?>, Tuple2<Object, Object>, Object, Object, ObjectLens<Tuple2<?, ?>, Object>, ObjectLens<Tuple2<?, ?>, Object>> common = new LensSpecParameterized2<Tuple2<?, ?>, Tuple2<Object, Object>, Object, Object, ObjectLens<Tuple2<?, ?>, Object>, ObjectLens<Tuple2<?, ?>, Object>>() {
+            @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
-            public LensSpec<Tuple2<Object, Object>, Tuple2<Object, Object>> getSpec() {
-                return LensSpec.of(selfRead(), selfWrite());
+            public LensSpec<Tuple2<?, ?>, Tuple2<Object, Object>> getSpec() {
+                return LensSpec.of(
+                        (in)        -> (Tuple2)in,
+                        (in, value) -> value);
             }
-        
             @Override
-            public ObjectLens<Tuple2<Object, Object>, Object> createSubLens1(String subName, LensSpec<Tuple2<Object, Object>, Object> subSpec) {
+            public ObjectLens<Tuple2<?, ?>, Object> createSubLens1(String subName, LensSpec<Tuple2<?, ?>, Object> subSpec) {
                 return ObjectLens.of(subName, subSpec);
             }
-        
             @Override
-            public ObjectLens<Tuple2<Object, Object>, Object> createSubLens2(String subName, LensSpec<Tuple2<Object, Object>, Object> subSpec) {
+            public ObjectLens<Tuple2<?, ?>, Object> createSubLens2(String subName, LensSpec<Tuple2<?, ?>, Object> subSpec) {
                 return ObjectLens.of(subName, subSpec);
             }
         };
@@ -106,8 +117,51 @@ public class Accesses {
         
         @SuppressWarnings({ "rawtypes", "unchecked" })
         @Override
-        public LensSpecParameterized2<Tuple2<Object, Object>, Tuple2<Object, Object>, Object, Object, ObjectLens<Tuple2<Object, Object>, Object>, ObjectLens<Tuple2<Object, Object>, Object>> lensSpecParameterized2() {
+        public LensSpecParameterized2<Tuple2<?, ?>, Tuple2<Object, Object>, Object, Object, ObjectLens<Tuple2<?, ?>, Object>, ObjectLens<Tuple2<?, ?>, Object>> lensSpecParameterized2() {
             return (LensSpecParameterized2) common;
+        }
+    }
+    
+    //-- IndexedItem --
+    public static class TheIndexedItemAccess implements IndexedItemAccess<IndexedItem<?>, Object, AnyAccess<IndexedItem<?>,Object>> {
+        @Override
+        public AccessParameterized<IndexedItem<?>, IndexedItem<Object>, Object, AnyAccess<IndexedItem<?>, Object>> accessParameterized() {
+            return new AccessParameterized<IndexedItem<?>, IndexedItem<Object>, Object, AnyAccess<IndexedItem<?>,Object>>() {
+                @Override
+                public AnyAccess<IndexedItem<?>, Object> createSubAccessFromHost(
+                        Function<IndexedItem<?>, Object> accessToParameter) {
+                    return accessToParameter::apply;
+                }
+                @SuppressWarnings("unchecked")
+                @Override
+                public IndexedItem<Object> applyUnsafe(IndexedItem<?> host) throws Exception {
+                    return (IndexedItem<Object>)host;
+                }
+            };
+        }
+    }
+    
+    //-- IndexedInt --
+    public static class TheIndexedIntAccess implements IndexedIntAccess<IndexedInt> {
+        @Override
+        public IndexedInt applyUnsafe(IndexedInt input) throws Exception {
+            return input;
+        }
+    }
+    
+    //-- IndexedLong --
+    public static class TheIndexedLongAccess implements IndexedLongAccess<IndexedLong> {
+        @Override
+        public IndexedLong applyUnsafe(IndexedLong input) throws Exception {
+            return input;
+        }
+    }
+    
+    //-- IndexedDouble --
+    public static class TheIndexedDoubleAccess implements IndexedDoubleAccess<IndexedDouble> {
+        @Override
+        public IndexedDouble applyUnsafe(IndexedDouble input) throws Exception {
+            return input;
         }
     }
 }

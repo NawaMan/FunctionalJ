@@ -29,7 +29,11 @@ import functionalj.tuple.ToTuple2Func;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public interface Tuple2Access<HOST, T1, T2, T1ACCESS extends AnyAccess<HOST, T1>, T2ACCESS extends AnyAccess<HOST, T2>> extends AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS>, ConcreteAccess<HOST, Tuple2<T1, T2>, Tuple2Access<HOST, T1, T2, T1ACCESS, T2ACCESS>>, ToTuple2Func<HOST, T1, T2> {
+public interface Tuple2Access<HOST, T1, T2, T1ACCESS extends AnyAccess<HOST, T1>, T2ACCESS extends AnyAccess<HOST, T2>> 
+        extends 
+            AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS>, 
+            ConcreteAccess<HOST, Tuple2<T1, T2>, Tuple2Access<HOST, T1, T2, T1ACCESS, T2ACCESS>>, 
+            ToTuple2Func<HOST, T1, T2> {
     
     public AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS> accessParameterized2();
     

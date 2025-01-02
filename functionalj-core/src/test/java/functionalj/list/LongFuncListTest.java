@@ -25,6 +25,7 @@ package functionalj.list;
 
 import static functionalj.TestHelper.assertAsString;
 import static functionalj.lens.Access.theDouble;
+import static functionalj.lens.Access.theIndexedLong;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theLong;
 import static functionalj.ref.Run.With;
@@ -35,6 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -65,7 +67,9 @@ import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
+
 import org.junit.Test;
+
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.function.aggregator.LongAggregation;
@@ -1467,7 +1471,8 @@ public class LongFuncListTest {
         run(LongFuncList.of(One, Two, Three, Four, Five, Six), list -> {
             assertAsString("[1, 2, 3, 4, 5, 6]", list);
             assertAsString("[(2,3), (5,6)]", list.query(theLong.thatIsDivisibleBy(3)));
-            assertAsString("[1, 2, 3, 4, 5, 6]", list);
+            assertAsString("[2, 5]",         list.query(theLong.thatIsDivisibleBy(3)).map(theIndexedLong.index()));
+            assertAsString("[3, 6]",         list.query(theLong.thatIsDivisibleBy(3)).map(theIndexedLong.item()));
         });
     }
     
@@ -2707,6 +2712,8 @@ public class LongFuncListTest {
     public void testMapWithIndex() {
         run(LongFuncList.of(One, Three, Five, Seven, Eleven), list -> {
             assertAsString("[(0,1), (1,3), (2,5), (3,7), (4,11)]", list.mapWithIndex());
+            assertAsString("[0, 1, 2, 3, 4]",                      list.mapWithIndex().map(theIndexedLong.index()));
+            assertAsString("[1, 3, 5, 7, 11]",                     list.mapWithIndex().map(theIndexedLong.item()));
         });
     }
     

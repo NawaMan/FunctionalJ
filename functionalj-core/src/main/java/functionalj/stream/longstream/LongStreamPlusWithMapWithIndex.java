@@ -23,17 +23,16 @@
 // ============================================================================
 package functionalj.stream.longstream;
 
-import static functionalj.tuple.IntLongTuple.tuple;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
+
 import functionalj.function.IntLongBiFunction;
 import functionalj.function.IntLongToIntFunction;
 import functionalj.function.IntLongToLongFunctionPrimitive;
 import functionalj.function.LongObjBiFunction;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.tuple.IntLongTuple;
 import lombok.val;
 
 public interface LongStreamPlusWithMapWithIndex {
@@ -44,13 +43,12 @@ public interface LongStreamPlusWithMapWithIndex {
     /**
      * @return  the stream of each value and index.
      */
-    public default StreamPlus<IntLongTuple> mapWithIndex() {
+    public default StreamPlus<IndexedLong> mapWithIndex() {
         val index = new AtomicInteger();
         val streamPlus = longStreamPlus();
         return streamPlus.mapToObj(each -> {
             val currentIndex = index.getAndIncrement();
-            val tuple = tuple(currentIndex, each);
-            return tuple;
+            return new IndexedLong(currentIndex, each);
         });
     }
     

@@ -25,6 +25,7 @@ package functionalj.list;
 
 import static functionalj.lens.Access.$I;
 import static java.util.function.Function.identity;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,6 +48,7 @@ import java.util.function.ToLongFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
 import functionalj.function.DoubleDoubleFunction;
 import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func;
@@ -71,6 +73,7 @@ import functionalj.list.longlist.ImmutableLongFuncList;
 import functionalj.list.longlist.LongFuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
+import functionalj.stream.IndexedItem;
 import functionalj.stream.IterablePlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
@@ -80,7 +83,6 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
-import functionalj.tuple.IntTuple2;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 import nullablej.nullable.Nullable;
@@ -1423,14 +1425,18 @@ public interface FuncList<DATA>
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
      */
-    public default FuncList<IntTuple2<DATA>> query(Predicate<? super DATA> predicate) {
-        return this.mapWithIndex((index, data) -> predicate.test(data) ? new IntTuple2<DATA>(index, data) : null).filterNonNull();
+    public default FuncList<IndexedItem<DATA>> query(Predicate<? super DATA> predicate) {
+        return this.mapWithIndex((index, data) -> {
+            return predicate.test(data)
+                    ? new IndexedItem<DATA>(index, data)
+                    : null;
+        }).filterNonNull();
     }
     
     /**
      * Returns the list of tuple of the index and the value for which the value match the predicate.
      */
-    public default FuncList<IntTuple2<DATA>> query(AggregationToBoolean<? super DATA> aggregation) {
+    public default FuncList<IndexedItem<DATA>> query(AggregationToBoolean<? super DATA> aggregation) {
         val check = aggregation.newAggregator();
         return query(check);
     }

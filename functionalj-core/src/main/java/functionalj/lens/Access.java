@@ -25,6 +25,7 @@ package functionalj.lens;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensType;
 import functionalj.lens.lenses.AnyAccess;
@@ -85,6 +86,14 @@ public interface Access {
     public static final BooleanAccessPrimitive<Object> True = any -> true;
     
     public static final BooleanAccessPrimitive<Object> False = any -> false;
+    
+    public static final Accesses.TheIndexedItemAccess theIndexedItem = new Accesses.TheIndexedItemAccess();
+    
+    public static final Accesses.TheIndexedIntAccess theIndexedInt = new Accesses.TheIndexedIntAccess();
+    
+    public static final Accesses.TheIndexedLongAccess theIndexedLong = new Accesses.TheIndexedLongAccess();
+    
+    public static final Accesses.TheIndexedDoubleAccess theIndexedDouble = new Accesses.TheIndexedDoubleAccess();
     
     public static final Accesses.TheListLens theList = new Accesses.TheListLens();
     
