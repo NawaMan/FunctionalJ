@@ -71,13 +71,13 @@ public final class Operators {
     /** Bitwise XOR of two numbers. */
     public static final IntReduceAggregationToInt xorInts = new IntReduceAggregationToInt(0, (a, b) -> a ^ b);
     
-    /** Left shift (a << b). */
+    /** Left shift (a &gt;&gt; b). */
     public static final IntBinaryOperator leftShiftInts = (a, b) -> a << b;
     
-    /** Right shift (a >> b). */
+    /** Right shift (a &lt;&lt; b). */
     public static final IntBinaryOperator rightShiftInts = (a, b) -> a >> b;
     
-    /** Unsigned right shift (a >>> b). */
+    /** Unsigned right shift (a &lt;&lt;&lt; b). */
     public static final IntBinaryOperator unsignedRightShiftInts = (a, b) -> a >>> b;
     
     /** Absolute difference of two numbers. */
@@ -93,7 +93,7 @@ public final class Operators {
         return Math.abs(a);
     };
     
-    /** Logical comparison: returns 1 if a > b, -1 if a < b, 0 if equal. */
+    /** Logical comparison: returns 1 if a &lt; b, -1 if a &gt; b, 0 if equal. */
     public static final IntBinaryOperator compareInts = (a, b) -> Integer.compare(a, b);
     
     /** Power operation (a^b). */
@@ -155,13 +155,13 @@ public final class Operators {
     /** Bitwise XOR of two numbers. */
     public static final LongReduceAggregationToLong xorLongs = new LongReduceAggregationToLong(0L, (a, b) -> a ^ b);
     
-    /** Left shift (a << b). */
+    /** Left shift (a &lt;&lt; b). */
     public static final LongBinaryOperator leftShiftLongs = (a, b) -> a << b;
     
-    /** Right shift (a >> b). */
+    /** Right shift (a &gt;&gt; b). */
     public static final LongBinaryOperator rightShiftLongs = (a, b) -> a >> b;
     
-    /** Unsigned right shift (a >>> b). */
+    /** Unsigned right shift (a &gt;&gt;&gt; b). */
     public static final LongBinaryOperator unsignedRightShiftLongs = (a, b) -> a >>> b;
     
     /** Absolute difference of two numbers. */
@@ -177,7 +177,7 @@ public final class Operators {
         return Math.abs(a);
     });
     
-    /** Logical comparison: returns 1 if a > b, -1 if a < b, 0 if equal. */
+    /** Logical comparison: returns 1 if a &gt; b, -1 if a &lt; b, 0 if equal. */
     public static final LongBinaryOperator compareLongs = (a, b) -> Long.compare(a, b);
     
     /** Power operation (a^b). */
@@ -249,7 +249,7 @@ public final class Operators {
     /** Power operation (a^b). */
     public static final DoubleBinaryOperator powerDoubles = Math::pow;
     
-    /** Logical comparison: returns 1.0 if a > b, -1.0 if a < b, 0.0 if equal. */
+    /** Logical comparison: returns 1.0 if a &gt; b, -1.0 if a &lt; b, 0.0 if equal. */
     public static final DoubleBinaryOperator compareDoubles = (a, b) -> Double.compare(a, b);
     
     //== BigInteger ==  
