@@ -23,16 +23,23 @@
 // ============================================================================
 package functionalj.function.aggregator;
 
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
+
+import functionalj.lens.lenses.DoubleAccess;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToDoublePlus;
 import lombok.val;
 
 public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double> {
+    
+    public static <A> DoubleAggregationToDouble reducingDouble(double intialValue, DoubleBinaryOperator reducer) {
+        return new DoubleReduceAggregationToDouble(intialValue, reducer);
+    }
     
     public static <A> DoubleAggregationToDouble from(DoubleCollectorToDoublePlus<A> collector) {
         return new DoubleAggregationToDouble.Impl(collector);
@@ -52,6 +59,12 @@ public abstract class DoubleAggregationToDouble extends DoubleAggregation<Double
     }
     
     // == Derived ==
+    
+    public <INPUT> AggregationToDouble<INPUT> of(DoubleAccess<INPUT> mapper) {
+        val newCollector = doubleCollectorToDoublePlus().of(mapper);
+        return new AggregationToDouble.Impl<>(newCollector);
+    }
+    
     public <INPUT> AggregationToDouble<INPUT> of(ToDoubleFunction<INPUT> mapper) {
         val newCollector = doubleCollectorToDoublePlus().of(mapper);
         return new AggregationToDouble.Impl<INPUT>(newCollector);

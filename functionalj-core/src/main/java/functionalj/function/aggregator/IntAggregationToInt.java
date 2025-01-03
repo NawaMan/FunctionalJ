@@ -24,15 +24,22 @@
 package functionalj.function.aggregator;
 
 import java.util.function.DoubleToIntFunction;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
 import java.util.function.ToIntFunction;
+
+import functionalj.lens.lenses.IntegerAccess;
 import functionalj.stream.intstream.collect.IntCollectorPlus;
 import functionalj.stream.intstream.collect.IntCollectorToIntPlus;
 import lombok.val;
 
 public abstract class IntAggregationToInt extends IntAggregation<Integer> {
+    
+    public static <A> IntAggregationToInt reducingInt(int intialValue, IntBinaryOperator reducer) {
+        return new IntReduceAggregationToInt(intialValue, reducer);
+    }
     
     public static <A> IntAggregationToInt from(IntCollectorToIntPlus<A> collector) {
         return new IntAggregationToInt.Impl(collector);
@@ -52,6 +59,12 @@ public abstract class IntAggregationToInt extends IntAggregation<Integer> {
     }
     
     // == Derived ==
+    
+    public <INPUT> AggregationToInt<INPUT> of(IntegerAccess<INPUT> mapper) {
+        val newCollector = intCollectorToIntPlus().of(mapper);
+        return new AggregationToInt.Impl<>(newCollector);
+    }
+    
     public <INPUT> AggregationToInt<INPUT> of(ToIntFunction<INPUT> mapper) {
         val newCollector = intCollectorToIntPlus().of(mapper);
         return new AggregationToInt.Impl<>(newCollector);

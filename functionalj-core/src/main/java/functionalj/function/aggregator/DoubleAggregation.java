@@ -27,6 +27,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.ToDoubleFunction;
+
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorPlus;
 import lombok.val;

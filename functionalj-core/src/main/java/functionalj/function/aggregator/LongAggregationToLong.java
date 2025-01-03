@@ -24,14 +24,21 @@
 package functionalj.function.aggregator;
 
 import java.util.function.IntToLongFunction;
+import java.util.function.LongBinaryOperator;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
+
+import functionalj.lens.lenses.LongAccess;
 import functionalj.stream.longstream.collect.LongCollectorPlus;
 import functionalj.stream.longstream.collect.LongCollectorToLongPlus;
 import lombok.val;
 
 public abstract class LongAggregationToLong extends LongAggregation<Long> {
+    
+    public static <A> LongAggregationToLong reducingLong(long intialValue, LongBinaryOperator reducer) {
+        return new LongReduceAggregationToLong(intialValue, reducer);
+    }
     
     public static <A> LongAggregationToLong from(LongCollectorToLongPlus<A> collector) {
         return new LongAggregationToLong.Impl(collector);
@@ -51,6 +58,12 @@ public abstract class LongAggregationToLong extends LongAggregation<Long> {
     }
     
     // == Derived ==
+    
+    public <INPUT> AggregationToLong<INPUT> of(LongAccess<INPUT> mapper) {
+        val newCollector = longCollectorToLongPlus().of(mapper);
+        return new AggregationToLong.Impl<>(newCollector);
+    }
+    
     public <INPUT> AggregationToLong<INPUT> of(ToLongFunction<INPUT> mapper) {
         val newCollector = longCollectorToLongPlus().of(mapper);
         return new AggregationToLong.Impl<>(newCollector);

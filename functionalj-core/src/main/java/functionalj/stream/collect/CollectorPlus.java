@@ -37,15 +37,11 @@ import lombok.val;
 public interface CollectorPlus<DATA, ACCUMULATED, RESULT> extends CollectorExtensible<DATA, ACCUMULATED, RESULT> {
     
     public static <D, A, R> CollectorPlus<D, A, R> from(Collector<D, A, R> collector) {
-        return (collector instanceof CollectorPlus) ? (CollectorPlus<D, A, R>) collector : () -> collector;
+        return (collector instanceof CollectorPlus)
+                ? (CollectorPlus<D, A, R>) collector
+                : () -> collector;
     }
     
-    // TODO - make it easy to create reducer
-    // (DATA, DATA)->DATA
-    // or
-    // (DATA)->TARGET , (TARGET, TARGET) -> TARGET
-    // or
-    // (DATA)->ACCUMULATED , (ACCUMULATED, ACCUMULATED) -> ACCUMULATED, (ACCUMULATED) -> TARGET
     public default CollectorPlus<DATA, ACCUMULATED, RESULT> collectorPlus() {
         return this;
     }

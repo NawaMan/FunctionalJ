@@ -32,6 +32,8 @@ import java.util.function.LongUnaryOperator;
 import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
+
+import functionalj.lens.lenses.LongAccess;
 import functionalj.stream.collect.CollectorToLongPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToLongPlus;
 import functionalj.stream.intstream.collect.IntCollectorToLongPlus;
@@ -57,6 +59,11 @@ public interface LongCollectorToLongPlus<ACCUMULATED> extends LongCollectorPlus<
     }
     
     // == Derived ==
+    
+    public default <SOURCE> CollectorToLongPlus<SOURCE, ACCUMULATED> of(LongAccess<SOURCE> mapper) {
+        return new DerivedLongCollectorToLongPlus.FromObj<>(this, mapper);
+    }
+    
     public default <SOURCE> CollectorToLongPlus<SOURCE, ACCUMULATED> of(ToLongFunction<SOURCE> mapper) {
         return new DerivedLongCollectorToLongPlus.FromObj<>(this, mapper);
     }

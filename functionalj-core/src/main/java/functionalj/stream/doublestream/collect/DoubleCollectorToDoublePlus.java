@@ -31,6 +31,8 @@ import java.util.function.LongToDoubleFunction;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
+
+import functionalj.lens.lenses.DoubleAccess;
 import functionalj.stream.collect.CollectorToDoublePlus;
 import functionalj.stream.intstream.collect.IntCollectorToDoublePlus;
 import functionalj.stream.longstream.collect.LongCollectorToDoublePlus;
@@ -54,6 +56,11 @@ public interface DoubleCollectorToDoublePlus<ACCUMULATED> extends DoubleCollecto
     }
     
     // == Derived ==
+    
+    public default <SOURCE> CollectorToDoublePlus<SOURCE, ACCUMULATED> of(DoubleAccess<SOURCE> mapper) {
+        return new DerivedDoubleCollectorToDoublePlus.FromObj<>(this, mapper);
+    }
+    
     public default <SOURCE> CollectorToDoublePlus<SOURCE, ACCUMULATED> of(ToDoubleFunction<SOURCE> mapper) {
         return new DerivedDoubleCollectorToDoublePlus.FromObj<>(this, mapper);
     }

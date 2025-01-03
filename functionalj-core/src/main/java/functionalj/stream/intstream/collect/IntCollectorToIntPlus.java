@@ -32,6 +32,8 @@ import java.util.function.LongToIntFunction;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
+
+import functionalj.lens.lenses.IntegerAccess;
 import functionalj.stream.collect.CollectorToIntPlus;
 import functionalj.stream.doublestream.collect.DoubleCollectorToIntPlus;
 import functionalj.stream.longstream.collect.LongCollectorToIntPlus;
@@ -57,6 +59,11 @@ public interface IntCollectorToIntPlus<ACCUMULATED> extends IntCollectorPlus<ACC
     }
     
     // == Derived ==
+    
+    public default <SOURCE> CollectorToIntPlus<SOURCE, ACCUMULATED> of(IntegerAccess<SOURCE> mapper) {
+        return new DerivedIntCollectorToIntPlus.FromObj<>(this, mapper);
+    }
+    
     public default <SOURCE> CollectorToIntPlus<SOURCE, ACCUMULATED> of(ToIntFunction<SOURCE> mapper) {
         return new DerivedIntCollectorToIntPlus.FromObj<>(this, mapper);
     }

@@ -27,6 +27,8 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
+import java.util.stream.Collector;
+
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.collect.CollectorToDoublePlus;
 import functionalj.stream.collect.CollectorToIntPlus;
@@ -35,8 +37,8 @@ import lombok.val;
 
 public abstract class Aggregation<SOURCE, TARGET> {
     
-    public static <S, A, T> Aggregation<S, T> from(CollectorPlus<S, A, T> collector) {
-        return new Aggregation.Impl<S, T>(collector);
+    public static <S, A, T> Aggregation<S, T> from(Collector<S, A, T> collector) {
+        return new Aggregation.Impl<S, T>(CollectorPlus.from(collector));
     }
     
     public static <S, A> AggregationToInt<S> from(CollectorToIntPlus<S, A> collector) {
@@ -72,6 +74,7 @@ public abstract class Aggregation<SOURCE, TARGET> {
     }
     
     // == Derived ==
+    
     public <INPUT> Aggregation<INPUT, TARGET> of(Function<INPUT, SOURCE> mapper) {
         val newCollector = collectorPlus().of(mapper);
         return new Aggregation.Impl<>(newCollector);
