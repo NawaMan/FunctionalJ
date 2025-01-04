@@ -25,6 +25,7 @@ package functionalj.stream.intstream;
 
 import static functionalj.stream.intstream.IntStreamPlusHelper.dummy;
 import static functionalj.tuple.IntIntTuple.intTuple;
+
 import java.util.Comparator;
 import java.util.IntSummaryStatistics;
 import java.util.Objects;
@@ -35,10 +36,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
+
 import functionalj.function.IntComparator;
+import functionalj.function.IntPredicatePrimitive;
 import functionalj.function.aggregator.IntAggregation;
 import functionalj.function.aggregator.IntAggregationToBoolean;
 import functionalj.function.aggregator.IntAggregationToInt;
+import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.IntIntTuple;
@@ -70,6 +74,14 @@ public interface AsIntStreamPlusWithStatistic {
     public default int sum() {
         val streamPlus = intStreamPlus();
         return streamPlus.sum();
+    }
+    
+    public default long count(IntPredicatePrimitive condition) {
+        return intStreamPlus().filter(condition).count();
+    }
+    
+    public default int sum(IntegerToIntegerAccessPrimitive mapper) {
+        return intStreamPlus().map(mapper).sum();
     }
     
     /**

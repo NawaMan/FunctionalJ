@@ -25,6 +25,7 @@ package functionalj.stream.longstream;
 
 import static functionalj.stream.longstream.LongStreamPlusHelper.dummy;
 import static functionalj.tuple.LongLongTuple.longTuple;
+
 import java.util.Comparator;
 import java.util.LongSummaryStatistics;
 import java.util.Objects;
@@ -36,10 +37,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
+
 import functionalj.function.LongComparator;
+import functionalj.function.LongPredicatePrimitive;
 import functionalj.function.aggregator.LongAggregation;
 import functionalj.function.aggregator.LongAggregationToBoolean;
 import functionalj.function.aggregator.LongAggregationToLong;
+import functionalj.lens.lenses.LongToLongAccessPrimitive;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.LongLongTuple;
@@ -71,6 +75,14 @@ public interface AsLongStreamPlusWithStatistic {
     public default long sum() {
         val streamPlus = longStreamPlus();
         return streamPlus.sum();
+    }
+
+    public default long count(LongPredicatePrimitive condition) {
+        return longStreamPlus().filter(condition).count();
+    }
+    
+    public default long sum(LongToLongAccessPrimitive mapper) {
+        return longStreamPlus().map(mapper).sum();
     }
     
     /**
