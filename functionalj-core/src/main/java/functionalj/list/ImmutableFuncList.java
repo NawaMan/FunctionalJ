@@ -36,6 +36,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import functionalj.function.ObjectObjectToIntegerFunction;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
@@ -51,14 +52,29 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
     
     private static final Predicate<Integer> toZero = (Integer i) -> i == 0;
     
-    private final static ImmutableFuncList<?> EMPTY = new ImmutableFuncList<>(Collections.emptyList(), 0);
+    private final static ImmutableFuncList<?> EMPTY_EAGER = new ImmutableFuncList<>(Collections.emptyList(), 0, Mode.eager);
+    
+    private final static ImmutableFuncList<?> EMPTY_CACHE = new ImmutableFuncList<>(Collections.emptyList(), 0, Mode.cache);
+    
+    private final static ImmutableFuncList<?> EMPTY_LAZY = new ImmutableFuncList<>(Collections.emptyList(), 0, Mode.lazy);
     
     /**
      * @return an empty list
      */
-    @SuppressWarnings("unchecked")
     public static final <T> ImmutableFuncList<T> empty() {
-        return (ImmutableFuncList<T>) EMPTY;
+        return empty(Mode.eager);
+    }
+    /**
+     * @return an empty list
+     */
+    @SuppressWarnings("unchecked")
+    public static final <T> ImmutableFuncList<T> empty(Mode mode) {
+        switch (mode) {
+            case eager: return (ImmutableFuncList<T>)EMPTY_EAGER;
+            case cache: return (ImmutableFuncList<T>)EMPTY_CACHE;
+            case lazy:  return (ImmutableFuncList<T>)EMPTY_LAZY;
+            default: throw new IllegalArgumentException("Unsupported mode: " + mode);
+        }
     }
     
     /**
@@ -148,6 +164,29 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
         if (collection instanceof List) {
             val list = (List<T>) collection;
             return new ImmutableFuncList<T>(list, list.size(), Mode.lazy);
+        }
+        val list = (List<T>) collection.stream().collect(Collectors.toList());
+        return new ImmutableFuncList<T>(list, list.size(), Mode.lazy);
+    }
+    
+    /**
+     * @return the list containing the element from the given collections.
+     */
+    public static <T> ImmutableFuncList<T> from(Mode mode, Collection<T> collection) {
+        if (collection instanceof ImmutableFuncList) {
+            val orgList = (ImmutableFuncList<T>) collection;
+            if (orgList.mode == mode) return orgList;
+            return new ImmutableFuncList<T>(orgList.data, orgList.size, mode);
+        }
+        if (collection == null)
+            return ImmutableFuncList.empty(mode);
+        if (collection instanceof FuncList) {
+            val funcList = (FuncList<T>) collection;
+            return new ImmutableFuncList<T>(funcList.toJavaList(), funcList.size(), mode);
+        }
+        if (collection instanceof List) {
+            val list = (List<T>) collection;
+            return new ImmutableFuncList<T>(list, list.size(), mode);
         }
         val list = (List<T>) collection.stream().collect(Collectors.toList());
         return new ImmutableFuncList<T>(list, list.size(), Mode.lazy);
@@ -343,7 +382,7 @@ public final class ImmutableFuncList<DATA> implements FuncList<DATA> {
      * This method is for convenient. It is not really efficient if used to add a lot of data.
      */
     public FuncList<DATA> append(DATA value) {
-        if (this == EMPTY) {
+        if ((this == EMPTY_EAGER) || (this == EMPTY_CACHE) || (this == EMPTY_LAZY)) {
             List<DATA> list = new ArrayList<DATA>();
             list.add(value);
             return new ImmutableFuncList<DATA>(list, 1, mode());
