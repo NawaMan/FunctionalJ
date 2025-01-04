@@ -1,5 +1,5 @@
 // ===========e=================================================================
-// Copyright (cnener) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (cnener) 2017-2025 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 

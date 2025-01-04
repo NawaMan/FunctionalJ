@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2024 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2025 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -24,6 +24,7 @@
 package functionalj.stream.doublestream;
 
 import static functionalj.tuple.DoubleDoubleTuple.doubleTuple;
+
 import java.util.Comparator;
 import java.util.DoubleSummaryStatistics;
 import java.util.Objects;
@@ -33,11 +34,14 @@ import java.util.OptionalInt;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;
+
 import functionalj.function.DoubleComparator;
 import functionalj.function.DoubleDoubleToIntFunctionPrimitive;
+import functionalj.function.DoublePredicatePrimitive;
 import functionalj.function.aggregator.DoubleAggregation;
 import functionalj.function.aggregator.DoubleAggregationToBoolean;
 import functionalj.function.aggregator.DoubleAggregationToDouble;
+import functionalj.lens.lenses.DoubleToDoubleAccessPrimitive;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.DoubleDoubleTuple;
@@ -70,6 +74,14 @@ public interface AsDoubleStreamPlusWithStatistic {
     public default double sum() {
         val streamPlus = doubleStreamPlus();
         return streamPlus.sum();
+    }
+
+    public default long count(DoublePredicatePrimitive condition) {
+        return doubleStreamPlus().filter(condition).count();
+    }
+    
+    public default double sum(DoubleToDoubleAccessPrimitive mapper) {
+        return doubleStreamPlus().map(mapper).sum();
     }
     
     /**
