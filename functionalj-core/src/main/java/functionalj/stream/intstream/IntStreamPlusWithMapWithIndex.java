@@ -116,4 +116,5 @@ public interface IntStreamPlusWithMapWithIndex {
             return target;
         });
     }
+    
 }

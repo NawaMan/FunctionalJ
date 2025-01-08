@@ -36,6 +36,7 @@ import static functionalj.lens.LensTest.Car.theCar;
 import static functionalj.list.FuncList.listOf;
 import static functionalj.list.FuncList.newBuilder;
 import static functionalj.list.FuncList.newListBuilder;
+import static functionalj.list.FuncList.repeat;
 import static functionalj.ref.Run.With;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
@@ -2724,6 +2725,15 @@ public class FuncListTest {
             // 8 = 3 + 5 (Seven)
             // 10 = 4 + 6 (Eleven)
             list.mapToDoubleWithIndex((index, value) -> index + value.length()));
+        });
+    }
+    
+    @Test
+    public void testFlatMapWithIndex() {
+        run(FuncList.of(1, 3, 5, 7, 11), list -> {
+            assertAsString(
+                    "[1, 3, 3, 5, 5, 5, 7, 7, 7, 7, 11, 11, 11, 11, 11]",
+                    list.flatMapWithIndex((idx,num) -> repeat(num).limit(idx + 1)));
         });
     }
     

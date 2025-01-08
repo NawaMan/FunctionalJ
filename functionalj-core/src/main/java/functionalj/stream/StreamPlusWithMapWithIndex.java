@@ -28,8 +28,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.IntObjToDoubleBiFunction;
 import functionalj.function.IntObjToIntBiFunction;
+import functionalj.function.IntObjToLongBiFunction;
+import functionalj.stream.doublestream.AsDoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.intstream.AsIntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.longstream.AsLongStreamPlus;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.markers.Sequential;
 import lombok.val;
 
@@ -96,6 +101,20 @@ public interface StreamPlusWithMapWithIndex<DATA> {
      * Create a stream whose value is the combination between value of this stream and its index.
      */
     @Sequential
+    public default LongStreamPlus mapToLongWithIndex(IntObjToLongBiFunction<? super DATA> combinator) {
+        val index = new AtomicInteger();
+        val streamPlus = streamPlus();
+        return streamPlus.mapToLong(each -> {
+            val currentIndex = index.getAndIncrement();
+            val target = combinator.apply(currentIndex, each);
+            return target;
+        });
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
     public default DoubleStreamPlus mapToDoubleWithIndex(IntObjToDoubleBiFunction<? super DATA> combinator) {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
@@ -104,5 +123,52 @@ public interface StreamPlusWithMapWithIndex<DATA> {
             val target = combinator.apply(currentIndex, each);
             return target;
         });
+    }
+    
+    //== FlatMap ==
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default <T> StreamPlus<T> flatMapWithIndex(IntObjBiFunction<? super DATA, ? extends AsStreamPlus<T>> combinator) {
+        return mapToObjWithIndex(combinator)
+                .flatMap(AsStreamPlus::streamPlus);
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default <T> StreamPlus<T> flatMapToObjWithIndex(IntObjBiFunction<? super DATA, ? extends AsStreamPlus<T>> combinator) {
+        return mapToObjWithIndex(combinator)
+                .flatMap(AsStreamPlus::streamPlus);
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default IntStreamPlus flatMapToIntWithIndex(IntObjBiFunction<? super DATA, ? extends AsIntStreamPlus> combinator) {
+        return mapToObjWithIndex(combinator)
+                .flatMapToInt(AsIntStreamPlus::intStreamPlus);
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default LongStreamPlus flatMapToLongWithIndex(IntObjBiFunction<? super DATA, ? extends AsLongStreamPlus> combinator) {
+        return mapToObjWithIndex(combinator)
+                .flatMapToLong(AsLongStreamPlus::longStreamPlus);
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default DoubleStreamPlus flatMapToDoubleWithIndex(IntObjBiFunction<? super DATA, ? extends AsDoubleStreamPlus> combinator) {
+        return mapToObjWithIndex(combinator)
+                .flatMapToDouble(AsDoubleStreamPlus::doubleStreamPlus);
     }
 }
