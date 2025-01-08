@@ -29,9 +29,15 @@ import static functionalj.list.FuncList.deriveFrom;
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.IntObjToDoubleBiFunction;
 import functionalj.function.IntObjToIntBiFunction;
+import functionalj.function.IntObjToLongBiFunction;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
+import functionalj.list.longlist.LongFuncList;
+import functionalj.stream.AsStreamPlus;
 import functionalj.stream.IndexedItem;
+import functionalj.stream.doublestream.AsDoubleStreamPlus;
+import functionalj.stream.intstream.AsIntStreamPlus;
+import functionalj.stream.longstream.AsLongStreamPlus;
 import functionalj.stream.markers.Sequential;
 import lombok.val;
 
@@ -74,8 +80,64 @@ public interface FuncListWithMapWithIndex<DATA> extends AsFuncList<DATA> {
      * Create a stream whose value is the combination between value of this stream and its index.
      */
     @Sequential
+    public default LongFuncList mapToLongWithIndex(IntObjToLongBiFunction<? super DATA> combinator) {
+        val funcList = funcListOf(this);
+        return LongFuncList.deriveFrom(funcList, stream -> stream.mapToLongWithIndex(combinator));
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
     public default DoubleFuncList mapToDoubleWithIndex(IntObjToDoubleBiFunction<? super DATA> combinator) {
         val funcList = funcListOf(this);
         return DoubleFuncList.deriveFrom(funcList, stream -> stream.mapToDoubleWithIndex(combinator));
+    }
+    
+    //== FlatMap ==
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default <T> FuncList<T> flatMapWithIndex(IntObjBiFunction<? super DATA, ? extends AsStreamPlus<T>> combinator) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.flatMapWithIndex(combinator));
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default <T> FuncList<T> flatMapToObjWithIndex(IntObjBiFunction<? super DATA, ? extends AsStreamPlus<T>> combinator) {
+        val funcList = funcListOf(this);
+        return deriveFrom(funcList, stream -> stream.flatMapWithIndex(combinator));
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default IntFuncList flatMapToIntWithIndex(IntObjBiFunction<? super DATA, ? extends AsIntStreamPlus> combinator) {
+        val funcList = funcListOf(this);
+        return IntFuncList.deriveFrom(funcList, stream -> stream.flatMapToIntWithIndex(combinator));
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default LongFuncList flatMapToLongWithIndex(IntObjBiFunction<? super DATA, ? extends AsLongStreamPlus> combinator) {
+        val funcList = funcListOf(this);
+        return LongFuncList.deriveFrom(funcList, stream -> stream.flatMapToLongWithIndex(combinator));
+    }
+    
+    /**
+     * Create a stream whose value is the combination between value of this stream and its index.
+     */
+    @Sequential
+    public default DoubleFuncList flatMapToDoubleWithIndex(IntObjBiFunction<? super DATA, ? extends AsDoubleStreamPlus> combinator) {
+        val funcList = funcListOf(this);
+        return DoubleFuncList.deriveFrom(funcList, stream -> stream.flatMapToDoubleWithIndex(combinator));
     }
 }
