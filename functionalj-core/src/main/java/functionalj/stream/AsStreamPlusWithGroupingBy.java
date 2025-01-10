@@ -44,13 +44,13 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
     /**
      * Group the elements by determining the grouping keys
      */
-    public default <KEY> FuncMap<KEY, FuncList<? super DATA>> groupingBy(Function<? super DATA, KEY> keyMapper) {
-        val toFuncList = f((ArrayList<? super DATA> array) -> FuncList.from(array));
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(Function<? super DATA, KEY> keyMapper) {
+        val toFuncList = f((ArrayList<DATA> array) -> FuncList.from(array));
         val newArray = f(() -> new ArrayList<DATA>());
         val streamPlus = this.streamPlus();
-        Supplier<Map<KEY, ArrayList<? super DATA>>> supplier;
-        BiConsumer<Map<KEY, ArrayList<? super DATA>>, ? super DATA> accumulator;
-        BiConsumer<Map<KEY, ArrayList<? super DATA>>, Map<KEY, ArrayList<? super DATA>>> combiner;
+        Supplier<Map<KEY, ArrayList<DATA>>> supplier;
+        BiConsumer<Map<KEY, ArrayList<DATA>>, DATA> accumulator;
+        BiConsumer<Map<KEY, ArrayList<DATA>>, Map<KEY, ArrayList<DATA>>> combiner;
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
             val key = keyMapper.apply(each);
@@ -70,7 +70,7 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
     /**
      * Group the elements by determining the grouping keys
      */
-    public default <KEY> FuncMap<KEY, FuncList<? super DATA>> groupingBy(Aggregation<? super DATA, KEY> keyAggregation) {
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(Aggregation<? super DATA, KEY> keyAggregation) {
         val keyMapper = keyAggregation.newAggregator();
         return groupingBy(keyMapper);
     }
@@ -80,7 +80,7 @@ public interface AsStreamPlusWithGroupingBy<DATA> {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(Function<DATA, KEY> keyMapper, Function<AsStreamPlus<DATA>, VALUE> aggregate) {
-        FuncMap<KEY, FuncList<? super DATA>> groupingBy = groupingBy(keyMapper);
+        FuncMap<KEY, FuncList<DATA>> groupingBy = groupingBy(keyMapper);
         return (FuncMap<KEY, VALUE>) groupingBy.mapValue((Function) aggregate);
     }
     
