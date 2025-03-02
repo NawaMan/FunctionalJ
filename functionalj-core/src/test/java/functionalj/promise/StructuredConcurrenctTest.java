@@ -2,7 +2,6 @@ package functionalj.promise;
 
 import static functionalj.TestHelper.assertAsString;
 import static functionalj.function.Func.f;
-import static functionalj.function.Lambda.λ;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.promise.DeferAction.race;
 import static java.lang.Thread.sleep;
@@ -32,7 +31,7 @@ public class StructuredConcurrenctTest {
         val prefix = Sleep( 10).thenReturn("[").defer();
         val suffix = Sleep( 50).thenReturn("]").defer();
         val body   = Sleep(100).thenReturn( "---").defer();
-        val string = λ(around, prefix, suffix, body);
+        val string = DeferAction.from(prefix, suffix, body, around);
         sleep(200);
         
         assertAsString("Result:{ NotReady }", string.getCurrentResult());
@@ -47,10 +46,11 @@ public class StructuredConcurrenctTest {
         val prefix = Sleep(  10).thenReturn("[").defer();
         val suffix = Sleep(  50).thenReturn("]").defer();
         val body   = Sleep(2000).thenReturn( "---").defer();
-        val string = λ(around, prefix, suffix, body);
+        val string = DeferAction.from(prefix, suffix, body, around)
+                        .start();
         
-        // `get()` will start the action and wait for all of them to finish.
-        assertAsString("[---]", string.get());
+        // `getResult()` will start the action and wait for all of them to finish.
+        assertAsString("Result:{ Value: [---] }", string.getResult());
     }
     
     @Test
@@ -61,9 +61,8 @@ public class StructuredConcurrenctTest {
         val prefix = Sleep(  10).thenReturn("[").defer();
         val suffix = Sleep( 100).thenThrow(RuntimeException::new, String.class).defer();
         val body   = Sleep(2000).thenReturn( "---").defer();
-        val string = λ(around, prefix, suffix, body);
-        
-        string.start();
+        val string = DeferAction.from(prefix, suffix, body, around)
+                        .start();
         
         assertAsString("Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #1 out of 3 fail. }",
                        string.getResult());
@@ -78,9 +77,9 @@ public class StructuredConcurrenctTest {
         val prefix = Sleep(  10).thenReturn("[").defer();
         val suffix = Sleep(  50).thenReturn("]").defer();
         val body   = Sleep(2000).thenReturn( "---").defer();
-        val string = λ(around, prefix, suffix, body);
+        val string = DeferAction.from(prefix, suffix, body, around)
+                        .start();
         
-        string.start();
         sleep(100);
         string.abort("Too long");
         
@@ -178,7 +177,7 @@ public class StructuredConcurrenctTest {
         val forth  = Sleep(1500).thenReturn("<4>").defer();
         val fifth  = Sleep(2000).thenReturn("<5>").defer();
         
-        val string = λ(around, first, second, race(third, forth, fifth));
+        val string = DeferAction.from(first, second, race(third, forth, fifth), around);
         string.start();
         
         assertAsString("Result:{ Value: <1><3><2> }", string.getResult());
@@ -199,7 +198,7 @@ public class StructuredConcurrenctTest {
         val forth  = Sleep(1000).thenReturn("<4>").defer();
         val fifth  = Sleep(2000).thenReturn("<5>").defer();
         
-        val string = λ(around, first, second, race(third, forth, fifth));
+        val string = DeferAction.from(first, second, race(third, forth, fifth), around);
         string.start();
         
         assertAsString("Result:{ Value: <1><4><2> }",                      string.getResult());
@@ -220,8 +219,9 @@ public class StructuredConcurrenctTest {
         val forth  = Sleep(150).thenReturn("<4>").defer();
         val fifth  = Sleep(200).thenReturn("<5>").defer();
         
-        val string = λ(around, first, second, race(third, forth, fifth));
-        string.start();
+        val string = DeferAction.from(first, second, race(third, forth, fifth), around)
+                        .start();
+        
         sleep(500);
         
         second.completeWith(Result.<String>ofException(new RuntimeException()));
@@ -247,8 +247,8 @@ public class StructuredConcurrenctTest {
         val forth  = Sleep(1500).thenReturn("<4>").defer();
         val fifth  = Sleep(2000).thenReturn("<5>").defer();
         
-        val string = λ(around, first, second, race(third, forth, fifth));
-        string.start();
+        val string = DeferAction.from(first, second, race(third, forth, fifth), around)
+                        .start();
         sleep(100);
         string.abort("Change my mind.");
         
