@@ -39,6 +39,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -256,9 +257,22 @@ public class GenClass implements IGenerateDefinition {
         return new GenClass(sourceSpec, accessibility, scope, modifiability, targetKind, type, generic, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public Stream<Type> requiredTypes() {
-        return asList(asList((IRequireTypes) (() -> Stream.of(type))), asList((IRequireTypes) (() -> extendeds.stream())), asList((IRequireTypes) (() -> implementeds.stream())), constructors, fields, mores).stream().flatMap(allLists()).map(IRequireTypes.class::cast).map(IRequireTypes::requiredTypes).flatMap(themAll());
+        return asList(
+        		asList((IRequireTypes) (() -> Stream.of(type))),
+        		asList((IRequireTypes) (() -> extendeds.stream())), 
+        		asList((IRequireTypes) (() -> implementeds.stream())), 
+        		constructors, 
+        		fields, 
+        		mores
+    		)
+    		.stream().
+    		flatMap((Function<? super List<? extends IRequireTypes>, ? extends Stream<? extends String>>) allLists())
+    		.map(IRequireTypes.class::cast)
+    		.map(IRequireTypes::requiredTypes)
+    		.flatMap(themAll());
     }
     
     @Override

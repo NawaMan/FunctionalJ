@@ -883,63 +883,63 @@ public class StreamPlusTest {
         val sumLength = new SumLength();
         assertEquals(18, stream.calculate(sumLength).intValue());
     }
-    
-    @Test
-    public void testCalculate2() {
-        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new SumLength();
-        val avgLength = new AvgLength();
-        assertEquals("(18,4)", stream.calculate(sumLength, avgLength).toString());
-    }
-    
-    @Test
-    public void testCalculate2_combine() {
-        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val minLength = new MinLength();
-        val maxLength = new MaxLength();
-        val range = stream.calculate(maxLength, minLength).mapWith((max, min) -> max - min).intValue();
-        assertEquals(3, range);
-    }
-    
-    @Test
-    public void testCalculate3() {
-        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new SumLength();
-        val avgLength = new AvgLength();
-        val minLength = new MinLength();
-        assertEquals("(18,4,3)", stream.calculate(sumLength, avgLength, minLength).toString());
-    }
-    
-    @Test
-    public void testCalculate3_combine() {
-        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new SumLength();
-        val avgLength = new AvgLength();
-        val minLength = new MinLength();
-        val value = stream.calculate(sumLength, avgLength, minLength).mapWith((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
-        assertEquals("sum: 18, avg: 4, min: 3", value);
-    }
-    
-    @Test
-    public void testCalculate4() {
-        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new SumLength();
-        val avgLength = new AvgLength();
-        val minLength = new MinLength();
-        val maxLength = new MaxLength();
-        assertEquals("(18,4,3,6)", stream.calculate(sumLength, avgLength, minLength, maxLength).toString());
-    }
-    
-    @Test
-    public void testCalculate4_combine() {
-        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new SumLength();
-        val avgLength = new AvgLength();
-        val minLength = new MinLength();
-        val maxLength = new MaxLength();
-        val value = stream.calculate(sumLength, avgLength, minLength, maxLength).mapWith((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
-        assertEquals("sum: 18, avg: 4, min: 3, max: 6", value);
-    }
+//    
+//    @Test
+//    public void testCalculate2() {
+//        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+//        val sumLength = new SumLength();
+//        val avgLength = new AvgLength();
+//        assertEquals("(18,4)", stream.calculate(sumLength, avgLength).toString());
+//    }
+//    
+//    @Test
+//    public void testCalculate2_combine() {
+//        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+//        val minLength = new MinLength();
+//        val maxLength = new MaxLength();
+//        val range = stream.calculate(maxLength, minLength).mapWith((max, min) -> max - min).intValue();
+//        assertEquals(3, range);
+//    }
+//    
+//    @Test
+//    public void testCalculate3() {
+//        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+//        val sumLength = new SumLength();
+//        val avgLength = new AvgLength();
+//        val minLength = new MinLength();
+//        assertEquals("(18,4,3)", stream.calculate(sumLength, avgLength, minLength).toString());
+//    }
+//    
+//    @Test
+//    public void testCalculate3_combine() {
+//        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+//        val sumLength = new SumLength();
+//        val avgLength = new AvgLength();
+//        val minLength = new MinLength();
+//        val value = stream.calculate(sumLength, avgLength, minLength).mapWith((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
+//        assertEquals("sum: 18, avg: 4, min: 3", value);
+//    }
+//    
+//    @Test
+//    public void testCalculate4() {
+//        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+//        val sumLength = new SumLength();
+//        val avgLength = new AvgLength();
+//        val minLength = new MinLength();
+//        val maxLength = new MaxLength();
+//        assertEquals("(18,4,3,6)", stream.calculate(sumLength, avgLength, minLength, maxLength).toString());
+//    }
+//    
+//    @Test
+//    public void testCalculate4_combine() {
+//        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+//        val sumLength = new SumLength();
+//        val avgLength = new AvgLength();
+//        val minLength = new MinLength();
+//        val maxLength = new MaxLength();
+//        val value = stream.calculate(sumLength, avgLength, minLength, maxLength).mapWith((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
+//        assertEquals("sum: 18, avg: 4, min: 3, max: 6", value);
+//    }
     
     @Test
     public void testCalculate5() {

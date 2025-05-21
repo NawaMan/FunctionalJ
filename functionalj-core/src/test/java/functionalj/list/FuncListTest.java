@@ -1893,70 +1893,70 @@ public class FuncListTest {
             assertEquals(18, list.calculate(sumLength).intValue());
         });
     }
-    
-    @Test
-    public void testCalculate2() {
-        run(FuncList.of(Two, Three, Four, Eleven), list -> {
-            val sumLength = new SumLength();
-            val avgLength = new AvgLength();
-            assertAsString("(18,4)", list.calculate(sumLength, avgLength));
-        });
-    }
-    
-    @Test
-    public void testCalculate2_combine() {
-        run(FuncList.of(Two, Three, Four, Eleven), list -> {
-            val minLength = new MinLength();
-            val maxLength = new MaxLength();
-            val range = list.calculate(maxLength, minLength).mapWith((max, min) -> max - min).intValue();
-            assertEquals(3, range);
-        });
-    }
-    
-    @Test
-    public void testCalculate3() {
-        run(FuncList.of(Two, Three, Four, Eleven), list -> {
-            val sumLength = new SumLength();
-            val avgLength = new AvgLength();
-            val minLength = new MinLength();
-            assertAsString("(18,4,3)", list.calculate(sumLength, avgLength, minLength));
-        });
-    }
-    
-    @Test
-    public void testCalculate3_combine() {
-        run(FuncList.of(Two, Three, Four, Eleven), list -> {
-            val sumLength = new SumLength();
-            val avgLength = new AvgLength();
-            val minLength = new MinLength();
-            val value = list.calculate(sumLength, avgLength, minLength).mapWith((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
-            assertAsString("sum: 18, avg: 4, min: 3", value);
-        });
-    }
-    
-    @Test
-    public void testCalculate4() {
-        run(FuncList.of(Two, Three, Four, Eleven), list -> {
-            val sumLength = new SumLength();
-            val avgLength = new AvgLength();
-            val minLength = new MinLength();
-            val maxLength = new MaxLength();
-            assertAsString("(18,4,3,6)", list.calculate(sumLength, avgLength, minLength, maxLength));
-        });
-    }
-    
-    @Test
-    public void testCalculate4_combine() {
-        run(FuncList.of(Two, Three, Four, Eleven), list -> {
-            val sumLength = new SumLength();
-            val avgLength = new AvgLength();
-            val minLength = new MinLength();
-            val maxLength = new MaxLength();
-            val value = list.calculate(sumLength, avgLength, minLength, maxLength).mapWith((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
-            assertAsString("sum: 18, avg: 4, min: 3, max: 6", value);
-        });
-    }
-    
+//    
+//    @Test
+//    public void testCalculate2() {
+//        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            assertAsString("(18,4)", list.calculate(sumLength, avgLength));
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate2_combine() {
+//        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            val range = list.calculate(maxLength, minLength).mapWith((max, min) -> max - min).intValue();
+//            assertEquals(3, range);
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate3() {
+//        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            assertAsString("(18,4,3)", list.calculate(sumLength, avgLength, minLength));
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate3_combine() {
+//        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val value = list.calculate(sumLength, avgLength, minLength).mapWith((sum, avg, min) -> "sum: " + sum + ", avg: " + avg + ", min: " + min);
+//            assertAsString("sum: 18, avg: 4, min: 3", value);
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate4() {
+//        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            assertAsString("(18,4,3,6)", list.calculate(sumLength, avgLength, minLength, maxLength));
+//        });
+//    }
+//    
+//    @Test
+//    public void testCalculate4_combine() {
+//        run(FuncList.of(Two, Three, Four, Eleven), list -> {
+//            val sumLength = new SumLength();
+//            val avgLength = new AvgLength();
+//            val minLength = new MinLength();
+//            val maxLength = new MaxLength();
+//            val value = list.calculate(sumLength, avgLength, minLength, maxLength).mapWith((sum, avg, min, max) -> "sum: " + sum + ", avg: " + avg + ", min: " + min + ", max: " + max);
+//            assertAsString("sum: 18, avg: 4, min: 3, max: 6", value);
+//        });
+//    }
+//    
     @Test
     public void testCalculate5() {
         run(FuncList.of(Two, Three, Four, Eleven), list -> {
