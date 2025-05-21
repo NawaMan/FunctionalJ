@@ -641,6 +641,13 @@ public interface StringAccess<HOST> extends ObjectAccess<HOST, String>, Concrete
         }, func -> StringAccess.this.newAccess(func));
     }
     
+    public default FuncListAccess<HOST, String, StringAccess<HOST>> split(String regex, int limit) {
+        return FuncListAccess.of(host -> {
+            val strValue = StringAccess.this.apply(host);
+            return FuncList.from(strValue.split(regex, limit));
+        }, func -> StringAccess.this.newAccess(func));
+    }
+    
     public default FuncListAccess<HOST, String, StringAccess<HOST>> split(Function<HOST, String> regexFunction) {
         return FuncListAccess.of(host -> {
             val strValue = StringAccess.this.apply(host);
