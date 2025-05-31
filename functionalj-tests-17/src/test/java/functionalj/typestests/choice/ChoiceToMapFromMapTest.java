@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.typestests.choice;
 
-import static functionalj.typestests.TestHelper.assertAsString;
+import static functionalj.TestHelper.assertAsString;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.junit.Test;

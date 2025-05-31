@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.typestests.struct;
 
-import static functionalj.typestests.TestHelper.assertAsString;
+import static functionalj.TestHelper.assertAsString;
 import static functionalj.typestests.struct.StructNamedComplex.theStructNamedComplex;
 import static functionalj.typestests.struct.StructNamedFuncList.theStructNamedFuncList;
 import static functionalj.typestests.struct.StructNamedFuncMap.theStructNamedFuncMap;

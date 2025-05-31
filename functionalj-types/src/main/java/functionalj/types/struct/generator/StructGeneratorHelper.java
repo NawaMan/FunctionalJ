@@ -61,6 +61,7 @@ import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
 import functionalj.types.struct.generator.model.Accessibility;
 import functionalj.types.struct.generator.model.GenConstructor;
+import functionalj.types.struct.generator.model.GenDefaultRecordConstructor;
 import functionalj.types.struct.generator.model.GenField;
 import functionalj.types.struct.generator.model.GenMethod;
 import functionalj.types.struct.generator.model.GenParam;
@@ -194,6 +195,34 @@ public class StructGeneratorHelper {
     }
     
     static GenConstructor allArgConstructor(SourceSpec sourceSpec) {
+    	if (sourceSpec.generateRecord()) {
+    		return allArgRecordConstructor(sourceSpec);
+    	} else {
+    		return allArgClassConstructor(sourceSpec);
+    	}
+    }
+    
+    static GenDefaultRecordConstructor allArgRecordConstructor(SourceSpec sourceSpec) {
+        BiFunction<SourceSpec, Accessibility, GenDefaultRecordConstructor> allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenDefaultRecordConstructor>) ((spec, acc) -> {
+            String         name          = spec.getTargetClassName();
+            String         pkgName       = sourceSpec.getPackageName();
+            String         eclName       = sourceSpec.getEncloseName();
+            String         valName       = sourceSpec.getValidatorName();
+            String         getterParams  = sourceSpec.getGetters().stream().map(getter -> getter.name()).collect(Collectors.joining(","));
+            Stream<String> assignGetters = spec.getGetters().stream().map(getter -> StructGeneratorHelper.initGetterField(getter, false));
+            Stream<String> validate      = (Stream<String>) ((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
+            Stream<String> postConstruct = postConstructor();
+            Stream<String> body          = Stream.of(assignGetters, validate, postConstruct).flatMap(identity());
+            return new GenDefaultRecordConstructor(acc, name, ILines.of(() -> body));
+        });
+        
+        boolean       publicConstructor         = sourceSpec.getConfigures().publicConstructor;
+        Accessibility allArgsConstAccessibility = sourceSpec.getConfigures().generateAllArgConstructor
+        										? (publicConstructor ? PUBLIC : PACKAGE) : PRIVATE;
+        return allArgsConstructor.apply(sourceSpec, allArgsConstAccessibility);
+    }
+    
+    static GenConstructor allArgClassConstructor(SourceSpec sourceSpec) {
         BiFunction<SourceSpec, Accessibility, GenConstructor> allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>) ((spec, acc) -> {
             String         name          = spec.getTargetClassName();
             List<GenParam> params        = spec.getGetters().stream().map(StructGeneratorHelper::getterToGenParam).collect(toList());
@@ -209,14 +238,27 @@ public class StructGeneratorHelper {
         });
         
         boolean       publicConstructor         = sourceSpec.getConfigures().publicConstructor;
-        Accessibility allArgsConstAccessibility = sourceSpec.getConfigures().generateAllArgConstructor ? (publicConstructor ? PUBLIC : PACKAGE) : PRIVATE;
+        Accessibility allArgsConstAccessibility = sourceSpec.getConfigures().generateAllArgConstructor
+        										? (publicConstructor ? PUBLIC : PACKAGE) : PRIVATE;
         return allArgsConstructor.apply(sourceSpec, allArgsConstAccessibility);
     }
     
     static String initGetterField(Getter getter) {
+    	return initGetterField(getter, true);
+    }
+    
+    static String initGetterField(Getter getter, boolean isAssigning) {
         // TODO - some of these should be pushed to $utils
         String getterName = getter.name();
         Type   getterType = getter.type();
+        
+        if (!isAssigning) {
+        	if (!getter.isNullable() && !getterType.isPrimitive()) {
+                return String.format("$utils.notNull(%1$s);", getterName);
+            }
+        	return "";
+        }
+        
         String initValue = null;
         if (getterType.isList()) {
             initValue = String.format("functionalj.list.ImmutableFuncList.from(%1$s)", getterName);

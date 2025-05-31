@@ -154,6 +154,21 @@ public class StructuredConcurrenctTest {
     }
     
     @Test
+    public void testRace_allFailed() throws InterruptedException {
+        val first  = Sleep(  10).thenThrow(RuntimeException::new, String.class).defer();
+        val second = Sleep( 500).thenThrow(RuntimeException::new, String.class).defer();
+        val third  = Sleep(2000).thenThrow(RuntimeException::new, String.class).defer();
+        
+        val result = DeferAction.race(first, second, third);
+        result.start();
+        
+        assertAsString("Result:{ Cancelled: Finish without non-null result. }", result.getResult());
+        assertAsString("Result:{ Exception: java.lang.RuntimeException }",      first.getResult());
+        assertAsString("Result:{ Exception: java.lang.RuntimeException }",      second.getResult());
+        assertAsString("Result:{ Exception: java.lang.RuntimeException }",      third.getResult());
+    }
+    
+    @Test
     public void testRace_cancelAll() {
         val action1 = DeferAction.run(TimeFuncs.Sleep(200).thenReturn("200"));
         val action2 = DeferAction.run(TimeFuncs.Sleep(100).thenReturn("100"));
@@ -420,6 +435,36 @@ public class StructuredConcurrenctTest {
                     + "]", 
                     logs.toString());
         });
+    }
+    
+    @Test
+    public void testSpawn2_success() {
+        val first  = Sleep(  10).thenReturn("1st").defer();
+        val second = Sleep( 500).thenReturn("2nd").defer();
+        val third  = Sleep(2000).thenReturn("3rd").defer();
+        
+        val firstDone = FuncList.of(first, second, third)
+        .spawn(it -> it)
+        .first();
+
+        assertEquals(
+        		"Optional[Result:{ Value: 1st }]", 
+        		firstDone.toString());
+    }
+    
+    @Test
+    public void testSpawn2_exception() {
+        val first  = Sleep  (10).thenThrow(RuntimeException::new, String.class).defer();
+        val second = Sleep( 500).thenReturn("2nd").defer();
+        val third  = Sleep(2000).thenReturn("3rd").defer();
+        
+        val firstDone = FuncList.of(first, second, third)
+        .spawn(it -> it)
+        .first();
+
+        assertEquals(
+        		"Optional[Result:{ Exception: java.lang.RuntimeException }]", 
+        		firstDone.toString());
     }
     
     @Test
