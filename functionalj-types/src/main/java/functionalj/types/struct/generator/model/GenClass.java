@@ -31,7 +31,6 @@ import static functionalj.types.struct.generator.ILines.oneLineOf;
 import static functionalj.types.struct.generator.ILines.withSeparateIndentedSpace;
 import static functionalj.types.struct.generator.model.GenClass.TargetKind.CLASS;
 import static functionalj.types.struct.generator.model.GenClass.TargetKind.RECORD;
-import static functionalj.types.struct.generator.model.utils.allLists;
 import static functionalj.types.struct.generator.model.utils.themAll;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
@@ -256,9 +255,21 @@ public class GenClass implements IGenerateDefinition {
         return new GenClass(sourceSpec, accessibility, scope, modifiability, targetKind, type, generic, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
     }
     
-    @Override
+	@Override
     public Stream<Type> requiredTypes() {
-        return asList(asList((IRequireTypes) (() -> Stream.of(type))), asList((IRequireTypes) (() -> extendeds.stream())), asList((IRequireTypes) (() -> implementeds.stream())), constructors, fields, mores).stream().flatMap(allLists()).map(IRequireTypes.class::cast).map(IRequireTypes::requiredTypes).flatMap(themAll());
+		return asList(
+        		asList((IRequireTypes) (() -> Stream.of(type))),
+        		asList((IRequireTypes) (() -> extendeds.stream())), 
+        		asList((IRequireTypes) (() -> implementeds.stream())), 
+        		constructors, 
+        		fields, 
+        		mores
+    		)
+    		.stream().
+    		flatMap(list -> list.stream())
+    		.map(IRequireTypes.class::cast)
+    		.map(IRequireTypes::requiredTypes)
+    		.flatMap(themAll());
     }
     
     @Override

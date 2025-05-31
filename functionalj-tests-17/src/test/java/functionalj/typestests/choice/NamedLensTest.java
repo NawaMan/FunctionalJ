@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.typestests.choice;
 
-import static functionalj.typestests.TestHelper.assertAsString;
+import static functionalj.TestHelper.assertAsString;
 import static functionalj.typestests.choice.Command.theCommand;
 import static functionalj.typestests.choice.Command.Move.theMove;
 import static functionalj.typestests.choice.Command.Rotate.theRotate;

@@ -1,6 +1,6 @@
 package functionalj.typestests.struct;
 
-import static functionalj.typestests.TestHelper.assertAsString;
+import static functionalj.TestHelper.assertAsString;
 import static functionalj.typestests.struct.Dot.theDot;
 import static functionalj.typestests.struct.Point.thePoint;
 import static org.junit.Assert.assertEquals;
