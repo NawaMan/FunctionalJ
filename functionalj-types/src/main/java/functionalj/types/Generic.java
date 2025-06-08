@@ -78,6 +78,10 @@ public class Generic {
     
     @Override
     public String toString() {
-        return "Generic [name=" + name + ", withBound=" + withBound + ", boundTypes=" + boundTypes + "]";
+        return "Generic ["
+        			+ "name="       + name       + ", "
+					+ "withBound="  + withBound  + ", "
+					+ "boundTypes=" + boundTypes 
+				+ "]";
     }
 }

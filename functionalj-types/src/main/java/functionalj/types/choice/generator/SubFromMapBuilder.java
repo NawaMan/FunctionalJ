@@ -52,15 +52,27 @@ public class SubFromMapBuilder implements Lines {
             Type    fieldType     = param.type();
             boolean isGenericType = !fieldType.simpleName().contains(".") && (fieldType.packageName() == null) && targetClass.type.generics().stream().filter(generic -> generic.name.equals(fieldType.simpleName())).findAny().isPresent();
             String  fieldTypeName = isGenericType ? targetClass.type.generics().stream().filter(generic -> generic.name.equals(fieldType.simpleName())).flatMap(generic -> generic.boundTypes.stream()).map(type -> type.simpleName()).findFirst().orElse(fieldType.simpleName()) : fieldType.simpleName();
-            String  fieldTypeFull = isGenericType ? fieldTypeName : fieldType.simpleNameWithGeneric();
-            String  extraction    = format("%s(%s)$utils.extractPropertyFromMap(%s.class, %s.class, map, __schema__, \"%s\")%s", indent, fieldTypeFull, choice.name, fieldTypeName, param.name(), comma.get());
+            
+            // TODO: It is more complicated ...
+            // If the generic is local, we should not use it ... as the method is static
+            // If the generic is global (static), we should use it.
+            // That said, it seems to be ok, id not used.
+//            String  fieldTypeFull = isGenericType ? fieldTypeName : fieldType.simpleNameWithGeneric();
+            
+            String  extraction    = format("%s(%s)$utils.extractPropertyFromMap(%s.class, %s.class, map, __schema__, \"%s\")%s", 
+            							indent, fieldTypeName, choice.name, fieldTypeName, param.name(), comma.get());
             return extraction;
-            // return "        $utils.extractPropertyFromMap(map, __schema__, \"" + param.name() + "\")" + comma.get();
         }), Stream.of("    );")).flatMap(allLines -> allLines);
     }
     
     @Override
     public List<String> lines() {
-        return Stream.of(Stream.of("public static " + choice.name + " caseFromMap(java.util.Map<String, ? extends Object> map) {"), body(), Stream.of("}")).flatMap(allLines -> allLines).collect(toList());
+        return Stream.of(
+        		Stream.of("public static " + choice.name + " caseFromMap(java.util.Map<String, ? extends Object> map) {"), 
+        		body(), 
+        		Stream.of("}")
+    		)
+    		.flatMap(allLines -> allLines)
+    		.collect(toList());
     }
 }
