@@ -3,7 +3,7 @@
     <server>
       <id>ossrh</id>
       <username>${env.NAWAMAN_SONATYPE_USERNAME}</username>
-      <password>${env.NAWAMAN_SONATYPE_PASSWORD}</password>
+      <password>${env.NAWAMAN_SONATYPE_TOKEN}</password>
     </server>
   </servers>
 </settings>
