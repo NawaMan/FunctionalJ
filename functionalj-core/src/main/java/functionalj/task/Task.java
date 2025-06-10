@@ -322,7 +322,7 @@ public interface Task<DATA> {
         return new TaskRace<D>(FuncList.from(ios));
     }
     
-    public static <D> Task<D> firstFrom(List<? extends Task<D>> ios) {
+    public static <D> Task<D> firstOf(List<? extends Task<D>> ios) {
         return new TaskRace<D>(FuncList.from(ios));
     }
     

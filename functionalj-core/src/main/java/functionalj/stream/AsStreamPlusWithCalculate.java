@@ -74,46 +74,49 @@ public interface AsStreamPlusWithCalculate<DATA> {
     /**
      * Perform the calculation using the data of this stream
      */
-    public default <RESULT1, RESULT2> Tuple2<RESULT1, RESULT2> calculate(Aggregation<? super DATA, RESULT1> collector1, Aggregation<? super DATA, RESULT2> collector2) {
-        val collected1 = collectedOf(collector1);
-        val collected2 = collectedOf(collector2);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public default <RESULT1, RESULT2> Tuple2<RESULT1, RESULT2> calculate(Aggregation<? super DATA, RESULT1> collector1, Aggregation<? super DATA, RESULT2> collector2) {
+        val collected1 = collectedOf((Aggregation)collector1);
+        val collected2 = collectedOf((Aggregation)collector2);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
         });
-        return Tuple.of(collected1.finish(), collected2.finish());
+        return (Tuple2<RESULT1, RESULT2>) Tuple.of(collected1.finish(), collected2.finish());
     }
     
     /**
      * Perform the calculation using the data of this stream
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <RESULT1, RESULT2, RESULT3> Tuple3<RESULT1, RESULT2, RESULT3> calculate(Aggregation<? super DATA, RESULT1> collector1, Aggregation<? super DATA, RESULT2> collector2, Aggregation<? super DATA, RESULT3> collector3) {
-        val collected1 = collectedOf(collector1);
-        val collected2 = collectedOf(collector2);
-        val collected3 = collectedOf(collector3);
+        val collected1 = collectedOf((Aggregation)collector1);
+        val collected2 = collectedOf((Aggregation)collector2);
+        val collected3 = collectedOf((Aggregation)collector3);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
             collected3.accumulate(each);
         });
-        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish());
+        return (Tuple3<RESULT1, RESULT2, RESULT3>) Tuple.of(collected1.finish(), collected2.finish(), collected3.finish());
     }
     
     /**
      * Perform the calculation using the data of this stream
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <RESULT1, RESULT2, RESULT3, RESULT4> Tuple4<RESULT1, RESULT2, RESULT3, RESULT4> calculate(Aggregation<? super DATA, RESULT1> collector1, Aggregation<? super DATA, RESULT2> collector2, Aggregation<? super DATA, RESULT3> collector3, Aggregation<? super DATA, RESULT4> collector4) {
-        val collected1 = collectedOf(collector1);
-        val collected2 = collectedOf(collector2);
-        val collected3 = collectedOf(collector3);
-        val collected4 = collectedOf(collector4);
+        val collected1 = collectedOf((Aggregation)collector1);
+        val collected2 = collectedOf((Aggregation)collector2);
+        val collected3 = collectedOf((Aggregation)collector3);
+        val collected4 = collectedOf((Aggregation)collector4);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
             collected3.accumulate(each);
             collected4.accumulate(each);
         });
-        return Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish());
+        return (Tuple4<RESULT1, RESULT2, RESULT3, RESULT4>) Tuple.of(collected1.finish(), collected2.finish(), collected3.finish(), collected4.finish());
     }
     
     /**

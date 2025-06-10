@@ -171,7 +171,18 @@ public class ChoiceSpec {
             String paramName = p.toString();
             if (p.isTypeVariable()) {
                 InputTypeVariable param = p.asTypeVariable();
-                return new Generic(paramName, paramName + ((param.getLowerBound() == null) ? "" : " super " + param.getLowerBound()) + (param.getUpperBound().toString().equals("java.lang.Object") ? "" : " extends " + param.getUpperBound()), Stream.of(typeOf(targetType, param.getLowerBound()), typeOf(targetType, param.getUpperBound())).filter(Objects::nonNull).collect(toList()));
+                return new Generic(
+                		paramName, 
+                		paramName 
+                			+ ((param.getLowerBound() == null) 
+                					? "" 
+        							: " super " + param.getLowerBound()) 
+                			+ (param.getUpperBound().toString().equals("java.lang.Object") 
+                					? "" 
+        							: " extends " + param.getUpperBound()), 
+            			Stream.of(
+            					typeOf(targetType, param.getLowerBound()), 
+            					typeOf(targetType, param.getUpperBound())).filter(Objects::nonNull).collect(toList()));
             } else {
                 return new Generic(paramName);
             }

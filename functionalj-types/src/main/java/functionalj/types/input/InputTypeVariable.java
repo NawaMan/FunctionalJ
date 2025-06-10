@@ -42,12 +42,14 @@ public interface InputTypeVariable extends InputReferenceType {
         
         @Override
         public InputType getLowerBound() {
-            return InputType.of(environment, typeVariable.getLowerBound());
+        	InputType inputType = InputType.of(environment, typeVariable.getLowerBound());
+            return (inputType == null || inputType.toString().equals("null")) ? null : inputType;
         }
         
         @Override
         public InputType getUpperBound() {
-            return InputType.of(environment, typeVariable.getUpperBound());
+        	InputType inputType = InputType.of(environment, typeVariable.getUpperBound());
+            return (inputType == null || inputType.toString().equals("null")) ? null : inputType;
         }
     }
     

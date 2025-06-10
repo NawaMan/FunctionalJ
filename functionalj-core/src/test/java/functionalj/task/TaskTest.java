@@ -398,7 +398,15 @@ public class TaskTest {
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         assertEquals("F2::merge(Task#F0::Action1.cached(), F2::merge(Task#F0::Action1.cached(), Task#F0::Action2))", action.toString());
-        assertEquals("[" + "Action1 runs!, A, " + "Action2 runs!, a, " + "Result: Result:{ Value: A-A-a }, " + "Action2 runs!, b, " + "Result: Result:{ Value: A-A-b }, " + "Action2 runs!, c, " + "Result: Result:{ Value: A-A-c }" + "]", logs.toString());
+        assertEquals("[" + 
+                        "Action1 runs!, A, " + 
+                        "Action2 runs!, a, " + 
+                        "Result: Result:{ Value: A-A-a }, " + 
+                        "Action2 runs!, b, " + 
+                        "Result: Result:{ Value: A-A-b }, " + 
+                        "Action2 runs!, c, " + 
+                        "Result: Result:{ Value: A-A-c }" + 
+                    "]", logs.toString());
     }
     
     @Test
@@ -431,7 +439,16 @@ public class TaskTest {
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         assertEquals("F2::merge(Task#F0::Action1.cachedFor(F0::get-ref,BiPredicate::when-change), F2::merge(Task#F0::Action1.cachedFor(F0::get-ref,BiPredicate::when-change), Task#F0::Action2))", action.toString());
-        assertEquals("[" + "Action1 runs!, A, " + "Action2 runs!, a, Result: Result:{ Value: A-A-a }, " + "Action2 runs!, b, Result: Result:{ Value: A-A-b }, " + "Action2 runs!, c, Result: Result:{ Value: A-A-c }, " + "Action1 runs!, B, " + "Action2 runs!, d, Result: Result:{ Value: B-B-d }, " + "Action2 runs!, e, Result: Result:{ Value: B-B-e }, " + "Action2 runs!, f, Result: Result:{ Value: B-B-f }" + "]", logs.toString());
+        assertEquals("["
+                        + "Action1 runs!, A, "
+                        + "Action2 runs!, a, Result: Result:{ Value: A-A-a }, " 
+                        + "Action2 runs!, b, Result: Result:{ Value: A-A-b }, " 
+                        + "Action2 runs!, c, Result: Result:{ Value: A-A-c }, " 
+                        + "Action1 runs!, B, " 
+                        + "Action2 runs!, d, Result: Result:{ Value: B-B-d }, " 
+                        + "Action2 runs!, e, Result: Result:{ Value: B-B-e }, " 
+                        + "Action2 runs!, f, Result: Result:{ Value: B-B-f }" 
+                        + "]", logs.toString());
     }
     
     @Test

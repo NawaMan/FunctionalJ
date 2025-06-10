@@ -57,7 +57,15 @@ class AsIntStreamPlusHelper {
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface AsIntStreamPlus extends AsIntStreamPlusWithCalculate, AsIntStreamPlusWithConversion, AsIntStreamPlusWithCollect, AsIntStreamPlusWithForEach, AsIntStreamPlusWithGroupingBy, AsIntStreamPlusWithReduce, AsIntStreamPlusWithStatistic {
+public interface AsIntStreamPlus
+        extends 
+            AsIntStreamPlusWithCalculate, 
+            AsIntStreamPlusWithConversion, 
+            AsIntStreamPlusWithCollect, 
+            AsIntStreamPlusWithForEach, 
+            AsIntStreamPlusWithGroupingBy, 
+            AsIntStreamPlusWithReduce, 
+            AsIntStreamPlusWithStatistic {
     
     /**
      * @return  the stream plus instance of this object.

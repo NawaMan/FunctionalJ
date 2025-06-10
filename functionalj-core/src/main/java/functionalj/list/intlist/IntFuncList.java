@@ -81,7 +81,29 @@ import lombok.val;
 import nullablej.nullable.Nullable;
 
 // TODO - Use this for byte, short and char
-public interface IntFuncList extends AsIntFuncList, IntIterable, IntPredicate, IntFuncListWithCombine, IntFuncListWithFilter, IntFuncListWithFlatMap, IntFuncListWithLimit, IntFuncListWithMap, IntFuncListWithMapFirst, IntFuncListWithMapGroup, IntFuncListWithMapMulti, IntFuncListWithMapThen, IntFuncListWithMapToMap, IntFuncListWithMapToTuple, IntFuncListWithMapWithIndex, IntFuncListWithModify, IntFuncListWithPeek, IntFuncListWithPipe, IntFuncListWithSegment, IntFuncListWithSort, IntFuncListWithSplit {
+public interface IntFuncList
+        extends
+            AsIntFuncList, 
+            IntIterable, 
+            IntPredicate, 
+            IntFuncListWithCombine, 
+            IntFuncListWithFilter, 
+            IntFuncListWithFlatMap, 
+            IntFuncListWithLimit, 
+            IntFuncListWithMap, 
+            IntFuncListWithMapFirst, 
+            IntFuncListWithMapGroup, 
+            IntFuncListWithMapMulti, 
+            IntFuncListWithMapThen, 
+            IntFuncListWithMapToMap, 
+            IntFuncListWithMapToTuple, 
+            IntFuncListWithMapWithIndex, 
+            IntFuncListWithModify, 
+            IntFuncListWithPeek, 
+            IntFuncListWithPipe, 
+            IntFuncListWithSegment, 
+            IntFuncListWithSort, 
+            IntFuncListWithSplit {
     
     /**
      * Throw a no more element exception. This is used for generator.

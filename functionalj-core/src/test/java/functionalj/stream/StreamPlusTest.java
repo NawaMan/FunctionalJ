@@ -79,7 +79,9 @@ import functionalj.list.intlist.IntFuncList;
 import functionalj.promise.DeferAction;
 import functionalj.stream.collect.CollectorPlus;
 import functionalj.stream.collect.CollectorToIntPlus;
+import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
 public class StreamPlusTest {
@@ -298,16 +300,22 @@ public class StreamPlusTest {
         assertAsString("[3, 3, 5]", stream.flatMapToInt(s -> IntStreamPlus.of(s.length())).toList());
     }
     
-    // @Test
-    // public void testFlatMapToLong() {
-    // val stream = StreamPlus.of("One", "Two", "Three");
-    // assertAsString("[3, 3, 5]", stream.flatMapToLong(s -> LongStreamPlus.of((long)s.length())).toList()));
-    // }
-    // @Test
-    // public void testFlatMapToDouble() {
-    // val stream = StreamPlus.of("One", "Two", "Three");
-    // assertAsString("[3, 3, 5]", stream.flatMapToDouble(s -> DoubleStreamPlus.of((double)s.length())).toList());
-    // }
+    @Test
+    public void testFlatMapToLong() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertAsString(
+        		"[3, 3, 5]", 
+        		stream.flatMapToLong(s -> LongStreamPlus.of((long)s.length())).toList());
+    }
+    
+    @Test
+    public void testFlatMapToDouble() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertAsString(
+        		"[3.0, 3.0, 5.0]", 
+        		stream.flatMapToDouble(s -> DoubleStreamPlus.of((double)s.length())).toList());
+    }
+     
     // -- Filter --
     @Test
     public void testFilter() {

@@ -67,7 +67,8 @@ public class ComplexChoiceTypeTest {
         assertAsString(expected, lines);
     }
     
-    private static final String expected = "package example.functionalj.elm;\n"
+    private static final String expected 
+    		  = "package example.functionalj.elm;\n"
               + "\n"
               + "import functionalj.lens.core.LensSpec;\n"
               + "import functionalj.lens.lenses.*;\n"
@@ -185,7 +186,7 @@ public class ComplexChoiceTypeTest {
               + "            return Loggined(\n"
               + "                    (String)$utils.extractPropertyFromMap(Loggined.class, String.class, map, __schema__, \"name\"),\n"
               + "                    (int)$utils.extractPropertyFromMap(Loggined.class, int.class, map, __schema__, \"age\"),\n"
-              + "                    (Optional<java.lang.Double>)$utils.extractPropertyFromMap(Loggined.class, Optional.class, map, __schema__, \"wealth\"),\n"
+              + "                    (Optional)$utils.extractPropertyFromMap(Loggined.class, Optional.class, map, __schema__, \"wealth\"),\n"
               + "                    (User)$utils.extractPropertyFromMap(Loggined.class, User.class, map, __schema__, \"user\")\n"
               + "            );\n"
               + "        }\n"

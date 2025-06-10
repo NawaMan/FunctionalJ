@@ -56,11 +56,10 @@ public class GenConstructor implements IGenerateDefinition {
     private final ILines body;
     
     public GenConstructor(Accessibility accessibility, String name, List<GenParam> params, ILines body) {
-        super();
         this.accessibility = accessibility;
-        this.name = name;
-        this.params = params;
-        this.body = body;
+        this.name          = name;
+        this.params        = params;
+        this.body          = body;
     }
     
     public Accessibility getAccessibility() {
@@ -123,7 +122,10 @@ public class GenConstructor implements IGenerateDefinition {
     @Override
     public ILines toDefinition(String currentPackage) {
         String paramDefs  = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
-        String definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{").map(utils.toStr()).filter(Objects::nonNull).collect(joining(" "));
+        String definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
+        					.map(utils.toStr())
+        					.filter(Objects::nonNull)
+        					.collect(joining(" "));
         return ILines.flatenLines(line(definition), indent(body), line("}"));
     }
     

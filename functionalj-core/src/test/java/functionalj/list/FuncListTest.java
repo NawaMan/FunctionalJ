@@ -1051,18 +1051,18 @@ public class FuncListTest {
         });
     }
     
-    // 
-    // @Test
-    // public void testGroupingBy_process() {
-    // run(FuncList.of(One, Two, Three, Four, Five), list -> {
-    // val sumLength = new SumLength();
-    // assertAsString(
-    // "{3:6, 4:8, 5:5}",
-    // list
-    // .groupingBy(theString.length(), sumLength)
-    // .sortedByKey(theInteger));
-    // });
-    // }
+     
+     @Test
+     public void testGroupingBy_process() {
+	     run(FuncList.of(One, Two, Three, Four, Five), list -> {
+		     val sumLength = new SumLength();
+		     assertAsString(
+			     "{3:6, 4:8, 5:5}",
+			     list
+			     .groupingBy(theString.length(), sumLength)
+			     .sortedByKey(theInteger));
+	     });
+     }
     @Test
     public void testGroupingBy_collect() {
         run(FuncList.of(One, Two, Three, Four, Five), list -> {

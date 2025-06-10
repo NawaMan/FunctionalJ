@@ -26,6 +26,8 @@ package functionalj.stream.intstream;
 import static functionalj.stream.intstream.IntStreamPlusHelper.dummy;
 import static functionalj.tuple.IntIntTuple.intTuple;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.IntSummaryStatistics;
 import java.util.Objects;
@@ -38,11 +40,14 @@ import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.function.IntComparator;
+import functionalj.function.IntFunctionPrimitive;
 import functionalj.function.IntPredicatePrimitive;
 import functionalj.function.aggregator.IntAggregation;
 import functionalj.function.aggregator.IntAggregationToBoolean;
 import functionalj.function.aggregator.IntAggregationToInt;
+import functionalj.lens.lenses.IntegerToDoubleAccessPrimitive;
 import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
+import functionalj.lens.lenses.IntegerToLongAccessPrimitive;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.IntIntTuple;
@@ -69,6 +74,10 @@ public interface AsIntStreamPlusWithStatistic {
         return streamPlus.count();
     }
     
+    public default long count(IntPredicatePrimitive condition) {
+        return intStreamPlus().filter(condition).count();
+    }
+    
     @Eager
     @Terminal
     public default int sum() {
@@ -76,12 +85,52 @@ public interface AsIntStreamPlusWithStatistic {
         return streamPlus.sum();
     }
     
-    public default long count(IntPredicatePrimitive condition) {
-        return intStreamPlus().filter(condition).count();
+    @Eager
+    @Terminal
+    public default long sumToLong() {
+        val streamPlus = intStreamPlus();
+        return streamPlus.sumToLong(i -> (long)i);
+    }
+    
+    @Eager
+    @Terminal
+    public default double sumToDouble() {
+        val streamPlus = intStreamPlus();
+        return streamPlus.sumToDouble(i -> (double)i);
+    }
+    
+    @Eager
+    @Terminal
+    public default BigInteger sumToBigInteger() {
+        val streamPlus = intStreamPlus();
+        return streamPlus.sumToBigInteger(i -> BigInteger.valueOf(i));
+    }
+    
+    @Eager
+    @Terminal
+    public default BigDecimal sumToBigDecimal() {
+        val streamPlus = intStreamPlus();
+        return streamPlus.sumToBigDecimal(i -> BigDecimal.valueOf(i));
     }
     
     public default int sum(IntegerToIntegerAccessPrimitive mapper) {
         return intStreamPlus().map(mapper).sum();
+    }
+    
+    public default long sumToLong(IntegerToLongAccessPrimitive mapper) {
+        return intStreamPlus().mapToLong(mapper).sum();
+    }
+    
+    public default double sumToDouble(IntegerToDoubleAccessPrimitive mapper) {
+        return intStreamPlus().mapToDouble(mapper).sum();
+    }
+    
+    public default BigInteger sumToBigInteger(IntFunctionPrimitive<BigInteger> mapper) {
+        return intStreamPlus().mapToObj(mapper).reduce(BigInteger::add).orElse(BigInteger.ZERO);
+    }
+    
+    public default BigDecimal sumToBigDecimal(IntFunctionPrimitive<BigDecimal> mapper) {
+        return intStreamPlus().mapToObj(mapper).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
     }
     
     /**
@@ -93,6 +142,8 @@ public interface AsIntStreamPlusWithStatistic {
         val streamPlus = intStreamPlus();
         return streamPlus.reduce((a, b) -> a * b);
     }
+    
+    //== Add product toThings ...
     
     @Eager
     @Terminal
