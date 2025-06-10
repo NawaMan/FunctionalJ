@@ -110,16 +110,19 @@ function build-release() {
         act git merge master --no-ff -m '"Release: v$VERSION"'
         
         set-version
-        act ./mvnw \
-            --no-transfer-progress \
-            --batch-mode           \
+        act ./mvnw                                     \
+            --no-transfer-progress                     \
+            --batch-mode                               \
             -Dgpg.passphrase=$NAWAMAN_SIGNING_PASSWORD \
-            -Dmaven.test.skip=false    \
-            -Dmaven.source.skip=false  \
-            -Dmaven.javadoc.skip=false \
-            -Dgpg.signing.skip=false   \
-            -Dsona.staging.skip=false  \
-            clean install package gpg:sign deploy  --toolchains ./toolchains.xml
+            -Dsona.site=$(cat project-publish-site)    \
+            -Dmaven.test.skip=false                    \
+            -Dmaven.source.skip=false                  \
+            -Dmaven.javadoc.skip=false                 \
+            -Dgpg.signing.skip=false                   \
+            -Dsona.staging.skip=false                  \
+            clean install package gpg:sign deploy      \
+            --settings   ./settings.xml                \
+            --toolchains ./toolchains.xml
         act git push
         
         act git tag -a v$VERSION -m '"Release: v$VERSION"'
