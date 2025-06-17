@@ -52,51 +52,100 @@ public enum ResultStatus {
         return null;
     }
     
-    public static final boolean isPresent(ResultStatus status) {
+    public static final boolean checkPresent(ResultStatus status) {
         return status == PRESENT;
     }
     
-    public static final boolean isAbsent(ResultStatus status) {
+    public static final boolean checkAbsent(ResultStatus status) {
         return status != PRESENT;
     }
     
-    public static final boolean isNull(ResultStatus status) {
+    public static final boolean checkNull(ResultStatus status) {
         return status == NULL;
     }
     
-    public static final boolean isValue(ResultStatus status) {
+    public static final boolean checkValue(ResultStatus status) {
         return (status == PRESENT) || (status == NULL);
     }
     
-    public static final boolean isNotValue(ResultStatus status) {
-        return !isValue(status);
+    public static final boolean checkNotValue(ResultStatus status) {
+        return !checkValue(status);
     }
     
-    public static final boolean isInvalid(ResultStatus status) {
+    public static final boolean checkInvalid(ResultStatus status) {
         return status == ResultStatus.INVALID;
     }
     
-    public static final boolean isNotExist(ResultStatus status) {
+    public static final boolean checkNotExist(ResultStatus status) {
         return status == NOTEXIST;
     }
     
-    public static final boolean isException(ResultStatus status) {
-        return !isValue(status);
+    public static final boolean checkException(ResultStatus status) {
+        return !checkValue(status);
     }
     
-    public static final boolean isCancelled(ResultStatus status) {
+    public static final boolean checkCancelled(ResultStatus status) {
         return status == CANCELLED;
     }
     
-    public static final boolean isReady(ResultStatus status) {
+    public static final boolean checkReady(ResultStatus status) {
         return status != NOTREADY;
     }
     
-    public static final boolean isNotReady(ResultStatus status) {
+    public static final boolean checkNotReady(ResultStatus status) {
         return status == NOTREADY;
     }
     
-    public static final boolean isNoMore(ResultStatus status) {
+    public static final boolean checkNoMore(ResultStatus status) {
         return status == NOMORE;
     }
+    
+    public final boolean isPresent() {
+        return checkPresent(this);
+    }
+    
+    public final boolean isAbsent() {
+        return checkAbsent(this);
+    }
+    
+    public final boolean isNull() {
+        return checkNull(this);
+    }
+    
+    public final boolean isValue() {
+        return checkValue(this);
+    }
+    
+    public final boolean isNotValue() {
+        return checkNotValue(this);
+    }
+    
+    public final boolean isInvalid() {
+        return checkInvalid(this);
+    }
+    
+    public final boolean isNotExist() {
+        return checkNotExist(this);
+    }
+    
+    public final boolean isException() {
+        return checkException(this);
+    }
+    
+    public final boolean isCancelled() {
+        return checkCancelled(this);
+    }
+    
+    public final boolean isReady() {
+        return checkReady(this);
+    }
+    
+    public final boolean isNotReady() {
+        return checkNotReady(this);
+    }
+    
+    public final boolean isNoMore() {
+        return checkNoMore(this);
+    }
+    
 }

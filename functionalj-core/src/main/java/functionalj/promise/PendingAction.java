@@ -26,6 +26,7 @@ package functionalj.promise;
 import static functionalj.function.Func.carelessly;
 
 import java.util.function.Predicate;
+
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.pipeable.Pipeable;
@@ -123,6 +124,11 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
         val newPromise = promise.map(mapper);
         return new PendingAction<TARGET>((Promise<TARGET>) newPromise);
     }
+    
+	public final <TARGET> PendingAction<TARGET> mapResult(Func1<Result<? super DATA>, Result<? extends TARGET>> mapper) {
+		val newPromise = promise.mapResult(mapper);
+	    return new PendingAction<TARGET>((Promise<TARGET>) newPromise);
+	}
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public final <TARGET> PendingAction<TARGET> flatMap(Func1<? super DATA, ? extends HasPromise<? extends TARGET>> mapper) {
