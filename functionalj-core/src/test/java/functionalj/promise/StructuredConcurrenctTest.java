@@ -71,6 +71,7 @@ public class StructuredConcurrenctTest {
         assertAsString("Result:{ Exception: java.lang.RuntimeException }", suffix.getResult());
         assertAsString("Result:{ Cancelled: No more listener. }",          body  .getResult());
     }
+    
     @Test
     public void testCombine_abort() throws InterruptedException {
         val around = f((String prefix, String suffix, String text) -> prefix + text + suffix);

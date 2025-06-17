@@ -27,7 +27,6 @@ import static functionalj.function.Func.carelessly;
 
 import java.util.function.Predicate;
 
-import defaultj.core.utils.failable.Failable.Function;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.pipeable.Pipeable;
