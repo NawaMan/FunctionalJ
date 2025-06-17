@@ -977,6 +977,11 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return newAction;
     }
     
+	public final <TARGET> DeferAction<TARGET> mapResult(Func1<Result<? super DATA>, Result<? extends TARGET>> mapper) {
+		val newPromise = promise.mapResult(mapper);
+	    return new DeferAction<TARGET>(this, (Promise<TARGET>) newPromise);
+	}
+    
     public final <TARGET> DeferAction<TARGET> flatMap(Func1<? super DATA, ? extends HasPromise<? extends TARGET>> mapper) {
         return chain((Func1) mapper);
     }
