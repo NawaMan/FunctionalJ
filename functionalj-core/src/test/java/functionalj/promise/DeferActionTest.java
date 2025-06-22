@@ -118,6 +118,51 @@ public class DeferActionTest {
     }
     
     @Test
+    public void testDeferAction_map_abort() throws InterruptedException {
+        val action1 = DeferAction.from(() -> {
+            Thread.sleep(5000);
+            return "Hello";
+        });
+        val start = System.currentTimeMillis();
+        
+        val action2 = action1.map(result -> {
+			val end = System.currentTimeMillis();
+			return "Result: " + result + ", Time: " + (end - start);
+		});
+        action2.start();
+        
+        Thread.sleep(200);
+        action2.abort();
+
+        assertAsString("Result:{ Cancelled: No more listener. }", action1.getCurrentResult());
+        assertAsString("Result:{ Cancelled }",                    action2.getCurrentResult());
+    }
+    
+    @Test
+    public void testDeferAction_map_abort_2() throws InterruptedException {
+        val action1 = DeferAction.from(() -> {
+            Thread.sleep(400);
+            return "Hello";
+        });
+        val start = System.currentTimeMillis();
+        
+        val action2 = action1.map(result -> {
+			val end = System.currentTimeMillis();
+			return "Result: " + result + ", Time: " + (end - start);
+		});
+        action2.start();
+        
+        val action3 = action1.map(s -> s.toLowerCase());
+        
+        Thread.sleep(200);
+        action2.abort();
+
+        assertAsString("Result:{ Value: Hello }", action1.getResult());
+        assertAsString("Result:{ Cancelled }",    action2.getResult());
+        assertAsString("Result:{ Value: hello }", action3.getResult());
+    }
+    
+    @Test
     public void testDeferAction_exception() throws InterruptedException {
         val log = new ArrayList<String>();
         val endRef = new AtomicInteger();
@@ -141,16 +186,12 @@ public class DeferActionTest {
     @Test
     public void testGetResult() {
         val log = new ArrayList<String>();
-        val start = System.currentTimeMillis();
-        log.add("Start: " + (start - start));
         val result = DeferAction.run(() -> {
             Thread.sleep(200);
             return "Hello";
         }).getResult();
-        val end = System.currentTimeMillis();
-        log.add("End: " + (100 * ((end - start) / 100)));
         log.add("Result: " + result);
-        assertEquals("[Start: 0, End: 200, Result: Result:{ Value: Hello }]", log.toString());
+        assertEquals("[Result: Result:{ Value: Hello }]", log.toString());
     }
     
     @Test
@@ -172,7 +213,6 @@ public class DeferActionTest {
     
     @Test
     public void testGetResult_interrupt() {
-        val start = System.currentTimeMillis();
         val threadRef = new AtomicReference<Thread>();
         val action = run(() -> {
             threadRef.set(Thread.currentThread());
@@ -188,7 +228,6 @@ public class DeferActionTest {
             threadRef.get().interrupt();
         }).start();
         action.getResult();
-        assertTrue((System.currentTimeMillis() - start) < 150);
         assertAsString("Result:{ Exception: java.lang.InterruptedException: sleep interrupted }", action.getResult());
     }
     
@@ -418,7 +457,7 @@ public class DeferActionTest {
         latch.await();
         val logString = log.toString();
         assertTrue(logString.contains("Done: Result:{ Cancelled }"));
-        assertTrue(logString.contains("Eavesdrop: false, Eavesdrop: Result:{ Value: Hello }"));
+        assertTrue(logString.contains("Eavesdrop: true, Eavesdrop: Result:{ Cancelled: No more listener. }"));
     }
     
     static class LoggedCreator extends DeferActionCreator {

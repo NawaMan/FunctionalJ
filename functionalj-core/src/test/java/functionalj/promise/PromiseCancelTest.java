@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import lombok.val;
@@ -268,11 +269,13 @@ public class PromiseCancelTest {
             val result  = action.getResult();
             val result1 = action1.getResult();
             val result2 = action2.getResult();
-            assertAsString("Result:{ Value: Hello World! }", result);
-            assertAsString("Result:{ Cancelled }",           result1);
-            assertAsString("Result:{ Cancelled }",           result2);
+            assertAsString("Result:{ Cancelled: No more listener. }", result);
+            assertAsString("Result:{ Cancelled }",                    result1);
+            assertAsString("Result:{ Cancelled }",                    result2);
             
-            assertAsString("null", result.getException());
+            assertAsString(
+            		"functionalj.result.ResultCancelledException: No more listener.",
+            		result.getException());
             
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
@@ -317,13 +320,17 @@ public class PromiseCancelTest {
             val result  = action.getResult();
             val result1 = action1.getResult();
             val result2 = action2.getResult();
-            assertAsString("Result:{ Value: Hello World! }",   result);
-            assertAsString("Result:{ Value: Hello World!!! }", result1);
-            assertAsString("Result:{ Cancelled }",             result2);
+            assertAsString("Result:{ Cancelled: No more listener. }", result);
+            assertAsString("Result:{ Cancelled: No more listener. }", result1);
+            assertAsString("Result:{ Cancelled }",                    result2);
             
-            assertAsString("null", result.getException());
+            assertAsString(
+            		"functionalj.result.ResultCancelledException: No more listener.", 
+            		result.getException());
             
-            assertAsString("null", result1.getException());
+            assertAsString(
+            		"functionalj.result.ResultCancelledException: No more listener.",
+            		result1.getException());
             
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"

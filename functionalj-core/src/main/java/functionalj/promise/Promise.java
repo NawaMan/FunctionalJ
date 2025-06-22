@@ -630,9 +630,23 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     private <T> Promise<T> newSubPromise(FuncUnit2<Result<DATA>, Promise<T>> resultConsumer) {
-        val promise = new Promise<T>(this);
-        onCompleted(resultConsumer.elevateWith(promise));
-        return promise;
+    	val holder = new AtomicReference<Promise>();
+        val record = onCompleted((input1) -> {
+        	val promise = holder.get();
+        	if (promise != null) {
+            	resultConsumer.accept(input1, promise);
+			}
+        });
+        val promise = record.getPromise();
+        holder.set(promise);
+        
+        if (this.isDone() && promise.isNotDone()) {
+        	// In the case the promise is already done, we can directly set the result.
+        	val input1 = (Result)this.getCurrentResult();
+        	resultConsumer.accept(input1, (Promise)promise);
+		}
+        
+        return (Promise<T>)promise;
     }
     
     // == Basic functionality ==
@@ -685,7 +699,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     private SubscriptionRecord<DATA> listen(boolean isEavesdropping, FuncUnit1<Result<DATA>> resultConsumer) {
-        val subscription = new SubscriptionRecord<DATA>(this);
+    	val promise      = new Promise(Promise.this);
+        val subscription = new SubscriptionRecord<DATA>(promise);
         if (isEavesdropping)
             eavesdroppers.add(resultConsumer);
         else
@@ -802,7 +817,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         val returnSubscription = (SubscriptionRecord<DATA>) synchronouseOperation(() -> {
             val data = dataRef.get();
             if (data instanceof Result) {
-                val subscription = new SubscriptionRecord<DATA>(this);
+            	val promise      = new Promise(Promise.this);
+                val subscription = new SubscriptionRecord<DATA>(promise);
                 toRunNow.set(true);
                 return subscription;
             }
