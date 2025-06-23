@@ -46,9 +46,9 @@ public class DeferActionCreator {
     
     public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, boolean interruptOnCancel, AsyncRunner runner) {
         val promiseRef = new AtomicReference<Promise<D>>();
-        val runTask = new RunTask<D>(interruptOnCancel, supplier, onStart, runner, promiseRef::get);
-        val action = new DeferAction<D>(runTask, null);
-        val promise = action.getPromise();
+        val runTask    = new RunTask<D>(interruptOnCancel, supplier, onStart, runner, promiseRef::get);
+        val action     = new DeferAction<D>(runTask, null);
+        val promise    = action.getPromise();
         promiseRef.set(promise);
         return action;
     }

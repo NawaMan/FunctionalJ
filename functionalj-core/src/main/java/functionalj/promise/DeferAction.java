@@ -821,7 +821,8 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     //== Create ==
     
     public static <D> DeferAction<D> create(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, AsyncRunner runner) {
-        return DeferActionCreator.current.value().create(supplier, onStart, interruptOnCancel, runner);
+        return DeferActionCreator.current.value()
+        		.create(supplier, onStart, interruptOnCancel, runner);
     }
     
     private final Runnable task;
@@ -841,10 +842,10 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     DeferAction(Runnable task, OnStart onStart) {
         super(onStart);
         this.parent = null;
-        this.task = task;
+        this.task   = task;
     }
     
-    public PendingAction<DATA> start() {
+    public final PendingAction<DATA> start() {
         if (parent != null) {
             parent.start();
         } else {

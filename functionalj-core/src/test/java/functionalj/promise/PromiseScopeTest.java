@@ -46,7 +46,7 @@ public class PromiseScopeTest {
                 Thread.sleep(10);
                 logs.add("Main.end()");
                 
-                // Ended before sub-action finish (wait only 10 ... sub-action is took 50).
+                // Ended before sub-action finish
                 return "Hello World!";
             })
             .start();
@@ -63,7 +63,7 @@ public class PromiseScopeTest {
                     + "Main.end()"
                     + "]",
                     logs); 
-        });
+        	});
         });
     }
     
