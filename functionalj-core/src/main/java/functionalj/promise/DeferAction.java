@@ -825,8 +825,7 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         		.create(supplier, onStart, interruptOnCancel, runner);
     }
     
-    private final Runnable task;
-    
+    private final Runnable       task;
     private final DeferAction<?> parent;
     
     DeferAction() {
@@ -846,6 +845,7 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     public final PendingAction<DATA> start() {
+    	AsyncRunner.logs.add("DeferAction.start(): " + this + ": " + Thread.currentThread());
         if (parent != null) {
             parent.start();
         } else {

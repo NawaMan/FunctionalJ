@@ -1,63 +1,81 @@
-//package functionalj.promise;
-//
-//import static functionalj.TestHelper.assertAsString;
-//import static java.util.stream.Collectors.toList;
-//import static org.junit.Assert.assertEquals;
-//
-//import java.util.ArrayList;
-//import java.util.concurrent.ThreadFactory;
-//import java.util.concurrent.atomic.AtomicInteger;
-//import java.util.stream.Collectors;
-//
-//import org.junit.Test;
-//
-//import functionalj.environments.Env;
-//import functionalj.promise.PromiseCancelTest.Body;
-//import functionalj.ref.Run;
-//import lombok.val;
-//
-//public class PromiseScopeTest {
-//	
-//	@Test
-//	public void testAgain() throws Exception {
-//        val logs = new ArrayList<String>();
-//        ensureThreadCleanup(() -> {
-//        	
-//            val subAction = DeferAction.<String>from(() -> {
-//                logs.add("Sub.start()");
-//                Thread.sleep(50);
-//                logs.add("Sub.end()");
-//                return "Hello there!";
-//            })
-//            .onCompleted(result -> {
-//                logs.add("Sub completed");
-//            });
-//        	
-//
-//            Run.with(ActionAsyncRunner.asyncScopeProvider.butWith(AsyncRunnerScopeProvider.nested)).run(() -> {
-//            val mainAction = DeferAction.<String>from(() -> {
-//                logs.add("Main.start()");
-//                Thread.sleep(50);
-//
-//            	subAction.start();
-//                
-//                Thread.sleep(10);
-//                logs.add("Main.end()");
-//                
-//                // Ended before sub-action finish
-//                return "Hello World!";
-//            });
-//            
-//            mainAction.start();
-//            val result = mainAction.getResult();
-//            System.out.println(result);
-//
-//            });
-//            System.out.println();
-//            logs.stream().map("  - "::concat).forEach(System.out::println);
-//        });
-//	}
-//    
+package functionalj.promise;
+
+import static java.util.stream.Collectors.joining;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+
+import org.junit.Test;
+
+import functionalj.promise.PromiseCancelTest.Body;
+import lombok.val;
+
+public class PromiseScopeTest {
+	
+	@Test
+	public void testAgain() throws Exception {
+        val logs = AsyncRunner.logs;
+        ensureThreadCleanup(() -> {
+            val subSubAction = DeferAction.<String>from(() -> {
+                Thread.currentThread().setName("SubSub");
+            	logs.add("SubSub-1: " + Thread.currentThread());
+                logs.add("SubSub.start()");
+                Thread.sleep(50);
+                logs.add("SubSub.end()");
+                return "Hello there!";
+            })
+            .onCompleted(result -> {
+                logs.add("SubSub completed: " + result);
+            	logs.add("SubSub-2: " + Thread.currentThread());
+            });
+        	
+            val subAction = DeferAction.<String>from(() -> {
+                Thread.currentThread().setName("Sub");
+            	logs.add("Sub-1: " + Thread.currentThread());
+                logs.add("Sub.start()");
+                Thread.sleep(50);
+                
+                subSubAction.start();
+
+                Thread.sleep(10);
+                logs.add("Sub.end()");
+                return "Hello there!";
+            })
+            .onCompleted(result -> {
+                logs.add("Sub completed: " + result);
+            	logs.add("Sub-2: " + Thread.currentThread());
+            });
+        	
+
+            val mainAction = DeferAction.<String>from(() -> {
+                Thread.currentThread().setName("Main");
+            	logs.add("Main-1: " + Thread.currentThread());
+            	
+                logs.add("Main.start()");
+                Thread.sleep(50);
+
+            	subAction.start();
+                
+                Thread.sleep(10);
+                logs.add("Main.end()");
+                
+                // Ended before sub-action finish
+                return "Hello World!";
+            })
+            .onCompleted(result -> {
+                logs.add("Main completed: " + result);
+            	logs.add("Main-2: " + Thread.currentThread());
+            });
+            
+            mainAction.start();
+            val result = mainAction.getResult();
+            System.out.println(result);
+
+        });
+        System.out.println();
+        logs.stream().map("  - "::concat).forEach(System.out::println);
+	}
+    
 //    @Test
 //    public void testScopeSuccess() throws Exception {
 //        Run.with(ActionAsyncRunner.asyncScopeProvider.butWith(AsyncRunnerScopeProvider.nested)).run(() -> {
@@ -272,32 +290,32 @@
 //        
 //        });
 //    }
-//    
-//    private void ensureThreadCleanup(Body body) throws Exception {
-//        int startActiveThreads = Thread.activeCount();
-//        val beforeThreads      = currentThreads(startActiveThreads);
-//        
-//        try {
-//            body.run();
-//        } finally {
-//            if (startActiveThreads < Thread.activeCount()) {
-//                val afterThreads = currentThreads(startActiveThreads);
-//                assertEquals(beforeThreads, afterThreads);
-//            }
-//        }
-//    }
-//    
-//    private String currentThreads(int startActiveThreads) {
-//        val logs    = new ArrayList<String>();
-//        val threads = new Thread[startActiveThreads];
-//        // Get all active threads in the current thread group
-//        int actualThreads = Thread.enumerate(threads);
-//        
-//        logs.add("Number of active threads: " + actualThreads + "\n");
-//        for (int i = 0; i < actualThreads; i++) {
-//            logs.add("Thread " + i + ": " + threads[i].getName() + "\n");
-//        }
-//        return logs.stream().collect(Collectors.joining());
-//    }
-//    
-//}
+    
+    private void ensureThreadCleanup(Body body) throws Exception {
+        int startActiveThreads = Thread.activeCount();
+        val beforeThreads      = currentThreads(startActiveThreads);
+        
+        try {
+            body.run();
+        } finally {
+            if (startActiveThreads < Thread.activeCount()) {
+                val afterThreads = currentThreads(startActiveThreads);
+                assertEquals(beforeThreads, afterThreads);
+            }
+        }
+    }
+    
+    private String currentThreads(int startActiveThreads) {
+        val logs    = new ArrayList<String>();
+        val threads = new Thread[startActiveThreads];
+        // Get all active threads in the current thread group
+        int actualThreads = Thread.enumerate(threads);
+        
+        logs.add("Number of active threads: " + actualThreads + "\n");
+        for (int i = 0; i < actualThreads; i++) {
+            logs.add("Thread " + i + ": " + threads[i].getName() + "\n");
+        }
+        return logs.stream().collect(joining());
+    }
+    
+}

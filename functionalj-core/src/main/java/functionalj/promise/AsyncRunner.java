@@ -25,6 +25,8 @@ package functionalj.promise;
 
 import static functionalj.ref.Run.With;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,6 +48,8 @@ import lombok.val;
  */
 @FunctionalInterface
 public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Runnable> {
+	
+    public static List<String> logs = new ArrayList<String>();
     
     public static AsyncRunner of(functionalj.function.FuncUnit1<java.lang.Runnable> runner) {
         if (runner instanceof AsyncRunner)
@@ -102,6 +106,7 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
         val latch = new CountDownLatch(1);
         theRunner.accept(() -> {
+        	AsyncRunner.logs.add("AsyncRunner: " + Thread.currentThread());
             try {
                 With(substitutions)
                 .run(() -> {
