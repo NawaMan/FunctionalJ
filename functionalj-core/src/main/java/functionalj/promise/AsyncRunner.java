@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.promise;
 
-import static functionalj.promise.AsyncRunnerScope.asyncScope;
 import static functionalj.ref.Run.With;
 
 import java.util.concurrent.CountDownLatch;
@@ -38,7 +37,6 @@ import functionalj.exception.WrapThrowable;
 import functionalj.function.Annotated;
 import functionalj.functions.ThrowFuncs;
 import functionalj.ref.ComputeBody;
-import functionalj.ref.Ref;
 import functionalj.ref.RunBody;
 import functionalj.ref.Substitution;
 import lombok.val;
@@ -48,12 +46,6 @@ import lombok.val;
  */
 @FunctionalInterface
 public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Runnable> {
-    
-    /** Reference for the provider. **/
-    public static final Ref<AsyncRunnerScopeProvider> asyncScopeProvider 
-            = Ref.of(AsyncRunnerScopeProvider.class)
-            .whenAbsentReferTo(AsyncRunnerScopeProvider.asyncScopeProvider)
-            .defaultTo(AsyncRunnerScopeProvider.noScope);
     
     public static AsyncRunner of(functionalj.function.FuncUnit1<java.lang.Runnable> runner) {
         if (runner instanceof AsyncRunner)
@@ -84,62 +76,34 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
     }
     
-    
     public static <EXCEPTION extends Exception> Promise<Object> run(RunBody<EXCEPTION> runnable) {
-        return run(null, null, runnable);
+        return run(null, runnable);
     }
     
     public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(ComputeBody<DATA, EXCEPTION> body) {
-        return run(null, null, body);
+        return run(null, body);
     }
     
     public static <EXCEPTION extends Exception> Promise<Object> run(AsyncRunner runner, RunBody<EXCEPTION> runnable) {
-        return run(runner, null, () -> {
+        return run(runner, () -> {
             runnable.run();
             return null;
         });
     }
     
     public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
-        return run(runner, null, body);
-    }
-    
-    
-    public static <EXCEPTION extends Exception> Promise<Object> run(AsyncRunnerScopeProvider scopeProvider, RunBody<EXCEPTION> runnable) {
-        return run(null, scopeProvider, runnable);
-    }
-    
-    public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunnerScopeProvider scopeProvider, ComputeBody<DATA, EXCEPTION> body) {
-        return run(null, scopeProvider, body);
-    }
-    
-    public static <EXCEPTION extends Exception> Promise<Object> run(AsyncRunner runner, AsyncRunnerScopeProvider scopeProvider, RunBody<EXCEPTION> runnable) {
-        return run(runner, scopeProvider, () -> {
-            runnable.run();
-            return null;
-        });
-    }
-    
-    public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, AsyncRunnerScopeProvider scopeProvider, ComputeBody<DATA, EXCEPTION> body) {
-        val action           = DeferAction.of((Class<DATA>) null).start();
-        val theRunner        = (runner        != null) ? runner        : Env.async();
-        val theScioeProvider = (scopeProvider != null) ? scopeProvider : asyncScopeProvider.get();
+        val action    = DeferAction.of((Class<DATA>) null).start();
+        val theRunner = (runner != null) ? runner : Env.async();
         
         val substitutions
                 = Substitution
                 .getCurrentSubstitutions()
                 .exclude(Substitution::isThreadLocal);
-        val parentScope = asyncScope.get();
         
         val latch = new CountDownLatch(1);
         theRunner.accept(() -> {
-            parentScope.onBeforeSubAction();
-            
-            val currentScope = theScioeProvider.get();
-            
             try {
                 With(substitutions)
-                .with(asyncScope.butWith(currentScope))
                 .run(() -> {
                     body.prepared();
                     latch.countDown();
@@ -153,8 +117,6 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
                 val exception = new WrapThrowable(throwable);
                 action.fail(exception);
                 ThrowFuncs.handleNoThrow(exception);
-            } finally {
-                currentScope.onActionCompleted();
             }
         });
         

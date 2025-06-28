@@ -77,7 +77,7 @@ public class DeferActionCreator {
         
         @Override
         public void run() {
-            ActionAsyncRunner.run(runner, new Body()).onCompleted(result -> {
+            AsyncRunner.run(runner, new Body()).onCompleted(result -> {
                 val promise = promiseRef.get();
                 val action = new PendingAction<D>(promise);
                 if (result.isValue())
