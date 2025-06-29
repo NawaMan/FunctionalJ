@@ -35,6 +35,7 @@ import java.util.concurrent.ThreadFactory;
 
 import functionalj.environments.Env;
 import functionalj.environments.VirtualThreadRunner;
+import functionalj.exception.FunctionInvocationException;
 import functionalj.exception.WrapThrowable;
 import functionalj.function.Annotated;
 import functionalj.functions.ThrowFuncs;
@@ -96,9 +97,15 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
     }
     
     public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
-        val action    = DeferAction.of((Class<DATA>) null).start();
+    	val parent    = Thread.currentThread();
         val theRunner = (runner != null) ? runner : Env.async();
+
+    	System.err.println(Thread.currentThread()); 
+    	for (val stack : Thread.currentThread().getStackTrace()) {
+    		System.err.println("  - " + stack); 
+    	}
         
+    	val deferValue = new DeferValue<DATA>();
         val substitutions
                 = Substitution
                 .getCurrentSubstitutions()
@@ -106,21 +113,32 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
         val latch = new CountDownLatch(1);
         theRunner.accept(() -> {
-        	AsyncRunner.logs.add("AsyncRunner: " + Thread.currentThread());
+        	AsyncRunner.logs.add("AsyncRunner: current=" + Thread.currentThread() + " parent=" + parent);
             try {
                 With(substitutions)
                 .run(() -> {
                     body.prepared();
                     latch.countDown();
                     DATA value = body.compute();
-                    action.complete(value);
+                    deferValue.assign(value);
                 });
+            } catch (FunctionInvocationException exception) {
+                val cause = exception.getCause();
+                if (cause instanceof Exception) {
+                	val causeException = (Exception)cause;
+                	deferValue.fail(causeException);
+                    ThrowFuncs.handleNoThrow(causeException);
+                } else {
+	                val wrapped = new WrapThrowable(cause);
+	            	deferValue.fail(wrapped);
+	                ThrowFuncs.handleNoThrow(wrapped);
+                }
             } catch (Exception exception) {
-                action.fail(exception);
+            	deferValue.fail(exception);
                 ThrowFuncs.handleNoThrow(exception);
             } catch (Throwable throwable) {
                 val exception = new WrapThrowable(throwable);
-                action.fail(exception);
+                deferValue.fail(exception);
                 ThrowFuncs.handleNoThrow(exception);
             }
         });
@@ -131,8 +149,7 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
             e.printStackTrace();
         }
         
-        val promise = action.getPromise();
-        return promise;
+        return deferValue;
     }
     
     public static final AsyncRunner onSameThread = AsyncRunner.withName("RunOnSameThread", runnable -> {

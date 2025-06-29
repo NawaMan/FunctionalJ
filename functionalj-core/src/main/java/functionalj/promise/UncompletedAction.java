@@ -100,4 +100,10 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         return promise.getResult(timeout, unit);
     }
+
+	@Override
+	public String toString() {
+		return "Action [" + promise + "]";
+	}
+    
 }

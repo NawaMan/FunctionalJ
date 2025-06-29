@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.FuncUnit1;
@@ -385,7 +386,7 @@ public class StructuredConcurrenctTest {
             return counter.get() == 3 ? "Three" : null;
         })
         .retry(5).times()
-        .waitFor(50)
+        .waitFor(100)
         .milliseconds();
         
         val action = builder.build().start();

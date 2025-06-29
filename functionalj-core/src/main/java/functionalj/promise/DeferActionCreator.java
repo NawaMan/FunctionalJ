@@ -24,12 +24,12 @@
 package functionalj.promise;
 
 import static functionalj.function.Func.carelessly;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 import functionalj.function.Func0;
 import functionalj.ref.ComputeBody;
 import functionalj.ref.Ref;
-import functionalj.result.Result;
 import functionalj.supportive.Default;
 import lombok.val;
 
@@ -55,41 +55,30 @@ public class DeferActionCreator {
     
     private static class RunTask<D> implements Runnable {
         
-        private final boolean interruptOnCancel;
-        
-        private final Func0<D> supplier;
-        
-        private final Runnable onStart;
-        
-        private final AsyncRunner runner;
-        
-        private final Func0<Promise<D>> promiseRef;
-        
+        private final boolean                 interruptOnCancel;
+        private final Func0<D>                supplier;
+        private final Runnable                onStart;
+        private final AsyncRunner             runner;
+        private final Func0<Promise<D>>       promiseRef;
         private final AtomicReference<Thread> threadRef = new AtomicReference<Thread>();
         
-        public RunTask(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, AsyncRunner runner, Func0<Promise<D>> promiseRef) {
+        RunTask(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, AsyncRunner runner, Func0<Promise<D>> promiseRef) {
             this.interruptOnCancel = interruptOnCancel;
-            this.supplier = supplier;
-            this.onStart = onStart;
-            this.runner = runner;
-            this.promiseRef = promiseRef;
+            this.supplier          = supplier;
+            this.onStart           = onStart;
+            this.runner            = runner;
+            this.promiseRef        = promiseRef;
         }
         
         @Override
         public void run() {
             AsyncRunner.run(runner, new Body()).onCompleted(result -> {
                 val promise = promiseRef.get();
-                val action = new PendingAction<D>(promise);
-                if (result.isValue())
-                    action.complete(null);
-                else if (result.isCancelled())
-                    action.abort(result.exception());
-                else
-                    action.fail(result.exception());
+                Promise.makeDone(promise, result);
             });
         }
         
-        class Body implements ComputeBody<Void, RuntimeException> {
+        class Body implements ComputeBody<D, RuntimeException> {
             
             public void prepared() {
                 val promise = promiseRef.get();
@@ -100,12 +89,8 @@ public class DeferActionCreator {
             }
             
             @Override
-            public Void compute() throws RuntimeException {
-                val promise = promiseRef.get();
-                val action = new PendingAction<D>(promise);
-                val result = Result.of(this::runSupplier);
-                action.completeWith(result);
-                return null;
+            public D compute() throws RuntimeException {
+                return this.runSupplier();
             }
             
             private D runSupplier() {

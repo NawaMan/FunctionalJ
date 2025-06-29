@@ -442,6 +442,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     Promise(StartableAction<DATA> action) {
         name = "" + ID.getAndIncrement();
         dataRef.set(action);
+        
+    	System.err.println(this + ": " + Thread.currentThread()); 
+    	for (val stack : Thread.currentThread().getStackTrace()) {
+    		System.err.println("  - " + stack); 
+    	}
     }
     
     Promise(Promise parent) {

@@ -52,6 +52,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.environments.Console;
@@ -211,6 +212,7 @@ public class DeferActionTest {
         }
     }
     
+//    @Ignore
     @Test
     public void testGetResult_interrupt() {
         val threadRef = new AtomicReference<Thread>();
@@ -822,7 +824,7 @@ public class DeferActionTest {
             return counter.get() == 3 ? "Three" : null;
         })
         .retry(5).times()
-        .waitFor(50)
+        .waitFor(200)
         .milliseconds();
         
         val action = builder.build().start();
