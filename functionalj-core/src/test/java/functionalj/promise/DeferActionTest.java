@@ -52,7 +52,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.environments.Console;
@@ -809,7 +808,7 @@ public class DeferActionTest {
         assertTrue(diff2 >= 2);
     }
     
-    @Ignore
+    // @Ignore
     @Test
     public void testRetry_abort() throws InterruptedException {
         val counter = new AtomicInteger(0);
@@ -818,8 +817,7 @@ public class DeferActionTest {
             return counter.get() == 3 ? "Three" : null;
         })
         .retry(5).times()
-        .waitFor(200)
-        .milliseconds();
+        .waitFor(2000).milliseconds();
         
         val action = builder.build().start();
         Thread.sleep(50);

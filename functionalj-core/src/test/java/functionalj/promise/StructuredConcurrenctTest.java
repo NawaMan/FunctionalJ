@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.FuncUnit1;
@@ -54,15 +53,15 @@ public class StructuredConcurrenctTest {
         assertAsString("Result:{ Value: [---] }", string.getResult());
     }
     
-    @Ignore
+    // @Ignore
     @Test
     public void testCombine_oneFailed() {
         // One (prefix) of the three success. Other one (suffix) failed while the last one is still working (body).
         
         val around = f((String prefix, String suffix, String text) -> prefix + text + suffix);
-        val prefix = Sleep(  10).thenReturn("[").defer();
-        val suffix = Sleep( 100).thenThrow(RuntimeException::new, String.class).defer();
-        val body   = Sleep(2000).thenReturn( "---").defer();
+        val prefix = Sleep(   10).thenReturn("[").defer();
+        val suffix = Sleep(  100).thenThrow(RuntimeException::new, String.class).defer();
+        val body   = Sleep(20000).thenReturn( "---").defer();
         val string = DeferAction.from(prefix, suffix, body, around)
                         .start();
         
@@ -379,7 +378,7 @@ public class StructuredConcurrenctTest {
         assertTrue(diff2 >= 2);
     }
     
-    @Ignore
+    // @Ignore
     @Test
     public void testRetry_abort() throws InterruptedException {
         val counter = new AtomicInteger(0);
@@ -388,8 +387,7 @@ public class StructuredConcurrenctTest {
             return counter.get() == 3 ? "Three" : null;
         })
         .retry(5).times()
-        .waitFor(1000)
-        .milliseconds();
+        .waitFor(2000).milliseconds();
         
         val action = builder.build().start();
         Thread.sleep(50);
