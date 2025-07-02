@@ -114,6 +114,7 @@ public class DeferActionCreator {
             private void setupInterruptOnCancel(Promise<D> promise) {
                 if (!interruptOnCancel)
                     return;
+                
                 threadRef.set(Thread.currentThread());
                 promise.eavesdrop(r -> {
                     r.ifCancelled(() -> {
@@ -129,6 +130,7 @@ public class DeferActionCreator {
         private void doInterruptOnCancel() {
             if (!interruptOnCancel)
                 return;
+            
             threadRef.set(null);
             // This is to reset the status in case the task was done
             // but threadRed is yet to be set to null.

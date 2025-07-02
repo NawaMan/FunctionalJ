@@ -59,7 +59,6 @@ import functionalj.function.Func8;
 import functionalj.function.Func9;
 import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
-import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.ref.Ref;
@@ -531,7 +530,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     boolean abort() {
-    	ThrowFuncs.logUnthrowable(new RuntimeException());
         val cancelResult = (Result<DATA>) Result.ofCancelled();
         return makeDone(cancelResult);
     }
