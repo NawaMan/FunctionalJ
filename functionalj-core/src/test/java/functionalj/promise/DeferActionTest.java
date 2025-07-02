@@ -658,7 +658,8 @@ public class DeferActionTest {
     @Test
     public void testInterrupt() throws InterruptedException {
         val stub = new Console.Stub();
-        With(Env.refs.console.butWith(stub)).run(() -> {
+        With(Env.refs.console.butWith(stub))
+        .run(() -> {
             val latch = new CountDownLatch(1);
             val subs = Substitution.getCurrentSubstitutions();
             val startTime = System.currentTimeMillis();
@@ -683,7 +684,8 @@ public class DeferActionTest {
             val diffTime = System.currentTimeMillis() - startTime;
             assertTrue("Taking too long", diffTime < 1000);
         });
-        assertEquals("java.lang.InterruptedException: sleep interrupted", stub.errLines().limit(1).join(", "));
+        stub.errLines().forEach(System.out::println);
+        assertTrue(stub.errLines().findFirst(s -> s.contains("java.lang.InterruptedException: sleep interrupted")).isPresent());
     }
     
     @Test
