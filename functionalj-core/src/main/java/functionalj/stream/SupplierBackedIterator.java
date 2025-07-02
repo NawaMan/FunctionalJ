@@ -23,9 +23,11 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.functions.ThrowFuncs.throwFrom;
+
 import java.util.Iterator;
 import java.util.function.Supplier;
-import functionalj.functions.ThrowFuncs;
+
 import functionalj.result.NoMoreResultException;
 
 public class SupplierBackedIterator<DATA> implements Iterator<DATA> {
@@ -34,7 +36,7 @@ public class SupplierBackedIterator<DATA> implements Iterator<DATA> {
      * Throw a no more element exception. This is used for generator.
      */
     public static <D> D noMoreElement() throws NoMoreResultException {
-        ThrowFuncs.doThrowFrom(() -> new NoMoreResultException());
+        throwFrom(() -> new NoMoreResultException());
         return (D) null;
     }
     

@@ -24,7 +24,8 @@
 package functionalj.function;
 
 import java.util.function.BiFunction;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 
 public interface IntObjBiFunction<DATA, TARGET> extends Func2<Integer, DATA, TARGET> {
     
@@ -34,7 +35,7 @@ public interface IntObjBiFunction<DATA, TARGET> extends Func2<Integer, DATA, TAR
         try {
             return applyAsIntUnsafe(input1, input2);
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(exception);
+            throw Throwables.exceptionTransformer.get().apply(exception);
         }
     }
     

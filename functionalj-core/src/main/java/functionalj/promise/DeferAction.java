@@ -25,6 +25,7 @@ package functionalj.promise;
 
 import static functionalj.function.Func.carelessly;
 import static functionalj.function.Func.f;
+import static functionalj.functions.ThrowFuncs.logUnthrowable;
 import static functionalj.list.FuncList.listOf;
 import static functionalj.promise.RaceResult.Race;
 
@@ -82,35 +83,46 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     public static <D> DeferAction<D> ofValue(D value) {
-        val action = new DeferAction<D>();
-        action.getPromise().makeComplete(value);
+        val action  = new DeferAction<D>();
+        val promise = action.getPromise();
+		promise.makeComplete(value);
         return action;
     }
     
     public static DeferAction<Object> defer(FuncUnit0 runnable) {
-        return DeferAction.from(runnable);
+        val action = DeferAction.from(runnable);
+		return action;
     }
     
     public static <D> DeferAction<D> defer(Func0<D> supplier) {
-        return DeferAction.from(supplier);
+        val action = DeferAction.from(supplier);
+		return action;
     }
     
     public static <D> DeferAction<D> defer(CompletableFuture<D> completableFucture) {
-        return DeferAction.from(completableFucture);
+        val action = DeferAction.from(completableFucture);
+		return action;
     }
     
     public static DeferAction<Object> from(FuncUnit0 runnable) {
-        return DeferActionConfig.current.value().createBuilder(runnable).build();
+        val config  = DeferActionConfig.current.value();
+		val builder = config.createBuilder(runnable);
+		val action  = builder.build();
+		return action;
     }
     
     public static <D> DeferAction<D> from(Func0<D> supplier) {
-        return DeferActionConfig.current.value().createBuilder(supplier).build();
+        val config  = DeferActionConfig.current.value();
+		val builder = config.createBuilder(supplier);
+		val action  = builder.build();
+		return action;
     }
     
     public static <D> DeferAction<D> from(CompletableFuture<D> completableFucture) {
         val action = DeferAction.of((Class<D>) null);
         val pending = action.start();
-        completableFucture.handle((value, exception) -> {
+        completableFucture
+        .handle((value, exception) -> {
             if (exception != null) {
                 if (exception instanceof Exception)
                     pending.fail((Exception) exception);
@@ -125,11 +137,15 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     public static PendingAction<Object> run(FuncUnit0 runnable) {
-        return DeferAction.from(runnable).start();
+        val deferAction   = DeferAction.from(runnable);
+		val pendingAction = deferAction.start();
+		return pendingAction;
     }
     
     public static <D> PendingAction<D> run(Func0<D> supplier) {
-        return DeferAction.from(supplier).start();
+        val deferAction   = DeferAction.from(supplier);
+		val pendingAction = deferAction.start();
+		return pendingAction;
     }
     
     //== AnyOf or Race ==
@@ -820,9 +836,9 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     
     //== Create ==
     
-    public static <D> DeferAction<D> create(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, AsyncRunner runner) {
+    public static <D> DeferAction<D> create(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart) {
         return DeferActionCreator.current.value()
-        		.create(supplier, onStart, interruptOnCancel, runner);
+        		.create(supplier, onStart, interruptOnCancel);
     }
     
     private final Runnable       task;
@@ -845,7 +861,6 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     public final PendingAction<DATA> start() {
-    	AsyncRunner.logs.add("DeferAction.start(): " + this + ": " + Thread.currentThread());
         if (parent != null) {
             parent.start();
         } else {
@@ -853,8 +868,9 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
             if (!isStarted && (task != null)) {
                 try {
                     task.run();
-                } catch (Exception e) {
-                    // Do nothing
+                } catch (Exception execption) {
+                	logUnthrowable(execption);
+                	
                 }
             }
         }
@@ -905,8 +921,8 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return this;
     }
     
-    public DeferAction<DATA> abortNoSubsriptionAfter(Wait wait) {
-        promise.abortNoSubscriptionAfter(wait);
+    public DeferAction<DATA> abortWhenNoSubsriptionAfter(Wait wait) {
+        promise.abortWhenNoSubscriptionAfter(wait);
         return this;
     }
     

@@ -23,8 +23,10 @@
 // ============================================================================
 package functionalj.stream.longstream;
 
+import static functionalj.functions.ThrowFuncs.throwFrom;
+
 import java.util.function.LongSupplier;
-import functionalj.functions.ThrowFuncs;
+
 import functionalj.result.NoMoreResultException;
 
 public class LongSupplierBackedIterator implements LongIteratorPlus {
@@ -33,7 +35,7 @@ public class LongSupplierBackedIterator implements LongIteratorPlus {
      * Throw a no more element exception. This is used for generator.
      */
     public static <D> D noMoreElement() throws NoMoreResultException {
-        ThrowFuncs.doThrowFrom(() -> new NoMoreResultException());
+    	throwFrom(() -> new NoMoreResultException());
         return (D) null;
     }
     

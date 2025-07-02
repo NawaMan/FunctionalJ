@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2025 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2025 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,33 +21,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.exception;
 
-import java.util.function.BiFunction;
+import functionalj.environments.Log;
+import functionalj.function.Func1;
+import functionalj.function.FuncUnit1;
+import functionalj.ref.Ref;
+import lombok.val;
 
-import functionalj.exception.Throwables;
 
-public interface LongObjBiFunction<DATA, TARGET> extends Func2<Long, DATA, TARGET> {
+public final class Throwables {
+	
+    public static final FuncUnit1<Throwable> defaultNoThrowLogger = throwable -> {
+    	Log.logErr(throwable);
+    };
     
-    public TARGET applyAsLongUnsafe(long input1, DATA input2) throws Exception;
+    public static final Ref<Func1<Throwable, RuntimeException>> exceptionTransformer = Ref.ofValue(e -> {
+        val throwable = (e instanceof RuntimeException) ? (RuntimeException) e : new FunctionInvocationException(e);
+        return throwable;
+    });
     
-    public default TARGET applyAsLong(long input1, DATA input2) {
-        try {
-            return applyAsLongUnsafe(input1, input2);
-        } catch (Exception exception) {
-            throw Throwables.exceptionTransformer.get().apply(exception);
-        }
-    }
+    public static final Ref<FuncUnit1<Throwable>> noThrowLogger = Ref.ofValue(defaultNoThrowLogger);
     
-    public default TARGET applyUnsafe(Long input1, DATA input2) throws Exception {
-        return applyAsLong(input1, input2);
-    }
+    private Throwables() {}
     
-    public static <D, T> T apply(BiFunction<Long, D, T> function, long input1, D input2) {
-        if (function instanceof LongObjBiPredicate) {
-            return ((LongObjBiFunction<D, T>) function).applyAsLong(input1, input2);
-        } else {
-            return function.apply(input1, input2);
-        }
-    }
 }

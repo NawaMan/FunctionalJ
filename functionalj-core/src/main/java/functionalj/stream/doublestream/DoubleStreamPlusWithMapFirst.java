@@ -25,7 +25,8 @@ package functionalj.stream.doublestream;
 
 import static functionalj.stream.doublestream.DoubleStreamPlusMapFirstAddOnHelper.doMapFirst;
 import java.util.function.DoubleFunction;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
@@ -53,7 +54,7 @@ class DoubleStreamPlusMapFirstAddOnHelper {
         }
         if (hasNull)
             return (T) null;
-        throw ThrowFuncs.exceptionTransformer.get().apply(exception);
+        throw Throwables.exceptionTransformer.get().apply(exception);
     }
 }
 

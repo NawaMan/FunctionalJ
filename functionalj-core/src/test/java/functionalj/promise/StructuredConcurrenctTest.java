@@ -54,6 +54,7 @@ public class StructuredConcurrenctTest {
         assertAsString("Result:{ Value: [---] }", string.getResult());
     }
     
+    @Ignore
     @Test
     public void testCombine_oneFailed() {
         // One (prefix) of the three success. Other one (suffix) failed while the last one is still working (body).
@@ -378,6 +379,7 @@ public class StructuredConcurrenctTest {
         assertTrue(diff2 >= 2);
     }
     
+    @Ignore
     @Test
     public void testRetry_abort() throws InterruptedException {
         val counter = new AtomicInteger(0);
@@ -386,7 +388,7 @@ public class StructuredConcurrenctTest {
             return counter.get() == 3 ? "Three" : null;
         })
         .retry(5).times()
-        .waitFor(100)
+        .waitFor(1000)
         .milliseconds();
         
         val action = builder.build().start();

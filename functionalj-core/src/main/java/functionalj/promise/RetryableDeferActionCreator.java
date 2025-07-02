@@ -39,8 +39,8 @@ public class RetryableDeferActionCreator {
     
     public static final Ref<RetryableDeferActionCreator> current = Ref.of(RetryableDeferActionCreator.class).defaultTo(RetryableDeferActionCreator.instance);
     
-    public <DATA> DeferAction<DATA> createRetryDeferAction(boolean interruptOnCancel, FuncUnit0 onStart, AsyncRunner runner, Retry<DATA> retry, Func0<DATA> supplier) {
-        val onComplete = new RetryDeferActionOnCompleted<DATA>(interruptOnCancel, onStart, runner, retry, supplier);
+    public <DATA> DeferAction<DATA> createRetryDeferAction(boolean interruptOnCancel, FuncUnit0 onStart, Retry<DATA> retry, Func0<DATA> supplier) {
+        val onComplete = new RetryDeferActionOnCompleted<DATA>(interruptOnCancel, onStart, retry, supplier);
         return onComplete.finalAction;
     }
     
@@ -53,9 +53,9 @@ public class RetryableDeferActionCreator {
         private final AtomicInteger     couter;
         private final DeferAction<DATA> finalAction;
         
-        public RetryDeferActionOnCompleted(boolean interruptOnCancel, FuncUnit0 onStart, AsyncRunner runner, Retry<DATA> retry, Func0<DATA> supplier) {
+        public RetryDeferActionOnCompleted(boolean interruptOnCancel, FuncUnit0 onStart, Retry<DATA> retry, Func0<DATA> supplier) {
             this.retry   = retry;
-            this.config  = new DeferActionConfig().interruptOnCancel(interruptOnCancel).onStart(onStart).runner(runner);
+            this.config  = new DeferActionConfig().interruptOnCancel(interruptOnCancel).onStart(onStart);
             this.builder = config.createBuilder(supplier);
             
             this.couter = new AtomicInteger(retry.times());

@@ -26,7 +26,7 @@ package functionalj.exception;
 /**
  * Wrapper for an exception throw while running a function.
  */
-public class FunctionInvocationException extends RuntimeException {
+public class FunctionInvocationException extends WrappedThrowableRuntimeException {
     
     private static final long serialVersionUID = 1145475380276387579L;
     
@@ -34,8 +34,16 @@ public class FunctionInvocationException extends RuntimeException {
         super(throwable);
     }
     
+    public FunctionInvocationException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
+    
     public FunctionInvocationException(String message) {
-        super(message);
+        this(message, null);
+    }
+    
+    public Throwable getThrowable() {
+        return this.getCause();
     }
     
 }

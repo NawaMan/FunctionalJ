@@ -30,7 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
 import functionalj.ref.ComputeBody;
@@ -83,7 +84,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(e);
+            throw Throwables.exceptionTransformer.value().apply(e);
         }
     }
     

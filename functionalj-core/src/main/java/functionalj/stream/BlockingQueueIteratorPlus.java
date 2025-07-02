@@ -29,7 +29,8 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import lombok.val;
 
 public class BlockingQueueIteratorPlus<DATA> implements IteratorPlus<DATA> {
@@ -56,7 +57,7 @@ public class BlockingQueueIteratorPlus<DATA> implements IteratorPlus<DATA> {
             try {
                 return queue.take();
             } catch (InterruptedException e) {
-                throw ThrowFuncs.exceptionTransformer.get().apply(e);
+                throw Throwables.exceptionTransformer.get().apply(e);
             }
         });
         return !Objects.equals(next.get(), endData);

@@ -58,7 +58,7 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
     }
     
     public PendingAction<DATA> abortNoSubsriptionAfter(Wait wait) {
-        promise.abortNoSubscriptionAfter(wait);
+        promise.abortWhenNoSubscriptionAfter(wait);
         return this;
     }
     

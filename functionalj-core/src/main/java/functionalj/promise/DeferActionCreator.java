@@ -44,9 +44,21 @@ public class DeferActionCreator {
     
     public static final Ref<DeferActionCreator> current = Ref.of(DeferActionCreator.class).orTypeDefaultOrGet(DeferActionCreator::new);
     
-    public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, boolean interruptOnCancel, AsyncRunner runner) {
+    /**
+     * Create a {@link DeferAction}.
+     * 
+     * @param  <D>                the result type.
+     * @param  supplier           the action body.
+     * @param  onStart            an action to be done before the {@link DeferAction} started.
+     * @param  interruptOnCancel  a flag to interrupt the task if the {@link DeferAction} is cancelled.
+     * @return
+     */
+    public <D> DeferAction<D> create(
+    				Func0<D>    supplier,
+    				Runnable    onStart,
+    				boolean     interruptOnCancel) {
         val promiseRef = new AtomicReference<Promise<D>>();
-        val runTask    = new RunTask<D>(interruptOnCancel, supplier, onStart, runner, promiseRef::get);
+        val runTask    = new RunTask<D>(interruptOnCancel, supplier, onStart, promiseRef::get);
         val action     = new DeferAction<D>(runTask, null);
         val promise    = action.getPromise();
         promiseRef.set(promise);
@@ -58,21 +70,19 @@ public class DeferActionCreator {
         private final boolean                 interruptOnCancel;
         private final Func0<D>                supplier;
         private final Runnable                onStart;
-        private final AsyncRunner             runner;
         private final Func0<Promise<D>>       promiseRef;
         private final AtomicReference<Thread> threadRef = new AtomicReference<Thread>();
         
-        RunTask(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, AsyncRunner runner, Func0<Promise<D>> promiseRef) {
+        RunTask(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, Func0<Promise<D>> promiseRef) {
             this.interruptOnCancel = interruptOnCancel;
             this.supplier          = supplier;
             this.onStart           = onStart;
-            this.runner            = runner;
             this.promiseRef        = promiseRef;
         }
         
         @Override
         public void run() {
-            AsyncRunner.run(runner, new Body()).onCompleted(result -> {
+            AsyncRunner.run(null, new Body()).onCompleted(result -> {
                 val promise = promiseRef.get();
                 Promise.makeDone(promise, result);
             });

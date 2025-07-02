@@ -14,60 +14,31 @@ public class PromiseScopeTest {
 	
 	@Test
 	public void testAgain() throws Exception {
-        val logs = AsyncRunner.logs;
         ensureThreadCleanup(() -> {
             val subSubAction = DeferAction.<String>from(() -> {
-//                Thread.currentThread().setName("SubSub");
-            	logs.add("SubSub-1: " + Thread.currentThread());
-                logs.add("SubSub.start()");
                 Thread.sleep(50);
-                logs.add("SubSub.end()");
                 return "Hello there!";
-            })
-            .onCompleted(result -> {
-                logs.add("SubSub completed: " + result);
-            	logs.add("SubSub-2: " + Thread.currentThread());
             });
-            logs.add("SubSub: " + subSubAction);
         	
             val subAction = DeferAction.<String>from(() -> {
-//                Thread.currentThread().setName("Sub");
-            	logs.add("Sub-1: " + Thread.currentThread());
-                logs.add("Sub.start()");
                 Thread.sleep(50);
                 
                 subSubAction.start();
 
                 Thread.sleep(200);
-                logs.add("Sub.end()");
                 return "Hello there!";
-            })
-            .onCompleted(result -> {
-                logs.add("Sub completed: " + result);
-            	logs.add("Sub-2: " + Thread.currentThread());
             });
-            logs.add("Sub: " + subAction);
         	
             val mainAction = DeferAction.<String>from(() -> {
-//                Thread.currentThread().setName("Main");
-            	logs.add("Main-1: " + Thread.currentThread());
-            	
-                logs.add("Main.start()");
                 Thread.sleep(50);
 
             	subAction.start();
                 
                 Thread.sleep(100);
-                logs.add("Main.end()");
                 
                 // Ended before sub-action finish
                 return "Hello World!";
-            })
-            .onCompleted(result -> {
-                logs.add("Main completed: " + result);
-            	logs.add("Main-2: " + Thread.currentThread());
             });
-            logs.add("Main: " + mainAction);
             
             mainAction.start();
             val result = mainAction.getResult();
@@ -75,7 +46,6 @@ public class PromiseScopeTest {
 
         });
         System.out.println();
-        logs.stream().map("  - "::concat).forEach(System.out::println);
 	}
     
 //    @Test

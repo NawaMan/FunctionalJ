@@ -237,7 +237,7 @@ public class PromiseTest {
         };
         val promise
                 = DeferAction.of(String.class)
-                .abortNoSubsriptionAfter(wait)
+                .abortWhenNoSubsriptionAfter(wait)
                 .eavesdrop(r -> list.add("e: " + r.toString()))
                 .start()
                 .getPromise();
@@ -268,7 +268,7 @@ public class PromiseTest {
         };
         val promise
                 = DeferAction.of(String.class)
-                .abortNoSubsriptionAfter(wait)
+                .abortWhenNoSubsriptionAfter(wait)
                 .eavesdrop(r -> list.add("e: " + r.toString()))
                 .onCompleted(r -> list.add("s: " + r.toString()))
                 .start()

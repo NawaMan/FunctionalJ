@@ -23,10 +23,9 @@
 // ============================================================================
 package functionalj.promise;
 
+import static functionalj.functions.ThrowFuncs.logUnthrowable;
 import static functionalj.ref.Run.With;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,26 +35,22 @@ import java.util.concurrent.ThreadFactory;
 import functionalj.environments.Env;
 import functionalj.environments.VirtualThreadRunner;
 import functionalj.exception.FunctionInvocationException;
-import functionalj.exception.WrapThrowable;
+import functionalj.exception.WrappedThrowableException;
 import functionalj.function.Annotated;
-import functionalj.functions.ThrowFuncs;
 import functionalj.ref.ComputeBody;
 import functionalj.ref.RunBody;
 import functionalj.ref.Substitution;
 import lombok.val;
 
 /**
- * Runnder for async runnable.
+ * Asynchronous runner for a {@link Runnable}.
  */
 @FunctionalInterface
 public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Runnable> {
 	
-    public static List<String> logs = new ArrayList<String>();
-    
     public static AsyncRunner of(functionalj.function.FuncUnit1<java.lang.Runnable> runner) {
         if (runner instanceof AsyncRunner)
             return (AsyncRunner)runner;
-        
         return runner::acceptUnsafe;
     }
     
@@ -97,14 +92,7 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
     }
     
     public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
-    	val parent    = Thread.currentThread();
-        val theRunner = (runner != null) ? runner : Env.async();
-
-    	System.err.println(Thread.currentThread()); 
-    	for (val stack : Thread.currentThread().getStackTrace()) {
-    		System.err.println("  - " + stack); 
-    	}
-        
+        val theRunner  = (runner != null) ? runner : Env.async();
     	val deferValue = new DeferValue<DATA>();
         val substitutions
                 = Substitution
@@ -113,33 +101,23 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
         val latch = new CountDownLatch(1);
         theRunner.accept(() -> {
-        	AsyncRunner.logs.add("AsyncRunner: current=" + Thread.currentThread() + " parent=" + parent);
             try {
-                With(substitutions)
-                .run(() -> {
-                    body.prepared();
-                    latch.countDown();
-                    DATA value = body.compute();
-                    deferValue.assign(value);
-                });
-            } catch (FunctionInvocationException exception) {
-                val cause = exception.getCause();
-                if (cause instanceof Exception) {
-                	val causeException = (Exception)cause;
-                	deferValue.fail(causeException);
-                    ThrowFuncs.handleNoThrow(causeException);
-                } else {
-	                val wrapped = new WrapThrowable(cause);
-	            	deferValue.fail(wrapped);
-	                ThrowFuncs.handleNoThrow(wrapped);
+            	try {
+	                With(substitutions)
+	                .run(() -> {
+	                    body.prepared();
+	                    latch.countDown();
+	                    DATA value = body.compute();
+	                    deferValue.assign(value);
+	                });
+	            } catch (FunctionInvocationException exception) {
+	                val cause = exception.getCause();
+	                throw cause;
                 }
-            } catch (Exception exception) {
-            	deferValue.fail(exception);
-                ThrowFuncs.handleNoThrow(exception);
             } catch (Throwable throwable) {
-                val exception = new WrapThrowable(throwable);
+                val exception = WrappedThrowableException.exceptionOf(throwable);
                 deferValue.fail(exception);
-                ThrowFuncs.handleNoThrow(exception);
+                logUnthrowable(exception);
             }
         });
         

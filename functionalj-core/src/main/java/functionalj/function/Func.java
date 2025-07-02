@@ -41,7 +41,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.environments.Env;
-import functionalj.functions.ThrowFuncs;
+import functionalj.exception.Throwables;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableFuncList;
 import functionalj.supportive.CallerId;
@@ -1595,7 +1595,7 @@ public interface Func {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(e);
+            throw Throwables.exceptionTransformer.get().apply(e);
         }
     }
     
@@ -1607,7 +1607,7 @@ public interface Func {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(e);
+            throw Throwables.exceptionTransformer.get().apply(e);
         }
     }
     

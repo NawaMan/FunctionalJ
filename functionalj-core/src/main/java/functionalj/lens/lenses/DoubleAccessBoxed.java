@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-import functionalj.functions.ThrowFuncs;
+import functionalj.exception.Throwables;
 import lombok.val;
 
 @FunctionalInterface
@@ -36,7 +36,7 @@ public interface DoubleAccessBoxed<HOST> extends DoubleAccess<HOST> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(e);
+            throw Throwables.exceptionTransformer.value().apply(e);
         }
     }
 }

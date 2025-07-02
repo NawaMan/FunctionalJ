@@ -25,7 +25,8 @@ package functionalj.stream.longstream;
 
 import static functionalj.stream.longstream.LongStreamPlusMapFirstAddOnHelper.doMapFirst;
 import java.util.function.LongFunction;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
@@ -53,7 +54,7 @@ class LongStreamPlusMapFirstAddOnHelper {
         }
         if (hasNull)
             return (T) null;
-        throw ThrowFuncs.exceptionTransformer.get().apply(exception);
+        throw Throwables.exceptionTransformer.get().apply(exception);
     }
 }
 
