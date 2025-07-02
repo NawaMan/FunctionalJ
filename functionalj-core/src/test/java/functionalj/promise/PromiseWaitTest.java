@@ -46,7 +46,7 @@ public class PromiseWaitTest {
     }
     
     @Test
-    public void testWaitAWhile_abort() throws InterruptedException {
+    public void testWaitAWhile_cancel() throws InterruptedException {
         val list = new ArrayList<String>();
         val action = DeferAction.of(String.class).use(promise -> promise.onCompleted(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()))).start();
         Thread.sleep(100);
@@ -85,7 +85,7 @@ public class PromiseWaitTest {
     }
     
     @Test
-    public void testWaitAWhile_differentRunners_abort() throws InterruptedException {
+    public void testWaitAWhile_differentRunners_cancel() throws InterruptedException {
         val runners = FuncList.of(Tuple.of("asyncRunnerOnNewThread", AsyncRunner.onNewThread), Tuple.of("asyncRunnerThreadFactory", AsyncRunner.threadFactory), Tuple.of("asyncRunnerExecutorService", AsyncRunner.executorService(Executors.newSingleThreadExecutor())), Tuple.of("asyncRunnerThreadFactory()", AsyncRunner.threadFactory(new ThreadFactory() {
         
             @Override
@@ -123,7 +123,7 @@ public class PromiseWaitTest {
         Thread.sleep(50);
         action.complete("Complete!");
         assertAsString("[Not done.]", list);
-        // The abort should be initiated at 150 but that was interrupted at 50.
+        // The cancel should be initiated at 150 but that was interrupted at 50.
     }
     
     @Test

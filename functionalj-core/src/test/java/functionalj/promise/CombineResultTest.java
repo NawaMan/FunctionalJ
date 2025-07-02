@@ -53,8 +53,8 @@ public class CombineResultTest {
         action2.complete("Two");
         logs.add("About to do three: " + action3.getPromise().getStatus());
         action3.complete("Three");
-        // Abort ... but after done so no effect.
-        combine.abort();
+        // Cancel ... but after done so no effect.
+        combine.cancel();
         logs.add(combine.getResult().toString());
         assertEquals("Done prepare\n" + "About to do one: PENDING\n" + "About to do two: PENDING\n" + "About to do three: PENDING\n" + "Result:{ Value: [Result:{ Value: One }, Result:{ Value: Two }, Result:{ Value: Three }] }\n" + "Result:{ Value: [Result:{ Value: One }, Result:{ Value: Two }, Result:{ Value: Three }] }", logs.stream().collect(joining("\n")));
     }

@@ -80,7 +80,7 @@ public class RetryableDeferActionCreator {
             } else {
                 val count = couter.decrementAndGet();
                 if (count == 0) {
-                    finalAction.abort("Retry exceed: " + retry.times());
+                    finalAction.cancel("Retry exceed: " + retry.times());
                 } else {
                     val period = retry.waitTimeMilliSecond();
                     Env.time().sleep(period);

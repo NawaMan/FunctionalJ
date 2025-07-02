@@ -65,8 +65,8 @@ public class PromiseTest {
     
     @Test
     public void testCancel() {
-        val promise = Promise.ofAborted();
-        assertEquals(PromiseStatus.ABORTED, promise.getStatus());
+        val promise = Promise.ofCancelled();
+        assertEquals(PromiseStatus.CANCELLED, promise.getStatus());
         assertAsString("Result:{ Cancelled }", promise.getCurrentResult());
         val ref = new AtomicReference<String>(null);
         promise.onCompleted(r -> ref.set("" + r.get()));
@@ -105,12 +105,12 @@ public class PromiseTest {
     }
     
     @Test
-    public void testAbort() {
+    public void testCancel2() {
         val ref    = new AtomicReference<String>(null);
         val action = DeferAction.of(String.class).onCompleted(r -> ref.set("" + r)).start();
         assertAsString("Result:{ NotReady }", action.getCurrentResult());
         
-        action.abort();
+        action.cancel();
         assertEquals("Result:{ Cancelled }", ref.get());
     }
     
@@ -142,7 +142,7 @@ public class PromiseTest {
         pendingAction.complete("Forty three");
         pendingAction.complete("Forty four");
         pendingAction.complete("Forty five");
-        pendingAction.abort();
+        pendingAction.cancel();
         
         assertAsString(
                 "["
@@ -187,7 +187,7 @@ public class PromiseTest {
         
         // Complete -- but this is too late.
         pendingAction.complete("Forty two");
-        assertEquals(PromiseStatus.ABORTED, promise.getStatus());
+        assertEquals(PromiseStatus.CANCELLED, promise.getStatus());
         assertAsString("Result:{ Cancelled: No more listener. }", promise.getCurrentResult());
         
         // This subscription will get cancelled as the result.
@@ -213,13 +213,13 @@ public class PromiseTest {
         
         // Complete -- but this is too late.
         pendingAction.complete("Forty two");
-        assertEquals(PromiseStatus.ABORTED, promise.getStatus());
+        assertEquals(PromiseStatus.CANCELLED, promise.getStatus());
         assertAsString("Result:{ Cancelled: No more listener. }", promise.getCurrentResult());
         assertAsString("[e: Result:{ Cancelled: No more listener. }]", list);
     }
     
     @Test
-    public void testCreateNew_abortNoSubscriptionAfter_withNoSubscription() {
+    public void testCreateNew_cancelNoSubscriptionAfter_withNoSubscription() {
         val list = new ArrayList<String>();
         
         val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
@@ -237,19 +237,19 @@ public class PromiseTest {
         };
         val promise
                 = DeferAction.of(String.class)
-                .abortWhenNoSubsriptionAfter(wait)
+                .cancelWhenNoSubsriptionAfter(wait)
                 .eavesdrop(r -> list.add("e: " + r.toString()))
                 .start()
                 .getPromise();
         assertEquals(PromiseStatus.PENDING, promise.getStatus());
         
         onExpireds.forEach(c -> c.accept(null, null));
-        assertEquals(PromiseStatus.ABORTED, promise.getStatus());
+        assertEquals(PromiseStatus.CANCELLED, promise.getStatus());
         assertAsString("[e: Result:{ Cancelled: No more listener. }]", list);
     }
     
     @Test
-    public void testCreateNew_abortNoSubscriptionAfter_withSubscription() {
+    public void testCreateNew_cancelNoSubscriptionAfter_withSubscription() {
         val list = new ArrayList<String>();
         val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
@@ -268,7 +268,7 @@ public class PromiseTest {
         };
         val promise
                 = DeferAction.of(String.class)
-                .abortWhenNoSubsriptionAfter(wait)
+                .cancelWhenNoSubsriptionAfter(wait)
                 .eavesdrop(r -> list.add("e: " + r.toString()))
                 .onCompleted(r -> list.add("s: " + r.toString()))
                 .start()

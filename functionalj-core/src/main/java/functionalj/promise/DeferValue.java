@@ -184,20 +184,20 @@ public class DeferValue<DATA> extends Promise<DATA> {
         }
     }
     
-    boolean abort(boolean shouldThrowException) {
-        return complete(shouldThrowException, parent -> parent.abort(), () -> super.abort());
+    boolean cancel(boolean shouldThrowException) {
+        return complete(shouldThrowException, parent -> parent.cancel(), () -> super.cancel());
     }
     
-    boolean abort(String message, boolean shouldThrowException) {
-        return complete(shouldThrowException, parent -> parent.abort(message), () -> super.abort(message));
+    boolean cancel(String message, boolean shouldThrowException) {
+        return complete(shouldThrowException, parent -> parent.cancel(message), () -> super.cancel(message));
     }
     
-    boolean abort(Exception cause, boolean shouldThrowException) {
-        return complete(shouldThrowException, parent -> parent.abort(cause), () -> super.abort(cause));
+    boolean cancel(Exception cause, boolean shouldThrowException) {
+        return complete(shouldThrowException, parent -> parent.cancel(cause), () -> super.cancel(cause));
     }
     
-    boolean abort(String message, Exception cause, boolean shouldThrowException) {
-        return complete(shouldThrowException, parent -> parent.abort(message, cause), () -> super.abort(message, cause));
+    boolean cancel(String message, Exception cause, boolean shouldThrowException) {
+        return complete(shouldThrowException, parent -> parent.cancel(message, cause), () -> super.cancel(message, cause));
     }
     
     boolean assign(DATA data, boolean shouldThrowException) {
@@ -213,20 +213,20 @@ public class DeferValue<DATA> extends Promise<DATA> {
     }
     
     // == Complete ==
-    public boolean abort() {
-        return abort(false);
+    public boolean cancel() {
+        return cancel(false);
     }
     
-    public boolean abort(String message) {
-        return abort(message, false);
+    public boolean cancel(String message) {
+        return cancel(message, false);
     }
     
-    public boolean abort(Exception cause) {
-        return abort(cause, false);
+    public boolean cancel(Exception cause) {
+        return cancel(cause, false);
     }
     
-    public boolean abort(String message, Exception cause) {
-        return abort(message, cause, false);
+    public boolean cancel(String message, Exception cause) {
+        return cancel(message, cause, false);
     }
     
     public boolean assign(DATA data) {
@@ -242,20 +242,20 @@ public class DeferValue<DATA> extends Promise<DATA> {
     }
     
     // == When not complete ==
-    public boolean abortOrThrow() {
-        return abort(true);
+    public boolean cancelOrThrow() {
+        return cancel(true);
     }
     
-    public boolean abortOrThrow(String message) {
-        return abort(message, true);
+    public boolean cancelOrThrow(String message) {
+        return cancel(message, true);
     }
     
-    public boolean abortOrThrow(Exception cause) {
-        return abort(cause, true);
+    public boolean cancelOrThrow(Exception cause) {
+        return cancel(cause, true);
     }
     
-    public boolean abortOrThrow(String message, Exception cause) {
-        return abort(message, cause, true);
+    public boolean cancelOrThrow(String message, Exception cause) {
+        return cancel(message, cause, true);
     }
     
     public boolean assignOrThrow(DATA data) {

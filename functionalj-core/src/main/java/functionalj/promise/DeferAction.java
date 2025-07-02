@@ -893,8 +893,8 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return PromiseStatus.PENDING.equals(getStatus());
     }
     
-    public final boolean isAborted() {
-        return PromiseStatus.ABORTED.equals(getStatus());
+    public final boolean isCancelled() {
+        return PromiseStatus.CANCELLED.equals(getStatus());
     }
     
     public final boolean isComplete() {
@@ -921,8 +921,8 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return this;
     }
     
-    public DeferAction<DATA> abortWhenNoSubsriptionAfter(Wait wait) {
-        promise.abortWhenNoSubscriptionAfter(wait);
+    public DeferAction<DATA> cancelWhenNoSubsriptionAfter(Wait wait) {
+        promise.cancelWhenNoSubscriptionAfter(wait);
         return this;
     }
     

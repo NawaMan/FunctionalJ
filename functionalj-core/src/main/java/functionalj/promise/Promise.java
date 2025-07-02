@@ -95,8 +95,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return DeferAction.of((Class<D>) null).start().fail(exception).getPromise();
     }
     
-    public static <D> Promise<D> ofAborted() {
-        return DeferAction.of((Class<D>) null).start().abort().getPromise();
+    public static <D> Promise<D> ofCancelled() {
+        return DeferAction.of((Class<D>) null).start().cancel().getPromise();
     }
     
     //== from ==
@@ -414,7 +414,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     // StartableAction  -> NOT START
     // consumer         -> Pending
     // result           -> done.
-    // result.cancelled -> aborted
+    // result.cancelled -> cancelled
     // result.completed -> completed
     final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers = new ConcurrentHashMap<>(INITIAL_CAPACITY);
     
@@ -490,7 +490,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (data instanceof Result) {
             val result = (Result<DATA>) data;
             if (result.isCancelled())
-                return PromiseStatus.ABORTED;
+                return PromiseStatus.CANCELLED;
             if (result.isReady())
                 return PromiseStatus.COMPLETED;
         }
@@ -529,22 +529,22 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return (data instanceof OnStart) ? (OnStart) data : OnStart.DoNothing;
     }
     
-    boolean abort() {
+    boolean cancel() {
         val cancelResult = (Result<DATA>) Result.ofCancelled();
         return makeDone(cancelResult);
     }
     
-    boolean abort(String message) {
+    boolean cancel(String message) {
         val cancelResult = (Result<DATA>) Result.ofCancelled(message);
         return makeDone(cancelResult);
     }
     
-    boolean abort(Exception cause) {
+    boolean cancel(Exception cause) {
         val cancelResult = (Result<DATA>) Result.ofCancelled(null, cause);
         return makeDone(cancelResult);
     }
     
-    boolean abort(String message, Exception cause) {
+    boolean cancel(String message, Exception cause) {
         val cancelResult = (Result<DATA>) Result.ofCancelled(message, cause);
         return makeDone(cancelResult);
     }
@@ -658,8 +658,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return PromiseStatus.PENDING.equals(getStatus());
     }
     
-    public final boolean isAborted() {
-        return PromiseStatus.ABORTED.equals(getStatus());
+    public final boolean isCancelled() {
+        return PromiseStatus.CANCELLED.equals(getStatus());
     }
     
     public final boolean isComplete() {
@@ -682,19 +682,19 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     void unsubscribe(SubscriptionRecord<DATA> subscription) {
         consumers.remove(subscription);
-        abortWhenNoSubscription();
+        cancelWhenNoSubscription();
     }
     
     void unsubscribe(Promise<DATA> promise) {
         val entry = consumers.entrySet().stream().filter(e -> Objects.equals(e.getKey().getPromise(), promise)).findFirst();
         if (entry.isPresent())
             consumers.remove(entry.get().getKey());
-        abortWhenNoSubscription();
+        cancelWhenNoSubscription();
     }
     
-    private void abortWhenNoSubscription() {
+    private void cancelWhenNoSubscription() {
         if (consumers.isEmpty())
-            abort("No more listener.");
+            cancel("No more listener.");
     }
     
     private SubscriptionRecord<DATA> listen(boolean isEavesdropping, FuncUnit1<Result<DATA>> resultConsumer) {
@@ -805,7 +805,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return doSubscribe(true, wait, resultConsumer);
     }
     
-    public final Promise<DATA> abortWhenNoSubscriptionAfter(Wait wait) {
+    public final Promise<DATA> cancelWhenNoSubscriptionAfter(Wait wait) {
         val subscriptionHolder = onCompleted(wait);
         subscriptionHolder.assign(__ -> subscriptionHolder.unsubscribe());
         return this;

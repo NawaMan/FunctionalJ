@@ -119,7 +119,7 @@ public class CombineResult<D> {
         if (!isDone.compareAndSet(false, true))
             return;
         
-        action.abort("Promise#" + index);
+        action.cancel("Promise#" + index);
         unsbscribeAll();
     }
     
@@ -127,7 +127,7 @@ public class CombineResult<D> {
         if (!isDone.compareAndSet(false, true))
             return;
         
-        action.abort("Promise#" + index, new IllegalStateException("Result cannot be in 'not ready' at this point: " + result.getStatus(), result.getException()));
+        action.cancel("Promise#" + index, new IllegalStateException("Result cannot be in 'not ready' at this point: " + result.getStatus(), result.getException()));
         unsbscribeAll();
     }
     

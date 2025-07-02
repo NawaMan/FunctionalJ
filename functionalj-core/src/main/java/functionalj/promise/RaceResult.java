@@ -67,16 +67,16 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
                 action.onCompleted(result -> {
                     result.ifPresent(value -> {
                         actionRef.get().complete(value);
-                        startedActions.forEach(PendingAction::abort);
+                        startedActions.forEach(PendingAction::cancel);
                     });
                     result.ifNull(() -> hasNull.set(true));
                     int count = counter.decrementAndGet();
                     if (count == 0) {
-                        startedActions.forEach(PendingAction::abort);
+                        startedActions.forEach(PendingAction::cancel);
                         if (hasNull.get())
                             actionRef.get().completeWith(Result.ofNull());
                         else
-                            actionRef.get().abort("Finish without non-null result.");
+                            actionRef.get().cancel("Finish without non-null result.");
                     }
                 });
             });

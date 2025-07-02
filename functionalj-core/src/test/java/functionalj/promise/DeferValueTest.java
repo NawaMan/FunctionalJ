@@ -94,13 +94,13 @@ public class DeferValueTest {
     }
     
     @Test
-    public void testComplete_connect_abort() {
+    public void testComplete_connect_cancel() {
         val logs = new ArrayList<String>();
         val defer1 = DeferValue.of(String.class).ifAbsent(() -> logs.add("defer1: absent")).ifNull(() -> logs.add("defer1: null"));
         val defer2 = defer1.whenAbsentUse("default-2").whenAbsentUse("default-2");
         val defer3 = defer1.whenAbsentUse("default-3").whenNullUse("default-3").ifNull(() -> logs.add("defer3: null"));
         val defer4 = defer1.whenAbsentUse("default-4").ifNull(() -> logs.add("defer4: null"));
-        defer3.abort();
+        defer3.cancel();
         assertEquals("Result:{ Cancelled }", "" + defer1.getCurrentResult());
         assertEquals("Result:{ Value: default-2 }", "" + defer2.getCurrentResult());
         assertEquals("Result:{ Value: default-3 }", "" + defer3.getCurrentResult());
