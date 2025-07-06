@@ -841,8 +841,8 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         		.create(supplier, onStart, interruptOnCancel);
     }
     
-    private final Runnable       task;
-    private final DeferAction<?> parent;
+    private final DeferActionCreator.RunTask task;
+    private final DeferAction<?>             parent;
     
     DeferAction() {
         this(null, (OnStart)null);
@@ -854,20 +854,32 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         this.task   = null;
     }
     
-    DeferAction(Runnable task, OnStart onStart) {
+    DeferAction(DeferActionCreator.RunTask task, OnStart onStart) {
         super(onStart);
         this.parent = null;
         this.task   = task;
     }
     
     public final PendingAction<DATA> start() {
+        return start(AsyncRunner.Strategy.LAUNCH);
+    }
+    
+    public final PendingAction<DATA> launch() {
+        return start(AsyncRunner.Strategy.LAUNCH);
+    }
+    
+    public final PendingAction<DATA> fork() {
+        return start(AsyncRunner.Strategy.FORK);
+    }
+    
+    final PendingAction<DATA> start(AsyncRunner.Strategy strategy) {
         if (parent != null) {
             parent.start();
         } else {
-            val isStarted = promise.start();
+            val isStarted = promise.start(strategy);
             if (!isStarted && (task != null)) {
                 try {
-                    task.run();
+                	task.start(strategy);
                 } catch (Exception execption) {
                 	logUnthrowable(execption);
                 	

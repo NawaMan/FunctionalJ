@@ -504,7 +504,12 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     // == Internal working ==
+    
     public final boolean start() {
+    	return start(AsyncRunner.Strategy.LAUNCH);
+    }
+    
+    final boolean start(AsyncRunner.Strategy strategy) {
         val data = dataRef.get();
         if (data instanceof Promise) {
             val parent = (Promise<DATA>) data;
@@ -516,10 +521,16 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             return false;
         val isJustStarted = dataRef.compareAndSet(data, consumers);
         if (isJustStarted) {
-            if (isStartAction)
-                ((StartableAction<DATA>) data).start();
-            else if (isOnStart)
+            if (isStartAction) {
+                if (data instanceof DeferAction) {
+                    ((DeferAction<DATA>) data).start(strategy);
+                } else {
+                	((StartableAction<DATA>)data).start();
+                }
+                
+            } else if (isOnStart) {
                 ((OnStart) data).run();
+            }
         }
         return isJustStarted;
     }

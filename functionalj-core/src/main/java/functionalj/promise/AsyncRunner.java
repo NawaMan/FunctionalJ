@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.promise;
 
-import static functionalj.functions.ThrowFuncs.logUnthrowable;
+import static functionalj.promise.AsyncRunner.Strategy.LAUNCH;
 import static functionalj.ref.Run.With;
 
 import java.util.concurrent.CountDownLatch;
@@ -38,6 +38,7 @@ import functionalj.exception.FunctionInvocationException;
 import functionalj.exception.WrappedThrowableException;
 import functionalj.function.Annotated;
 import functionalj.ref.ComputeBody;
+import functionalj.ref.Ref;
 import functionalj.ref.RunBody;
 import functionalj.ref.Substitution;
 import lombok.val;
@@ -91,35 +92,68 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         });
     }
     
-    public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
-        val theRunner  = (runner != null) ? runner : Env.async();
-    	val deferValue = new DeferValue<DATA>();
+    @SuppressWarnings("rawtypes")
+	static final Ref<DeferAction> currentDeferAction = Ref.to(DeferAction.class);
+    
+    static enum Strategy {
+    	LAUNCH,
+    	FORK,
+    	RUN
+    }
+    
+	public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
+		return run(LAUNCH, runner, body);
+	}
+    
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(Strategy strategy, AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
+		strategy = (strategy != null) ? strategy : LAUNCH;
+		
+		val parentAction  = currentDeferAction.asResult();
+    	val currentAction = deferAction(body);
+        val theRunner     = (runner != null) ? runner : Env.async();
+    	val deferValue    = new DeferValue<DATA>();
         val substitutions
                 = Substitution
                 .getCurrentSubstitutions()
                 .exclude(Substitution::isThreadLocal);
         
+        // This latch is to ensure `prepare()` runs completely before continue the parent thread.
         val latch = new CountDownLatch(1);
+        
         theRunner.accept(() -> {
-            try {
-            	try {
-	                With(substitutions)
-	                .run(() -> {
-	                    body.prepared();
+        	val subs = substitutions.append(currentDeferAction.butWith(currentAction));
+            With(subs)
+            .run(() -> {
+	            try {
+	            	try {
+	                	// prepare() is guaranteed to run..
+	                    body.prepare();
 	                    latch.countDown();
-	                    DATA value = body.compute();
+	                    
+	                    // This is where the body is run.
+	                    val value = body.compute();
 	                    deferValue.assign(value);
-	                });
-	            } catch (FunctionInvocationException exception) {
-	                val cause = exception.getCause();
-	                throw cause;
-                }
-            } catch (Throwable throwable) {
-                val exception = WrappedThrowableException.exceptionOf(throwable);
-                deferValue.fail(exception);
-                logUnthrowable(exception);
-            }
+		            } catch (FunctionInvocationException exception) {
+		                val cause = exception.getCause();
+		                throw cause;
+	                }
+	            } catch (Throwable throwable) {
+	                val exception = WrappedThrowableException.exceptionOf(throwable);
+	                deferValue.fail(exception);
+	            } finally {
+					// This point is where the sub task is done.
+				}
+            });
         });
+        
+        if (strategy == Strategy.FORK) {
+        	parentAction.ifPresent(parent -> {
+        		parent.onCompleted(__ -> {
+        			currentAction.cancel();
+        		});
+        	});
+        }
         
         try {
             latch.await();
@@ -129,6 +163,15 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
         return deferValue;
     }
+	
+    @SuppressWarnings({ "rawtypes", "unused" })
+	public static <DATA, EXCEPTION extends Exception> DeferAction deferAction(ComputeBody<DATA, EXCEPTION> body) {
+		DeferAction deferAction = null;
+		if (body instanceof DeferActionCreator.RunTask.Body) {
+			deferAction = ((DeferActionCreator.RunTask.Body)body).action();
+		}
+		return deferAction;
+	}
     
     public static final AsyncRunner onSameThread = AsyncRunner.withName("RunOnSameThread", runnable -> {
         runnable.run();
