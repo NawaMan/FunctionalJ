@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import functionalj.TestHelper;
 import functionalj.promise.PromiseCancelTest.Body;
 import lombok.val;
 
