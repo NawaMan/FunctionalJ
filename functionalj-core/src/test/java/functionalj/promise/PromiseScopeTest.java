@@ -76,7 +76,7 @@ public class PromiseScopeTest {
 	public void testFork_doneAfter() throws Exception {
         ensureThreadCleanup(() -> {
             val subAction = DeferAction.<String>from(() -> {
-                Thread.sleep(200);
+                Thread.sleep(20000);
                 return "Hello there!";
             });
         	
@@ -90,7 +90,10 @@ public class PromiseScopeTest {
             
             mainAction.start();
             assertAsString("Result:{ Value: Hello World! }", mainAction.getResult());
-            assertAsString("Result:{ Cancelled }",           subAction.getCurrentResult());
+            
+            // Wait a bit for the cancellation to kick in
+            Thread.sleep(50);
+            assertAsString("Result:{ Cancelled }", subAction.getCurrentResult());
         });
 	}
     

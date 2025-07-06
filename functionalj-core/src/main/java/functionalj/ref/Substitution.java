@@ -75,6 +75,15 @@ public abstract class Substitution<DATA> {
                 );
     }
     
+    public static final FuncList<Substitution<?>> currentSubstitutions() {
+    	return getCurrentSubstitutions();
+    }
+    
+    public static final FuncList<Substitution<?>> allThreadSubstitutions() {
+    	return getCurrentSubstitutions()
+    			.exclude(Substitution::isThreadLocal);
+    }
+    
     public static final FuncList<Substitution<?>> getCurrentSubstitutions() {
         return Ref.getSubstitutions();
     }

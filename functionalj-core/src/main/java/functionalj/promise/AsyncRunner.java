@@ -25,6 +25,7 @@ package functionalj.promise;
 
 import static functionalj.promise.AsyncRunner.Strategy.LAUNCH;
 import static functionalj.ref.Run.With;
+import static functionalj.ref.Run.WithAllGlobalSubstitutions;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -39,6 +40,7 @@ import functionalj.exception.WrappedThrowableException;
 import functionalj.function.Annotated;
 import functionalj.ref.ComputeBody;
 import functionalj.ref.Ref;
+import functionalj.ref.Run;
 import functionalj.ref.RunBody;
 import functionalj.ref.Substitution;
 import lombok.val;
@@ -120,16 +122,12 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
         val theRunner  = (runner != null) ? runner : Env.async();
     	val deferValue = new DeferValue<DATA>();
-        val substitutions
-		        = Substitution
-		        .getCurrentSubstitutions()
-		        .exclude(Substitution::isThreadLocal);
         
         // This latch is to ensure `prepare()` runs completely before continue the parent thread.
         val latch = new CountDownLatch(1);
-        
+        val with  = WithAllGlobalSubstitutions();
         theRunner.accept(() -> {
-            With(substitutions)
+        	with
             .and(currentDeferAction.butWith(currentAction))
             .run(() -> {
 	            try {

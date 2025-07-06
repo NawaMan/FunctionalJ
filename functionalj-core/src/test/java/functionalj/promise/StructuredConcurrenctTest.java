@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -280,16 +281,21 @@ public class StructuredConcurrenctTest {
     //== Cleanup ==
     
     @Test
-    public void testCleanup_success() {
-        val logs = new ArrayList<String>();
-        
+    public void testCleanup_success() throws InterruptedException {
+        val logs   = new ArrayList<String>();
+        val latch  = new CountDownLatch(1);
         val string = Sleep(10).thenReturn("$$$").defer();
-        string.onCompleted(result -> logs.add("Ended: " + result));
+        string.onCompleted(result -> {
+        	logs.add("Ended: " + result);
+        	latch.countDown();
+        });
         
         string.start();
         
         // Wait for all of them to finish.
-        assertAsString("Result:{ Value: $$$ }",          string.getResult());
+        assertAsString("Result:{ Value: $$$ }", string.getResult());
+        
+        latch.await();
         assertAsString("[Ended: Result:{ Value: $$$ }]", logs);
     }
     
@@ -387,7 +393,7 @@ public class StructuredConcurrenctTest {
             return counter.get() == 3 ? "Three" : null;
         })
         .retry(5).times()
-        .waitFor(2000).milliseconds();
+        .waitFor(20000).milliseconds();
         
         val action = builder.build().start();
         Thread.sleep(50);

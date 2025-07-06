@@ -57,10 +57,15 @@ public class Run {
         return With(currentSubstitutions);
     }
     
-    public static SyncRunInstance WithAll() {
+    public static SyncRunInstance WithAllSubstitutions() {
         val currentSubstitutions = Substitution.getCurrentSubstitutions();
         return With(currentSubstitutions);
     }
+    
+    public static SyncRunInstance WithAllGlobalSubstitutions() {
+    	val currentSubstitutions = Substitution.allThreadSubstitutions();
+    	return With(currentSubstitutions);
+	}
     
     public static final SyncRunInstance Synchronously = new SyncRunInstance();
     
