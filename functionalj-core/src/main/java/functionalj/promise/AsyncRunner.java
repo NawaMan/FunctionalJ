@@ -97,8 +97,7 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
     
     static enum Strategy {
     	LAUNCH,
-    	FORK,
-    	RUN
+    	FORK
     }
     
 	public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
@@ -106,24 +105,32 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
 	}
     
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(Strategy strategy, AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
+	static <DATA, EXCEPTION extends Exception> Promise<DATA> run(Strategy strategy, AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
 		strategy = (strategy != null) ? strategy : LAUNCH;
-		
-		val parentAction  = currentDeferAction.asResult();
-    	val currentAction = deferAction(body);
-        val theRunner     = (runner != null) ? runner : Env.async();
-    	val deferValue    = new DeferValue<DATA>();
+
+    	val currentAction = thisDeferAction(body);
+        if (strategy == Strategy.FORK) {
+    		val parentAction  = currentDeferAction.asResult();
+        	parentAction.ifPresent(parent -> {
+        		parent.onCompleted(__ -> {
+        			currentAction.cancel();
+        		});
+        	});
+        }
+        
+        val theRunner  = (runner != null) ? runner : Env.async();
+    	val deferValue = new DeferValue<DATA>();
         val substitutions
-                = Substitution
-                .getCurrentSubstitutions()
-                .exclude(Substitution::isThreadLocal);
+		        = Substitution
+		        .getCurrentSubstitutions()
+		        .exclude(Substitution::isThreadLocal);
         
         // This latch is to ensure `prepare()` runs completely before continue the parent thread.
         val latch = new CountDownLatch(1);
         
         theRunner.accept(() -> {
-        	val subs = substitutions.append(currentDeferAction.butWith(currentAction));
-            With(subs)
+            With(substitutions)
+            .and(currentDeferAction.butWith(currentAction))
             .run(() -> {
 	            try {
 	            	try {
@@ -147,14 +154,6 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
             });
         });
         
-        if (strategy == Strategy.FORK) {
-        	parentAction.ifPresent(parent -> {
-        		parent.onCompleted(__ -> {
-        			currentAction.cancel();
-        		});
-        	});
-        }
-        
         try {
             latch.await();
         } catch (InterruptedException e) {
@@ -165,7 +164,7 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
     }
 	
     @SuppressWarnings({ "rawtypes", "unused" })
-	public static <DATA, EXCEPTION extends Exception> DeferAction deferAction(ComputeBody<DATA, EXCEPTION> body) {
+	public static <DATA, EXCEPTION extends Exception> DeferAction thisDeferAction(ComputeBody<DATA, EXCEPTION> body) {
 		DeferAction deferAction = null;
 		if (body instanceof DeferActionCreator.RunTask.Body) {
 			deferAction = ((DeferActionCreator.RunTask.Body)body).action();

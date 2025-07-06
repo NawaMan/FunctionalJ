@@ -387,7 +387,8 @@ public abstract class FuncMap<KEY, VALUE> implements ReadOnlyMap<KEY, VALUE>, Fu
      * @return the newly created {@link ImmutableFuncMap}.
      */
     public static <K, V> ImmutableFuncMap<K, V> of(K key0, V value0, K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6) {
-        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        UnderlineMap uMap = underlineMap.orElse(UnderlineMap.HashMap);
+		val map = uMap.<K, V>newMap();
         if (key0 != null)
             map.put(key0, value0);
         if (key1 != null)
