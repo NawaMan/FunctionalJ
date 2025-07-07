@@ -122,6 +122,11 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
         val theRunner  = (runner != null) ? runner : Env.async();
     	val deferValue = new DeferValue<DATA>();
+
+    	if (UncompletedAction.isMonitoring.get()) {
+    		System.err.println("Arda: AsyncRunner.run is called: strategy=" + strategy);
+    		System.err.println("Arda: AsyncRunner.run is called: theRunner=" + theRunner + ": " + ((theRunner == null)?"void":theRunner.getClass()));
+    	}
         
         // This latch is to ensure `prepare()` runs completely before continue the parent thread.
         val latch = new CountDownLatch(1);

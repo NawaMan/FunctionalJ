@@ -580,6 +580,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         val isDone = promise.synchronouseOperation(() -> {
             val data = promise.dataRef.get();
             try {
+            	if (UncompletedAction.isMonitoring.get()) {
+            		System.err.println("Arda: makeDone is called: result=" + result);
+            	}
                 if (data instanceof Promise) {
                     val parent = (Promise<DATA>) data;
                     try {
@@ -600,6 +603,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             } finally {
             }
         });
+    	if (UncompletedAction.isMonitoring.get()) {
+    		System.err.println("Arda: makeDone is called: isDone=" + isDone);
+    	}
         
         if (isDone != null)
             return isDone.booleanValue();

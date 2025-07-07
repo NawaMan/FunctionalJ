@@ -57,6 +57,9 @@ public class StructuredConcurrenctTest {
     // @Ignore
     @Test
     public void testCombine_oneFailed() {
+    	System.err.println("Arda: testCombine_oneFailed: start.");
+    	UncompletedAction.isMonitoring.set(true);
+    	try {
         // One (prefix) of the three success. Other one (suffix) failed while the last one is still working (body).
         
         val around = f((String prefix, String suffix, String text) -> prefix + text + suffix);
@@ -72,6 +75,10 @@ public class StructuredConcurrenctTest {
         assertAsString("Result:{ Value: [ }",                              prefix.getResult());
         assertAsString("Result:{ Exception: java.lang.RuntimeException }", suffix.getResult());
         assertAsString("Result:{ Cancelled: No more listener. }",          body  .getResult());
+    	} finally {
+    		System.err.println("Arda: testCombine_oneFailed: finish.");
+        	UncompletedAction.isMonitoring.set(false);
+    	}
     }
     
     @Test
@@ -387,8 +394,12 @@ public class StructuredConcurrenctTest {
     // @Ignore
     @Test
     public void testRetry_cancel() throws InterruptedException {
+    	System.err.println("Arda: testRetry_cancel: start.");
+    	UncompletedAction.isMonitoring.set(true);
+    	try {
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
+        	System.err.println("Arda: action is called.");
             counter.incrementAndGet();
             return counter.get() == 3 ? "Three" : null;
         })
@@ -400,6 +411,10 @@ public class StructuredConcurrenctTest {
         action.cancel("Can't wait.");
         
         assertAsString("Result:{ Cancelled: Can't wait. }", action.getResult());
+    	} finally {
+    		UncompletedAction.isMonitoring.set(false);
+    		System.err.println("Arda: testRetry_cancel: finish.");
+    	}
     }
     
     //== Spawn ==

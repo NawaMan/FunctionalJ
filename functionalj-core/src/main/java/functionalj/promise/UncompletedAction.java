@@ -24,6 +24,8 @@
 package functionalj.promise;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import functionalj.result.Result;
 import lombok.val;
 
@@ -47,8 +49,13 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
         promise.cancel();
         return new CompletedAction<DATA>(promise);
     }
+
+    public static AtomicBoolean isMonitoring = new AtomicBoolean(false);
     
     public final CompletedAction<DATA> cancel(String message) {
+    	if (UncompletedAction.isMonitoring.get()) {
+    		System.err.println("Arda: Cancel is called.");
+    	}
         promise.cancel(message);
         return new CompletedAction<DATA>(promise);
     }
