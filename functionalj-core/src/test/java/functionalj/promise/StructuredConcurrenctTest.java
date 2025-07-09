@@ -54,12 +54,8 @@ public class StructuredConcurrenctTest {
         assertAsString("Result:{ Value: [---] }", string.getResult());
     }
     
-    // @Ignore
     @Test
     public void testCombine_oneFailed() {
-    	System.err.println("Arda: testCombine_oneFailed: start.");
-    	UncompletedAction.isMonitoring.set(true);
-    	try {
         // One (prefix) of the three success. Other one (suffix) failed while the last one is still working (body).
         
         val around = f((String prefix, String suffix, String text) -> prefix + text + suffix);
@@ -75,10 +71,6 @@ public class StructuredConcurrenctTest {
         assertAsString("Result:{ Value: [ }",                              prefix.getResult());
         assertAsString("Result:{ Exception: java.lang.RuntimeException }", suffix.getResult());
         assertAsString("Result:{ Cancelled: No more listener. }",          body  .getResult());
-    	} finally {
-    		System.err.println("Arda: testCombine_oneFailed: finish.");
-        	UncompletedAction.isMonitoring.set(false);
-    	}
     }
     
     @Test
@@ -251,10 +243,8 @@ public class StructuredConcurrenctTest {
         
         second.completeWith(Result.<String>ofException(new RuntimeException()));
         
-        assertAsString("Result:{ Exception: "
-                                + "functionalj.promise.PromisePartiallyFailException: "
-                                + "Promise #1 out of 3 fail. "
-                            + "}",                                         string.getResult());
+        assertAsString("Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #1 out of 3 fail. }",  
+        		                                                           string.getResult());
         assertAsString("Result:{ Value: <1> }",                            first.getResult());
         assertAsString("Result:{ Exception: java.lang.RuntimeException }", second.getResult());
         assertAsString("Result:{ Value: <3> }",                            third.getResult());

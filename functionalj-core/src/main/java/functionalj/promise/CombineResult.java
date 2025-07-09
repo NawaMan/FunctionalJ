@@ -71,8 +71,10 @@ public class CombineResult<D> {
         });
         this.promise = action.getPromise();
         this.promise.eavesdrop(result -> {
-            if (result.isCancelled()) {
-                unsbscribeAll();
+        	if (result.isCancelled() || (result.getException() instanceof PromisePartiallyFailException)) {
+				// If the result is cancelled, we will unsubscribe all.
+				// This is to ensure that we do not have any dangling subscriptions.
+        		unsbscribeAll();
             }
         });
     }

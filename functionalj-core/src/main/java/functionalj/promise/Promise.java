@@ -581,7 +581,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             val data = promise.dataRef.get();
             try {
             	if (UncompletedAction.isMonitoring.get()) {
-            		System.err.println("Arda: makeDone is called: result=" + result);
+            		System.err.println("Arda: makeDone is called: promise=" + promise + " data=" + data + ":" + ((data == null) ? null : data.getClass()) + " result=" + result);
             	}
                 if (data instanceof Promise) {
                     val parent = (Promise<DATA>) data;
@@ -604,7 +604,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             }
         });
     	if (UncompletedAction.isMonitoring.get()) {
-    		System.err.println("Arda: makeDone is called: isDone=" + isDone);
+    		System.err.println("Arda: makeDone is called: promise=" + promise + " isDone=" + isDone);
     	}
         
         if (isDone != null)
