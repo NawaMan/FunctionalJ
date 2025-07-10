@@ -384,10 +384,8 @@ public class StructuredConcurrenctTest {
     // @Ignore
     @Test
     public void testRetry_cancel() throws InterruptedException {
-    	System.err.println("Arda: testRetry_cancel: start.");
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
-        	System.err.println("Arda: action is called.");
             counter.incrementAndGet();
             return counter.get() == 3 ? "Three" : null;
         })
