@@ -475,7 +475,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final PromiseStatus getStatus() {
         val data = dataRef.get();
         if (data instanceof Promise) {
-            Promise<DATA> promise = (Promise<DATA>) data;
+            Promise<DATA> promise      = (Promise<DATA>) data;
             PromiseStatus parentStatus = promise.getStatus();
             // Pending ... as the result is not yet propagated down
             if (parentStatus.isNotDone())

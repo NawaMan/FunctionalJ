@@ -386,14 +386,18 @@ public class StructuredConcurrenctTest {
     public void testRetry_cancel() throws InterruptedException {
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
-            counter.incrementAndGet();
-            return counter.get() == 3 ? "Three" : null;
+            return counter.incrementAndGet() == 3
+            		? "Three"
+    				: null;
         })
         .retry(5).times()
         .waitFor(20000).milliseconds();
         
-        val action = builder.build().start();
-        Thread.sleep(50);
+        val action
+        		= builder
+        		.build()
+        		.start();
+        Thread.sleep(100);
         action.cancel("Can't wait.");
         
         assertAsString("Result:{ Cancelled: Can't wait. }", action.getResult());
