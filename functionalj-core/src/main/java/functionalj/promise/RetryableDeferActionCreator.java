@@ -58,10 +58,13 @@ public class RetryableDeferActionCreator {
             this.config  = new DeferActionConfig().interruptOnCancel(interruptOnCancel).onStart(onStart);
             this.builder = config.createBuilder(supplier);
             
-            this.couter = new AtomicInteger(retry.times());
+            this.couter      = new AtomicInteger(retry.times());
             this.finalAction = DeferAction.createNew();
             
-            this.builder.build().onCompleted(this).start();
+            this.builder
+	            .build()
+	            .onCompleted(this)
+	            .start();
         }
         
         public DeferAction<DATA> finalAction() {
@@ -77,6 +80,8 @@ public class RetryableDeferActionCreator {
             if (result.isPresent()) {
                 val value = result.value();
                 finalAction.complete(value);
+            } else if (result.isCancelled()) {
+				finalAction.fail(result.getException());
             } else {
                 val count = couter.decrementAndGet();
                 if (count == 0) {
@@ -84,7 +89,11 @@ public class RetryableDeferActionCreator {
                 } else {
                     val period = retry.waitTimeMilliSecond();
                     Env.time().sleep(period);
-                    builder.build().onCompleted(this).start();
+                    
+                    builder
+                    .build()
+                    .onCompleted(this)
+                    .start();
                 }
             }
         }

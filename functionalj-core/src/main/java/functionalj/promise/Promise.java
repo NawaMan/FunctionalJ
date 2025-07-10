@@ -579,33 +579,24 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     static <DATA> boolean makeDone(Promise<DATA> promise, Result<DATA> result) {
         val isDone = promise.synchronouseOperation(() -> {
             val data = promise.dataRef.get();
-            try {
-            	if (UncompletedAction.isMonitoring.get()) {
-            		System.err.println("Arda: makeDone is called: promise=" + promise + " data=" + data + ":" + ((data == null) ? null : data.getClass()) + " result=" + result);
-            	}
-                if (data instanceof Promise) {
-                    val parent = (Promise<DATA>) data;
-                    try {
-                        if (!promise.dataRef.compareAndSet(parent, result))
-                            return false;
-                    } finally {
-                        parent.unsubscribe(promise);
-                    }
-                } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
-                    if (!promise.dataRef.compareAndSet(data, result))
+            if (data instanceof Promise) {
+                val parent = (Promise<DATA>) data;
+                try {
+                    if (!promise.dataRef.compareAndSet(parent, result))
                         return false;
-                } else {
-                    val changeSuccess = promise.dataRef.compareAndSet(promise.consumers, result);
-                    if (!changeSuccess)
-                        return false;
+                } finally {
+                    parent.unsubscribe(promise);
                 }
-                return null;
-            } finally {
+            } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
+                if (!promise.dataRef.compareAndSet(data, result))
+                    return false;
+            } else {
+                val changeSuccess = promise.dataRef.compareAndSet(promise.consumers, result);
+                if (!changeSuccess)
+                    return false;
             }
+            return null;
         });
-    	if (UncompletedAction.isMonitoring.get()) {
-    		System.err.println("Arda: makeDone is called: promise=" + promise + " isDone=" + isDone);
-    	}
         
         if (isDone != null)
             return isDone.booleanValue();

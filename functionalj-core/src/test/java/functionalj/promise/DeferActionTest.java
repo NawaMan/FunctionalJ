@@ -816,16 +816,23 @@ public class DeferActionTest {
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
             counter.incrementAndGet();
-            return counter.get() == 3 ? "Three" : null;
+            return counter.get() == 3
+            		? "Three"
+    				: null;
         })
         .retry(5).times()
         .waitFor(2000).milliseconds();
         
-        val action = builder.build().start();
+        val action
+        		= builder
+        		.build()
+        		.start();
         Thread.sleep(50);
         action.cancel("Can't wait.");
         
-        assertAsString("Result:{ Cancelled: Can't wait. }", action.getResult());
+        assertAsString(
+        		"Result:{ Cancelled: Can't wait. }",
+        		action.getResult());
     }
     
     @Test

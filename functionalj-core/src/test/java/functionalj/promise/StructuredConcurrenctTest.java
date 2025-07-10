@@ -385,8 +385,6 @@ public class StructuredConcurrenctTest {
     @Test
     public void testRetry_cancel() throws InterruptedException {
     	System.err.println("Arda: testRetry_cancel: start.");
-    	UncompletedAction.isMonitoring.set(true);
-    	try {
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
         	System.err.println("Arda: action is called.");
@@ -401,10 +399,6 @@ public class StructuredConcurrenctTest {
         action.cancel("Can't wait.");
         
         assertAsString("Result:{ Cancelled: Can't wait. }", action.getResult());
-    	} finally {
-    		UncompletedAction.isMonitoring.set(false);
-    		System.err.println("Arda: testRetry_cancel: finish.");
-    	}
     }
     
     //== Spawn ==
