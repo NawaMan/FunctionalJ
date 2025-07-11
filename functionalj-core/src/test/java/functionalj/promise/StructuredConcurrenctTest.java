@@ -390,8 +390,10 @@ public class StructuredConcurrenctTest {
     			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
     			+ ": Arya: StructuredConcurrencyTest.testRetry_cancel -- started.");
     	try {
+    	val latch   = new CountDownLatch(1);
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
+        	latch.await();
             return counter.incrementAndGet() == 3
             		? "Three"
     				: null;
@@ -405,6 +407,7 @@ public class StructuredConcurrenctTest {
         		.start();
         Thread.sleep(100);
         action.cancel("Can't wait.");
+        latch.countDown();
         
         assertAsString("Result:{ Cancelled: Can't wait. }", action.getResult());
     	} finally {

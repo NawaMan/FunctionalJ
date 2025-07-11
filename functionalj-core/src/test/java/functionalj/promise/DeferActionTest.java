@@ -818,8 +818,10 @@ public class DeferActionTest {
     			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
     			+ ": Arya: DeferActionTest.testRetry_cancel -- started.");
     	try {
+    	val latch   = new CountDownLatch(1);
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
+        	latch.await();
             counter.incrementAndGet();
             return counter.get() == 3
             		? "Three"
@@ -834,6 +836,7 @@ public class DeferActionTest {
         		.start();
         Thread.sleep(50);
         action.cancel("Can't wait.");
+        latch.countDown();
         
         assertAsString(
         		"Result:{ Cancelled: Can't wait. }",
