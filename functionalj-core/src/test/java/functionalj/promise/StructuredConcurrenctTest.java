@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.environments.Env;
 import functionalj.function.FuncUnit1;
 import functionalj.functions.TimeFuncs;
 import functionalj.list.FuncList;
@@ -384,7 +385,10 @@ public class StructuredConcurrenctTest {
     @Test
     public void testRetry_cancel() throws InterruptedException {
     	DeferAction.isMornitoring.set(true);
-    	System.err.println("Arya: StructuredConcurrencyTest.testRetry_cancel -- started.");
+    	DeferAction.startTime.set(Env.time().currentMilliSecond());
+    	System.err.println(
+    			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+    			+ ": Arya: StructuredConcurrencyTest.testRetry_cancel -- started.");
     	try {
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
@@ -404,7 +408,9 @@ public class StructuredConcurrenctTest {
         
         assertAsString("Result:{ Cancelled: Can't wait. }", action.getResult());
     	} finally {
-        	System.err.println("Arya: StructuredConcurrencyTest.testRetry_cancel -- done.");
+        	System.err.println(
+        			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+        			+ ": Arya: StructuredConcurrencyTest.testRetry_cancel -- done.");
     		DeferAction.isMornitoring.set(false);
     	}
     }

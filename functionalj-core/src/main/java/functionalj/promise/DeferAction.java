@@ -34,6 +34,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -68,6 +69,7 @@ import lombok.val;
 public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeable<HasPromise<DATA>> {
 	
 	public static final AtomicBoolean isMornitoring = new AtomicBoolean(false);
+	public static final AtomicLong    startTime     = new AtomicLong();
     
     public static <D> DeferAction<D> createNew() {
         return of((Class<D>) null);

@@ -25,6 +25,7 @@ package functionalj.promise;
 
 import java.util.concurrent.TimeUnit;
 
+import functionalj.environments.Env;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -51,6 +52,11 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
     
     public final CompletedAction<DATA> cancel(String message) {
         promise.cancel(message);
+    	if (DeferAction.isMornitoring.get()) {
+	    	System.err.println(
+	    			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+	    			+ ": Arya: Promise.cancel(): promise=" + promise + " - " + promise.getCurrentResult());
+    	}
         return new CompletedAction<DATA>(promise);
     }
     

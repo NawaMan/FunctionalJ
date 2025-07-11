@@ -78,9 +78,15 @@ public class RetryableDeferActionCreator {
         
         private void doRetry(Result<DATA> result) {
         	if (DeferAction.isMornitoring.get()) {
-        		System.err.println("Arya: doRetry -- result:                   " + result);
-        		System.err.println("Arya: doRetry -- result.isPresent():       " + result.isPresent());
-        		System.err.println("Arya: doRetry -- result.isCancelled():     " + result.isCancelled());
+        		System.err.println(
+            			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+            			+ ": Arya: doRetry -- result:                   " + result);
+        		System.err.println(
+            			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+            			+ ": Arya: doRetry -- result.isPresent():       " + result.isPresent());
+        		System.err.println(
+            			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+            			+ ": Arya: doRetry -- result.isCancelled():     " + result.isCancelled());
         	}
         	
             if (result.isPresent()) {
@@ -91,7 +97,9 @@ public class RetryableDeferActionCreator {
             } else {
                 val count = couter.decrementAndGet();
             	if (DeferAction.isMornitoring.get()) {
-            		System.err.println("Arya: doRetry -- couter: " + count);
+            		System.err.println(
+                			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+                			+ ": Arya: doRetry -- couter: " + count);
             	}
                 if (count == 0) {
                     finalAction.cancel("Retry exceed: " + retry.times());
@@ -100,7 +108,9 @@ public class RetryableDeferActionCreator {
                     Env.time().sleep(period);
 
                 	if (DeferAction.isMornitoring.get()) {
-                		System.err.println("Arya: doRetry -- period: " + period);
+                		System.err.println(
+                    			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+                    			+ ": Arya: doRetry -- period: " + period);
                 	}
                     
                     builder

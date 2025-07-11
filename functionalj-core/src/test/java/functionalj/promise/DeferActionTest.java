@@ -813,7 +813,10 @@ public class DeferActionTest {
     @Test
     public void testRetry_cancel() throws InterruptedException {
     	DeferAction.isMornitoring.set(true);
-    	System.err.println("Arya: DeferActionTest.testRetry_cancel -- started.");
+    	DeferAction.startTime.set(Env.time().currentMilliSecond());
+    	System.err.println(
+    			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+    			+ ": Arya: DeferActionTest.testRetry_cancel -- started.");
     	try {
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
@@ -836,7 +839,9 @@ public class DeferActionTest {
         		"Result:{ Cancelled: Can't wait. }",
         		action.getResult());
     	} finally {
-        	System.err.println("Arya: DeferActionTest.testRetry_cancel -- done.");
+        	System.err.println(
+        			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
+        			+ ": Arya: DeferActionTest.testRetry_cancel -- done.");
     		DeferAction.isMornitoring.set(false);
     	}
     }
