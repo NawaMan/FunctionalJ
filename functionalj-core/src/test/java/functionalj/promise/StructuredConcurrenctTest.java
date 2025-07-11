@@ -381,9 +381,11 @@ public class StructuredConcurrenctTest {
         assertTrue(diff2 >= 2);
     }
     
-    // @Ignore
     @Test
     public void testRetry_cancel() throws InterruptedException {
+    	DeferAction.isMornitoring.set(true);
+    	System.err.println("Arya: StructuredConcurrencyTest.testRetry_cancel -- started.");
+    	try {
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
             return counter.incrementAndGet() == 3
@@ -401,6 +403,10 @@ public class StructuredConcurrenctTest {
         action.cancel("Can't wait.");
         
         assertAsString("Result:{ Cancelled: Can't wait. }", action.getResult());
+    	} finally {
+        	System.err.println("Arya: StructuredConcurrencyTest.testRetry_cancel -- done.");
+    		DeferAction.isMornitoring.set(false);
+    	}
     }
     
     //== Spawn ==
