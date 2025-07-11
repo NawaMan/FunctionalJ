@@ -77,18 +77,6 @@ public class RetryableDeferActionCreator {
         }
         
         private void doRetry(Result<DATA> result) {
-        	if (DeferAction.isMornitoring.get()) {
-        		System.err.println(
-            			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
-            			+ ": Arya: doRetry -- result:                   " + result);
-        		System.err.println(
-            			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
-            			+ ": Arya: doRetry -- result.isPresent():       " + result.isPresent());
-        		System.err.println(
-            			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
-            			+ ": Arya: doRetry -- result.isCancelled():     " + result.isCancelled());
-        	}
-        	
             if (result.isPresent()) {
                 val value = result.value();
                 finalAction.complete(value);
@@ -96,22 +84,11 @@ public class RetryableDeferActionCreator {
 				finalAction.fail(result.getException());
             } else {
                 val count = couter.decrementAndGet();
-            	if (DeferAction.isMornitoring.get()) {
-            		System.err.println(
-                			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
-                			+ ": Arya: doRetry -- couter: " + count);
-            	}
                 if (count == 0) {
                     finalAction.cancel("Retry exceed: " + retry.times());
                 } else {
                     val period = retry.waitTimeMilliSecond();
                     Env.time().sleep(period);
-
-                	if (DeferAction.isMornitoring.get()) {
-                		System.err.println(
-                    			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
-                    			+ ": Arya: doRetry -- period: " + period);
-                	}
                     
                     builder
                     .build()

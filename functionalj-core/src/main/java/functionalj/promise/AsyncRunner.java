@@ -120,12 +120,6 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         val theRunner  = (runner != null) ? runner : Env.async();
     	val deferValue = new DeferValue<DATA>();
 
-    	if (DeferAction.isMornitoring.get()) {
-			System.err.println(
-	    			(Env.time().currentMilliSecond() - DeferAction.startTime.get()) 
-	    			+ ": Arya: AsyncRunner.run() -- theRunner: " + theRunner);
-    	}
-
         // This latch is to ensure `prepare()` runs completely before continue the parent thread.
         val latch = new CountDownLatch(1);
         val with  = WithAllGlobalSubstitutions()
@@ -164,7 +158,7 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         return deferValue;
     }
 	
-    @SuppressWarnings({ "rawtypes", "unused" })
+    @SuppressWarnings({ "rawtypes" })
 	public static <DATA, EXCEPTION extends Exception> DeferAction thisDeferAction(ComputeBody<DATA, EXCEPTION> body) {
 		DeferAction deferAction = null;
 		if (body instanceof DeferActionCreator.RunTask.Body) {
