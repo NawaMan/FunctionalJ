@@ -2,7 +2,7 @@
   <servers>
     <server>
       <id>ossrh</id>
-      <username>${env.NAWAMAN_SONATYPE_USERNAME}</username>
+      <username>VM9GY3qT</username>
       <password>${env.NAWAMAN_SONATYPE_TOKEN}</password>
     </server>
   </servers>
