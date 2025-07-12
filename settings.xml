@@ -1,7 +1,7 @@
 <settings>
   <servers>
     <server>
-      <id>ossrh</id>
+      <id>central</id>
       <username>VM9GY3qT</username>
       <password>${env.NAWAMAN_SONATYPE_TOKEN}</password>
     </server>

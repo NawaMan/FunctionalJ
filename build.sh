@@ -114,7 +114,6 @@ function build-release() {
             --no-transfer-progress                     \
             --batch-mode                               \
             -Dgpg.passphrase=$NAWAMAN_SIGNING_PASSWORD \
-            -Dsona.site=$(cat project-publish-site)    \
             -Dmaven.test.skip=false                    \
             -Dmaven.source.skip=false                  \
             -Dmaven.javadoc.skip=false                 \
