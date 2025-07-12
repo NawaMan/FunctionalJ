@@ -35,7 +35,7 @@
         <gpg.executable>/usr/bin/gpg</gpg.executable>
         <gpg.keyname>${env.FUNCTIONALJ_KEYNAME}</gpg.keyname>
         <gpg.passphrase>${env.NAWAMAN_SIGNING_PASSWORD}</gpg.passphrase>
-        <sona.site>https://oss.sonatype.org</sona.site>
+        <sona.site>https://s01.oss.sonatype.org</sona.site>
         
         <!--==== VERSIONS ====-->
         
