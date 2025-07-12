@@ -29,7 +29,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Optional;
 import java.util.function.Consumer;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
@@ -139,7 +140,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(e);
+            throw Throwables.exceptionTransformer.value().apply(e);
         }
     }
     

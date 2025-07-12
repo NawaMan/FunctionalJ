@@ -24,6 +24,7 @@
 package functionalj.promise;
 
 import java.util.concurrent.TimeUnit;
+
 import functionalj.result.Result;
 import lombok.val;
 
@@ -43,23 +44,23 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
         this.promise = promise;
     }
     
-    public final CompletedAction<DATA> abort() {
-        promise.abort();
+    public final CompletedAction<DATA> cancel() {
+        promise.cancel();
         return new CompletedAction<DATA>(promise);
     }
     
-    public final CompletedAction<DATA> abort(String message) {
-        promise.abort(message);
+    public final CompletedAction<DATA> cancel(String message) {
+        promise.cancel(message);
         return new CompletedAction<DATA>(promise);
     }
     
-    public final CompletedAction<DATA> abort(Exception cause) {
-        promise.abort(cause);
+    public final CompletedAction<DATA> cancel(Exception cause) {
+        promise.cancel(cause);
         return new CompletedAction<DATA>(promise);
     }
     
-    public final CompletedAction<DATA> abort(String message, Exception cause) {
-        promise.abort(message, cause);
+    public final CompletedAction<DATA> cancel(String message, Exception cause) {
+        promise.cancel(message, cause);
         return new CompletedAction<DATA>(promise);
     }
     
@@ -100,4 +101,10 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         return promise.getResult(timeout, unit);
     }
+
+	@Override
+	public String toString() {
+		return "Action [" + promise + "]";
+	}
+    
 }

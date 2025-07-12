@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.exception.InterruptedRuntimeException;
+import functionalj.exception.Throwables;
 import functionalj.function.FuncUnit1;
-import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
@@ -576,7 +576,7 @@ public final class Console {
                 inLines.add("" + currentLine);
                 return currentLine;
             } catch (InterruptedException e) {
-                throw ThrowFuncs.exceptionTransformer.get().apply(e);
+                throw Throwables.exceptionTransformer.get().apply(e);
             }
         }
         

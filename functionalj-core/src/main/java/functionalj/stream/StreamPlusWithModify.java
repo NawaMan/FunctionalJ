@@ -164,7 +164,7 @@ public interface StreamPlusWithModify<DATA> {
             
             resultStream.onClose(() -> {
                 actions.forEach(action -> {
-                    action.abort("Stream closed!");
+                    action.cancel("Stream closed!");
                 });
             });
             

@@ -25,7 +25,8 @@ package functionalj.function;
 
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 
 @FunctionalInterface
 public interface IntDoubleToIntFunction extends ToIntBiFunction<Integer, Double>, Func2<Integer, Double, Integer> {
@@ -36,7 +37,7 @@ public interface IntDoubleToIntFunction extends ToIntBiFunction<Integer, Double>
         try {
             return applyIntAndDoubleUnsafe(intValue, doubleValue);
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(exception);
+            throw Throwables.exceptionTransformer.get().apply(exception);
         }
     }
     

@@ -49,14 +49,17 @@ public final class Env {
         return Env.refs.time.orElse(Time.System.instance);
     }
     
+    /** @return  the {@link AsyncRunner} to be used. */
     public static AsyncRunner async() {
         return Env.refs.async.orElse(AsyncRunner.virtualThread(AsyncRunner.threadFactory));
     }
     
+    /** @return  the {@link Console} to be used. */
     public static Console.Instance console() {
         return Env.refs.console.orElse(Console.System.instance);
     }
     
+    /** @return  the {@link Log} to be used. */
     public static Log.Instance log() {
         return Env.refs.log.orElse(Log.Instance.instance);
     }

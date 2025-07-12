@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -58,9 +59,9 @@ public class StructuredConcurrenctTest {
         // One (prefix) of the three success. Other one (suffix) failed while the last one is still working (body).
         
         val around = f((String prefix, String suffix, String text) -> prefix + text + suffix);
-        val prefix = Sleep(  10).thenReturn("[").defer();
-        val suffix = Sleep( 100).thenThrow(RuntimeException::new, String.class).defer();
-        val body   = Sleep(2000).thenReturn( "---").defer();
+        val prefix = Sleep(   10).thenReturn("[").defer();
+        val suffix = Sleep(  100).thenThrow(RuntimeException::new, String.class).defer();
+        val body   = Sleep(20000).thenReturn( "---").defer();
         val string = DeferAction.from(prefix, suffix, body, around)
                         .start();
         
@@ -73,7 +74,7 @@ public class StructuredConcurrenctTest {
     }
     
     @Test
-    public void testCombine_abort() throws InterruptedException {
+    public void testCombine_cancel() throws InterruptedException {
         val around = f((String prefix, String suffix, String text) -> prefix + text + suffix);
         val prefix = Sleep(  10).thenReturn("[").defer();
         val suffix = Sleep(  50).thenReturn("]").defer();
@@ -82,7 +83,7 @@ public class StructuredConcurrenctTest {
                         .start();
         
         sleep(100);
-        string.abort("Too long");
+        string.cancel("Too long");
         
         assertAsString("Result:{ Cancelled: Too long }",          string.getResult());
         assertAsString("Result:{ Value: [ }",                     prefix.getResult());
@@ -174,8 +175,8 @@ public class StructuredConcurrenctTest {
         val action1 = DeferAction.run(TimeFuncs.Sleep(200).thenReturn("200"));
         val action2 = DeferAction.run(TimeFuncs.Sleep(100).thenReturn("100"));
         val action  = DeferAction.race(action1, action2);
-        action1.abort();
-        action2.abort();
+        action1.cancel();
+        action2.cancel();
         assertAsString("Result:{ Cancelled }", action1.getResult());
         assertAsString("Result:{ Cancelled }", action2.getResult());
         assertAsString("Result:{ Cancelled: Finish without non-null result. }", action.getResult());
@@ -242,10 +243,8 @@ public class StructuredConcurrenctTest {
         
         second.completeWith(Result.<String>ofException(new RuntimeException()));
         
-        assertAsString("Result:{ Exception: "
-                                + "functionalj.promise.PromisePartiallyFailException: "
-                                + "Promise #1 out of 3 fail. "
-                            + "}",                                         string.getResult());
+        assertAsString("Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #1 out of 3 fail. }",  
+        		                                                           string.getResult());
         assertAsString("Result:{ Value: <1> }",                            first.getResult());
         assertAsString("Result:{ Exception: java.lang.RuntimeException }", second.getResult());
         assertAsString("Result:{ Value: <3> }",                            third.getResult());
@@ -266,7 +265,7 @@ public class StructuredConcurrenctTest {
         val string = DeferAction.from(first, second, race(third, forth, fifth), around)
                         .start();
         sleep(100);
-        string.abort("Change my mind.");
+        string.cancel("Change my mind.");
         
         assertAsString("Result:{ Cancelled: Change my mind. }",   string.getResult());
         assertAsString("Result:{ Value: 1st }",                   first.getResult());
@@ -279,16 +278,21 @@ public class StructuredConcurrenctTest {
     //== Cleanup ==
     
     @Test
-    public void testCleanup_success() {
-        val logs = new ArrayList<String>();
-        
+    public void testCleanup_success() throws InterruptedException {
+        val logs   = new ArrayList<String>();
+        val latch  = new CountDownLatch(1);
         val string = Sleep(10).thenReturn("$$$").defer();
-        string.onCompleted(result -> logs.add("Ended: " + result));
+        string.onCompleted(result -> {
+        	logs.add("Ended: " + result);
+        	latch.countDown();
+        });
         
         string.start();
         
         // Wait for all of them to finish.
-        assertAsString("Result:{ Value: $$$ }",          string.getResult());
+        assertAsString("Result:{ Value: $$$ }", string.getResult());
+        
+        latch.await();
         assertAsString("[Ended: Result:{ Value: $$$ }]", logs);
     }
     
@@ -378,19 +382,25 @@ public class StructuredConcurrenctTest {
     }
     
     @Test
-    public void testRetry_abort() throws InterruptedException {
+    public void testRetry_cancel() throws InterruptedException {
+    	val latch   = new CountDownLatch(1);
         val counter = new AtomicInteger(0);
         val builder = DeferActionBuilder.from(() -> {
-            counter.incrementAndGet();
-            return counter.get() == 3 ? "Three" : null;
+        	latch.await();
+            return counter.incrementAndGet() == 3
+            		? "Three"
+    				: null;
         })
         .retry(5).times()
-        .waitFor(50)
-        .milliseconds();
+        .waitFor(20000).milliseconds();
         
-        val action = builder.build().start();
-        Thread.sleep(50);
-        action.abort("Can't wait.");
+        val action
+        		= builder
+        		.build()
+        		.start();
+        Thread.sleep(100);
+        action.cancel("Can't wait.");
+        latch.countDown();
         
         assertAsString("Result:{ Cancelled: Can't wait. }", action.getResult());
     }

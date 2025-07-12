@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.function;
 
-import functionalj.functions.ThrowFuncs;
+import functionalj.exception.Throwables;
 
 public interface IntObjToLongBiFunction<DATA> extends Func2<Integer, DATA, Long> {
     
@@ -33,7 +33,7 @@ public interface IntObjToLongBiFunction<DATA> extends Func2<Integer, DATA, Long>
         try {
             return applyAsLongUnsafe(input1, input2);
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(exception);
+            throw Throwables.exceptionTransformer.get().apply(exception);
         }
     }
     

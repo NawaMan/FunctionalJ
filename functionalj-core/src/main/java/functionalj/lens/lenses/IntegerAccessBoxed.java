@@ -24,7 +24,8 @@
 package functionalj.lens.lenses;
 
 import java.util.function.IntSupplier;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import lombok.val;
 
 @FunctionalInterface
@@ -37,7 +38,7 @@ public interface IntegerAccessBoxed<HOST> extends IntegerAccess<HOST> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(e);
+            throw Throwables.exceptionTransformer.value().apply(e);
         }
     }
     

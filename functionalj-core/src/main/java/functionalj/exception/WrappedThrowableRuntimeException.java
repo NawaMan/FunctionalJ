@@ -23,24 +23,40 @@
 // ============================================================================
 package functionalj.exception;
 
-public class WrapException extends RuntimeException {
+/**
+ * An {@link RuntimeException} that wrap a {@link Throwable} so that it appears as an {@link RuntimeException}.
+ */
+public class WrappedThrowableRuntimeException extends RuntimeException {
     
     private static final long serialVersionUID = -5814440055771538679L;
     
-    public static WrapException of(Exception exception) {
-        if (exception instanceof WrapException)
-            return (WrapException) exception;
-        if (exception == null) {
+    public static WrappedThrowableRuntimeException of(Throwable throwable) {
+        if (throwable instanceof WrappedThrowableRuntimeException)
+            return (WrappedThrowableRuntimeException) throwable;
+        if (throwable instanceof WrappedThrowableException)
+            return new WrappedThrowableRuntimeException(((WrappedThrowableException)throwable).getThrowable());
+        if (throwable == null) {
             return null;
         }
-        return new WrapException(exception);
+        return new WrappedThrowableRuntimeException(throwable);
     }
     
-    private WrapException(Exception exception) {
+    public static RuntimeException runtimeExceptionOf(Throwable throwable) {
+    	if (throwable instanceof RuntimeException) {
+        	return (RuntimeException)throwable;
+    	}
+		return WrappedThrowableRuntimeException.of(throwable);
+    }
+    
+    WrappedThrowableRuntimeException(Throwable exception) {
         super(exception);
     }
     
-    public Exception getException() {
-        return (Exception)this.getCause();
+    public WrappedThrowableRuntimeException(String message, Throwable exception) {
+        super(message);
+    }
+    
+    public Throwable getThrowable() {
+        return this.getCause();
     }
 }

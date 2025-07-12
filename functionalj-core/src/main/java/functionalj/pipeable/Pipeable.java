@@ -28,9 +28,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import functionalj.exception.Throwables;
 import functionalj.function.Func;
 import functionalj.function.Func1;
-import functionalj.functions.ThrowFuncs;
 import functionalj.result.Result;
 import lombok.val;
 import nullablej.nullable.Nullable;
@@ -141,7 +142,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -164,7 +165,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -189,7 +190,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -216,7 +217,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -245,7 +246,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -276,7 +277,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -309,7 +310,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -344,7 +345,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -381,7 +382,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -420,7 +421,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -461,7 +462,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -504,7 +505,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -549,7 +550,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -596,7 +597,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -645,7 +646,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     
@@ -696,7 +697,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+            throw Throwables.exceptionTransformer.value().apply(exception);
         }
     }
     

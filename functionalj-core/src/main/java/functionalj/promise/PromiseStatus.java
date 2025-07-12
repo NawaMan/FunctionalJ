@@ -25,7 +25,7 @@ package functionalj.promise;
 
 public enum PromiseStatus {
     
-    NOT_STARTED, PENDING, ABORTED, COMPLETED;
+    NOT_STARTED, PENDING, CANCELLED, COMPLETED;
     
     public boolean isStarted() {
         return !PromiseStatus.NOT_STARTED.equals(this);
@@ -35,8 +35,8 @@ public enum PromiseStatus {
         return PromiseStatus.PENDING.equals(this);
     }
     
-    public boolean isAborted() {
-        return PromiseStatus.ABORTED.equals(this);
+    public boolean isCancelled() {
+        return PromiseStatus.CANCELLED.equals(this);
     }
     
     public boolean isComplete() {
@@ -44,7 +44,7 @@ public enum PromiseStatus {
     }
     
     public boolean isDone() {
-        return ABORTED.equals(this) || COMPLETED.equals(this);
+        return CANCELLED.equals(this) || COMPLETED.equals(this);
     }
     
     public boolean isNotDone() {

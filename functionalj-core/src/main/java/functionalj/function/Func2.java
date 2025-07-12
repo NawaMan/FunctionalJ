@@ -31,7 +31,8 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
@@ -147,7 +148,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(e);
+            throw Throwables.exceptionTransformer.value().apply(e);
         }
     }
     

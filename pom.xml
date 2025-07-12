@@ -35,7 +35,6 @@
         <gpg.executable>/usr/bin/gpg</gpg.executable>
         <gpg.keyname>${env.FUNCTIONALJ_KEYNAME}</gpg.keyname>
         <gpg.passphrase>${env.NAWAMAN_SIGNING_PASSWORD}</gpg.passphrase>
-        <sona.site>https://oss.sonatype.org</sona.site>
         
         <!--==== VERSIONS ====-->
         
@@ -48,7 +47,7 @@
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
-        <nexus-staging-plugin.version>1.6.8</nexus-staging-plugin.version>
+        <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
         
         <!-- DEPENDENCY -->
         <lombok.version>1.18.28</lombok.version>
@@ -207,9 +206,9 @@
                     <version>${maven-gpg-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>${nexus-staging-plugin.version}</version>
+				    <groupId>org.sonatype.central</groupId>
+				    <artifactId>central-publishing-maven-plugin</artifactId>
+				    <version>${central-publishing-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -298,17 +297,15 @@
             </plugin>
             
             <!-- PUBLISH -->
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>${sona.site}</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    <skipNexusStagingDeployMojo>${sona.staging.skip}</skipNexusStagingDeployMojo>
-                </configuration>
-            </plugin>
+			<plugin>
+			    <groupId>org.sonatype.central</groupId>
+			    <artifactId>central-publishing-maven-plugin</artifactId>
+			    <extensions>true</extensions>
+			    <configuration>
+			        <publishingServerId>central</publishingServerId>
+			        <waitUntil>published</waitUntil>
+			    </configuration>
+			</plugin>
         </plugins>
     </build>
 </project>

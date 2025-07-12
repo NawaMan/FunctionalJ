@@ -218,7 +218,9 @@ public interface PromiseStatusAddOn<DATA> {
     }
     
     public default Promise<DATA> recover(Class<? extends Throwable> problemClass, DATA fallbackValue) {
-        return (Promise) mapResult(result -> result.recover(problemClass, fallbackValue));
+        return (Promise) mapResult(result -> {
+        	return result.recover(problemClass, fallbackValue);
+        });
     }
     
     public default Promise<DATA> recover(Class<? extends Throwable> problemClass, Supplier<? extends DATA> fallbackSupplier) {

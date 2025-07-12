@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.function;
 
-import functionalj.functions.ThrowFuncs;
+import functionalj.exception.Throwables;
 
 public interface IntObjToDoubleBiFunction<DATA> extends Func2<Integer, DATA, Double> {
     
@@ -33,7 +33,7 @@ public interface IntObjToDoubleBiFunction<DATA> extends Func2<Integer, DATA, Dou
         try {
             return applyAsDoubleUnsafe(input1, input2);
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(exception);
+            throw Throwables.exceptionTransformer.get().apply(exception);
         }
     }
     

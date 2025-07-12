@@ -69,7 +69,7 @@ public abstract class Ref<DATA> implements AsResult<DATA> {
         val dataClass = (Class<D>) value.getClass();
         val result    = Result.valueOf(value);
         val ref       = new RefOf.FromResult<D>(name, dataClass, result, null);
-        return ref;
+        return ref.whenAbsentUse(value);
     }
     
     @SuppressWarnings("unchecked")
@@ -78,7 +78,7 @@ public abstract class Ref<DATA> implements AsResult<DATA> {
         val location  = CallerId.instance.trace(Traced::extractLocationString) + ":" + "Ref<" + Utils.name(dataClass) + ">";
         val result    = Result.valueOf(value);
         val ref       = new RefOf.FromResult<D>(location, dataClass, result, null);
-        return ref;
+        return ref.whenAbsentUse(value);
     }
     
     @SuppressWarnings("unchecked")

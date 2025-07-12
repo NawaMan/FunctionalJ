@@ -95,8 +95,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return DeferAction.of((Class<D>) null).start().fail(exception).getPromise();
     }
     
-    public static <D> Promise<D> ofAborted() {
-        return DeferAction.of((Class<D>) null).start().abort().getPromise();
+    public static <D> Promise<D> ofCancelled() {
+        return DeferAction.of((Class<D>) null).start().cancel().getPromise();
     }
     
     //== from ==
@@ -414,7 +414,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     // StartableAction  -> NOT START
     // consumer         -> Pending
     // result           -> done.
-    // result.cancelled -> aborted
+    // result.cancelled -> cancelled
     // result.completed -> completed
     final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers = new ConcurrentHashMap<>(INITIAL_CAPACITY);
     
@@ -475,7 +475,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final PromiseStatus getStatus() {
         val data = dataRef.get();
         if (data instanceof Promise) {
-            Promise<DATA> promise = (Promise<DATA>) data;
+            Promise<DATA> promise      = (Promise<DATA>) data;
             PromiseStatus parentStatus = promise.getStatus();
             // Pending ... as the result is not yet propagated down
             if (parentStatus.isNotDone())
@@ -490,7 +490,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (data instanceof Result) {
             val result = (Result<DATA>) data;
             if (result.isCancelled())
-                return PromiseStatus.ABORTED;
+                return PromiseStatus.CANCELLED;
             if (result.isReady())
                 return PromiseStatus.COMPLETED;
         }
@@ -504,7 +504,12 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     // == Internal working ==
+    
     public final boolean start() {
+    	return start(AsyncRunner.Strategy.LAUNCH);
+    }
+    
+    final boolean start(AsyncRunner.Strategy strategy) {
         val data = dataRef.get();
         if (data instanceof Promise) {
             val parent = (Promise<DATA>) data;
@@ -516,10 +521,16 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             return false;
         val isJustStarted = dataRef.compareAndSet(data, consumers);
         if (isJustStarted) {
-            if (isStartAction)
-                ((StartableAction<DATA>) data).start();
-            else if (isOnStart)
+            if (isStartAction) {
+                if (data instanceof DeferAction) {
+                    ((DeferAction<DATA>) data).start(strategy);
+                } else {
+                	((StartableAction<DATA>)data).start();
+                }
+                
+            } else if (isOnStart) {
                 ((OnStart) data).run();
+            }
         }
         return isJustStarted;
     }
@@ -529,23 +540,22 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return (data instanceof OnStart) ? (OnStart) data : OnStart.DoNothing;
     }
     
-    boolean abort() {
-//        val cancelResult = (Result<DATA>) Result.ofCancelled("Cancelled: " + this);
+    boolean cancel() {
         val cancelResult = (Result<DATA>) Result.ofCancelled();
         return makeDone(cancelResult);
     }
     
-    boolean abort(String message) {
+    boolean cancel(String message) {
         val cancelResult = (Result<DATA>) Result.ofCancelled(message);
         return makeDone(cancelResult);
     }
     
-    boolean abort(Exception cause) {
+    boolean cancel(Exception cause) {
         val cancelResult = (Result<DATA>) Result.ofCancelled(null, cause);
         return makeDone(cancelResult);
     }
     
-    boolean abort(String message, Exception cause) {
+    boolean cancel(String message, Exception cause) {
         val cancelResult = (Result<DATA>) Result.ofCancelled(message, cause);
         return makeDone(cancelResult);
     }
@@ -569,26 +579,23 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     static <DATA> boolean makeDone(Promise<DATA> promise, Result<DATA> result) {
         val isDone = promise.synchronouseOperation(() -> {
             val data = promise.dataRef.get();
-            try {
-                if (data instanceof Promise) {
-                    val parent = (Promise<DATA>) data;
-                    try {
-                        if (!promise.dataRef.compareAndSet(parent, result))
-                            return false;
-                    } finally {
-                        parent.unsubscribe(promise);
-                    }
-                } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
-                    if (!promise.dataRef.compareAndSet(data, result))
+            if (data instanceof Promise) {
+                val parent = (Promise<DATA>) data;
+                try {
+                    if (!promise.dataRef.compareAndSet(parent, result))
                         return false;
-                } else {
-                    val changeSuccess = promise.dataRef.compareAndSet(promise.consumers, result);
-                    if (!changeSuccess)
-                        return false;
+                } finally {
+                    parent.unsubscribe(promise);
                 }
-                return null;
-            } finally {
+            } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
+                if (!promise.dataRef.compareAndSet(data, result))
+                    return false;
+            } else {
+                val changeSuccess = promise.dataRef.compareAndSet(promise.consumers, result);
+                if (!changeSuccess)
+                    return false;
             }
+            return null;
         });
         
         if (isDone != null)
@@ -630,9 +637,23 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     private <T> Promise<T> newSubPromise(FuncUnit2<Result<DATA>, Promise<T>> resultConsumer) {
-        val promise = new Promise<T>(this);
-        onCompleted(resultConsumer.elevateWith(promise));
-        return promise;
+    	val holder = new AtomicReference<Promise>();
+        val record = onCompleted((input1) -> {
+        	val promise = holder.get();
+        	if (promise != null) {
+            	resultConsumer.accept(input1, promise);
+			}
+        });
+        val promise = record.getPromise();
+        holder.set(promise);
+        
+        if (this.isDone() && promise.isNotDone()) {
+        	// In the case the promise is already done, we can directly set the result.
+        	val input1 = (Result)this.getCurrentResult();
+        	resultConsumer.accept(input1, (Promise)promise);
+		}
+        
+        return (Promise<T>)promise;
     }
     
     // == Basic functionality ==
@@ -645,8 +666,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return PromiseStatus.PENDING.equals(getStatus());
     }
     
-    public final boolean isAborted() {
-        return PromiseStatus.ABORTED.equals(getStatus());
+    public final boolean isCancelled() {
+        return PromiseStatus.CANCELLED.equals(getStatus());
     }
     
     public final boolean isComplete() {
@@ -669,23 +690,24 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     void unsubscribe(SubscriptionRecord<DATA> subscription) {
         consumers.remove(subscription);
-        abortWhenNoSubscription();
+        cancelWhenNoSubscription();
     }
     
     void unsubscribe(Promise<DATA> promise) {
         val entry = consumers.entrySet().stream().filter(e -> Objects.equals(e.getKey().getPromise(), promise)).findFirst();
         if (entry.isPresent())
             consumers.remove(entry.get().getKey());
-        abortWhenNoSubscription();
+        cancelWhenNoSubscription();
     }
     
-    private void abortWhenNoSubscription() {
+    private void cancelWhenNoSubscription() {
         if (consumers.isEmpty())
-            abort("No more listener.");
+            cancel("No more listener.");
     }
     
     private SubscriptionRecord<DATA> listen(boolean isEavesdropping, FuncUnit1<Result<DATA>> resultConsumer) {
-        val subscription = new SubscriptionRecord<DATA>(this);
+    	val promise      = new Promise(Promise.this);
+        val subscription = new SubscriptionRecord<DATA>(promise);
         if (isEavesdropping)
             eavesdroppers.add(resultConsumer);
         else
@@ -791,7 +813,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return doSubscribe(true, wait, resultConsumer);
     }
     
-    public final Promise<DATA> abortNoSubscriptionAfter(Wait wait) {
+    public final Promise<DATA> cancelWhenNoSubscriptionAfter(Wait wait) {
         val subscriptionHolder = onCompleted(wait);
         subscriptionHolder.assign(__ -> subscriptionHolder.unsubscribe());
         return this;
@@ -802,7 +824,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         val returnSubscription = (SubscriptionRecord<DATA>) synchronouseOperation(() -> {
             val data = dataRef.get();
             if (data instanceof Result) {
-                val subscription = new SubscriptionRecord<DATA>(this);
+            	val promise      = new Promise(Promise.this);
+                val subscription = new SubscriptionRecord<DATA>(promise);
                 toRunNow.set(true);
                 return subscription;
             }

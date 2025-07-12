@@ -71,8 +71,10 @@ public class CombineResult<D> {
         });
         this.promise = action.getPromise();
         this.promise.eavesdrop(result -> {
-            if (result.isCancelled()) {
-                unsbscribeAll();
+        	if (result.isException()) {
+				// If the result end with exception, we will unsubscribe all.
+				// This is to ensure that we do not have any dangling subscriptions.
+        		unsbscribeAll();
             }
         });
     }
@@ -119,7 +121,7 @@ public class CombineResult<D> {
         if (!isDone.compareAndSet(false, true))
             return;
         
-        action.abort("Promise#" + index);
+        action.cancel("Promise#" + index);
         unsbscribeAll();
     }
     
@@ -127,7 +129,7 @@ public class CombineResult<D> {
         if (!isDone.compareAndSet(false, true))
             return;
         
-        action.abort("Promise#" + index, new IllegalStateException("Result cannot be in 'not ready' at this point: " + result.getStatus(), result.getException()));
+        action.cancel("Promise#" + index, new IllegalStateException("Result cannot be in 'not ready' at this point: " + result.getStatus(), result.getException()));
         unsbscribeAll();
     }
     

@@ -25,7 +25,8 @@ package functionalj.stream.intstream;
 
 import static functionalj.stream.intstream.IntStreamPlusMapFirstAddOnHelper.doMapFirst;
 import java.util.function.IntFunction;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
@@ -53,7 +54,7 @@ class IntStreamPlusMapFirstAddOnHelper {
         }
         if (hasNull)
             return (T) null;
-        throw ThrowFuncs.exceptionTransformer.get().apply(exception);
+        throw Throwables.exceptionTransformer.get().apply(exception);
     }
 }
 

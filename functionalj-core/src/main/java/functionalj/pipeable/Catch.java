@@ -27,7 +27,8 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import functionalj.result.Result;
 import nullablej.nullable.Nullable;
 
@@ -177,7 +178,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
                 if (exception instanceof RuntimeException)
                     throw (RuntimeException) exception;
                 if (exception != null)
-                    throw ThrowFuncs.exceptionTransformer.value().apply(exception);
+                    throw Throwables.exceptionTransformer.value().apply(exception);
                 return data;
             }
         };

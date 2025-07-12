@@ -953,10 +953,10 @@ public class Tasks {
         
         @Override
         public DeferAction<D> createAction() {
-            val actions = list.map(io -> io.createAction());
+            val actions    = list.map(io -> io.createAction());
             val raceResult = RaceResult.from(actions);
-            val promise = raceResult.getResultPromise();
-            val action = DeferAction.of((Class<D>) null, () -> {
+            val promise    = raceResult.getResultPromise();
+            val action     = DeferAction.of((Class<D>) null, () -> {
                 raceResult.start();
                 if (promise != null)
                     promise.start();

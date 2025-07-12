@@ -74,7 +74,7 @@ public class SubscriptionRecord<DATA> implements HasPromise<DATA> {
         Objects.requireNonNull(promiseStatus);
         if (promiseStatus.isComplete())
             return SubscriptionStatus.COMPLETED;
-        if (promiseStatus.isAborted())
+        if (promiseStatus.isCancelled())
             return SubscriptionStatus.CANCELLED;
         if (!promise.isSubscribed(this))
             return SubscriptionStatus.UNSUBSCRIBED;

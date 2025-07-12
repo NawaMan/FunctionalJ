@@ -246,8 +246,8 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
         
         WaitRetryBuilderUnit(DeferActionBuilder<DATA> actionBuilder, int times, long period) {
             this.actionBuilder = actionBuilder;
-            this.times = times;
-            this.period = period;
+            this.times         = times;
+            this.period        = period;
         }
         
         public DeferActionBuilder<DATA> milliseconds() {

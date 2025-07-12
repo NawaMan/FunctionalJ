@@ -24,12 +24,12 @@
 package functionalj.promise;
 
 import static functionalj.function.Func.carelessly;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 import functionalj.function.Func0;
 import functionalj.ref.ComputeBody;
 import functionalj.ref.Ref;
-import functionalj.result.Result;
 import functionalj.supportive.Default;
 import lombok.val;
 
@@ -44,100 +44,110 @@ public class DeferActionCreator {
     
     public static final Ref<DeferActionCreator> current = Ref.of(DeferActionCreator.class).orTypeDefaultOrGet(DeferActionCreator::new);
     
-    public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, boolean interruptOnCancel, AsyncRunner runner) {
+    /**
+     * Create a {@link DeferAction}.
+     * 
+     * @param  <D>                the result type.
+     * @param  supplier           the action body.
+     * @param  onStart            an action to be done before the {@link DeferAction} started.
+     * @param  interruptOnCancel  a flag to interrupt the task if the {@link DeferAction} is cancelled.
+     * @return
+     */
+    public <D> DeferAction<D> create(
+    				Func0<D>    supplier,
+    				Runnable    onStart,
+    				boolean     interruptOnCancel) {
         val promiseRef = new AtomicReference<Promise<D>>();
-        val runTask = new RunTask<D>(interruptOnCancel, supplier, onStart, runner, promiseRef::get);
-        val action = new DeferAction<D>(runTask, null);
-        val promise = action.getPromise();
+        val runTask    = new RunTask<D>(interruptOnCancel, supplier, onStart, promiseRef::get);
+        val action     = new DeferAction<D>(runTask, null);
+        val promise    = action.getPromise();
+        runTask.actionRef.set(action);
         promiseRef.set(promise);
         return action;
     }
     
-    private static class RunTask<D> implements Runnable {
+    static class RunTask<D> implements Runnable {
         
-        private final boolean interruptOnCancel;
+        private final boolean                         interruptOnCancel;
+        private final Func0<D>                        supplier;
+        private final Runnable                        onStart;
+        private final Func0<Promise<D>>               promiseRef;
+        private final AtomicReference<DeferAction<D>> actionRef = new AtomicReference<>(null);
+        private final AtomicReference<Thread>         threadRef = new AtomicReference<>();
         
-        private final Func0<D> supplier;
-        
-        private final Runnable onStart;
-        
-        private final AsyncRunner runner;
-        
-        private final Func0<Promise<D>> promiseRef;
-        
-        private final AtomicReference<Thread> threadRef = new AtomicReference<Thread>();
-        
-        public RunTask(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, AsyncRunner runner, Func0<Promise<D>> promiseRef) {
+        RunTask(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, Func0<Promise<D>> promiseRef) {
             this.interruptOnCancel = interruptOnCancel;
-            this.supplier = supplier;
-            this.onStart = onStart;
-            this.runner = runner;
-            this.promiseRef = promiseRef;
+            this.supplier          = supplier;
+            this.onStart           = onStart;
+            this.promiseRef        = promiseRef;
+        }
+        
+        public void start(AsyncRunner.Strategy strategy) {
+            AsyncRunner.run(strategy, null, new Body()).onCompleted(result -> {
+                val promise = promiseRef.get();
+                Promise.makeDone(promise, result);
+            });
         }
         
         @Override
         public void run() {
-            ActionAsyncRunner.run(runner, new Body()).onCompleted(result -> {
-                val promise = promiseRef.get();
-                val action = new PendingAction<D>(promise);
-                if (result.isValue())
-                    action.complete(null);
-                else if (result.isCancelled())
-                    action.abort(result.exception());
-                else
-                    action.fail(result.exception());
-            });
+        	start(AsyncRunner.Strategy.LAUNCH);
         }
         
-        class Body implements ComputeBody<Void, RuntimeException> {
+        public void launch() {
+        	start(AsyncRunner.Strategy.LAUNCH);
+        }
+        
+        public void fork() {
+        	start(AsyncRunner.Strategy.FORK);
+        }
+        
+        class Body implements ComputeBody<D, RuntimeException> {
             
-            public void prepared() {
+        	// prepare() is run on the thread that runs the task (NOT the starting thread).
+            public void prepare() {
                 val promise = promiseRef.get();
                 if (!promise.isNotDone())
                     return;
-                setupInterruptOnCancel(promise);
+
+                if (interruptOnCancel) {
+                	// The threadRef holds the running thread.
+                	// So the cancellation of the promise can interrupt the running thread.
+	                threadRef.set(Thread.currentThread());
+	                promise.eavesdrop(r -> {
+	                    r.ifCancelled(() -> {
+	                        val thread = threadRef.get();
+	                        if ((thread != null) && !thread.equals(Thread.currentThread())) {
+	                            thread.interrupt();
+	                        }
+	                    });
+	                });
+                }
+                
                 carelessly(onStart);
             }
             
+            // compute() is run on the thread that runs the task (NOT the starting thread).
             @Override
-            public Void compute() throws RuntimeException {
-                val promise = promiseRef.get();
-                val action = new PendingAction<D>(promise);
-                val result = Result.of(this::runSupplier);
-                action.completeWith(result);
-                return null;
-            }
-            
-            private D runSupplier() {
+            public D compute() throws RuntimeException {
                 try {
-                    return supplier.get();
-                } finally {
-                    doInterruptOnCancel();
-                }
+				    return supplier.get();
+				    
+				} finally {
+		            if (interruptOnCancel) {
+			            threadRef.set(null);
+			            // This is to reset the status in case the task was done
+			            // but threadRed is yet to be set to null.
+			            Thread.currentThread().isInterrupted();
+		            }
+				}
             }
             
-            private void setupInterruptOnCancel(Promise<D> promise) {
-                if (!interruptOnCancel)
-                    return;
-                threadRef.set(Thread.currentThread());
-                promise.eavesdrop(r -> {
-                    r.ifCancelled(() -> {
-                        val thread = threadRef.get();
-                        if ((thread != null) && !thread.equals(Thread.currentThread())) {
-                            thread.interrupt();
-                        }
-                    });
-                });
-            }
+            /** @return  the DeferAction that own this body. */
+            public DeferAction<D> action() {
+            	return actionRef.get();
+			}
         }
         
-        private void doInterruptOnCancel() {
-            if (!interruptOnCancel)
-                return;
-            threadRef.set(null);
-            // This is to reset the status in case the task was done
-            // but threadRed is yet to be set to null.
-            Thread.currentThread().isInterrupted();
-        }
     }
 }

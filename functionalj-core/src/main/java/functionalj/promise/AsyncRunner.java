@@ -23,8 +23,8 @@
 // ============================================================================
 package functionalj.promise;
 
-import static functionalj.promise.AsyncRunnerScope.asyncScope;
-import static functionalj.ref.Run.With;
+import static functionalj.promise.AsyncRunner.Strategy.LAUNCH;
+import static functionalj.ref.Run.WithAllGlobalSubstitutions;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -34,31 +34,23 @@ import java.util.concurrent.ThreadFactory;
 
 import functionalj.environments.Env;
 import functionalj.environments.VirtualThreadRunner;
-import functionalj.exception.WrapThrowable;
+import functionalj.exception.FunctionInvocationException;
+import functionalj.exception.WrappedThrowableException;
 import functionalj.function.Annotated;
-import functionalj.functions.ThrowFuncs;
 import functionalj.ref.ComputeBody;
 import functionalj.ref.Ref;
 import functionalj.ref.RunBody;
-import functionalj.ref.Substitution;
 import lombok.val;
 
 /**
- * Runnder for async runnable.
+ * Asynchronous runner for a {@link Runnable}.
  */
 @FunctionalInterface
 public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Runnable> {
-    
-    /** Reference for the provider. **/
-    public static final Ref<AsyncRunnerScopeProvider> asyncScopeProvider 
-            = Ref.of(AsyncRunnerScopeProvider.class)
-            .whenAbsentReferTo(AsyncRunnerScopeProvider.asyncScopeProvider)
-            .defaultTo(AsyncRunnerScopeProvider.noScope);
-    
+	
     public static AsyncRunner of(functionalj.function.FuncUnit1<java.lang.Runnable> runner) {
         if (runner instanceof AsyncRunner)
             return (AsyncRunner)runner;
-        
         return runner::acceptUnsafe;
     }
     
@@ -84,78 +76,77 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
         
     }
     
-    
     public static <EXCEPTION extends Exception> Promise<Object> run(RunBody<EXCEPTION> runnable) {
-        return run(null, null, runnable);
+        return run(null, runnable);
     }
     
     public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(ComputeBody<DATA, EXCEPTION> body) {
-        return run(null, null, body);
+        return run(null, body);
     }
     
     public static <EXCEPTION extends Exception> Promise<Object> run(AsyncRunner runner, RunBody<EXCEPTION> runnable) {
-        return run(runner, null, () -> {
+        return run(runner, () -> {
             runnable.run();
             return null;
         });
     }
     
-    public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
-        return run(runner, null, body);
+    @SuppressWarnings("rawtypes")
+	static final Ref<DeferAction> currentDeferAction = Ref.to(DeferAction.class);
+    
+    static enum Strategy {
+    	LAUNCH,
+    	FORK
     }
     
+	public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
+		return run(LAUNCH, runner, body);
+	}
     
-    public static <EXCEPTION extends Exception> Promise<Object> run(AsyncRunnerScopeProvider scopeProvider, RunBody<EXCEPTION> runnable) {
-        return run(null, scopeProvider, runnable);
-    }
-    
-    public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunnerScopeProvider scopeProvider, ComputeBody<DATA, EXCEPTION> body) {
-        return run(null, scopeProvider, body);
-    }
-    
-    public static <EXCEPTION extends Exception> Promise<Object> run(AsyncRunner runner, AsyncRunnerScopeProvider scopeProvider, RunBody<EXCEPTION> runnable) {
-        return run(runner, scopeProvider, () -> {
-            runnable.run();
-            return null;
-        });
-    }
-    
-    public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(AsyncRunner runner, AsyncRunnerScopeProvider scopeProvider, ComputeBody<DATA, EXCEPTION> body) {
-        val action           = DeferAction.of((Class<DATA>) null).start();
-        val theRunner        = (runner        != null) ? runner        : Env.async();
-        val theScioeProvider = (scopeProvider != null) ? scopeProvider : asyncScopeProvider.get();
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	static <DATA, EXCEPTION extends Exception> Promise<DATA> run(Strategy strategy, AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
+		strategy = (strategy != null) ? strategy : LAUNCH;
+
+    	val currentAction = thisDeferAction(body);
+        if (strategy == Strategy.FORK) {
+    		val parentAction  = currentDeferAction.asResult();
+        	parentAction.ifPresent(parent -> {
+        		parent.onCompleted(__ -> {
+        			currentAction.cancel();
+        		});
+        	});
+        }
         
-        val substitutions
-                = Substitution
-                .getCurrentSubstitutions()
-                .exclude(Substitution::isThreadLocal);
-        val parentScope = asyncScope.get();
-        
+        val theRunner  = (runner != null) ? runner : Env.async();
+    	val deferValue = new DeferValue<DATA>();
+
+        // This latch is to ensure `prepare()` runs completely before continue the parent thread.
         val latch = new CountDownLatch(1);
+        val with  = WithAllGlobalSubstitutions()
+                	.and(currentDeferAction.butWith(currentAction));
         theRunner.accept(() -> {
-            parentScope.onBeforeSubAction();
-            
-            val currentScope = theScioeProvider.get();
-            
-            try {
-                With(substitutions)
-                .with(asyncScope.butWith(currentScope))
-                .run(() -> {
-                    body.prepared();
-                    latch.countDown();
-                    DATA value = body.compute();
-                    action.complete(value);
-                });
-            } catch (Exception exception) {
-                action.fail(exception);
-                ThrowFuncs.handleNoThrow(exception);
-            } catch (Throwable throwable) {
-                val exception = new WrapThrowable(throwable);
-                action.fail(exception);
-                ThrowFuncs.handleNoThrow(exception);
-            } finally {
-                currentScope.onActionCompleted();
-            }
+        	with
+            .run(() -> {
+	            try {
+	            	try {
+	                	// prepare() is guaranteed to run..
+	                    body.prepare();
+	                    latch.countDown();
+	                    
+	                    // This is where the body is run.
+	                    val value = body.compute();
+	                    deferValue.assign(value);
+		            } catch (FunctionInvocationException exception) {
+		                val cause = exception.getCause();
+		                throw cause;
+	                }
+	            } catch (Throwable throwable) {
+	                val exception = WrappedThrowableException.exceptionOf(throwable);
+	                deferValue.fail(exception);
+	            } finally {
+					// This point is where the sub task is done.
+				}
+            });
         });
         
         try {
@@ -164,9 +155,17 @@ public interface AsyncRunner extends functionalj.function.FuncUnit1<java.lang.Ru
             e.printStackTrace();
         }
         
-        val promise = action.getPromise();
-        return promise;
+        return deferValue;
     }
+	
+    @SuppressWarnings({ "rawtypes" })
+	public static <DATA, EXCEPTION extends Exception> DeferAction thisDeferAction(ComputeBody<DATA, EXCEPTION> body) {
+		DeferAction deferAction = null;
+		if (body instanceof DeferActionCreator.RunTask.Body) {
+			deferAction = ((DeferActionCreator.RunTask.Body)body).action();
+		}
+		return deferAction;
+	}
     
     public static final AsyncRunner onSameThread = AsyncRunner.withName("RunOnSameThread", runnable -> {
         runnable.run();

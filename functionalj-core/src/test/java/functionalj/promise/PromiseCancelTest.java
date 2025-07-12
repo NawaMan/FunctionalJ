@@ -70,7 +70,7 @@ public class PromiseCancelTest {
                 return "Hello World!";
             });
             val action = deferAction.start();
-            action.abort();
+            action.cancel();
             
             val result = action.getResult();
             assertAsString("Result:{ Cancelled }",                        result);
@@ -79,8 +79,8 @@ public class PromiseCancelTest {
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.cancel(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.cancel(UncompletedAction.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E[a-zA-Z0-9$]+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testCancel(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
@@ -103,7 +103,7 @@ public class PromiseCancelTest {
             val subscription = action.subscribe(result -> {
                 logs.add(result);
             });
-            subscription.abort();
+            subscription.cancel();
             
             val result = action.getResult();
             assertAsString("Result:{ Cancelled }", result);
@@ -111,8 +111,8 @@ public class PromiseCancelTest {
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.cancel(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.cancel(UncompletedAction.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E[a-zA-Z0-9$]+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testUnsubscribe(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
@@ -133,7 +133,7 @@ public class PromiseCancelTest {
             });
             val action = deferAction.start();
             
-            action.abort();
+            action.cancel();
             
             val result = action.getResult();
             assertAsString("Result:{ Cancelled }", result);
@@ -141,8 +141,8 @@ public class PromiseCancelTest {
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.cancel(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.cancel(UncompletedAction.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testUnsubscribe_cancel(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
@@ -184,7 +184,7 @@ public class PromiseCancelTest {
             .map($S.replaceAll("World", "there"));
             val action = deferAction.start();
             
-            action.abort();
+            action.cancel();
             
             val result = action.getResult();
             assertAsString("Result:{ Cancelled }", result);
@@ -205,7 +205,7 @@ public class PromiseCancelTest {
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
             
-            action.abort();
+            action.cancel();
             
             val result  = action.getResult();
             val result1 = action1.getResult();
@@ -217,8 +217,8 @@ public class PromiseCancelTest {
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.cancel(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.cancel(UncompletedAction.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testMap_middleCancel(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
@@ -228,8 +228,8 @@ public class PromiseCancelTest {
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.cancel(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.cancel(UncompletedAction.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testMap_middleCancel(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
@@ -239,8 +239,8 @@ public class PromiseCancelTest {
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.cancel(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.cancel(UncompletedAction.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testMap_middleCancel(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
@@ -263,22 +263,24 @@ public class PromiseCancelTest {
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
             
-            action1.abort();
+            action1.cancel();
             
             val result  = action.getResult();
             val result1 = action1.getResult();
             val result2 = action2.getResult();
-            assertAsString("Result:{ Value: Hello World! }", result);
-            assertAsString("Result:{ Cancelled }",           result1);
-            assertAsString("Result:{ Cancelled }",           result2);
+            assertAsString("Result:{ Cancelled: No more listener. }", result);
+            assertAsString("Result:{ Cancelled }",                    result1);
+            assertAsString("Result:{ Cancelled }",                    result2);
             
-            assertAsString("null", result.getException());
+            assertAsString(
+            		"functionalj.result.ResultCancelledException: No more listener.",
+            		result.getException());
             
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.cancel(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.cancel(UncompletedAction.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testMap_middleCancel1(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
@@ -288,8 +290,8 @@ public class PromiseCancelTest {
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.cancel(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.cancel(UncompletedAction.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testMap_middleCancel1(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
@@ -312,24 +314,28 @@ public class PromiseCancelTest {
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
             
-            action2.abort();
+            action2.cancel();
             
             val result  = action.getResult();
             val result1 = action1.getResult();
             val result2 = action2.getResult();
-            assertAsString("Result:{ Value: Hello World! }",   result);
-            assertAsString("Result:{ Value: Hello World!!! }", result1);
-            assertAsString("Result:{ Cancelled }",             result2);
+            assertAsString("Result:{ Cancelled: No more listener. }", result);
+            assertAsString("Result:{ Cancelled: No more listener. }", result1);
+            assertAsString("Result:{ Cancelled }",                    result2);
             
-            assertAsString("null", result.getException());
+            assertAsString(
+            		"functionalj.result.ResultCancelledException: No more listener.", 
+            		result.getException());
             
-            assertAsString("null", result1.getException());
+            assertAsString(
+            		"functionalj.result.ResultCancelledException: No more listener.",
+            		result1.getException());
             
             assertAsString(
                     "functionalj.result.ResultCancelledException\n"
                     + "\tat functionalj.result.Result.ofCancelled(Result.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.Promise.abort(Promise.java:\\E[0-9]+\\Q)\n"
-                    + "\tat functionalj.promise.UncompletedAction.abort(UncompletedAction.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.Promise.cancel(Promise.java:\\E[0-9]+\\Q)\n"
+                    + "\tat functionalj.promise.UncompletedAction.cancel(UncompletedAction.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.lambda$\\E.+\\Q(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.ensureThreadCleanup(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
                     + "\tat functionalj.promise.PromiseCancelTest.testMap_middleCancel2(PromiseCancelTest.java:\\E[0-9]+\\Q)\n"
@@ -386,7 +392,7 @@ public class PromiseCancelTest {
     }
     
     @Test
-    public void testMap_cleanUp_aborted() throws Exception {
+    public void testMap_cleanUp_cancelled() throws Exception {
         int startValue    =   42;
         int subStartValue =    0;
         int subEndValue   =   -1;
@@ -415,7 +421,7 @@ public class PromiseCancelTest {
             
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
-            action.abort();
+            action.cancel();
             
             val result  = action.getResult();
             val result1 = action1.getResult();
@@ -432,7 +438,7 @@ public class PromiseCancelTest {
     }
     
     @Test
-    public void testMap_cleanUp_aborted1() throws Exception {
+    public void testMap_cleanUp_cancelled1() throws Exception {
         int startValue    =   42;
         int subStartValue =    0;
         int subEndValue   =   -1;
@@ -462,7 +468,7 @@ public class PromiseCancelTest {
             val action1 = action .map($S.concat("!!"));
             val action2 = action1.map($S.replaceAll("World", "there"));
             
-            action1.abort();
+            action1.cancel();
             
             val result  = action.getResult();
             val result1 = action1.getResult();

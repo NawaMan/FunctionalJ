@@ -27,7 +27,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-import functionalj.functions.ThrowFuncs;
+import functionalj.exception.Throwables;
 import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
@@ -133,7 +133,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(e);
+            throw Throwables.exceptionTransformer.value().apply(e);
         }
     }
     

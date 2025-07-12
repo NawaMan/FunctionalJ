@@ -96,7 +96,7 @@ public class TaskTest {
         }));
         
         val action = task.createAction().start();
-        action.abort();
+        action.cancel();
         
         assertAsString(
                 "Result:{ Cancelled }",

@@ -33,7 +33,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import functionalj.functions.ThrowFuncs;
+
+import functionalj.exception.Throwables;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
@@ -133,7 +134,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTransformer.value().apply(e);
+            throw Throwables.exceptionTransformer.value().apply(e);
         }
     }
     
