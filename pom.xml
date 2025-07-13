@@ -51,8 +51,8 @@
         
         <!-- DEPENDENCY -->
         <lombok.version>1.18.28</lombok.version>
-        <defaultj.version>2.3.1</defaultj.version>
-        <nullablej.version>4.1.0</nullablej.version>
+        <defaultj.version>2.3.2</defaultj.version>
+        <nullablej.version>4.1.1</nullablej.version>
         
         <!-- TEST -->
         <junit.version>4.13.2</junit.version>
@@ -297,15 +297,15 @@
             </plugin>
             
             <!-- PUBLISH -->
-			<plugin>
-			    <groupId>org.sonatype.central</groupId>
-			    <artifactId>central-publishing-maven-plugin</artifactId>
-			    <extensions>true</extensions>
-			    <configuration>
-			        <publishingServerId>central</publishingServerId>
-			        <waitUntil>published</waitUntil>
-			    </configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <waitUntil>published</waitUntil>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

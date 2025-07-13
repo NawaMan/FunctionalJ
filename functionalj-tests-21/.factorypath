@@ -4,5 +4,5 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/io/defaultj/defaultj-core/2.3.1/defaultj-core-2.3.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/defaultj/defaultj-annotations/2.3.1/defaultj-annotations-2.3.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/projectlombok/lombok/1.18.28/lombok-1.18.28.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/io/functionalj/functionalj-types/0.0.1-SNAPSHOT/functionalj-types-0.0.1-SNAPSHOT.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/functionalj/functionalj-types/1.0.28/functionalj-types-1.0.28.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>
